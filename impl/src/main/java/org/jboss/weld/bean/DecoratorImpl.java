@@ -26,11 +26,10 @@ import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -47,6 +46,7 @@ import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -100,7 +100,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    private WeldClass<?> annotatedDelegateItem;
    private WeldClass<T> proxyClassForAbstractDecorators;
    private WeldConstructor<T> constructorForAbstractDecorator;
-   private Set<MethodSignature> decoratedMethodSignatures;
+   private Map<MethodSignature, WeldMethod<?,?>> decoratorMethods;
    private WeldInjectionPoint<?, ?> delegateInjectionPoint;
    private Set<Annotation> delegateBindings;
    private Type delegateType;
@@ -132,8 +132,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       this.decoratedTypes = new HashSet<Type>();
       this.decoratedTypes.addAll(getWeldAnnotated().getInterfaceClosure());
       this.decoratedTypes.remove(Serializable.class);
-
-      this.decoratedMethodSignatures = Decorators.getDecoratedMethodSignatures(getBeanManager(), this.decoratedTypes);
+      this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, decoratedTypes, getWeldAnnotated());
    }
 
    protected void initDelegateInjectionPoint()
@@ -277,11 +276,11 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       }
    }
 
-   public Set<MethodSignature> getDecoratedMethodSignatures()
+   public WeldMethod<?,?> getDecoratorMethod(Method method)
    {
-      return decoratedMethodSignatures;
+      return Decorators.findDecoratorMethod(this, decoratorMethods, method);
    }
-   
+
    @Override
    public String toString()
    {

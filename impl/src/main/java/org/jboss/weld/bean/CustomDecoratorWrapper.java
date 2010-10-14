@@ -17,12 +17,14 @@
 
 package org.jboss.weld.bean;
 
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
@@ -38,7 +40,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
    private Decorator<T> delegate;
    private WeldClass<T> weldClass;
 
-   private Set<MethodSignature> decoratedMethodSignatures;
+   private Map<MethodSignature, WeldMethod<?,?>> decoratorMethods;
 
    public static <T> CustomDecoratorWrapper<T> of(Decorator<T> delegate, BeanManagerImpl beanManager)
    {
@@ -49,7 +51,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
    {
       this.delegate = delegate;
       this.weldClass =  beanManager.getServices().get(ClassTransformer.class).loadClass((Class<T>) delegate.getBeanClass());
-      this.decoratedMethodSignatures = Decorators.getDecoratedMethodSignatures(beanManager, delegate.getDecoratedTypes());
+      this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, delegate.getDecoratedTypes(), this.weldClass);
    }
 
    @Override
@@ -63,9 +65,8 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
       return weldClass;
    }
 
-   public Set<MethodSignature> getDecoratedMethodSignatures()
+   public WeldMethod<?,?> getDecoratorMethod(Method method)
    {
-      return decoratedMethodSignatures;
+      return Decorators.findDecoratorMethod(this, decoratorMethods, method);
    }
-   
 }
