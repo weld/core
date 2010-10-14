@@ -17,6 +17,7 @@
 
 package org.jboss.weld.util;
 
+import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
@@ -24,6 +25,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -86,5 +88,34 @@ public class Decorators
          return (WeldClass<?>) beanManager.createAnnotatedType((Class<?>) ((ParameterizedType) type).getRawType());
       }
       throw new IllegalStateException(UNABLE_TO_PROCESS, type);
+   }
+
+   public static <T> WeldMethod<?, ?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods, Method method)
+   {
+      // try the signature first, might be simpler
+      MethodSignature key = new MethodSignatureImpl(method);
+      if (decoratorMethods.containsKey(key))
+      {
+         return decoratorMethods.get(key);
+      }
+      // try all methods
+      for (WeldMethod<?, ?> decoratorMethod : decoratorMethods.values())
+      {
+         if (method.getParameterTypes().length == decoratorMethod.getParameters().size()
+               && method.getName().equals(decoratorMethod.getName()))
+         {
+            boolean parameterMatch = true;
+            for (int i=0; parameterMatch && i < method.getParameterTypes().length; i++)
+            {
+               parameterMatch = parameterMatch && decoratorMethod.getParameterTypesAsArray()[i].isAssignableFrom(method.getParameterTypes()[i]);
+            }
+            if (parameterMatch)
+            {
+               return decoratorMethod;
+            }
+         }
+      }
+
+      return null;
    }
 }

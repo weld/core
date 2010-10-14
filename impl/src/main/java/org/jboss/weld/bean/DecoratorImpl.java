@@ -278,31 +278,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
    public WeldMethod<?,?> getDecoratorMethod(Method method)
    {
-      // try the signature first, might be simpler
-      MethodSignature key = new MethodSignatureImpl(method);
-      if (decoratorMethods.containsKey(key))
-      {
-         return decoratorMethods.get(key);
-      }
-      // generic methods do not pass the signature test so we need to check methods individually
-      for (WeldMethod<?, ?> decoratorMethod : decoratorMethods.values())
-      {
-         if (method.getParameterTypes().length == decoratorMethod.getParameters().size()
-               && method.getName().equals(decoratorMethod.getName()))
-         {
-            boolean parameterMatch = true;
-            for (int i=0; parameterMatch && i < method.getParameterTypes().length; i++)
-            {
-               parameterMatch = parameterMatch && decoratorMethod.getParameterTypesAsArray()[i].isAssignableFrom(method.getParameterTypes()[i]);
-            }
-            if (parameterMatch)
-            {
-               return decoratorMethod;
-            }
-         }
-      }
-
-      return null;
+      return Decorators.findDecoratorMethod(this, decoratorMethods, method);
    }
 
    @Override
