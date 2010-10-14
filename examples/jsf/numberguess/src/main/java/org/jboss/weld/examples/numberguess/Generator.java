@@ -20,8 +20,10 @@ public class Generator implements Serializable
       return random;
    }
    
-   @Produces @Random int next() { 
-      return getRandom().nextInt(maxNumber); 
+   @Produces @Random int next() 
+   { 
+      //a number between 1 and 100
+      return getRandom().nextInt(maxNumber - 1) + 1; 
    }
    
    @Produces @MaxNumber int getMaxNumber()
