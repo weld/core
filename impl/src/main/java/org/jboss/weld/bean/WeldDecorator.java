@@ -17,13 +17,14 @@
 
 package org.jboss.weld.bean;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
-
+import org.jboss.weld.introspector.WeldMethod;
 
 
 /**
@@ -37,6 +38,13 @@ public interface WeldDecorator<T> extends Decorator<T>
 
    public WeldClass<?> getWeldAnnotated();
 
-   public Set<MethodSignature> getDecoratedMethodSignatures();
+   /**
+    * Returns the decorated method that can decorate a particular method, if one exists
+    *
+    * Such a method must be implement one of the decorated type methods, and can be parametrized
+    * @param method
+    * @return
+    */
+   public WeldMethod<?,?> getDecoratorMethod(Method method);
    
 }

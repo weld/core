@@ -58,7 +58,6 @@ public class DecorateGenericObserverTest
    /*
     * description = "WELD-579"
     */
-   @Category(Broken.class)
    @Test
    public void shouldInvokeDecoratorsWhenObservingGenericEvents()
    {

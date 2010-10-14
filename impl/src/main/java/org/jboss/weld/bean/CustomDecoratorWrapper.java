@@ -17,12 +17,17 @@
 
 package org.jboss.weld.bean;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
@@ -38,7 +43,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
    private Decorator<T> delegate;
    private WeldClass<T> weldClass;
 
-   private Set<MethodSignature> decoratedMethodSignatures;
+   private Map<MethodSignature, WeldMethod<?,?>> decoratorMethods;
 
    public static <T> CustomDecoratorWrapper<T> of(Decorator<T> delegate, BeanManagerImpl beanManager)
    {
@@ -49,7 +54,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
    {
       this.delegate = delegate;
       this.weldClass =  beanManager.getServices().get(ClassTransformer.class).loadClass((Class<T>) delegate.getBeanClass());
-      this.decoratedMethodSignatures = Decorators.getDecoratedMethodSignatures(beanManager, delegate.getDecoratedTypes());
+      this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, delegate.getDecoratedTypes(), this.weldClass);
    }
 
    @Override
@@ -63,9 +68,32 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
       return weldClass;
    }
 
-   public Set<MethodSignature> getDecoratedMethodSignatures()
+   public WeldMethod<?,?> getDecoratorMethod(Method method)
    {
-      return decoratedMethodSignatures;
+      // try the signature first, might be simpler
+      MethodSignature key = new MethodSignatureImpl(method);
+      if (decoratorMethods.containsKey(key))
+      {
+         return decoratorMethods.get(key);
+      }
+      // try all methods
+      for (WeldMethod<?, ?> decoratorMethod : decoratorMethods.values())
+      {
+         if (method.getParameterTypes().length == decoratorMethod.getParameters().size()
+               && method.getName().equals(decoratorMethod.getName()))
+         {
+            boolean parameterMatch = true;
+            for (int i=0; parameterMatch && i < method.getParameterTypes().length; i++)
+            {
+               parameterMatch = parameterMatch && decoratorMethod.getParameterTypesAsArray()[i].isAssignableFrom(method.getParameterTypes()[i]);
+            }
+            if (parameterMatch)
+            {
+               return decoratorMethod;
+            }
+         }
+      }
+
+      return null;
    }
-   
 }

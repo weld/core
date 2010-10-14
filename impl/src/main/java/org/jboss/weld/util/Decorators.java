@@ -21,12 +21,12 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
 
@@ -39,21 +39,40 @@ import javax.inject.Inject;
  */
 public class Decorators
 {
-   public static Set<MethodSignature> getDecoratedMethodSignatures(BeanManagerImpl beanManager, Set<Type> decoratedTypes)
+
+   public static Map<MethodSignature, WeldMethod<?, ?>> getDecoratorMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes, WeldClass<?> decoratorClass)
    {
-      Set<MethodSignature> methodSignatures = new HashSet<MethodSignature>();
+      List<WeldMethod<?, ?>> decoratedMethods = Decorators.getDecoratedMethods(beanManager, decoratedTypes);
+      Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods = new HashMap<MethodSignature, WeldMethod<?, ?>>();
+      for (WeldMethod<?, ?> method : decoratorClass.getWeldMethods())
+      {
+         MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
+         for (WeldMethod<?, ?> decoratedMethod : decoratedMethods)
+         {
+            if (new MethodSignatureImpl(decoratedMethod).equals(methodSignature))
+            {
+               decoratorMethods.put(methodSignature, method);
+            }
+         }
+      }
+      return decoratorMethods;
+   }
+
+   public static List<WeldMethod<?,?>> getDecoratedMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes)
+   {
+      List<WeldMethod<?,?>> methods = new ArrayList<WeldMethod<?,?>>();
       for (Type type: decoratedTypes)
       {
          WeldClass<?> weldClass = getWeldClassOfDecoratedType(beanManager, type);
          for (WeldMethod<?, ?> method : weldClass.getWeldMethods())
          {
-            if (!methodSignatures.contains(method.getSignature()))
+            if (!methods.contains(method))
             {
-               methodSignatures.add(method.getSignature());
+               methods.add(method);
             }
          }
       }
-      return methodSignatures;
+      return methods;
    }
 
    public static WeldClass<?> getWeldClassOfDecoratedType(BeanManagerImpl beanManager, Type type)
