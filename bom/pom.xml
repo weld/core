@@ -37,7 +37,7 @@
       <!-- Override the API and compile with more recent EL API -->
       <google.guava.version>r06</google.guava.version>
       <cdi.tck.version>1.0.2.CR2</cdi.tck.version>
-      <javassist.version>3.13.0-GA</javassist.version>
+      <javassist.version>3.14.0-GA</javassist.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
       <jboss.interceptor.version>2.0.0.Alpha3</jboss.interceptor.version>
       <slf4j.version>1.5.10</slf4j.version>
