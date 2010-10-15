@@ -16,16 +16,14 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.util.TypeLiteral;
-import javax.inject.Provider;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
@@ -36,26 +34,19 @@ import com.google.common.collect.MapMaker;
 
 /**
  * @author pmuir
- *
+ * 
  */
 public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Resolvable, T>
 {
-   
-   private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
-   private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
-   private static final Class<Event<?>> EVENT_TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
 
    private final BeanManagerImpl beanManager;
-   private final ConcurrentMap<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans; 
-   
+   private final ConcurrentMap<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
+
    public static class BeanDisambiguation implements Function<Set<Bean<?>>, Set<Bean<?>>>
    {
-      
-      private final BeanManagerImpl beanManager;
 
-      private BeanDisambiguation(BeanManagerImpl beanManager)
+      private BeanDisambiguation()
       {
-         this.beanManager = beanManager;
       }
 
       public Set<Bean<?>> apply(Set<Bean<?>> from)
@@ -64,7 +55,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
          {
             boolean alternativePresent = Beans.isAlternativePresent(from);
             Set<Bean<?>> disambiguatedBeans = new HashSet<Bean<?>>();
-            
+
             for (Bean<?> bean : from)
             {
                if (alternativePresent ? bean.isAlternative() : true)
@@ -79,14 +70,14 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
             return from;
          }
       }
-      
+
    }
 
    public TypeSafeBeanResolver(BeanManagerImpl beanManager, Iterable<T> beans)
    {
       super(beans);
       this.beanManager = beanManager;
-      this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation(beanManager));
+      this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation());
    }
 
    @Override
@@ -94,7 +85,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    {
       return Reflections.matches(resolvable.getTypes(), bean.getTypes()) && Beans.containsAllQualifiers(resolvable.getQualifiers(), bean.getQualifiers(), beanManager);
    }
-   
+
    /**
     * @return the manager
     */
@@ -102,7 +93,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    {
       return beanManager;
    }
-   
+
    @Override
    protected Set<T> filterResult(Set<T> matched)
    {
@@ -114,20 +105,22 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    {
       return matched;
    }
-   
 
-   @SuppressWarnings("unchecked")
-   public <X> Set<Bean<? extends X>> resolve(final Set<Bean<? extends X>> beans)
+   public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans)
    {
-      return (Set) Collections.unmodifiableSet(disambiguatedBeans.get(new HashSet(beans)));
+      /*
+       * We need to defensively copy the beans set as it can be provided by
+       * the user in which case this algorithm will have thread safety issues
+       */
+      beans = new HashSet<Bean<? extends X>>(beans);
+      return cast(Collections.unmodifiableSet(disambiguatedBeans.get(beans)));
    }
-   
+
    @Override
    public void clear()
    {
       super.clear();
-      //this.disambiguatedBeans.clear();
+      this.disambiguatedBeans.clear();
    }
-
 
 }

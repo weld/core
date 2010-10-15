@@ -19,6 +19,7 @@ package org.jboss.weld.resolution;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_QUALIFIERS;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
 import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -257,7 +258,7 @@ public class ResolvableBuilder
 
       public <A extends Annotation> A getAnnotation(Class<A> annotationType)
       {
-         return (A) mappedQualifiers.get(annotationType);
+         return Reflections.<A>cast(mappedQualifiers.get(annotationType));
       }
 
       public Class<?> getJavaClass()
