@@ -219,7 +219,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X> void createObserverMethods(RIBean<X> declaringBean, WeldClass<X> annotatedClass)
    {
-      for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
+      for (WeldMethod<?, ? super X> method : annotatedClass.getWeldMethodsWithAnnotatedParameters(Observes.class))
       {
          createObserverMethod(declaringBean, method);
       }

@@ -83,7 +83,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    }
 
    // Class attributes
-   private final WeldClass<?> superclass;
+   private final WeldClass<? super T> superclass;
 
    // The set of abstracted fields
    private final Set<WeldField<?, ?>> fields;
@@ -547,6 +547,16 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       return Collections.unmodifiableCollection(declaredMethodsByAnnotatedParameters.get(annotationType));
    }
 
+   public Collection<WeldMethod<?, ? super T>> getWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   {
+      ArrayList<WeldMethod<?, ? super T>> aggregateMethods = new ArrayList<WeldMethod<?, ? super T>>(this.declaredMethodsByAnnotatedParameters.get(annotationType));
+      if ((superclass != null) && (superclass.getJavaClass() != Object.class))
+      {
+         aggregateMethods.addAll(superclass.getWeldMethodsWithAnnotatedParameters(annotationType));
+      }
+      return Collections.unmodifiableCollection(aggregateMethods);
+   }
+   
    public WeldMethod<?, ?> getWeldMethod(Method methodDescriptor)
    {
       // TODO Should be cached
