@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T11:17:19\n"
-"PO-Revision-Date: 2010-07-25T11:17:19\n"
+"POT-Creation-Date: 2010-10-19T01:52:19\n"
+"PO-Revision-Date: 2010-10-19T01:52:19\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -104,7 +104,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>BeanDeploymentArchive</literal> provides three methods which allow it's contents to be discovered by Weld&#8212;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the BDA, <literal>BeanDeploymentArchive.getBeansXml()</literal> must return all the deployment descriptors in the archive, and <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an EJB descriptor for every EJB in the BDA, or an empty list if it is not an EJB archive."
+msgid "<literal>BeanDeploymentArchive</literal> provides three methods which allow it's contents to be discovered by Weld&#8212;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the BDA, <literal>BeanDeploymentArchive.getBeansXml()</literal> must return a data structure representing the <code>beans.xml</code> deployment descriptor for the archive, and <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an EJB descriptor for every EJB in the BDA, or an empty list if it is not an EJB archive."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "To aid container integrator, Weld provides a built-in <code>beans.xml</code> parser. To parse a <code>beans.xml</code> into the data-structure required by <code>BeanDeploymentArchive</code>, the container should call <code>Bootstrap.parseBeansXml(URL)</code>. Weld can also parse multiple <code>beans.xml</code> files, merging them to become a single data-structure. This can be achieved by calling <code>Bootstrap.parseBeansXml(Iterable&lt;URL&gt;)</code>."
 msgstr ""
 
 #. Tag: para
@@ -135,6 +140,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Certain services are provided for the whole deployment, whilst some are provided per-BDA. BDA services are provided using <literal>BeanDeploymentArchive.getServices()</literal> and only apply to the BDA on which they are provided."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The contract for <code>Deployment</code> requires the container to specify the portable extensions (see chapter 12 of the CDI specification) which should be loaded by the application. To aid the container integrator, Weld provides the method <code>Bootstrap.loadExtensions(ClassLoader)</code> which will load the extensions for the specified classloader."
 msgstr ""
 
 #. Tag: title
@@ -539,7 +549,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You should bind the bean manager for the bean deployment archive into JNDI at <literal>java:comp/Manager</literal>. The type should be <literal>javax.enterprise.inject.spi.BeanManager</literal>. To obtain the correct bean manager for the bean deployment archive, you may call <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>"
+msgid "You should bind the bean manager for the bean deployment archive into JNDI at <literal>java:comp/BeanManager</literal>. The type should be <literal>javax.enterprise.inject.spi.BeanManager</literal>. To obtain the correct bean manager for the bean deployment archive, you may call <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>"
 msgstr ""
 
 #. Tag: term

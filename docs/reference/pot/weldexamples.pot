@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T03:52:15\n"
-"PO-Revision-Date: 2010-07-25T03:52:15\n"
+"POT-Creation-Date: 2010-10-19T01:52:19\n"
+"PO-Revision-Date: 2010-10-19T01:52:19\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -359,12 +359,47 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To run the example:"
+msgid "To use the Weld SE numberguess example in Eclipse, you can open the example natively using the <ulink url=\"http://m2eclipse.sonatype.org/\">m2eclipse plugin</ulink> ."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Ensure that Maven 2 (version 2.0.10+) is installed and in your PATH"
+msgid "If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select <emphasis>File -&gt; Import... -&gt; Maven Projects</emphasis> . Then, browse to the location of the Weld SE numberguess example. You should see that Eclipse recognizes the existence of a Maven project."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "This will create a project in your workspace called <literal>weld-se-numberguess</literal> ."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Disable m2eclipse's <emphasis>Workspace Resolution</emphasis>, to make sure that Eclipse can find <literal>StartMain</literal>. Right click on the project, and choose <emphasis>Properties -&gt; Maven</emphasis>, and uncheck <emphasis>Resolve dependencies from Workspace projects</emphasis>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Right click on the project, and choose <emphasis>Run As -&gt; Run As Application</emphasis>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Locate the <literal>StartMain</literal> class:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The application should now launch!"
+msgstr ""
+
+#. Tag: title
+#, no-c-format
+msgid "Running the example from the command line"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Ensure that Maven 3 is installed and in your PATH"
 msgstr ""
 
 #. Tag: para

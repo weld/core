@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T10:21:23\n"
+"POT-Creation-Date: 2010-10-19T02:05:01\n"
 "PO-Revision-Date: 2010-04-14 14:08-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -77,8 +77,8 @@ msgid "Beans"
 msgstr "Beans"
 
 #. Tag: title
-#, no-c-format
-msgid "Weld, the CDI Reference Implementation"
+#, fuzzy, no-c-format
+msgid "Getting Start with Weld, the CDI Reference Implementation"
 msgstr "Weld, a Implementação de Referência de CDI"
 
 #. Tag: title
@@ -92,6 +92,6 @@ msgid "CDI and the Java EE ecosystem"
 msgstr "CDI e o ecossistema Java EE"
 
 #. Tag: title
-#, no-c-format
-msgid "Weld reference"
+#, fuzzy, no-c-format
+msgid "Weld Reference Guide"
 msgstr "Referência a Weld"

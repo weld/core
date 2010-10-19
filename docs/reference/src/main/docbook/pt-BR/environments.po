@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection "
 "VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-10-19T02:05:01\n"
 "PO-Revision-Date: 2009-12-19 18:10-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -105,7 +105,7 @@ msgstr "Servlet Containers (como o Tomcat ou Jetty)"
 #, fuzzy, no-c-format
 msgid ""
 "While JSR-299 does not require support for servlet environments, Weld can be "
-"used in any servlet container, such as Tomcat 6.0 or Jetty 6.1."
+"used in a servlet container, such as Tomcat 6.0 or Jetty 6.1."
 msgstr ""
 "A Web Beans pode ser utilizada em qualquer Servlet container como o Tomcat "
 "6.0 ou Jetty 6.1."
@@ -246,12 +246,29 @@ msgstr "Jetty"
 #, fuzzy, no-c-format
 msgid ""
 "Like Tomcat, Jetty has a read-only JNDI, so Weld can't automatically bind "
-"the Manager. To bind the Manager to JNDI, you should populate <literal>WEB-"
-"INF/jetty-env.xml</literal> with the following contents:"
+"the BeanManager. To bind the BeanManager to JNDI in Jetty 6, you should "
+"populate <literal>WEB-INF/jetty-env.xml</literal> with the following "
+"contents:"
 msgstr ""
 "O Tomcat tem um JNDI apenas de leitura. Assim, a Web Beans não pode vincular "
 "automaticamente o Manager. Para vincular o Manager no JNDI, você deve "
 "adicionar o seguinte ao seu <literal>META-INF/context.xml</literal>:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Jetty 7 has moved to the Eclipse Foundation; if you are using Jetty 7 put "
+"the following in your <literal>WEB-INF/jetty-env.xml</literal>:"
+msgstr ""
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Just like in Tomcat, you need to make it available to your deployment by "
+"adding this to the bottom of <literal>web.xml</literal>:"
+msgstr ""
+"e torná-lo disponível para a sua implantação, acrescentando-o ao "
+"<literal>web.xml</literal>:"
 
 #. Tag: para
 #, no-c-format
@@ -497,7 +514,26 @@ msgid ""
 "Weld SE comes packaged as a 'shaded' jar which includes the CDI API, Weld "
 "Core and all dependant classes bundled into a single jar. Therefore the only "
 "Weld jar you need on the classpath, in addition to your application's "
-"classes and dependant jars, is the Weld SE jar."
+"classes and dependant jars, is the Weld SE jar. If you are working with a "
+"pure Java SE application you launch using <literal>java</literal>, this may "
+"be simpler for you."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you prefer to work with individual dependencies, then you can use the "
+"<literal>weld-core</literal> jar which just contains the Weld SE classes. Of "
+"course in this mode you will need to assemble the classpath yourself. This "
+"mode is useful, for example, if you wish to use an alternative slf4j log "
+"binding."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you work with a dependency management solution such as Maven you can "
+"declare a dependency on <literal>org.jboss.weld.se:weld-se-core</literal>."
 msgstr ""
 
 #~ msgid "<![CDATA[jboss.home=/path/to/jboss-as-5.x]]>"

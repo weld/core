@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
-"PO-Revision-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-10-19T01:52:18\n"
+"PO-Revision-Date: 2010-10-19T01:52:18\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with two starter example applications, in addition to more specialized examples. The first, <literal>weld-numberguess</literal>, is a web (war) example containing only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. The second example, <literal>weld-translator</literal>, is an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 6.0, Glassfish 3.0 or any compliant Java EE 6 container."
+msgid "Weld comes with a number of examples. We recommend you start with <literal>examples/jsf/numberguess</literal> and <literal>examples/jsf/translator</literal>. Numberguess is a web (war) example containing only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. Translator is an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 6.0, Glassfish 3.0 or any compliant Java EE 6 container."
 msgstr ""
 
 #. Tag: para

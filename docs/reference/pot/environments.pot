@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
-"PO-Revision-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-10-19T01:52:18\n"
+"PO-Revision-Date: 2010-10-19T01:52:18\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -69,7 +69,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "While JSR-299 does not require support for servlet environments, Weld can be used in any servlet container, such as Tomcat 6.0 or Jetty 6.1."
+msgid "While JSR-299 does not require support for servlet environments, Weld can be used in a servlet container, such as Tomcat 6.0 or Jetty 6.1."
 msgstr ""
 
 #. Tag: para
@@ -164,7 +164,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Like Tomcat, Jetty has a read-only JNDI, so Weld can't automatically bind the Manager. To bind the Manager to JNDI, you should populate <literal>WEB-INF/jetty-env.xml</literal> with the following contents:"
+msgid "Like Tomcat, Jetty has a read-only JNDI, so Weld can't automatically bind the BeanManager. To bind the BeanManager to JNDI in Jetty 6, you should populate <literal>WEB-INF/jetty-env.xml</literal> with the following contents:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Jetty 7 has moved to the Eclipse Foundation; if you are using Jetty 7 put the following in your <literal>WEB-INF/jetty-env.xml</literal>:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "Just like in Tomcat, you need to make it available to your deployment by adding this to the bottom of <literal>web.xml</literal>:"
 msgstr ""
 
 #. Tag: para
@@ -334,6 +344,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld SE comes packaged as a 'shaded' jar which includes the CDI API, Weld Core and all dependant classes bundled into a single jar. Therefore the only Weld jar you need on the classpath, in addition to your application's classes and dependant jars, is the Weld SE jar."
+msgid "Weld SE comes packaged as a 'shaded' jar which includes the CDI API, Weld Core and all dependant classes bundled into a single jar. Therefore the only Weld jar you need on the classpath, in addition to your application's classes and dependant jars, is the Weld SE jar. If you are working with a pure Java SE application you launch using <literal>java</literal>, this may be simpler for you."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If you prefer to work with individual dependencies, then you can use the <literal>weld-core</literal> jar which just contains the Weld SE classes. Of course in this mode you will need to assemble the classpath yourself. This mode is useful, for example, if you wish to use an alternative slf4j log binding."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "If you work with a dependency management solution such as Maven you can declare a dependency on <literal>org.jboss.weld.se:weld-se-core</literal>."
 msgstr ""
 
