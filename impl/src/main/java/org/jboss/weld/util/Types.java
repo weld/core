@@ -46,7 +46,11 @@ public class Types
    
    public static Class<?> boxedClass(Class<?> type)
    {
-      if (type.equals(Boolean.TYPE))
+      if (!type.isPrimitive())
+      {
+         return type;
+      }
+      else if (type.equals(Boolean.TYPE))
       {
          return Boolean.class;
       }
@@ -82,7 +86,11 @@ public class Types
       {
          return Void.class;
       }
-      return type;
+      else
+      {
+         // Vagaries of if/else statement, can't be reached ;-)
+         return type;
+      }
    }
    
    
