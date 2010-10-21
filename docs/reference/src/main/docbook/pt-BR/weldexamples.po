@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-10-19T02:05:01\n"
-"PO-Revision-Date: 2010-07-26 22:47-0300\n"
+"PO-Revision-Date: 2010-10-21 02:02-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -390,7 +390,7 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Creating the Eclipse project"
-msgstr ""
+msgstr "Criando o projeto no Eclipse"
 
 #. Tag: para
 #, no-c-format
@@ -402,6 +402,13 @@ msgid ""
 "so heavily on Maven, we encourage you to bite the bullet and adopt the "
 "m2eclipse plugin. Both approaches are described here for your convenience.."
 msgstr ""
+"Para usar o exemplo com Wicket no Eclipse, você tem que escolher uma de duas "
+"opções. Você pode utilizar um plugin do Maven para gerar um projeto Web no "
+"Eclipse, ou pode abrir o exemplo sem grandes problemas usando o <ulink url="
+"\"http://m2eclipse.sonatype.org/\">plugin m2eclipse</ulink>. Uma vez que o "
+"código fonte do Weld depende bastante do Maven, nós encorajamos você a fazer "
+"um sacrifício e adotar o plugin m2eclipse. Ambas abordagens são descritas "
+"aqui para sua conveniência."
 
 #. Tag: para
 #, no-c-format
@@ -412,6 +419,11 @@ msgid ""
 "example. You should see that Eclipse recognizes the existence of a Maven "
 "project."
 msgstr ""
+"Se você possui o m2eclipse instalado, você pode abrir qualquer projeto Maven "
+"diretamente. Uma vez dentro do Eclipse, selecione <emphasis>File -&gt; "
+"Import... -&gt; Maven Projects</emphasis>. Então, navegue até o diretório do "
+"exemplo numberguess com Wicket. Você observará que o Eclipse reconhece a "
+"existência de um projeto Maven."
 
 #. Tag: para
 #, no-c-format
@@ -419,6 +431,8 @@ msgid ""
 "This will create a project in your workspace called <literal>weld-wicket-"
 "numberguess</literal>."
 msgstr ""
+"Isto criará um projeto em seu workspace com o nome <literal>weld-wicket-"
+"numberguess</literal>."
 
 #. Tag: para
 #, no-c-format
@@ -434,6 +448,17 @@ msgid ""
 "incompatiblity between the m2eclipse plugin and the Maven enforcer plugin "
 "that we use for the Weld project. Now, you're ready to develop!"
 msgstr ""
+"Você notará que após a importação, o projeto terá um erro de construção. "
+"Isto é porque precisamos ativar o profile do Maven. Clique o botão direito "
+"sobre o projeto e selecione <emphasis>Properties</emphasis>, depois "
+"selecione o item <emphasis>Maven</emphasis> na janela que aparecerá. No "
+"campo rotulado com \"Active Maven Profiles (comma separated):\", digite "
+"<literal>jetty</literal>. Isto ativará algumas dependências extras que "
+"permitirá o projeto compilar. Adicionalmente, <emphasis>desmarque</emphasis> "
+"o item \"Skip Maven compile plugin when processing resources (recommended)"
+"\". Isto resolve uma incompatibilidade entre o plugin m2eclipse e o plugin "
+"enforcer do Maven que usamos no projeto Weld. Agora você está pronto para "
+"desenvolver!"
 
 #. Tag: para
 #, no-c-format

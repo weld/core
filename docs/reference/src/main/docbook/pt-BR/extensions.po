@@ -7,7 +7,7 @@ msgstr ""
 "VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-07-25T03:52:14\n"
-"PO-Revision-Date: 2010-01-07 10:42-0300\n"
+"PO-Revision-Date: 2010-10-21 01:20-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr ""
 "jboss.weld:weld-logger</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If you are using Weld as your JSR-299 implementation, there's no need to "
 "include sl4j as it's already included (and used internally)."

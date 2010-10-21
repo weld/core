@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-07-25T03:52:14\n"
-"PO-Revision-Date: 2010-01-07 10:22-0300\n"
+"PO-Revision-Date: 2010-10-21 01:34-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgid "Decorators"
 msgstr "Decoradores"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Interceptors are a powerful way to capture and separate concerns which are "
 "<emphasis>orthogonal</emphasis> to the application (and type system). Any "
@@ -30,16 +30,16 @@ msgid ""
 "an appropriate tool for separating business-related concerns."
 msgstr ""
 "Interceptadores são um meio poderoso para capturar e separar preocupações "
-"<emphasis>ortogonais</emphasis> para a aplicação (e sistema de tipos). "
-"Qualquer interceptador é capaz de interceptar invocações de qualquer tipo "
-"Java. Isso os torna ideais para resolver questões técnicas, tais como "
-"gerenciamento de transação, segurança e registro de chamadas. No entanto, "
-"por natureza, interceptadores desconhecem a real semântica dos eventos que "
-"interceptam. Assim, interceptadores não são um instrumento adequado para a "
-"separação de questões relacionadas a negócios."
+"<emphasis>ortogonais</emphasis> na aplicação (e sistema de tipos). Qualquer "
+"interceptador é capaz de interceptar invocações de qualquer tipo Java. Isso "
+"os torna ideais para resolver questões técnicas, tais como gerenciamento de "
+"transação, segurança e registro de chamadas. No entanto, por natureza, "
+"interceptadores desconhecem a real semântica dos eventos que interceptam. "
+"Assim, interceptadores não são um instrumento adequado para a separação de "
+"questões relacionadas a negócios."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The reverse is true of <emphasis>decorators</emphasis>. A decorator "
 "intercepts invocations only for a certain Java interface, and is therefore "
@@ -55,12 +55,12 @@ msgstr ""
 "intercepta invocações apenas para uma determinada interface Java e, "
 "portanto, é ciente de toda a semântica que acompanha esta interface. Visto "
 "que decoradores implementam diretamente operações com regras de negócios, "
-"torna eles uma ferramenta perfeita para modelar alguns tipos de questões de "
-"negócios. Significa também que um decorador não tem a generalidade de um "
-"interceptador. Decoradores não são capazes de resolver questões técnicas que "
-"atravessam muitos tipos diferentes. Interceptadores e decoradores, ambora "
-"similares em muitos aspectos, são complementares. Vamos ver alguns casos "
-"onde decoradores são bem convenientes."
+"isto torna eles uma ferramenta perfeita para modelar alguns tipos de "
+"questões de negócios. Isto também significa que um decorador não tem a "
+"generalidade de um interceptador. Decoradores não são capazes de resolver "
+"questões técnicas que atravessam muitos tipos diferentes. Interceptadores e "
+"decoradores, ambora similares em muitos aspectos, são complementares. Vamos "
+"ver alguns casos onde decoradores são bem convenientes."
 
 #. Tag: para
 #, no-c-format
@@ -101,14 +101,14 @@ msgstr ""
 "interceptar."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Unlike other beans, a decorator may be an abstract class. Therefore, if "
 "there's nothing special the decorator needs to do for a particular method of "
 "the decorated interface, you don't need to implement that method."
 msgstr ""
 "Ao contrário de outros beans, um decorador pode ser uma classe abstrata. "
-"Portanto, se não há nada de especial que o decorador precisa fazer para um "
+"Portanto, se não há nada de especial que o decorador precise fazer para um "
 "determinado método da interface decorada, você não precisa implementar esse "
 "método."
 
@@ -208,7 +208,7 @@ msgstr ""
 "beans neste arquivo."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This declaration serves the same purpose for decorators that the "
 "<literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
