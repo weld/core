@@ -158,7 +158,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
    public WeldMethod<?, ?> getDeclaredWeldMethod(Method method);
 
    /**
-    * Gets all with parameters annotated with annotationType
+    * Gets declared with parameters annotated with annotationType
     * 
     * @param annotationType The annotation to match
     * @return A set of abstracted methods with the given annotation. Returns an
@@ -166,6 +166,15 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     */
    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
+   /**
+    * Gets all with parameters annotated with annotationType
+    * 
+    * @param annotationType The annotation to match
+    * @return A set of abstracted methods with the given annotation. Returns an
+    *         empty set if there are no matches
+    */
+   public Collection<WeldMethod<?, ? super T>> getWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+   
    /**
     * Gets the superclass.
     * 
