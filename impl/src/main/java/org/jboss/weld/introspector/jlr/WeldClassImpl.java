@@ -547,6 +547,20 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       return Collections.unmodifiableCollection(declaredMethodsByAnnotatedParameters.get(annotationType));
    }
 
+   public Collection<WeldMethod<?, ? super T>> getWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
+   {
+      // TODO should be cached
+      ArrayList<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
+      for (WeldMethod<?, ?> method : getWeldMethods())
+      {
+         if (!method.getWeldParameters(annotationType).isEmpty())
+         {
+            methods.add((WeldMethod<?, ? super T>) method);
+         }
+      }
+      return Collections.unmodifiableCollection(methods);
+   }
+
    public WeldMethod<?, ?> getWeldMethod(Method methodDescriptor)
    {
       // TODO Should be cached
@@ -651,7 +665,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    {
       return Modifier.isFinal(getJavaClass().getModifiers());
    }
-   
+
    public boolean isGeneric()
    {
       return getJavaClass().getTypeParameters().length > 0;
