@@ -50,5 +50,15 @@ public class ProxyTest
    {
       Bean<?> bean = beanManager.resolve(beanManager.getBeans("foo"));
       Assert.assertNotNull(beanManager.getReference(bean, Object.class, beanManager.createCreationalContext(bean)));
+
+   }
+
+   @Test
+   public void testProxyInvocations()
+   {
+      Bean<?> bean = beanManager.resolve(beanManager.getBeans("foo"));
+      Foo foo = (Foo) beanManager.getReference(bean, Foo.class, beanManager.createCreationalContext(bean));
+      Assert.assertEquals(Foo.MESSAGE, foo.getMsg(0, 0L, 0D, false, 'a', 0F, (short) 0));
+      Assert.assertEquals(Foo.MESSAGE, foo.getRealMsg(0, 0L, 0D, false, 'a', 0F, (short) 0));
    }
 }

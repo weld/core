@@ -55,6 +55,15 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
     */
    public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
    {
+      if (thisMethod == null)
+      {
+         log.trace("MethodHandler processing returning bean instance for " + self.getClass());
+         if (beanInstance == null)
+         {
+            throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY);
+         }
+         return beanInstance.getInstance();
+      }
       log.trace("MethodHandler processing call to " + thisMethod + " for " + self.getClass());
       if (thisMethod.getDeclaringClass().equals(TargetInstanceProxy.class))
       {

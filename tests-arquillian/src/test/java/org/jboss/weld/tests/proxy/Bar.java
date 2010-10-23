@@ -16,27 +16,7 @@
  */
 package org.jboss.weld.tests.proxy;
 
-import java.io.Serializable;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-
-@Named
-@RequestScoped
-class Foo implements Serializable, Bar
+public interface Bar
 {
-   public static final String MESSAGE = "Hi";
-
-   public String getRealMsg(int param1, long param2, double param3, boolean param4, char param5, float param7, short param8)
-   {
-      return MESSAGE;
-   }
-
-   // test all primitive parameter types to make sure the bytecode is generated
-   // correctly for each of them
-   public String getMsg(int param1, long param2, double param3, boolean param4, char param5, float param7, short param8)
-   {
-      return MESSAGE;
-   }
-   
+   public String getMsg(int param1, long param2, double param3, boolean param4, char param5, float param7, short param8);
 }

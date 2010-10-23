@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.proxy.ClientProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
@@ -105,7 +106,7 @@ public class SerializableProxy implements Serializable
       Class<?> proxyBeanType = Container.instance().services().get(ProxyServices.class).loadBeanClass(proxySuperClassName);
       ArraySet<Type> proxyBeanInterfaces = loadInterfaces(); 
       Class<?> proxyClass = null;
-      if (proxyClassName.endsWith(ProxyFactory.PROXY_SUFFIX))
+      if (proxyClassName.endsWith(ClientProxyFactory.CLIENT_PROXY_SUFFIX))
       {
          proxyClass = generateClientProxyClass(proxyBeanType, proxyBeanInterfaces, proxyClassName);
       }
@@ -153,6 +154,6 @@ public class SerializableProxy implements Serializable
 
    private <T> Class<?> generateClientProxyClass(Class<T> beanType, Set<Type> interfaces, String proxyClassName)
    {
-      return new ProxyFactory<T>(beanType, interfaces, proxyClassName).getProxyClass();
+      return new ClientProxyFactory<T>(beanType, interfaces, proxyClassName).getProxyClass();
    }
 }

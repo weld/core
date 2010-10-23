@@ -592,7 +592,8 @@ public class ProxyFactory<T>
                {
                   try
                   {
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createInterceptorBody(proxyClassType, method), proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(),
+                           createForwardingMethodBody(proxyClassType, method), proxyClassType.getConstPool()));
                      log.trace("Adding method " + method);
                   }
                   catch (DuplicateMemberException e)
@@ -610,7 +611,8 @@ public class ProxyFactory<T>
             {
                try
                {
-                  proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createInterceptorBody(proxyClassType, method), proxyClassType.getConstPool()));
+                  proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(),
+                        createSpecialMethodBody(proxyClassType, method), proxyClassType.getConstPool()));
                   log.trace("Adding method " + method);
                }
                catch (DuplicateMemberException e)
@@ -623,6 +625,16 @@ public class ProxyFactory<T>
       {
          throw new WeldException(e);
       }
+   }
+
+   protected Bytecode createSpecialMethodBody(ClassFile proxyClassType, Method method) throws NotFoundException
+   {
+      return createInterceptorBody(proxyClassType, method);
+   }
+
+   protected Bytecode createForwardingMethodBody(ClassFile proxyClassType, Method method) throws NotFoundException
+   {
+      return createInterceptorBody(proxyClassType, method);
    }
 
    /**
