@@ -30,9 +30,11 @@ import java.util.Set;
 
 import javax.decorator.Delegate;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
@@ -54,6 +56,8 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
    private final Bean<?> declaringBean;
    private final WeldField<T, X> field;
    private final boolean delegate;
+   private final boolean cacheable;
+   private Bean<?> cachedBean;
 
    
    public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldField<T, X> field)
@@ -66,6 +70,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       this.declaringBean = declaringBean;
       this.field = field;
       this.delegate = isAnnotationPresent(Inject.class) && isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
+      this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(field.getJavaMember().getType()) && !Instance.class.isAssignableFrom(field.getJavaMember().getType());
    }
 
    @Override
@@ -118,7 +123,20 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
                instanceToInject = ((TargetInstanceProxy)declaringInstance).getTargetInstance();
             }
          }
-         delegate().set(instanceToInject, manager.getInjectableReference(this, creationalContext));
+         Object objectToInject;
+         if (!cacheable)
+         {
+            objectToInject = manager.getInjectableReference(this, creationalContext);
+         }
+         else
+         {
+            if (cachedBean == null)
+            {
+               cachedBean = manager.resolve(manager.getBeans(this));
+            }
+            objectToInject = manager.getReference(this, cachedBean, creationalContext);
+         }
+         delegate().set(instanceToInject, objectToInject);
       }
       catch (IllegalArgumentException e)
       {
