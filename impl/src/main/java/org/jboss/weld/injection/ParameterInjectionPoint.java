@@ -31,9 +31,11 @@ import java.util.Set;
 
 import javax.decorator.Delegate;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
@@ -61,12 +63,15 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
    private final Bean<?> declaringBean;
    private final WeldParameter<T, X> parameter;
    private final boolean delegate;
+   private final boolean cacheable;
+   private Bean<?> cachedBean;
 
    private ParameterInjectionPoint(Bean<?> declaringBean, WeldParameter<T, X> parameter)
    {
       this.declaringBean = declaringBean;
       this.parameter = parameter;
       this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
+      this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(parameter.getJavaClass()) && !Instance.class.isAssignableFrom(parameter.getJavaClass());
    }
 
    @Override
@@ -119,7 +124,20 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
    @SuppressWarnings("unchecked")
    public T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext)
    {
-      return (T) manager.getInjectableReference(this, creationalContext);
+      T objectToInject;
+      if (!cacheable)
+      {
+         objectToInject = (T) manager.getInjectableReference(this, creationalContext);
+      }
+      else
+      {
+         if (cachedBean == null)
+         {
+            cachedBean = manager.resolve(manager.getBeans(this));
+         }
+         objectToInject = (T) manager.getReference(this, cachedBean, creationalContext);
+      }
+      return objectToInject;
    }
 
    public Annotated getAnnotated()
