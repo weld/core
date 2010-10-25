@@ -63,8 +63,19 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
     */
    protected Bytecode createForwardingMethodBody(ClassFile file, Method method) throws NotFoundException
    {
-      //we need to handle private methods with reflection
-      if (Modifier.isPrivate(method.getModifiers()))
+      // we can only use bytecode based invocation for some methods
+      // at the moment we restrict it solely to public methods with public
+      // return and parameter types
+      boolean bytecodeInvocationAllowed = Modifier.isPublic(method.getModifiers()) && Modifier.isPublic(method.getReturnType().getModifiers());
+      for (Class<?> paramType : method.getParameterTypes())
+      {
+         if (!Modifier.isPublic(paramType.getModifiers()))
+         {
+            bytecodeInvocationAllowed = false;
+            break;
+         }
+      }
+      if (!bytecodeInvocationAllowed)
       {
          return createInterceptorBody(file, method);
       }
