@@ -42,6 +42,7 @@ import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents functionality common for all annotated items, mainly different
@@ -226,12 +227,15 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
 
    public Set<Type> getInterfaceClosure()
    {
-      Set<Type> types = new HashSet<Type>();
-      for (Type t : rawType.getGenericInterfaces())
+      Set<Type> interfaces = new HashSet<Type>();
+      for (Type t: getTypeClosure())
       {
-         types.addAll(new HierarchyDiscovery(t).getTypeClosure());
+         if (Reflections.getRawType(t).isInterface())
+         {
+            interfaces.add(t);
+         }
       }
-      return types;
+      return Collections.unmodifiableSet(interfaces);
    }
 
    public abstract S getDelegate();
