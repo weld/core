@@ -89,7 +89,14 @@
                <exclude name="testInactiveScope" />
             </methods>
          </class>
-         
+
+          <!-- CDITCK-178 (fixed in TCK 1.0.2.CR3 -->
+          <class name="org.jboss.jsr299.tck.tests.decorators.definition.DecoratorDefinitionTest">
+             <methods>
+                <exclude name="testDecoratedTypes" />
+             </methods>
+          </class>
+
          <!-- CDITCK-182 -->
          <class name="org.jboss.jsr299.tck.tests.policy.enterprise.SessionBeanPolicyTest">
             <methods>
