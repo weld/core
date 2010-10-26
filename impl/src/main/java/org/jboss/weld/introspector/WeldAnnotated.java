@@ -87,8 +87,6 @@ public interface WeldAnnotated<T, S> extends Annotated
    /**
     * Get the type hierarchy of any interfaces implemented by this class.
     * 
-    * Interface hierarchies from super classes are not included.
-    * 
     * The returned types should have any type parameters resolved to their
     * actual types.
     * 
