@@ -39,6 +39,7 @@ import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.slf4j.cal10n.LocLogger;
 
@@ -56,6 +57,8 @@ public class WeldListener extends AbstractServletListener
 {
 
    private static final LocLogger log = loggerFactory().getLogger(SERVLET);
+
+   private static final BeanManagerImpl CACHED_BEAN_MANAGER = Container.instance().deploymentManager();
 
    @Override
    public void sessionDestroyed(HttpSessionEvent event)
@@ -147,7 +150,7 @@ public class WeldListener extends AbstractServletListener
    
    private static Instance<Context> instance()
    {
-      return Container.instance().deploymentManager().instance().select(Context.class);
+      return CACHED_BEAN_MANAGER.instance().select(Context.class);
    }
 
 }

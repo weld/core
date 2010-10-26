@@ -80,14 +80,15 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       Bean<?> bean = getBeanManager().getBean(new ResolvableBuilder(getType()).addQualifiers(getQualifiers()).setDeclaringBean(getInjectionPoint().getBean()).create());
       // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the qualifiers and type
       InjectionPoint ip = new SimpleInjectionPoint(getInjectionPoint().isTransient(), getInjectionPoint().isDelegate(), getType(), getQualifiers(), getInjectionPoint().getMember(), getInjectionPoint().getBean(), getInjectionPoint().getAnnotated());
+      CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
       try
       {   
-         Container.instance().services().get(CurrentInjectionPoint.class).push(ip);
+         currentInjectionPoint.push(ip);
          return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
       }
       finally
       {
-         Container.instance().services().get(CurrentInjectionPoint.class).pop();
+         currentInjectionPoint.pop();
       }
    }
 

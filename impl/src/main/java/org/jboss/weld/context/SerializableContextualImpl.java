@@ -53,6 +53,8 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
    // the id of a non-serializable, passivation capable contextual
    private String id;
    
+   private static final ContextualStore CACHED_CONTEXTUAL_STORE = Container.instance().services().get(ContextualStore.class);
+   
    public SerializableContextualImpl(C contextual)
    {
       if (contextual instanceof Serializable)
@@ -63,7 +65,7 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
       else
       {
          // otherwise, generate an id (may not be portable between container instances)
-         this.id = Container.instance().services().get(ContextualStore.class).putIfAbsent(contextual);
+         this.id = CACHED_CONTEXTUAL_STORE.putIfAbsent(contextual);
       }
       // cache the contextual
       this.cached = contextual;
@@ -86,7 +88,7 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
       }
       else if (id != null)
       {
-         this.cached = Container.instance().services().get(ContextualStore.class).<C, I>getContextual(id);
+         this.cached = CACHED_CONTEXTUAL_STORE.<C, I>getContextual(id);
       }
    }
    

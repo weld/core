@@ -24,6 +24,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.el.ForwardingValueExpression;
 
 /**
@@ -60,11 +61,13 @@ public class WeldValueExpression extends ForwardingValueExpression
       return delegate;
    }
    
+   private final static BeanManagerImpl CACHED_BEANMANAGER = Container.instance().deploymentManager(); 
+   
    @Override
    public Object getValue(final ELContext context)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -81,7 +84,7 @@ public class WeldValueExpression extends ForwardingValueExpression
    public void setValue(ELContext context, Object value)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -99,7 +102,7 @@ public class WeldValueExpression extends ForwardingValueExpression
    public Class getType(ELContext context)
    {
    // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
       try
       {
          getCreationalContextStore(context).push(creationalContext);
