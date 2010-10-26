@@ -23,10 +23,10 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 class ELCreationalContextStack extends Stack<ELCreationalContext<?>>
 {
-   
    
    private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
    {
@@ -49,6 +49,7 @@ class ELCreationalContextStack extends Stack<ELCreationalContext<?>>
       return store;
    }
    
+   private static final BeanManagerImpl CACHED_BEANMANAGER = Container.instance().deploymentManager(); 
    
    public static ELCreationalContextStack getCreationalContextStore(ELContext context)
    {
@@ -63,7 +64,7 @@ class ELCreationalContextStack extends Stack<ELCreationalContext<?>>
       if (store.isEmpty()) 
       {
          // TODO need to use correct manager for module
-         ELCreationalContext<?> creationalContext = ELCreationalContext.of(Container.instance().deploymentManager().createCreationalContext(CONTEXTUAL));
+         ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
          store.push(creationalContext);
       }
       return (ELCreationalContextStack) o;

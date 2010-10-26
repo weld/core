@@ -57,6 +57,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 {
 
    private static final long serialVersionUID = -376721889693284887L;
+   private final CurrentInjectionPoint cachedCurrentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
 
    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager)
    {
@@ -80,14 +81,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       InjectionPoint ip = new SimpleInjectionPoint(getInjectionPoint().isTransient(), getInjectionPoint().isDelegate(), getType(), getQualifiers(), getInjectionPoint().getMember(), getInjectionPoint().getBean(), getInjectionPoint().getAnnotated());
       try
       {   
-         Container.instance().services().get(CurrentInjectionPoint.class).push(ip);
+         cachedCurrentInjectionPoint.push(ip);
          @SuppressWarnings("unchecked")
          T instance = (T) getBeanManager().getReference(bean, getType(), getCreationalContext());
          return instance;
       }
       finally
       {
-         Container.instance().services().get(CurrentInjectionPoint.class).pop();
+         cachedCurrentInjectionPoint.pop();
       }
    }
 

@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.inject.Instance;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.ConversationContext;
@@ -58,6 +59,8 @@ public class ConversationImpl implements ManagedConversation, Serializable
 
    private ReentrantLock concurrencyLock;
    private long lastUsed;
+   
+   private final Instance<ConversationContext> cachedConversationContext = Container.instance().deploymentManager().instance().select(ConversationContext.class);
 
    public ConversationImpl()
    {
@@ -77,7 +80,7 @@ public class ConversationImpl implements ManagedConversation, Serializable
    
    private ConversationContext getConversationContext()
    {
-      for (ConversationContext conversationContext : Container.instance().deploymentManager().instance().select(ConversationContext.class))
+      for (ConversationContext conversationContext : cachedConversationContext)
       {
          if (conversationContext.isActive())
          {
