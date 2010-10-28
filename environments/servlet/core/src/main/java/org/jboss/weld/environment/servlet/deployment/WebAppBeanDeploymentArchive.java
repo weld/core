@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.servlet.deployment;
 
+import javax.servlet.ServletContext;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.servlet.ServletContext;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -34,7 +34,6 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.Servlets;
-import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * The means by which Web Beans are discovered on the classpath. This will only
@@ -59,7 +58,7 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
       this.services = new SimpleServiceRegistry();
       this.classes = new ArrayList<String>();
       List<URL> urls = new ArrayList<URL>();
-      URLScanner scanner = new URLScanner(Reflections.getClassLoader());
+      URLScanner scanner = createScanner(Reflections.getClassLoader());
       scanner.scanResources(new String[] { META_INF_BEANS_XML }, classes, urls);
       try
       {
@@ -80,6 +79,19 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
          throw new IllegalStateException("Error loading resources from servlet context ", e);
       }
       this.beansXml = bootstrap.parse(urls);
+   }
+
+   protected URLScanner createScanner(ClassLoader classLoader)
+   {
+      try
+      {
+         classLoader.loadClass("org.jboss.virtual.VFS"); // check if we can use JBoss VFS
+         return new VFSURLScanner(classLoader);
+      }
+      catch (Throwable t)
+      {
+         return new URLScanner(classLoader);
+      }
    }
 
    public Collection<String> getBeanClasses()
