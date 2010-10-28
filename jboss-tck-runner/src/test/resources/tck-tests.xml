@@ -192,6 +192,26 @@
                <exclude name="testSerializeSFSB" />
             </methods>
          </class>
+
+        <!-- CDI Observes API regression START -->
+        <class name="org.jboss.jsr299.tck.tests.event.broken.observer.dependentIsConditionalObserver.DependentIsConditionalObserverTest">
+            <methods>
+                <exclude name="testDependentBeanWithConditionalObserverMethodIsDefinitionError"/>
+            </methods>
+        </class>
+
+        <class name="org.jboss.jsr299.tck.tests.event.observer.ObserverTest">
+            <methods>
+                <exclude name="testGetNotifyOnObserverMethod"/>
+            </methods>
+        </class>
+        
+        <class name="org.jboss.jsr299.tck.tests.event.observer.conditional.ConditionalObserverTest">
+            <methods>
+                <exclude name="testConditionalObserver"/>
+            </methods>
+        </class>
+        <!-- CDI Observes API regression END -->
          
       </classes>
    </test>
