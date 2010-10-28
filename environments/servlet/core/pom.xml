@@ -96,6 +96,11 @@
          <optional>true</optional>
       </dependency>
 
+      <dependency>
+         <groupId>org.jboss</groupId>
+         <artifactId>jboss-vfs</artifactId>
+         <scope>provided</scope>
+      </dependency>
 
       <dependency>
          <groupId>junit</groupId>

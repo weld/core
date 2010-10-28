@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  */
 public class URLScanner
 {
-
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
    private final ClassLoader classLoader;
@@ -146,7 +145,7 @@ public class URLScanner
       }
    }
 
-   private void handleArchiveByFile(File file, List<String> classes, List<URL> urls) throws IOException
+   protected void handleArchiveByFile(File file, List<String> classes, List<URL> urls) throws IOException
    {
       try
       {
@@ -211,6 +210,9 @@ public class URLScanner
 
    /**
     * Convert a path to a class file to a class name
+    *
+    * @param filename the file name
+    * @return classname
     */
    public static String filenameToClassname(String filename)
    {
