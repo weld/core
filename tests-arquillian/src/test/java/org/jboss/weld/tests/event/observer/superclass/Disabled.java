@@ -7,6 +7,7 @@ import javax.inject.Qualifier;
 
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Disabled {
+public @interface Disabled
+{
 
 }

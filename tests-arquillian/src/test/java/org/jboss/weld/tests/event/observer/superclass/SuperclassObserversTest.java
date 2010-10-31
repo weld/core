@@ -28,52 +28,56 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class SuperclassObserversTest {
-	@Deployment
-	public static Archive<?> deploy() {
-		return ShrinkWrap.create(BeanArchive.class).addPackage(
-				SuperclassObserversTest.class.getPackage());
-	}
+public class SuperclassObserversTest
+{
+   @Deployment
+   public static Archive<?> deploy()
+   {
+      return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassObserversTest.class.getPackage());
+   }
 
-	@Inject
-	Event<TestEvent> event;
+   @Inject
+   Event<TestEvent> event;
 
-	@Inject
-	private TestObserver observer;
+   @Inject
+   private TestObserver observer;
 
-	@Inject
-	@Disabled
-	private DisabledTestObserver disabled;
+   @Inject
+   @Disabled
+   private DisabledTestObserver disabled;
 
-	@Inject
-	@ReEnabled
-	private ReEnabledTestObserver reenabled;
+   @Inject
+   @ReEnabled
+   private ReEnabledTestObserver reenabled;
 
-	@Test
-	public void testObserverMethodFromSuperclassInvoked() {
-		observer.reset();
+   @Test
+   public void testObserverMethodFromSuperclassInvoked()
+   {
+      observer.reset();
 
-		assert observer.getTestEvent() == null;
-		event.fire(new TestEvent());
-		assert observer.getTestEvent() != null;
-	}
+      assert observer.getTestEvent() == null;
+      event.fire(new TestEvent());
+      assert observer.getTestEvent() != null;
+   }
 
-	@Test
-	public void testObserverMethodOnOverridesWithoutAnnotNotInvoked() {
-		disabled.reset();
+   @Test
+   public void testObserverMethodOnOverridesWithoutAnnotNotInvoked()
+   {
+      disabled.reset();
 
-		assert disabled.getTestEvent() == null;
-		event.fire(new TestEvent());
-		assert disabled.getTestEvent() == null;
-	}
+      assert disabled.getTestEvent() == null;
+      event.fire(new TestEvent());
+      assert disabled.getTestEvent() == null;
+   }
 
-	@Test
-	public void testObserverMethodOnOverridesWithAnnotAreInvoked() {
-		reenabled.reset();
+   @Test
+   public void testObserverMethodOnOverridesWithAnnotAreInvoked()
+   {
+      reenabled.reset();
 
-		assert reenabled.getTestEvent() == null;
-		event.fire(new TestEvent());
-		assert reenabled.getTestEvent() != null;
-	}
+      assert reenabled.getTestEvent() == null;
+      event.fire(new TestEvent());
+      assert reenabled.getTestEvent() != null;
+   }
 
 }
