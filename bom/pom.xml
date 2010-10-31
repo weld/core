@@ -33,7 +33,7 @@
    </developers>
 
    <properties>
-      <weld.api.version>1.1-SNAPSHOT</weld.api.version>
+      <weld.api.version>1.1.Beta2</weld.api.version>
       <!-- Override the API and compile with more recent EL API -->
       <google.guava.version>r06</google.guava.version>
       <cdi.tck.version>1.0.2.CR2</cdi.tck.version>
