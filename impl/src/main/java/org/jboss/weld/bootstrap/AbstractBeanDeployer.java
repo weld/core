@@ -26,7 +26,6 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_ME
 import java.lang.reflect.Member;
 import java.util.Set;
 
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Extension;
@@ -63,6 +62,7 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -217,12 +217,12 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       }
    }
    
-   protected <X> void createObserverMethods(RIBean<X> declaringBean, WeldClass<X> annotatedClass)
+   protected <X> void createObserverMethods(RIBean<X> declaringBean, WeldClass<? super X> annotatedClass)
    {
-      for (WeldMethod<?, ? super X> method : annotatedClass.getWeldMethodsWithAnnotatedParameters(Observes.class))
-      {
+	   for (WeldMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass))
+	   {
          createObserverMethod(declaringBean, method);
-      }
+	   }
    }
    
    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> method)

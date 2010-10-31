@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.event.observer.superclass;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -26,33 +26,33 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class SuperclassObserversTest
+public class SuperclassObservers2Test
 {
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassObserversTest.class.getPackage());
+      return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassObservers2Test.class.getPackage());
    }
 
    @Inject
    Event<TestEvent> event;
 
    @Inject
-   private TestObserver observer;
+   @Disabled
+   private DisabledTestObserver disabled;
 
    @Test
-   public void testObserverMethodFromSuperclassInvoked()
+   public void testObserverMethodOnOverridesWithoutAnnotNotInvoked()
    {
-      observer.reset();
+      disabled.reset();
 
-      Assert.assertNull(observer.getTestEvent());
+      assertNull(disabled.getTestEvent());
       event.fire(new TestEvent());
-      assertNotNull(observer.getTestEvent());
+      assertNull(disabled.getTestEvent());
    }
 
 }

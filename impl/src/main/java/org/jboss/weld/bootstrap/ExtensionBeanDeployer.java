@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.Container;
@@ -37,6 +36,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.DeploymentStructures;
 
 /**
@@ -99,9 +99,9 @@ public class ExtensionBeanDeployer
       this.extensions.add(extension);
    }
    
-   protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldClass<X> annotatedClass, Set<ObserverMethodImpl<?, ?>> observerMethods)
+   protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldClass<? super X> annotatedClass, Set<ObserverMethodImpl<?, ?>> observerMethods)
    {
-      for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
+      for (WeldMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass))
       {
          createObserverMethod(declaringBean, beanManager, method, observerMethods);
       }

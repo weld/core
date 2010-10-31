@@ -415,6 +415,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    protected void checkObserverMethods()
    {
+      // TODO Need to check super classes too
       for (WeldMethod<?, ?> method : this.annotatedItem.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
       {
          if (!method.isStatic())
