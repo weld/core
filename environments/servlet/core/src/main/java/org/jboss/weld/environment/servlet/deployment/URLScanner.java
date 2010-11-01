@@ -33,21 +33,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * This class provides file-system orientated scanning
- * 
+ *
  * @author Pete Muir
- * 
+ * @author Ales Justin
  */
 public class URLScanner
 {
    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
    private final ClassLoader classLoader;
-   
+
    public URLScanner(ClassLoader classLoader)
    {
       this.classLoader = classLoader;
+   }
+
+   protected ClassLoader getClassLoader()
+   {
+      return classLoader;
    }
 
    protected void handle(String name, URL url, List<String> classes, List<URL> urls)
@@ -61,7 +66,7 @@ public class URLScanner
          urls.add(url);
       }
    }
-   
+
    public void scanDirectories(File[] directories, List<String> classes, List<URL> urls)
    {
       for (File directory : directories)
@@ -73,23 +78,23 @@ public class URLScanner
    public void scanResources(String[] resources, List<String> classes, List<URL> urls)
    {
       Set<String> paths = new HashSet<String>();
-      
+
       for (String resourceName : resources)
       {
          try
          {
             Enumeration<URL> urlEnum = classLoader.getResources(resourceName);
-            
+
             while (urlEnum.hasMoreElements())
             {
                String urlPath = urlEnum.nextElement().getFile();
                urlPath = URLDecoder.decode(urlPath, "UTF-8");
-               
+
                if (urlPath.startsWith("file:"))
                {
                   urlPath = urlPath.substring(5);
                }
-               
+
                if (urlPath.indexOf('!') > 0)
                {
                   urlPath = urlPath.substring(0, urlPath.indexOf('!'));
@@ -97,16 +102,16 @@ public class URLScanner
                else
                {
                   File dirOrArchive = new File(urlPath);
-                  
+
                   if ((resourceName != null) && (resourceName.lastIndexOf('/') > 0))
                   {
                      // for META-INF/beans.xml
                      dirOrArchive = dirOrArchive.getParentFile();
                   }
-                  
+
                   urlPath = dirOrArchive.getParent();
                }
-               
+
                paths.add(urlPath);
             }
          }
@@ -115,7 +120,7 @@ public class URLScanner
             log.warn("could not read: " + resourceName, ioe);
          }
       }
-      
+
       handle(paths, classes, urls);
    }
 
@@ -126,9 +131,9 @@ public class URLScanner
          try
          {
             log.trace("scanning: " + urlPath);
-            
+
             File file = new File(urlPath);
-            
+
             if (file.isDirectory())
             {
                handleDirectory(file, null, classes, urls);
@@ -150,10 +155,10 @@ public class URLScanner
       try
       {
          log.trace("archive: " + file);
-         
+
          ZipFile zip = new ZipFile(file);
          Enumeration<? extends ZipEntry> entries = zip.entries();
-         
+
          while (entries.hasMoreElements())
          {
             ZipEntry entry = entries.nextElement();
@@ -179,17 +184,17 @@ public class URLScanner
          if (file.equals(excludedDirectory))
          {
             log.trace("skipping excluded directory: " + file);
-            
+
             return;
          }
       }
-      
+
       log.trace("handling directory: " + file);
-      
+
       for (File child : file.listFiles())
       {
          String newPath = (path == null) ? child.getName() : (path + '/' + child.getName());
-         
+
          if (child.isDirectory())
          {
             handleDirectory(child, newPath, excludedDirectories, classes, urls);
@@ -216,8 +221,6 @@ public class URLScanner
     */
    public static String filenameToClassname(String filename)
    {
-      return filename.substring( 0, filename.lastIndexOf(".class") )
-            .replace('/', '.').replace('\\', '.');
+      return filename.substring(0, filename.lastIndexOf(".class")).replace('/', '.').replace('\\', '.');
    }
-   
 }
