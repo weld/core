@@ -193,7 +193,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
       {
          WeldParameter<T, ?> parameter = getWeldParameter();
          Bean<T> bean = getDeclaringBean();
-         if (parameter == null || bean == null)
+         if (parameter == null || (bean == null && getDeclaringBeanId() != null))
          {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), methodSignature, parameterPosition);
          }

@@ -202,7 +202,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
       {
          WeldField<T, ?> field = getWeldField();
          Bean<T> bean = getDeclaringBean();
-         if (field == null || bean == null)
+         if (field == null || (bean == null && getDeclaringBeanId() != null))
          {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), fieldName);
          }
