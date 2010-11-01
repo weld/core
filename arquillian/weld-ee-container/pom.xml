@@ -17,7 +17,7 @@
    <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
    <name>Arquillian Container Weld EE Embedded 1.1.x (Weld Dev Fork)</name>
    <description>Weld EE 1.1.x Embedded Container integration for the Arquillian Project</description>
-   <version>1.1.0-SNAPSHOT</version>
+   <version>1.1.0.Beta2</version>
 
 
    <!-- Properties -->
