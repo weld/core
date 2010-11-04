@@ -31,6 +31,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.BeanStore;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -58,6 +59,8 @@ public abstract class AbstractContext implements Context
    private static ReentrantLock creationLock = new ReentrantLock();
    
    private final boolean multithreaded;
+   
+   private static final ServiceRegistry CACHED_SERVICE_REGISTRY  = Container.instance().services();
    
    /**
     * Constructor
@@ -192,7 +195,7 @@ public abstract class AbstractContext implements Context
    
    protected static String getId(Contextual<?> contextual)
    {
-      return Container.instance().services().get(ContextualStore.class).putIfAbsent(contextual);
+      return CACHED_SERVICE_REGISTRY.get(ContextualStore.class).putIfAbsent(contextual);
    }
    
 }
