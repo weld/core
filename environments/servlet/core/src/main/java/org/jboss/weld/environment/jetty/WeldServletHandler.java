@@ -1,12 +1,12 @@
 package org.jboss.weld.environment.jetty;
 
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.log.Log;
-
-import javax.servlet.Servlet;
-import javax.servlet.Filter;
-import javax.servlet.ServletContext;
 
 /**
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
@@ -39,7 +39,8 @@ public class WeldServletHandler extends ServletHandler
       return filter;
    }
 
-   protected void inject(Object injectable) {
+   protected void inject(Object injectable)
+   {
       if (injector == null)
       {
          injector = (JettyWeldInjector) sco.getAttribute(org.jboss.weld.environment.servlet.Listener.INJECTOR_ATTRIBUTE_NAME);

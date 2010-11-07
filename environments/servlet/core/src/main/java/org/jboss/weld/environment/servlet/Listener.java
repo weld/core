@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Pete Muir
  * @author Ales Justin
+ * @author <a href="mailto:dan.j.allen@gmail.com">Dan Allen</a>
  */
 public class Listener extends ForwardingServletListener
 {
@@ -54,8 +55,8 @@ public class Listener extends ForwardingServletListener
    private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
    private static final String WELD_LISTENER_CLASS_NAME = "org.jboss.weld.servlet.WeldListener";
    private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
-   private static final String JETTY_REQUIRED_CLASS_NAME = "org.mortbay.jetty.servlet.ServletHandler";
-   public  static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
+   private static final String JETTY_SERVER_INFO_PREFIX = "jetty/";
+   public static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
    public static final String BEAN_MANAGER_ATTRIBUTE_NAME = Listener.class.getPackage().getName() + "." + BeanManager.class.getName();
 
    private final transient Bootstrap bootstrap;
@@ -91,12 +92,10 @@ public class Listener extends ForwardingServletListener
          WeldForwardingAnnotationProcessor.restoreAnnotationProcessor(sce);
       }
       catch (IllegalArgumentException ignore) {}
-      try
+      if (sce.getServletContext().getServerInfo().startsWith(JETTY_SERVER_INFO_PREFIX))
       {
-         Reflections.classForName(JETTY_REQUIRED_CLASS_NAME);
          sce.getServletContext().removeAttribute(INJECTOR_ATTRIBUTE_NAME);
       }
-      catch (IllegalArgumentException ignore) {}
       super.contextDestroyed(sce);
    }
 
@@ -139,6 +138,11 @@ public class Listener extends ForwardingServletListener
    @Override
    public void contextInitialized(ServletContextEvent sce)
    {
+      if (sce.getServletContext().getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) instanceof BeanManager)
+      {
+         return;
+      }
+      
       // Make Javassist always use the TCCL to load classes
       ProxyFactory.classLoaderProvider = new ClassLoaderProvider()
       {
@@ -207,15 +211,7 @@ public class Listener extends ForwardingServletListener
          tomcat7 = false;
       }
 
-      boolean jetty = true;
-      try
-      {
-         Reflections.classForName(JETTY_REQUIRED_CLASS_NAME);
-      }
-      catch (IllegalArgumentException e)
-      {
-         jetty = false;
-      }
+      boolean jetty = sce.getServletContext().getServerInfo().startsWith(JETTY_SERVER_INFO_PREFIX);
 
       if (jetty)
       {
@@ -232,6 +228,7 @@ public class Listener extends ForwardingServletListener
             log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
          }
       }
+      
       if (tomcat7)
       {
          try
@@ -244,8 +241,8 @@ public class Listener extends ForwardingServletListener
             log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
          }
       }
-      if (!tomcat && !jetty&&!tomcat7) {
-         log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filtersor or Listeners");
+      if (!tomcat && !jetty && !tomcat7) {
+         log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filters or Listeners");
       }
 
       // Push the manager into the servlet context so we can access in JSF
