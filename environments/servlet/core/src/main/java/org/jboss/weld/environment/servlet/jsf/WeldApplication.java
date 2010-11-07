@@ -26,7 +26,6 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.environment.servlet.Listener;
 import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.TransparentELResolver;
@@ -111,9 +110,9 @@ public class WeldApplication extends ForwardingApplication
    
    private BeanManager beanManager()
    {
-      if (beanManager == null)
+      FacesContext facesContext;
+      if (beanManager == null && (facesContext = FacesContext.getCurrentInstance()) != null)
       {
-         FacesContext facesContext = FacesContext.getCurrentInstance();
          if (!(facesContext.getExternalContext().getContext() instanceof ServletContext))
          {
             throw new IllegalStateException("Not in a servlet environment!");
