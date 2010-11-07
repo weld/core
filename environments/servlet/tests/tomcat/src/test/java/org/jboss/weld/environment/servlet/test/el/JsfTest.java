@@ -7,13 +7,10 @@ import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.api.Run;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 @Run(AS_CLIENT)
 @RunWith(Arquillian.class)
-@Ignore
-// This test runs fine in the IDE, but I can't get UEL 2.2 to run on the classpath
 public class JsfTest extends JsfTestBase
 {
 
@@ -26,7 +23,7 @@ public class JsfTest extends JsfTestBase
    @Override
    protected String getPath(String page)
    {
-      return "http://localhost:8888/test/" + page;
+      return "http://localhost:8888/test" + page;
    }
    
 }

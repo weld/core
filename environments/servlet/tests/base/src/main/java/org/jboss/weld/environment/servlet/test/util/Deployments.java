@@ -4,6 +4,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.environment.servlet.test.el.JsfApplicationObjectInvokerServlet;
 
 public class Deployments
 {
@@ -17,7 +18,8 @@ public class Deployments
    
    public static final Asset EMPTY_FACES_CONFIG_XML = new ByteArrayAsset("<faces-config version=\"2.0\" xmlns=\"http://java.sun.com/xml/ns/javaee\"></faces-config>".getBytes());
    
-   public static final Asset FACES_WEB_XML = new ByteArrayAsset((DEFAULT_WEB_XML_PREFIX + "<listener><listener-class>com.sun.faces.config.ConfigureListener</listener-class></listener> <context-param><param-name>javax.faces.DEFAULT_SUFFIX</param-name><param-value>.xhtml</param-value></context-param> <servlet><servlet-name>Faces Servlet</servlet-name><servlet-class>javax.faces.webapp.FacesServlet</servlet-class><load-on-startup>1</load-on-startup></servlet> <servlet-mapping><servlet-name>Faces Servlet</servlet-name><url-pattern>*.jsf</url-pattern></servlet-mapping> " + DEFAULT_WEB_XML_SUFFIX).getBytes());
+   // NOTE: JSF listener is only required because of a bug in the Arquillian Jetty container adapter
+   public static final Asset FACES_WEB_XML = new ByteArrayAsset((DEFAULT_WEB_XML_PREFIX + " <listener><listener-class>com.sun.faces.config.ConfigureListener</listener-class></listener><servlet><servlet-name>JSF Application Invoker Servlet</servlet-name><servlet-class>" + JsfApplicationObjectInvokerServlet.class.getName() + "</servlet-class></servlet><servlet-mapping><servlet-name>JSF Application Invoker Servlet</servlet-name><url-pattern>/stage</url-pattern></servlet-mapping> <servlet><servlet-name>Faces Servlet</servlet-name><servlet-class>javax.faces.webapp.FacesServlet</servlet-class></servlet> <servlet-mapping><servlet-name>Faces Servlet</servlet-name><url-pattern>*.jsf</url-pattern></servlet-mapping> " + DEFAULT_WEB_XML_SUFFIX).getBytes());
 
    public static WebArchive baseDeployment(BeansXml beansXml, Asset webXml)
    {

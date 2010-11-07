@@ -11,9 +11,11 @@ import java.util.Set;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 
+import com.gargoylesoftware.htmlunit.TextPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -37,7 +39,7 @@ public abstract class JsfTestBase
    "<body> " +
    "<f:view> " +
       "<h:outputText value=\"#{chicken.name}\" id=\"oldel\"/>" +
-      "<h:outputText value=\"#{chicken.getName()}\" id=\"newel\"/>" +
+      //"<h:outputText value=\"#{chicken.getName()}\" id=\"newel\"/>" +
    "</f:view> " + 
   "</body> " +
   "</html> " +
@@ -48,6 +50,7 @@ public abstract class JsfTestBase
       return baseDeployment(FACES_WEB_XML)
          .add(CHARLIE_XHTML, "charlie.xhtml")
          .addWebResource(EMPTY_FACES_CONFIG_XML, "faces-config.xml")
+         .add(new StringAsset("<html><body>welcome</body></html>"), "index.jsp")
          .addClass(Chicken.class);
    }
 
@@ -55,17 +58,22 @@ public abstract class JsfTestBase
    public void testELWithParameters() throws Exception
    {
       WebClient client = new WebClient();
+      
+      TextPage p = client.getPage(getPath("/stage"));
+      assertEquals("Production", p.getContent());
+      
       HtmlPage page = client.getPage(getPath("/charlie.jsf"));
       
-      String s = page.asXml();
+      assertNotNull(page.asXml());
       
       HtmlSpan oldel = getFirstMatchingElement(page, HtmlSpan.class, "oldel");
       assertNotNull(oldel);
       assertEquals("Charlie", oldel.asText());
       
-      HtmlSpan newel = getFirstMatchingElement(page, HtmlSpan.class, "newel");
-      assertNotNull(newel);
-      assertEquals("Charlie", newel.asText());
+      // disabled checks since support for UEL 2.2 is not part of what Weld Servlet provides
+//      HtmlSpan newel = getFirstMatchingElement(page, HtmlSpan.class, "newel");
+//      assertNotNull(newel);
+//      assertEquals("Charlie", newel.asText());
    }
    
    protected abstract String getPath(String page);
