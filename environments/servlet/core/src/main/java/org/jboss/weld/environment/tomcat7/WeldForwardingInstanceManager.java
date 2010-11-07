@@ -72,7 +72,7 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager
       return a;
    }
 
-   public static void replacInstanceManager(ServletContextEvent sce, WeldManager manager)
+   public static void replaceInstanceManager(ServletContextEvent sce, WeldManager manager)
    {
       StandardContext stdContext = getStandardContext(sce);
       setInstanceManager(stdContext, createInstance(manager, stdContext));

@@ -27,7 +27,7 @@ public class JsfTest extends JsfTestBase
    @Override
    protected String getPath(String page)
    {
-      return "http://localhost:8888/test/" + page;
+      return "http://localhost:8888/test" + page;
    }
    
 }

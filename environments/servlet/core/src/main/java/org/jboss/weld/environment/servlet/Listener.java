@@ -51,7 +51,8 @@ public class Listener extends ForwardingServletListener
    private static final String WELD_LISTENER_CLASS_NAME = "org.jboss.weld.servlet.WeldListener";
    private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
    private static final String JETTY_REQUIRED_CLASS_NAME = "org.mortbay.jetty.servlet.ServletHandler";
-   public  static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
+   public static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
+   public static final String LISTENER_INJECTION_SUPPORT_ATTRIBUTE_NAME = "org.jboss.weld.environment.tomcat.ListenerInjectionSupport";
    public static final String BEAN_MANAGER_ATTRIBUTE_NAME = Listener.class.getPackage().getName() + "." + BeanManager.class.getName();
 
    private final transient Bootstrap bootstrap;
@@ -100,6 +101,12 @@ public class Listener extends ForwardingServletListener
    @Override
    public void contextInitialized(ServletContextEvent sce)
    {
+      // detect if already initialized (initialization may have already been performed to support injection into Listener components)
+      if (sce.getServletContext().getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) instanceof BeanManager)
+      {
+         return;
+      }
+      
       // Make Javassist always use the TCCL to load classes
       ProxyFactory.classLoaderProvider = new ClassLoaderProvider()
       {
@@ -142,11 +149,19 @@ public class Listener extends ForwardingServletListener
          try
          {
             WeldForwardingAnnotationProcessor.replaceAnnotationProcessor(sce, manager);
-            log.info("Tomcat 6 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
+            if (sce.getServletContext().getAttribute(LISTENER_INJECTION_SUPPORT_ATTRIBUTE_NAME) != null)
+            {
+               log.info("Tomcat 6 detected. CDI injection available in Servlet, Filter and Listener components.");
+            }
+            else
+            {
+               log.info("Tomcat 6 detected. CDI injection available in Servlet and Filter components.");
+               log.info("Injection not available in Listener components. Additional configuration required. Please see reference guide for details.");
+            }
          }
          catch (Exception e)
          {
-            log.error("Unable to replace Tomcat AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
+            log.error("Unable to replace Tomcat AnnotationProcessor. CDI injection will NOT be available in Servlet, Filter or Listener components.", e);
          }
       }
       try
@@ -177,27 +192,37 @@ public class Listener extends ForwardingServletListener
             Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
             Object injector = clazz.getConstructor(WeldManager.class).newInstance(manager);
             sce.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
-            log.info("Jetty detected, JSR-299 injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
+            log.info("Jetty detected. CDI injection is available in Servlet, Filter and Listener components.");
          }
          catch (Exception e)
          {
-            log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
+            log.error("Unable to create JettyWeldInjector. CDI injection will NOT be available in Servlets, Filters or Listeners", e);
          }
       }
       if (tomcat7)
       {
          try
          {
-            WeldForwardingInstanceManager.replacInstanceManager(sce, manager);
-            log.info("Tomcat 7 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
+            WeldForwardingInstanceManager.replaceInstanceManager(sce, manager);
+            if (sce.getServletContext().getAttribute(LISTENER_INJECTION_SUPPORT_ATTRIBUTE_NAME) != null)
+            {
+               log.info("Tomcat 7 detected. CDI injection available in Servlet, Filter and Listener components.");
+            }
+            else
+            {
+               log.info("Tomcat 7 detected. CDI injection available in Servlet and Filter components.");
+               log.info("Injection not available in Listener components. Additional configuration required. Please see reference guide for details.");
+            }
          }
          catch (Exception e)
          {
-            log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
+            log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will NOT be available in Servlets, Filters, or Listeners", e);
          }
       }
-      if (!tomcat && !jetty&&!tomcat7) {
-         log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filtersor or Listeners");
+      
+      if (!tomcat && !jetty && !tomcat7)
+      {
+         log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filters or Listeners");
       }
 
       // Push the manager into the servlet context so we can access in JSF

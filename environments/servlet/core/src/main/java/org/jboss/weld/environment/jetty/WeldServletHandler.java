@@ -1,12 +1,15 @@
 package org.jboss.weld.environment.jetty;
 
+import java.util.EventListener;
+
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.log.Log;
-
-import javax.servlet.Servlet;
-import javax.servlet.Filter;
-import javax.servlet.ServletContext;
 
 /**
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
@@ -59,5 +62,30 @@ public class WeldServletHandler extends ServletHandler
       WeldServletHandler wHanlder = new WeldServletHandler(wac.getServletHandler(), wac.getServletContext());
       wac.setServletHandler(wHanlder);
       wac.getSecurityHandler().setHandler(wHanlder);
+
+      // notify the Weld listener of the context initialized event earlier than other listeners
+      // so that injection can be supported into other listeners
+      boolean initialized = false;
+      for (EventListener l : wac.getEventListeners())
+      {
+         if (l instanceof org.jboss.weld.environment.servlet.Listener)
+         {
+            ServletContext ctx = wac.getServletContext();
+            ((org.jboss.weld.environment.servlet.Listener) l).contextInitialized(new ServletContextEvent(ctx));
+            initialized = true;
+            break;
+         }
+      }
+      
+      if (initialized)
+      {
+         for (EventListener l : wac.getEventListeners())
+         {
+            if (!(l instanceof Listener))
+            {
+               wHanlder.inject(l);
+            }
+         }
+      }
    }
 }

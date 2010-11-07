@@ -62,16 +62,17 @@ $> mvn -Pupdate-jboss-as</programlisting>
       <title>Servlet containers (such as Tomcat or Jetty)</title>
       
       <para>
-         While JSR-299 does not require support for servlet environments, Weld can be used in a servlet container,
-         such as Tomcat 6.0 or Jetty 6.1.
+         JSR-299 does not require support for a standalone Servlet environment (only when used as part of Java EE).
+         However, Weld adds support for much of the JSR-299 programming model in Servlet environments, starting with
+         Tomcat 6 and Jetty 6.
       </para>
       
       <note>
          <para>
-            There is a major limitation to using a servlet container. Weld doesn't support deploying session beans,
-            injection using <literal>@EJB</literal> or <literal>@PersistenceContext</literal>, or using transactional
-            events in servlet containers. For enterprise features such as these, you should really be looking at a Java
-            EE application server.
+            There is a major limitation to using a Servlet container. In a Servlet container, Weld doesn't support
+            deploying session beans, injection using <literal>@EJB</literal> or <literal>@PersistenceContext</literal>,
+            or using transactional events. For enterprise features such as these, you should really be considering using
+            a Java EE application server.
          </para>
       </note>
       
@@ -133,8 +134,9 @@ $> mvn -Pupdate-jboss-as</programlisting>
       </itemizedlist>
       
       <para>
-         You also need to explicitly specify the servlet listener (used to boot Weld, and control its interaction
-         with requests) in <literal>WEB-INF/web.xml</literal> in the web root:
+         You also need to register the Weld listener, which is used to startup Weld and control its interaction with
+         requests. To register this listener, add the following XML fragment above all other
+         <literal>&lt;listener&gt;</literal> elements in your web application's <literal>WEB-INF/web.xml</literal>:
       </para>
          
       <programlisting role="XML"><![CDATA[<listener>
@@ -145,9 +147,9 @@ $> mvn -Pupdate-jboss-as</programlisting>
          <title>Tomcat</title>
 
          <para>
-            Tomcat has a read-only JNDI, so Weld can't automatically bind the BeanManager extension SPI. To bind
-            the BeanManager into JNDI, you should populate <literal>META-INF/context.xml</literal> in the web root with
-            the following contents:
+            Tomcat has a read-only JNDI, so Weld can't automatically bind the <literal>BeanManager</literal> extension
+            SPI. If you need to access the BeanManager via JNDI, first populate the file
+            <literal>META-INF/context.xml</literal> relative to the web root with the following contents:
          </para>
       
          <programlisting role="XML"><![CDATA[<Context>
@@ -158,7 +160,7 @@ $> mvn -Pupdate-jboss-as</programlisting>
 </Context>]]></programlisting>
 
          <para>
-            and make it available to your deployment by adding this to the bottom of <literal>web.xml</literal>:
+            Then, add the following XML fragment to the bottom of <literal>WEB-INF/web.xml</literal>:
          </para>
       
          <programlisting role="XML"><![CDATA[<resource-env-ref>
@@ -169,12 +171,22 @@ $> mvn -Pupdate-jboss-as</programlisting>
 </resource-env-ref>]]></programlisting>
 
          <para>
-            Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, so the BeanManager will be
-            available at <literal>java:comp/env/BeanManager</literal>
+             Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, so the BeanManager will be
+            available at <literal>java:comp/env/BeanManager</literal> rather than the standard JNDI location,
+            <literal>java:comp/BeanManager</literal>
          </para>
       
          <para>
-            Weld also supports Servlet injection in Tomcat 6.
+            Weld also supports injection into Servlet and Filter components in Tomcat 6. Support for injection into
+            Listener components requires adding the following XML fragment to the bottom of
+            <literal>META-INF/context.xml</literal> (within the root <literal>&lt;Context&gt;</literal> element:
+         </para>
+
+         <programlisting role="XML"><![CDATA[<Listener
+   className="org.jboss.weld.environment.tomcat.WeldLifecycleListener"/>]]></programlisting>
+
+         <para>
+            You'll see confirmation in the logs whether you've properly enabled injection for Listener components.
          </para>
 
       </section>
@@ -214,7 +226,7 @@ $> mvn -Pupdate-jboss-as</programlisting>
 
 <Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
     <New id="BeanManager" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg> <Ref id="webAppCtx"/> </Arg>
+        <Arg><Ref id="webAppCtx"/></Arg>
         <Arg>BeanManager</Arg>
         <Arg>
             <New class="javax.naming.Reference">

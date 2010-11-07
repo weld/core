@@ -12,7 +12,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ListenerInjectionTestBase
@@ -25,8 +24,7 @@ public class ListenerInjectionTestBase
       return baseDeployment(WEB_XML).addClasses(BatListener.class, BatServlet.class, Sewer.class);
    }
    
-   @Test @Ignore
-   // Injection doesn't work in listeners in Tomcat
+   @Test
    public void testListenerInjection() throws Exception
    {
       HttpClient client = new HttpClient();
