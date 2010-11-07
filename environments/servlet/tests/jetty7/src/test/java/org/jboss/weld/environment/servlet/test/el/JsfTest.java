@@ -1,4 +1,4 @@
-package org.jboss.weld.environment.servlet.test.injection;
+package org.jboss.weld.environment.servlet.test.el;
 
 import static org.jboss.arquillian.api.RunModeType.AS_CLIENT;
 import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
@@ -8,19 +8,26 @@ import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.api.Run;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
 @Run(AS_CLIENT)
-@Ignore // ignore in this branch
-public class ListenerInjectionTest extends ListenerInjectionTestBase
+@RunWith(Arquillian.class)
+public class JsfTest extends JsfTestBase
 {
-   
+
    @Deployment
    public static WebArchive deployment()
    {
-      return ListenerInjectionTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml").addWebResource(JETTY_WEB, "jetty-web.xml");
+      WebArchive archive = JsfTestBase.deployment()
+         .addWebResource(JETTY_ENV, "jetty-env.xml")
+         .addWebResource(JETTY_WEB, "jetty-web.xml");
+      return archive;
    }
-
+   
+   @Override
+   protected String getPath(String page)
+   {
+      return "http://localhost:8888/test/" + page;
+   }
+   
 }
