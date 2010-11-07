@@ -76,61 +76,13 @@ $> mvn -Pupdate-jboss-as</programlisting>
       </note>
       
       <para>
-         Weld should be used as a web application library in a servlet container. You should place
-         <literal>weld-servlet.jar</literal> in <literal>WEB-INF/lib</literal> in the web root.
-         <literal>weld-servlet.jar</literal> is an "uber-jar", meaning it bundles all the bits of Weld and CDI required
-         for running in a servlet container, provided for your convenience. Alternatively, you could use its component
-         jars: 
+         Weld can be used as a library in an web application that is deployed to a Servlet container. You should place
+         <literal>weld-servlet.jar</literal> within the <literal>WEB-INF/lib</literal> directory relative to the web
+         root. <literal>weld-servlet.jar</literal> is an "uber-jar", meaning it bundles all the bits of Weld and CDI
+         required for running in a Servlet container, for your convenience. Alternatively, you can use its component
+         jars. A list of transitive dependencies can be found in the META-INF/DEPENDENCIES.txt file inside the
+         <literal>weld-servlet.jar</literal> artifact.
       </para>
-      
-      <!-- TODO check for accuracy in 1.0 release -->
-      <itemizedlist>
-         <listitem>
-            <para>
-               <literal>jsr299-api.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>weld-api.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>weld-spi.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>weld-core.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>weld-logging.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>weld-servlet-int.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>javassist.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>dom4j.jar</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               <literal>google-collections.jar</literal>
-            </para>
-         </listitem>
-      </itemizedlist>
       
       <para>
          You also need to explicitly specify the servlet listener (used to boot Weld, and control its interaction
