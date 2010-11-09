@@ -22,67 +22,64 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
 import org.jboss.weld.environment.servlet.deployment.URLScanner;
-import org.jboss.weld.environment.servlet.deployment.WebAppBeanDeploymentArchive;
 
 /**
  * Exact listener.
  *
- * Explicitly list all the bean classes in beans.txt file.
+ * Explicitly list all the bean classes in bean-classes.txt file.
  * This will reduce scanning; e.g. useful for restricted env like GAE
  *
  * @author Ales Justin
  */
 public class ExactListener extends Listener
 {
-   protected ServletDeployment createServletDeployment(ServletContext context, Bootstrap bootstrap)
+   public static final String BEAN_CLASSES = "bean-classes.txt";
+
+   protected URLScanner createUrlScanner(ClassLoader classLoader, ServletContext context)
    {
-      return new ExactServletDeployment(context, bootstrap);
-   }
-
-   private static class ExactServletDeployment extends ServletDeployment
-   {
-      private ExactServletDeployment(ServletContext servletContext, Bootstrap bootstrap)
-      {
-         super(servletContext, bootstrap);
-      }
-
-      protected WebAppBeanDeploymentArchive createWebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap)
-      {
-         return new ExactWebAppBeanDeploymentArchive(servletContext, bootstrap);
-      }
-   }
-
-   private static class ExactWebAppBeanDeploymentArchive extends WebAppBeanDeploymentArchive
-   {
-      private ExactWebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap)
-      {
-         super(servletContext, bootstrap);
-      }
-
-      protected URLScanner createScanner(ClassLoader classLoader)
-      {
-         return new ExactScanner(classLoader);
-      }
+      return new ExactScanner(classLoader, context);
    }
 
    private static class ExactScanner extends URLScanner
    {
-      private ExactScanner(ClassLoader classLoader)
+      private ServletContext context;
+
+      private ExactScanner(ClassLoader classLoader, ServletContext context)
       {
          super(classLoader);
+
+         if (context == null)
+            throw new IllegalArgumentException("Null context");
+
+         this.context = context;
+      }
+
+      protected URL getExactBeansURL()
+      {
+         try
+         {
+            URL url = context.getResource("/WEB-INF/" + BEAN_CLASSES);
+            if (url == null)
+               url = getClassLoader().getResource(BEAN_CLASSES);
+
+            return url;
+         }
+         catch (MalformedURLException e)
+         {
+            throw new RuntimeException(e);
+         }
       }
 
       public void scanResources(String[] resources, List<String> classes, List<URL> urls)
       {
-         URL url = getClassLoader().getResource("beans.txt");
+         URL url = getExactBeansURL();
          if (url == null)
-            throw new IllegalArgumentException("Missing beans.txt");
+            throw new IllegalArgumentException("Missing exact beans resource: " + BEAN_CLASSES);
 
          try
          {

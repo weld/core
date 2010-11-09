@@ -58,7 +58,7 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
       this.services = new SimpleServiceRegistry();
       this.classes = new ArrayList<String>();
       List<URL> urls = new ArrayList<URL>();
-      URLScanner scanner = createScanner(Reflections.getClassLoader());
+      URLScanner scanner = createScanner(servletContext);
       scanner.scanResources(new String[] { META_INF_BEANS_XML }, classes, urls);
       try
       {
@@ -81,17 +81,20 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
       this.beansXml = bootstrap.parse(urls);
    }
 
-   protected URLScanner createScanner(ClassLoader classLoader)
+   protected URLScanner createScanner(ServletContext context)
    {
-      try
+      URLScanner scanner = (URLScanner) context.getAttribute(URLScanner.class.getName());
+      if (scanner == null)
       {
-         classLoader.loadClass("org.jboss.virtual.VFS"); // check if we can use JBoss VFS
-         return new VFSURLScanner(classLoader);
+         ClassLoader cl = Reflections.getClassLoader();
+         scanner = new URLScanner(cl);
       }
-      catch (Throwable t)
+      else
       {
-         return new URLScanner(classLoader);
+         // cleanup
+         context.removeAttribute(URLScanner.class.getName());
       }
+      return scanner;
    }
 
    public Collection<String> getBeanClasses()
