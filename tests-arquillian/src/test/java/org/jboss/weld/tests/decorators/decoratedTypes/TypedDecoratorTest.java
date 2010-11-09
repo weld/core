@@ -14,53 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.hierarchical;
-
-import java.util.Collection;
-import java.util.List;
-
-import junit.framework.Assert;
+package org.jboss.weld.tests.decorators.decoratedTypes;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
-import org.jboss.weld.metadata.TypeStore;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.tests.category.Broken;
-import org.jboss.weld.util.Beans;
+import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class SimpleWeldClassTest
+public class TypedDecoratorTest
 {
    @Deployment
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(InterceptorsWithHierarchyTest.class.getPackage());
+         .decorate(TypedDecorator.class)
+         .addPackage(TypedDecoratorTest.class.getPackage());
    }
-
-   /*
-    * description = "WELD-568"
-    */
-   @Category(Broken.class)
+   
    @Test
-   public void testWeldClassForCovariantReturnType()
+   public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean)
    {
-      WeldClass<Attacker> weldClass = WeldClassImpl.of(Attacker.class, new ClassTransformer(new TypeStore()));
-      Collection<WeldMethod<?, ? super Attacker>> methods = weldClass.getWeldMethods();
-      Assert.assertEquals(4, methods.size());
-      List<WeldMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
-      Assert.assertEquals(4, interceptableMethods.size());
+      testBean.decoratedMethod();
+      testBean.notDecoratedMethod();
+
+      Assert.assertTrue(TypedDecorator.decoratedInvoked);
+      Assert.assertFalse(TypedDecorator.notDecoratedInvoked);
+      Assert.assertTrue(TestBean.decoratedInvoked);
+      Assert.assertTrue(TestBean.notDecoratedInvoked);
    }
 }

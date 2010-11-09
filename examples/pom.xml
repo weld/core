@@ -197,6 +197,17 @@
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>failsafe-maven-plugin</artifactId>
             </plugin>
+             <!--
+                  Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187
+                  during release
+             -->
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-war-plugin</artifactId>
+                 <configuration>
+                     <useCache>false</useCache>
+                 </configuration>
+             </plugin>
          </plugins>
       </pluginManagement>
    </build>

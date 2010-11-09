@@ -304,7 +304,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
       {
          if (isExpired(conversation))
          {
-            conversation.end();
+            if (!conversation.isTransient()) {
+               conversation.end();
+            }
          }
       }
    }

@@ -11,7 +11,7 @@ public class Cat
    
    private Mouse mouse;
    
-   public void observe(@Observes(receive=IF_EXISTS) Mouse mouse)
+   public void observe(@Observes(notifyObserver=IF_EXISTS) Mouse mouse)
    {
       this.mouse = mouse;
    }

@@ -58,7 +58,7 @@ public class SimpleWeldClassTest
    public void testWeldClassForGenericSuperclass()
    {
       WeldClass<StringProcessor> weldClass = WeldClassImpl.of(StringProcessor.class, new ClassTransformer(new TypeStore()));
-      Collection<WeldMethod<?, ?>> methods = weldClass.getWeldMethods();
+      Collection<WeldMethod<?, ? super StringProcessor>> methods = weldClass.getWeldMethods();
       //assert methods.size() == 2;
       List<WeldMethod<?,?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
       Assert.assertEquals(4, interceptableMethods.size());

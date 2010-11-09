@@ -259,6 +259,35 @@ public class Beans
       }
       return methods;
    }
+   
+   public static <T> List<WeldMethod<?, ? super T>> getObserverMethods(WeldClass<T> type)
+   {
+      List<WeldMethod<?, ? super T>> observerMethods = new ArrayList<WeldMethod<?,? super T>>();
+      // Keep track of all seen methods so we can ignore overridden methods
+      Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>()
+      {
+
+         public Set<Package> get()
+         {
+            return new HashSet<Package>();
+         }
+
+      });
+      WeldClass<? super T> t = type;
+      while (t != null && !t.getJavaClass().equals(Object.class))
+      {
+         for (WeldMethod<?, ? super T> method : t.getDeclaredWeldMethods())
+         {
+            if (!isOverridden(method, seenMethods) && !method.getWeldParameters(Observes.class).isEmpty())
+            {
+               observerMethods.add(method);
+            }
+            seenMethods.put(method.getSignature(), method.getPackage());
+         }
+         t = t.getWeldSuperclass();
+      }
+      return observerMethods;
+   }
 
    public static <T> List<WeldMethod<?, ? super T>> getPreDestroyMethods(WeldClass<T> type)
    {

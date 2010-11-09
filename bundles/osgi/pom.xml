@@ -95,8 +95,7 @@
                      org.jboss.weld.el;
                      version=${osgi.version},
                      org.jboss.weld.jsf;
-                     version=${osgi.version},
-                     javassist.util.proxy;version=${javassist.version}
+                     version=${osgi.version}
                  </_exportcontents>
 
                   <!-- A note about how slf4j is handled:

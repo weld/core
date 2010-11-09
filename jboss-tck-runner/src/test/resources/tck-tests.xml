@@ -17,83 +17,11 @@
       
          <!-- Issues in the TCK -->
          
-         <!-- CDITCK-174 -->
-         <class name="org.jboss.jsr299.tck.tests.extensions.observer.ProcessObserverMethodEventTest">
+         <!-- CDITCK-190 -->
+         <class name="org.jboss.jsr299.tck.tests.event.observer.enterprise.EnterpriseEventInheritenceTest">
             <methods>
-               <exclude name="testGetAnnotatedMethod" />
-               <exclude name="testGetObserverMethod" />
-               <exclude name="testProcessObserverMethodEventsSent" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.extensions.observer.broken.definitionError.ProcessObserverMethodErrorTest">
-            <methods>
-               <exclude name="testAddDefinitionError" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.extensions.observer.broken.exception.ProcessObserverMethodExceptionTest">
-            <methods>
-               <exclude name="testExceptionIsDefinitionError" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-176 -->
-         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingBeanConstructor.DecoratorWithNonPassivatingBeanConstructorTest">
-            <methods>
-               <exclude name="testPassivationCapableBeanWithNonPassivatingDecoratorBeanConstructorFails" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingInitializerMethod.DecoratorWithNonPassivatingInitializerMethodTest">
-            <methods>
-               <exclude name="testPassivationCapableBeanWithNonPassivatingInitializerInDecoratorFails" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingInjectedField.DecoratorWithNonPassivatingInjectedFieldTest">
-            <methods>
-               <exclude name="testPassivationCapableBeanWithNonPassivatingDecoratorInjectedFieldFails" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingDecorator.EnterpriseBeanWithNonPassivatingDecoratorTest">
-            <methods>
-               <exclude name="testEnterpriseBeanWithNonPassivatingDecoratorFails" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.decorators.definition.broken.decoratorListedTwiceInBeansXml.DecoratorListedTwiceInBeansXmlTest">
-            <methods>
-               <exclude name="testDecoratorListedTwiceInBeansXmlNotOK" />
-            </methods>
-         </class>
-         <class name="org.jboss.jsr299.tck.tests.decorators.definition.broken.nonExistantClassInBeansXml.NonExistantDecoratorClassInBeansXmlTest">
-            <methods>
-               <exclude name="testNonExistantDecoratorClassInBeansXmlNotOK" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-177 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.simple.definition.EnterpriseBeanNotDiscoveredAsManagedBeanTest">
-            <methods>
-               <exclude name="testClassesImplementingEnterpriseBeanInterfaceNotDiscoveredAsSimpleBean" />
-            </methods>
-         </class>
-         <!-- CDITCK-181 -->
-         <class
-            name="org.jboss.jsr299.tck.tests.lookup.clientProxy.ClientProxyTest">
-            <methods>
-               <exclude name="testInactiveScope" />
-            </methods>
-         </class>
-
-         <!-- CDITCK-181 -->
-         <class
-            name="org.jboss.jsr299.tck.tests.lookup.clientProxy.ClientProxyTest">
-            <methods>
-               <exclude name="testInactiveScope" />
-            </methods>
-         </class>
-         
-         <!-- CDITCK-182 -->
-         <class name="org.jboss.jsr299.tck.tests.policy.enterprise.SessionBeanPolicyTest">
-            <methods>
-               <exclude name="testEnabledPolicyAvailable" />
+               <exclude name="testNonStaticObserverMethodInherited" />
+               <exclude name="testNonStaticObserverMethodIndirectlyInherited" />
             </methods>
          </class>
 
@@ -128,23 +56,17 @@
          <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.definition.EnterpriseBeanDefinitionTest">
             <methods>
                <exclude name="testEnterpriseBeanClassLocalView" />
-               <!-- WELDINT-31 -->
+               <!-- JBAS-8279 -->
                <exclude name="testConstructorAnnotatedInjectCalled" />
             </methods>
          </class>
-         <!-- WELDINT-1 -->
-         <class name="org.jboss.jsr299.tck.tests.deployment.packaging.bundledLibrary.LibraryInEarTest">
-            <methods>
-               <exclude name="test" />
-            </methods>
-         </class>
-         <!-- WELDINT-31 -->
+         <!-- JBAS-8279 -->
          <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
             <methods>
                <exclude name="testNewBeanHasSameConstructor" />
             </methods>
          </class>
-         <!-- WELDINT-27 -->
+         <!-- JBAS-8280 -->
          <class name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.interceptorOrder.SessionBeanInterceptorOrderTest">
             <methods>
                <exclude name="testInterceptorsDeclaredUsingInterceptorsCalledBeforeInterceptorBinding" />
@@ -168,25 +90,16 @@
                <exclude name="testInjectionOnEJBInterceptor" />
             </methods>
          </class>
-         <!-- WELDINT-22 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ContainerEventTest">
-            <methods>
-               <exclude name="testProcessInjectionTargetEventFiredForServletListener" />
-               <exclude name="testProcessInjectionTargetEventFiredForTagLibraryListener" />
-               <exclude name="testProcessInjectionTargetEventFiredForFilter" />
-               <exclude name="testTypeOfProcessInjectionTargetParameter" />
-               <exclude name="testProcessInjectionTargetEventFiredForServlet" />
-            </methods>
-         </class>
          
          <!-- WELDINT-36 -->
          <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.InjectionIntoNonContextualComponentTest">
             <methods>
                <exclude name="testInjectionIntoTagHandler" />
+               <exclude name="testInjectionIntoJSFManagedBean" />
             </methods>
          </class>
          
-         <!-- WELDINT-63 -->
+         <!-- JBAS-8284 -->
          <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
             <methods>
                <exclude name="testSerializeSFSB" />

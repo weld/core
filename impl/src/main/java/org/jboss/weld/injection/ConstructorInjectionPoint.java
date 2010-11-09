@@ -262,7 +262,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
       {
          WeldConstructor<T> constructor = getWeldConstructor();
          Bean<T> bean = getDeclaringBean();
-         if (constructor == null || bean == null)
+         if (constructor == null || (bean == null && getDeclaringBeanId() != null))
          {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
          }

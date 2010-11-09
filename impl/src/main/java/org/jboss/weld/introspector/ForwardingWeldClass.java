@@ -19,7 +19,6 @@ package org.jboss.weld.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Set;
 
 public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, Class<T>> implements WeldClass<T>
 {
@@ -47,7 +46,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getNoArgsWeldConstructor();
    }
    
-   public Collection<WeldMethod<?, ?>> getWeldMethods()
+   public Collection<WeldMethod<?, ? super T>> getWeldMethods()
    {
       return delegate().getWeldMethods();
    }
@@ -83,7 +82,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
       return delegate().getWeldMethod(signature);
    }
 
-   public WeldClass<?> getWeldSuperclass()
+   public WeldClass<? super T> getWeldSuperclass()
    {
       return delegate().getWeldSuperclass();
    }

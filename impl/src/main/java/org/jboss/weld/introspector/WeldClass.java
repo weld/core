@@ -19,7 +19,6 @@ package org.jboss.weld.introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
@@ -44,14 +43,14 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     * 
     * @return A set of abstracted fields
     */
-   public Collection<WeldMethod<?, ?>> getWeldMethods();
+   public Collection<WeldMethod<?, ? super T>> getWeldMethods();
    
    /**
     * Gets all fields on the type
     * 
     * @return A set of abstracted fields
     */
-   public Collection<WeldMethod<?, ?>> getDeclaredWeldMethods();
+   public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods();
 
    /**
     * Get a field by name
@@ -158,20 +157,20 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
    public WeldMethod<?, ?> getDeclaredWeldMethod(Method method);
 
    /**
-    * Gets all with parameters annotated with annotationType
+    * Gets declared with parameters annotated with annotationType
     * 
     * @param annotationType The annotation to match
     * @return A set of abstracted methods with the given annotation. Returns an
     *         empty set if there are no matches
     */
    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
-
+   
    /**
     * Gets the superclass.
     * 
     * @return The abstracted superclass, null if there is no superclass
     */
-   public WeldClass<?> getWeldSuperclass();
+   public WeldClass<? super T> getWeldSuperclass();
 
    public boolean isParameterizedType();
 

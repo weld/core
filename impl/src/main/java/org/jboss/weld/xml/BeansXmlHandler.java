@@ -378,6 +378,11 @@ public class BeansXmlHandler extends DefaultHandler
    @Override
    public void error(SAXParseException e) throws SAXException
    {
+	   if (e.getMessage().equals("cvc-elt.1: Cannot find the declaration of element 'beans'."))
+	   {
+		   // Ignore the errors we get when there is no schema defined
+		   return;
+	   }
       log.warn(XSD_VALIDATION_ERROR, file, e.getLineNumber(), e.getMessage());
    }
 

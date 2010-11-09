@@ -102,7 +102,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
       this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
-      this.reception = observesAnnotation.receive();
+      this.reception = observesAnnotation.notifyObserver();
       transactionPhase = TransactionPhase.IN_PROGRESS;
       this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
