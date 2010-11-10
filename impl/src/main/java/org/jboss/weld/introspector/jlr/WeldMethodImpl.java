@@ -37,7 +37,6 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
@@ -60,9 +59,6 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
    // The abstracted parameters
    private final ArrayList<WeldParameter<?, X>> parameters;
-   // A mapping from annotation type to parameter abstraction with that
-   // annotation present
-   private final ArraySetMultimap<Class<? extends Annotation>, WeldParameter<?, X>> annotatedParameters;
 
    // The property name
    private final String propertyName;
@@ -96,7 +92,6 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
       this.method = method;
       this.parameters = new ArrayList<WeldParameter<?, X>>(method.getParameterTypes().length);
-      this.annotatedParameters = new ArraySetMultimap<Class<? extends Annotation>, WeldParameter<?, X>>();
 
       if (annotatedMethod == null)
       {
@@ -108,13 +103,6 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
                Type parametertype = method.getGenericParameterTypes()[i];
                WeldParameter<?, X> parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
                this.parameters.add(parameter);
-               for (Annotation annotation : parameter.getAnnotations())
-               {
-                  if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
-                  {
-                     annotatedParameters.putSingleElement(annotation.annotationType(), parameter);
-                  }
-               }
             }
             else
             {
@@ -137,19 +125,11 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
             {
                WeldParameter<?, X> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), method.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
                this.parameters.add(parameter);
-               for (Annotation annotation : parameter.getAnnotations())
-               {
-                  if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
-                  {
-                     annotatedParameters.putSingleElement(annotation.annotationType(), parameter);
-                  }
-               }
             }
          }
          
       }
       this.parameters.trimToSize();
-      this.annotatedParameters.trimToSize();
 
       String propertyName = Reflections.getPropertyName(getDelegate());
       if (propertyName == null)
@@ -182,7 +162,15 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
    public List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> annotationType)
    {
-      return Collections.unmodifiableList(annotatedParameters.get(annotationType));
+      List<WeldParameter<?, X>> ret = new ArrayList<WeldParameter<?, X>>();
+      for (WeldParameter<?, X> parameter : parameters)
+      {
+         if (parameter.isAnnotationPresent(annotationType))
+         {
+            ret.add(parameter);
+         }
+      }
+      return ret;
    }
 
    public boolean isEquivalent(Method method)
