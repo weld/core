@@ -17,6 +17,13 @@
       
          <!-- Issues in the TCK -->
          
+         <!-- CDITCK-190 -->
+         <class name="org.jboss.jsr299.tck.tests.event.observer.enterprise.EnterpriseEventInheritenceTest">
+            <methods>
+               <exclude name="testNonStaticObserverMethodInherited" />
+               <exclude name="testNonStaticObserverMethodIndirectlyInherited" />
+            </methods>
+         </class>
 
          <!-- Issues in Weld (the RI) -->
 
