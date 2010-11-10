@@ -98,6 +98,7 @@ import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -213,7 +214,7 @@ public class Beans
       WeldClass<?> t = type;
       while (t != null && !t.getJavaClass().equals(Object.class))
       {
-         Set<FieldInjectionPoint<?, ?>> fields = new HashSet<FieldInjectionPoint<?, ?>>();
+         ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
          injectableFieldsList.add(0, fields);
          for (WeldField<?, ?> annotatedField : t.getDeclaredWeldFields(Inject.class))
          {
@@ -222,6 +223,7 @@ public class Beans
                addFieldInjectionPoint(annotatedField, fields, declaringBean);
             }
          }
+         fields.trimToSize();
          t = t.getWeldSuperclass();
       }
       return injectableFieldsList;
@@ -229,12 +231,12 @@ public class Beans
 
    public static Set<FieldInjectionPoint<?, ?>> getFieldInjectionPoints(Bean<?> declaringBean, List<? extends Set<? extends FieldInjectionPoint<?, ?>>> fieldInjectionPoints)
    {
-      Set<FieldInjectionPoint<?, ?>> injectionPoints = new HashSet<FieldInjectionPoint<?, ?>>();
+      ArraySet<FieldInjectionPoint<?, ?>> injectionPoints = new ArraySet<FieldInjectionPoint<?, ?>>();
       for (Set<? extends FieldInjectionPoint<?, ?>> i : fieldInjectionPoints)
       {
          injectionPoints.addAll(i);
       }
-      return injectionPoints;
+      return injectionPoints.trimToSize();
    }
 
    public static <T> List<WeldMethod<?, ? super T>> getPostConstructMethods(WeldClass<T> type)
@@ -340,12 +342,12 @@ public class Beans
       if (manager.getServices().contains(EjbInjectionServices.class))
       {
          Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-         Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         ArraySet<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
          for (WeldField<?, ?> field : type.getWeldFields(ejbAnnotationType))
          {
             ejbInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
-         return ejbInjectionPoints;
+         return ejbInjectionPoints.trimToSize();
       }
       else
       {
@@ -357,13 +359,13 @@ public class Beans
    {
       if (manager.getServices().contains(JpaInjectionServices.class))
       {
-         Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
          Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
          for (WeldField<?, ?> field : type.getWeldFields(persistenceContextAnnotationType))
          {
             jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
-         return jpaInjectionPoints;
+         return jpaInjectionPoints.trimToSize();
       }
       else
       {
@@ -375,13 +377,13 @@ public class Beans
    {
       if (manager.getServices().contains(JpaInjectionServices.class))
       {
-         Set<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
          Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
          for (WeldField<?, ?> field : type.getWeldFields(persistenceUnitAnnotationType))
          {
             jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
-         return jpaInjectionPoints;
+         return jpaInjectionPoints.trimToSize();
       }
       else
       {
@@ -394,12 +396,12 @@ public class Beans
       if (manager.getServices().contains(ResourceInjectionServices.class))
       {
          Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-         Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+         ArraySet<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
          for (WeldField<?, ?> field : type.getWeldFields(resourceAnnotationType))
          {
             resourceInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
          }
-         return resourceInjectionPoints;
+         return resourceInjectionPoints.trimToSize();
       }
       else
       {
@@ -423,7 +425,7 @@ public class Beans
       WeldClass<?> t = type;
       while (t != null && !t.getJavaClass().equals(Object.class))
       {
-         Set<MethodInjectionPoint<?, ?>> initializerMethods = new HashSet<MethodInjectionPoint<?, ?>>();
+         ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
          initializerMethodsList.add(0, initializerMethods);
          for (WeldMethod<?, ?> method : t.getDeclaredWeldMethods())
          {
@@ -456,6 +458,7 @@ public class Beans
             }
             seenMethods.put(method.getSignature(), method.getPackage());
          }
+         initializerMethods.trimToSize();
          t = t.getWeldSuperclass();
       }
       return initializerMethodsList;
@@ -479,27 +482,27 @@ public class Beans
 
    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WeldConstructor<?> constructor)
    {
-      Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?, ?>>();
+      ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
       for (WeldParameter<?, ?> parameter : constructor.getWeldParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
       }
-      return injectionPoints;
+      return injectionPoints.trimToSize();
    }
 
    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, MethodInjectionPoint<?, ?> method)
    {
-      Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?, ?>>();
+      ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
       for (WeldParameter<?, ?> parameter : method.getWeldParameters())
       {
          injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
       }
-      return injectionPoints;
+      return injectionPoints.trimToSize();
    }
 
    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints)
    {
-      Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?, ?>>();
+      ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
       for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints)
       {
          for (MethodInjectionPoint<?, ?> method : i)
@@ -510,7 +513,7 @@ public class Beans
             }
          }
       }
-      return injectionPoints;
+      return injectionPoints.trimToSize();
    }
 
    private static void addFieldInjectionPoint(WeldField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean)

@@ -33,15 +33,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
@@ -404,6 +406,14 @@ public class WeldBootstrap implements Bootstrap
             entry.getValue().getBeanManager().getBeanResolver().clear();
             entry.getValue().getBeanManager().getObserverResolver().clear();
             entry.getValue().getBeanManager().getDecoratorResolver().clear();
+            for (Bean<?> bean : entry.getValue().getBeanManager().getBeans())
+            {
+               if (bean instanceof RIBean<?>)
+               {
+                  RIBean<?> riBean = (RIBean<?>) bean;
+                  riBean.cleanupAfterBoot();
+               }
+            }
          }
       }
       return this;
