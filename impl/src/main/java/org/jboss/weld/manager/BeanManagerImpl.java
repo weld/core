@@ -841,6 +841,26 @@ public class BeanManagerImpl implements WeldManager, Serializable
    }
 
    /**
+    * Get the decorator resolver. For internal use
+    * 
+    * @return The resolver
+    */
+   public TypeSafeResolver<Resolvable, Decorator<?>> getDecoratorResolver()
+   {
+      return decoratorResolver;
+   }
+
+   /**
+    * Get the observer resolver. For internal use
+    * 
+    * @return The resolver
+    */
+   public TypeSafeResolver<Resolvable, ObserverMethod<?>> getObserverResolver()
+   {
+      return observerResolver;
+   }
+
+   /**
     * Gets a string representation
     * 
     * @return A string representation
