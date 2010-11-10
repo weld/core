@@ -33,8 +33,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.spi.Context;
@@ -394,6 +394,17 @@ public class WeldBootstrap implements Bootstrap
       {
          // Register the managers so external requests can handle them
          Container.instance().setState(ContainerState.VALIDATED);
+         // clear the TypeSafeResolvers, so data that is only used at startup
+         // is not kept around using up memory
+         deploymentManager.getBeanResolver().clear();
+         deploymentManager.getObserverResolver().clear();
+         deploymentManager.getDecoratorResolver().clear();
+         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
+         {
+            entry.getValue().getBeanManager().getBeanResolver().clear();
+            entry.getValue().getBeanManager().getObserverResolver().clear();
+            entry.getValue().getBeanManager().getDecoratorResolver().clear();
+         }
       }
       return this;
    }
