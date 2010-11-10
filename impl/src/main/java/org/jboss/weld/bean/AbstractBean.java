@@ -79,9 +79,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    protected boolean alternative;
    protected Class<T> type;
    protected Set<Type> types;
-   private Set<WeldInjectionPoint<?, ?>> injectionPoints;
-   private Set<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
-   private Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
+   private ArraySet<WeldInjectionPoint<?, ?>> injectionPoints;
+   private ArraySet<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
+   private ArraySet<WeldInjectionPoint<?, ?>> newInjectionPoints;
    protected BeanManagerImpl beanManager;
    private boolean initialized;
 
@@ -94,9 +94,17 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    {
       super(idSuffix, beanManager);
       this.beanManager = beanManager;
-      this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-      this.delegateInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
-      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?,?>>();
+      this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
+      this.delegateInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
+      this.newInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
+   }
+
+   @Override
+   public void cleanupAfterBoot()
+   {
+      injectionPoints.trimToSize();
+      delegateInjectionPoints.trimToSize();
+      newInjectionPoints.trimToSize();
    }
 
    /**

@@ -64,6 +64,12 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    public abstract void initialize(BeanDeployerEnvironment environment);
 
    /**
+    * This method is called after the container is started allowing the bean to 
+    * release any resources that are only required at boot time
+    */
+   public abstract void cleanupAfterBoot();
+
+   /**
     * In particular cases, the deployer must perform some initialization operations
     * only after all beans have been deployed (e.g. for initializing decorators
     * taking into account the possibility of having custom decorators which are

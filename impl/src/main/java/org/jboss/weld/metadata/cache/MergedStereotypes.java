@@ -19,11 +19,11 @@ package org.jboss.weld.metadata.cache;
 import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.ArraySet;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -33,13 +33,13 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class MergedStereotypes<T, E>
 {
    // The possible scope types
-   private final Set<Annotation> possibleScopeTypes;
+   private final ArraySet<Annotation> possibleScopeTypes;
    // Is the bean name defaulted?
    private boolean beanNameDefaulted;
    // Are any of the sterotypes alternatives
    private boolean alternative;
    
-   private Set<Class<? extends Annotation>> stereotypes;
+   private ArraySet<Class<? extends Annotation>> stereotypes;
    
    private final BeanManagerImpl manager;
    
@@ -50,10 +50,12 @@ public class MergedStereotypes<T, E>
     */
    public MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager)
    {
-      this.possibleScopeTypes = new HashSet<Annotation>();
-      this.stereotypes = new HashSet<Class<? extends Annotation>>();
+      this.possibleScopeTypes = new ArraySet<Annotation>();
+      this.stereotypes = new ArraySet<Class<? extends Annotation>>();
       this.manager = manager;
       merge(stereotypeAnnotations);
+      this.possibleScopeTypes.trimToSize();
+      this.stereotypes.trimToSize();
    }
 
    /**
