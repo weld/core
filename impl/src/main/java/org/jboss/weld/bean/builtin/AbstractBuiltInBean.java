@@ -48,6 +48,12 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T>
    }
 
    @Override
+   public void cleanupAfterBoot()
+   {
+      // No-op
+   }
+
+   @Override
    public void initializeAfterBeanDiscovery()
    {
       // No-op  
