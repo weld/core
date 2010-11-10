@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -45,10 +44,6 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
-
 /**
  * Represents an annotated constructor
  * 
@@ -66,8 +61,6 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
 
    // The list of parameter abstractions
    private final List<WeldParameter<?, T>> parameters;
-   // The mapping of annotation -> parameter abstraction
-   private final ListMultimap<Class<? extends Annotation>, WeldParameter<?, T>> annotatedParameters;
 
    private final ConstructorSignature signature;
 
@@ -95,15 +88,6 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
       this.constructor = constructor;
 
       this.parameters = new ArrayList<WeldParameter<?, T>>();
-      annotatedParameters = Multimaps.newListMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldParameter<?, T>>>(), new Supplier<List<WeldParameter<?, T>>>()
-      {
-
-         public List<WeldParameter<?, T>> get()
-         {
-            return new ArrayList<WeldParameter<?, T>>();
-         }
-
-      });
 
       Map<Integer, AnnotatedParameter<?>> annotatedTypeParameters = new HashMap<Integer, AnnotatedParameter<?>>();
 
@@ -139,13 +123,6 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
                }
                WeldParameter<?, T> parameter = WeldParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, parameterType, this, i, classTransformer);
                this.parameters.add(parameter);
-               for (Annotation annotation : parameter.getAnnotations())
-               {
-                  if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
-                  {
-                     annotatedParameters.put(annotation.annotationType(), parameter);
-                  }
-               }
             }
             else
             {
@@ -176,13 +153,6 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
             {
                WeldParameter<?, T> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), constructor.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
                this.parameters.add(parameter);
-               for (Annotation annotation : parameter.getAnnotations())
-               {
-                  if (MAPPED_PARAMETER_ANNOTATIONS.contains(annotation.annotationType()))
-                  {
-                     annotatedParameters.put(annotation.annotationType(), parameter);
-                  }
-               }
             }
          }
 
@@ -230,6 +200,8 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
     * 
     * If the parameters are null, they are initializes first.
     * 
+    * The results of the method are not cached, as it is not called at runtime
+    * 
     * @param annotationType The annotation type to match
     * @return A list of matching parameter abstractions. An empty list is
     *         returned if there are no matches.
@@ -238,7 +210,15 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
     */
    public List<WeldParameter<?, T>> getWeldParameters(Class<? extends Annotation> annotationType)
    {
-      return Collections.unmodifiableList(annotatedParameters.get(annotationType));
+      List<WeldParameter<?, T>> ret = new ArrayList<WeldParameter<?, T>>();
+      for (WeldParameter<?, T> parameter : parameters)
+      {
+         if (parameter.isAnnotationPresent(annotationType))
+         {
+            ret.add(parameter);
+         }
+      }
+      return ret;
    }
 
    /**
