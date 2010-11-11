@@ -63,20 +63,21 @@ public class WeldValueExpression extends ForwardingValueExpression
    
    private final static BeanManagerImpl CACHED_BEANMANAGER = Container.instance().deploymentManager(); 
    
+   private final ELCreationalContext<?> cachedCreationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
+   
    @Override
    public Object getValue(final ELContext context)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         getCreationalContextStore(context).push(cachedCreationalContext);
          return delegate().getValue(context);
       }
       finally
       {
          getCreationalContextStore(context).pop();
-         creationalContext.release();
+         cachedCreationalContext.release();
       }
    }
    
@@ -84,16 +85,15 @@ public class WeldValueExpression extends ForwardingValueExpression
    public void setValue(ELContext context, Object value)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         getCreationalContextStore(context).push(cachedCreationalContext);
          delegate().setValue(context, value);
       }
       finally
       {
          getCreationalContextStore(context).pop();
-         creationalContext.release();
+         cachedCreationalContext.release();
       }
    }
 
@@ -102,16 +102,15 @@ public class WeldValueExpression extends ForwardingValueExpression
    public Class getType(ELContext context)
    {
    // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         getCreationalContextStore(context).push(cachedCreationalContext);
          return delegate().getType(context);
       }
       finally
       {
          getCreationalContextStore(context).pop();
-         creationalContext.release();
+         cachedCreationalContext.release();
       }
    }
 
