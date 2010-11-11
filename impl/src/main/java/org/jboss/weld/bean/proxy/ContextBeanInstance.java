@@ -74,6 +74,10 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
          bean = CACHED_CONTAINER.services().get(ContextualStore.class).<Bean<T>, T>getContextual(id);
       }
       Context context = CACHED_CONTAINER.deploymentManager().getContext(bean.getScope());
+      
+      if(context.get(bean) != null)
+         return context.get(bean);
+      
       WeldCreationalContext<T> creationalContext;
       WeldCreationalContext<?> previousCreationalContext = currentCreationalContext.get();
       if (currentCreationalContext.get() == null)
