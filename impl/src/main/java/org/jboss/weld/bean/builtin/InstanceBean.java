@@ -33,10 +33,14 @@ import org.jboss.weld.util.collections.Arrays2;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>>
 {
-   @SuppressWarnings("serial")
-   private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {}.getRawType();
-   @SuppressWarnings("serial")
-   private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {}.getRawType();
+   private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() 
+   {
+      private static final long serialVersionUID = -1246199714407637856L;
+   }.getRawType();
+   private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() 
+   {
+      private static final long serialVersionUID = -5256050387550468441L;
+   }.getRawType();
    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet( INSTANCE_TYPE, PROVIDER_TYPE, Object.class );
    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
    

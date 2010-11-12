@@ -18,11 +18,9 @@
 package org.jboss.weld.bean;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.Decorator;
 
-import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 

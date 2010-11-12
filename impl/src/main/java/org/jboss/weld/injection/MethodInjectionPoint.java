@@ -141,7 +141,6 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
       return null;
    }
 
-   @SuppressWarnings("unchecked")
    public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
       try
@@ -192,7 +191,6 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
       return null;
    }
 
-   @SuppressWarnings("unchecked")
    public T invokeOnInstanceWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow)
    {
       try

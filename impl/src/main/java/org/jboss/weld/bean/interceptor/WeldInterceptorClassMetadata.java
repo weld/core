@@ -33,6 +33,8 @@ import org.jboss.weld.introspector.WeldMethod;
  */
 public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serializable
 {
+   private static final long serialVersionUID = -5087425231467781559L;
+
    private Class<T> clazz;
 
    private WeldInterceptorClassMetadata<?> superclass;
@@ -59,7 +61,7 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
 
    public static <T> WeldInterceptorClassMetadata<T> of(WeldClass<T> weldClass)
    {
-      return new WeldInterceptorClassMetadata(weldClass);
+      return new WeldInterceptorClassMetadata<T>(weldClass);
    }
 
    public String getClassName()

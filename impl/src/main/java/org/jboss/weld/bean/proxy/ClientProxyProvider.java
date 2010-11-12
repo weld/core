@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATED_NEW_CLIENT_PROXY_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.concurrent.ConcurrentMap;
 
@@ -30,6 +31,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Function;
@@ -106,10 +108,9 @@ public class ClientProxyProvider
     * @param bean The bean to get a proxy to
     * @return the client proxy for the bean
     */
-   @SuppressWarnings("unchecked")
    public <T> T getClientProxy(final Bean<T> bean)
    {
-      T proxy = (T) pool.get(bean);
+      T proxy = Reflections.<T>cast(pool.get(bean));
       log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);
       return proxy;
    }

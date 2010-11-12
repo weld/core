@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -23,6 +25,7 @@ import javax.enterprise.inject.spi.ProcessProducerField;
 
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerField<T, X>> implements ProcessProducerField<T, X>
 {
@@ -40,12 +43,11 @@ public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<
       super(beanManager, ProcessProducerField.class, new Type[] { bean.getWeldAnnotated().getDeclaringType().getBaseType(), bean.getWeldAnnotated().getBaseType() }, bean);
    }
 
-   @SuppressWarnings("unchecked")
    public AnnotatedField<T> getAnnotatedProducerField()
    {
       if (getBean().getWeldAnnotated() != null)
       {
-         return (AnnotatedField<T>) getBean().getWeldAnnotated();
+         return cast(getBean().getWeldAnnotated());
       }
       else
       {

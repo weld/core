@@ -28,6 +28,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS
 import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Set;
 
@@ -216,7 +217,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
       public Set<InjectionPoint> getInjectionPoints()
       {
-         return (Set) bean.getWeldInjectionPoints();
+         return cast(bean.getWeldInjectionPoints());
       }
 
       public T produce(final CreationalContext<T> ctx)

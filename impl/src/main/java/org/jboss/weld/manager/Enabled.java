@@ -40,6 +40,7 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
 
@@ -63,7 +64,7 @@ public class Enabled
 
       public Metadata<Class<? extends T>> apply(Metadata<String> from)
       {
-         return new MetadataImpl<Class<? extends T>>((Class<? extends T>) resourceLoader.classForName(from.getValue()), from.getLocation());
+         return new MetadataImpl<Class<? extends T>>(Reflections.<Class<? extends T>>cast(resourceLoader.classForName(from.getValue())), from.getLocation());
       }
       
    }

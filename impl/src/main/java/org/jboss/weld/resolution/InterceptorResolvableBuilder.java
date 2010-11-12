@@ -22,7 +22,6 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RES
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder
       }
       if (qualifiers.contains(qualifier))
       {
-         throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, Arrays.asList(qualifiers));
+         throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, qualifiers);
       }
    }
    

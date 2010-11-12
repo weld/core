@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +40,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.DeploymentStructures;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir
@@ -66,8 +69,7 @@ public class ExtensionBeanDeployer
       ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
       for (Metadata<Extension> extension : extensions)
       {
-         @SuppressWarnings("unchecked")
-         WeldClass<Extension> clazz = (WeldClass<Extension>) classTransformer.loadClass(extension.getValue().getClass());
+         WeldClass<Extension> clazz = cast(classTransformer.loadClass(extension.getValue().getClass()));
          
          // Locate the BeanDeployment for this extension
          BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass());

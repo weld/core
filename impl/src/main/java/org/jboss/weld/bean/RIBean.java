@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -103,7 +105,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    
    public Set<InjectionPoint> getInjectionPoints()
    {
-      return (Set) getWeldInjectionPoints();
+      return cast(getWeldInjectionPoints());
    }
 
    public abstract RIBean<?> getSpecializedBean();

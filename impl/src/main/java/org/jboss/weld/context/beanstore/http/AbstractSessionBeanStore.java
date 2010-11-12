@@ -5,7 +5,6 @@ import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;

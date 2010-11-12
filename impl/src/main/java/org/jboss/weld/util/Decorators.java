@@ -17,6 +17,17 @@
 
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.MethodSignature;
@@ -24,15 +35,6 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
-
-import javax.inject.Inject;
 
 /**
  * Helper class for {@link javax.enterprise.inject.spi.Decorator} inspections.

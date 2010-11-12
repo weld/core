@@ -34,7 +34,6 @@ import org.jboss.weld.util.collections.Arrays2;
 public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S>, AnnotatedCallable<X>
 {
    
-   @SuppressWarnings("unchecked")
    public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Arrays2.asSet(Disposes.class, Observes.class);
    
    /**

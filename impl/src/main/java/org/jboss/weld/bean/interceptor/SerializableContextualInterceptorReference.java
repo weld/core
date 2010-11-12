@@ -7,16 +7,11 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import javax.enterprise.inject.spi.Interceptor;
 import java.io.Serializable;
 
-/**
-* Created by IntelliJ IDEA.
-* User: marius
-* Date: Sep 27, 2010
-* Time: 8:12:08 PM
-* To change this template use File | Settings | File Templates.
-*/
 public class SerializableContextualInterceptorReference implements InterceptorReference<SerializableContextual<Interceptor<?>,?>>, Serializable
 {
 
+   private static final long serialVersionUID = 8653531535170327439L;
+   
    private SerializableContextual<Interceptor<?>, ?> interceptor;
    private ClassMetadata<?> classMetadata;
 

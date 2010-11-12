@@ -112,7 +112,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
          {
             if (bean instanceof AbstractProducerBean<?, ?, ?>)
             {
-               ProcessProducerImpl.fire(manager, (AbstractProducerBean<?, ?, Member>) bean);
+               ProcessProducerImpl.fire(manager, Reflections.<AbstractProducerBean<?, ?, Member>>cast(bean));
             }
             else if (bean instanceof AbstractClassBean<?>)
             {
@@ -124,7 +124,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
             }
             else if (bean instanceof SessionBean<?>)
             {
-               ProcessSessionBeanImpl.fire(manager, (SessionBean<Object>) bean);
+               ProcessSessionBeanImpl.fire(manager, Reflections.<SessionBean<Object>>cast(bean));
             }
             else if (bean instanceof ProducerField<?, ?>)
             {

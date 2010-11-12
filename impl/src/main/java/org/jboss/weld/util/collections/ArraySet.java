@@ -43,6 +43,9 @@ import java.util.Set;
  */
 public class ArraySet<E> implements Set<E>, Serializable
 {
+
+   private static final long serialVersionUID = -5296795345424575659L;
+   
    // Underlying array of set elements
    private ArrayList<E> elements;
 

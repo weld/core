@@ -92,9 +92,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
       try
       {
         org.jboss.interceptor.spi.model.InterceptionType interceptionType = org.jboss.interceptor.spi.model.InterceptionType.valueOf(type.name());
-        Set<InterceptorInvocation<Object>> invocationSet = Collections.singleton(new InterceptorInvocation<Object>(instance, interceptorMetadata, interceptionType));
         Collection<InterceptorInvocation<?>> invocations = new ArrayList<InterceptorInvocation<?>>();
-        invocations.add(new InterceptorInvocation(instance, interceptorMetadata, interceptionType));
+        invocations.add(new InterceptorInvocation<T>(instance, interceptorMetadata, interceptionType));
         return new SimpleInterceptionChain( invocations, interceptionType, instance, ctx.getMethod()).invokeNextInterceptor(ctx);
       } catch (Throwable e)
       {

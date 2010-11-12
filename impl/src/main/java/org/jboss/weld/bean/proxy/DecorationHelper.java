@@ -19,19 +19,20 @@ package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
@@ -61,10 +62,9 @@ public class DecorationHelper<T>
 
    List<Decorator<?>> decorators;
 
-   @SuppressWarnings("unchecked")
    public DecorationHelper(TargetBeanInstance originalInstance, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, List<Decorator<?>> decorators)
    {
-      this.originalInstance = (T) originalInstance.getInstance();
+      this.originalInstance = Reflections.<T>cast(originalInstance.getInstance());
       this.targetBeanInstance = originalInstance;
       this.beanManager = beanManager;
       this.decorators = new LinkedList<Decorator<?>>(decorators);
@@ -97,7 +97,7 @@ public class DecorationHelper<T>
          {
             T proxy = SecureReflections.newInstance(proxyClassForDecorator);
             TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
-            newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, (Decorator<Object>) decorators.get(counter++)));
+            newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, Reflections.<Decorator<Object>>cast(decorators.get(counter++))));
             ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance);
             previousDelegate = proxy;
             return proxy;

@@ -36,7 +36,6 @@ public class ApiAbstraction
    private static final Class<DummyAnnotation> DUMMY_ANNOTATION = DummyAnnotation.class;
    
    private static final Class<Dummy> DUMMY_CLASS = Dummy.class;
-   private static final Class<Object> OBJECT_CLASS = Object.class;
    
    private ResourceLoader resourceLoader;
 
@@ -99,7 +98,6 @@ public class ApiAbstraction
     * @return The instance of the class. Returns a dummy if the class was not
     *         found.
     */
-   @SuppressWarnings("unchecked")
    protected Class<?> classForName(String name)
    {
       try

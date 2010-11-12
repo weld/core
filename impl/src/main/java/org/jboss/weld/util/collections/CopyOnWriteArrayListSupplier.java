@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.util.collections;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

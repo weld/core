@@ -17,6 +17,7 @@
 package org.jboss.weld.ejb;
 
 import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_EJBS_FOR_CLASS;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import java.util.Set;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -71,10 +73,9 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
     * @param beanClass The EJB class
     * @return An iterator
     */
-   @SuppressWarnings("unchecked")
    public <T> InternalEjbDescriptor<T> get(String beanName)
    {
-      return (InternalEjbDescriptor<T>) ejbByName.get(beanName);
+      return cast(ejbByName.get(beanName));
    }
 
    /**

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.resources;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentMap;
@@ -174,12 +176,11 @@ public class ClassTransformer implements Service
       }
    }
    
-   @SuppressWarnings("unchecked")
    public <T> WeldClass<T> loadClass(final Class<T> clazz)
    {
       try
       {
-         return (WeldClass<T>) classes.get(new TypeHolder<T>(clazz, clazz));
+         return cast(classes.get(new TypeHolder<T>(clazz, clazz)));
       }
       catch (ComputationException e)
       {

@@ -17,6 +17,7 @@
 package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_TYPE_NOT_EJB;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Type;
 
@@ -46,7 +47,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
 
    public AnnotatedType<X> getAnnotatedSessionBeanClass()
    {
-      return (AnnotatedType<X>) getBean().getWeldAnnotated();
+      return cast(getBean().getWeldAnnotated());
    }
 
    public String getEjbName()

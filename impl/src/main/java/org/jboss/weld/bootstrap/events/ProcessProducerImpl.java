@@ -25,17 +25,17 @@ import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 
 public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessProducer<T, X>
 {
-   
-   @SuppressWarnings("unchecked")
+ 
    public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean)
    {
       if (beanManager.isBeanEnabled(bean))
       {
-         new ProcessProducerImpl<T, X>(beanManager, (AnnotatedMember<T>) bean.getWeldAnnotated(), bean) {}.fire();
+         new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>>cast(bean.getWeldAnnotated()), bean) {}.fire();
       }
    }
    

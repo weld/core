@@ -24,8 +24,11 @@ import javax.inject.Qualifier;
  * 
  * @author Pete Muir
  */
+@SuppressWarnings("all")
 public class QualifierLiteral extends AnnotationLiteral<Qualifier> implements Qualifier
 {
+   
+   private static final long serialVersionUID = -1865461877555038671L;
    
    public static final Qualifier INSTANCE = new QualifierLiteral();
    

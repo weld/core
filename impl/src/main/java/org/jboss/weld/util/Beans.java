@@ -37,6 +37,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -87,7 +88,6 @@ import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -245,7 +245,7 @@ public class Beans
       List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
       while (!t.getJavaClass().equals(Object.class))
       {
-         Collection<WeldMethod<?, ? super T>> declaredMethods = (Collection) t.getDeclaredWeldMethods(PostConstruct.class);
+         Collection<WeldMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredWeldMethods(PostConstruct.class));
          log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
          if (declaredMethods.size() > 1)
          {
@@ -297,7 +297,7 @@ public class Beans
       List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
       while (!t.getJavaClass().equals(Object.class))
       {
-         Collection<WeldMethod<?, ? super T>> declaredMethods = (Collection) t.getDeclaredWeldMethods(PreDestroy.class);
+         Collection<WeldMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredWeldMethods(PreDestroy.class));
          log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
          if (declaredMethods.size() > 1)
          {
@@ -319,7 +319,6 @@ public class Beans
       List<WeldMethod<?, ?>> annotatedMethods = new ArrayList<WeldMethod<?, ?>>();
       for (WeldMethod<?, ?> annotatedMethod : type.getWeldMethods())
       {
-         int modifiers = ((WeldMember) annotatedMethod).getJavaMember().getModifiers();
          boolean businessMethod = !annotatedMethod.isStatic() && !annotatedMethod.isAnnotationPresent(Inject.class);
 
          if (businessMethod)
@@ -847,7 +846,7 @@ public class Beans
     * 
     * @return The bean type
     */
-   public static Type getDeclaredBeanType(Class<? extends Bean> clazz)
+   public static Type getDeclaredBeanType(Class<?> clazz)
    {
       Type[] actualTypeArguments = Reflections.getActualTypeArguments(clazz);
       if (actualTypeArguments.length == 1)

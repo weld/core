@@ -28,6 +28,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.util.Nonbinding;
@@ -46,7 +47,7 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class InterceptorBindingModel<T extends Annotation> extends AnnotationModel<T>
 {
-   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(InterceptorBinding.class);
+   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(InterceptorBinding.class);
    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    private Set<WeldMethod<?,?>> nonBindingTypes;
    private Set<Annotation> inheritedInterceptionBindingTypes;

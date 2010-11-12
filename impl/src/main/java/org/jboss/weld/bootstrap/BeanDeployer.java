@@ -41,6 +41,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 
@@ -186,7 +187,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
             {
                for (WeldClass<?> c : otherWeldClasses.get(ejbDescriptor.getBeanClass()))
                {
-                  createSessionBean(ejbDescriptor, (WeldClass) c);
+                  createSessionBean(ejbDescriptor, Reflections.<WeldClass>cast(c));
                }
             }
             else

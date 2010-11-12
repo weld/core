@@ -43,11 +43,11 @@ public class ClassFileUtils
    {
       try
       {
-         AccessController.doPrivileged(new PrivilegedExceptionAction()
+         AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
          {
             public Object run() throws Exception
             {
-               Class cl = Class.forName("java.lang.ClassLoader");
+               Class<?> cl = Class.forName("java.lang.ClassLoader");
                defineClass1 = cl.getDeclaredMethod("defineClass", new Class[] { String.class, byte[].class, int.class, int.class });
 
                defineClass2 = cl.getDeclaredMethod("defineClass", new Class[] { String.class, byte[].class, int.class, int.class, ProtectionDomain.class });
@@ -88,7 +88,7 @@ public class ClassFileUtils
     *           used.
     * 
     */
-   public static Class toClass(ClassFile ct, ClassLoader loader, ProtectionDomain domain) throws CannotCompileException
+   public static Class<?> toClass(ClassFile ct, ClassLoader loader, ProtectionDomain domain) throws CannotCompileException
    {
       try
       {
@@ -137,10 +137,10 @@ public class ClassFileUtils
       }
    }
 
-   private static synchronized Class toClass2(Method method, ClassLoader loader, Object[] args) throws Exception
+   private static synchronized Class<?> toClass2(Method method, ClassLoader loader, Object[] args) throws Exception
    {
       method.setAccessible(true);
-      Class clazz = (Class) method.invoke(loader, args);
+      Class<?> clazz = Class.class.cast(method.invoke(loader, args));
       method.setAccessible(false);
       return clazz;
    }

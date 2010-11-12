@@ -20,13 +20,16 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
- * Annotation literal for {@link Default}?
+ * Annotation literal for {@link Default}
  * 
  * @author Pete Muir
  */
+@SuppressWarnings("all")
 public class DefaultLiteral extends AnnotationLiteral<Default> implements Default 
 {
 
+   private static final long serialVersionUID = 5464062523108931731L;
+   
    public static final Default INSTANCE = new DefaultLiteral();
    
    private DefaultLiteral() {}

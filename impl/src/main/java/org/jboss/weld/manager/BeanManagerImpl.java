@@ -32,6 +32,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RES
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -65,7 +66,6 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.interceptor.reader.cache.MetadataCachingReader;
@@ -123,7 +123,6 @@ import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
@@ -141,8 +140,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
 {
 
    private static final long serialVersionUID = 3021562879133838561L;
-   
-   private static final Class<Instance<Object>> INSTANCE_TYPE = new TypeLiteral<Instance<Object>>() {}.getRawType();
    
    /*
     * Application scoped services 
@@ -395,12 +392,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
       };
    }
    
-   private <T> Iterable<T> createStaticAccessibleIterable(final Transform<T> transform)
-   {
-      Set<Iterable<T>> iterable = buildAccessibleClosure(this, new ArrayList<BeanManagerImpl>(), transform);
-      return Iterables.concat(iterable); 
-   }
-   
    public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager)
    {
       accessibleManagers.add(accessibleBeanManager);
@@ -461,11 +452,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
       interceptorResolver.clear();
    }
 
-
-   @SuppressWarnings("unchecked")
    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers)
    {
-      return (Set) observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create());
+      return cast(observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create()));
    }
    
    /**
@@ -666,7 +655,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       else
       {
-         return getContext(bean.getScope()).get((Contextual) bean, creationalContext);
+         return getContext(bean.getScope()).get(Reflections.<Contextual>cast(bean), creationalContext);
       }
    }
    
@@ -773,7 +762,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public <T> Bean<T> getBean(Resolvable resolvable)
    {
-      Bean<T> bean = (Bean<T>) resolve(beanResolver.resolve(resolvable));
+      Bean<T> bean = cast(resolve(beanResolver.resolve(resolvable)));
       if (bean == null)
       {
          throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, resolvable);
@@ -1045,7 +1034,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          }
          key = specializedBeans.get(key);
       }
-      return (Bean<X>) key;
+      return cast(key);
    }
 
    public void validate(InjectionPoint ij)
@@ -1165,7 +1154,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public <T> SessionBean<T> getBean(EjbDescriptor<T> descriptor)
    {
-      return (SessionBean<T>) getEnterpriseBeans().get(descriptor);
+      return cast(getEnterpriseBeans().get(descriptor));
    }
    
    public void cleanup()

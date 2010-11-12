@@ -19,6 +19,7 @@ package org.jboss.weld.bean.builtin;
 import static org.jboss.weld.injection.SimpleInjectionPoint.EMPTY_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
@@ -44,6 +45,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -81,9 +83,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       try
       {   
          Container.instance().services().get(CurrentInjectionPoint.class).push(ip);
-         @SuppressWarnings("unchecked")
-         T instance = (T) getBeanManager().getReference(bean, getType(), getCreationalContext());
-         return instance;
+         return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
       }
       finally
       {
@@ -116,11 +116,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
          if (!InjectionPoint.class.isAssignableFrom(bean.getBeanClass()))
          {
             Object object = getBeanManager().getReference(bean, getType(), getBeanManager().createCreationalContext(bean));
-            
-            @SuppressWarnings("unchecked")
-            T instance = (T) object;
-            
-            instances.add(instance);
+            instances.add(Reflections.<T>cast(object));
          }
       }
       return instances.iterator();

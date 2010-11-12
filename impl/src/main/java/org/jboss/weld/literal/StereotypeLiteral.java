@@ -24,8 +24,11 @@ import javax.enterprise.util.AnnotationLiteral;
  * 
  * @author Pete Muir
  */
+@SuppressWarnings("all")
 public class StereotypeLiteral extends AnnotationLiteral<Stereotype> implements Stereotype
 {
+   
+   private static final long serialVersionUID = -974277187448157814L;
    
    public static final Stereotype INSTANCE = new StereotypeLiteral();
    

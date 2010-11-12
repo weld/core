@@ -34,8 +34,10 @@ import org.jboss.weld.util.collections.Arrays2;
 public class EventBean extends AbstractFacadeBean<Event<?>>
 {
 
-   @SuppressWarnings("serial")
-   private static final Class<Event<?>> TYPE = new TypeLiteral<Event<?>>() {}.getRawType();
+   private static final Class<Event<?>> TYPE = new TypeLiteral<Event<?>>() {
+
+      private static final long serialVersionUID = -5563106290838705515L;
+   }.getRawType();
    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(TYPE, Object.class);
    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
    

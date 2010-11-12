@@ -133,7 +133,6 @@ public class HierarchyDiscovery
       }
    }
 
-   @SuppressWarnings("unchecked")
    private void discoverFromClass(Class<?> clazz)
    {
       try

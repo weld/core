@@ -50,16 +50,14 @@ public class WeldExpressionFactory extends ForwardingExpressionFactory
       return delegate;
    }
    
-   @SuppressWarnings("unchecked")
    @Override
-   public ValueExpression createValueExpression(ELContext context, String expression, Class expectedType)
+   public ValueExpression createValueExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedType)
    {
       return new WeldValueExpression(super.createValueExpression(context, expression, expectedType));
    }
    
-   @SuppressWarnings("unchecked")
    @Override
-   public MethodExpression createMethodExpression(ELContext context, String expression, Class expectedReturnType, Class[] expectedParamTypes)
+   public MethodExpression createMethodExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedReturnType, @SuppressWarnings("rawtypes") Class[] expectedParamTypes)
    {
       return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
    }

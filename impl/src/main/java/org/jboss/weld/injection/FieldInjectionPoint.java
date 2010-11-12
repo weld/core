@@ -46,6 +46,7 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -120,7 +121,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
             // if declaringInstance is a proxy, unwrap it
             if (declaringInstance instanceof TargetInstanceProxy)
             {
-               instanceToInject = ((TargetInstanceProxy)declaringInstance).getTargetInstance();
+               instanceToInject = Reflections.<TargetInstanceProxy<T>>cast(declaringInstance).getTargetInstance();
             }
          }
          Object objectToInject;
@@ -157,7 +158,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
          {
             // if declaringInstance is a proxy, unwrap it
             if (instanceToInject instanceof TargetInstanceProxy)
-            instanceToInject = ((TargetInstanceProxy)declaringInstance).getTargetInstance();
+            instanceToInject = Reflections.<TargetInstanceProxy<T>>cast(declaringInstance).getTargetInstance();
          }
          delegate().set(instanceToInject, value);
       }

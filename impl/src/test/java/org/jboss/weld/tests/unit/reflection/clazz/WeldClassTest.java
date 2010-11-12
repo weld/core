@@ -18,9 +18,7 @@ package org.jboss.weld.tests.unit.reflection.clazz;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
@@ -49,7 +47,7 @@ public class WeldClassTest
    @Ignore // Broken
    public void testMemberClassWithGenericTypes()
    {
-      AnnotatedType at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
+      AnnotatedType<?> at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
       WeldClassImpl.of(at, transformer);
    }
    
@@ -66,7 +64,7 @@ public class WeldClassTest
     */
    public void testLocalClassWithGenericTypes()
    {
-      AnnotatedType at = WeldClassImpl.of(new Koala().procreate().getClass(), transformer);
+      AnnotatedType<?> at = WeldClassImpl.of(new Koala().procreate().getClass(), transformer);
       WeldClassImpl.of(at, transformer);
    }
    
@@ -83,7 +81,7 @@ public class WeldClassTest
     */
    public void testAnonymousClassWithGenericTypes()
    {
-      AnnotatedType at = WeldClassImpl.of(new Possum().procreate().getClass(), transformer);
+      AnnotatedType<?> at = WeldClassImpl.of(new Possum().procreate().getClass(), transformer);
       WeldClassImpl.of(at, transformer);
    }
    

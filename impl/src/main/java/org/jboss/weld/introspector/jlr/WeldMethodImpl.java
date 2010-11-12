@@ -65,16 +65,14 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
    private final MethodSignature signature;
 
-   @SuppressWarnings("unchecked")
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldMethodImpl<T, X>(method, (Class<T>) method.getReturnType(), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method, Reflections.<Class<T>>cast(method.getReturnType()), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
    }
 
-   @SuppressWarnings("unchecked")
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<? super X> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldMethodImpl<T, X>(method.getJavaMember(), (Class<T>) method.getJavaMember().getReturnType(), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method.getJavaMember(), Reflections.<Class<T>>cast(method.getJavaMember().getReturnType()), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
    }
 
    /**
@@ -86,7 +84,6 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
     * @param method The underlying method
     * @param declaringClass The declaring class abstraction
     */
-   @SuppressWarnings("unchecked")
    private WeldMethodImpl(Method method, final Class<T> rawType, final Type type, Set<Type> typeClosure, AnnotatedMethod<? super X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
@@ -108,7 +105,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
             {
                Class<? extends Object> clazz = method.getParameterTypes()[i];
                Type parameterType = method.getGenericParameterTypes()[i];
-               WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], (Class<Object>) clazz, parameterType, this, i, classTransformer);
+               WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], Reflections.<Class<Object>>cast(clazz), parameterType, this, i, classTransformer);
                this.parameters.add(parameter);
             }
          }
@@ -182,16 +179,12 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
       Method method = SecureReflections.lookupMethod(instance.getClass(), getName(), getParameterTypesAsArray());
-      @SuppressWarnings("unchecked")
-      T result = (T) SecureReflections.invoke(instance, method, parameters);
-      return result;
+      return SecureReflections.<T>invoke(instance, method, parameters);
    }
 
    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
    {
-      @SuppressWarnings("unchecked")
-      T result = (T) SecureReflections.invoke(instance, method, parameters);
-      return result;
+      return SecureReflections.<T>invoke(instance, method, parameters);
    }
 
    public String getPropertyName()
@@ -210,10 +203,9 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       return signature;
    }
 
-   @SuppressWarnings("unchecked")
    public List<AnnotatedParameter<X>> getParameters()
    {
-      return Collections.unmodifiableList((List) parameters);
+      return Collections.unmodifiableList(Reflections.<List<AnnotatedParameter<X>>>cast(parameters));
    }
    
    public boolean isGeneric()

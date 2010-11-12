@@ -36,7 +36,6 @@ import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
-import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 

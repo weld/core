@@ -17,6 +17,8 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.io.Serializable;
 
 import javax.enterprise.context.spi.Context;
@@ -28,6 +30,7 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.SimpleInjectionPoint;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * An instance locator that uses a context to lookup the instance if
@@ -102,10 +105,9 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
       }
    }
 
-   @SuppressWarnings("unchecked")
    public Class<T> getInstanceType()
    {
-      return (Class<T>) instanceType;
+      return cast(instanceType);
    }
 
 }

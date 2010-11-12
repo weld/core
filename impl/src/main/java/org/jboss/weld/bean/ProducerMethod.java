@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIO
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -133,7 +134,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
 
             public Set<InjectionPoint> getInjectionPoints()
             {
-               return (Set) getWeldInjectionPoints();
+               return cast(getWeldInjectionPoints());
             }
 
             public T produce(CreationalContext<T> creationalContext)

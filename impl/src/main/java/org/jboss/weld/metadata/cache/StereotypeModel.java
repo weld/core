@@ -29,6 +29,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_M
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,7 +55,7 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
 {
-   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Stereotype.class);
+   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Stereotype.class);
    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
    
    // Is the stereotype an alternative

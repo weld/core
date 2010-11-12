@@ -16,10 +16,9 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Field;
 import java.util.Set;
@@ -29,7 +28,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 
-import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -37,7 +35,7 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
-import org.slf4j.cal10n.LocLogger;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents a producer field
@@ -48,7 +46,6 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 {
-   private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
    // The underlying field
    private WeldField<T, ? super X> field;
@@ -124,7 +121,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
 
             public Set<InjectionPoint> getInjectionPoints()
             {
-               return (Set) getWeldInjectionPoints();
+               return cast(getWeldInjectionPoints());
             }
 
             public T produce(CreationalContext<T> creationalContext)
@@ -133,7 +130,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
                Object receiver = getReceiver(creationalContext);
                if (receiver instanceof TargetInstanceProxy)
                {
-                  receiver = ((TargetInstanceProxy)receiver).getTargetInstance();
+                  receiver = Reflections.<TargetInstanceProxy<T>>cast(receiver).getTargetInstance();
                }
                return field.get(receiver);
             }

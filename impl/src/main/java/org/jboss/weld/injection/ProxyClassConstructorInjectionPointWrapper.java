@@ -24,7 +24,6 @@ import javax.decorator.Decorator;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.bean.proxy.BeanInstance;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.introspector.WeldConstructor;

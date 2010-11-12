@@ -29,7 +29,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -46,7 +49,6 @@ import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -129,7 +131,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
    protected void initDecoratedTypes()
    {
-      this.decoratedTypes = new HashSet(getWeldAnnotated().getInterfaceClosure());
+      this.decoratedTypes = new HashSet<Type>(getWeldAnnotated().getInterfaceClosure());
       decoratedTypes.retainAll(getTypes());
       this.decoratedTypes.remove(Serializable.class);
       this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, decoratedTypes, getWeldAnnotated());

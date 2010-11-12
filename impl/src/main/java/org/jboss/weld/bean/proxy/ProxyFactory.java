@@ -22,6 +22,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.FAILED_TO_SET_THREAD_LOCAL_ON_PROXY;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -192,6 +193,7 @@ public class ProxyFactory<T>
     * 
     * @return a new proxy object
     */
+   
    public T create(BeanInstance beanInstance)
    {
       T proxy = null;
@@ -207,7 +209,11 @@ public class ProxyFactory<T>
             {
                Field sfield = proxyClass.getDeclaredField(FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME);
                sfield.setAccessible(true);
-               sfield.set(proxy, new ThreadLocal());
+               
+               @SuppressWarnings("rawtypes")
+               ThreadLocal threadLocal = new ThreadLocal();
+               
+               sfield.set(proxy, threadLocal);
             }
             catch(Exception e)
             {
@@ -236,7 +242,6 @@ public class ProxyFactory<T>
     * 
     * @return always the class of the proxy
     */
-   @SuppressWarnings("unchecked")
    public Class<T> getProxyClass()
    {
       String suffix = "_$$_Weld" + getProxyNameSuffix();
@@ -254,7 +259,7 @@ public class ProxyFactory<T>
       try
       {
          // First check to see if we already have this proxy class
-         proxyClass = (Class<T>) classLoader.loadClass(proxyClassName);
+         proxyClass = cast(classLoader.loadClass(proxyClassName));
       }
       catch (ClassNotFoundException e)
       {
@@ -334,7 +339,6 @@ public class ProxyFactory<T>
 
    }
 
-   @SuppressWarnings("unchecked")
    private Class<T> createProxyClass(String proxyClassName) throws Exception
    {
       ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(3);
@@ -373,7 +377,7 @@ public class ProxyFactory<T>
       {
          proxyClassType.addInterface(specialInterface.getName());
       }
-      Class proxyClass = ClassFileUtils.toClass(proxyClassType, classLoader, null);
+      Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, null));
       log.trace("Created Proxy class of type " + proxyClass + " supporting interfaces " + Arrays.toString(proxyClass.getInterfaces()));
       return proxyClass;
    }

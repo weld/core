@@ -29,6 +29,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FA
 import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -74,7 +75,6 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Formats;
@@ -208,7 +208,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
 
             public Set<InjectionPoint> getInjectionPoints()
             {
-               return (Set) getWeldInjectionPoints();
+               return cast(getWeldInjectionPoints());
             }
 
             public T produce(CreationalContext<T> ctx)

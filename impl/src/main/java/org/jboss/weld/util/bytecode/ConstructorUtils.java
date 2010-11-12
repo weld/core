@@ -70,6 +70,7 @@ public class ConstructorUtils
          exAt.setExceptions(exceptions);
          ctor.setExceptionsAttribute(exAt);
          Bytecode b = new Bytecode(file.getConstPool());
+         @SuppressWarnings("unused")
          String[] params = DescriptorUtils.descriptorStringToParameterArray(descriptor);
          // we need to generate a constructor with a single invokespecial call
          // to the super constructor

@@ -1,12 +1,14 @@
 package org.jboss.weld.context.beanstore.http;
 
 import java.util.Collection;
+import java.util.Enumeration;
 
 import javax.servlet.ServletRequest;
 
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.util.collections.EnumerationList;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * <p>
@@ -44,11 +46,10 @@ public class RequestBeanStore extends AttributeBeanStore
       request.removeAttribute(key);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    protected Collection<String> getAttributeNames()
    {
-      return new EnumerationList<String>(request.getAttributeNames());
+      return new EnumerationList<String>(Reflections.<Enumeration<String>>cast(request.getAttributeNames()));
    }
 
    @Override

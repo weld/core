@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.ProcessObserverMethod;
 
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Implementation of the event used to notify observers for each observer
@@ -42,7 +43,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
    {
       if (beanManager.isBeanEnabled(observer.getDeclaringBean()))
       {
-         new ProcessObserverMethodImpl<T, X>(beanManager, (AnnotatedMethod<X>) observer.getMethod(), observer) {}.fire();
+         new ProcessObserverMethodImpl<T, X>(beanManager, Reflections.<AnnotatedMethod<X>>cast(observer.getMethod()), observer) {}.fire();
       }
    }
    

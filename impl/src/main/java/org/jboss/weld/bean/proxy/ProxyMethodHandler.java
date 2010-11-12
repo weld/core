@@ -39,6 +39,9 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class ProxyMethodHandler implements MethodHandler, Serializable
 {
+
+   private static final long serialVersionUID = 5293834510764991583L;
+
    // The log provider
    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
 

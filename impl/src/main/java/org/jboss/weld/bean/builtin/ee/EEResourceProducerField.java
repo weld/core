@@ -19,6 +19,7 @@ package org.jboss.weld.bean.builtin.ee;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.Serializable;
 
@@ -76,10 +77,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
             Contextual<T> contextual = Container.instance().services().get(ContextualStore.class).<Contextual<T>, T> getContextual(beanId);
             if (contextual instanceof EEResourceProducerField<?, ?>)
             {
-               @SuppressWarnings("unchecked")
-               EEResourceProducerField<?, T> bean = (EEResourceProducerField<?, T>) contextual;
-
-               this.instance = bean.createUnderlying(creationalContext);
+               this.instance = Reflections.<EEResourceProducerField<?, T>>cast(contextual).createUnderlying(creationalContext);
             }
             else
             {
@@ -165,7 +163,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
       // Treat static fields as a special case, as they won't be injected, as the no bean is resolved, and normally there is no injection on static fields
       if (getWeldAnnotated().isStatic())
       {
-         return (T) Beans.resolveEEResource(getBeanManager(), injectionPoint);
+         return Reflections.<T>cast(Beans.resolveEEResource(getBeanManager(), injectionPoint));
       }
       else
       {

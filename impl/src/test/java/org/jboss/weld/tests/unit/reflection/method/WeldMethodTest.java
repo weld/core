@@ -31,7 +31,10 @@ public class WeldMethodTest
 {
 	
    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
-   private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() {}.getRawType();
+   private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() 
+   {
+      private static final long serialVersionUID = 1672009803068800735L;
+   }.getRawType();
    
    /*
     * description = "WELD-221"

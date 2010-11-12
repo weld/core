@@ -18,17 +18,15 @@ package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
 
+import java.lang.reflect.Method;
+
 import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
-
-import java.lang.reflect.Method;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -39,7 +37,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
  * @author Marius Bogoevici
  *
  */
-public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandler
+public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandler<Object>
 {
    private static final long serialVersionUID = 4577632640130385060L;
 
@@ -78,9 +76,6 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
    @Override
    protected Object doInvoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
    {
-
-      MethodSignature methodSignature = new MethodSignatureImpl(method);
-
       SerializableContextualInstance<Decorator<Object>, Object> beanInstance = decoratorInstance;
       if (beanInstance.getContextual().get() instanceof WeldDecorator<?>)
       {

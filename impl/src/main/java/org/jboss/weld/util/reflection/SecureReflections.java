@@ -230,12 +230,12 @@ public class SecureReflections
     * @throws NoSuchMethodException If the constructor cannot be found
     * @see java.lang.Class#getDeclaredConstructor(Class...)
     */
-   public static Constructor<?> getDeclaredConstructor(final Class<?> clazz, final Class<?>... parameterTypes) throws NoSuchMethodException
+   public static <T> Constructor<T> getDeclaredConstructor(final Class<T> clazz, final Class<?>... parameterTypes) throws NoSuchMethodException
    {
-      return new SecureReflectionAccess<Constructor<?>>()
+      return new SecureReflectionAccess<Constructor<T>>()
       {
          @Override
-         protected Constructor<?> work() throws Exception
+         protected Constructor<T> work() throws Exception
          {
             return clazz.getDeclaredConstructor(parameterTypes);
          }
@@ -385,13 +385,12 @@ public class SecureReflections
     * @throws IllegalAccessException If there was an illegal access attempt
     * @see java.lang.Class#newInstance()
     */
-   @SuppressWarnings("unchecked")
    public static <T> T newInstance(final Class<T> clazz) throws InstantiationException, IllegalAccessException
    {
-      return (T) new SecureReflectionAccess()
+      return new SecureReflectionAccess<T>()
       {
          @Override
-         protected Object work() throws Exception
+         protected T work() throws Exception
          {
             return clazz.newInstance();
          }
@@ -408,13 +407,12 @@ public class SecureReflections
     * @throws IllegalAccessException If there was an illegal access attempt
     * @see java.lang.Class#newInstance()
     */
-   @SuppressWarnings("unchecked")
    public static <T> T newUnsafeInstance(final Class<T> clazz) throws InstantiationException, IllegalAccessException
    {
-      return (T) new SecureReflectionAccess()
+      return new SecureReflectionAccess<T>()
       {
          @Override
-         protected Object work() throws Exception
+         protected T work() throws Exception
          {
             return InstantiatorFactory.getInstantiator().instantiate(clazz);
          }

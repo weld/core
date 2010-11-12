@@ -94,7 +94,7 @@ public class WeldValueExpression extends ForwardingValueExpression
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Class getType(ELContext context)
    {

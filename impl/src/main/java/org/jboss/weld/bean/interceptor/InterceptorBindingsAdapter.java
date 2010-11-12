@@ -38,6 +38,7 @@ import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Marius Bogoevici
@@ -111,7 +112,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings
          Object interceptor = interceptorMetadata.getInterceptorReference().getInterceptor();
          if (interceptor instanceof SerializableContextual)
          {
-            interceptors.add(((SerializableContextual<Interceptor<?>, ?>)interceptor).get());
+            interceptors.add(Reflections.<SerializableContextual<Interceptor<?>, ?>>cast(interceptor).get());
          }
       }
       return interceptors;

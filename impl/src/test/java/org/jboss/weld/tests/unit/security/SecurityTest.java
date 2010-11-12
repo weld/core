@@ -28,6 +28,7 @@ import org.junit.Test;
 public class SecurityTest
 {
    
+   @SuppressWarnings("unused")
    private String foo;
    
    @Test

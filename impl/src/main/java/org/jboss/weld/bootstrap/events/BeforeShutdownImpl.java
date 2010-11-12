@@ -28,7 +28,6 @@ import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.Logger;
-import org.slf4j.ext.XLogger;
 
 /**
  * @author pmuir
@@ -37,7 +36,6 @@ import org.slf4j.ext.XLogger;
 public class BeforeShutdownImpl extends AbstractContainerEvent implements BeforeShutdown
 {
    
-   private static final XLogger xLog = loggerFactory().getXLogger(BOOTSTRAP);
    private static final Logger log = loggerFactory().getLogger(BOOTSTRAP);
    
    public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)

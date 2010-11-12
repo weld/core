@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 
+import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -56,7 +57,7 @@ public class AnnotationTest
    protected <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException
    {
       ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-      return (T) in.readObject();
+      return Reflections.<T>cast(in.readObject());
    }
    
 }

@@ -377,6 +377,7 @@ public class Selectors
     * @param str
     * @return
     */
+   @SuppressWarnings("unused")
    static String[] tokenize(String str)
    {
       String root = null;

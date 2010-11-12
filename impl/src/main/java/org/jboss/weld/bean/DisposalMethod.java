@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.DISPOSE_NOT_FIRST_PARA
 import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSE_PARAMS;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -41,6 +42,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
@@ -83,10 +85,9 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
       initDisposesParameter();
    }
 
-   @SuppressWarnings("unchecked")
    protected void initType()
    {
-      this.type = (Class<T>) disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getJavaClass();
+      this.type = cast(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getJavaClass());
    }
 
    @Override

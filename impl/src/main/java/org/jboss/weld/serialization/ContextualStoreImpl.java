@@ -29,6 +29,7 @@ import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -121,12 +122,12 @@ public class ContextualStoreImpl implements ContextualStore
 
    public <C extends Contextual<I>, I> SerializableContextual<C, I> getSerializableContextual(Contextual<I> contextual)
    {
-      return new SerializableContextualImpl(contextual);
+      return new SerializableContextualImpl<C, I>(Reflections.<C>cast(contextual));
    }
 
    public <C extends Contextual<I>, I> SerializableContextualInstance<C, I> getSerializableContextualInstance(Contextual<I> contextual, I instance, CreationalContext<I> creationalContext)
    {
-      return new SerializableContextualInstanceImpl(contextual, instance, creationalContext);
+      return new SerializableContextualInstanceImpl<C, I>(Reflections.<C>cast(contextual), instance, creationalContext);
    }
 
    public void cleanup()

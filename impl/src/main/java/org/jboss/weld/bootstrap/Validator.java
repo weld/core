@@ -50,6 +50,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -190,7 +191,7 @@ public class Validator implements Service
             {
                if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof SerializableContextual)
                {
-                  SerializableContextual<Interceptor<?>, ?> serializableContextual = (SerializableContextual<Interceptor<?>, ?>) interceptorMetadata.getInterceptorReference().getInterceptor();
+                  SerializableContextual<Interceptor<?>, ?> serializableContextual = cast(interceptorMetadata.getInterceptorReference().getInterceptor());
 
                   if (!((InterceptorImpl<?>) serializableContextual.get()).isSerializable())
                   {
@@ -209,7 +210,7 @@ public class Validator implements Service
                   {
                      throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
                   }
-                  InjectionTarget<Object> injectionTarget = (InjectionTarget<Object>) beanManager.createInjectionTarget(beanManager.createAnnotatedType(classMetadata.getJavaClass()));
+                  InjectionTarget<Object> injectionTarget = cast(beanManager.createInjectionTarget(beanManager.createAnnotatedType(classMetadata.getJavaClass())));
                   for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
                   {
                      Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));

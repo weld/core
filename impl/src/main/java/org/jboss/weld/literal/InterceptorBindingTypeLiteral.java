@@ -20,12 +20,15 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.interceptor.InterceptorBinding;
 
 /**
- * Annotation literal for {@link InterceptorBinding}?
+ * Annotation literal for {@link InterceptorBinding}
  * 
  * @author Pete Muir
  */
+@SuppressWarnings("all")
 public class InterceptorBindingTypeLiteral extends AnnotationLiteral<InterceptorBinding> implements InterceptorBinding
 {
+   
+   private static final long serialVersionUID = 978485112467708038L;
    
    public static final InterceptorBinding INSTANCE = new InterceptorBindingTypeLiteral();
    

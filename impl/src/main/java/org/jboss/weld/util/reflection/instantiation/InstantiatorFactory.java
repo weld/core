@@ -19,10 +19,8 @@ package org.jboss.weld.util.reflection.instantiation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.DefaultResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * A factory class for obtaining the first available instantiator

@@ -20,12 +20,15 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
- * Annotation literal for {@link Any}?
+ * Annotation literal for {@link Any}
  * 
  * @author Pete Muir
  */
+@SuppressWarnings("all")
 public class AnyLiteral extends AnnotationLiteral<Any> implements Any
 {
+   
+   private static final long serialVersionUID = 1L;
    
    public static final Any INSTANCE = new AnyLiteral();
    

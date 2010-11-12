@@ -59,7 +59,7 @@ public class AbstractDecoratorMethodHandler implements MethodHandler
       {
          if (injectionPoint instanceof FieldInjectionPoint)
          {
-            this.delegate = ((FieldInjectionPoint) injectionPoint).get(self);
+            this.delegate = Reflections.<FieldInjectionPoint<?, ?>>cast(injectionPoint).get(self);
          }
          else
          if (injectionPoint.getMember() instanceof Method && injectionPoint instanceof ParameterInjectionPoint<?, ?>)

@@ -28,6 +28,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * A wrapper for a decorated instance. Allows to enhance custom decorators with metadata
@@ -50,7 +51,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
    private CustomDecoratorWrapper(Decorator<T> delegate, BeanManagerImpl beanManager)
    {
       this.delegate = delegate;
-      this.weldClass =  beanManager.getServices().get(ClassTransformer.class).loadClass((Class<T>) delegate.getBeanClass());
+      this.weldClass =  beanManager.getServices().get(ClassTransformer.class).loadClass(Reflections.<Class<T>>cast(delegate.getBeanClass()));
       this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, delegate.getDecoratedTypes(), this.weldClass);
    }
 

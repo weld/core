@@ -28,6 +28,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FA
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
@@ -70,6 +71,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -84,6 +86,13 @@ import org.slf4j.cal10n.LocLogger;
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 {
 
+   private static final InterceptorMetadata<?>[] EMPTY_INTERCEPTOR_METADATA_ARRAY = new InterceptorMetadata[0];
+   
+   private static <T> InterceptorMetadata<T>[] emptyInterceptorMetadataArray()
+   {
+      return cast(EMPTY_INTERCEPTOR_METADATA_ARRAY);
+   }
+   
    /**
     * Extracts the complete set of interception bindings from a given set of
     * annotations.
@@ -115,7 +124,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor);
          serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
       }
-      return serializableContextuals.toArray(new InterceptorMetadata[] {});
+      return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
    }
 
    // Logger
@@ -233,7 +242,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                   {
                      throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
                   }
-                  builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  builder.interceptAroundTimeout(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                }
             }
             else
@@ -245,7 +254,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                   {
                      throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
                   }
-                  builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                }
             }
          }
@@ -277,7 +286,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
          }
          if (excludeClassInterceptors)
          {
-            builder.ignoreGlobalInterceptors(((AnnotatedMethod) method).getJavaMember());
+            builder.ignoreGlobalInterceptors(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember());
          }
          if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0)
          {
@@ -292,11 +301,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
             }
             if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
             {
-               builder.interceptAroundTimeout(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
+               builder.interceptAroundTimeout(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
             }
             else
             {
-               builder.interceptAroundInvoke(((AnnotatedMethod) method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
+               builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
             }
          }
       }
@@ -572,7 +581,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
 
    private void initTargetClassInterceptors()
    {
-      InterceptorMetadata interceptorClassMetadata = beanManager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(getWeldAnnotated()));
+      InterceptorMetadata<T> interceptorClassMetadata = beanManager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(getWeldAnnotated()));
       hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.interceptor.spi.model.InterceptionType.POST_ACTIVATE).isEmpty();
    }
 
