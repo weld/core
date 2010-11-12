@@ -84,6 +84,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    private ArraySet<WeldInjectionPoint<?, ?>> newInjectionPoints;
    protected BeanManagerImpl beanManager;
    private boolean initialized;
+   private boolean proxyRequired;
 
    /**
     * Constructor
@@ -125,6 +126,14 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       initName();
       initScope();
       checkDelegateInjectionPoints();
+      if (getScope() != null)
+      {
+         proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+      }
+      else
+      {
+         proxyRequired = false;
+      }
       this.qualifiers = Collections.unmodifiableSet(new ArraySet<Annotation>(qualifiers));
    }
    
@@ -477,4 +486,10 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
       return initialized;
    }
    
+   @Override
+   public boolean isProxyRequired()
+   {
+      return proxyRequired;
+   }
+
 }

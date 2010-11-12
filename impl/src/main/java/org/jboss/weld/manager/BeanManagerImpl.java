@@ -661,13 +661,13 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    private boolean isProxyRequired(Bean<?> bean)
    {
-      if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
-      {
-         return true;
-      }
-      else if (bean instanceof RIBean<?>)
+      if (bean instanceof RIBean<?>)
       {
          return ((RIBean<?>) bean).isProxyRequired();
+      }
+      else if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal())
+      {
+         return true;
       }
       else
       {
