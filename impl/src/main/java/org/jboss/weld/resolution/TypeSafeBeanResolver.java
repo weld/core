@@ -108,6 +108,10 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
 
    public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans)
    {
+      if (beans.size() <= 1)
+      {
+         return beans;
+      }
       /*
        * We need to defensively copy the beans set as it can be provided by
        * the user in which case this algorithm will have thread safety issues
