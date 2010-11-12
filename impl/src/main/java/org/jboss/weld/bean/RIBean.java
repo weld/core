@@ -94,10 +94,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    
    public abstract boolean isPassivationCapableDependency();
 
-   public boolean isProxyRequired()
-   {
-      return false;
-   }
+   public abstract boolean isProxyRequired();
    
    public abstract boolean isPrimitive();
 
