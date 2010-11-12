@@ -42,11 +42,14 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    private final BeanManagerImpl beanManager;
    
    private final String id;
+   
+   private final int hashCode;
 
    protected RIBean(String idSuffix, BeanManagerImpl beanManager)
    {
       this.beanManager = beanManager;
       this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(BEAN_ID_SEPARATOR).append(beanManager.getId()).append(BEAN_ID_SEPARATOR).append(idSuffix).toString();
+      this.hashCode = this.id.hashCode();
    }
 
    protected BeanManagerImpl getBeanManager()
@@ -125,7 +128,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable
    @Override
    public int hashCode()
    {
-      return getId().hashCode();
+      return hashCode;
    }
    
    public String getId()
