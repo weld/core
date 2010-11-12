@@ -14,7 +14,7 @@
    <name>Weld Build Aggregator</name>
 
    <prerequisites>
-      <maven>2.0.10</maven>
+      <maven>3.0</maven>
    </prerequisites>
 
 
