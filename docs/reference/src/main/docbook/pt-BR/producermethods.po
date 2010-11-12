@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-07-25T03:52:15\n"
-"PO-Revision-Date: 2009-12-19 18:07-0300\n"
-"Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
+"PO-Revision-Date: 2010-11-11 23:43-0300\n"
+"Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +19,17 @@ msgid "Producer methods"
 msgstr "Métodos produtores"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Producer methods let us overcome certain limitations that arise when a "
 "container, instead of the application, is responsible for instantiating "
 "objects. They're also the easiest way to integrate objects which are not "
 "beans into the CDI environment."
 msgstr ""
-"Métodos produtores permitem superarmos certas limitações que surgem quando o "
-"gerenciador do Web Bean, em vez da aplicação, é responsável por instanciar "
-"objetos. Eles são também a forma mais fácil de integrar os objetos que não "
-"são Web Beans ao ambiente Web Beans. (Veremos uma segunda abordagem em <xref "
-"linkend=\"xml\"/>.)"
+"Métodos produtores permitem superarmos certas limitações que surgem quando "
+"um contêiner, em vez da aplicação, é responsável por instanciar objetos. "
+"Eles são também a forma mais fácil de integrar os objetos que não são beans "
+"ao ambiente CDI."
 
 #. Tag: para
 #, no-c-format
@@ -38,18 +37,16 @@ msgid "According to the spec:"
 msgstr "De acordo com a especificação:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A producer method acts as a source of objects to be injected, where:"
 msgstr ""
-"Um método produtor Web Beans funciona como uma fonte de objetos a ser "
-"injetado, quando:"
+"Um método produtor funciona como uma fonte de objetos a serem injetados, "
+"onde:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "the objects to be injected are not required to be instances of beans,"
-msgstr ""
-"os objetos a serem injetados não forem obrigados a ser instâncias de Web "
-"Beans,"
+msgstr "os objetos a serem injetados não necessitam ser instâncias de beans,"
 
 #. Tag: para
 #, no-c-format
@@ -59,13 +56,13 @@ msgstr ""
 "execução ou"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "the objects require some custom initialization that is not performed by the "
 "bean constructor"
 msgstr ""
 "os objetos requerem alguma inicialização personalizada que não é realizada "
-"pelo construtor do Web Bean"
+"pelo construtor do bean"
 
 #. Tag: para
 #, no-c-format
@@ -73,42 +70,42 @@ msgid "For example, producer methods let us:"
 msgstr "Por exemplo, métodos produtores permitem:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "expose a JPA entity as a bean,"
-msgstr "expor uma entidade JPA como um Web Bean,"
+msgstr "expõe uma entidade JPA como um bean,"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "expose any JDK class as a bean,"
-msgstr "expor qualquer classe do JDK como um Web Bean,"
+msgstr "expõe qualquer classe do JDK como um bean,"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "define multiple beans, with different scopes or initialization, for the same "
 "implementation class, or"
 msgstr ""
-"definir vários Web Beans, com diferentes escopos ou inicialização, para a "
-"mesma implementação da classe, ou"
+"definir vários beans, com diferentes escopos ou inicialização, para a mesma "
+"classe de implementação, ou"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "vary the implementation of a bean type at runtime."
-msgstr "variar a implementação de um tipo da API em tempo de execução."
+msgstr "varia a implementação de um tipo de bean em tempo de execução."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "In particular, producer methods let us use runtime polymorphism with CDI. As "
 "we've seen, alternative beans are one solution to the problem of deployment-"
 "time polymorphism. But once the system is deployed, the CDI implementation "
 "is fixed. A producer method has no such limitation:"
 msgstr ""
-"Em particular, métodos produtores permite-nos utilizar o polimorfismo em "
-"tempo de execução com Web Beans. Como vimos, os tipo de implantação são uma "
-"poderosa solução para o problema do polimorfismo em tempo de implantação. "
-"Mas, uma vez que o sistema está implantado, a implementação do Web Bean é "
-"fixada. Um método produtor não tem essa limitação:"
+"Em particular, métodos produtores permitem-nos utilizar polimorfismo em "
+"tempo de execução com CDI. Como vimos, os beans alternativos são uma solução "
+"para o problema do polimorfismo em tempo de implantação. Mas, uma vez que o "
+"sistema está implantado, a implementação do CDI é imutável. Um método "
+"produtor não tem essa limitação:"
 
 #. Tag: para
 #, no-c-format
@@ -116,17 +113,17 @@ msgid "Consider an injection point:"
 msgstr "Considere o ponto de injeção:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "This injection point has the same type and qualifier annotations as the "
 "producer method, so it resolves to the producer method using the usual CDI "
 "injection rules. The producer method will be called by the container to "
 "obtain an instance to service this injection point."
 msgstr ""
-"Esse ponto de injeção tem o mesmo tipo e anotações de binding que o método "
-"produtor. Assim, resolve para o método produtor utilizando as regras de "
-"injeção da Web Beans. O método produtor será invocado pelo gerenciador do "
-"Bean Web para obter uma instância para servir esse ponto de injeção."
+"Este ponto de injeção tem o mesmo tipo e anotações de qualificadoras que o "
+"método produtor. Assim, ele resolve para o método produtor utilizando as "
+"regras de injeção do CDI. O método produtor será invocado pelo contêiner "
+"para obter uma instância para servir esse ponto de injeção."
 
 #. Tag: title
 #, no-c-format
@@ -134,7 +131,7 @@ msgid "Scope of a producer method"
 msgstr "Escopo de um método produtor"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "The scope of the producer method defaults to <literal>@Dependent</literal>, "
 "and so it will be called <emphasis>every time</emphasis> the container "
@@ -143,9 +140,9 @@ msgid ""
 "<literal>PaymentStrategy</literal> object for each user session."
 msgstr ""
 "O escopo padrão dos métodos produtores é <literal>@Dependent</literal>, e, "
-"por isso ,serão chamados <emphasis>toda vez</emphasis> que o gerenciador do "
-"Web Bean injetar esse atributo ou qualquer outro atributo que resolve para o "
-"mesmo método produtor. Assim, pode haver várias instâncias do objeto "
+"por isso, serão chamados <emphasis>toda vez</emphasis> que o contêiner "
+"injetar esse atributo ou qualquer outro atributo que resolve para o mesmo "
+"método produtor. Assim, pode haver várias instâncias do objeto "
 "<literal>PaymentStrategy</literal> para cada sessão do usuário."
 
 #. Tag: para
@@ -158,15 +155,15 @@ msgstr ""
 "<literal>@SessionScoped</literal> ao método."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Now, when the producer method is called, the returned "
 "<literal>PaymentStrategy</literal> will be bound to the session context. The "
 "producer method won't be called again in the same session."
 msgstr ""
 "Agora, quando o método produtor é chamado, o <literal>PaymentStrategy</"
-"literal> retornado será associado ao contexto sessão. O método produtor não "
-"será invocado novamente na mesma sessão."
+"literal> retornado será associado ao contexto de sessão. O método produtor "
+"não será invocado novamente na mesma sessão."
 
 #. Tag: para
 #, no-c-format
@@ -179,6 +176,12 @@ msgid ""
 "producer method determines the lifecycle of the object upon which the "
 "producer method is invoked."
 msgstr ""
+"Um método produtor <emphasis>não</emphasis> herda o escopo do bean que "
+"declara o método. Existem dois beans diferentes aqui: o método produtor, e o "
+"bean que o declara. O escopo do método produtor determina como o método será "
+"invocado, e o ciclo de vida dos objetos retornados pelo método. O ecopo do "
+"bean que declara o método produtor determina o ciclo de vida do objeto no "
+"qual o método produtor é invocado."
 
 #. Tag: title
 #, no-c-format
@@ -186,7 +189,7 @@ msgid "Injection into producer methods"
 msgstr "Injeção em métodos produtores"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "There's one potential problem with the code above. The implementations of "
 "<literal>CreditCardPaymentStrategy</literal> are instantiated using the Java "
@@ -196,21 +199,21 @@ msgid ""
 msgstr ""
 "Existe um problema potencial com o código acima. As implementações de "
 "<literal>CreditCardPaymentStrategy</literal> são instanciadas utilizando o "
-"operador de Java <literal>new</literal>. Objetos instanciados diretamente "
+"operador <literal>new</literal> de Java. Objetos instanciados diretamente "
 "pela aplicação não usufruem da injeção de dependência e não possuem "
 "interceptadores."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "If this isn't what we want, we can use dependency injection into the "
 "producer method to obtain bean instances:"
 msgstr ""
-"Se  não é isso  o que queremos, podemos utilizar a injeção de dependência no "
-"método produtor para obter instâncias do Web Bean:"
+"Se não é isso o que queremos, podemos utilizar a injeção de dependência no "
+"método produtor para obter instâncias do bean:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-"
 "scoped bean? Then the producer method has the effect of \"promoting\" the "
@@ -221,17 +224,17 @@ msgid ""
 "by the container, so please take extra care when returning bean instances "
 "from producer methods!"
 msgstr ""
-"Espere, o que se <literal>CreditCardPaymentStrategy</literal> é um Web Bean "
-"de escopo de requisição? Então o método produtor tem o efeito de \"promover"
-"\" a instância atual no escopo de requisição para o escopo de sessão. Isso "
-"certamente é um erro! O objeto no escopo de requisição será destruído pelo "
-"gerenciador do Web Bean antes de terminar a sessão, mas a referência ao "
-"objeto será deixada \"presa\" no escopo sessão. Esse erro <emphasis>não</"
-"emphasis> será detectado pelo gerenciador do Web Bean. Por isso, tome "
-"cuidado quando retornar instâncias de Web Bean em métodos produtores!"
+"Espere, o que ocorre se <literal>CreditCardPaymentStrategy</literal> for um "
+"bean com escopo de requisição? Assim o método produtor tem o efeito de "
+"\"promover\" a instância atual com escopo de requisição para escopo de "
+"sessão. Isso certamente é um erro! O objeto com escopo de requisição será "
+"destruído pelo contêiner antes de terminar a sessão, mas a referência ao "
+"objeto será deixada \"presa\" ao escopo de sessão. Esse erro <emphasis>não</"
+"emphasis> será detectado pelo contêiner. Por isso, tome cuidado adicional ao "
+"retornar instâncias de bean em métodos produtores!"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "There's at least three ways we could go about fixing this bug. We could "
 "change the scope of the <literal>CreditCardPaymentStrategy</literal> "
@@ -239,20 +242,20 @@ msgid ""
 "option would be to change the scope of the producer method to "
 "<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr ""
-"Existem pelo menos três maneiras de corrigirmos esse erro. Podemos alterar o "
-"escopo da implementação do <literal>CreditCardPaymentStrategy</literal>, mas "
-"isso poderia afetar outros clientes desse Web Bean. A mehor opção seria "
-"alterar o escopo do médoto produtor para <literal>@Dependent</literal> ou "
-"<literal>@RequestScoped</literal>."
+"Existem pelo menos três maneiras de corrigirmos esse problema. Podemos "
+"alterar o escopo da implementação de <literal>CreditCardPaymentStrategy</"
+"literal>, mas isso poderia afetar outros clientes desse bean. A mehor opção "
+"seria alterar o escopo do método produtor para <literal>@Dependent</literal> "
+"ou <literal>@RequestScoped</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "But a more common solution is to use the special <literal>@New</literal> "
 "qualifier annotation."
 msgstr ""
-"Mas, uma solução mais comum é utilizar a anotação especial de binding "
-"<literal>@New</literal>"
+"Mas uma solução mais comum é utilizar a anotação qualificadora especial "
+"<literal>@New</literal>."
 
 #. Tag: title
 #, no-c-format
@@ -265,7 +268,7 @@ msgid "Consider the following producer method:"
 msgstr "Considere o seguinte método produtor:"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Then a new <emphasis>dependent</emphasis> instance of "
 "<literal>CreditCardPaymentStrategy</literal> will be created, passed to the "
@@ -278,12 +281,12 @@ msgstr ""
 "<literal>CreditCardPaymentStrategy</literal> será criada, passada para o "
 "método produtor, retornada pelo método produtor e, finalmente, associada ao "
 "contexto de sessão. O objeto dependente não será destruído até que o objeto "
-"<literal>Preferences</literal> seja destruído, no término da sessão."
+"<literal>Preferences</literal> seja destruído, ao término da sessão."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Disposer methods"
-msgstr "Métodos produtores"
+msgstr "Métodos destruidores"
 
 #. Tag: para
 #, no-c-format
@@ -291,6 +294,8 @@ msgid ""
 "Some producer methods return objects that require explicit destruction. For "
 "example, somebody needs to close this JDBC connection:"
 msgstr ""
+"Alguns métodos produtores retornam objetos que requerem destruição "
+"explícita. Por exemplo, alguém precisa fechar esta conexão JDBC:"
 
 #. Tag: para
 #, no-c-format
@@ -298,6 +303,8 @@ msgid ""
 "Destruction can be performed by a matching <emphasis>disposer method</"
 "emphasis>, defined by the same class as the producer method:"
 msgstr ""
+"A destruição pode ser realizada por um <emphasis>método destruidor</"
+"emphasis> apropriado, definido pela mesma classe do método produtor:"
 
 #. Tag: para
 #, no-c-format
@@ -311,6 +318,14 @@ msgid ""
 "satisfies the type and qualifiers of each parameter and pass it to the "
 "method automatically."
 msgstr ""
+"O método destruidor deve ter ao menos um parâmetro, anotado com "
+"<literal>@Disposes</literal>, com o mesmo tipo e qualificadores do método "
+"produtor. O método destruidor é chamado automaticamente quando o contexto "
+"termina (neste caso, ao final da requisição), e este parâmetro recebe o "
+"objeto produzido pelo método produtor. Se o método produtor possui "
+"parâmetros adicionais, o contêiner procurará por um bean que satisfaça o "
+"tipo e qualificadores de cada parâmetro e o passará para o método "
+"automaticamente."
 
 #~ msgid ""
 #~ "<![CDATA[@SessionScoped\n"
