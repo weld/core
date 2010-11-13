@@ -16,20 +16,18 @@
  */
 package org.jboss.weld.tests.serialization.noncontextual;
 
-import static org.junit.Assert.fail;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import java.io.Serializable;
-import java.io.*;
-
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.context.spi.Contextual;
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

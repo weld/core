@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.serialization.noncontextual;
 
 import java.io.Serializable;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
