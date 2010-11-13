@@ -97,4 +97,10 @@ public class Cloud implements Serializable
       return "sessionInvalidated";
    }
    
+   public String sleet()
+   {
+      FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+      return "sleet";
+   }
+   
 }

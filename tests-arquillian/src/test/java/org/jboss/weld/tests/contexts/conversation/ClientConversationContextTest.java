@@ -140,6 +140,23 @@ public class ClientConversationContextTest
    }
    
    @Test
+   public void testInvalidateThenRedirect() throws Exception
+   {
+      WebClient client = new WebClient();
+            
+      // Now start a conversation
+      HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+      cloud = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "hurricane").click();
+      
+      // Now invalidate the session and redirect
+      cloud = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "sleet").click();
+
+      // Check that we are still working by verifying the page rendered
+      String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
+      assertEquals(Cloud.NAME, cloudName);
+   }
+   
+   @Test
    public void testExceptionInPostConstruct() throws Exception
    {
       WebClient client = new WebClient();

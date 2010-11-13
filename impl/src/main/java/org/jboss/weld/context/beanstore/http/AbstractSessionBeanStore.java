@@ -62,7 +62,7 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore
       }
       else
       {
-         log.trace("Unable to remove " + key + " from session " + this.getSession(false).getId() + " as no session could be obtained");
+         log.trace("Unable to remove " + key + " from non-existent session");
       }
    }
 

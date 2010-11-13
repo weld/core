@@ -28,6 +28,9 @@
       <h:form>
          <h:commandButton action="#{cloud.invalidateSession}" value="Invalidate Session" id="invalidateSession" />
       </h:form>
+      <h:form>
+         <h:commandButton action="#{cloud.sleet}" value="Sleet" id="sleet" />
+      </h:form>
    </f:view>
   </body>
   </html>

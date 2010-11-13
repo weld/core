@@ -32,6 +32,24 @@
          <redirect/>
       </navigation-case>
    </navigation-rule>
+   
+   <navigation-rule>
+      <from-view-id>/cloud.jspx</from-view-id>
+      <navigation-case>
+         <from-action>#{cloud.hurricane}</from-action>
+         <to-view-id>/cloud.jspx</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   
+      <navigation-rule>
+      <from-view-id>/cloud.jspx</from-view-id>
+      <navigation-case>
+         <from-action>#{cloud.sleet}</from-action>
+         <to-view-id>/cloud.jspx</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
 
    <navigation-rule>
       <from-view-id>/hailstorm.jspx</from-view-id>
