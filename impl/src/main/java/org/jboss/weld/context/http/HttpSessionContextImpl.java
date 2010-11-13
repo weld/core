@@ -95,7 +95,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
          }
          else
          {
-            // In a request, with no coversations, so destroy now
+            // In a request, with no conversations, so destroy now
             getConversationContext().destroy(session);
          }
          return false;

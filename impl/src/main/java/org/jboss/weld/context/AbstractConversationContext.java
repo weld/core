@@ -164,7 +164,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             {
                /*
                 * If the session is available, store the conversation id generator and
-                * convertsations if necessary.
+                * conversations if necessary.
                 */
                if (getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null)
                {
@@ -304,7 +304,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
       {
          if (isExpired(conversation))
          {
-            if (!conversation.isTransient()) {
+            if (!conversation.isTransient()) 
+            {
                conversation.end();
             }
          }
