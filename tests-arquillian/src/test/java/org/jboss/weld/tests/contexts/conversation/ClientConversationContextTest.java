@@ -78,7 +78,7 @@ public class ClientConversationContextTest
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class)
+               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class)
                .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
@@ -122,6 +122,21 @@ public class ClientConversationContextTest
       // And navigate to another page, checking the conversation exists by verifying that state is maintained
       cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
       assertEquals("bob", cloudName);
+   }
+   
+   @Test
+   public void testInvalidateCallsPreDestroy() throws Exception
+   {
+      WebClient client = new WebClient();
+            
+      // Now start a conversation
+      HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+      cloud = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "hurricane").click();
+      
+      // Invalidate the session
+      cloud = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "invalidateSession").click();
+      String cloudDestroyed = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudDestroyed").getTextContent();
+      assertEquals("true", cloudDestroyed);
    }
    
    @Test

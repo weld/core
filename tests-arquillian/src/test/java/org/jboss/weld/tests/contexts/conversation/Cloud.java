@@ -21,7 +21,7 @@ import java.io.Serializable;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.inject.Default;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -37,8 +37,6 @@ public class Cloud implements Serializable
 	public static final String NAME = Cloud.class.getName() + ".Pete";
    
    public static final String RAINED_HEADER_NAME = Cloud.class.getName() + ".rained";
-   
-   private static boolean destroyed = false;
 
    private boolean rained;
    
@@ -46,20 +44,12 @@ public class Cloud implements Serializable
    
    @Inject Conversation conversation;
    
+   @Inject Hurricane hurricane;
+   
    @PreDestroy
    public void destroy()
    {
-      destroyed = true;
-   }
-   
-   public static boolean isDestroyed()
-   {
-      return destroyed;
-   }
-   
-   public static void setDestroyed(boolean destroyed)
-   {
-      Cloud.destroyed = destroyed;
+      hurricane.setPreDestroyCalledOnCloud(true);
    }
    
    public String getName()
@@ -93,6 +83,18 @@ public class Cloud implements Serializable
    {
       conversation.begin();
       return "hail";
+   }
+   
+   public String hurricane()
+   {
+      conversation.begin();
+      return "wind";
+   }
+   
+   public String invalidateSession()
+   {
+      FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+      return "sessionInvalidated";
    }
    
 }
