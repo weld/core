@@ -45,7 +45,7 @@
                   <configuration>
                      <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                      <arguments>
-                        <argument>${project.name}</argument>
+                        <argument>${name}</argument>
                      </arguments>
                   </configuration>
                </plugin>
