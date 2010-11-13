@@ -158,23 +158,23 @@
    <build>
       <defaultGoal>test</defaultGoal>
       <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>generate-test-report</id>
-                  <phase>test</phase>
-                  <goals>
-                     <goal>report</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
-               <outputName>test-report</outputName>
-            </configuration>
-         </plugin>
+<!--         <plugin>-->
+<!--            <groupId>org.apache.maven.plugins</groupId>-->
+<!--            <artifactId>maven-surefire-report-plugin</artifactId>-->
+<!--            <executions>-->
+<!--               <execution>-->
+<!--                  <id>generate-test-report</id>-->
+<!--                  <phase>test</phase>-->
+<!--                  <goals>-->
+<!--                     <goal>report</goal>-->
+<!--                  </goals>-->
+<!--               </execution>-->
+<!--            </executions>-->
+<!--            <configuration>-->
+<!--               <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>-->
+<!--               <outputName>test-report</outputName>-->
+<!--            </configuration>-->
+<!--         </plugin>-->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
