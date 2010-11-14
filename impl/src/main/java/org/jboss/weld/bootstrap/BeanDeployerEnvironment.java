@@ -164,7 +164,6 @@ public class BeanDeployerEnvironment
 
    public void addManagedBean(ManagedBean<?> bean)
    {
-      newManagedBeanClasses.add(bean.getWeldAnnotated());
       addAbstractClassBean(bean);
    }
 

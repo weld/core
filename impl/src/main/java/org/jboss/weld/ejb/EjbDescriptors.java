@@ -29,7 +29,6 @@ import java.util.Set;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
@@ -117,7 +116,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
    public InternalEjbDescriptor<?> getUnique(Class<?> beanClass)
    {
       Set<String> ejbs = ejbByClass.get(beanClass);
-      if (ejbs.size() > 0)
+      if (ejbs.size() > 1)
       {
          throw new IllegalStateException(TOO_MANY_EJBS_FOR_CLASS, beanClass, ejbs);
       }
