@@ -209,6 +209,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
    private transient final List<Interceptor<?>> interceptors;
    private transient final List<String> namespaces;
    private transient final List<ObserverMethod<?>> observers;
+
+   /*
+    * set that is only used to make sure that no duplicate beans are added
+    */
+   private transient final Set<Bean<?>> beanSet = Collections.synchronizedSet(new HashSet<Bean<?>>());
    
    /*
     * These data structures represent the managers *accessible* from this bean 
@@ -405,7 +410,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public void addBean(Bean<?> bean)
    {
-      if (beans.contains(bean))
+      if (beanSet.contains(bean))
       {
          return;
       }
@@ -429,6 +434,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          this.transitiveBeans.add(bean);
       }
       this.beans.add(bean);
+      this.beanSet.add(bean);
       beanResolver.clear();
    }
    
