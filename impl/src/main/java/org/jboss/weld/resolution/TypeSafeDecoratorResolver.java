@@ -47,6 +47,12 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
    }
    
    @Override
+   protected Iterable<? extends Decorator<?>> getAllBeans(Resolvable resolvable)
+   {
+      return getAllBeans();
+   }
+
+   @Override
    protected Set<Decorator<?>> sortResult(Set<Decorator<?>> matchedDecorators)
    {
       Set<Decorator<?>> sortedBeans = new TreeSet<Decorator<?>>(getBeanManager().getEnabled().getDecoratorComparator());

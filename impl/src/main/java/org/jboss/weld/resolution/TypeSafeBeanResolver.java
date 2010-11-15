@@ -18,19 +18,32 @@ package org.jboss.weld.resolution;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
+import javax.inject.Provider;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
+import com.google.common.primitives.Primitives;
 
 /**
  * @author pmuir
@@ -41,6 +54,8 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
 
    private final BeanManagerImpl beanManager;
    private final ConcurrentMap<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
+
+   private final LazyValueHolder<Map<Type, ArrayList<T>>> beansByType;
 
    public static class BeanDisambiguation implements Function<Set<Bean<?>>, Set<Bean<?>>>
    {
@@ -73,17 +88,112 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
 
    }
 
-   public TypeSafeBeanResolver(BeanManagerImpl beanManager, Iterable<T> beans)
+   public TypeSafeBeanResolver(BeanManagerImpl beanManager, final Iterable<T> beans)
    {
       super(beans);
       this.beanManager = beanManager;
       this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation());
+      // beansByType stores a map of a type to all beans that are assignable to
+      // that type
+      this.beansByType = new LazyValueHolder<Map<Type, ArrayList<T>>>()
+        {
+        
+         @Override
+         protected Map<Type, ArrayList<T>> computeValue()
+         {
+            Map<Type, ArrayList<T>> val = new HashMap<Type, ArrayList<T>>();
+            for (T bean : beans)
+            {
+               for (Type type : bean.getTypes())
+               {
+                  if (!val.containsKey(type))
+                  {
+                     val.put(type, new ArrayList<T>());
+                  }
+                  val.get(type).add(bean);
+                  if (type instanceof ParameterizedType)
+                  {
+                     // add the raw type as well
+                     Type rawType = ((ParameterizedType) type).getRawType();
+                     if (!val.containsKey(rawType))
+                     {
+                        val.put(rawType, new ArrayList<T>());
+                     }
+                     val.get(rawType).add(bean);
+                  }
+                  else if (type instanceof Class<?>)
+                  {
+                     // deal with primitives
+                     Class<?> clazz = (Class<?>) type;
+                     if (clazz.isPrimitive())
+                     {
+                        clazz = Primitives.wrap(clazz);
+                        if (!val.containsKey(clazz))
+                        {
+                           val.put(clazz, new ArrayList<T>());
+                        }
+                        val.get(clazz).add(bean);
+                     }
+                  }
+               }
+            }
+            for (Entry<Type, ArrayList<T>> entry : val.entrySet())
+            {
+               entry.getValue().trimToSize();
+            }
+            return val;
+         }
+      };
+       
    }
 
    @Override
    protected boolean matches(Resolvable resolvable, T bean)
    {
       return Reflections.matches(resolvable.getTypes(), bean.getTypes()) && Beans.containsAllQualifiers(resolvable.getQualifiers(), bean.getQualifiers(), beanManager);
+   }
+
+   @Override
+   protected Iterable<? extends T> getAllBeans(Resolvable resolvable)
+   {
+      if (resolvable.getTypes().contains(Object.class) || Instance.class.equals(resolvable.getJavaClass()) || Event.class.equals(resolvable.getJavaClass()) || Provider.class.equals(resolvable.getJavaClass()) || resolvable.getTypes().contains(Serializable.class))
+      {
+         return super.getAllBeans(resolvable);
+      }
+      Set<T> beans = new HashSet<T>();
+      for (Type type : resolvable.getTypes())
+      {
+         List<T> beansForType = beansByType.get().get(type);
+         if (beansForType != null)
+         {
+            beans.addAll(beansForType);
+         }
+         if (type instanceof ParameterizedType)
+         {
+            // we also need to consider the raw type
+            Type rawType = ((ParameterizedType) type).getRawType();
+            beansForType = beansByType.get().get(rawType);
+            if (beansForType != null)
+            {
+               beans.addAll(beansForType);
+            }
+         }
+         else if (type instanceof Class<?>)
+         {
+            // primitives
+            Class<?> clazz = (Class<?>) type;
+            if (clazz.isPrimitive())
+            {
+               clazz = Primitives.wrap(clazz);
+               beansForType = beansByType.get().get(clazz);
+               if (beansForType != null)
+               {
+                  beans.addAll(beansForType);
+               }
+            }
+         }
+      }
+      return beans;
    }
 
    /**
@@ -125,6 +235,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
    {
       super.clear();
       this.disambiguatedBeans.clear();
+      this.beansByType.clear();
    }
 
 }

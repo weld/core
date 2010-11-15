@@ -97,7 +97,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
    private Set<T> findMatching(R resolvable)
    {
       Set<T> result = new HashSet<T>();
-      for (T bean : allBeans)
+      for (T bean : getAllBeans(resolvable))
       {
          if (matches(resolvable, bean))
          {
@@ -107,6 +107,16 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
       return result;
    }
    
+   protected Iterable<? extends T> getAllBeans(R resolvable)
+   {
+      return allBeans;
+   }
+
+   protected Iterable<? extends T> getAllBeans()
+   {
+      return allBeans;
+   }
+
    protected abstract Set<T> filterResult(Set<T> matched);
 
    protected abstract Set<T> sortResult(Set<T> matched);
