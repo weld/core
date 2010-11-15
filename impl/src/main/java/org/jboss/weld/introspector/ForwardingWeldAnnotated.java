@@ -78,11 +78,6 @@ public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated 
       return delegate().isGeneric();
    }
 
-   public boolean isProxyable()
-   {
-      return delegate().isProxyable();
-   }
-
    public boolean isPublic()
    {
       return delegate().isPublic();

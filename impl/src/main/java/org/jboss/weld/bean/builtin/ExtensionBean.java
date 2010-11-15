@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Proxies;
 
 /**
  * @author pmuir
@@ -40,6 +41,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    private final WeldClass<Extension> clazz;
    private final Metadata<Extension> instance;
    private final boolean passivationCapable;
+   private final boolean proxiable;
    
    public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Metadata<Extension> instance)
    {
@@ -47,6 +49,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
       this.clazz = clazz;
       this.instance = instance;
       this.passivationCapable = clazz.isSerializable();
+      this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType());
    }
 
    @Override
@@ -63,7 +66,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension>
    @Override
    public boolean isProxyable()
    {
-      return clazz.isProxyable();
+      return proxiable;
    }
    
    @Override

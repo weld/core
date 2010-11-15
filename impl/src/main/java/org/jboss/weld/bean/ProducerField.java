@@ -34,6 +34,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -49,6 +50,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
    
    // The underlying field
    private WeldField<T, ? super X> field;
+   private final boolean proxiable;
    
    /**
     * Creates a producer field
@@ -79,6 +81,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
       initTypes();
       initQualifiers();
       initStereotypes();
+      this.proxiable = Proxies.isTypeProxyable(field.getBaseType());
    }
    
    protected static String createId(WeldField<?, ?> field, AbstractClassBean<?> declaringBean)
@@ -207,6 +210,12 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
    public String toString()
    {
       return "Producer Field [" + Formats.formatType(getWeldAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getWeldAnnotated() + "]";
+   }
+
+   @Override
+   public boolean isProxyable()
+   {
+      return proxiable;
    }
 
 }

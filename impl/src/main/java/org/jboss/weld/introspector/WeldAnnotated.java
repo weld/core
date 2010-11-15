@@ -126,13 +126,6 @@ public interface WeldAnnotated<T, S> extends Annotated
    public boolean isFinal();
 
    /**
-    * Indicates if this AnnotatedItem can be proxyed
-    * 
-    * @return True if proxyable, false otherwise
-    */
-   public boolean isProxyable();
-
-   /**
     * Indicates if this annotated item is public
     * 
     * @return if public, returns true

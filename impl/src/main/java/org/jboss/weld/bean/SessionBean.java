@@ -478,5 +478,12 @@ public class SessionBean<T> extends AbstractClassBean<T>
    {
       return "Session bean [" + getBeanClass() + " with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "]; local interfaces are [" + Formats.formatBusinessInterfaceDescriptors(getEjbDescriptor().getLocalBusinessInterfaces()) +"]";
    }
+
+   // ejb's are always proxiable
+   @Override
+   public boolean isProxyable()
+   {
+      return true;
+   }
 }
 
