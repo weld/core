@@ -32,13 +32,14 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.MethodSignature;
+import org.jboss.weld.introspector.TypeClosureLazyValueHolder;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -67,12 +68,12 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldMethodImpl<T, X>(method, Reflections.<Class<T>>cast(method.getReturnType()), method.getGenericReturnType(), new HierarchyDiscovery(method.getGenericReturnType()).getTypeClosure(), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method, Reflections.<Class<T>> cast(method.getReturnType()), method.getGenericReturnType(), new TypeClosureLazyValueHolder(method.getGenericReturnType()), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
    }
 
    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<? super X> method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
-      return new WeldMethodImpl<T, X>(method.getJavaMember(), Reflections.<Class<T>>cast(method.getJavaMember().getReturnType()), method.getBaseType(), method.getTypeClosure(), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
+      return new WeldMethodImpl<T, X>(method.getJavaMember(), Reflections.<Class<T>> cast(method.getJavaMember().getReturnType()), method.getBaseType(), new TypeClosureLazyValueHolder(method.getTypeClosure()), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
    }
 
    /**
@@ -84,7 +85,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
     * @param method The underlying method
     * @param declaringClass The declaring class abstraction
     */
-   private WeldMethodImpl(Method method, final Class<T> rawType, final Type type, Set<Type> typeClosure, AnnotatedMethod<? super X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer)
+   private WeldMethodImpl(Method method, final Class<T> rawType, final Type type, LazyValueHolder<Set<Type>> typeClosure, AnnotatedMethod<? super X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
       this.method = method;

@@ -26,6 +26,7 @@ import java.util.Set;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -50,7 +51,7 @@ public abstract class AbstractWeldMember<T, X, S extends Member> extends Abstrac
     * 
     * @param annotationMap The annotation map
     */
-   protected AbstractWeldMember(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, Set<Type> typeClosure, WeldClass<X> declaringType)
+   protected AbstractWeldMember(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldClass<X> declaringType)
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
       this.declaringType = declaringType;
