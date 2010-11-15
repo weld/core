@@ -25,11 +25,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.weld.introspector.TypeClosureLazyValueHolder;
 import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.HashSetSupplier;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.collect.Multimaps;
@@ -75,7 +75,7 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
     */
    protected WeldAnnotationImpl(Class<T> annotationType, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer)
    {
-      super(annotationType, annotationType, null, new HierarchyDiscovery(annotationType).getTypeClosure(), annotationMap, declaredAnnotationMap, classTransformer);
+      super(annotationType, annotationType, null, new TypeClosureLazyValueHolder(annotationType), annotationMap, declaredAnnotationMap, classTransformer);
       this.clazz = annotationType;
       members = new HashSet<WeldMethod<?, ?>>();
       annotatedMembers = Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<WeldMethod<?, ?>>>(), HashSetSupplier.<WeldMethod<?, ?>>instance());

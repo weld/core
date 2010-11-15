@@ -14,29 +14,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.introspector.jlr;
+package org.jboss.weld.introspector;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.introspector.WeldCallable;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
- * @author pmuir
- *
+ * {@link LazyValueHolder} that calculates a type closue. In many cases this
+ * will not be needed, so computing it on demand saves memory and startup time.
+ * 
+ * @author Stuart Douglas
+ * 
  */
-public abstract class AbstractWeldCallable<T, X, S extends Member> extends AbstractWeldMember<T, X, S> implements WeldCallable<T, X, S>
-{  
-   
-   protected AbstractWeldCallable(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldClass<X> declaringType)
+public class TypeClosureLazyValueHolder extends LazyValueHolder<Set<Type>>
+{
+
+   private final Type type;
+
+   private final Set<Type> types;
+
+   public TypeClosureLazyValueHolder(Type type)
    {
-      super(annotationMap, declaredAnnotationMap, classTransformer, member, rawType, type, typeClosure, declaringType);
+      this.type = type;
+      this.types = null;
+   }
+
+   public TypeClosureLazyValueHolder(Set<Type> types)
+   {
+      this.type = null;
+      this.types = types;
+   }
+
+   @Override
+   protected Set<Type> computeValue()
+   {
+      if (types != null)
+      {
+         return types;
+      }
+      return new HierarchyDiscovery(type).getTypeClosure();
    }
 
 }

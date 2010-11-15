@@ -36,6 +36,7 @@ import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
@@ -128,7 +129,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
    private final Class<T> rawType;
    private final Type[] actualTypeArguments; 
    private final Type type;
-   private final Set<Type> typeClosure;
+   private final LazyValueHolder<Set<Type>> typeClosure;
 
    /**
     * Constructor
@@ -139,7 +140,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
     * @param annotationMap A map of annotation to register
     * 
     */
-   public AbstractWeldAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Class<T> rawType, Type type, Set<Type> typeClosure)
+   public AbstractWeldAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Class<T> rawType, Type type, final LazyValueHolder<Set<Type>> typeClosure)
    {
       if (annotationMap == null)
       {
@@ -168,7 +169,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       {
          this.actualTypeArguments = new Type[0];
       }
-      this.typeClosure = Collections.unmodifiableSet(new ArraySet<Type>(typeClosure));
+      this.typeClosure = typeClosure;
    }
 
    protected AbstractWeldAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, TypeStore typeStore)
@@ -239,7 +240,7 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
 
    public Set<Type> getTypeClosure()
    {
-      return typeClosure;
+      return typeClosure.get();
    }
    
    public Set<Annotation> getAnnotations()
