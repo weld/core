@@ -94,7 +94,8 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
       this.beanManager = beanManager;
       this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation());
       // beansByType stores a map of a type to all beans that are assignable to
-      // that type
+      // that type. This means that it most cases we do not need to loop through
+      // every bean in the system when performing resolution
       this.beansByType = new LazyValueHolder<Map<Type, ArrayList<T>>>()
         {
         
@@ -113,7 +114,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
                   val.get(type).add(bean);
                   if (type instanceof ParameterizedType)
                   {
-                     // add the raw type as well
+                     // we need to add the raw type as well
                      Type rawType = ((ParameterizedType) type).getRawType();
                      if (!val.containsKey(rawType))
                      {
@@ -123,7 +124,8 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
                   }
                   else if (type instanceof Class<?>)
                   {
-                     // deal with primitives
+                     // if the type is a primitive we also need to add the bean
+                     // is also resolvable from the boxed class
                      Class<?> clazz = (Class<?>) type;
                      if (clazz.isPrimitive())
                      {
@@ -141,7 +143,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
             {
                entry.getValue().trimToSize();
             }
-            return val;
+            return Collections.unmodifiableMap(val);
          }
       };
        
