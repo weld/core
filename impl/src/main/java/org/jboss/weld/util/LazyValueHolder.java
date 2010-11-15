@@ -26,8 +26,6 @@ public abstract class LazyValueHolder<T>
 {
    private volatile T value;
 
-   private Object lock = new Object();
-
    public T get()
    {
       T valueCopy = value;
@@ -35,7 +33,7 @@ public abstract class LazyValueHolder<T>
       {
          return valueCopy;
       }
-      synchronized (lock)
+      synchronized (this)
       {
          if (value == null)
          {
@@ -47,7 +45,7 @@ public abstract class LazyValueHolder<T>
 
    public void clear()
    {
-      synchronized (lock)
+      synchronized (this)
       {
          value = null;
       }
