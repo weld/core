@@ -615,24 +615,23 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Context getContext(Class<? extends Annotation> scopeType)
    {
-      List<Context> activeContexts = new ArrayList<Context>();
+      Context activeContexts = null;
       for (Context context : contexts.get(scopeType))
       {
          if (context.isActive())
          {
-            activeContexts.add(context);
+            if(activeContexts == null)
+               activeContexts = context;
+            else
+               throw new IllegalStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
          }
       }
-      if (activeContexts.isEmpty())
+      if (activeContexts == null)
       {
          throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
       }
-      if (activeContexts.size() > 1)
-      {
-         throw new IllegalStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
-      }
-      return activeContexts.iterator().next();
-
+      
+      return activeContexts;
    }
    
    public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy)
@@ -906,23 +905,25 @@ public class BeanManagerImpl implements WeldManager, Serializable
    
    public BeanManagerImpl getCurrent()
    {
-      List<CurrentActivity> activeCurrentActivities = new ArrayList<CurrentActivity>();
+      CurrentActivity activeCurrentActivity = null;
       for (CurrentActivity currentActivity : currentActivities)
       {
          if (currentActivity.getContext().isActive())
          {
-            activeCurrentActivities.add(currentActivity);
+            if(activeCurrentActivity == null)
+               activeCurrentActivity = currentActivity;
+            else
+               throw new IllegalStateException(TOO_MANY_ACTIVITIES, currentActivities);
          }
       }
-      if (activeCurrentActivities.size() == 0)
+      if (activeCurrentActivity == null)
       {
          return this;
       }
-      else if (activeCurrentActivities.size() == 1)
+      else
       {
-         return activeCurrentActivities.get(0).getManager();
+         return activeCurrentActivity.getManager();
       }
-      throw new IllegalStateException(TOO_MANY_ACTIVITIES, currentActivities);
    }
 
    public ServiceRegistry getServices()
