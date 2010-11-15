@@ -22,10 +22,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.security.AccessControlException;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.weld.util.collections.ArraySet;
 import org.slf4j.ext.XLogger.Level;
 
 import com.google.common.collect.BiMap;
@@ -55,7 +55,7 @@ public class HierarchyDiscovery
          init();
       }
       // Return an independent set with no ties to the BiMap used
-      return new HashSet<Type>(types.keySet());
+      return new ArraySet<Type>(types.keySet()).trimToSize();
    }
 
    public Map<Class<?>, Type> getTypeMap()
