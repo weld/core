@@ -42,6 +42,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -59,6 +60,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    private DisposalMethod<X, ?> disposalMethodBean;
    private ProducerMethod<?, ?> specializedBean;
    private final String id;
+   private final boolean proxiable;
 
    /**
     * Creates a producer method Web Bean
@@ -83,6 +85,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
       this.id = createId(method, declaringBean);
       initStereotypes();
       initProducerMethodInjectableParameters();
+      this.proxiable = Proxies.isTypeProxyable(method.getBaseType());
    }
 
    protected String createId(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean)
@@ -306,6 +309,12 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
    public String toString()
    {
       return "Producer Method [" + Formats.formatType(getWeldAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getWeldAnnotated() + "]";
+   }
+
+   @Override
+   public boolean isProxyable()
+   {
+      return proxiable;
    }
 
 }

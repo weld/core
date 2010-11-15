@@ -64,6 +64,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -273,6 +274,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    private boolean passivationCapableBean;
    private boolean passivationCapableDependency;
+   private final boolean proxiable;
 
    /**
     * Creates a simple, annotation defined Web Bean
@@ -321,6 +323,7 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       initTypes();
       initQualifiers();
       initConstructor();
+      this.proxiable = Proxies.isTypeProxyable(type.getBaseType());
    }
 
    /**
@@ -576,6 +579,12 @@ public class ManagedBean<T> extends AbstractClassBean<T>
    public String toString()
    {
       return "Managed Bean [" + getBeanClass().toString() + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "]";
+   }
+
+   @Override
+   public boolean isProxyable()
+   {
+      return proxiable;
    }
 
 }

@@ -449,12 +449,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    }
 
    @Override
-   public boolean isProxyable()
-   {
-      return getWeldAnnotated().isProxyable();
-   }
-
-   @Override
    public boolean isDependent()
    {
       return Dependent.class.equals(getScope());
