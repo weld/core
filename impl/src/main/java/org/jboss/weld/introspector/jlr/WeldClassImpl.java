@@ -48,6 +48,7 @@ import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
@@ -319,14 +320,15 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
       this.declaredAnnotatedMethods.trimToSize();
       this.declaredMethodsByAnnotatedParameters.trimToSize();
 
-      this.declaredMetaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
+      ArraySetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
       for (Annotation declaredAnnotation : declaredAnnotationMap.values())
       {
          addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, declaredAnnotation.annotationType().getAnnotations(), true);
          addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getTypeStore().get(declaredAnnotation.annotationType()), true);
-         this.declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
+         declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
       }
       declaredMetaAnnotationMap.trimToSize();
+      this.declaredMetaAnnotationMap = SharedObjectFacade.wrap(declaredMetaAnnotationMap);
    }
 
    private <X> WeldClass<X> getDeclaringWeldClass(Member member, ClassTransformer transformer)
