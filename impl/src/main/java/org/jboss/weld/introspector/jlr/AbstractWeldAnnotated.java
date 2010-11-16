@@ -36,6 +36,7 @@ import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
@@ -146,14 +147,15 @@ public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
       {
          throw new WeldException(ANNOTATION_MAP_NULL);
       }
-      this.annotationMap = annotationMap;
-      this.metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
+      this.annotationMap = SharedObjectFacade.wrap(annotationMap);
+      ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
       for (Annotation annotation : annotationMap.values())
       {
          addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
          addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
       }
       metaAnnotationMap.trimToSize();
+      this.metaAnnotationMap = SharedObjectFacade.wrap(metaAnnotationMap);
       
       if (declaredAnnotationMap == null)
       {

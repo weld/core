@@ -97,6 +97,7 @@ import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
@@ -297,6 +298,7 @@ public class WeldBootstrap implements Bootstrap
       services.add(Validator.class, new Validator());
       services.add(TypeStore.class, new TypeStore());
       services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
+      services.add(SharedObjectCache.class, new SharedObjectCache());
       services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
       services.add(ContextualStore.class, new ContextualStoreImpl());
       services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
