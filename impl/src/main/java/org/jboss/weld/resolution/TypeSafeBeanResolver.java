@@ -96,6 +96,13 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
       // beansByType stores a map of a type to all beans that are assignable to
       // that type. This means that it most cases we do not need to loop through
       // every bean in the system when performing resolution
+
+      // we build this map lazily, as we do not have access to all beans when
+      // the resolveris created. Calling the resolvers clear method will also
+      // clear this map.This task is not suitable for a computing hashmap, as
+      // the whole map should be calculated in one hit, so only a single
+      // iteration over all beans is required
+
       this.beansByType = new LazyValueHolder<Map<Type, ArrayList<T>>>()
         {
         
