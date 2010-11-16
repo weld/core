@@ -34,6 +34,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.MethodInjectionPoint;
@@ -70,14 +71,14 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method>
     * @param beanManager the current manager
     * @return A producer Web Bean
     */
-   public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      return new ProducerMethod<X, T>(method, declaringBean, beanManager);
+      return new ProducerMethod<X, T>(method, declaringBean, beanManager, services);
    }
 
-   protected ProducerMethod(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   protected ProducerMethod(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager);
+      super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
       this.method = MethodInjectionPoint.of(this, method);
       initType();
       initTypes();

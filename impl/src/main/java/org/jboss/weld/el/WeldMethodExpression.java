@@ -24,8 +24,6 @@ import javax.el.MethodInfo;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.el.ForwardingMethodExpression;
 
 /**
@@ -37,7 +35,7 @@ public class WeldMethodExpression extends ForwardingMethodExpression
    
    private static final long serialVersionUID = 7070020110515571744L;
 
-   private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
+   private static final Contextual<Object> CONTEXTUAL = new Contextual<Object>()
    {
 
       public Object create(CreationalContext<Object> creationalContext)
@@ -62,13 +60,11 @@ public class WeldMethodExpression extends ForwardingMethodExpression
       return delegate;
    }
    
-   private final static BeanManagerImpl CACHED_BEANMANAGER = Container.instance().deploymentManager(); 
-   
    @Override
    public Object invoke(ELContext context, Object[] params)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -85,7 +81,7 @@ public class WeldMethodExpression extends ForwardingMethodExpression
    public MethodInfo getMethodInfo(ELContext context)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
       try
       {
          getCreationalContextStore(context).push(creationalContext);

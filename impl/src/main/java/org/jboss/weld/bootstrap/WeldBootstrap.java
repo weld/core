@@ -277,7 +277,7 @@ public class WeldBootstrap implements Bootstrap
          Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
          Container.instance().setState(ContainerState.STARTING);
 
-         this.contexts = createContexts();
+         this.contexts = createContexts(deploymentServices);
          this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts);
 
          // Read the deployment structure, this will be the physical structure
@@ -419,7 +419,7 @@ public class WeldBootstrap implements Bootstrap
       return this;
    }
 
-   protected Collection<ContextHolder<? extends Context>> createContexts()
+   protected Collection<ContextHolder<? extends Context>> createContexts(ServiceRegistry services)
    {
       List<ContextHolder<? extends Context>> contexts = new ArrayList<ContextHolder<? extends Context>>();
 
@@ -434,7 +434,7 @@ public class WeldBootstrap implements Bootstrap
       contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(), BoundConversationContext.class, BoundLiteral.INSTANCE));
       contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(), BoundRequestContext.class, BoundLiteral.INSTANCE));
       contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(), RequestContext.class, UnboundLiteral.INSTANCE));
-      contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(), DependentContext.class, UnboundLiteral.INSTANCE));
+      contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, UnboundLiteral.INSTANCE));
 
       if (Reflections.isClassLoadable("javax.servlet.ServletContext", deployment.getServices().get(ResourceLoader.class)))
       {

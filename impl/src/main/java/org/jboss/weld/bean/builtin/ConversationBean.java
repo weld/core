@@ -7,7 +7,9 @@ import java.util.Set;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 
+import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -17,10 +19,19 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation>
 {
 
    private static final Set<Type> TYPES = Arrays2.<Type> asSet(Conversation.class, Object.class);
+   
+   private Instance<ConversationContext> conversationContexts;
 
    public ConversationBean(BeanManagerImpl beanManager)
    {
       super(Conversation.class.getName(), beanManager);
+   }
+   
+   @Override
+   public void initialize(BeanDeployerEnvironment environment)
+   {
+      super.initialize(environment);
+      this.conversationContexts = getBeanManager().instance().select(ConversationContext.class);
    }
 
    public Set<Type> getTypes()
@@ -42,7 +53,7 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation>
        * return this dummy Conversation which will simply throw a
        * ContextNotActiveException for every method call as the spec requires.
        */
-      return new ConversationImpl();
+      return new ConversationImpl(conversationContexts);
    }
 
    public void destroy(Conversation instance, CreationalContext<Conversation> creationalContext)

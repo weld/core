@@ -36,6 +36,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
@@ -50,14 +51,14 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method>
    protected MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
    private WeldParameter<?, ? super X> disposesParameter;
    
-   public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean)
+   public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, ServiceRegistry services)
    {
-      return new DisposalMethod<X, T>(manager, method, declaringBean);
+      return new DisposalMethod<X, T>(manager, method, declaringBean, services);
    }
 
-   protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean)
+   protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean, ServiceRegistry services)
    {
-      super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager);
+      super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, services);
       this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
       initQualifiers();
       initType();

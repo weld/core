@@ -41,6 +41,7 @@ import javax.inject.Inject;
 
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ProxyClassConstructorInjectionPointWrapper;
@@ -94,9 +95,9 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     * @param beanManager the current manager
     * @return a Bean
     */
-   public static <T> DecoratorImpl<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager)
+   public static <T> DecoratorImpl<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      return new DecoratorImpl<T>(clazz, beanManager);
+      return new DecoratorImpl<T>(clazz, beanManager, services);
    }
    
    private WeldClass<?> annotatedDelegateItem;
@@ -109,9 +110,9 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    private Set<Type> delegateTypes;
    private Set<Type> decoratedTypes;
 
-   protected DecoratorImpl(WeldClass<T> type, BeanManagerImpl beanManager)
+   protected DecoratorImpl(WeldClass<T> type, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      super(type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
+      super(type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
    }
 
    @Override

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.NewLiteral;
@@ -43,10 +44,10 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * @param beanManager The Bean manager
     * @return a new NewEnterpriseBean instance
     */
-   public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager)
+   public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, ServiceRegistry services)
    {
       WeldClass<T> type = beanManager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new NewSessionBean<T>(type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager);
+      return new NewSessionBean<T>(type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager, services);
    }
    
    private Set<Annotation> bindings;
@@ -57,9 +58,9 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean
     * @param type An annotated class
     * @param beanManager The Bean manager
     */
-   protected NewSessionBean(final WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl beanManager)
+   protected NewSessionBean(final WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      super(type, ejbDescriptor, idSuffix, beanManager);
+      super(type, ejbDescriptor, idSuffix, beanManager, services);
       this.bindings = new HashSet<Annotation>();
       this.bindings.add(new NewLiteral()
       {

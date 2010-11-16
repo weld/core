@@ -110,7 +110,7 @@ public class BeanDeployment
          // bean is an EJB!
          ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
       }
-      beanDeployer = new BeanDeployer(beanManager, ejbDescriptors);
+      beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
       
       // Must at the Manager bean straight away, as it can be injected during startup!
       beanManager.addBean(new BeanManagerBean(beanManager));

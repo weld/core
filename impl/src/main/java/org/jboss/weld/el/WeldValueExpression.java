@@ -23,8 +23,6 @@ import javax.el.ValueExpression;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.el.ForwardingValueExpression;
 
 /**
@@ -36,7 +34,7 @@ public class WeldValueExpression extends ForwardingValueExpression
    
    private static final long serialVersionUID = 1122137212009930853L;
 
-   private static final Contextual<?> CONTEXTUAL = new Contextual<Object>()
+   private static final Contextual<Object> CONTEXTUAL = new Contextual<Object>()
    {
 
       public Object create(CreationalContext<Object> creationalContext)
@@ -61,13 +59,11 @@ public class WeldValueExpression extends ForwardingValueExpression
       return delegate;
    }
    
-   private final static BeanManagerImpl CACHED_BEANMANAGER = Container.instance().deploymentManager(); 
-   
    @Override
    public Object getValue(final ELContext context)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -84,7 +80,7 @@ public class WeldValueExpression extends ForwardingValueExpression
    public void setValue(ELContext context, Object value)
    {
       // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
       try
       {
          getCreationalContextStore(context).push(creationalContext);
@@ -102,7 +98,7 @@ public class WeldValueExpression extends ForwardingValueExpression
    public Class getType(ELContext context)
    {
    // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = ELCreationalContext.of(CACHED_BEANMANAGER.createCreationalContext(CONTEXTUAL));
+      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
       try
       {
          getCreationalContextStore(context).push(creationalContext);

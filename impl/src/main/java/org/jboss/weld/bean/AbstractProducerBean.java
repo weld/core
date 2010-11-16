@@ -56,6 +56,7 @@ import javax.inject.Scope;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
@@ -112,9 +113,9 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     * @param declaringBean The declaring bean
     * @param beanManager The Bean manager
     */
-   public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      super(idSuffix, declaringBean, beanManager);
+      super(idSuffix, declaringBean, beanManager, services);
       serializationCheckCache = new MapMaker().makeComputingMap(SERIALIZABLE_CHECK);
    }
 

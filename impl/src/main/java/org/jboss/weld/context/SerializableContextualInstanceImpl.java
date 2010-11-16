@@ -19,6 +19,7 @@ package org.jboss.weld.context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 
@@ -31,9 +32,9 @@ public class SerializableContextualInstanceImpl<C extends Contextual<I>, I> impl
    private final I instance;
    private final CreationalContext<I> creationalContext;
 
-   public SerializableContextualInstanceImpl(C contextual, I instance, CreationalContext<I> creationalContext)
+   public SerializableContextualInstanceImpl(C contextual, I instance, CreationalContext<I> creationalContext, ContextualStore contextualStore)
    {
-      this.contextual = new SerializableContextualImpl<C, I>(contextual);
+      this.contextual = new SerializableContextualImpl<C, I>(contextual, contextualStore);
       this.instance = instance;
       this.creationalContext = creationalContext;
    }

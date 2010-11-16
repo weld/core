@@ -25,6 +25,7 @@ import java.lang.reflect.Member;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -42,9 +43,9 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
    
    private AbstractClassBean<X> declaringBean;
 
-   public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      super(idSuffix, beanManager);
+      super(idSuffix, beanManager, services);
       this.declaringBean = declaringBean;
    }
    

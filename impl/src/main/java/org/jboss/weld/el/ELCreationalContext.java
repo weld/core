@@ -21,32 +21,21 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.context.ForwardingWeldCreationalContext;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.CreationalContextImpl;
 
-abstract class ELCreationalContext<T> extends ForwardingWeldCreationalContext<T>
+class ELCreationalContext<T> extends CreationalContextImpl<T>
 {
-   
-   public static <X> ELCreationalContext<X> of(final WeldCreationalContext<X> creationalContext)
-   {
-      return new ELCreationalContext<X>()
-      {
-         
-         @Override
-         protected WeldCreationalContext<X> delegate()
-         {
-            return creationalContext;
-         }
-         
-      };
-   }
 
+   private static final long serialVersionUID = -8337917208165841779L;
+   
    private final Map<String, Object> dependentInstances;
    
-   public ELCreationalContext()
+   public ELCreationalContext(Contextual<T> contextual)
    {
+      super(contextual);
       this.dependentInstances = new HashMap<String, Object>();
    }
    

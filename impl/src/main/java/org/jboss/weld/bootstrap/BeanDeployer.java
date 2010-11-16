@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.interceptor.Interceptor;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -66,9 +67,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
     * @param manager
     * @param ejbDescriptors
     */
-   public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors)
+   public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services)
    {
-      super(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
+      super(manager, services, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WeldClass<?>>();
       this.resourceLoader = manager.getServices().get(ResourceLoader.class);
       this.classTransformer = Container.instance().services().get(ClassTransformer.class);

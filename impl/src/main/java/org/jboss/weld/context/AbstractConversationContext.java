@@ -34,7 +34,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Instance;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.ConversationNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
@@ -64,6 +66,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
    private final AtomicLong concurrentAccessTimeout;
 
    private final ThreadLocal<R> associated;
+   
+   private final Instance<ConversationContext> conversationContexts;
 
    public AbstractConversationContext()
    {
@@ -72,6 +76,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
       this.defaultTimeout = new AtomicLong(DEFAULT_TIMEOUT);
       this.concurrentAccessTimeout = new AtomicLong(CONCURRENT_ACCESS_TIMEOUT);
       this.associated = new ThreadLocal<R>();
+      this.conversationContexts = Container.instance().deploymentManager().instance().select(ConversationContext.class);
    }
 
    public String getParameterName()
@@ -273,7 +278,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
          // Attach the conversation
          if (cid == null || getConversation(cid) == null)
          {
-            ManagedConversation conversation = new ConversationImpl();
+            ManagedConversation conversation = new ConversationImpl(conversationContexts);
             setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
             // Set a temporary bean store, this will be attached at the end of
             // the request if needed

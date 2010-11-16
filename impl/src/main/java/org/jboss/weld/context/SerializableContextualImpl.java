@@ -53,10 +53,14 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
    // the id of a non-serializable, passivation capable contextual
    private String id;
    
-   private static final ContextualStore CACHED_CONTEXTUAL_STORE = Container.instance().services().get(ContextualStore.class);
+   private transient ContextualStore cachedContextualStore;
    
-   public SerializableContextualImpl(C contextual)
+   @java.lang.SuppressWarnings("unused")
+   private SerializableContextualImpl() {}
+   
+   public SerializableContextualImpl(C contextual, ContextualStore contextualStore)
    {
+      this.cachedContextualStore = contextualStore;
       if (contextual instanceof Serializable)
       {
          // the contextual is serializable, so we can just use it
@@ -65,10 +69,19 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
       else
       {
          // otherwise, generate an id (may not be portable between container instances)
-         this.id = CACHED_CONTEXTUAL_STORE.putIfAbsent(contextual);
+         this.id = getContextualStore().putIfAbsent(contextual);
       }
       // cache the contextual
       this.cached = contextual;
+   }
+   
+   private ContextualStore getContextualStore()
+   {
+      if (cachedContextualStore == null)
+      {
+         this.cachedContextualStore = Container.instance().services().get(ContextualStore.class);
+      }
+      return this.cachedContextualStore;
    }
    
    public C get()
@@ -88,7 +101,7 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
       }
       else if (id != null)
       {
-         this.cached = CACHED_CONTEXTUAL_STORE.<C, I>getContextual(id);
+         this.cached = getContextualStore().<C, I>getContextual(id);
       }
    }
    

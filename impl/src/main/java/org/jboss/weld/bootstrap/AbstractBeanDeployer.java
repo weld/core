@@ -45,6 +45,7 @@ import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ProcessBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessBeanInjectionTarget;
 import org.jboss.weld.bootstrap.events.ProcessManagedBeanImpl;
@@ -73,11 +74,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
    
    private final BeanManagerImpl manager;
+   private final ServiceRegistry services;
    private final E environment;
    
-   public AbstractBeanDeployer(BeanManagerImpl manager, E environment)
+   public AbstractBeanDeployer(BeanManagerImpl manager, ServiceRegistry services, E environment)
    {
       this.manager = manager;
+      this.services = services;
       this.environment = environment;
    }
    
@@ -183,7 +186,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    {
       for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class))
       {
-         DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
+         DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean, services);
          disposalBean.initialize(getEnvironment());
          getEnvironment().addDisposesMethod(disposalBean);
       }
@@ -191,7 +194,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, ? super X> annotatedMethod)
    {
-      ProducerMethod<? super X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager);
+      ProducerMethod<? super X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager, services);
       getEnvironment().addProducerMethod(bean);
    }
    
@@ -200,11 +203,11 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
       ProducerField<X, T> bean;
       if (isEEResourceProducerField(field))
       {
-         bean = EEResourceProducerField.of(field, declaringBean, manager);
+         bean = EEResourceProducerField.of(field, declaringBean, manager, services);
       }
       else
       {
-         bean = ProducerField.of(field, declaringBean, manager);
+         bean = ProducerField.of(field, declaringBean, manager, services);
       }
       getEnvironment().addProducerField(bean);
    }
@@ -233,7 +236,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
 
    protected <T> ManagedBean<T> createManagedBean(WeldClass<T> annotatedClass)
    {
-      ManagedBean<T> bean = ManagedBean.of(annotatedClass, manager);
+      ManagedBean<T> bean = ManagedBean.of(annotatedClass, manager, services);
       getEnvironment().addManagedBean(bean);
       createObserversProducersDisposers(bean);
       return bean;
@@ -241,25 +244,25 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <T> void createNewManagedBean(WeldClass<T> annotatedClass)
    {
-      getEnvironment().addManagedBean(NewManagedBean.of(annotatedClass, manager));
+      getEnvironment().addManagedBean(NewManagedBean.of(annotatedClass, manager, services));
    }
    
    protected <T> void createDecorator(WeldClass<T> annotatedClass)
    {
-      DecoratorImpl<T> bean = DecoratorImpl.of(annotatedClass, manager);
+      DecoratorImpl<T> bean = DecoratorImpl.of(annotatedClass, manager, services);
       getEnvironment().addDecorator(bean);
    }
 
    protected <T> void createInterceptor(WeldClass<T> annotatedClass)
    {
-      InterceptorImpl<T> bean = InterceptorImpl.of(annotatedClass, manager);
+      InterceptorImpl<T> bean = InterceptorImpl.of(annotatedClass, manager, services);
       getEnvironment().addInterceptor(bean);
    }
    
    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> ejbDescriptor)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
-      SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager);
+      SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager, services);
       getEnvironment().addSessionBean(bean);
       createObserversProducersDisposers(bean);
       return bean;
@@ -268,7 +271,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> ejbDescriptor, WeldClass<T> weldClass)
    {
       // TODO Don't create enterprise bean if it has no local interfaces!
-      SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager, weldClass);
+      SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager, weldClass, services);
       getEnvironment().addSessionBean(bean);
       createObserversProducersDisposers(bean);
       return bean;
@@ -276,7 +279,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
 
    protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor)
    {
-      getEnvironment().addSessionBean(NewSessionBean.of(ejbDescriptor, manager));
+      getEnvironment().addSessionBean(NewSessionBean.of(ejbDescriptor, manager, services));
    }
    
    /**

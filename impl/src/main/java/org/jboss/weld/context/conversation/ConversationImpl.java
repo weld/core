@@ -34,8 +34,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -60,10 +60,12 @@ public class ConversationImpl implements ManagedConversation, Serializable
    private ReentrantLock concurrencyLock;
    private long lastUsed;
    
-   private final Instance<ConversationContext> cachedConversationContext = Container.instance().deploymentManager().instance().select(ConversationContext.class);
+   private final Instance<ConversationContext> conversationContexts;
 
-   public ConversationImpl()
+   @Inject
+   public ConversationImpl(Instance<ConversationContext> conversationContexts)
    {
+      this.conversationContexts = conversationContexts;
       this._transient = true;
       ConversationContext conversationContext = getConversationContext();
       if (conversationContext != null)
@@ -80,7 +82,7 @@ public class ConversationImpl implements ManagedConversation, Serializable
    
    private ConversationContext getConversationContext()
    {
-      for (ConversationContext conversationContext : cachedConversationContext)
+      for (ConversationContext conversationContext : conversationContexts)
       {
          if (conversationContext.isActive())
          {

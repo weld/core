@@ -122,12 +122,12 @@ public class ContextualStoreImpl implements ContextualStore
 
    public <C extends Contextual<I>, I> SerializableContextual<C, I> getSerializableContextual(Contextual<I> contextual)
    {
-      return new SerializableContextualImpl<C, I>(Reflections.<C>cast(contextual));
+      return new SerializableContextualImpl<C, I>(Reflections.<C>cast(contextual), this);
    }
 
    public <C extends Contextual<I>, I> SerializableContextualInstance<C, I> getSerializableContextualInstance(Contextual<I> contextual, I instance, CreationalContext<I> creationalContext)
    {
-      return new SerializableContextualInstanceImpl<C, I>(Reflections.<C>cast(contextual), instance, creationalContext);
+      return new SerializableContextualInstanceImpl<C, I>(Reflections.<C>cast(contextual), instance, creationalContext, this);
    }
 
    public void cleanup()

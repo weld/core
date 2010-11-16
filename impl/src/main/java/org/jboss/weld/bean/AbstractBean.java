@@ -47,6 +47,7 @@ import javax.inject.Qualifier;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldAnnotated;
@@ -83,6 +84,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    private ArraySet<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
    private ArraySet<WeldInjectionPoint<?, ?>> newInjectionPoints;
    protected BeanManagerImpl beanManager;
+   private final ServiceRegistry services;
    private boolean initialized;
    private boolean proxyRequired;
 
@@ -91,13 +93,14 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
     * 
     * @param beanManager The Bean manager
     */
-   public AbstractBean(String idSuffix, BeanManagerImpl beanManager)
+   public AbstractBean(String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services)
    {
       super(idSuffix, beanManager);
       this.beanManager = beanManager;
       this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
       this.delegateInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
       this.newInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
+      this.services = services;
    }
 
    @Override
@@ -484,6 +487,11 @@ public abstract class AbstractBean<T, S> extends RIBean<T>
    public boolean isProxyRequired()
    {
       return proxyRequired;
+   }
+   
+   protected ServiceRegistry getServices()
+   {
+      return services;
    }
 
 }

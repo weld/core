@@ -25,13 +25,11 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.SimpleInjectionPoint;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * An instance locator that uses a context to lookup the instance if
@@ -71,12 +69,12 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
 
    public T getInstance()
    {
-      Container CACHED_CONTAINER = Container.instance();
+      Container container = Container.instance();
       if (bean == null)
       {
-         bean = CACHED_CONTAINER.services().get(ContextualStore.class).<Bean<T>, T>getContextual(id);
+         bean = container.services().get(ContextualStore.class).<Bean<T>, T>getContextual(id);
       }
-      Context context = CACHED_CONTAINER.deploymentManager().getContext(bean.getScope());
+      Context context = container.deploymentManager().getContext(bean.getScope());
       
       if(context.get(bean) != null)
          return context.get(bean);
@@ -95,12 +93,12 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
       try
       {
          // Ensure that there is no injection point associated
-         CACHED_CONTAINER.services().get(CurrentInjectionPoint.class).push(SimpleInjectionPoint.EMPTY_INJECTION_POINT);
+         container.services().get(CurrentInjectionPoint.class).push(SimpleInjectionPoint.EMPTY_INJECTION_POINT);
          return context.get(bean, creationalContext);
       }
       finally
       {
-         CACHED_CONTAINER.services().get(CurrentInjectionPoint.class).pop();
+         container.services().get(CurrentInjectionPoint.class).pop();
          if (previousCreationalContext == null)
          {
             currentCreationalContext.remove();

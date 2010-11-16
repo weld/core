@@ -58,7 +58,7 @@ public class WeldListener extends AbstractServletListener
 
    private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
-   private static final BeanManagerImpl CACHED_BEAN_MANAGER = Container.instance().deploymentManager();
+   private final BeanManagerImpl CACHED_BEAN_MANAGER = Container.instance().deploymentManager();
 
    @Override
    public void sessionDestroyed(HttpSessionEvent event)
@@ -148,7 +148,7 @@ public class WeldListener extends AbstractServletListener
       }
    }
    
-   private static Instance<Context> instance()
+   private Instance<Context> instance()
    {
       return CACHED_BEAN_MANAGER.instance().select(Context.class);
    }

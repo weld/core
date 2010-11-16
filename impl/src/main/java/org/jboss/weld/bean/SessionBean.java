@@ -61,6 +61,7 @@ import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
@@ -106,10 +107,10 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * @param beanManager the current manager
     * @return An Enterprise Web Bean
     */
-   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager)
+   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, ServiceRegistry services)
    {
       WeldClass<T> type = beanManager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager);
+      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager, services);
    }
 
    /**
@@ -121,9 +122,9 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * @param type the AnnotatedType to use
     * @return An Enterprise Web Bean
     */
-   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, WeldClass<T> type)
+   public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, WeldClass<T> type, ServiceRegistry services)
    {
-      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager);
+      return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager, services);
    }
 
    protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor)
@@ -149,9 +150,9 @@ public class SessionBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param manager The Bean manager
     */
-   protected SessionBean(WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager)
+   protected SessionBean(WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager, ServiceRegistry services)
    {
-      super(type, idSuffix, manager);
+      super(type, idSuffix, manager, services);
       initType();
       this.ejbDescriptor = ejbDescriptor;
       initTypes();

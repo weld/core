@@ -51,6 +51,7 @@ import org.jboss.weld.bean.interceptor.WeldInterceptorInstantiator;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -284,15 +285,15 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * @param beanManager the current manager
     * @return A Web Bean
     */
-   public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager)
+   public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services)
    {
       if (clazz.isDiscovered())
       {
-         return new ManagedBean<T>(clazz, createSimpleId(ManagedBean.class.getSimpleName(), clazz), beanManager);
+         return new ManagedBean<T>(clazz, createSimpleId(ManagedBean.class.getSimpleName(), clazz), beanManager, services);
       }
       else
       {
-         return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
+         return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager, services);
       }
    }
 
@@ -316,9 +317,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
     * @param type The type of the bean
     * @param beanManager The Bean manager
     */
-   protected ManagedBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager)
+   protected ManagedBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      super(type, idSuffix, beanManager);
+      super(type, idSuffix, beanManager, services);
       initType();
       initTypes();
       initQualifiers();

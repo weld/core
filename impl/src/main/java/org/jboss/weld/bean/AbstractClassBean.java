@@ -57,6 +57,7 @@ import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -69,6 +70,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
@@ -121,7 +123,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       for (Interceptor<?> interceptor : interceptors)
       {
 
-         SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor);
+         SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, getServices().get(ContextualStore.class));
          serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
       }
       return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
@@ -162,9 +164,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
     * @param type The type
     * @param beanManager The Bean manager
     */
-   protected AbstractClassBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager)
+   protected AbstractClassBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      super(idSuffix, beanManager);
+      super(idSuffix, beanManager, services);
       this.annotatedItem = type;
       initStereotypes();
       initAlternative();
@@ -345,7 +347,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       T proxy = null;
       TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
       ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
-      DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, proxyFactory.getProxyClass(), beanManager, decorators);
+      DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
 
       DecorationHelper.getHelperStack().push(decorationHelper);
       proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);

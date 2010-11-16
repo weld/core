@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -60,9 +61,9 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @param beanManager the current manager
     * @return A producer field
     */
-   public static <X, T> ProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager)
+   public static <X, T> ProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
    {
-      return new ProducerField<X, T>(field, declaringBean, beanManager);
+      return new ProducerField<X, T>(field, declaringBean, beanManager, services);
    }
 
 
@@ -73,9 +74,9 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
     * @param declaringBean The declaring bean
     * @param manager The Bean manager
     */
-   protected ProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected ProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services)
    {
-      super(createId(field, declaringBean), declaringBean, manager);
+      super(createId(field, declaringBean), declaringBean, manager, services);
       this.field = field;
       initType();
       initTypes();

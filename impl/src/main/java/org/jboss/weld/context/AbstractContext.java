@@ -60,7 +60,7 @@ public abstract class AbstractContext implements Context
    
    private final boolean multithreaded;
    
-   private static final ServiceRegistry CACHED_SERVICE_REGISTRY  = Container.instance().services();
+   private final ServiceRegistry serviceRegistry;
    
    /**
     * Constructor
@@ -70,6 +70,7 @@ public abstract class AbstractContext implements Context
    public AbstractContext(boolean multithreaded)
    {
       this.multithreaded = multithreaded;
+      this.serviceRegistry = Container.instance().services();
    }
 
    /**
@@ -120,7 +121,7 @@ public abstract class AbstractContext implements Context
             T instance = contextual.create(creationalContext);
             if (instance != null)
             {
-               beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext);
+               beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, serviceRegistry.get(ContextualStore.class));
                getBeanStore().put(id, beanInstance);
             }
             return instance;
@@ -193,9 +194,14 @@ public abstract class AbstractContext implements Context
       return Container.instance().services().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
    }
    
-   protected static String getId(Contextual<?> contextual)
+   protected String getId(Contextual<?> contextual)
    {
-      return CACHED_SERVICE_REGISTRY.get(ContextualStore.class).putIfAbsent(contextual);
+      return serviceRegistry.get(ContextualStore.class).putIfAbsent(contextual);
+   }
+   
+   protected ServiceRegistry getServiceRegistry()
+   {
+      return serviceRegistry;
    }
    
 }

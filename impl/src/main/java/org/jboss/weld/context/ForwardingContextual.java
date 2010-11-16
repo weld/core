@@ -34,7 +34,6 @@ public abstract class ForwardingContextual<T> implements Contextual<T>
       delegate().destroy(instance, creationalContext); 
    }
    
-   
    @Override
    public boolean equals(Object obj) 
    {

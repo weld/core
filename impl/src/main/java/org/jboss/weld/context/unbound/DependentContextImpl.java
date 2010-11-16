@@ -33,6 +33,7 @@ import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
  * The dependent context
@@ -41,6 +42,13 @@ import org.jboss.weld.context.api.ContextualInstance;
  */
 public class DependentContextImpl implements DependentContext 
 {
+   
+   private final ContextualStore contextualStore;
+
+   public DependentContextImpl(ContextualStore contextualStore)
+   {
+      this.contextualStore = contextualStore;
+   }
 
    /**
     * Overridden method always creating a new instance
@@ -60,7 +68,7 @@ public class DependentContextImpl implements DependentContext
          if (creationalContext instanceof WeldCreationalContext<?>)
          {
             WeldCreationalContext<T> creationalContextImpl = (WeldCreationalContext<T>) creationalContext;
-            ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext);
+            ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
             creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
          }
          return instance;

@@ -19,7 +19,6 @@ package org.jboss.weld.bean.builtin.ee;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.Serializable;
 
@@ -35,6 +34,7 @@ import org.jboss.weld.bean.proxy.BeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -103,16 +103,16 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T>
     * @param manager the current manager
     * @return A producer field
     */
-   public static <X, T> EEResourceProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   public static <X, T> EEResourceProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services)
    {
-      return new EEResourceProducerField<X, T>(field, declaringBean, manager);
+      return new EEResourceProducerField<X, T>(field, declaringBean, manager, services);
    }
    
    private final WeldInjectionPoint<?, ?> injectionPoint;
 
-   protected EEResourceProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager)
+   protected EEResourceProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services)
    {
-      super(field, declaringBean, manager);
+      super(field, declaringBean, manager, services);
       this.injectionPoint = FieldInjectionPoint.of(declaringBean, field);
    }
 
