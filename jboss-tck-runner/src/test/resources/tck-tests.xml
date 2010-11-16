@@ -24,6 +24,30 @@
                <exclude name="testNonStaticObserverMethodIndirectlyInherited" />
             </methods>
          </class>
+         
+         <!-- CDITCK-194 -->
+         <class name="org.jboss.jsr299.tck.tests.implementation.simple.newSimpleBean.NewSimpleBeanTest" >
+            <methods>
+               <exclude name="testForEachSimpleBeanANewBeanExists"/>
+               <exclude name="testNewBeanHasNoBeanELName"/>
+               <exclude name="testNewBeanHasNoDisposerMethods"/>
+               <exclude name="testNewBeanHasNoProducerFields"/>
+               <exclude name="testNewBeanHasNoProducerMethods"/>
+               <exclude name="testNewBeanHasNoStereotypes"/>
+               <exclude name="testNewBeanHasOnlyNewBinding"/>
+               <exclude name="testNewBeanHasSameConstructor"/>
+               <exclude name="testNewBeanHasSameInitializers"/>
+               <exclude name="testNewBeanHasSameInjectedFields"/>
+               <exclude name="testNewBeanIsDependentScoped"/>
+            </methods>
+         </class>
+                  
+         <!-- CDITCK-194 -->
+         <class name="org.jboss.jsr299.tck.tests.definition.qualifier.QualifierDefinitionTest" >
+            <methods>
+               <exclude name="testNewQualifierAndAnyBindingMutualExclusive"/>
+            </methods>
+         </class>
 
          <!-- Issues in Weld (the RI) -->
 
