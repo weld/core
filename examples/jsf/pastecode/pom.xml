@@ -15,6 +15,11 @@
 	<name>Weld Examples: PasteCode</name>
 
 	<dependencies>
+         <dependency>
+            <groupId>com.ocpsoft</groupId>
+            <artifactId>prettyfaces-jsf2</artifactId>
+            <version>3.1.0</version>
+         </dependency>
 
 		<dependency>
 			<groupId>org.testng</groupId>

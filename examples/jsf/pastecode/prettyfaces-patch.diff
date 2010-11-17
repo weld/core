@@ -1,0 +1,78 @@
+diff --git a/examples/jsf/pastecode/pom.xml b/examples/jsf/pastecode/pom.xml
+index 0aa8eea..74fda79 100644
+--- a/examples/jsf/pastecode/pom.xml
++++ b/examples/jsf/pastecode/pom.xml
+@@ -15,6 +15,11 @@
+ 	<name>Weld Examples: PasteCode</name>
+ 
+ 	<dependencies>
++         <dependency>
++            <groupId>com.ocpsoft</groupId>
++            <artifactId>prettyfaces-jsf2</artifactId>
++            <version>3.1.0</version>
++         </dependency>
+ 
+ 		<dependency>
+ 			<groupId>org.testng</groupId>
+diff --git a/examples/jsf/pastecode/src/main/java/org/jboss/weld/examples/pastecode/session/PasteWindow.java b/examples/jsf/pastecode/src/main/java/org/jboss/weld/examples/pastecode/session/PasteWindow.java
+index 9d3332c..f1b2707 100644
+--- a/examples/jsf/pastecode/src/main/java/org/jboss/weld/examples/pastecode/session/PasteWindow.java
++++ b/examples/jsf/pastecode/src/main/java/org/jboss/weld/examples/pastecode/session/PasteWindow.java
+@@ -61,7 +61,7 @@ public class PasteWindow
+    public String send()
+    {
+       codeFragmentId = codeFragmentManager.addCodeFragment(codeFragment, privateFragment);
+-      return "success";
++      return "pretty:view";
+    }
+ 
+    // loadCodeFragment is a view action called to load the code fragment from
+diff --git a/examples/jsf/pastecode/src/main/webapp/WEB-INF/web.xml b/examples/jsf/pastecode/src/main/webapp/WEB-INF/web.xml
+index b5ca46e..4f2a45b 100644
+--- a/examples/jsf/pastecode/src/main/webapp/WEB-INF/web.xml
++++ b/examples/jsf/pastecode/src/main/webapp/WEB-INF/web.xml
+@@ -5,27 +5,11 @@
+     <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+     <param-value>.xhtml</param-value>
+   </context-param>
++  <context-param>
++    <param-name>javax.faces.PROJECT_STAGE</param-name>
++    <param-value>Development</param-value>
++  </context-param>
+   <session-config>
+     <session-timeout>10</session-timeout>
+   </session-config>
+-  <servlet>
+-    <servlet-name>Faces Servlet</servlet-name>
+-    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+-    <load-on-startup>1</load-on-startup>
+-  </servlet>
+-  <servlet-mapping>
+-    <servlet-name>Faces Servlet</servlet-name>
+-    <url-pattern>*.jsf</url-pattern>
+-    <url-pattern>/faces/*</url-pattern>
+-  </servlet-mapping>
+-  <filter>
+-    <filter-name>UrlRewriteFilter</filter-name>
+-    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+-  </filter>
+-  <filter-mapping>
+-    <filter-name>UrlRewriteFilter</filter-name>
+-    <url-pattern>/*</url-pattern>
+-    <dispatcher>REQUEST</dispatcher>
+-    <dispatcher>FORWARD</dispatcher>
+-  </filter-mapping>
+ </web-app>
+\ No newline at end of file
+diff --git a/examples/jsf/pastecode/src/main/webapp/index.html b/examples/jsf/pastecode/src/main/webapp/index.html
+deleted file mode 100644
+index 473be2f..0000000
+--- a/examples/jsf/pastecode/src/main/webapp/index.html
++++ /dev/null
+@@ -1,5 +0,0 @@
+-<html>
+-<head>
+-  <meta http-equiv="Refresh" content="0; URL=home.jsf">
+-</head>
+-</html>
+\ No newline at end of file

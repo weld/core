@@ -1,0 +1,16 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.1.0    
+      http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.1.0.xsd">
+
+   <url-mapping>
+      <pattern value="/"></pattern>
+      <view-id>/home.jsf</view-id>
+   </url-mapping>
+   
+   <url-mapping id="view">
+      <pattern value="/#{ /[0-9]+/ id : pasteWindow.codeFragmentId}"></pattern>
+      <view-id>/display.jsf</view-id>
+   </url-mapping>
+
+</pretty-config> 

@@ -61,7 +61,7 @@ public class PasteWindow
    public String send()
    {
       codeFragmentId = codeFragmentManager.addCodeFragment(codeFragment, privateFragment);
-      return "success";
+      return "pretty:view";
    }
 
    // loadCodeFragment is a view action called to load the code fragment from
