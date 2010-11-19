@@ -57,7 +57,7 @@ public class WeldListener extends AbstractServletListener
 
    private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
-   private transient Instance<Context> contextInstanceCache;
+   private Instance<Context> contextInstanceCache;
    
    private Instance<Context> instance()
    {
