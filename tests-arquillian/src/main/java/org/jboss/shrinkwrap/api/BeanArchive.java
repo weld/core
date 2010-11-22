@@ -2,6 +2,9 @@ package org.jboss.shrinkwrap.api;
  
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
  
+/**
+ * A CDI specific extension to Shrinkwrap to ease Weld testing.
+ */
 public interface BeanArchive extends JavaArchive       
 {
    
