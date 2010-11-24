@@ -69,7 +69,7 @@ public class DependentContextImpl implements DependentContext
          {
             WeldCreationalContext<T> creationalContextImpl = (WeldCreationalContext<T>) creationalContext;
             ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
-            creationalContextImpl.getParentDependentInstancesStore().addDependentInstance(beanInstance);
+            creationalContextImpl.addDependentInstance(beanInstance);
          }
          return instance;
       }
