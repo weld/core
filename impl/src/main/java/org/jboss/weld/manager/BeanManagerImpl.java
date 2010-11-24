@@ -621,14 +621,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Context getContext(Class<? extends Annotation> scopeType)
    {
-      Context activeContexts = null;
+      Context activeContext = null;
       for (Context context : contexts.get(scopeType))
       {
          if (context.isActive())
          {
-            if(activeContexts == null)
+            if(activeContext == null)
             {
-               activeContexts = context;
+               activeContext = context;
             }
             else
             {
@@ -636,12 +636,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
             }
          }
       }
-      if (activeContexts == null)
+      if (activeContext == null)
       {
          throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
       }
       
-      return activeContexts;
+      return activeContext;
    }
    
    public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy)
