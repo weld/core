@@ -26,6 +26,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 
 /**
@@ -58,7 +59,7 @@ public class NameBasedResolver
                matchedBeans.add(bean);
             }
          }
-         return Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager);
+         return ImmutableSet.copyOf(Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager));
       }
       
    }

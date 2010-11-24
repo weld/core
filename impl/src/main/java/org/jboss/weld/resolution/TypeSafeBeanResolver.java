@@ -42,6 +42,7 @@ import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 import com.google.common.primitives.Primitives;
 
@@ -78,11 +79,11 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
                   disambiguatedBeans.add(bean);
                }
             }
-            return disambiguatedBeans;
+            return ImmutableSet.copyOf(disambiguatedBeans);
          }
          else
          {
-            return from;
+            return ImmutableSet.copyOf(from);
          }
       }
 
@@ -235,8 +236,8 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
        * We need to defensively copy the beans set as it can be provided by
        * the user in which case this algorithm will have thread safety issues
        */
-      beans = new HashSet<Bean<? extends X>>(beans);
-      return cast(Collections.unmodifiableSet(disambiguatedBeans.get(beans)));
+      beans = ImmutableSet.copyOf(beans);
+      return cast(disambiguatedBeans.get(beans));
    }
 
    @Override
