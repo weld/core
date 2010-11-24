@@ -221,7 +221,7 @@ public class ConversationImpl implements ManagedConversation, Serializable
    private void verifyConversationContextActive()
    {
       ConversationContext ctx = getConversationContext();
-      if (ctx == null || !ctx.isActive())
+      if (ctx == null)
       {
          throw new ContextNotActiveException("Conversation Context not active when method called on conversation " + this);
       }
