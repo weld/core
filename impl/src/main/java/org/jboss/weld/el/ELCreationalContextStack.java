@@ -19,23 +19,9 @@ package org.jboss.weld.el;
 import java.util.Stack;
 
 import javax.el.ELContext;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
 
-class ELCreationalContextStack extends Stack<ELCreationalContext<?>>
+class ELCreationalContextStack extends Stack<CreationalContextCallable>
 {
-   
-   private static final Contextual<Object> CONTEXTUAL = new Contextual<Object>()
-   {
-
-      public Object create(CreationalContext<Object> creationalContext)
-      {
-         return null;
-      }
-
-      public void destroy(Object instance, CreationalContext<Object> creationalContext) {}
-      
-   };
    
    private static final long serialVersionUID = -57142365866995726L;
    
@@ -49,20 +35,14 @@ class ELCreationalContextStack extends Stack<ELCreationalContext<?>>
    public static ELCreationalContextStack getCreationalContextStore(ELContext context)
    {
       Object o = context.getContext(ELCreationalContextStack.class);
-      
-      if (!(o instanceof ELCreationalContextStack))
+      if (o != null)
       {
-         ELCreationalContextStack store = ELCreationalContextStack.addToContext(context);
-         o = store;
+         return (ELCreationalContextStack) o;
       }
-      ELCreationalContextStack store = (ELCreationalContextStack) o;
-      if (store.isEmpty()) 
+      else
       {
-         // TODO need to use correct manager for module
-         ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
-         store.push(creationalContext);
+         return addToContext(context);
       }
-      return (ELCreationalContextStack) o;
    }
    
 }

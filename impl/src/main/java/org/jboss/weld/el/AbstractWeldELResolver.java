@@ -144,7 +144,7 @@ public abstract class AbstractWeldELResolver extends ELResolver
       else
       {
          // Need to use a "special" creationalContext that can make sure that we do share dependent instances referenced by the EL Expression
-         final ELCreationalContext<?> creationalContext = getCreationalContextStore(context).peek();
+         final ELCreationalContext<?> creationalContext = getCreationalContextStore(context).peek().get();
          String beanName = bean.getName();
          Object value = creationalContext.getDependentInstanceForExpression(beanName);
          if (value == null)
