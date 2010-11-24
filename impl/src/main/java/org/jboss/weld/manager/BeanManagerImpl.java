@@ -627,9 +627,13 @@ public class BeanManagerImpl implements WeldManager, Serializable
          if (context.isActive())
          {
             if(activeContexts == null)
+            {
                activeContexts = context;
+            }
             else
+            {
                throw new IllegalStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
+            }
          }
       }
       if (activeContexts == null)

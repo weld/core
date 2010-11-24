@@ -77,7 +77,9 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
       Context context = container.deploymentManager().getContext(bean.getScope());
       
       if(context.get(bean) != null)
+      {
          return context.get(bean);
+      }
       
       WeldCreationalContext<T> creationalContext;
       WeldCreationalContext<?> previousCreationalContext = currentCreationalContext.get();
