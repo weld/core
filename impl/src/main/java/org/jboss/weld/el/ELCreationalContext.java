@@ -18,11 +18,8 @@ package org.jboss.weld.el;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.context.CreationalContextImpl;
 
@@ -31,33 +28,22 @@ class ELCreationalContext<T> extends CreationalContextImpl<T>
 
    private static final long serialVersionUID = -8337917208165841779L;
    
-   private final Map<String, Object> dependentInstances;
+   private final Map<String, Object> expressionLocalDependentInstances;
    
    public ELCreationalContext(Contextual<T> contextual)
    {
       super(contextual);
-      this.dependentInstances = new HashMap<String, Object>();
+      this.expressionLocalDependentInstances = new HashMap<String, Object>();
    }
    
-   public Object putIfAbsent(Bean<?> bean, Callable<Object> value) throws Exception
+   public void registerDependentInstanceForExpression(String name, Object value)
    {
-      if (bean.getScope().equals(Dependent.class))
-      {
-         if (dependentInstances.containsKey(bean.getName()))
-         {
-            return dependentInstances.get(bean.getName());
-         }
-         else
-         {
-            Object instance = value.call();
-            dependentInstances.put(bean.getName(), instance);
-            return instance;
-         }
-      }
-      else
-      {
-         return value.call();
-      }
+      expressionLocalDependentInstances.put(name, value);
+   }
+   
+   public Object getDependentInstanceForExpression(String name)
+   {
+      return expressionLocalDependentInstances.get(name);
    }
    
 }
