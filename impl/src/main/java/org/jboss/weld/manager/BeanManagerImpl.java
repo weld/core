@@ -716,6 +716,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext)
    {
+      if (resolvedBean == null)
+      {
+         throw new IllegalArgumentException(NULL_BEAN_ARGUMENT);
+      }
+      if (creationalContext == null)
+      {
+         throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
+      }
       boolean registerInjectionPoint = (injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class));
       boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
       try
