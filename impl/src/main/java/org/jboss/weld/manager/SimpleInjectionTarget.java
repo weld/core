@@ -39,6 +39,7 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -66,6 +67,10 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       this.beanManager = beanManager;
       this.type = type;
       this.injectionPoints = new HashSet<InjectionPoint>();
+      if (type.getJavaClass().isInterface())
+      {
+         throw new DefinitionException(BeanMessage.INJECTION_TARGET_CANNOT_BE_CREATED_FOR_INTERFACE, type);
+      }
       ConstructorInjectionPoint<T> constructor = null;
       try
       {
