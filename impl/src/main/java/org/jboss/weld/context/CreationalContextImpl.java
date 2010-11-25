@@ -17,12 +17,16 @@
 package org.jboss.weld.context;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -37,21 +41,21 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
    @SuppressWarnings(value="SE_TRANSIENT_FIELD_NOT_RESTORED", justification="Not needed after initial creation")
    private final transient Contextual<T> contextual;
    
-   private final DependentInstancesStore dependentInstancesStore;
+   private final List<ContextualInstance<?>> dependentInstances;
    
-   private final DependentInstancesStore parentDependentInstancesStore;
+   private final List<ContextualInstance<?>> parentDependentInstances;
    
    public CreationalContextImpl(Contextual<T> contextual)
    {
-      this(contextual, new HashMap<Contextual<?>, Object>(), new DependentInstancesStore());
+      this(contextual, new HashMap<Contextual<?>, Object>(), Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()));
    }
    
-   private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances, DependentInstancesStore parentDependentInstancesStore)
+   private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances, List<ContextualInstance<?>> parentDependentInstancesStore)
    {
       this.incompleteInstances = incompleteInstances;
       this.contextual = contextual;
-      this.dependentInstancesStore = new DependentInstancesStore();
-      this.parentDependentInstancesStore = parentDependentInstancesStore;
+      this.dependentInstances = Collections.synchronizedList(new ArrayList<ContextualInstance<?>>());
+      this.parentDependentInstances = parentDependentInstancesStore;
    }
    
    public void push(T incompleteInstance)
@@ -61,7 +65,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
    
    public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual)
    {
-      return new CreationalContextImpl<S>(contextual, incompleteInstances == null ? new HashMap<Contextual<?>, Object>() : new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstancesStore);
+      return new CreationalContextImpl<S>(contextual, incompleteInstances == null ? new HashMap<Contextual<?>, Object>() : new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstances);
    }
    
    public <S> S getIncompleteInstance(Contextual<S> bean)
@@ -74,18 +78,26 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
       return incompleteInstances == null ? false : incompleteInstances.containsKey(bean);
    }
    
-   public DependentInstancesStore getParentDependentInstancesStore()
+   public void addDependentInstance(ContextualInstance<?> contextualInstance)
    {
-      return parentDependentInstancesStore;
+      parentDependentInstances.add(contextualInstance);
    }
 
    public void release()
    {
-      dependentInstancesStore.destroyDependentInstances();
+      for (ContextualInstance<?> dependentInstance : dependentInstances)
+      {
+         destroy(dependentInstance);
+      }
       if (incompleteInstances != null)
       {
          incompleteInstances.clear();
       }
+   }
+   
+   private static <T> void destroy(ContextualInstance<T> beanInstance)
+   {
+      beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
    }
    
 }

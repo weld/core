@@ -20,8 +20,6 @@ import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextSto
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.util.el.ForwardingValueExpression;
 
@@ -33,18 +31,6 @@ public class WeldValueExpression extends ForwardingValueExpression
 {
    
    private static final long serialVersionUID = 1122137212009930853L;
-
-   private static final Contextual<Object> CONTEXTUAL = new Contextual<Object>()
-   {
-
-      public Object create(CreationalContext<Object> creationalContext)
-      {
-         return null;
-      }
-
-      public void destroy(Object instance, CreationalContext<Object> creationalContext) {}
-      
-   };
    
    private final ValueExpression delegate;
    
@@ -62,34 +48,38 @@ public class WeldValueExpression extends ForwardingValueExpression
    @Override
    public Object getValue(final ELContext context)
    {
-      // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
+      ELCreationalContextStack store = getCreationalContextStore(context);
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         store.push(new CreationalContextCallable());
          return delegate().getValue(context);
       }
       finally
       {
-         getCreationalContextStore(context).pop();
-         creationalContext.release();
+         CreationalContextCallable callable = store.pop();
+         if (callable.exists())
+         {
+            callable.get().release();
+         }
       }
    }
    
    @Override
    public void setValue(ELContext context, Object value)
    {
-      // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
+      ELCreationalContextStack store = getCreationalContextStore(context);
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         store.push(new CreationalContextCallable());
          delegate().setValue(context, value);
       }
       finally
       {
-         getCreationalContextStore(context).pop();
-         creationalContext.release();
+         CreationalContextCallable callable = store.pop();
+         if (callable.exists())
+         {
+            callable.get().release();
+         }
       }
    }
 
@@ -97,17 +87,19 @@ public class WeldValueExpression extends ForwardingValueExpression
    @Override
    public Class getType(ELContext context)
    {
-   // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
+      ELCreationalContextStack store = getCreationalContextStore(context);
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         store.push(new CreationalContextCallable());
          return delegate().getType(context);
       }
       finally
       {
-         getCreationalContextStore(context).pop();
-         creationalContext.release();
+         CreationalContextCallable callable = store.pop();
+         if (callable.exists())
+         {
+            callable.get().release();
+         }
       }
    }
 

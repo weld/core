@@ -28,8 +28,6 @@ import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_L
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
 
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
@@ -57,15 +55,35 @@ public class WeldListener extends AbstractServletListener
 
    private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
-   private Instance<Context> contextInstanceCache;
+   private transient HttpSessionContext sessionContextCache;
+   private transient HttpRequestContext requestContextCache;
+   private transient HttpConversationContext conversationContextCache;
    
-   private Instance<Context> instance()
+   private HttpSessionContext sessionContext()
    {
-      if (contextInstanceCache == null)
+      if (sessionContextCache == null)
       {
-         contextInstanceCache = Container.instance().deploymentManager().instance().select(Context.class);
+         this.sessionContextCache = Container.instance().deploymentManager().instance().select(HttpSessionContext.class).get();
       }
-      return contextInstanceCache;
+      return sessionContextCache;
+   }
+   
+   private HttpRequestContext requestContext()
+   {
+      if (requestContextCache == null)
+      {
+         this.requestContextCache = Container.instance().deploymentManager().instance().select(HttpRequestContext.class).get();
+      }
+      return requestContextCache;
+   }
+   
+   private HttpConversationContext conversationContext()
+   {
+      if (conversationContextCache == null)
+      {
+         this.conversationContextCache = Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
+      }
+      return conversationContextCache;
    }
 
    @Override
@@ -74,11 +92,9 @@ public class WeldListener extends AbstractServletListener
       // JBoss AS will still start the deployment even if WB fails
       if (Container.available())
       {
-         HttpSessionContext sessionContext = instance().select(HttpSessionContext.class).get();
-
          // Mark the session context and conversation contexts to destroy
          // instances when appropriate
-         sessionContext.destroy(event.getSession());
+         sessionContext().destroy(event.getSession());
       }
    }
 
@@ -92,17 +108,12 @@ public class WeldListener extends AbstractServletListener
          if (event.getServletRequest() instanceof HttpServletRequest)
          {
             HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
-            Instance<Context> instance = instance();
-
-            HttpRequestContext requestContext = instance.select(HttpRequestContext.class).get();
-            HttpSessionContext sessionContext = instance.select(HttpSessionContext.class).get();
-            HttpConversationContext conversationContext = instance.select(HttpConversationContext.class).get();
             
             try
             {
-               requestContext.invalidate();
-               requestContext.deactivate();
-               sessionContext.deactivate();
+               requestContext().invalidate();
+               requestContext().deactivate();
+               sessionContext().deactivate();
                /*
                 * The conversation context is invalidated and deactivated in the
                 * WeldPhaseListener
@@ -110,9 +121,9 @@ public class WeldListener extends AbstractServletListener
             }
             finally
             {
-               requestContext.dissociate(request);
-               sessionContext.dissociate(request);
-               conversationContext.dissociate(request);
+               requestContext().dissociate(request);
+               sessionContext().dissociate(request);
+               conversationContext().dissociate(request);
             }
          }
          else
@@ -132,21 +143,16 @@ public class WeldListener extends AbstractServletListener
          if (event.getServletRequest() instanceof HttpServletRequest)
          {
             HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
-            Instance<Context> instance = instance();
 
-            HttpRequestContext requestContext = instance.select(HttpRequestContext.class).get();
-            HttpSessionContext sessionContext = instance.select(HttpSessionContext.class).get();
-            HttpConversationContext conversationContext = instance.select(HttpConversationContext.class).get();
-
-            requestContext.associate(request);
-            sessionContext.associate(request);
-            conversationContext.associate(request);
+            requestContext().associate(request);
+            sessionContext().associate(request);
+            conversationContext().associate(request);
             /*
              * The conversation context is activated in the WeldPhaseListener
              */
 
-            requestContext.activate();
-            sessionContext.activate();
+            requestContext().activate();
+            sessionContext().activate();
          }
          else
          {

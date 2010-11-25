@@ -28,6 +28,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
+import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
@@ -94,6 +95,11 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
          {
             throw new DefinitionException(INJECTION_ON_NON_CONTEXTUAL, type, ip);
          }
+      }
+      Validator validator = new Validator();
+      for (InjectionPoint ij : this.injectionPoints)
+      {
+         validator.validateInjectionPoint(ij, beanManager);
       }
    }
 

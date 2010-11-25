@@ -621,23 +621,27 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Context getContext(Class<? extends Annotation> scopeType)
    {
-      Context activeContexts = null;
+      Context activeContext = null;
       for (Context context : contexts.get(scopeType))
       {
          if (context.isActive())
          {
-            if(activeContexts == null)
-               activeContexts = context;
+            if(activeContext == null)
+            {
+               activeContext = context;
+            }
             else
+            {
                throw new IllegalStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
+            }
          }
       }
-      if (activeContexts == null)
+      if (activeContext == null)
       {
          throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
       }
       
-      return activeContexts;
+      return activeContext;
    }
    
    public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy)
@@ -712,6 +716,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext)
    {
+      if (resolvedBean == null)
+      {
+         throw new IllegalArgumentException(NULL_BEAN_ARGUMENT);
+      }
+      if (creationalContext == null)
+      {
+         throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
+      }
       boolean registerInjectionPoint = (injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class));
       boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
       try
@@ -1140,14 +1152,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans)
    {
       Set<Bean<? extends X>> resolvedBeans = beanResolver.resolve(beans);
-      if (resolvedBeans.size() == 0)
-      {
-         return null;
-      }
       if (resolvedBeans.size() == 1)
       {
          return resolvedBeans.iterator().next();
       }
+      else if (resolvedBeans.size() == 0)
+      {
+         return null;
+      } 
       else
       {
          throw new AmbiguousResolutionException(AMBIGUOUS_BEANS_FOR_DEPENDENCY, beans);

@@ -21,17 +21,16 @@ import static org.jboss.weld.logging.Category.EL;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_LOOKUP;
 import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_RESOLVED;
-import static org.jboss.weld.logging.messages.ElMessage.RESOLUTION_ERROR;
 
 import java.beans.FeatureDescriptor;
+import java.lang.annotation.Annotation;
 import java.util.Iterator;
-import java.util.concurrent.Callable;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
 
@@ -67,6 +66,7 @@ public abstract class AbstractWeldELResolver extends ELResolver
    @Override
    public Object getValue(final ELContext context, Object base, Object property)
    {
+      BeanManagerImpl beanManager = getManager(context);
       if (property != null)
       {
          String propertyString = property.toString();
@@ -74,9 +74,9 @@ public abstract class AbstractWeldELResolver extends ELResolver
          Namespace namespace = null;
          if (base == null)
          {
-            if (getManager(context).getRootNamespace().contains(propertyString))
+            if (beanManager.getRootNamespace().contains(propertyString))
             {
-               Object value = getManager(context).getRootNamespace().get(propertyString);
+               Object value = beanManager.getRootNamespace().get(propertyString);
                context.setPropertyResolved(true);
                log.trace(PROPERTY_RESOLVED, propertyString, value);
                return value;
@@ -110,28 +110,7 @@ public abstract class AbstractWeldELResolver extends ELResolver
          {
             name = propertyString;
          }
-         Object value = null;
-         try
-         {
-            final Bean<?> bean = getManager(context).resolve(getManager(context).getBeans(name));
-            final ELCreationalContext<?> creationalContext = getCreationalContextStore(context).peek();
-            if (bean != null)
-            {
-               value = creationalContext.putIfAbsent(bean, new Callable<Object>()
-               {
-
-                  public Object call() throws Exception
-                  {
-                     return getManager(context).getReference(bean, creationalContext, false);
-                  }
-
-               });
-            }
-         }
-         catch (Exception e)
-         {
-            throw new WeldException(RESOLUTION_ERROR, e, propertyString, base);
-         }
+         Object value = lookup(beanManager, context, name);
          if (value != null)
          {
             context.setPropertyResolved(true);
@@ -140,6 +119,41 @@ public abstract class AbstractWeldELResolver extends ELResolver
          }
       }
       return null;
+   }
+   
+   private Object lookup(BeanManagerImpl beanManager, ELContext context, String name)
+   {
+      final Bean<?> bean = beanManager.resolve(beanManager.getBeans(name));
+      if (bean == null)
+      {
+         return null;
+      }
+      Class<? extends Annotation> scope = bean.getScope();
+      if (!scope.equals(Dependent.class))
+      {
+         Object value = beanManager.getContext(scope).get(bean);
+         if (value != null)
+         {
+            return value;
+         }
+         else
+         {
+            return beanManager.getReference(bean, beanManager.createCreationalContext(bean), false);
+         }
+      }
+      else
+      {
+         // Need to use a "special" creationalContext that can make sure that we do share dependent instances referenced by the EL Expression
+         final ELCreationalContext<?> creationalContext = getCreationalContextStore(context).peek().get();
+         String beanName = bean.getName();
+         Object value = creationalContext.getDependentInstanceForExpression(beanName);
+         if (value == null)
+         {
+            value = getManager(context).getReference(bean, creationalContext, false);
+            creationalContext.registerDependentInstanceForExpression(beanName, value);
+         }
+         return value;
+      }
    }
 
    @Override

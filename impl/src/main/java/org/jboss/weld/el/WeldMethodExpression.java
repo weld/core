@@ -21,8 +21,6 @@ import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextSto
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.util.el.ForwardingMethodExpression;
 
@@ -34,18 +32,6 @@ public class WeldMethodExpression extends ForwardingMethodExpression
 {
    
    private static final long serialVersionUID = 7070020110515571744L;
-
-   private static final Contextual<Object> CONTEXTUAL = new Contextual<Object>()
-   {
-
-      public Object create(CreationalContext<Object> creationalContext)
-      {
-         return null;
-      }
-
-      public void destroy(Object instance, CreationalContext<Object> creationalContext) {}
-      
-   };
    
    private final MethodExpression delegate;
    
@@ -63,34 +49,38 @@ public class WeldMethodExpression extends ForwardingMethodExpression
    @Override
    public Object invoke(ELContext context, Object[] params)
    {
-      // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
+      ELCreationalContextStack store = getCreationalContextStore(context);
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         store.push(new CreationalContextCallable());
          return super.invoke(context, params);
       }
       finally
       {
-         getCreationalContextStore(context).pop();
-         creationalContext.release();
+         CreationalContextCallable callable = store.pop();
+         if (callable.exists())
+         {
+            callable.get().release();
+         }
       }
    }
    
    @Override
    public MethodInfo getMethodInfo(ELContext context)
    {
-      // TODO need to use correct manager for module
-      ELCreationalContext<?> creationalContext = new ELCreationalContext<Object>(CONTEXTUAL);
+      ELCreationalContextStack store = getCreationalContextStore(context);
       try
       {
-         getCreationalContextStore(context).push(creationalContext);
+         store.push(new CreationalContextCallable());
          return super.getMethodInfo(context);
       }
       finally
       {
-         getCreationalContextStore(context).pop();
-         creationalContext.release();
+         CreationalContextCallable callable = store.pop();
+         if (callable.exists())
+         {
+            callable.get().release();
+         }
       }
    }
 

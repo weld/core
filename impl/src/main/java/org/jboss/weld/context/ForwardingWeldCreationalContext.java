@@ -18,6 +18,8 @@ package org.jboss.weld.context;
 
 import javax.enterprise.context.spi.Contextual;
 
+import org.jboss.weld.context.api.ContextualInstance;
+
 
 /**
  * @author pmuir
@@ -53,9 +55,9 @@ public abstract class ForwardingWeldCreationalContext<T> implements WeldCreation
       return delegate().getIncompleteInstance(bean);
    }
 
-   public DependentInstancesStore getParentDependentInstancesStore()
+   public void addDependentInstance(ContextualInstance<?> contextualInstance)
    {
-      return delegate().getParentDependentInstancesStore();
+      delegate().addDependentInstance(contextualInstance);
    }
    
    @Override
