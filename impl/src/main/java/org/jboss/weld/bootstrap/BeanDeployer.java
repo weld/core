@@ -112,7 +112,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
                }
                else
                {
-                  classes.add(classTransformer.loadClass(event.getAnnotatedType()));
+                  classes.add(classTransformer.loadClass(ExternalAnnotatedType.of(event.getAnnotatedType())));
                }
             }
          }

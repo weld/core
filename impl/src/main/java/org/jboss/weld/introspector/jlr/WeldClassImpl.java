@@ -137,7 +137,11 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
          discovered = true;
       }
 
-      if (rawType.getSuperclass() != null)
+      if (!discovered)
+      {
+         this.superclass = classTransformer.loadClass(Object.class);
+      }
+      else if (rawType.getSuperclass() != null)
       {
          this.superclass = classTransformer.loadClass(rawType.getSuperclass());
       }
