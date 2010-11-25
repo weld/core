@@ -76,7 +76,7 @@ public @interface Updated {}]]></programlisting>
 
       <para>
          An observer method need not specify any event qualifiers&#8212;in this case it is interested in
-         <emphasis>all</emphasis> events of a particular type. If it does specify qualifiers, it's only interested
+         <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it's only interested
          in events which have those qualifiers.
       </para>
 
@@ -248,12 +248,24 @@ public @interface Role {
 ...
 if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]></programlisting>
 
-      <para>When this event occurs, all of the following observer methods will be notified:</para>
+      <para>
+         Observers must completely match the final qualified type of the event. Assume the following observers in this example:
+      </para>
 
       <programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]></programlisting>
       <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
       <programlisting role="JAVA"><![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]></programlisting>
       <programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]></programlisting>
+
+      <para>The only observer notified will be:</para>
+
+      <programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]></programlisting>
+
+      <para>However, if there were also an observer:</para>
+
+      <programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Any Document document) { ... }]]></programlisting>
+
+      <para>It would also be notified, as <literal>@Any</literal> acts as an alias for any and all qualifiers.</para>
 
    </section>
 
