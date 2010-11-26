@@ -18,6 +18,7 @@ package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Decorator;
@@ -85,7 +86,14 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
             WeldMethod<?, ?> decoratorMethod = decorator.getDecoratorMethod(method);
             if (decoratorMethod != null)
             {
-               return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
+               try
+               {
+                  return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
+               }
+               catch (InvocationTargetException e)
+               {
+                  throw e.getCause();
+               }
             }
          }
       }
