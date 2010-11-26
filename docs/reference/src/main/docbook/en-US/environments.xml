@@ -12,40 +12,13 @@
          to the classpath or <literal>WEB-INF/beans.xml</literal> to the web root!
       </para>
       
-      <para>
-         Unfortunately, you can't use Weld with earlier versions of JBoss AS since they are missing key libraries. If
-         you want to learn how to upgrade the built-in support on JBoss AS 6.0, then read on.
-      </para>
-         
-      <para>
-         If there is a newer release of Weld than what is included in the latest JBoss AS 6 release, upgrading the Weld
-         add-on is easy. The Weld distribution includes a build script that can take care of this task for you in a
-         single command.
-      </para>
-      
-      <para>
-         First, we need to tell Weld where JBoss AS is located. This information is communicated by assigning the
-         <literal>JBOSS_HOME</literal> environment variable. In a bash shell, you can assign the environment variable as
-         follows:
-      </para>
-
-      <programlisting><![CDATA[export JBOSS_HOME=/path/to/jboss-as-6.x]]></programlisting>
-
-      <para>
-         Now we can install the Weld deployer from the <literal>jboss-as</literal> directory of the Weld distribution:
-      </para>
-      
-      <programlisting>$> cd jboss-as
-$> mvn -Pupdate-jboss-as</programlisting>
-
       <note>
          <para>
-            A new deployer, <literal>weld.deployer</literal> is added to JBoss AS. This adds supports for JSR-299
-            deployments to JBoss AS, and allows Weld to query the EJB 3 container and discover which EJBs are installed
-            in your application. It also performs an upgrade of the Javassist library, if necessary.
+            Additionally, Weld Servlet supports JBoss EAP 5.1, to do this use the <literal>jboss5</literal> variant
+            of Weld Servlet.
          </para>
       </note>
-
+         
    </section>
    
    <section>
