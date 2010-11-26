@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.decorators.unwrapException;
 
 /**
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
-public interface Simple {
-    boolean invoked();
+public interface Simple
+{
+   boolean invoked();
 
-    String speak();
+   String speak();
 }

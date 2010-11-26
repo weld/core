@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.decorators.unwrapException;
 
 import javax.decorator.Decorator;
@@ -25,12 +24,14 @@ import javax.inject.Inject;
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
 @Decorator
-public abstract class CheckedExceptionThrowingDecorator implements SimpleChecked {
-    @Inject
-    @Delegate
-    SimpleChecked delegate;
+public abstract class CheckedExceptionThrowingDecorator implements SimpleChecked
+{
+   @Inject
+   @Delegate
+   SimpleChecked delegate;
 
-    public String speak() throws Exception {
-        throw new Exception("Sorry, no can do");
-    }
+   public String speak() throws Exception
+   {
+      throw new Exception("Sorry, no can do");
+   }
 }

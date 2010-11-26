@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.decorators.unwrapException;
 
 import org.jboss.arquillian.api.Deployment;
@@ -29,19 +28,22 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
 @RunWith(Arquillian.class)
-public class UnwrappingUncheckedExceptionTest {
-    @Deployment
-    public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .decorate(UncheckedExceptionThrowingDecorator.class)
-                .addPackage(UnwrappingCheckedExceptionTest.class.getPackage());
-    }
+public class UnwrappingUncheckedExceptionTest
+{
+   @Deployment
+   public static Archive<?> deploy()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+            .decorate(UncheckedExceptionThrowingDecorator.class)
+            .addPackage(UnwrappingCheckedExceptionTest.class.getPackage());
+   }
 
-    /**
-     * WELD-747
-     */
-    @Test(expected = UnsupportedOperationException.class)
-    public void assertExceptionIsUnwrapped(Simple bean) {
-        bean.speak();
-    }
+   /**
+    * WELD-747
+    */
+   @Test(expected = UnsupportedOperationException.class)
+   public void assertExceptionIsUnwrapped(Simple bean)
+   {
+      bean.speak();
+   }
 }

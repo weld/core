@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.decorators.unwrapException;
 
 /**
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
-public class SimpleCheckedImpl implements SimpleChecked {
-    public String speak() throws Exception {
-        return "Bark";
-    }
+public class SimpleCheckedImpl implements SimpleChecked
+{
+   public String speak() throws Exception
+   {
+      return "Bark";
+   }
 }
