@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Decorator;
@@ -35,65 +37,57 @@ import org.jboss.weld.util.reflection.SecureReflections;
  *
  * @author Pete Muir
  * @author Marius Bogoevici
- *
  */
-public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandler<Object>
-{
-   private static final long serialVersionUID = 4577632640130385060L;
+public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandler<Object> {
+    private static final long serialVersionUID = 4577632640130385060L;
 
-   private final SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance;
+    private final SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance;
 
-   /**
-    * Constructor
-    *
-    * @param removeMethods
-    *
-    * @param proxy The generic proxy
-    */
-   public DecoratorProxyMethodHandler(SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance, Object delegateInstance)
-   {
-      super (delegateInstance, delegateInstance.getClass());
-      this.decoratorInstance = decoratorInstance;
-   }
+    /**
+     * Constructor
+     *
+     * @param removeMethods
+     * @param proxy         The generic proxy
+     */
+    public DecoratorProxyMethodHandler(SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance, Object delegateInstance) {
+        super(delegateInstance, delegateInstance.getClass());
+        this.decoratorInstance = decoratorInstance;
+    }
 
-   /**
-    *
-    *
-    * @param self the proxy instance.
-    * @param method the overridden method declared in the super class or
-    *           interface.
-    * @param proceed the forwarder method for invoking the overridden method. It
-    *           is null if the overridden method is abstract or declared in the
-    *           interface.
-    * @param args an array of objects containing the values of the arguments
-    *           passed in the method invocation on the proxy instance. If a
-    *           parameter type is a primitive type, the type of the array
-    *           element is a wrapper class.
-    * @return the resulting value of the method invocation.
-    *
-    * @throws Throwable if the method invocation fails.
-    */
-   @Override
-   protected Object doInvoke(Object self, Method method, Method proceed, Object[] args) throws Throwable
-   {
-      SerializableContextualInstance<Decorator<Object>, Object> beanInstance = decoratorInstance;
-      if (beanInstance.getContextual().get() instanceof WeldDecorator<?>)
-      {
-         WeldDecorator<?> decorator = (WeldDecorator<?>) beanInstance.getContextual().get();
-         if (!method.isAnnotationPresent(Inject.class))
-         {
-            WeldMethod<?, ?> decoratorMethod = decorator.getDecoratorMethod(method);
-            if (decoratorMethod != null)
-            {
-               return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
+    /**
+     * @param self    the proxy instance.
+     * @param method  the overridden method declared in the super class or
+     *                interface.
+     * @param proceed the forwarder method for invoking the overridden method. It
+     *                is null if the overridden method is abstract or declared in the
+     *                interface.
+     * @param args    an array of objects containing the values of the arguments
+     *                passed in the method invocation on the proxy instance. If a
+     *                parameter type is a primitive type, the type of the array
+     *                element is a wrapper class.
+     * @return the resulting value of the method invocation.
+     * @throws Throwable if the method invocation fails.
+     */
+    @Override
+    protected Object doInvoke(Object self, Method method, Method proceed, Object[] args) throws Throwable {
+        SerializableContextualInstance<Decorator<Object>, Object> beanInstance = decoratorInstance;
+        if (beanInstance.getContextual().get() instanceof WeldDecorator<?>) {
+            WeldDecorator<?> decorator = (WeldDecorator<?>) beanInstance.getContextual().get();
+            if (!method.isAnnotationPresent(Inject.class)) {
+                WeldMethod<?, ?> decoratorMethod = decorator.getDecoratorMethod(method);
+                if (decoratorMethod != null) {
+                    try {
+                        return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
+                    }
+                    catch (InvocationTargetException e) {
+                        throw e.getCause();
+                    }
+                }
             }
-         }
-      }
-      else
-      {
-         throw new IllegalStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, beanInstance.getContextual().get());
-      }
+        } else {
+            throw new IllegalStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, beanInstance.getContextual().get());
+        }
 
-      return SecureReflections.invoke(getTargetInstance(), method, args);
-   }
+        return SecureReflections.invoke(getTargetInstance(), method, args);
+    }
 }
