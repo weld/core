@@ -25,48 +25,6 @@
       you are reading this guide, you likely have something to offer.
    </para>
 
-   <para>
-      We are eager to find volunteers to help revise, proofread or translate this guide. The first step is getting the
-      source of this guide checked out. To build against the trunk (latest source), follow these steps:
-   </para>
-
-   <itemizedlist>
-      <listitem>
-         <para>
-            Checkout source from <ulink
-            url="http://anonsvn.jboss.org/repos/weld/doc/trunk/reference">http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</ulink>
-            using SVN
-         </para>
-         <programlisting><![CDATA[$> svn co http://anonsvn.jboss.org/repos/weld/doc/trunk/reference weld-reference]]></programlisting> 
-      </listitem>
-      <listitem>
-         <para>
-            Edit the <literal>pom.xml</literal> file in the root of the checkout and remove the "<literal>-SNAPSHOT</literal>" 
-            from the version element (so you don't have to build other Weld modules).
-         </para>
-      </listitem>
-      <listitem>
-         <para>
-            Build using Maven 2
-         </para>
-         <programlisting><![CDATA[$> mvn]]></programlisting> 
-         <note>
-            <para>
-               If you experience an out of memory error, try setting this environment variable:
-               <literal>MAVEN_OPTS=-Xmx1024m</literal>
-            </para>
-         </note>
-      </listitem>
-      <listitem>
-         <para>The PDF version of the reference guide will appear the current directory. You can find the HTML version
-         in <literal>target/docbook/publish/en-US/html</literal>.</para>
-      </listitem>
-   </itemizedlist>
-
-   <para>
-      We look forward to your participation! 
-   </para>
-
 <!--
 vim:et:ts=3:sw=3:tw=120
 -->

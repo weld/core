@@ -31,8 +31,8 @@ run a full build to ensure all classes are in the right place.
 
 To run this example using Maven directly:
 
-- Open a command line/terminal window in the examples/se/numberguess directory
-- Ensure that Maven 2 is installed and in your PATH
+- Open a command line/terminal window in the examples/se/hello-world directory
+- Ensure that Maven 3 is installed and in your PATH
 - Ensure that the JAVA_HOME environment variable is pointing to your JDK installation
 - execute the following command
 

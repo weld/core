@@ -31,7 +31,7 @@ run a full build to ensure all classes are in the right place.
 
 To run this example using Maven directly:
 
- - Ensure that Maven 2 (version 2.0.10+) is installed and in your PATH
+ - Ensure that Maven 3 is installed and in your PATH
  - Ensure that the JAVA_HOME environment variable is pointing to your JDK installation
  - Open a command line or terminal window in the examples/se/numberguess directory
  - Execute the following command
@@ -49,7 +49,7 @@ folder of the Weld distribution.
 
 In the Number Guess application you get given 10 attempts to guess a number between 1 and
 100. After each attempt, you will be told whether you are too high, or too low. This example can
-be found in the examples/se/numberguess folder of the Web Beans distribution.
+be found in the examples/se/numberguess folder of the Weld distribution.
 
 As usual, there is an empty beans.xml file in the root package (src/main/resources/beans.xml),
 which marks this application as a CDI application.
@@ -101,7 +101,7 @@ guessing game.
 
     The message generator for UI messages is injected.
 
-    This application is started in the usual Web Beans SE way, by observing the
+    This application is started in the usual Weld SE way, by observing the
     ContainerInitialized event.
 
     The initComponents method initializes all of the Swing components. Note the use of the msgGenerator.
