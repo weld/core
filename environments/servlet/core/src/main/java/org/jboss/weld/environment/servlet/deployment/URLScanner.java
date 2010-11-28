@@ -20,10 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
+import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -55,7 +54,7 @@ public class URLScanner
       return classLoader;
    }
 
-   protected void handle(String name, URL url, List<String> classes, List<URL> urls)
+   protected void handle(String name, URL url, Set<String> classes, Set<URL> urls)
    {
       if (name.endsWith(".class"))
       {
@@ -67,7 +66,7 @@ public class URLScanner
       }
    }
 
-   public void scanDirectories(File[] directories, List<String> classes, List<URL> urls)
+   public void scanDirectories(File[] directories, Set<String> classes, Set<URL> urls)
    {
       for (File directory : directories)
       {
@@ -75,7 +74,7 @@ public class URLScanner
       }
    }
 
-   public void scanResources(String[] resources, List<String> classes, List<URL> urls)
+   public void scanResources(String[] resources, Set<String> classes, Set<URL> urls)
    {
       Set<String> paths = new HashSet<String>();
 
@@ -88,7 +87,6 @@ public class URLScanner
             while (urlEnum.hasMoreElements())
             {
                String urlPath = urlEnum.nextElement().getFile();
-               urlPath = URLDecoder.decode(urlPath, "UTF-8");
 
                if (urlPath.startsWith("file:"))
                {
@@ -124,7 +122,7 @@ public class URLScanner
       handle(paths, classes, urls);
    }
 
-   protected void handle(Set<String> paths, List<String> classes, List<URL> urls)
+   protected void handle(Set<String> paths, Set<String> classes, Set<URL> urls)
    {
       for (String urlPath : paths)
       {
@@ -150,7 +148,7 @@ public class URLScanner
       }
    }
 
-   protected void handleArchiveByFile(File file, List<String> classes, List<URL> urls) throws IOException
+   protected void handleArchiveByFile(File file, Set<String> classes, Set<URL> urls) throws IOException
    {
       try
       {
@@ -158,7 +156,8 @@ public class URLScanner
 
          ZipFile zip = new ZipFile(file);
          Enumeration<? extends ZipEntry> entries = zip.entries();
-
+         // Replace out the default classloader with one for the zip
+         URLClassLoader classLoader = new URLClassLoader(new URL[] { file.toURI().toURL() });
          while (entries.hasMoreElements())
          {
             ZipEntry entry = entries.nextElement();
@@ -172,12 +171,12 @@ public class URLScanner
       }
    }
 
-   private void handleDirectory(File file, String path, List<String> classes, List<URL> urls)
+   private void handleDirectory(File file, String path, Set<String> classes, Set<URL> urls)
    {
       handleDirectory(file, path, new File[0], classes, urls);
    }
 
-   private void handleDirectory(File file, String path, File[] excludedDirectories, List<String> classes, List<URL> urls)
+   private void handleDirectory(File file, String path, File[] excludedDirectories, Set<String> classes, Set<URL> urls)
    {
       for (File excludedDirectory : excludedDirectories)
       {

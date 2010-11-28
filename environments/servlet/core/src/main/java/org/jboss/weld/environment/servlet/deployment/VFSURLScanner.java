@@ -19,13 +19,12 @@ package org.jboss.weld.environment.servlet.deployment;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
+import java.util.Set;
 
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileVisitor;
 import org.jboss.virtual.VisitorAttributes;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +43,7 @@ public class VFSURLScanner extends URLScanner
    }
 
    @Override
-   protected void handleArchiveByFile(File file, final List<String> classes, final List<URL> urls) throws IOException
+   protected void handleArchiveByFile(File file, final Set<String> classes, final Set<URL> urls) throws IOException
    {
       try
       {

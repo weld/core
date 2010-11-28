@@ -16,15 +16,15 @@
  */
 package org.jboss.weld.environment.servlet.deployment;
 
-import javax.servlet.ServletContext;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -49,15 +49,15 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive
    public static final String WEB_INF_BEANS_XML = "/WEB-INF/beans.xml";
    public static final String WEB_INF_CLASSES = "/WEB-INF/classes";
    
-   private final List<String> classes;
+   private final Set<String> classes;
    private final BeansXml beansXml;
    private final ServiceRegistry services;
    
    public WebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap)
    {
       this.services = new SimpleServiceRegistry();
-      this.classes = new ArrayList<String>();
-      List<URL> urls = new ArrayList<URL>();
+      this.classes = new HashSet<String>();
+      Set<URL> urls = new HashSet<URL>();
       URLScanner scanner = createScanner(servletContext);
       scanner.scanResources(new String[] { META_INF_BEANS_XML }, classes, urls);
       try
