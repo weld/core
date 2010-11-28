@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.threadlocal;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +31,7 @@ public class ThreadLocalTestCase
    }
 
    @Test
-   public void ensureNoThreadLocalLeak() throws Exception
+   public void ensureNoThreadLocalLeakOnContexts() throws Exception
    {
       TestContainer container = new TestContainer(Foo.class, ThreadLocalTestCase.class);
       container.startContainer();
@@ -48,6 +50,25 @@ public class ThreadLocalTestCase
       {
          // Ignore, expected
       }
+
+      container.stopContainer();
+      verifyThreadLocals();
+   }
+   
+   @Test
+   public void ensureNoThreadLocalLeakOnInjectionPoints() throws Exception
+   {
+      TestContainer container = new TestContainer(Bar.class, Baz.class);
+      container.startContainer();
+      BeanManager manager = getBeanManager(container);
+
+      Bean<?> testBean = manager.resolve(manager.getBeans(Baz.class));
+      
+      Baz baz = cast(manager.getReference(
+               testBean, 
+               Baz.class, 
+               manager.createCreationalContext(testBean)));
+      baz.getBar().ping();
 
       container.stopContainer();
       verifyThreadLocals();
@@ -97,8 +118,8 @@ public class ThreadLocalTestCase
          if(keyName != null)
          {
             Assert.assertFalse(
-                  "Verify found ThreadLocal variable key [" + keyName + "] does not belong to org.jboss, with value[" + entry.getValue() + "]", 
-                  keyName.startsWith("org.jboss"));   
+                  "ThreadLocal variable with key [" + keyName + "] with value[" + entry.getValue() + "] found", 
+                  keyName.startsWith("org.jboss.weld"));   
          }
       }
    }

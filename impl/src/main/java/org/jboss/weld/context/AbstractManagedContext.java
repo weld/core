@@ -1,7 +1,6 @@
 package org.jboss.weld.context;
 
 import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 public abstract class AbstractManagedContext extends AbstractContext implements ManagedContext
 {
@@ -12,31 +11,15 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
    public AbstractManagedContext(boolean multithreaded)
    {
       super(multithreaded);
-      this.active = new ThreadLocal<Boolean>()
-      {
-         
-         @Override
-         protected Boolean initialValue()
-         {
-            return FALSE;
-         }
-         
-      };
-      this.valid = new ThreadLocal<Boolean>()
-      {
-         
-         protected Boolean initialValue() 
-         {
-            return TRUE;
-         }
-         
-      };
+      this.active = new ThreadLocal<Boolean>();
+      this.valid = new ThreadLocal<Boolean>();
       
    }
 
    public boolean isActive()
    {
-      return active.get().booleanValue();
+      Boolean active = this.active.get();
+      return active == null ? false : active.booleanValue();
    }
 
    protected void setActive(boolean active)
@@ -53,14 +36,20 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
    {
       setActive(true);
    }
+   
+   private boolean isValid()
+   {
+      Boolean valid = this.valid.get();
+      return valid == null ? true : valid.booleanValue();
+   }
 
    public void deactivate()
    {
-      if (!valid.get().booleanValue())
+      if (!isValid())
       {
          destroy();
       }
-      setActive(false);
+      active.remove();
    }
 
    @Override
