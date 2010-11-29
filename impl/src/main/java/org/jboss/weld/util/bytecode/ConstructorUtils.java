@@ -26,6 +26,8 @@ import javassist.bytecode.ExceptionsAttribute;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 
+import org.jboss.weld.bean.proxy.ProxyFactory;
+
 /**
  * Utility class for working with constructors in the low level javassist API
  * 
@@ -81,6 +83,10 @@ public class ConstructorUtils
          int localVariableCount = BytecodeUtils.loadParameters(b, descriptor);
          // now we have the parameters on the stack
          b.addInvokespecial(file.getSuperclass(), "<init>", descriptor);
+         // now set constructed to true
+         b.addAload(0);
+         b.addIconst(1);
+         b.addPutfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
          b.addOpcode(Opcode.RETURN);
          CodeAttribute ca = b.toCodeAttribute();
          // set the initial field values

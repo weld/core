@@ -93,6 +93,8 @@ public class ProxyFactory<T>
 
    private static final String FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME = "firstSerializationPhaseComplete";
 
+   public static final String CONSTRUCTED_FLAG_NAME = "constructed";
+
    /**
     * created a new proxy factory from a bean instance. The proxy name is
     * generated from the bean id
@@ -438,6 +440,10 @@ public class ProxyFactory<T>
          FieldInfo sfield = new FieldInfo(proxyClassType.getConstPool(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
          sfield.setAccessFlags(AccessFlag.TRANSIENT | AccessFlag.PRIVATE);
          proxyClassType.addField(sfield);
+         // field used to indicate that super() has been called
+         FieldInfo constfield = new FieldInfo(proxyClassType.getConstPool(), CONSTRUCTED_FLAG_NAME, "Z");
+         constfield.setAccessFlags(AccessFlag.PRIVATE);
+         proxyClassType.addField(constfield);
          // we need to initialize this to a new ThreadLocal
          initialValueBytecode.addAload(0);
          initialValueBytecode.addNew("java/lang/ThreadLocal");
@@ -596,8 +602,7 @@ public class ProxyFactory<T>
                {
                   try
                   {
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(),
-                           createForwardingMethodBody(proxyClassType, method), proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, method), method), proxyClassType.getConstPool()));
                      log.trace("Adding method " + method);
                   }
                   catch (DuplicateMemberException e)
@@ -634,6 +639,48 @@ public class ProxyFactory<T>
    protected Bytecode createSpecialMethodBody(ClassFile proxyClassType, Method method) throws NotFoundException
    {
       return createInterceptorBody(proxyClassType, method);
+   }
+
+   /**
+    * Adds the following code to a delegating method:
+    * <p>
+    * <code>
+    * if(!this.constructed) return super.thisMethod()
+    * </code>
+    * <p>
+    * This means that the proxy will not start to delegate to the underlying
+    * bean instance until after the constructor has finished.
+    * 
+    */
+   protected Bytecode addConstructedGuardToMethodBody(ClassFile proxyClassType, Bytecode existingMethod, Method method)
+   {
+      String methodDescriptor = DescriptorUtils.getMethodDescriptor(method);
+      // first generate the invokespecial call to the super class method
+      Bytecode b = new Bytecode(proxyClassType.getConstPool());
+      b.add(Opcode.ALOAD_0);
+      BytecodeUtils.loadParameters(b, methodDescriptor);
+      b.addInvokespecial(proxyClassType.getSuperclass(), method.getName(), methodDescriptor);
+      BytecodeUtils.addReturnInstruction(b, method.getReturnType());
+      byte[] invokeSpecialBytes = b.get();
+      // now create the conditional
+      Bytecode cond = new Bytecode(proxyClassType.getConstPool());
+      cond.add(Opcode.ALOAD_0);
+      cond.addGetfield(proxyClassType.getName(), CONSTRUCTED_FLAG_NAME, "Z");
+      cond.add(Opcode.IFNE);
+
+      BytecodeUtils.add16bit(cond, invokeSpecialBytes.length + 3);
+      for (int i = 0; i < invokeSpecialBytes.length; ++i)
+      {
+         cond.add(invokeSpecialBytes[i]);
+      }
+      byte[] methodBodyBytes = existingMethod.get();
+      for (int i = 0; i < methodBodyBytes.length; ++i)
+      {
+         cond.add(methodBodyBytes[i]);
+      }
+      cond.setMaxLocals(existingMethod.getMaxLocals());
+      cond.setMaxStack(existingMethod.getMaxStack());
+      return cond;
    }
 
    protected Bytecode createForwardingMethodBody(ClassFile proxyClassType, Method method) throws NotFoundException
