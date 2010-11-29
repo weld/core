@@ -592,7 +592,7 @@ public class ProxyFactory<T>
          {
             for (Method method : cls.getDeclaredMethods())
             {
-               if (!Modifier.isStatic(method.getModifiers()) && (method.getDeclaringClass() != Object.class || method.getName().equals("toString")))
+               if (!Modifier.isStatic(method.getModifiers()) && (method.getDeclaringClass() != Object.class || method.getName().equals("toString")) && !Modifier.isFinal(method.getModifiers()))
                {
                   try
                   {
