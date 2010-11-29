@@ -25,7 +25,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.tests.category.Broken;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -46,5 +48,16 @@ public class InterceptedBeanWithFinalMethodTest
    public void testInterceptionWorksOnClassWithFinalMethod()
    {
       Assert.assertEquals(TopSecretBriefing.MESSAGE + TopSecretInterceptor.MESSAGE, briefing.performBriefing());
+   }
+
+   /*
+    * description = "WELD-771"
+    */
+   @Category(Broken.class)
+   @Test
+   public void testFinalMethodInvocationOnInterceptedBean()
+   {
+      briefing.performBriefing();
+      Assert.assertTrue(briefing.isBriefingPerformed());
    }
 }

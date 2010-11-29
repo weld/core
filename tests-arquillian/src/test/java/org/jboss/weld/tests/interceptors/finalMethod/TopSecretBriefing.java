@@ -20,15 +20,22 @@ public class TopSecretBriefing
 {
    public static final String MESSAGE = "Briefing";
 
+   private boolean briefingPerformed = false;
+
    @TopSecret
    public String performBriefing()
    {
+      briefingPerformed = true;
       return getBriefingMessage();
    }
 
-   public final String stuff()
+   /**
+    * As this method is final it will currently be invoked on the proxy rather
+    * than the underlying bean
+    */
+   public final boolean isBriefingPerformed()
    {
-      return "";
+      return briefingPerformed;
    }
 
    private final String getBriefingMessage()
