@@ -61,4 +61,12 @@ public class ProxyTest
       Assert.assertEquals(Foo.MESSAGE, foo.getMsg(0, 0L, 0D, false, 'a', 0F, (short) 0));
       Assert.assertEquals(Foo.MESSAGE, foo.getRealMsg(0, 0L, 0D, false, 'a', 0F, (short) 0));
    }
+
+   @Test
+   public void testSelfInvocationInConstructor()
+   {
+      Bean<?> bean = beanManager.resolve(beanManager.getBeans("baz"));
+      Baz baz = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
+      Assert.assertEquals(1, baz.getCount());
+   }
 }
