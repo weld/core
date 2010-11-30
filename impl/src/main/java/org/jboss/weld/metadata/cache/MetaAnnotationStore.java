@@ -26,7 +26,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ComputationException;

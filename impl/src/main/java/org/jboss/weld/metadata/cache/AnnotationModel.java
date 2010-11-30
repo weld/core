@@ -63,6 +63,7 @@ public abstract class AnnotationModel<T extends Annotation>
    {
       initType();
       initValid();
+      check();
    }
 
    /**
@@ -88,13 +89,16 @@ public abstract class AnnotationModel<T extends Annotation>
          {
             this.valid = true;
          }
-      }
-      if (annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))
+      }            
+   }
+   
+   protected void check()
+   {
+      if (valid && (!annotatedAnnotation.isAnnotationPresent(Retention.class) || annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME)))
       {
          this.valid = false;
          log.debug(MISSING_RETENTION, annotatedAnnotation);
       }
-            
    }
 
    /**

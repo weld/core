@@ -16,11 +16,18 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
 import static org.jboss.weld.logging.Category.REFLECTION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
+import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
+import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Set;
@@ -31,6 +38,7 @@ import javax.inject.Qualifier;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -67,25 +75,42 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T>
    @Override
    protected void init()
    {
-      super.init();
       initNonBindingMembers();
-      checkArrayAndAnnotationValuedMembers();
+      super.init();
+   }
+   
+   @Override
+   protected void initValid()
+   {
+      super.initValid();
+      for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+      {
+         if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingMembers.contains(annotatedMethod))
+         {
+            log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
+            super.valid = false;
+         }
+      }
    }
 
    /**
     * Validates the members
     */
-   private void checkArrayAndAnnotationValuedMembers()
+   protected void check()
    {
-      for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
+      super.check();
+      if (isValid())
       {
-         if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingMembers.contains(annotatedMethod))
+         
+         if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
          {
-            super.valid = false;
-            log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
+            log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+         }
+         else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE))
+         {
+            log.debug(MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE, getAnnotatedAnnotation());
          }
       }
-
    }
 
    /**

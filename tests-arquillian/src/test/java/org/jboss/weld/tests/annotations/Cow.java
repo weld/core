@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2010, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.tests.annotations;
 
-package org.jboss.weld.tests.interceptors.interceptorBinding;
 
-/**
- * @author Marius Bogoevici
- */
-@BadInterceptorBinding
-public class NaiveClass
+@Foo
+public class Cow
 {
-   public void doSomething()
+   
+   private boolean pinged;
+   
+   public boolean isPinged()
    {
+      return pinged;
    }
+   
+   public void ping()
+   {
+      pinged = true;
+   }
+
 }

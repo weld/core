@@ -164,24 +164,25 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T>
    }
    
    @Override
-   protected void initValid()
+   protected void check()
    {
-      super.initValid();
-      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+      super.check();
+      if (isValid())
       {
-         this.valid = false;
-         log.debug(MISSING_TARGET, getAnnotatedAnnotation());
-      }
-      else if (!(
-            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE) ||
-            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), TYPE) ||
-            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD) ||
-            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), FIELD) ||
-            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, TYPE)
-         ))
-      {
-         this.valid = false;
-         log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, getAnnotatedAnnotation());
+         if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+         {
+            log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+         }
+         else if (!(
+               Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE) ||
+               Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), TYPE) ||
+               Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD) ||
+               Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), FIELD) ||
+               Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, TYPE)
+            ))
+         {
+            log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, getAnnotatedAnnotation());
+         }
       }
    }
 

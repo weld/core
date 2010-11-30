@@ -81,18 +81,19 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T>
    }
    
    @Override
-   protected void initValid()
+   protected void check()
    {
-      super.initValid();
-      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+      super.check();
+      if (isValid())
       {
-         this.valid = false;
-         log.debug(MISSING_TARGET, getAnnotatedAnnotation());
-      }
-      else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE))
-      {
-         this.valid = false;
-         log.debug(MISSING_TARGET_METHOD_FIELD_TYPE, getAnnotatedAnnotation());
+         if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+         {
+            log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+         }
+         else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE))
+         {
+            log.debug(MISSING_TARGET_METHOD_FIELD_TYPE, getAnnotatedAnnotation());
+         }
       }
    }
 

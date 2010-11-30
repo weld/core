@@ -36,6 +36,7 @@ import javax.interceptor.InterceptorBinding;
 
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
@@ -47,18 +48,23 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class InterceptorBindingModel<T extends Annotation> extends AnnotationModel<T>
 {
-   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(InterceptorBinding.class);
+   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>> singleton(InterceptorBinding.class);
    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
-   private Set<WeldMethod<?,?>> nonBindingTypes;
+   private Set<WeldMethod<?, ?>> nonBindingTypes;
    private Set<Annotation> inheritedInterceptionBindingTypes;
    private Set<Annotation> metaAnnotations;
 
    public InterceptorBindingModel(Class<T> type, ClassTransformer transformer)
    {
       super(type, transformer);
+   }
+   
+   @Override
+   protected void init()
+   {
+      super.init();
       if (isValid())
       {
-         checkTargetType();
          initNonBindingTypes();
          initInterceptionBindingTypes();
          checkArrayAndAnnotationValuedMembers();
@@ -88,38 +94,35 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       inheritedInterceptionBindingTypes = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBinding.class);
    }
 
-   private void checkTargetType()
+   protected void check()
    {
-      if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
+      super.check();
+      if (isValid())
       {
-         this.valid = false;
-         throw new DefinitionException(MISSING_TARGET, getAnnotatedAnnotation());
-      }
-      else
-      {
-         if (!isValidTargetType())
+         if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
          {
-            this.valid = false;
-            throw new DefinitionException(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, getAnnotatedAnnotation());
+            log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+         }
+         if (!isValidTargetType(getAnnotatedAnnotation()))
+         {
+            log.debug(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, getAnnotatedAnnotation());
          }
       }
    }
 
-   private boolean isValidTargetType()
+   private static boolean isValidTargetType(WeldAnnotation<?> annotation)
    {
-      return Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), ElementType.TYPE, ElementType.METHOD)
-            || Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), ElementType.TYPE);
+      return Arrays2.unorderedEquals(annotation.getAnnotation(Target.class).value(), ElementType.TYPE, ElementType.METHOD) || Arrays2.unorderedEquals(annotation.getAnnotation(Target.class).value(), ElementType.TYPE);
    }
 
    private void checkMetaAnnotations()
    {
       if (Arrays2.containsAll(getAnnotatedAnnotation().getAnnotation(Target.class).value(), ElementType.METHOD))
       {
-         for (Annotation inheritedBinding: getInheritedInterceptionBindingTypes())
+         for (Annotation inheritedBinding : getInheritedInterceptionBindingTypes())
          {
             if (!Arrays2.containsAll(inheritedBinding.annotationType().getAnnotation(Target.class).value(), ElementType.METHOD))
             {
-               this.valid = false;
                log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, getAnnotatedAnnotation(), inheritedBinding);
             }
          }
@@ -138,8 +141,10 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
    }
 
    /**
-    * Retrieves the transitive interceptor binding types that are inherited by this interceptor binding,
-    * as per section 9.1.1 of the specification, "Interceptor binding types with additional interceptor bindings"
+    * Retrieves the transitive interceptor binding types that are inherited by
+    * this interceptor binding, as per section 9.1.1 of the specification,
+    * "Interceptor binding types with additional interceptor bindings"
+    * 
     * @return a set of transitive interceptor bindings, if any
     */
    public Set<Annotation> getInheritedInterceptionBindingTypes()
@@ -149,7 +154,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
 
    public boolean isEqual(Annotation instance, Annotation other)
    {
-       return isEqual(instance, other, false);
+      return isEqual(instance, other, false);
    }
 
    public boolean isEqual(Annotation instance, Annotation other, boolean includeNonBindingTypes)
