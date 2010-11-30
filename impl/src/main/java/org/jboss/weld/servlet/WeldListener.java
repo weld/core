@@ -116,8 +116,14 @@ public class WeldListener extends AbstractServletListener
                sessionContext().deactivate();
                /*
                 * The conversation context is invalidated and deactivated in the
-                * WeldPhaseListener
+                * WeldPhaseListener, however if an exception is thrown by the action
+                * method, we can't detect that in the phase listener. Make sure it
+                * happens!
                 */
+               if (conversationContext().isActive())
+               {
+                  conversationContext().deactivate();
+               }
             }
             finally
             {

@@ -77,4 +77,13 @@
       </navigation-case>
    </navigation-rule>
    
+   <navigation-rule>
+      <from-view-id>/locking-issue.jspx</from-view-id>
+      <navigation-case>
+         <from-action>#{lockingIssueBean.start}</from-action>
+         <to-view-id>/locking-issue.jspx</to-view-id>
+         <redirect />
+      </navigation-case>
+   </navigation-rule>
+   
 </faces-config>

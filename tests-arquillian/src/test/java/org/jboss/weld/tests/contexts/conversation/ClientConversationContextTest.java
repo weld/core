@@ -78,13 +78,14 @@ public class ClientConversationContextTest
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class)
+               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class, LockingIssueBean.class)
                .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "snowstorm.jsf", "/winter/snowstorm.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.jsf", "hailstorm.jspx")
+               .addResource(ClientConversationContextTest.class.getPackage(), "locking-issue.jsf", "locking-issue.jspx")
                .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
@@ -109,6 +110,27 @@ public class ClientConversationContextTest
       snowstorm = getFirstMatchingElement(snowstorm, HtmlSubmitInput.class, "go").click();
       name = getFirstMatchingElement(snowstorm, HtmlSpan.class, "snowstormName").getTextContent();
       assertEquals(Snowstorm.NAME, name);
+   }
+
+   @Test
+   public void testLockingIssue() throws Exception
+   {
+      /*
+       * click start 
+       * click redirect 
+       * click dummy 
+       * refresh browser or retry url.
+       */
+      WebClient client = new WebClient();
+      client.setThrowExceptionOnFailingStatusCode(false);
+      HtmlPage page = client.getPage(getPath("locking-issue.jsf"));
+      assertEquals("Gavin", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
+      page = getFirstMatchingElement(page, HtmlSubmitInput.class, "start").click();
+      assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
+      String cid = getCid(page);
+      page = getFirstMatchingElement(page, HtmlSubmitInput.class, "dummy").click();
+      page = client.getPage(getPath("locking-issue.jsf?cid=" + cid));
+      assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
    }
 
    @Test
