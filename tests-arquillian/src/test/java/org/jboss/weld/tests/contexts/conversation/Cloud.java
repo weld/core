@@ -91,6 +91,12 @@ public class Cloud implements Serializable
       return "wind";
    }
    
+   public String snowstorm()
+   {
+      conversation.begin();
+      return "snow";
+   }
+   
    public String invalidateSession()
    {
       FacesContext.getCurrentInstance().getExternalContext().invalidateSession();

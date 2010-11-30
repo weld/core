@@ -61,18 +61,14 @@ public class FacesUrlTransformer
 
    public FacesUrlTransformer toRedirectViewId()
    {
+      String requestPath = context.getExternalContext().getRequestContextPath();
       if (isUrlAbsolute())
       {
-         String requestPath = context.getExternalContext().getRequestContextPath();
          url = url.substring(url.indexOf(requestPath) + requestPath.length());
-      } 
-      else 
+      }
+      else if (url.startsWith(requestPath))
       {
-         int lastSlash = url.lastIndexOf("/");
-         if (lastSlash > 0) 
-         {
-            url = url.substring(lastSlash);
-         }
+         url = url.substring(requestPath.length());
       }
       return this;
    }

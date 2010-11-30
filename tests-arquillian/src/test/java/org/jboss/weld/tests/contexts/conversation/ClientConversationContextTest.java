@@ -78,11 +78,12 @@ public class ClientConversationContextTest
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class)
+               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class)
                .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
+               .addResource(ClientConversationContextTest.class.getPackage(), "snowstorm.jsf", "/winter/snowstorm.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.jsf", "hailstorm.jspx")
                .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
@@ -95,6 +96,19 @@ public class ClientConversationContextTest
       Page page = client.getPage(getPath("/cloud.jsf", "org.jboss.jsr299"));
       
       Assert.assertEquals(500, page.getWebResponse().getStatusCode());
+   }
+   
+   @Test
+   public void testRedirectToConversation() throws Exception
+   {
+      WebClient client = new WebClient();
+      HtmlPage page = client.getPage(getPath("/cloud.jsf"));
+      HtmlPage snowstorm = getFirstMatchingElement(page, HtmlSubmitInput.class, "snow").click();
+      String name = getFirstMatchingElement(snowstorm, HtmlSpan.class, "snowstormName").getTextContent();
+      assertEquals(Snowstorm.NAME, name);
+      snowstorm = getFirstMatchingElement(snowstorm, HtmlSubmitInput.class, "go").click();
+      name = getFirstMatchingElement(snowstorm, HtmlSpan.class, "snowstormName").getTextContent();
+      assertEquals(Snowstorm.NAME, name);
    }
    
    @Test

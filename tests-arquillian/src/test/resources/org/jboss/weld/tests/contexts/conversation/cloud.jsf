@@ -26,6 +26,9 @@
          <h:commandButton action="#{cloud.hailstorm}" value="Start Conversation2" id="hail" />
       </h:form>
       <h:form>
+         <h:commandButton action="#{cloud.snowstorm}" value="Start Conversation3" id="snow" />
+      </h:form>
+      <h:form>
          <h:commandButton action="#{cloud.invalidateSession}" value="Invalidate Session" id="invalidateSession" />
       </h:form>
       <h:form>

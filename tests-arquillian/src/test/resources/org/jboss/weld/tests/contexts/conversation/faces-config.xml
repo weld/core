@@ -36,6 +36,24 @@
    <navigation-rule>
       <from-view-id>/cloud.jspx</from-view-id>
       <navigation-case>
+         <from-action>#{cloud.snowstorm}</from-action>
+         <to-view-id>/winter/snowstorm.jspx</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   
+   <navigation-rule>
+      <from-view-id>/winter/snowstorm.jspx</from-view-id>
+      <navigation-case>
+         <from-action>#{snowstorm.go}</from-action>
+         <to-view-id>/winter/snowstorm.jspx</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   
+   <navigation-rule>
+      <from-view-id>/cloud.jspx</from-view-id>
+      <navigation-case>
          <from-action>#{cloud.hurricane}</from-action>
          <to-view-id>/cloud.jspx</to-view-id>
          <redirect/>
