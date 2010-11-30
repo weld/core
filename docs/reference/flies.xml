@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns="http://flies.openl10n.net/config/v1/">
+<!--
+      <url>http://localhost:8080/flies/</url>
+      <url>https://translate.jboss.org/flies/</url>
+-->
+      <url>http://localhost:8080/flies/</url>
+      <project>weld-ref-guide</project>
+      <project-version>1.1.0</project-version>
+      <locales>
+         <locale map-from="de-DE">de</locale>
+         <locale map-from="es-ES">es</locale>
+         <locale map-from="fr-FR">fr</locale>
+         <locale map-from="it-IT">it</locale>
+         <locale map-from="ja-JP">ja</locale>
+         <locale map-from="ko-KR">ko</locale>
+         <locale>pt-BR</locale>
+         <locale map-from="zh-CN">zh-CN-Hans</locale>
+         <locale map-from="zh-TW">zh-TW-Hant</locale>
+      </locales>
+</config>
