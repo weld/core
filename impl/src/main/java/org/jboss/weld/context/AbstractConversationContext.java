@@ -261,7 +261,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
       {
          throw new IllegalStateException("Context is not active");
       }
-
    }
 
    public void activate(String cid)
