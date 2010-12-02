@@ -49,6 +49,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTI
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -61,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -93,8 +95,10 @@ import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.WeldDecorator;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
@@ -138,6 +142,10 @@ public class Validator implements Service
       if (normalScoped && !Beans.isBeanProxyable(bean))
       {
          throw Proxies.getUnproxyableTypesException(bean.getTypes());
+      }
+      if (!normalScoped)
+      {
+         validatePseudoScopedBean(bean, beanManager);
       }
    }
 
@@ -579,6 +587,71 @@ public class Validator implements Service
       else
       {
          return resolvedBeans.size() > 0;
+      }
+   }
+
+   /**
+    * Checks to make sure that pseudo scoped beans (i.e. @Dependent scoped
+    * beans) have no circular dependencies
+    * 
+    */
+   private static void validatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager)
+   {
+      reallyValidatePseudoScopedBean(bean, beanManager, new LinkedHashSet<Bean<?>>(), new HashSet<Bean<?>>());
+   }
+
+   /**
+    * checks if a bean has been seen before in the dependecyPath. If not, it
+    * resolves the InjectionPoints and adds the resolved beans to the set of
+    * beans to be validated
+    */
+   private static void reallyValidatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans)
+   {
+      // see if we have already seen this bean in the dependency path
+      if (dependencyPath.contains(bean))
+      {
+         // create a list that shows the path to the bean
+         List<Bean<?>> realDepdencyPath = new ArrayList<Bean<?>>(dependencyPath);
+         realDepdencyPath.add(bean);
+         throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, realDepdencyPath);
+      }
+      if (validatedBeans.contains(bean))
+      {
+         return;
+      }
+      dependencyPath.add(bean);
+      for (InjectionPoint injectionPoint : bean.getInjectionPoints())
+      {
+         validatePseudoScopedInjectionPoint(injectionPoint, beanManager, dependencyPath, validatedBeans);
+      }
+      validatedBeans.add(bean);
+      dependencyPath.remove(bean);
+   }
+
+   /**
+    * finds pseudo beans and adds them to the list of beans to be validated
+    */
+   private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans)
+   {
+      Set<Bean<?>> resolved = beanManager.getBeans(ij);
+      try
+      {
+         Bean<? extends Object> bean = beanManager.resolve(resolved);
+         if (bean != null)
+         {
+            if (!(bean instanceof AbstractBuiltInBean<?>))
+            {
+               boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+               if (!normalScoped)
+               {
+                  reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+               }
+            }
+         }
+      }
+      catch (AmbiguousResolutionException e)
+      {
+         // this is handled by another validator
       }
    }
 

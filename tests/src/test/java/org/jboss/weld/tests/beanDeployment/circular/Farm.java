@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.resolution.circular;
+package org.jboss.weld.tests.beanDeployment.circular;
 
-import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
-class DependentLoopingProducer
+class Farm
 {
    
-   @Produces @DependentLooping
-   public Violation produceViolation(@DependentLooping Violation violation) {
-      return new Violation();
+   @Inject
+   public Farm(Farm farm)
+   {
    }
-
-} 
+   
+}
