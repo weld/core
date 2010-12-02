@@ -136,6 +136,19 @@ public class MetaAnnotationStore implements Service
    }
 
    /**
+    * removes all data for an annotation class. This should be called after an
+    * annotation has been modified through the SPI
+    * 
+    */
+   public void clearAnnotationData(Class<? extends Annotation> annotationClass)
+   {
+      stereotypes.remove(annotationClass);
+      scopes.remove(annotationClass);
+      qualifiers.remove(annotationClass);
+      interceptorBindings.remove(annotationClass);
+   }
+
+   /**
     * Gets a stereotype model
     * 
     * Adds the model if it is not present.

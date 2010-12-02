@@ -195,6 +195,11 @@ public class ClassTransformer implements Service
       }
    }
    
+   public void clearAnnotationData(Class<? extends Annotation> annotationClass)
+   {
+      annotations.remove(annotationClass);
+   }
+
    @SuppressWarnings("unchecked")
    public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz)
    {

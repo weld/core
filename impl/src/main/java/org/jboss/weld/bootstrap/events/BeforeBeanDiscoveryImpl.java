@@ -37,6 +37,8 @@ import org.jboss.weld.literal.ScopeLiteral;
 import org.jboss.weld.literal.StereotypeLiteral;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.resources.ClassTransformer;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
 {
@@ -54,6 +56,8 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
    public void addQualifier(Class<? extends Annotation> bindingType)
    {
       getTypeStore().add(bindingType, QualifierLiteral.INSTANCE);
+      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
+      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
    }
 
    public void addInterceptorBinding(Class<? extends Annotation> bindingType, Annotation... bindingTypeDef)
@@ -63,6 +67,8 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       {
          getTypeStore().add(bindingType, a);
       }
+      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
+      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
    }
 
    public void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating)
@@ -79,6 +85,8 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       {
          getTypeStore().add(scopeType, ScopeLiteral.INSTANCE);
       }
+      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(scopeType);
+      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(scopeType);
    }
 
    public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef)
@@ -88,6 +96,8 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
       {
          getTypeStore().add(stereotype, a);
       }
+      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(stereotype);
+      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(stereotype);
    }
 
    public void addAnnotatedType(AnnotatedType<?> type)
