@@ -252,6 +252,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             if (entry.getValue().isTransient())
             {
                destroyConversation(getSessionFromRequest(getRequest(), false), entry.getKey());
+               getConversationMap().remove(entry.getKey());
             }
          }
          // deactivate the context
