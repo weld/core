@@ -23,8 +23,10 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import javassist.NotFoundException;
+import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
+import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 
@@ -116,6 +118,53 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
          b.setMaxLocals(localCount);
       }
       return b;
+   }
+
+   /**
+    * Client proxies use the following hashCode:
+    * <code>MyProxyName.class.hashCode()</code>
+    * 
+    */
+   @Override
+   protected MethodInfo generateHashCodeMethod(ClassFile proxyClassType)
+   {
+      MethodInfo method = new MethodInfo(proxyClassType.getConstPool(), "hashCode", "()I");
+      method.setAccessFlags(AccessFlag.PUBLIC);
+      Bytecode b = new Bytecode(proxyClassType.getConstPool());
+      // MyProxyName.class.hashCode()
+      int classLocation = proxyClassType.getConstPool().addClassInfo(proxyClassType.getName());
+      b.addLdc(classLocation);
+      // now we have the class object on top of the stack
+      b.addInvokevirtual("java.lang.Object", "hashCode", "()I");
+      // now we have the hashCode
+      b.add(Opcode.IRETURN);
+      b.setMaxLocals(1);
+      b.setMaxStack(1);
+      method.setCodeAttribute(b.toCodeAttribute());
+      return method;
+   }
+
+   /**
+    * Client proxies are equal to other client proxies for the same bean.
+    * <p>
+    * The corresponding java code: <code>
+    * return other instanceof MyProxyClassType.class
+    * </code>
+    * 
+    */
+   @Override
+   protected MethodInfo generateEqualsMethod(ClassFile proxyClassType)
+   {
+      MethodInfo method = new MethodInfo(proxyClassType.getConstPool(), "equals", "(Ljava/lang/Object;)Z");
+      method.setAccessFlags(AccessFlag.PUBLIC);
+      Bytecode b = new Bytecode(proxyClassType.getConstPool());
+      b.addAload(1);
+      b.addInstanceof(proxyClassType.getName());
+      b.add(Opcode.IRETURN);
+      b.setMaxLocals(2);
+      b.setMaxStack(1);
+      method.setCodeAttribute(b.toCodeAttribute());
+      return method;
    }
 
    @Override
