@@ -99,9 +99,13 @@ public class ConversationImpl implements ManagedConversation, Serializable
       {
          throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
       }
-      log.debug(PROMOTED_TRANSIENT, id);
       _transient = false;
-      this.id = getConversationContext().generateConversationId();
+      if (this.id == null)
+      {
+         // This a conversation that was made transient previously in this request
+         this.id = getConversationContext().generateConversationId();
+      }
+      log.debug(PROMOTED_TRANSIENT, id);
    }
 
    public void begin(String id)
@@ -115,9 +119,9 @@ public class ConversationImpl implements ManagedConversation, Serializable
       {
          throw new IllegalStateException(CONVERSATION_ID_ALREADY_IN_USE, id);
       }
-      log.debug(PROMOTED_TRANSIENT, id);
       _transient = false;
       this.id = id;
+      log.debug(PROMOTED_TRANSIENT, id);
    }
 
 
@@ -130,13 +134,19 @@ public class ConversationImpl implements ManagedConversation, Serializable
       }
       log.debug(DEMOTED_LRC, id);
       _transient = true;
-      id = null;
    }
 
    public String getId()
    {
       verifyConversationContextActive();
-      return id;
+      if (!isTransient())
+      {
+         return id;
+      }
+      else
+      {
+         return null;
+      }
    }
 
    public long getTimeout()
@@ -154,7 +164,14 @@ public class ConversationImpl implements ManagedConversation, Serializable
    @Override
    public String toString()
    {
-      return "Conversation with id: " + id;
+      if (_transient)
+      {
+         return "Transient conversation";
+      }
+      else
+      {
+         return "Conversation with id: " + id;
+      }
    }
 
    public boolean isTransient()

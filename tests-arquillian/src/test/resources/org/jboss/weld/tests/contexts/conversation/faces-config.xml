@@ -78,6 +78,24 @@
    </navigation-rule>
    
    <navigation-rule>
+      <from-view-id>/tornado.jspx</from-view-id>
+      <navigation-case>
+         <from-action>#{tornado.beginConversation}</from-action>
+         <to-view-id>/tornado.jspx</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   
+   <navigation-rule>
+      <from-view-id>/tornado.jspx</from-view-id>
+      <navigation-case>
+         <from-action>#{tornado.endAndBeginConversation}</from-action>
+         <to-view-id>/tornado.jspx</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   
+   <navigation-rule>
       <from-view-id>/locking-issue.jspx</from-view-id>
       <navigation-case>
          <from-action>#{lockingIssueBean.start}</from-action>

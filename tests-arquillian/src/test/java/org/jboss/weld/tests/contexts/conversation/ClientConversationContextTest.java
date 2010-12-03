@@ -78,10 +78,11 @@ public class ClientConversationContextTest
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class, LockingIssueBean.class)
+               .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class, LockingIssueBean.class, Tornado.class)
                .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
+               .addResource(ClientConversationContextTest.class.getPackage(), "tornado.jsf", "tornado.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "snowstorm.jsf", "/winter/snowstorm.jspx")
                .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.jsf", "hailstorm.jspx")
@@ -110,6 +111,22 @@ public class ClientConversationContextTest
       snowstorm = getFirstMatchingElement(snowstorm, HtmlSubmitInput.class, "go").click();
       name = getFirstMatchingElement(snowstorm, HtmlSpan.class, "snowstormName").getTextContent();
       assertEquals(Snowstorm.NAME, name);
+   }
+   
+   // WELD-755
+   @Test
+   public void testEndAndBeginInSameRequestsKeepsSameCid() throws Exception
+   {
+      WebClient client = new WebClient();
+      HtmlPage page = client.getPage(getPath("/tornado.jsf"));
+      String name = getFirstMatchingElement(page, HtmlSpan.class, "tornadoName").getTextContent();
+      assertEquals("Pete", name);
+      page = getFirstMatchingElement(page, HtmlSubmitInput.class, "beginConversation").click();
+      name = getFirstMatchingElement(page, HtmlSpan.class, "tornadoName").getTextContent();
+      assertEquals("Shane", name);
+      page = getFirstMatchingElement(page, HtmlSubmitInput.class, "endAndBeginConversation").click();
+      name = getFirstMatchingElement(page, HtmlSpan.class, "tornadoName").getTextContent();
+      assertEquals("Shane", name);
    }
 
    @Test
