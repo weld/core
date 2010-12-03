@@ -28,7 +28,7 @@ import static javax.faces.event.PhaseId.RESTORE_VIEW;
 import static org.jboss.weld.logging.Category.JSF;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_TRANSIENT_CONVERSATION;
-import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_TO_RESTORE;
+import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
 import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
 import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
@@ -105,7 +105,7 @@ public class WeldPhaseListener implements PhaseListener
       if (cid != null && conversationContext.getConversation(cid) == null)
       {
          // Make sure that the conversation already exists
-         throw new NonexistentConversationException(NO_CONVERSATION_TO_RESTORE, cid);
+         throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
       }
       conversationContext.activate(cid);
    }
