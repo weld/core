@@ -69,4 +69,24 @@ public class ProxyTest
       Baz baz = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
       Assert.assertEquals(1, baz.getCount());
    }
+
+   /**
+    * The proxy hashCode should be equal to the class hashCode (see WELD-695)
+    */
+   @Test
+   public void testHashCodeImplmentation()
+   {
+      Bean<?> bean = beanManager.resolve(beanManager.getBeans("baz"));
+      Baz baz = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
+      Assert.assertTrue(baz.hashCode() == baz.getClass().hashCode());
+   }
+
+   @Test
+   public void testEqualsImplmentation()
+   {
+      Bean<?> bean = beanManager.resolve(beanManager.getBeans("baz"));
+      Baz baz1 = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
+      Baz baz2 = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
+      Assert.assertEquals(baz1, baz2);
+   }
 }
