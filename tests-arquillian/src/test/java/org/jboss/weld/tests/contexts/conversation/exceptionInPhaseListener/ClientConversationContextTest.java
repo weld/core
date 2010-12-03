@@ -46,7 +46,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -103,11 +102,12 @@ public class ClientConversationContextTest
       String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
       assertEquals(Cloud.NAME, cloudName);
       
-      // Now start a conversation and access the page that throws an exception again
+      // Now start a conversation
       HtmlPage thunderstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "beginConversation").click();
-      // This page will error
-      
       String cid = getCid(thunderstorm);
+
+      //  and access the page that throws an exception again
+      getFirstMatchingElement(cloud, HtmlSubmitInput.class, "thunderstorm").click();
       
       cloud = client.getPage(getPath("/cloud.jsf", cid));
       

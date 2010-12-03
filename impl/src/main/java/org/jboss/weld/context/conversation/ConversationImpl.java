@@ -139,7 +139,7 @@ public class ConversationImpl implements ManagedConversation, Serializable
    public String getId()
    {
       verifyConversationContextActive();
-      if (!isTransient())
+      if (!_transient)
       {
          return id;
       }

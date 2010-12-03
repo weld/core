@@ -16,7 +16,10 @@
    <f:view>
       <h:outputText value="#{cloud.name}" id="cloudName" />
       <h:form>
-         <h:commandButton action="#{cloud.thunderstorm}" value="Start Conversation" id="beginConversation" />
+         <h:commandButton action="#{cloud.beginConversation}" value="Start Conversation" id="beginConversation" />
+      </h:form>
+      <h:form>
+         <h:commandButton action="#{cloud.thunderstorm}" value="Start Conversation" id="thunderstorm" />
       </h:form>
    </f:view>
   </body>

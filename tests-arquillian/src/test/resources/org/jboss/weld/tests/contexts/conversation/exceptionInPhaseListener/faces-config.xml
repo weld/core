@@ -15,5 +15,14 @@
          <to-view-id>/thunderstorm.jspx</to-view-id>
       </navigation-case>
    </navigation-rule>
+   
+   <navigation-rule>
+      <from-view-id>/cloud.jspx</from-view-id>
+      <navigation-case>
+         <redirect/>
+         <from-action>#{cloud.beginConversation}</from-action>
+         <to-view-id>/cloud.jspx</to-view-id>
+      </navigation-case>
+   </navigation-rule>
 
 </faces-config>

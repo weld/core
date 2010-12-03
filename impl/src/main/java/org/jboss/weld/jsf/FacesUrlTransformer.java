@@ -44,14 +44,37 @@ public class FacesUrlTransformer
 
    public FacesUrlTransformer appendConversationIdIfNecessary(String cidParameterName, String cid)
    {
-      int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
-      // if there is no query string or there is a query string but the cid param is absent, then append it
-      if (queryStringIndex < 0 || url.indexOf(cidParameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0)
-      {
-         url = new StringBuilder(url).append(queryStringIndex < 0 ? QUERY_STRING_DELIMITER : PARAMETER_PAIR_DELIMITER)
-            .append(cidParameterName).append(PARAMETER_ASSIGNMENT_OPERATOR).append(cid).toString();
-      }
+      this.url = appendParameterIfNeeded(url, cidParameterName, cid);
       return this;
+   }
+
+   private static String appendParameterIfNeeded(String url, String parameterName, String parameterValue)
+   {
+      int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
+      // if there is no query string or there is a query string but the param is
+      // absent, then append it
+      if (queryStringIndex < 0 || url.indexOf(parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0)
+      {
+         StringBuilder builder = new StringBuilder(url);
+         if (queryStringIndex < 0)
+         {
+            builder.append(QUERY_STRING_DELIMITER);
+         }
+         else
+         {
+            builder.append(PARAMETER_PAIR_DELIMITER);
+         }
+         builder.append(parameterName).append(PARAMETER_ASSIGNMENT_OPERATOR);
+         if (parameterValue != null)
+         {
+            builder.append(parameterValue);
+         }
+         return builder.toString();
+      }
+      else
+      {
+         return url;
+      }
    }
    
    public String getUrl()

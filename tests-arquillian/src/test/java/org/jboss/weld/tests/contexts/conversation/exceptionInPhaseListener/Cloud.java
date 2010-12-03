@@ -21,7 +21,6 @@ import java.io.Serializable;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -85,9 +84,14 @@ public class Cloud implements Serializable
    
    public String thunderstorm()
    {
-      conversation.begin();
-      setName("gavin");
       return "thunder";
+   }
+   
+   public String beginConversation()
+   {
+      setName("gavin");
+      conversation.begin();
+      return "conversationBegun";
    }
    
    public String hailstorm()
