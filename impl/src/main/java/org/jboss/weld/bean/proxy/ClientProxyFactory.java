@@ -99,6 +99,9 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       b.addCheckcast(method.getDeclaringClass().getName());
 
       //now we should have the target bean instance on top of the stack
+      // we need to dup it so we still have it to compare to the return value
+      b.add(Opcode.DUP);
+
       //lets create the method invocation
       String methodDescriptor = DescriptorUtils.getMethodDescriptor(method);
       BytecodeUtils.loadParameters(b, methodDescriptor);
@@ -110,9 +113,40 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       {
          b.addInvokevirtual(method.getDeclaringClass().getName(), method.getName(), methodDescriptor);
       }
-      // now we need to return the appropriate type
-      BytecodeUtils.addReturnInstruction(b, method.getReturnType());
+      // if this method returns a primitive we just return
+      if (method.getReturnType().isPrimitive())
+      {
+         BytecodeUtils.addReturnInstruction(b, method.getReturnType());
+      }
+      else
+      {
+         // otherwise we have to check that the proxy is not returning 'this;
+         // now we need to check if the proxy has return 'this' and if so return
+         // an
+         // instance of the proxy.
+         // currently we have result, beanInstance on the stack.
+         b.add(Opcode.DUP_X1);
+         // now we have result, beanInstance, result
+         // we need to compare result and beanInstance
 
+         // first we need to build up the inner conditional that just returns
+         // the
+         // result
+         Bytecode rresult = new Bytecode(file.getConstPool());
+         BytecodeUtils.addReturnInstruction(rresult, method.getReturnType());
+         byte returnBytes[] = rresult.get();
+         b.add(Opcode.IF_ACMPEQ);
+         BytecodeUtils.add16bit(b, returnBytes.length + 3); // ifacmpeq = 3
+                                                            // bytes
+         for (byte bt : returnBytes)
+         {
+            b.add(bt);
+         }
+         // now add the case where the proxy returns 'this';
+         b.add(Opcode.ALOAD_0);
+         b.addCheckcast(method.getReturnType().getName());
+         BytecodeUtils.addReturnInstruction(b, method.getReturnType());
+      }
       if (b.getMaxLocals() < localCount)
       {
          b.setMaxLocals(localCount);

@@ -39,5 +39,5 @@ public interface BeanInstance
    
    public Class<?> getInstanceType();
    
-   public Object invoke(Method method, Object... arguments) throws Throwable;
+   public Object invoke(Object instance, Method method, Object... arguments) throws Throwable;
 }

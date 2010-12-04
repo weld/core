@@ -39,13 +39,13 @@ public abstract class AbstractBeanInstance implements BeanInstance
    // The log provider
    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-   public Object invoke(Method method, Object... arguments) throws Throwable
+   public Object invoke(Object instance, Method method, Object... arguments) throws Throwable
    {
       Object result = null;
       try
       {
          SecureReflections.ensureAccessible(method);
-         result = method.invoke(getInstance(), arguments);
+         result = method.invoke(instance, arguments);
       }
       catch (InvocationTargetException e)
       {

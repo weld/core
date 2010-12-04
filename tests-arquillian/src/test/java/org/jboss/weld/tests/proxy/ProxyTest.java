@@ -89,4 +89,17 @@ public class ProxyTest
       Baz baz2 = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
       Assert.assertEquals(baz1, baz2);
    }
+
+   @Test
+   public void testBeanInstanceDoesNotEscape()
+   {
+      Bean<?> bean = beanManager.resolve(beanManager.getBeans("wobble"));
+      Wobble wobble = (Wobble) beanManager.getReference(bean, Wobble.class, beanManager.createCreationalContext(bean));
+      Assert.assertSame(wobble, wobble.getThis());
+      // package private classes have a diffent code path
+      // as they do not use direct bytecode invocation
+      bean = beanManager.resolve(beanManager.getBeans("wibble"));
+      Wibble wibble = (Wibble) beanManager.getReference(bean, Wibble.class, beanManager.createCreationalContext(bean));
+      Assert.assertSame(wibble, wibble.getThis());
+   }
 }

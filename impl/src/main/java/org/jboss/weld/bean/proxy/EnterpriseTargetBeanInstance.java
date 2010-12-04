@@ -56,7 +56,7 @@ public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implement
       return beanType;
    }
 
-   public Object invoke(Method method, Object... arguments) throws Throwable
+   public Object invoke(Object instance, Method method, Object... arguments) throws Throwable
    {
       // Pass the invocation directly to the method handler
       return methodHandler.invoke(null, method, method, arguments);

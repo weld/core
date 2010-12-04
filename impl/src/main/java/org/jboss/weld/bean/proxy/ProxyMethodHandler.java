@@ -102,8 +102,17 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
          {
             throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY);
          }
-         return beanInstance.invoke(thisMethod, args);
+         Object instance = beanInstance.getInstance();
+         Object result = beanInstance.invoke(instance, thisMethod, args);
+         // if the method returns this return the proxy instead
+         // to prevent the bean instance escaping
+         if (result == instance)
+         {
+            return self;
+         }
+         return result;
       }
    }
+
 
 }
