@@ -53,6 +53,7 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
@@ -140,13 +141,13 @@ public class ClientConversationContextTest
        */
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
-      HtmlPage page = client.getPage(getPath("locking-issue.jsf"));
+      HtmlPage page = client.getPage(getPath("/locking-issue.jsf"));
       assertEquals("Gavin", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
       page = getFirstMatchingElement(page, HtmlSubmitInput.class, "start").click();
       assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
       String cid = getCid(page);
       page = getFirstMatchingElement(page, HtmlSubmitInput.class, "dummy").click();
-      page = client.getPage(getPath("locking-issue.jsf?cid=" + cid));
+      page = client.getPage(getPath("/locking-issue.jsf?cid=" + cid));
       assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
    }
 
@@ -245,13 +246,13 @@ public class ClientConversationContextTest
    protected String getPath(String viewId, String cid)
    {
       // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
+      return "http://localhost:8080/test" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
    }
 
    protected String getPath(String viewId)
    {
       // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + viewId;
+      return "http://localhost:8080/test" + viewId;
    }
 
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
