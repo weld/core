@@ -82,12 +82,12 @@ public class ClientConversationContextTest
                .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class, LockingIssueBean.class, Tornado.class)
                .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "tornado.jsf", "tornado.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "snowstorm.jsf", "/winter/snowstorm.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.jsf", "hailstorm.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "locking-issue.jsf", "locking-issue.jspx")
+               .addResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
+               .addResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
+               .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
+               .addResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
+               .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
+               .addResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
                .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 

@@ -1,0 +1,14 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<head>
+<title>Test</title>
+</head>
+<body>
+	<h:outputText value="#{snowstorm.name}" id="snowstormName" />
+	<h:form>
+		<h:commandButton action="#{snowstorm.go}" value="Go" id="go" />
+	</h:form>
+</body>
+</html>

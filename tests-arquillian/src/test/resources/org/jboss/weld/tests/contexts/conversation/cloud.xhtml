@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html">
+   <head>
+      <title>Test</title>
+   </head>
+   <body>
+      <h:outputText value="#{cloud.name}" id="cloudName" />
+      <h:outputText value="#{hurricane.preDestroyCalledOnCloud}" id="cloudDestroyed" /> 
+      <h:form>
+         <h:commandButton action="#{cloud.thunderstorm}" value="Start Conversation" id="beginConversation" />
+      </h:form>
+      <h:form>
+         <h:commandButton action="#{cloud.hurricane}" value="Start Conversation" id="hurricane" />
+      </h:form>
+      <h:form>
+         <h:commandButton action="#{cloud.hailstorm}" value="Start Conversation2" id="hail" />
+      </h:form>
+      <h:form>
+         <h:commandButton action="#{cloud.snowstorm}" value="Start Conversation3" id="snow" />
+      </h:form>
+      <h:form>
+         <h:commandButton action="#{cloud.invalidateSession}" value="Invalidate Session" id="invalidateSession" />
+      </h:form>
+      <h:form>
+         <h:commandButton action="#{cloud.sleet}" value="Sleet" id="sleet" />
+      </h:form>
+  </body>
+</html>

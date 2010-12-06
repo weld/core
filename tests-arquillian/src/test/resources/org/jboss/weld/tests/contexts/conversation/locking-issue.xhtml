@@ -1,0 +1,15 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html">
+   <head>
+      <title>Test</title>
+   </head>
+   <body>
+		<h:form>  
+			<h:commandButton value="start" action="#{lockingIssueBean.start}" id="start"/> 
+			<h:commandButton value="dummy" action="#{lockingIssueBean.dummy}" id="dummy" /> 
+		   <h:outputText value="#{lockingIssueBean.name}" id="name"/> 
+		</h:form> 
+	</body> 
+</html>

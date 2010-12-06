@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html">
+   <head>
+      <title>Test</title>
+   </head>
+   <body>
+      <h:outputText value="#{tornado.name}" id="tornadoName" />
+      <h:form>
+         <h:commandButton action="#{tornado.beginConversation}" value="Start Conversation" id="beginConversation" />
+      </h:form>
+      <h:form>
+         <h:commandButton action="#{tornado.endAndBeginConversation}" value="End and Start Conversation" id="endAndBeginConversation" />
+      </h:form>
+  </body>
+  </html>
+
