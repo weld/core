@@ -75,9 +75,11 @@ public class BeansXmlParser
       {
          throw new IllegalStateException(CONFIGURATION_ERROR, e);
       }
+      InputStream beansXmlInputStream = null;
       try
       {
-         InputSource source = new InputSource(beansXml.openStream());
+         beansXmlInputStream = beansXml.openStream();
+         InputSource source = new InputSource(beansXmlInputStream);
          if (source.getByteStream().available() == 0)
          {
             // The file is just acting as a marker file
@@ -106,6 +108,20 @@ public class BeansXmlParser
       catch (SAXException e)
       {
          throw new IllegalStateException(PARSING_ERROR, beansXml, e);
+      }
+      finally
+      {
+         if (beansXmlInputStream != null)
+         {
+            try
+            {
+               beansXmlInputStream.close();
+            }
+            catch (IOException e)
+            {
+               throw new IllegalStateException(e);
+            }
+         }
       }
    }
 
