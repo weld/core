@@ -1,0 +1,6 @@
+ <beans>
+   <alternatives>
+      <class>
+      org.jboss.weld.tests.parser.Cow</class>
+   </alternatives>
+ </beans>
