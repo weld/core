@@ -83,6 +83,32 @@ public class Reflections
       return map;
    }
    
+   public static boolean isCacheable(Set<Annotation> annotations)
+   {
+      for (Annotation qualifier : annotations)
+      {
+         Class<?> clazz = qualifier.getClass();
+         if (clazz.isAnonymousClass() || (clazz.isMemberClass() && isStatic(clazz)))
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+   
+   public static boolean isCacheable(Annotation[] annotations)
+   {
+      for (Annotation qualifier : annotations)
+      {
+         Class<?> clazz = qualifier.getClass();
+         if (clazz.isAnonymousClass() || (clazz.isMemberClass() && isStatic(clazz)))
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+   
    @SuppressWarnings("unchecked")
    public static <T> T cast(Object obj)
    {

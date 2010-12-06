@@ -293,7 +293,8 @@ public class BeanDeployerEnvironment
     */
    public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean)
    {
-      Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create()));
+      // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
+      Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));
       resolvedDisposalBeans.addAll(beans);
       return Collections.unmodifiableSet(beans);
    }

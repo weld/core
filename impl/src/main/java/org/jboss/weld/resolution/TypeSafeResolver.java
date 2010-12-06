@@ -54,6 +54,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
    private final ConcurrentMap<R, Set<T>> resolved;
    // The beans to search
    private final Iterable<? extends T> allBeans;
+   private final ResolvableToBeanSet<R, T> resolverFunction;
    
    
 
@@ -63,7 +64,8 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
     */
    public TypeSafeResolver(Iterable<? extends T> allBeans)
    {
-      this.resolved = new MapMaker().makeComputingMap(new ResolvableToBeanSet<R, T>(this));
+      this.resolverFunction = new ResolvableToBeanSet<R, T>(this);
+      this.resolved = new MapMaker().makeComputingMap(resolverFunction);
       this.allBeans = allBeans;
    }
 
@@ -81,9 +83,17 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
     * @param resolvable The resolving criteria
     * @return An unmodifiable set of matching beans
     */
-   public Set<T> resolve(R resolvable)
+   public Set<T> resolve(R resolvable, boolean cache)
    {
-      return resolved.get(wrap(resolvable));
+      R wrappedResolable = wrap(resolvable);
+      if (cache)
+      {
+         return resolved.get(wrappedResolable);
+      }
+      else
+      {
+         return resolverFunction.apply(wrappedResolable);
+      }
    }
    
    /**
@@ -129,6 +139,11 @@ public abstract class TypeSafeResolver<R extends Resolvable, T>
    protected R wrap(R resolvable)
    {
       return resolvable;
+   }
+   
+   public boolean isCached(R resolvable)
+   {
+      return resolved.containsKey(wrap(resolvable));
    }
 
    /**
