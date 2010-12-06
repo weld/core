@@ -17,6 +17,14 @@
    </navigation-rule>
    
    <navigation-rule>
+      <from-view-id>/cloud.xhtml</from-view-id>
+      <navigation-case>
+         <from-action>#{cloud.blizzard}</from-action>
+         <to-view-id>/blizzard.xhtml</to-view-id>
+      </navigation-case>
+   </navigation-rule>
+   
+   <navigation-rule>
       <from-view-id>/thunderstorm.xhtml</from-view-id>
       <navigation-case>
          <from-action>#{thunderstorm.cloud}</from-action>

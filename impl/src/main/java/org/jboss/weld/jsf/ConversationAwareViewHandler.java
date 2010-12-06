@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.jsf;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Instance;
@@ -48,15 +51,28 @@ import org.jboss.weld.context.http.HttpConversationContext;
  */
 public class ConversationAwareViewHandler extends ViewHandlerWrapper
 {
+   
+   private static enum Source
+   {
+      
+      ACTION,
+      BOOKMARKABLE,
+      REDIRECT,
+      RESOURCE;
+      
+   }
 
    private final ViewHandler delegate;
    private final Instance<Context> context;
+   private final ThreadLocal<Source> source;
+   
 
    public ConversationAwareViewHandler(ViewHandler delegate)
    {
       this.delegate = delegate;
       Container container = Container.instance();
       this.context = container.deploymentManager().instance().select(Context.class);
+      this.source = new ThreadLocal<ConversationAwareViewHandler.Source>();
    }
 
    /**
@@ -76,13 +92,67 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
       ConversationContext conversationContext = context.select(HttpConversationContext.class).get();
       String actionUrl = super.getActionURL(facesContext, viewId);
       Conversation conversation = conversationContext.getCurrentConversation();
-      if (!conversation.isTransient())
+      if (!getSource().equals(Source.BOOKMARKABLE) && !conversation.isTransient())
       {
          return new FacesUrlTransformer(actionUrl, facesContext).appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).getUrl();
       }
       else
       {
          return actionUrl;
+      }
+   }
+   
+   private Source getSource()
+   {
+      if (source.get() == null)
+      {
+         return Source.ACTION;
+      }
+      else
+      {
+         return source.get();
+      }
+   }
+   
+   @Override
+   public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams)
+   {
+      try
+      {
+         source.set(Source.BOOKMARKABLE);
+         return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+      }
+      finally
+      {
+         source.remove();
+      }
+   }
+   
+   @Override
+   public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams)
+   {
+      try
+      {
+         source.set(Source.REDIRECT);
+         return super.getRedirectURL(context, viewId, parameters, includeViewParams);
+      }
+      finally
+      {
+         source.remove();
+      }
+   }
+   
+   @Override
+   public String getResourceURL(FacesContext context, String path)
+   {
+      try
+      {
+         source.set(Source.RESOURCE);
+         return super.getResourceURL(context, path);
+      }
+      finally
+      {
+         source.remove();
       }
    }
 

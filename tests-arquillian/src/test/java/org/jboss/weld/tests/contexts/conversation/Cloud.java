@@ -108,5 +108,12 @@ public class Cloud implements Serializable
       FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
       return "sleet";
    }
+
+   public String blizzard()
+   {
+      this.name = "henry";
+      conversation.begin();
+      return "blizzard";
+   }
    
 }
