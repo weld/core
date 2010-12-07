@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Import updated source content from git to Flies (possibly run nightly)
+
+# update pot files before importing to flies
+echo "Updating POT files"
+(cd src/main/docbook/; publican update_pot)
+
+# push updated pot files to flies for translation
+echo "Pushing updated POT files to Flies for translation"
+mvn flies:publican-push -e -B
+
+# optional: push pot files back to VCS (probably best avoided for nightly jobs)
+echo "Finished!  You may want to check src/main/docbook into version control to track the updated POT files"

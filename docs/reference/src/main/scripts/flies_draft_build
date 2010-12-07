@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Build DocBook document using latest (draft) translations
+
+echo "Pulling latest translations from Flies server"
+# TODO this should probably write to a different directory (not src/main/docbook)
+mvn flies:publican-pull -e
+
+# draft build the translated documents
+# (alternative: run Ant from weld/build/dist)
+
+# TODO this should build from the "different directory" above
+mvn jdocbook:translate 
