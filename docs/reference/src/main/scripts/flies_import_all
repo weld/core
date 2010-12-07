@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Initial import (used when first setting up project in Flies)
+
+# update pot and po files before importing to flies
+echo "Updating POT and PO files from DocBook XML"
+(cd src/main/docbook/; publican update_pot)
+(cd src/main/docbook/; publican update_po --langs=all)
+
+# push initial po and pot files to flies for translation
+echo "Note: this script should only be run against a new, empty Flies project version!"
+echo "Use the script flies_import_source for normal updates."
+echo
+echo "Pushing to Flies server."
+mvn flies:publican-push -Dflies.importPo -e
+
+echo "Finished!  You may want to check src/main/docbook into version control to track the updated POT/PO files"
