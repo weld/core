@@ -171,7 +171,7 @@ public class Validator implements Service
             }
             specializedBeans.add(abstractBean.getSpecializedBean());
          }
-         if ((bean instanceof AbstractClassBean<?>) && bean.isPassivationCapableBean())
+         if ((bean instanceof AbstractClassBean<?>))
          {
             AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
             if (classBean.hasDecorators())
@@ -201,20 +201,24 @@ public class Validator implements Service
                {
                   SerializableContextual<Interceptor<?>, ?> serializableContextual = cast(interceptorMetadata.getInterceptorReference().getInterceptor());
 
-                  if (!((InterceptorImpl<?>) serializableContextual.get()).isSerializable())
+                  if (classBean.isPassivationCapableBean() && !((InterceptorImpl<?>) serializableContextual.get()).isSerializable())
                   {
                      throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, serializableContextual.get());
                   }
                   for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints())
                   {
                      Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                     validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                     validateInjectionPoint(injectionPoint, beanManager);
+                     if (classBean.isPassivationCapableBean())
+                     {
+                        validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                     }
                   }
                }
                if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof ClassMetadata<?>)
                {
                   ClassMetadata<?> classMetadata = (ClassMetadata<?>) interceptorMetadata.getInterceptorReference().getInterceptor();
-                  if (!Reflections.isSerializable(classMetadata.getJavaClass()))
+                  if (classBean.isPassivationCapableBean() && !Reflections.isSerializable(classMetadata.getJavaClass()))
                   {
                      throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
                   }
@@ -222,7 +226,11 @@ public class Validator implements Service
                   for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
                   {
                      Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                     validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                     validateInjectionPoint(injectionPoint, beanManager);
+                     if (classBean.isPassivationCapableBean())
+                     {
+                        validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                     }
                   }
                }
             }
@@ -234,7 +242,7 @@ public class Validator implements Service
    {
       for (Decorator<?> decorator : classBean.getDecorators())
       {
-         if (!((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable())
+         if (classBean.isPassivationCapableBean() && !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable())
          {
             throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
          }
@@ -243,7 +251,11 @@ public class Validator implements Service
             if (!ij.isDelegate())
             {
                Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
-               validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+               validateInjectionPoint(ij, beanManager);
+               if (classBean.isPassivationCapableBean())
+               {
+                  validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+               }
             }
          }
       }
