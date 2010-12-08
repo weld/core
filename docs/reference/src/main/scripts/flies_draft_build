@@ -3,12 +3,25 @@ set -eu
 
 # Build DocBook document using latest (draft) translations
 
+# PO files are saved to a directory outside the src/main/docbook tree
+# to avoid overwriting versioned files.
+
+draft_dir=target/draft
+mkdir -p $draft_dir
+
 echo "Pulling latest translations from Flies server"
-# TODO this should probably write to a different directory (not src/main/docbook)
-mvn flies:publican-pull -e
+# write PO files to a different directory under target
+mvn flies:publican-pull -e -Dflies.dstDir=$draft_dir
 
 # draft build the translated documents
 # (alternative: run Ant from weld/build/dist)
 
-# TODO this should build from the "different directory" above
-mvn jdocbook:translate 
+# copy en-US source to draft dir for use by jDocBook
+cp -a src/main/docbook/en-US $draft_dir/en-US
+
+echo "Building translated documentation with jDocBook"
+
+# pick up PO files from the different directory above
+mvn compile -Ptranslations -DjdocbookSourceDirectory=$draft_dir
+
+echo "Finished! You may need to overwrite src/main/docbook from version control"
