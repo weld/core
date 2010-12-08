@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 # Export translations from flies to git (eg before a release)
 
