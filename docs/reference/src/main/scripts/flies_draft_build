@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 # Build DocBook document using latest (draft) translations
 

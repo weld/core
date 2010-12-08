@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 # Import updated source content from git to Flies (possibly run nightly)
 

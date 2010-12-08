@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 # Initial import (used when first setting up project in Flies)
 
