@@ -28,9 +28,7 @@
       <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
       <flies.plugin.version>1.1-alpha-1</flies.plugin.version>
       <flies.srcDir>src/main/docbook</flies.srcDir>
-      <flies.srcDirPot>./pot</flies.srcDirPot>
       <flies.dstDir>src/main/docbook</flies.dstDir>
-      <flies.dstDirPot>./pot</flies.dstDirPot>
    </properties>
 
    <build>
