@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.Conversation;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
@@ -63,7 +61,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    }
 
    private final ViewHandler delegate;
-   private final Instance<Context> context;
+   private final ConversationContext conversationContext;
    private final ThreadLocal<Source> source;
    
 
@@ -71,7 +69,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    {
       this.delegate = delegate;
       Container container = Container.instance();
-      this.context = container.deploymentManager().instance().select(Context.class);
+      this.conversationContext = container.deploymentManager().instance().select(HttpConversationContext.class).get();
       this.source = new ThreadLocal<ConversationAwareViewHandler.Source>();
    }
 
@@ -89,7 +87,6 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
    @Override
    public String getActionURL(FacesContext facesContext, String viewId)
    {
-      ConversationContext conversationContext = context.select(HttpConversationContext.class).get();
       String actionUrl = super.getActionURL(facesContext, viewId);
       Conversation conversation = conversationContext.getCurrentConversation();
       if (!getSource().equals(Source.BOOKMARKABLE) && !conversation.isTransient())
