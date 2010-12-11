@@ -20,10 +20,11 @@ package org.jboss.weld.injection;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import javax.decorator.Decorator;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
+import javassist.util.proxy.ProxyObject;
+import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.introspector.WeldConstructor;
@@ -31,7 +32,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * A wrapper on a {@link ConstructorInjectionPoint}, to be used if a proxy subclass is instantiated instead of the
- * original (e.g. because the original is an abstract {@link Decorator})
+ * original (e.g. because the original is an abstract {@link javax.decorator.Decorator})
  *
  * This is a wrapper class, it is not thread-safe and any instance of this class should be used only for temporarily
  * enhancing the bean instance creation process.
@@ -44,10 +45,12 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
 {
    private ConstructorInjectionPoint<T> originalConstructorInjectionPoint;
    private Object decoratorDelegate = null;
+   private boolean decorator;
 
    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint)
    {
       super(declaringBean, weldConstructor);
+      this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
       this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;
    }
 
@@ -78,7 +81,17 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
       // Once the instance is created, a method handler is required regardless of whether
       // an actual bean instance is known yet.
       T instance = super.newInstance(manager, creationalContext);
-      DecoratorProxyFactory.setBeanInstance(instance, decoratorDelegate == null ? null : new TargetBeanInstance(decoratorDelegate));
-      return instance;
+      if (decorator)
+      {
+          DecoratorProxyFactory.setBeanInstance(instance, decoratorDelegate == null ? null : new TargetBeanInstance(decoratorDelegate));
+      }
+      else
+      {
+         if (instance instanceof ProxyObject)
+         {
+            ((ProxyObject) instance).setHandler(new CombinedInterceptorAndDecoratorStackMethodHandler());
+         }
+      }
+       return instance;
    }
 }

@@ -44,7 +44,6 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.ProxyClassConstructorInjectionPointWrapper;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
@@ -101,8 +100,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    }
    
    private WeldClass<?> annotatedDelegateItem;
-   private WeldClass<T> proxyClassForAbstractDecorators;
-   private WeldConstructor<T> constructorForAbstractDecorator;
    private Map<MethodSignature, WeldMethod<?,?>> decoratorMethods;
    private WeldInjectionPoint<?, ?> delegateInjectionPoint;
    private Set<Annotation> delegateBindings;
@@ -120,8 +117,8 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    {
       if (!isInitialized())
       {
-         super.initialize(environment);
          initDelegateInjectionPoint();
+         super.initialize(environment);
          initDecoratedTypes();
          initDelegateBindings();
          initDelegateType();
@@ -141,18 +138,19 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
    protected void initDelegateInjectionPoint()
    {
       this.delegateInjectionPoint = getDelegateInjectionPoints().iterator().next();
-      if (getWeldAnnotated().isAbstract())
-      {
-         Class<T> clazz = new DecoratorProxyFactory<T>(getWeldAnnotated().getJavaClass(), delegateInjectionPoint, this).getProxyClass();
-         proxyClassForAbstractDecorators = beanManager.getServices().get(ClassTransformer.class).loadClass(clazz);
-         constructorForAbstractDecorator = WeldConstructorImpl.of(
-               proxyClassForAbstractDecorators.getDeclaredWeldConstructor(getConstructor().getSignature()),
-               proxyClassForAbstractDecorators,
-               beanManager.getServices().get(ClassTransformer.class));
-      }
    }
 
-   @Override
+
+    protected Class<T> createEnhancedSubclass() {
+        return new DecoratorProxyFactory<T>(getWeldAnnotated().getJavaClass(), delegateInjectionPoint, this).getProxyClass();
+    }
+
+    @Override
+    protected boolean isSubclassed() {
+        return getWeldAnnotated().isAbstract();
+    }
+
+    @Override
    protected void checkDelegateInjectionPoints()
    {
       for (WeldInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints())
@@ -221,7 +219,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
    private void checkAbstractMethods()
    {
-      if (getWeldAnnotated().isAbstract())
+      if (isSubclassed())
       {
          for(WeldMethod<?,?> method: getWeldAnnotated().getWeldMethods())
          {
@@ -264,20 +262,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
       // No-op, decorators can't have decorators
    }
 
-   @Override
-   protected T createInstance(CreationalContext<T> ctx)
-   {
-      if (!getWeldAnnotated().isAbstract())
-      {
-         return super.createInstance(ctx);
-      }
-      else
-      {
-         ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, constructorForAbstractDecorator, getConstructor());
-         T instance = constructorInjectionPointWrapper.newInstance(beanManager, ctx);
-         return instance;
-      }
-   }
 
    public WeldMethod<?,?> getDecoratorMethod(Method method)
    {

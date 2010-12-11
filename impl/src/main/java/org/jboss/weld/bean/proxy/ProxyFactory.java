@@ -42,6 +42,7 @@ import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.DuplicateMemberException;
+import javassist.bytecode.ExceptionTable;
 import javassist.bytecode.FieldInfo;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
@@ -77,6 +78,7 @@ import org.slf4j.cal10n.LocLogger;
  * 
  * @author David Allen
  * @author Stuart Douglas
+ * @author Marius Bogoevici
  */
 public class ProxyFactory<T>
 {
@@ -150,7 +152,7 @@ public class ProxyFactory<T>
       baseProxyName = proxyName;
    }
 
-   private static String getProxyName(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
+   static String getProxyName(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
    {
       TypeInfo typeInfo = TypeInfo.of(typeClosure);
       String proxyPackage;
@@ -464,7 +466,7 @@ public class ProxyFactory<T>
       }
    }
 
-   private void addMethods(ClassFile proxyClassType)
+   protected void addMethods(ClassFile proxyClassType)
    {
       // Add all class methods for interception
       addMethodsFromClass(proxyClassType);
@@ -722,10 +724,25 @@ public class ProxyFactory<T>
       {
          cond.add(invokeSpecialBytes[i]);
       }
+      // store the offset for copying the exception table
+      int offset = cond.currentPc();
+      // copy the byecode of the original method
       byte[] methodBodyBytes = existingMethod.get();
       for (int i = 0; i < methodBodyBytes.length; ++i)
       {
          cond.add(methodBodyBytes[i]);
+      }
+      // copy the exception table of the original method, if any (shift the table values to account for the guard)
+      ExceptionTable originalExceptionTable = existingMethod.getExceptionTable();
+      if (originalExceptionTable.size() > 0)
+      {
+         for (int i = 0; i< originalExceptionTable.size(); i++)
+         {
+            cond.addExceptionHandler(originalExceptionTable.startPc(i) + offset,
+                  originalExceptionTable.endPc(i) + offset,
+                  originalExceptionTable.handlerPc(i) + offset,
+                  originalExceptionTable.catchType(i));
+         }
       }
       cond.setMaxLocals(existingMethod.getMaxLocals());
       cond.setMaxStack(existingMethod.getMaxStack());
@@ -992,6 +1009,11 @@ public class ProxyFactory<T>
    public Class<?> getBeanType()
    {
       return beanType;
+   }
+
+   public Set<Class<?>> getAdditionalInterfaces()
+   {
+      return additionalInterfaces;
    }
 
    static protected interface BytecodeMethodResolver

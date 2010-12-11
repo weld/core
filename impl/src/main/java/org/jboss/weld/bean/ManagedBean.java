@@ -41,6 +41,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.PassivationCapable;
 
+import javassist.util.proxy.ProxyObject;
 import org.jboss.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
@@ -48,8 +49,7 @@ import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.interceptor.WeldInterceptorInstantiator;
-import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.bean.proxy.TargetBeanInstance;
+import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -57,6 +57,7 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
+import org.jboss.weld.injection.ProxyClassConstructorInjectionPointWrapper;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
@@ -379,7 +380,16 @@ public class ManagedBean<T> extends AbstractClassBean<T>
 
    protected T createInstance(CreationalContext<T> ctx)
    {
-      return getConstructor().newInstance(beanManager, ctx);
+      if (!isSubclassed())
+      {
+          return getConstructor().newInstance(beanManager, ctx);
+      }
+      else
+      {
+         ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, constructorForEnhancedSubclass, getConstructor());
+         T instance = constructorInjectionPointWrapper.newInstance(beanManager, ctx);
+         return instance;
+      }
    }
 
    @Override
@@ -563,11 +573,9 @@ public class ManagedBean<T> extends AbstractClassBean<T>
       {
          WeldInterceptorInstantiator<T> interceptorInstantiator = new WeldInterceptorInstantiator<T>(beanManager, creationalContext);
          InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptorInstantiator, new DefaultInvocationContextFactory(), beanManager.getInterceptorModelRegistry().get(getType()));
-         MethodHandler methodHandler = interceptorProxyCreator.createMethodHandler(instance, WeldInterceptorClassMetadata.of(getWeldAnnotated()));
-         TargetBeanInstance targetInstance = new TargetBeanInstance(this, instance);
-         targetInstance.setInterceptorsHandler(methodHandler);
-         instance = new ProxyFactory<T>(getType(), getTypes(), this).create(targetInstance);
-
+         MethodHandler methodHandler = interceptorProxyCreator.createSubclassingMethodHandler(null, WeldInterceptorClassMetadata.of(getWeldAnnotated()));
+         CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
+         wrapperMethodHandler.setInterceptorMethodHandler(methodHandler);
       }
       catch (Exception e)
       {

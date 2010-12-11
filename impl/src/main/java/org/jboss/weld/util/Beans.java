@@ -100,6 +100,7 @@ import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Supplier;

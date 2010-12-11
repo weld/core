@@ -54,12 +54,14 @@ import javax.interceptor.Interceptor;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
+import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.weld.bean.proxy.EnterpriseProxyFactory;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bean.proxy.ProxyFactory;
+import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -76,6 +78,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Formats;
@@ -345,6 +348,26 @@ public class SessionBean<T> extends AbstractClassBean<T>
          throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
       }
       
+   }
+
+   @Override
+   protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint)
+   {
+      //for EJBs, we apply decorators through a proxy
+      T proxy = null;
+      TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
+      ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
+      DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), getDecorators());
+
+      DecorationHelper.getHelperStack().push(decorationHelper);
+      proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+      DecorationHelper.getHelperStack().pop();
+
+      if (proxy == null)
+      {
+         throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
+      }
+      return proxy;
    }
 
    public void destroy(T instance, CreationalContext<T> creationalContext)

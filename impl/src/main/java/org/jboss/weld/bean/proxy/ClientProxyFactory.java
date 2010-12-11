@@ -41,6 +41,7 @@ import org.jboss.weld.util.bytecode.MethodUtils;
  * are not valid for other proxy types.
  * 
  * @author Stuart Douglas
+ * @author Marius Bogoevici
  */
 public class ClientProxyFactory<T> extends ProxyFactory<T>
 {
@@ -82,7 +83,13 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
          return createInterceptorBody(file, method);
       }
       Bytecode b = new Bytecode(file.getConstPool());
-      int localCount = MethodUtils.calculateMaxLocals(method) + 1;
+      int localCount = MethodUtils.calculateMaxLocals(method) + 2;
+
+      // create a new interceptor invocation context whenever we invoke a method on a client proxy
+      // we use a try-catch block in order to make sure that endInterceptorContext() is invoked regardless whether
+      // the method has succeeded or not
+      int start = b.currentPc();
+      b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "startInterceptorContext", "()V");
 
       b.add(Opcode.ALOAD_0);
       b.addGetfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
@@ -113,6 +120,25 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       {
          b.addInvokevirtual(method.getDeclaringClass().getName(), method.getName(), methodDescriptor);
       }
+
+      // end the interceptor context, everything was fine
+      b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
+
+      // jump over the catch block
+      int end = b.currentPc();
+      b.addOpcode(Opcode.GOTO);
+      b.addIndex(0);
+
+      // create catch block
+      b.addExceptionHandler(start, b.currentPc(), b.currentPc(), 0);
+      b.add(Opcode.ASTORE_1);
+      b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
+      b.add(Opcode.ALOAD_1);
+      b.add(Opcode.ATHROW);
+
+      // update the correct address to jump over the catch block
+      b.write16bit(end + 1, b.currentPc() - end);
+
       // if this method returns a primitive we just return
       if (method.getReturnType().isPrimitive())
       {
