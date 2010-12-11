@@ -90,4 +90,12 @@ public class ELResolverTest
       Object value = exprFactory.createValueExpression(elContext, "#{beerOnTap.style}", String.class).getValue(elContext);
       Assert.assertEquals("IPA", value);
    }
+   
+   @Test(expected=OrderException.class)
+   // WELD-782
+   public void testErrorMessageGood(BeanManagerImpl beanManager)
+   {
+      ELContext ctx = EL.createELContext(beanManager);
+      EL.EXPRESSION_FACTORY.createValueExpression(ctx, "#{orderBean.orderId}", Object.class).getValue(ctx);
+   }
 }
