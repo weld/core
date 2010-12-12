@@ -35,6 +35,15 @@ public class BytecodeUtils
    public static int loadParameters(Bytecode b, String descriptor)
    {
       String[] params = DescriptorUtils.descriptorStringToParameterArray(descriptor);
+      return loadParameters(b, params);
+   }
+
+   /**
+    * Push all parameters onto the stack, excluding the this pointer (variable
+    * 0). This is usually used to prepare for a method call on a delegate
+    */
+   public static int loadParameters(Bytecode b, String[] params)
+   {
       // local variables is the number of parameters +1 for this
       // if some of the parameters are wide this may go up.
       int localVariableCount = params.length + 1;
