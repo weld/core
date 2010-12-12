@@ -83,7 +83,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
          return createInterceptorBody(file, method);
       }
       Bytecode b = new Bytecode(file.getConstPool());
-      int localCount = MethodUtils.calculateMaxLocals(method) + 2;
+      int localCount = MethodUtils.calculateMaxLocals(method) + 1;
 
       // create a new interceptor invocation context whenever we invoke a method on a client proxy
       // we use a try-catch block in order to make sure that endInterceptorContext() is invoked regardless whether
@@ -131,9 +131,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
 
       // create catch block
       b.addExceptionHandler(start, b.currentPc(), b.currentPc(), 0);
-      b.add(Opcode.ASTORE_1);
       b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
-      b.add(Opcode.ALOAD_1);
       b.add(Opcode.ATHROW);
 
       // update the correct address to jump over the catch block
