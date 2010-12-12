@@ -106,7 +106,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
          Object result = beanInstance.invoke(instance, thisMethod, args);
          // if the method returns this return the proxy instead
          // to prevent the bean instance escaping
-         if (result == instance)
+         if (result != null && result == instance)
          {
             return self;
          }
