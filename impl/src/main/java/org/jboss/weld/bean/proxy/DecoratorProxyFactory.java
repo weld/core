@@ -40,7 +40,10 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
+import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
+import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+import org.jboss.weld.util.bytecode.StaticMethodInformation;
 
 /**
  * This special proxy factory is mostly used for abstract decorators. When a
@@ -73,7 +76,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
 
    private void addHandlerInitializerMethod(ClassFile proxyClassType) throws Exception
    {
-      proxyClassType.addMethod(MethodUtils.makeMethod(Modifier.PRIVATE, void.class, "_initMH", new Class[] { Object.class }, new Class[] {}, createMethodHandlerInitializerBody(proxyClassType), proxyClassType.getConstPool()));
+      StaticMethodInformation methodInfo = new StaticMethodInformation("_initMH", new Class[] { Object.class }, void.class, proxyClassType.getName());
+      proxyClassType.addMethod(MethodUtils.makeMethod(Modifier.PRIVATE, methodInfo, new Class[] {}, createMethodHandlerInitializerBody(proxyClassType), proxyClassType.getConstPool()));
    }
 
    @Override
@@ -91,7 +95,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
    {
       Bytecode b = new Bytecode(proxyClassType.getConstPool(), 1, 2);
       b.add(Opcode.ALOAD_0);
-      invokeMethodHandler(proxyClassType, b, proxyClassType.getName(), "_initMH", new String[] { "Ljava/lang/Object;" }, "V", false, DEFAULT_METHOD_RESOLVER);
+      StaticMethodInformation methodInfo = new StaticMethodInformation("_initMH", new Class[] { Object.class }, void.class, proxyClassType.getName());
+      invokeMethodHandler(proxyClassType, b, methodInfo, false, DEFAULT_METHOD_RESOLVER);
       b.addCheckcast("javassist/util/proxy/MethodHandler");
       b.addPutfield(proxyClassType.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
       b.add(Opcode.RETURN);
@@ -124,22 +129,23 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
          {
             for (Method method : cls.getDeclaredMethods())
             {
+               MethodInformation methodInfo = new RuntimeMethodInformation(method);
                if (!method.getDeclaringClass().getName().equals("java.lang.Object") || method.getName().equals("toString"))
                {
                   Bytecode methodBody = null;
                   if ((delegateParameterPosition >= 0) && (initializerMethod.equals(method)))
                   {
-                     methodBody = createDelegateInitializerCode(proxyClassType, method, delegateParameterPosition);
+                     methodBody = createDelegateInitializerCode(proxyClassType, methodInfo, delegateParameterPosition);
                   }
                   if (Modifier.isAbstract(method.getModifiers()))
                   {
-                     methodBody = createAbstractMethodCode(proxyClassType, method);
+                     methodBody = createAbstractMethodCode(proxyClassType, methodInfo);
                   }
 
                   if (methodBody != null)
                   {
                      log.trace("Adding method " + method);
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), methodBody, proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), methodBody, proxyClassType.getConstPool()));
                   }
                }
             }
@@ -158,29 +164,28 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       return PROXY_SUFFIX;
    }
 
-   private Bytecode createAbstractMethodCode(ClassFile file, Method method) throws NotFoundException
+   private Bytecode createAbstractMethodCode(ClassFile file, MethodInformation method) throws NotFoundException
    {
       if ((delegateField != null) && (!Modifier.isPrivate(delegateField.getModifiers())))
       {
          // Call the corresponding method directly on the delegate
          Bytecode b = new Bytecode(file.getConstPool());
-         int localVariables = MethodUtils.calculateMaxLocals(method);
+         int localVariables = MethodUtils.calculateMaxLocals(method.getMethod());
          b.setMaxLocals(localVariables);
          // load the delegate field
          b.addAload(0);
          b.addGetfield(file.getName(), delegateField.getName(), DescriptorUtils.classToStringRepresentation(delegateField.getType()));
-         String methodDescriptor = DescriptorUtils.getMethodDescriptor(method);
          // load the parameters
-         BytecodeUtils.loadParameters(b, methodDescriptor);
+         BytecodeUtils.loadParameters(b, method.getDescriptor());
          // invoke the delegate method
-         b.addInvokeinterface(delegateField.getType().getName(), method.getName(), methodDescriptor, localVariables);
+         b.addInvokeinterface(delegateField.getType().getName(), method.getName(), method.getDescriptor(), localVariables);
          // return the value if applicable
          BytecodeUtils.addReturnInstruction(b, method.getReturnType());
          return b;
       }
       else
       {
-         if (!Modifier.isPrivate(method.getModifiers()))
+         if (!Modifier.isPrivate(method.getMethod().getModifiers()))
          {
             // if it is a parameter injection point we need to initalize the
             // injection point then handle the method with the method handler
@@ -194,19 +199,14 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       }
    }
 
-   private Bytecode createAbstractMethodHandler(ClassFile file, Method method)
+   private Bytecode createAbstractMethodHandler(ClassFile file, MethodInformation methodInfo)
    {
       // this is slightly different to a normal method handler call, as we pass
       // in a TargetInstanceBytecodeMethodResolver. This resolver uses the
       // method handler to call getTargetClass to get the correct class type to
       // resolve the method with, and then resolves this method
       Bytecode b = new Bytecode(file.getConstPool());
-      String[] ptypes = new String[method.getParameterTypes().length];
-      for (int i = 0; i < method.getParameterTypes().length; ++i)
-      {
-         ptypes[i] = DescriptorUtils.classToStringRepresentation(method.getParameterTypes()[i]);
-      }
-      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, new TargetInstanceBytecodeMethodResolver());
+      invokeMethodHandler(file, b, methodInfo, true, new TargetInstanceBytecodeMethodResolver());
 
       return b;
 
@@ -223,7 +223,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
     * @param delegateParameterPosition
     * @return
     */
-   private Bytecode createDelegateInitializerCode(ClassFile file, Method intializerMethod, int delegateParameterPosition)
+   private Bytecode createDelegateInitializerCode(ClassFile file, MethodInformation intializerMethodInfo, int delegateParameterPosition)
    {
       Bytecode b = new Bytecode(file.getConstPool());
       // we need to push all the pareters on the stack to call the corresponding
@@ -231,8 +231,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       b.addAload(0); // load this
       int localVariables = 1;
       int actualDelegateParamterPosition = 0;
-      String methodDescriptor = DescriptorUtils.getMethodDescriptor(intializerMethod);
-      for (int i = 0; i < intializerMethod.getParameterTypes().length; ++i)
+      for (int i = 0; i < intializerMethodInfo.getMethod().getParameterTypes().length; ++i)
       {
          if (i == delegateParameterPosition)
          {
@@ -240,7 +239,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
             // variables
             actualDelegateParamterPosition = localVariables;
          }
-         Class<?> type = intializerMethod.getParameterTypes()[i];
+         Class<?> type = intializerMethodInfo.getMethod().getParameterTypes()[i];
          BytecodeUtils.addLoadInstruction(b, DescriptorUtils.classToStringRepresentation(type), localVariables);
          if (type == long.class || type == double.class)
          {
@@ -251,7 +250,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
             localVariables++;
          }
       }
-      b.addInvokespecial(file.getSuperclass(), intializerMethod.getName(), methodDescriptor);
+      b.addInvokespecial(file.getSuperclass(), intializerMethodInfo.getName(), intializerMethodInfo.getDescriptor());
       // if this method returns a value it is now sitting on top of the stack
       // we will leave it there are return it later
 
@@ -261,7 +260,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       b.addInvokevirtual(file.getName(), "_initMH", "(Ljava/lang/Object;)V");
       // return the object from the top of the stack that we got from calling
       // the superclass method earlier
-      BytecodeUtils.addReturnInstruction(b, intializerMethod.getReturnType());
+      BytecodeUtils.addReturnInstruction(b, intializerMethodInfo.getReturnType());
       b.setMaxLocals(localVariables);
       return b;
 
@@ -272,7 +271,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       public void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes)
       {
          // get the correct class type to use to resolve the method
-         invokeMethodHandler(file, code, TargetInstanceProxy.class.getName(), "getTargetClass", parameterTypes, "Ljava/lang/Class;", false, DEFAULT_METHOD_RESOLVER);
+         MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", parameterTypes, "Ljava/lang/Class;", TargetInstanceProxy.class.getName());
+         invokeMethodHandler(file, code, methodInfo, false, DEFAULT_METHOD_RESOLVER);
          code.addCheckcast("java/lang/Class");
          // now we have the class on the stack
          code.addLdc(methodName);

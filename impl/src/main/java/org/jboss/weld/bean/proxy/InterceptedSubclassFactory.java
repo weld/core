@@ -41,7 +41,10 @@ import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
+import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
+import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+import org.jboss.weld.util.bytecode.StaticMethodInformation;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -114,8 +117,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
                {
                   try
                   {
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName() + SUPER_DELEGATE_SUFFIX, method.getParameterTypes(), method.getExceptionTypes(), createDelegateToSuper(proxyClassType, method), proxyClassType.getConstPool()));
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, method), method), proxyClassType.getConstPool()));
+                     MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                     MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes(), methodInfo.getReturnType(), proxyClassType.getName());
+                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, delegatingMethodInfo, method.getExceptionTypes(), createDelegateToSuper(proxyClassType, methodInfo), proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, methodInfo), methodInfo), proxyClassType.getConstPool()));
                      log.trace("Adding method " + method);
                   }
                   catch (DuplicateMemberException e)
@@ -133,8 +138,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
             {
                try
                {
-                  proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(),
-                        createSpecialMethodBody(proxyClassType, method), proxyClassType.getConstPool()));
+                  MethodInformation methodInformation = new RuntimeMethodInformation(method);
+                  proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
                   log.trace("Adding method " + method);
                }
                catch (DuplicateMemberException e)
@@ -149,7 +154,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
       }
    }
 
-   protected Bytecode createForwardingMethodBody(ClassFile proxyClassType, Method method) throws NotFoundException
+   protected Bytecode createForwardingMethodBody(ClassFile proxyClassType, MethodInformation method) throws NotFoundException
    {
       return createInterceptorBody(proxyClassType, method, true);
    }
@@ -168,27 +173,21 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
     * @param delegateToSuper
     * @return the method byte code
     */
-   protected Bytecode createInterceptorBody(ClassFile file, Method method, boolean delegateToSuper) throws NotFoundException
+   protected Bytecode createInterceptorBody(ClassFile file, MethodInformation methodInfo, boolean delegateToSuper) throws NotFoundException
    {
       Bytecode b = new Bytecode(file.getConstPool());
-      String[] ptypes = new String[method.getParameterTypes().length];
-      for (int i = 0; i < method.getParameterTypes().length; ++i)
-      {
-         ptypes[i] = DescriptorUtils.classToStringRepresentation(method.getParameterTypes()[i]);
-      }
-      String methodDescriptor = DescriptorUtils.getMethodDescriptor(method);
-      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), methodDescriptor, ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, DEFAULT_METHOD_RESOLVER, delegateToSuper);
+
+      invokeMethodHandler(file, b, methodInfo, true, DEFAULT_METHOD_RESOLVER, delegateToSuper);
       return b;
    }
 
-   private Bytecode createDelegateToSuper(ClassFile file, Method method) throws NotFoundException
+   private Bytecode createDelegateToSuper(ClassFile file, MethodInformation method) throws NotFoundException
    {
       Bytecode b = new Bytecode(file.getConstPool());
-      String methodDescriptor = DescriptorUtils.getMethodDescriptor(method);
       // first generate the invokespecial call to the super class method
       b.add(Opcode.ALOAD_0);
-      int localVarCount = BytecodeUtils.loadParameters(b, methodDescriptor);
-      b.addInvokespecial(file.getSuperclass(), method.getName(), methodDescriptor);
+      int localVarCount = BytecodeUtils.loadParameters(b, method.getDescriptor());
+      b.addInvokespecial(file.getSuperclass(), method.getName(), method.getDescriptor());
       b.setMaxLocals(localVarCount);
       BytecodeUtils.addReturnInstruction(b, method.getReturnType());
       return b;
@@ -206,7 +205,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
     * @param addReturnInstruction set to true you want to return the result of
     * @param addProceed
     */
-   protected static void invokeMethodHandler(ClassFile file, Bytecode b, String declaringClass, String methodName, String methodDescriptor, String[] methodParameters, String returnType, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed)
+   protected static void invokeMethodHandler(ClassFile file, Bytecode b, MethodInformation methodInfo, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed)
    {
       // now we need to build the bytecode. The order we do this in is as
       // follows:
@@ -243,9 +242,9 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          Bytecode invokeSuperBytecode = new Bytecode(file.getConstPool());
          invokeSuperBytecode.add(Opcode.ALOAD_0);
          // create the method invocation
-         BytecodeUtils.loadParameters(invokeSuperBytecode, methodParameters);
-         invokeSuperBytecode.addInvokespecial(declaringClass, methodName, methodDescriptor);
-         BytecodeUtils.addReturnInstruction(invokeSuperBytecode, returnType);
+         BytecodeUtils.loadParameters(invokeSuperBytecode, methodInfo.getParameterTypes());
+         invokeSuperBytecode.addInvokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+         BytecodeUtils.addReturnInstruction(invokeSuperBytecode, methodInfo.getReturnType());
 
          byte[] invocationBytes = invokeSuperBytecode.get();
          BytecodeUtils.add16bit(b, invocationBytes.length + 3);
@@ -255,25 +254,25 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          }
       }
       b.add(Opcode.ALOAD_0);
-      bytecodeMethodResolver.getDeclaredMethod(file, b, declaringClass, methodName, methodParameters);
+      bytecodeMethodResolver.getDeclaredMethod(file, b, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes());
 
       if (addProceed)
       {
-         bytecodeMethodResolver.getDeclaredMethod(file, b, file.getName(), methodName + SUPER_DELEGATE_SUFFIX, methodParameters);
+         bytecodeMethodResolver.getDeclaredMethod(file, b, file.getName(), methodInfo.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes());
       }
       else
       {
          b.add(Opcode.ACONST_NULL);
       }
 
-      b.addIconst(methodParameters.length);
+      b.addIconst(methodInfo.getParameterTypes().length);
       b.addAnewarray("java.lang.Object");
 
       int localVariableCount = 1;
 
-      for (int i = 0; i < methodParameters.length; ++i)
+      for (int i = 0; i < methodInfo.getParameterTypes().length; ++i)
       {
-         String typeString = methodParameters[i];
+         String typeString = methodInfo.getParameterTypes()[i];
          b.add(Opcode.DUP); // duplicate the array reference
          b.addIconst(i);
          // load the parameter value
@@ -297,22 +296,22 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
       if (addReturnInstruction)
       {
          // now we need to return the appropriate type
-         if (returnType.equals("V"))
+         if (methodInfo.getReturnType().equals("V"))
          {
             b.add(Opcode.RETURN);
          }
-         else if (DescriptorUtils.isPrimitive(returnType))
+         else if (DescriptorUtils.isPrimitive(methodInfo.getReturnType()))
          {
-            Boxing.unbox(b, returnType);
-            if (returnType.equals("D"))
+            Boxing.unbox(b, methodInfo.getReturnType());
+            if (methodInfo.getReturnType().equals("D"))
             {
                b.add(Opcode.DRETURN);
             }
-            else if (returnType.equals("F"))
+            else if (methodInfo.getReturnType().equals("F"))
             {
                b.add(Opcode.FRETURN);
             }
-            else if (returnType.equals("J"))
+            else if (methodInfo.getReturnType().equals("J"))
             {
                b.add(Opcode.LRETURN);
             }
@@ -323,10 +322,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          }
          else
          {
-            String castType = returnType;
-            if (!returnType.startsWith("["))
+            String castType = methodInfo.getReturnType();
+            if (!methodInfo.getReturnType().startsWith("["))
             {
-               castType = returnType.substring(1).substring(0, returnType.length() - 2);
+               castType = methodInfo.getReturnType().substring(1).substring(0, methodInfo.getReturnType().length() - 2);
             }
             b.addCheckcast(castType);
             b.add(Opcode.ARETURN);
@@ -352,16 +351,24 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          for (Method method : LifecycleMixin.class.getDeclaredMethods())
          {
             log.trace("Adding method " + method);
-            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createInterceptorBody(proxyClassType, method, false), proxyClassType.getConstPool()));
+            MethodInformation methodInfo = new RuntimeMethodInformation(method);
+            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo, false), proxyClassType.getConstPool()));
          }
          Method getInstanceMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetInstance");
          Method getInstanceClassMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetClass");
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceMethod.getReturnType(), getInstanceMethod.getName(), getInstanceMethod.getParameterTypes(), getInstanceMethod.getExceptionTypes(), generateGetTargetInstanceBody(proxyClassType), proxyClassType.getConstPool()));
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceClassMethod.getReturnType(), getInstanceClassMethod.getName(), getInstanceClassMethod.getParameterTypes(), getInstanceClassMethod.getExceptionTypes(), generateGetTargetClassBody(proxyClassType), proxyClassType.getConstPool()));
+         MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
+         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceMethodInfo, getInstanceMethod.getExceptionTypes(), generateGetTargetInstanceBody(proxyClassType), proxyClassType.getConstPool()));
+
+         MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
+         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceClassMethodInfo, getInstanceClassMethod.getExceptionTypes(), generateGetTargetClassBody(proxyClassType), proxyClassType.getConstPool()));
+
          Method setMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("setHandler", MethodHandler.class);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, setMethodHandlerMethod.getReturnType(), setMethodHandlerMethod.getName(), setMethodHandlerMethod.getParameterTypes(), setMethodHandlerMethod.getExceptionTypes(), generateSetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
+         MethodInformation setMethodHandlerMethodInfo = new RuntimeMethodInformation(setMethodHandlerMethod);
+         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, setMethodHandlerMethodInfo, setMethodHandlerMethod.getExceptionTypes(), generateSetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
+
          Method getMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("getHandler");
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getMethodHandlerMethod.getReturnType(), getMethodHandlerMethod.getName(), getMethodHandlerMethod.getParameterTypes(), getMethodHandlerMethod.getExceptionTypes(), generateGetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
+         MethodInformation getMethodHandlerMethodInfo = new RuntimeMethodInformation(getMethodHandlerMethod);
+         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getMethodHandlerMethodInfo, getMethodHandlerMethod.getExceptionTypes(), generateGetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
       }
       catch (Exception e)
       {

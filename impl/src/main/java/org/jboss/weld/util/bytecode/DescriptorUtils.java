@@ -204,6 +204,26 @@ public class DescriptorUtils
       return desc.toString();
    }
 
+   public static String[] getParameterTypes(Method m)
+   {
+      String[] ret = new String[m.getParameterTypes().length];
+      for (int i = 0; i < ret.length; ++i)
+      {
+         ret[i] = DescriptorUtils.classToStringRepresentation(m.getParameterTypes()[i]);
+      }
+      return ret;
+   }
+
+   public static String[] getParameterTypes(Class<?>[] parameters)
+   {
+      String[] ret = new String[parameters.length];
+      for (int i = 0; i < ret.length; ++i)
+      {
+         ret[i] = DescriptorUtils.classToStringRepresentation(parameters[i]);
+      }
+      return ret;
+   }
+
    public static String getMethodDescriptor(Method m)
    {
       StringBuilder desc = new StringBuilder("(");
@@ -213,6 +233,18 @@ public class DescriptorUtils
       }
       desc.append(")");
       desc.append(DescriptorUtils.classToStringRepresentation(m.getReturnType()));
+      return desc.toString();
+   }
+
+   public static String getMethodDescriptor(String[] parameters, String returnType)
+   {
+      StringBuilder desc = new StringBuilder("(");
+      for (String p : parameters)
+      {
+         desc.append(p);
+      }
+      desc.append(")");
+      desc.append(returnType);
       return desc.toString();
    }
 }
