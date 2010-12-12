@@ -124,22 +124,6 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
                      // been overridden
                   }
                }
-               else if (method.getDeclaringClass() == Object.class && method.getName().equals("equals"))
-               {
-                  MethodInfo equalsMethod = generateEqualsMethod(proxyClassType);
-                  if (equalsMethod != null)
-                  {
-                     proxyClassType.addMethod(equalsMethod);
-                  }
-               }
-               else if (method.getDeclaringClass() == Object.class && method.getName().equals("hashCode"))
-               {
-                  MethodInfo hashCodeMethod = generateHashCodeMethod(proxyClassType);
-                  if (hashCodeMethod != null)
-                  {
-                     proxyClassType.addMethod(hashCodeMethod);
-                  }
-               }
             }
             cls = cls.getSuperclass();
          }

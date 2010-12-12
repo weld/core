@@ -73,8 +73,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                {
                   if (outerDecorator != null)
                   {
-                     SecureReflections.ensureAccessible(thisMethod);
-                     return thisMethod.invoke(outerDecorator, args);
+                     return SecureReflections.invoke(outerDecorator, thisMethod, args);
                   }
                }
             }
@@ -83,8 +82,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                this.getDisabledHandlers().remove(this);
             }
          }
-         SecureReflections.ensureAccessible(proceed);
-         return proceed.invoke(self, args);
+         return SecureReflections.invoke(self, proceed, args);
       }
       catch (InvocationTargetException e)
       {
