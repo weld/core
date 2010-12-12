@@ -711,8 +711,6 @@ public class ProxyFactory<T>
    {
       String methodDescriptor = method.getDescriptor();
 
-      Bytecode b = new Bytecode(proxyClassType.getConstPool());
-
       // now create the conditional
       Bytecode cond = new Bytecode(proxyClassType.getConstPool());
       cond.add(Opcode.ALOAD_0);
@@ -720,13 +718,13 @@ public class ProxyFactory<T>
 
       // jump if the proxy constructor has finished
       cond.add(Opcode.IFNE);
-      JumpMarker invokeSpecial = JumpUtils.addJumpInstruction(b);
+      JumpMarker invokeSpecial = JumpUtils.addJumpInstruction(cond);
       // generate the invokespecial call to the super class method
       // this is run when the proxy is being constructed
-      b.add(Opcode.ALOAD_0);
-      BytecodeUtils.loadParameters(b, methodDescriptor);
-      b.addInvokespecial(proxyClassType.getSuperclass(), method.getName(), methodDescriptor);
-      BytecodeUtils.addReturnInstruction(b, method.getReturnType());
+      cond.add(Opcode.ALOAD_0);
+      BytecodeUtils.loadParameters(cond, methodDescriptor);
+      cond.addInvokespecial(proxyClassType.getSuperclass(), method.getName(), methodDescriptor);
+      BytecodeUtils.addReturnInstruction(cond, method.getReturnType());
       invokeSpecial.mark();
 
       // store the offset for copying the exception table
