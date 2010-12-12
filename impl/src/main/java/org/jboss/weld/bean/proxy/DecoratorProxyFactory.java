@@ -91,7 +91,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
    {
       Bytecode b = new Bytecode(proxyClassType.getConstPool(), 1, 2);
       b.add(Opcode.ALOAD_0);
-      invokeMethodHandler(proxyClassType, b, proxyClassType.getName(), "_initMH", new String[] { "Ljava/lang/Object;" }, "V", false, null);
+      invokeMethodHandler(proxyClassType, b, proxyClassType.getName(), "_initMH", new String[] { "Ljava/lang/Object;" }, "V", false, DEFAULT_METHOD_RESOLVER);
       b.addCheckcast("javassist/util/proxy/MethodHandler");
       b.addPutfield(proxyClassType.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
       b.add(Opcode.RETURN);
@@ -267,12 +267,12 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
 
    }
 
-   protected static class TargetInstanceBytecodeMethodResolver implements ProxyFactory.BytecodeMethodResolver
+   protected static class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver
    {
       public void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes)
       {
          // get the correct class type to use to resolve the method
-         invokeMethodHandler(file, code, TargetInstanceProxy.class.getName(), "getTargetClass", parameterTypes, "Ljava/lang/Class;", false, null);
+         invokeMethodHandler(file, code, TargetInstanceProxy.class.getName(), "getTargetClass", parameterTypes, "Ljava/lang/Class;", false, DEFAULT_METHOD_RESOLVER);
          code.addCheckcast("java/lang/Class");
          // now we have the class on the stack
          code.addLdc(methodName);

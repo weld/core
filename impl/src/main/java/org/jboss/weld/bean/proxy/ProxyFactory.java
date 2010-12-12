@@ -97,6 +97,8 @@ public class ProxyFactory<T>
 
    public static final String CONSTRUCTED_FLAG_NAME = "constructed";
 
+   protected static final BytecodeMethodResolver DEFAULT_METHOD_RESOLVER = new DefaultBytecodeMethodResolver();
+
    /**
     * created a new proxy factory from a bean instance. The proxy name is
     * generated from the bean id
@@ -584,7 +586,7 @@ public class ProxyFactory<T>
       b.add(Opcode.ALOAD_0);
       b.addGetfield(proxyClassType.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
       b.add(Opcode.ALOAD_0);
-      getDeclaredMethod(b, proxyClassType.getName(), "writeReplace", new String[0]);
+      DEFAULT_METHOD_RESOLVER.getDeclaredMethod(proxyClassType, b, proxyClassType.getName(), "writeReplace", new String[0]);
       b.add(Opcode.ACONST_NULL);
 
       b.addIconst(0);
@@ -774,7 +776,7 @@ public class ProxyFactory<T>
       {
          ptypes[i] = DescriptorUtils.classToStringRepresentation(method.getParameterTypes()[i]);
       }
-      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, null);
+      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, DEFAULT_METHOD_RESOLVER);
       return b;
    }
 
@@ -807,14 +809,7 @@ public class ProxyFactory<T>
       b.add(Opcode.ALOAD_0);
       b.addGetfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
       b.add(Opcode.ALOAD_0);
-      if (bytecodeMethodResolver == null)
-      {
-         getDeclaredMethod(b, declaringClass, methodName, methodParameters);
-      }
-      else
-      {
-         bytecodeMethodResolver.getDeclaredMethod(file, b, declaringClass, methodName, methodParameters);
-      }
+      bytecodeMethodResolver.getDeclaredMethod(file, b, declaringClass, methodName, methodParameters);
       b.add(Opcode.ACONST_NULL);
 
       b.addIconst(methodParameters.length);
@@ -928,44 +923,6 @@ public class ProxyFactory<T>
       return b;
    }
 
-   /**
-    * generates some bytecode that will load the given method object into the
-    * top of the stack
-    */
-   protected static void getDeclaredMethod(Bytecode code, Method method)
-   {
-      String[] ptypes = new String[method.getParameterTypes().length];
-      for (int i = 0; i < method.getParameterTypes().length; ++i)
-      {
-         ptypes[i] = method.getParameterTypes()[i].getName();
-      }
-      getDeclaredMethod(code, method.getDeclaringClass().getName(), method.getName(), ptypes);
-   }
-
-   /**
-    * generates some bytecode that will load the given method object into the
-    * top of the stack
-    */
-   protected static void getDeclaredMethod(Bytecode code, String declaringClass, String methodName, String[] parameterTypes)
-   {
-      BytecodeUtils.pushClassType(code, declaringClass);
-      // now we have the class on the stack
-      code.addLdc(methodName);
-      // now we need to load the parameter types into an array
-      code.addIconst(parameterTypes.length);
-      code.addAnewarray("java.lang.Class");
-      for (int i = 0; i < parameterTypes.length; ++i)
-      {
-         code.add(Opcode.DUP); // duplicate the array reference
-         code.addIconst(i);
-         // now load the class object
-         String type = parameterTypes[i];
-         BytecodeUtils.pushClassType(code, type);
-         // and store it in the array
-         code.add(Opcode.AASTORE);
-      }
-      code.addInvokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-   }
 
    /**
     * Adds two constructors to the class that call each other in order to bypass
@@ -1014,11 +971,6 @@ public class ProxyFactory<T>
    public Set<Class<?>> getAdditionalInterfaces()
    {
       return additionalInterfaces;
-   }
-
-   static protected interface BytecodeMethodResolver
-   {
-      abstract void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes);
    }
 
 }
