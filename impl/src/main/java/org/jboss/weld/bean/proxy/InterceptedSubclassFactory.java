@@ -22,17 +22,17 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-
 import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.DuplicateMemberException;
-import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.exceptions.WeldException;
