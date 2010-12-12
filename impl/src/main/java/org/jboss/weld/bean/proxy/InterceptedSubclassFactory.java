@@ -176,7 +176,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
       {
          ptypes[i] = DescriptorUtils.classToStringRepresentation(method.getParameterTypes()[i]);
       }
-      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, null, delegateToSuper);
+      String methodDescriptor = DescriptorUtils.getMethodDescriptor(method);
+      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), methodDescriptor, ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, null, delegateToSuper);
       return b;
    }
 
@@ -205,14 +206,19 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
     * @param addReturnInstruction set to true you want to return the result of
     * @param addProceed
     */
-   protected static void invokeMethodHandler(ClassFile file, Bytecode b, String declaringClass, String methodName, String[] methodParameters, String returnType, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed)
+   protected static void invokeMethodHandler(ClassFile file, Bytecode b, String declaringClass, String methodName, String methodDescriptor, String[] methodParameters, String returnType, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed)
    {
       // now we need to build the bytecode. The order we do this in is as
       // follows:
       // load methodHandler
+      // dup the methodhandler
+      // invoke isDisabledHandler on the method handler to figure out of this is
+      // a self invocation.
+
       // load this
       // load the method object
-      // load null
+      // load the proceed method that invokes the superclass version of the
+      // current method
       // create a new array the same size as the number of parameters
       // push our parameter values into the array
       // invokeinterface the invoke method
@@ -221,6 +227,33 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
       // add an appropriate return instruction
       b.add(Opcode.ALOAD_0);
       b.addGetfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+
+      // this is a self invocation optimisation
+      // test to see if this is a self invocation, and if so invokespecial the
+      // superclass method directly
+      if (addProceed)
+      {
+         b.add(Opcode.DUP);
+         b.addCheckcast("org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler");
+         b.addInvokevirtual("org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler", "isDisabledHandler", "()Z");
+         b.add(Opcode.ICONST_0);
+         b.add(Opcode.IF_ICMPEQ);
+
+         // now build the bytecode that invokes the super class method
+         Bytecode invokeSuperBytecode = new Bytecode(file.getConstPool());
+         invokeSuperBytecode.add(Opcode.ALOAD_0);
+         // create the method invocation
+         BytecodeUtils.loadParameters(invokeSuperBytecode, methodParameters);
+         invokeSuperBytecode.addInvokespecial(declaringClass, methodName, methodDescriptor);
+         BytecodeUtils.addReturnInstruction(invokeSuperBytecode, returnType);
+
+         byte[] invocationBytes = invokeSuperBytecode.get();
+         BytecodeUtils.add16bit(b, invocationBytes.length + 3);
+         for (int i = 0; i < invocationBytes.length; ++i)
+         {
+            b.add(invocationBytes[i]);
+         }
+      }
       b.add(Opcode.ALOAD_0);
       if (bytecodeMethodResolver == null)
       {

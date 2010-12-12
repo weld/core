@@ -1,8 +1,8 @@
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.startInterceptorContext;
 import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.endInterceptorContext;
 import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.getDisabledInterceptionContexts;
+import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.startInterceptorContext;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
+
 import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
@@ -95,6 +96,15 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
             endInterceptorContext();
          }
       }
+   }
+
+   public boolean isDisabledHandler()
+   {
+      if (getDisabledInterceptionContexts().empty())
+      {
+         return false;
+      }
+      return getDisabledHandlers().contains(this);
    }
 
 
