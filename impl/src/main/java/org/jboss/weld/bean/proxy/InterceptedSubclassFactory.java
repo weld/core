@@ -41,6 +41,8 @@ import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
+import org.jboss.weld.util.bytecode.JumpMarker;
+import org.jboss.weld.util.bytecode.JumpUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
@@ -237,21 +239,14 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          b.addInvokevirtual("org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler", "isDisabledHandler", "()Z");
          b.add(Opcode.ICONST_0);
          b.add(Opcode.IF_ICMPEQ);
-
+         JumpMarker invokeSuperDirectly = JumpUtils.addJumpInstruction(b);
          // now build the bytecode that invokes the super class method
-         Bytecode invokeSuperBytecode = new Bytecode(file.getConstPool());
-         invokeSuperBytecode.add(Opcode.ALOAD_0);
+         b.add(Opcode.ALOAD_0);
          // create the method invocation
-         BytecodeUtils.loadParameters(invokeSuperBytecode, methodInfo.getParameterTypes());
-         invokeSuperBytecode.addInvokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
-         BytecodeUtils.addReturnInstruction(invokeSuperBytecode, methodInfo.getReturnType());
-
-         byte[] invocationBytes = invokeSuperBytecode.get();
-         BytecodeUtils.add16bit(b, invocationBytes.length + 3);
-         for (int i = 0; i < invocationBytes.length; ++i)
-         {
-            b.add(invocationBytes[i]);
-         }
+         BytecodeUtils.loadParameters(b, methodInfo.getParameterTypes());
+         b.addInvokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+         BytecodeUtils.addReturnInstruction(b, methodInfo.getReturnType());
+         invokeSuperDirectly.mark();
       }
       b.add(Opcode.ALOAD_0);
       bytecodeMethodResolver.getDeclaredMethod(file, b, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes());
