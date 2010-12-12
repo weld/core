@@ -177,7 +177,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          ptypes[i] = DescriptorUtils.classToStringRepresentation(method.getParameterTypes()[i]);
       }
       String methodDescriptor = DescriptorUtils.getMethodDescriptor(method);
-      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), methodDescriptor, ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, null, delegateToSuper);
+      invokeMethodHandler(file, b, method.getDeclaringClass().getName(), method.getName(), methodDescriptor, ptypes, DescriptorUtils.classToStringRepresentation(method.getReturnType()), true, DEFAULT_METHOD_RESOLVER, delegateToSuper);
       return b;
    }
 
@@ -255,24 +255,11 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          }
       }
       b.add(Opcode.ALOAD_0);
-      if (bytecodeMethodResolver == null)
-      {
-         getDeclaredMethod(b, declaringClass, methodName, methodParameters);
-      }
-      else
-      {
-         bytecodeMethodResolver.getDeclaredMethod(file, b, declaringClass, methodName, methodParameters);
-      }
+      bytecodeMethodResolver.getDeclaredMethod(file, b, declaringClass, methodName, methodParameters);
+
       if (addProceed)
       {
-         if (bytecodeMethodResolver == null)
-         {
-            getDeclaredMethod(b, file.getName(), methodName + SUPER_DELEGATE_SUFFIX, methodParameters);
-         }
-         else
-         {
-            bytecodeMethodResolver.getDeclaredMethod(file, b, file.getName(), methodName + SUPER_DELEGATE_SUFFIX, methodParameters);
-         }
+         bytecodeMethodResolver.getDeclaredMethod(file, b, file.getName(), methodName + SUPER_DELEGATE_SUFFIX, methodParameters);
       }
       else
       {
