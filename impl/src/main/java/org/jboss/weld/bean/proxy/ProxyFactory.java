@@ -64,6 +64,8 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.ClassFileUtils;
 import org.jboss.weld.util.bytecode.ConstructorUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
+import org.jboss.weld.util.bytecode.JumpMarker;
+import org.jboss.weld.util.bytecode.JumpUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
@@ -559,28 +561,22 @@ public class ProxyFactory<T>
     */
    private Bytecode createWriteReplaceBody(ClassFile proxyClassType)
    {
-      // we need to build up the conditional body first
-      // this bytecode is run if firstSerializationPhaseComplete=true
-      Bytecode runSecondPhase = new Bytecode(proxyClassType.getConstPool());
-      // set firstSerializationPhaseComplete=false
-      runSecondPhase.add(Opcode.ALOAD_0);
-      runSecondPhase.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
-      runSecondPhase.addInvokevirtual("java.lang.ThreadLocal", "remove", "()V");
-      // return this
-      runSecondPhase.add(Opcode.ALOAD_0);
-      runSecondPhase.add(Opcode.ARETURN);
-      byte[] runSecondBytes = runSecondPhase.get();
       Bytecode b = new Bytecode(proxyClassType.getConstPool());
       b.add(Opcode.ALOAD_0);
       b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
       b.addInvokevirtual("java.lang.ThreadLocal", "get", "()Ljava/lang/Object;");
       b.add(Opcode.IFNULL);
-      // +3 because the IFNULL sequence is 3 bytes long
-      BytecodeUtils.add16bit(b, runSecondBytes.length + 3);
-      for (int i = 0; i < runSecondBytes.length; ++i)
-      {
-         b.add(runSecondBytes[i]);
-      }
+      JumpMarker runSecondPhase = JumpUtils.addJumpInstruction(b);
+      // this bytecode is run if firstSerializationPhaseComplete=true
+      // set firstSerializationPhaseComplete=false
+      b.add(Opcode.ALOAD_0);
+      b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
+      b.addInvokevirtual("java.lang.ThreadLocal", "remove", "()V");
+      // return this
+      b.add(Opcode.ALOAD_0);
+      b.add(Opcode.ARETURN);
+      runSecondPhase.mark();
+
       // now create the rest of the bytecode
       // set firstSerializationPhaseComplete=true
       b.add(Opcode.ALOAD_0);
@@ -714,24 +710,25 @@ public class ProxyFactory<T>
    protected Bytecode addConstructedGuardToMethodBody(ClassFile proxyClassType, Bytecode existingMethod, MethodInformation method)
    {
       String methodDescriptor = method.getDescriptor();
-      // first generate the invokespecial call to the super class method
+
       Bytecode b = new Bytecode(proxyClassType.getConstPool());
-      b.add(Opcode.ALOAD_0);
-      BytecodeUtils.loadParameters(b, methodDescriptor);
-      b.addInvokespecial(proxyClassType.getSuperclass(), method.getName(), methodDescriptor);
-      BytecodeUtils.addReturnInstruction(b, method.getReturnType());
-      byte[] invokeSpecialBytes = b.get();
+
       // now create the conditional
       Bytecode cond = new Bytecode(proxyClassType.getConstPool());
       cond.add(Opcode.ALOAD_0);
       cond.addGetfield(proxyClassType.getName(), CONSTRUCTED_FLAG_NAME, "Z");
-      cond.add(Opcode.IFNE);
 
-      BytecodeUtils.add16bit(cond, invokeSpecialBytes.length + 3);
-      for (int i = 0; i < invokeSpecialBytes.length; ++i)
-      {
-         cond.add(invokeSpecialBytes[i]);
-      }
+      // jump if the proxy constructor has finished
+      cond.add(Opcode.IFNE);
+      JumpMarker invokeSpecial = JumpUtils.addJumpInstruction(b);
+      // generate the invokespecial call to the super class method
+      // this is run when the proxy is being constructed
+      b.add(Opcode.ALOAD_0);
+      BytecodeUtils.loadParameters(b, methodDescriptor);
+      b.addInvokespecial(proxyClassType.getSuperclass(), method.getName(), methodDescriptor);
+      BytecodeUtils.addReturnInstruction(b, method.getReturnType());
+      invokeSpecial.mark();
+
       // store the offset for copying the exception table
       int offset = cond.currentPc();
       // copy the byecode of the original method

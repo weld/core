@@ -34,6 +34,8 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
+import org.jboss.weld.util.bytecode.JumpMarker;
+import org.jboss.weld.util.bytecode.JumpUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 
@@ -127,9 +129,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
 
       // jump over the catch block
-      int end = b.currentPc();
       b.addOpcode(Opcode.GOTO);
-      b.addIndex(0);
+      JumpMarker gotoEnd = JumpUtils.addJumpInstruction(b);
 
       // create catch block
       b.addExceptionHandler(start, b.currentPc(), b.currentPc(), 0);
@@ -137,7 +138,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       b.add(Opcode.ATHROW);
 
       // update the correct address to jump over the catch block
-      b.write16bit(end + 1, b.currentPc() - end);
+      gotoEnd.mark();
 
       // if this method returns a primitive we just return
       if (method.getReturnType().isPrimitive())
@@ -158,16 +159,11 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
          // first we need to build up the inner conditional that just returns
          // the
          // result
-         Bytecode rresult = new Bytecode(file.getConstPool());
-         BytecodeUtils.addReturnInstruction(rresult, methodInfo.getReturnType());
-         byte returnBytes[] = rresult.get();
          b.add(Opcode.IF_ACMPEQ);
-         BytecodeUtils.add16bit(b, returnBytes.length + 3); // ifacmpeq = 3
-                                                            // bytes
-         for (byte bt : returnBytes)
-         {
-            b.add(bt);
-         }
+         JumpMarker returnInstruction = JumpUtils.addJumpInstruction(b);
+         BytecodeUtils.addReturnInstruction(b, methodInfo.getReturnType());
+         returnInstruction.mark();
+
          // now add the case where the proxy returns 'this';
          b.add(Opcode.ALOAD_0);
          b.addCheckcast(methodInfo.getMethod().getReturnType().getName());
