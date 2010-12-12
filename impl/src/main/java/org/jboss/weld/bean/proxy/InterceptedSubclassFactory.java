@@ -97,72 +97,33 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
 
       // Add special proxy methods
       addSpecialMethods(proxyClassType);
-
    }
 
-   protected void addMethodsFromClass(ClassFile proxyClassType)
+   /**
+    * Customize the overriding of the superclass methods
+    */
+
+   @Override
+   protected void overrideSuperclassMethod(ClassFile proxyClassType, Method method) throws DuplicateMemberException, NotFoundException
    {
-      try
-      {
-         // Add all methods from the class heirachy
-         Class<?> cls = getBeanType();
-         while (cls != null)
-         {
-            for (Method method : cls.getDeclaredMethods())
-            {
-               if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(new MethodSignatureImpl(method)))
-               {
-                  try
-                  {
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName() + SUPER_DELEGATE_SUFFIX, method.getParameterTypes(), method.getExceptionTypes(), createDelegateToSuper(proxyClassType, method), proxyClassType.getConstPool()));
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, method), method), proxyClassType.getConstPool()));
-                     log.trace("Adding method " + method);
-                  }
-                  catch (DuplicateMemberException e)
-                  {
-                     // do nothing. This will happen if superclass methods have
-                     // been overridden
-                  }
-               }
-               else if (method.getDeclaringClass() == Object.class && method.getName().equals("equals"))
-               {
-                  MethodInfo equalsMethod = generateEqualsMethod(proxyClassType);
-                  if (equalsMethod != null)
-                  {
-                     proxyClassType.addMethod(equalsMethod);
-                  }
-               }
-               else if (method.getDeclaringClass() == Object.class && method.getName().equals("hashCode"))
-               {
-                  MethodInfo hashCodeMethod = generateHashCodeMethod(proxyClassType);
-                  if (hashCodeMethod != null)
-                  {
-                     proxyClassType.addMethod(hashCodeMethod);
-                  }
-               }
-            }
-            cls = cls.getSuperclass();
-         }
-         for (Class<?> c : getAdditionalInterfaces())
-         {
-            for (Method method : c.getMethods())
-            {
-               try
-               {
-                  proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(),
-                        createSpecialMethodBody(proxyClassType, method), proxyClassType.getConstPool()));
-                  log.trace("Adding method " + method);
-               }
-               catch (DuplicateMemberException e)
-               {
-               }
-            }
-         }
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(e);
-      }
+      proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName() + SUPER_DELEGATE_SUFFIX, method.getParameterTypes(), method.getExceptionTypes(), createDelegateToSuper(proxyClassType, method), proxyClassType.getConstPool()));
+      log.trace("Adding method " + method);
+      proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, method), method), proxyClassType.getConstPool()));
+      log.trace("Adding method " + method + " and a corresponding delegate that invokes super()");
+   }
+
+   @Override
+   protected MethodInfo generateHashCodeMethod(ClassFile proxyClassType)
+   {
+      // this method must return null, regardless what happens in the superclass
+      return null;
+   }
+
+   @Override
+   protected MethodInfo generateEqualsMethod(ClassFile proxyClassType)
+   {
+      // this method must return null, regardless what happens in the superclass
+      return null;
    }
 
    protected Bytecode createForwardingMethodBody(ClassFile proxyClassType, Method method) throws NotFoundException

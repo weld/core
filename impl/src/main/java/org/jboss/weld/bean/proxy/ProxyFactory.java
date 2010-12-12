@@ -611,8 +611,7 @@ public class ProxyFactory<T>
                {
                   try
                   {
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, method), method), proxyClassType.getConstPool()));
-                     log.trace("Adding method " + method);
+                     overrideSuperclassMethod(proxyClassType, method);
                   }
                   catch (DuplicateMemberException e)
                   {
@@ -659,6 +658,13 @@ public class ProxyFactory<T>
       {
          throw new WeldException(e);
       }
+   }
+
+   protected void overrideSuperclassMethod(ClassFile proxyClassType, Method method)
+         throws DuplicateMemberException, NotFoundException
+   {
+      proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, method), method), proxyClassType.getConstPool()));
+      log.trace("Adding method " + method);
    }
 
    /**
