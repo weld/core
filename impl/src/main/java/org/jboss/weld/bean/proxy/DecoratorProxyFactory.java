@@ -206,10 +206,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
       // method handler to call getTargetClass to get the correct class type to
       // resolve the method with, and then resolves this method
       Bytecode b = new Bytecode(file.getConstPool());
-      invokeMethodHandler(file, b, methodInfo, true, new TargetInstanceBytecodeMethodResolver());
-
+      invokeMethodHandler(file, b, methodInfo, true, TargetInstanceBytecodeMethodResolver.INSTANCE);
       return b;
-
    }
 
    /**
@@ -291,6 +289,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
          }
          code.addInvokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
       }
+
+      static final TargetInstanceBytecodeMethodResolver INSTANCE = new TargetInstanceBytecodeMethodResolver();
    }
 
 }
