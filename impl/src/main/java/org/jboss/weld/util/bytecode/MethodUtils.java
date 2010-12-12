@@ -54,19 +54,9 @@ public class MethodUtils
     * @param pool the const pool
     * @return the created method
     */
-   public static MethodInfo makeMethod(int modifiers, Class<?> returnType, String mname, Class<?>[] parameters, Class<?>[] exceptions, Bytecode body, ConstPool pool)
+   public static MethodInfo makeMethod(int modifiers, MethodInformation methodInfo, Class<?>[] exceptions, Bytecode body, ConstPool pool)
    {
-      StringBuilder desc = new StringBuilder("(");
-      if (parameters != null)
-      {
-         for (Class<?> p : parameters)
-         {
-            desc.append(DescriptorUtils.classToStringRepresentation(p));
-         }
-      }
-      desc.append(")");
-      desc.append(DescriptorUtils.classToStringRepresentation(returnType));
-      MethodInfo meth = new MethodInfo(pool, mname, desc.toString());
+      MethodInfo meth = new MethodInfo(pool, methodInfo.getName(), methodInfo.getDescriptor());
       meth.setAccessFlags(modifiers);
       String[] ex = new String[exceptions.length];
       for (int i = 0; i < exceptions.length; ++i)

@@ -25,7 +25,9 @@ import javassist.bytecode.ClassFile;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
+import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 
 /**
  * This factory produces client proxies specific for enterprise beans, in
@@ -58,7 +60,8 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
          for (Method method : EnterpriseBeanInstance.class.getDeclaredMethods())
          {
             log.trace("Adding method " + method);
-            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, method.getReturnType(), method.getName(), method.getParameterTypes(), method.getExceptionTypes(), createInterceptorBody(proxyClassType, method), proxyClassType.getConstPool()));
+            MethodInformation methodInfo = new RuntimeMethodInformation(method);
+            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
          }
       }
       catch (Exception e)
