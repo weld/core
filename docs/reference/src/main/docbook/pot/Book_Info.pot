@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-10-19T01:52:18\n"
-"PO-Revision-Date: 2010-10-19T01:52:18\n"
+"POT-Creation-Date: 2010-12-14T13:35:16\n"
+"PO-Revision-Date: 2010-12-14T13:35:16\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -20,5 +20,10 @@ msgstr ""
 #. Tag: subtitle
 #, no-c-format
 msgid "JSR-299: The new Java standard for dependency injection and contextual lifecycle management"
+msgstr ""
+
+#. Tag: productname
+#, no-c-format
+msgid "Weld"
 msgstr ""
 

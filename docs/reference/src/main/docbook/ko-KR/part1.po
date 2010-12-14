@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T11:17:19\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2009-01-27 10:42+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,79 +25,42 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"The <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> "
-"specification (CDI) defines a set of complementary services that help "
-"improve the structure of application code. CDI layers an enhanced lifecycle "
-"and interaction model over existing Java component types, including managed "
-"beans and Enterprise Java Beans. The CDI services provide:"
-msgstr ""
-"Web Beans (JSR-299) 사양은 애플리케이션을 보다 쉽게 개발하기 위한 Java EE 환"
-"경에 대한 서비스 모음을 정의합니다. Web Beans는 JavaBeans 및 Enterprise Java "
-"Bean을 포함하여 기존의 Java 구성 요소 유형을 통해 향상된 수명 주기 및 상호 작"
-"용 모델을 계층화합니다. 전통적인 Java EE 프로그래밍 모델의 구성 요소로서, "
-"Web Beans는 다음과 같은 서비스를 제공합니다:  "
+msgid "The <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> specification (CDI) defines a set of complementary services that help improve the structure of application code. CDI layers an enhanced lifecycle and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. The CDI services provide:"
+msgstr "Web Beans (JSR-299) 사양은 애플리케이션을 보다 쉽게 개발하기 위한 Java EE 환경에 대한 서비스 모음을 정의합니다. Web Beans는 JavaBeans 및 Enterprise Java Bean을 포함하여 기존의 Java 구성 요소 유형을 통해 향상된 수명 주기 및 상호 작용 모델을 계층화합니다. 전통적인 Java EE 프로그래밍 모델의 구성 요소로서, Web Beans는 다음과 같은 서비스를 제공합니다:  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"an improved lifecycle for stateful objects, bound to well-defined "
-"<emphasis>contexts</emphasis>,"
-msgstr ""
-"명확하게 정의된 <emphasis>컨텍스트</emphasis>에 바인딩된 상태 유지 구성 요소"
-"의 수명 주기 개선   "
+msgid "an improved lifecycle for stateful objects, bound to well-defined <emphasis>contexts</emphasis>,"
+msgstr "명확하게 정의된 <emphasis>컨텍스트</emphasis>에 바인딩된 상태 유지 구성 요소의 수명 주기 개선   "
 
 #. Tag: para
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
-msgstr ""
-"<emphasis>의존성 주입 (dependency injection)</emphasis>으로의 타입 안정적 "
-"(typesafe) 접근  "
+msgstr "<emphasis>의존성 주입 (dependency injection)</emphasis>으로의 타입 안정적 (typesafe) 접근  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"object interaction via an <emphasis>event notification facility</emphasis>,"
+msgid "object interaction via an <emphasis>event notification facility</emphasis>,"
 msgstr "<emphasis>이벤트 통지</emphasis> 기능을 통한 상호작용 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"a better approach to binding <emphasis>interceptors</emphasis> to objects, "
-"along with a new kind of interceptor, called a <emphasis>decorator</"
-"emphasis>, that is more appropriate for use in solving business problems, and"
-msgstr ""
-"<emphasis>데코레이터 (decorator)</emphasis> 라는 새로운 종류의 인터셉터와 함"
-"께 <emphasis>인터셉터</emphasis>를 구성요소에 바인딩하기 위해 개선된 접근으"
-"로, 비지니스 문제 해결을 위해 보다 적절하게 사용  "
+msgid "a better approach to binding <emphasis>interceptors</emphasis> to objects, along with a new kind of interceptor, called a <emphasis>decorator</emphasis>, that is more appropriate for use in solving business problems, and"
+msgstr "<emphasis>데코레이터 (decorator)</emphasis> 라는 새로운 종류의 인터셉터와 함께 <emphasis>인터셉터</emphasis>를 구성요소에 바인딩하기 위해 개선된 접근으로, 비지니스 문제 해결을 위해 보다 적절하게 사용  "
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"an <emphasis>SPI</emphasis> for developing portable extensions to the "
-"container."
+msgid "an <emphasis>SPI</emphasis> for developing portable extensions to the container."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The CDI services are a core aspect of the Java EE platform and include full "
-"support for Java EE modularity and the Java EE component architecture. But "
-"the specification does not limit the use of CDI to the Java EE environment. "
-"In the Java SE environment, the services might be provided by a standalone "
-"CDI implementation like Weld (see <xref linkend=\"weld-se\"/>), or even by a "
-"container that also implements the subset of EJB defined for embedded usage "
-"by the EJB 3.1 specification. CDI is especially useful in the context of web "
-"application development, but the problems it solves are general development "
-"concerns and it is therefore applicable to a wide variety of application."
+msgid "The CDI services are a core aspect of the Java EE platform and include full support for Java EE modularity and the Java EE component architecture. But the specification does not limit the use of CDI to the Java EE environment. In the Java SE environment, the services might be provided by a standalone CDI implementation like Weld (see <xref linkend=\"weld-se\" />), or even by a container that also implements the subset of EJB defined for embedded usage by the EJB 3.1 specification. CDI is especially useful in the context of web application development, but the problems it solves are general development concerns and it is therefore applicable to a wide variety of application."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"An object bound to a lifecycle context is called a bean. CDI includes built-"
-"in support for several different kinds of bean, including the following Java "
-"EE component types:"
+msgid "An object bound to a lifecycle context is called a bean. CDI includes built-in support for several different kinds of bean, including the following Java EE component types:"
 msgstr ""
 
 #. Tag: para
@@ -111,11 +75,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Both managed beans and EJB session beans may inject other beans. But some "
-"other objects, which are not themselves beans in the sense used here, may "
-"also have beans injected via CDI. In the Java EE platform, the following "
-"kinds of component may have beans injected:"
+msgid "Both managed beans and EJB session beans may inject other beans. But some other objects, which are not themselves beans in the sense used here, may also have beans injected via CDI. In the Java EE platform, the following kinds of component may have beans injected:"
 msgstr ""
 
 #. Tag: para
@@ -145,12 +105,8 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"CDI relieves the user of an unfamiliar API of the need to answer the "
-"following questions:"
-msgstr ""
-"컨텍스트 수명 주기 관리와 함께 의존성 주입은 다음과 같은 질문을 묻고 대답하"
-"는 것에서 생소한 API 사용자를 보호합니다:   "
+msgid "CDI relieves the user of an unfamiliar API of the need to answer the following questions:"
+msgstr "컨텍스트 수명 주기 관리와 함께 의존성 주입은 다음과 같은 질문을 묻고 대답하는 것에서 생소한 API 사용자를 보호합니다:   "
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -179,18 +135,13 @@ msgstr "이를 명시적으로 삭제해야 합니까? "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"Where should I keep the reference to it when I'm not currently using it?"
+msgid "Where should I keep the reference to it when I&#39;m not currently using it?"
 msgstr "직접 사용하지 않을 경우 참조 사항을 어디에 보관해야 합니까? "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"How can I define an alternative implementation, so that the implementation "
-"can vary at deployment time?"
-msgstr ""
-"어떻게 하면 우회 계층을 추가하여, 배치시 이러한 개체 구현을 다르게 할 수 있을"
-"까요?     "
+msgid "How can I define an alternative implementation, so that the implementation can vary at deployment time?"
+msgstr "어떻게 하면 우회 계층을 추가하여, 배치시 이러한 개체 구현을 다르게 할 수 있을까요?     "
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -199,137 +150,64 @@ msgstr "어떻게 하면 다른 개체 사이에서 이러한 개체를 공유�
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"CDI is more than a framework. It's a whole, rich programming model. The "
-"<emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong "
-"typing</emphasis>. Let's study what that phrase means."
+msgid "CDI is more than a framework. It&#39;s a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong typing</emphasis>. Let&#39;s study what that phrase means."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"A bean specifies only the type and semantics of other beans it depends upon. "
-"It need not be aware of the actual lifecycle, concrete implementation, "
-"threading model or other clients of any bean it interacts with. Even better, "
-"the concrete implementation, lifecycle and threading model of a bean may "
-"vary according to the deployment scenario, without affecting any client. "
-"This loose-coupling makes your code easier to maintain."
-msgstr ""
-"Web Bean은 의존하는 다른 Web Beans의 유형 및 시멘틱 만을 지정합니다. 이는 의"
-"존하는 다른 Web Bean 클라이언트 또는 스레딩 모델, 실제적인 수명 주기, 구체적 "
-"구현 방식을 인식할 필요가 없습니다. 더 나아가 의존하는 Web Bean의 스레딩 모"
-"델, 수명 주기, 구체적 구현 방식은 클라이언트에게 영향을 미치지 않고 운용 방식"
-"에 따라 달라질 수 있습니다.        "
+msgid "A bean specifies only the type and semantics of other beans it depends upon. It need not be aware of the actual lifecycle, concrete implementation, threading model or other clients of any bean it interacts with. Even better, the concrete implementation, lifecycle and threading model of a bean may vary according to the deployment scenario, without affecting any client. This loose-coupling makes your code easier to maintain."
+msgstr "Web Bean은 의존하는 다른 Web Beans의 유형 및 시멘틱 만을 지정합니다. 이는 의존하는 다른 Web Bean 클라이언트 또는 스레딩 모델, 실제적인 수명 주기, 구체적 구현 방식을 인식할 필요가 없습니다. 더 나아가 의존하는 Web Bean의 스레딩 모델, 수명 주기, 구체적 구현 방식은 클라이언트에게 영향을 미치지 않고 운용 방식에 따라 달라질 수 있습니다.        "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"Events, interceptors and decorators enhance the loose-coupling inherent in "
-"this model:"
-msgstr ""
-"이벤트, 인터셉터 및 데코레이터는 이러한 모델에 내제된 <emphasis>느슨하게 연결"
-"하는 (loose-coupling)</emphasis> 기능을 강화합니다:  "
+msgid "Events, interceptors and decorators enhance the loose-coupling inherent in this model:"
+msgstr "이벤트, 인터셉터 및 데코레이터는 이러한 모델에 내제된 <emphasis>느슨하게 연결하는 (loose-coupling)</emphasis> 기능을 강화합니다:  "
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<emphasis>event notifications</emphasis> decouple event producers from event "
-"consumers,"
-msgstr ""
-"<emphasis>이벤트 통지</emphasis>는 이벤트 소비자로부터 이벤트 생산자를 연결 "
-"해제합니다  "
+msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers,"
+msgstr "<emphasis>이벤트 통지</emphasis>는 이벤트 소비자로부터 이벤트 생산자를 연결 해제합니다  "
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<emphasis>interceptors</emphasis> decouple technical concerns from business "
-"logic, and"
-msgstr ""
-"<emphasis>인터셉터</emphasis>는 비지니스 로직으로 부터의 기술적 문제를 연결 "
-"해제합니다   "
+msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic, and"
+msgstr "<emphasis>인터셉터</emphasis>는 비지니스 로직으로 부터의 기술적 문제를 연결 해제합니다   "
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<emphasis>decorators</emphasis> allow business concerns to be "
-"compartmentalized."
+msgid "<emphasis>decorators</emphasis> allow business concerns to be compartmentalized."
 msgstr "<emphasis>데코레이터</emphasis>는 비지니스 문제를 구분하게 합니다. "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"What's even more powerful (and comforting) is that CDI provides all these "
-"facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on "
-"string-based identifiers to determine how collaborating objects fit "
-"together. Instead, CDI uses the typing information that is already available "
-"in the Java object model, augmented using a new programming pattern, called "
-"<emphasis>qualifier annotations</emphasis>, to wire together beans, their "
-"dependencies, their interceptors and decorators, and their event consumers. "
-"Usage of XML descriptors is minimized to truly deployment-specific "
-"information."
-msgstr ""
-"가장 중요하게 Web Beans는 이러한 모든 기능을 <emphasis>타입 안정적 (typesafe)"
-"</emphasis> 방식으로 제공합니다. Web Beans는 협력적 객체를 갖추기 위한 방법"
-"을 결정하기 위해 문자열 기반의 식별자를 사용하지 않습니다. XML은 옵션으로 남"
-"아있어도 거의 사용되지 않습니다. 대신 Web Beans는 <emphasis>바인딩 어노테이"
-"션 (binding annotations)</emphasis>이라는 새로운 패턴과 함께 Java 객체 모델에"
-"서 이미 사용 가능한 타이핑 정보를 사용하여 Web Beans 및 Web Beans의 의존성, "
-"인터셉터, 데코레이터 및 이벤트 소비자를 함께 묶습니다.     "
+msgid "What&#39;s even more powerful (and comforting) is that CDI provides all these facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating objects fit together. Instead, CDI uses the typing information that is already available in the Java object model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of XML descriptors is minimized to truly deployment-specific information."
+msgstr "가장 중요하게 Web Beans는 이러한 모든 기능을 <emphasis>타입 안정적 (typesafe)</emphasis> 방식으로 제공합니다. Web Beans는 협력적 객체를 갖추기 위한 방법을 결정하기 위해 문자열 기반의 식별자를 사용하지 않습니다. XML은 옵션으로 남아있어도 거의 사용되지 않습니다. 대신 Web Beans는 <emphasis>바인딩 어노테이션 (binding annotations)</emphasis>이라는 새로운 패턴과 함께 Java 객체 모델에서 이미 사용 가능한 타이핑 정보를 사용하여 Web Beans 및 Web Beans의 의존성, 인터셉터, 데코레이터 및 이벤트 소비자를 함께 묶습니다.     "
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"But CDI isn't a restrictive programming model. It doesn't tell you how you "
-"should to structure your application into layers, how you should handle "
-"persistence, or what web framework you have to use. You'll have to decide "
-"those kinds of things for yourself."
+msgid "But CDI isn&#39;t a restrictive programming model. It doesn&#39;t tell you how you should to structure your application into layers, how you should handle persistence, or what web framework you have to use. You&#39;ll have to decide those kinds of things for yourself."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"CDI even provides a comprehensive SPI, allowing other kinds of object "
-"defined by future Java EE specifications or by third-party frameworks to be "
-"cleanly integrated with CDI, take advantage of the CDI services, and "
-"interact with any other kind of bean."
-msgstr ""
-"Web Beans는 통합 지점을 제공하여 차후 Java EE 사양이나 또는 비표준 프레임워크"
-"에 의해 지정된 다른 종류의 구성 요소가 Web Beans과 통합되어 Web Beans 서비스"
-"의 장점을 취하고 다른 종류의 Web Bean과 상호 작용합니다.        "
+msgid "CDI even provides a comprehensive SPI, allowing other kinds of object defined by future Java EE specifications or by third-party frameworks to be cleanly integrated with CDI, take advantage of the CDI services, and interact with any other kind of bean."
+msgstr "Web Beans는 통합 지점을 제공하여 차후 Java EE 사양이나 또는 비표준 프레임워크에 의해 지정된 다른 종류의 구성 요소가 Web Beans과 통합되어 Web Beans 서비스의 장점을 취하고 다른 종류의 Web Bean과 상호 작용합니다.        "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"CDI was influenced by a number of existing Java frameworks, including Seam, "
-"Guice and Spring. However, CDI has its own, very distinct, character: more "
-"typesafe than Seam, more stateful and less XML-centric than Spring, more web "
-"and enterprise-application capable than Guice. But it couldn't have been any "
-"of these without inspiration from the frameworks mentioned and "
-"<emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 "
-"Expert Group (EG)."
-msgstr ""
-"Web Beans는 Seam, Guice, Spring을 포함하여 다수의 기존 Java 프레임워크에 의"
-"해 영향을 받았지만 Web Beans은 자체적으로 다음과 같은 고유한 기능을 소유하고 "
-"있습니다: Seam 보다 더 타입 안정적, 보다 더 상태 기반적, Spring 보다 덜 XML-"
-"중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 사용 가능   "
+msgid "CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice. But it couldn&#39;t have been any of these without inspiration from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group (EG)."
+msgstr "Web Beans는 Seam, Guice, Spring을 포함하여 다수의 기존 Java 프레임워크에 의해 영향을 받았지만 Web Beans은 자체적으로 다음과 같은 고유한 기능을 소유하고 있습니다: Seam 보다 더 타입 안정적, 보다 더 상태 기반적, Spring 보다 덜 XML-중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 사용 가능   "
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Finally, CDI is a <ulink url=\"http://jcp.org\">Java Community Process</"
-"ulink> (JCP) standard. Java EE 6 requires that all compliant application "
-"servers provide support for JSR-299 (even in the web profile)."
+msgid "Finally, CDI is a <ulink url=\"http://jcp.org\">Java Community Process</ulink> (JCP) standard. Java EE 6 requires that all compliant application servers provide support for JSR-299 (even in the web profile)."
 msgstr ""
 
 #~ msgid "where can I get one from?"
 #~ msgstr "어디서 얻을 수 있을까요?  "
 
-#~ msgid ""
-#~ "The Web Beans services are general and apply to the following types of "
-#~ "components that exist in the Java EE environment:"
-#~ msgstr ""
-#~ "Web Beans 서비스는 일반적으로 Java EE 환경에 있는 다음과 같은 구성 요소의 "
-#~ "유형에 적용됩니다:  "
+#~ msgid "The Web Beans services are general and apply to the following types of components that exist in the Java EE environment:"
+#~ msgstr "Web Beans 서비스는 일반적으로 Java EE 환경에 있는 다음과 같은 구성 요소의 유형에 적용됩니다:  "
 
 #~ msgid "all JavaBeans,"
 #~ msgstr "모든 JavaBeans"
@@ -340,10 +218,5 @@ msgstr ""
 #~ msgid "all Servlets."
 #~ msgstr "모든 Servlets "
 
-#~ msgid ""
-#~ "Most importantly, Web Beans is a JCP standard that integrates cleanly "
-#~ "with Java EE, and with any Java SE environment where embeddable EJB Lite "
-#~ "is available."
-#~ msgstr ""
-#~ "보다 중요하게 Web Beans는 Java EE 및 내장 가능한 EJB Lite를 사용할 수 있"
-#~ "는 Java SE 환경과 통합된 JCP 표준입니다.  "
+#~ msgid "Most importantly, Web Beans is a JCP standard that integrates cleanly with Java EE, and with any Java SE environment where embeddable EJB Lite is available."
+#~ msgstr "보다 중요하게 Web Beans는 Java EE 및 내장 가능한 EJB Lite를 사용할 수 있는 Java SE 환경과 통합된 JCP 표준입니다.  "

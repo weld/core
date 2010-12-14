@@ -5,43 +5,139 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-05-01T13:53:42\n"
+"POT-Creation-Date: 2010-12-14T13:35:16\n"
 "PO-Revision-Date: 2009-11-23 21:11+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: firstname
+#, no-c-format
+msgid "Gavin"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "King"
+msgstr ""
 
 #. Tag: contrib
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
 msgstr "JSR-299: Contexts and Dependency Injection Lead"
 
+#. Tag: firstname
+#, no-c-format
+msgid "Pete"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Muir"
+msgstr ""
+
 #. Tag: contrib
 #, no-c-format
 msgid "Weld (JSR-299 RI) Lead"
 msgstr "Weld (JSR-299 RI) Lead"
+
+#. Tag: firstname
+#, no-c-format
+msgid "Dan"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Allen"
+msgstr ""
+
+#. Tag: firstname
+#, no-c-format
+msgid "David"
+msgstr ""
+
+#. Tag: firstname
+#, no-c-format
+msgid "Nicola"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Benaglia"
+msgstr ""
 
 #. Tag: contrib
 #, no-c-format
 msgid "Italian Translation"
 msgstr "Traduzione italiana"
 
+#. Tag: firstname
+#, no-c-format
+msgid "Gladys"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Guerrero"
+msgstr ""
+
 #. Tag: contrib
 #, no-c-format
 msgid "Spanish Translation"
 msgstr "Traduzione spagnola"
+
+#. Tag: firstname
+#, no-c-format
+msgid "Eun-Ju"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Ki,"
+msgstr ""
 
 #. Tag: contrib
 #, no-c-format
 msgid "Korean Translation"
 msgstr "Traduzione coreana"
 
+#. Tag: firstname
+#, no-c-format
+msgid "Terry"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Chuang"
+msgstr ""
+
 #. Tag: contrib
 #, no-c-format
 msgid "Traditional Chinese Translation"
 msgstr "Traduzione cinese (tradizionale)"
+
+#. Tag: firstname
+#, no-c-format
+msgid "Francesco"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Milesi"
+msgstr ""
+
+#. Tag: firstname
+#, no-c-format
+msgid "Sean"
+msgstr ""
+
+#. Tag: surname
+#, no-c-format
+msgid "Wu"
+msgstr ""
 
 #. Tag: contrib
 #, no-c-format
@@ -78,19 +174,11 @@ msgstr "Traduzione cinese semplificato"
 #~ msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
 #~ msgstr "<firstname>Sean</firstname> <surname>Wu</surname>"
 
-#~ msgid ""
-#~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "
-#~ "Middleware LLC</orgname>"
-#~ msgstr ""
-#~ "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat "
-#~ "Middleware LLC</orgname>"
+#~ msgid "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
+#~ msgstr "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
 
-#~ msgid ""
-#~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
-#~ "<orgname>Red Hat Middleware LLC</orgname>"
-#~ msgstr ""
-#~ "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> "
-#~ "<orgname>Red Hat Middleware LLC</orgname>"
+#~ msgid "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
+#~ msgstr "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
 
 #~ msgid "Red Hat Middleware LLC"
 #~ msgstr "Red Hat Middleware LLC"

@@ -5,10 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-05-01T13:53:43\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2009-11-11 15:00+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,36 +21,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Java EE 5 already introduced some limited support for dependency injection, "
-"in the form of component environment injection. A component environment "
-"resource is a Java EE component, for example a JDBC datasource, JMS queue or "
-"topic, JPA persistence context, remote EJB or web service."
+msgid "Java EE 5 already introduced some limited support for dependency injection, in the form of component environment injection. A component environment resource is a Java EE component, for example a JDBC datasource, JMS queue or topic, JPA persistence context, remote EJB or web service."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Naturally, there is now a slight mismatch with the new style of dependency "
-"injection in CDI. Most notably, component environment injection relies on "
-"string-based names to qualify ambiguous types, and there is no real "
-"consistency as to the nature of the names (sometimes a JNDI name, sometimes "
-"a persistence unit name, sometimes an EJB link, sometimes a nonportable &#34;"
-"mapped name&#34;). Producer fields turned out to be an elegant adaptor to "
-"reduce all this complexity to a common model and get component environment "
-"resources to participate in the CDI system just like any other kind of bean."
+msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a nonportable &#34;mapped name&#34;). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Fields have a duality in that they can both be the target of Java EE "
-"component environment injection and be declared as a CDI producer field. "
-"Therefore, they can define a mapping from a string-based name in the "
-"component environment, to a combination of type and qualifiers used in the "
-"world of typesafe injection. We call a producer field that represents a "
-"reference to an object in the Java EE component environment a "
-"<emphasis>resource</emphasis>."
+msgid "Fields have a duality in that they can both be the target of Java EE component environment injection and be declared as a CDI producer field. Therefore, they can define a mapping from a string-based name in the component environment, to a combination of type and qualifiers used in the world of typesafe injection. We call a producer field that represents a reference to an object in the Java EE component environment a <emphasis>resource</emphasis>."
 msgstr ""
 
 #. Tag: title
@@ -59,26 +41,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The CDI specification uses the term <emphasis>resource</emphasis> to refer, "
-"generically, to any of the following kinds of object which might be "
-"available in the Java EE component environment:"
+msgid "The CDI specification uses the term <emphasis>resource</emphasis> to refer, generically, to any of the following kinds of object which might be available in the Java EE component environment:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, "
-"<literal>Topic</literal>s and <literal>ConnectionFactory</literal>s, "
-"JavaMail <literal>Session</literal>s and other transactional resources "
-"including JCA connectors,"
+msgid "JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, <literal>Topic</literal>s and <literal>ConnectionFactory</literal>s, JavaMail <literal>Session</literal>s and other transactional resources including JCA connectors,"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"JPA <literal>EntityManager</literal>s and <literal>EntityManagerFactory</"
-"literal>s,"
+msgid "JPA <literal>EntityManager</literal>s and <literal>EntityManagerFactory</literal>s,"
 msgstr ""
 
 #. Tag: para
@@ -93,11 +66,42 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
+msgid "We declare a resource by annotating a producer field with a component environment injection annotation: <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
 msgid ""
-"We declare a resource by annotating a producer field with a component "
-"environment injection annotation: <literal>@Resource</literal>, "
-"<literal>@EJB</literal>, <literal>@PersistenceContext</literal>, "
-"<literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>."
+"@Produces @WebServiceRef(lookup=&#34;java:app/service/Catalog&#34;)\n"
+"Catalog catalog;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid ""
+"@Produces @Resource(lookup=&#34;java:global/env/jdbc/CustomerDatasource&#34;) \n"
+"@CustomerDatabase Datasource customerDatabase;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid ""
+"@Produces @PersistenceContext(unitName=&#34;CustomerDatabase&#34;)\n"
+"@CustomerDatabase EntityManager customerDatabasePersistenceContext;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid ""
+"@Produces @PersistenceUnit(unitName=&#34;CustomerDatabase&#34;) \n"
+"@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid ""
+"@Produces @EJB(ejbLink=&#34;../their.jar#PaymentService&#34;) \n"
+"PaymentService paymentService;"
 msgstr ""
 
 #. Tag: para
@@ -112,25 +116,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"the JNDI name, EJB link, persistence unit name, or other metadata needed to "
-"obtain a reference to the resource from the component environment, and"
+msgid "the JNDI name, EJB link, persistence unit name, or other metadata needed to obtain a reference to the resource from the component environment, and"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"the type and qualifiers that we will use to inject the reference into our "
-"beans."
+msgid "the type and qualifiers that we will use to inject the reference into our beans."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"It might feel strange to be declaring resources in Java code. Isn&#39;t this "
-"stuff that might be deployment-specific? Certainly, and that&#39;s why it "
-"makes sense to declare your resources in a class annotated "
-"<literal>@Alternative</literal>."
+msgid "It might feel strange to be declaring resources in Java code. Isn&#39;t this stuff that might be deployment-specific? Certainly, and that&#39;s why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
 msgstr ""
 
 #. Tag: title
@@ -143,27 +139,54 @@ msgstr ""
 msgid "These resources can now be injected in the usual way."
 msgstr ""
 
-#. Tag: para
+#. Tag: programlisting
 #, no-c-format
-msgid ""
-"The bean type and qualifiers of the resource are determined by the producer "
-"field declaration."
+msgid "@Inject Catalog catalog;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @CustomerDatabase Datasource customerDatabase;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @CustomerDatabase EntityManager customerDatabaseEntityManager;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @CustomerDatabase EntityManagerFactory customerDatabaseEntityManagerFactory;"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject PaymentService paymentService;"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"It might seem like a pain to have to write these extra producer field "
-"declarations, just to gain an additional level of indirection. You could "
-"just as well use component environment injection directly, right? But "
-"remember that you&#39;re going to be using resources like the "
-"<literal>EntityManager</literal> in several different beans. Isn&#39;t it "
-"nicer and more typesafe to write"
+msgid "The bean type and qualifiers of the resource are determined by the producer field declaration."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you&#39;re going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn&#39;t it nicer and more typesafe to write"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @CustomerDatabase EntityManager"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "instead of"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@PersistenceContext(unitName=&#34;CustomerDatabase&#34;) EntityManager"
 msgstr ""
 
 #. Tag: para

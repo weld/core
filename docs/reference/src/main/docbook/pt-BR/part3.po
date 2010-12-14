@@ -5,165 +5,84 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T10:21:24\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2010-11-11 23:05-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
-#, no-c-format
-msgid ""
-"The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've "
-"already seen three means of achieving loose coupling:"
-msgstr ""
-"O primeiro grande tema de CDI é <emphasis>baixo acoplamento</emphasis>. Já "
-"vimos três meios de alcançar baixo acoplamento:"
+#, fuzzy, no-c-format
+msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We&#39;ve already seen three means of achieving loose coupling:"
+msgstr "O primeiro grande tema de CDI é <emphasis>baixo acoplamento</emphasis>. Já vimos três meios de alcançar baixo acoplamento:"
 
 #. Tag: para
 #, no-c-format
 msgid "<emphasis>alternatives</emphasis> enable deployment time polymorphism,"
-msgstr ""
-"<emphasis>alternativos</emphasis> permitem polimorfismo durante a "
-"implantação,"
+msgstr "<emphasis>alternativos</emphasis> permitem polimorfismo durante a implantação,"
 
 #. Tag: para
 #, no-c-format
 msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
-msgstr ""
-"<emphasis>métodos produtores</emphasis> permitem polimorfismo durante a "
-"execução, e"
+msgstr "<emphasis>métodos produtores</emphasis> permitem polimorfismo durante a execução, e"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<emphasis>contextual lifecycle management</emphasis> decouples bean "
-"lifecycles."
-msgstr ""
-"<emphasis>gerenciamento contextual do ciclo de vida</emphasis> desacopla os "
-"ciclos de vida dos beans."
+msgid "<emphasis>contextual lifecycle management</emphasis> decouples bean lifecycles."
+msgstr "<emphasis>gerenciamento contextual do ciclo de vida</emphasis> desacopla os ciclos de vida dos beans."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"These techniques serve to enable loose coupling of client and server. The "
-"client is no longer tightly bound to an implementation of an interface, nor "
-"is it required to manage the lifecycle of the implementation. This approach "
-"lets <emphasis>stateful objects interact as if they were services</emphasis>."
-msgstr ""
-"Estas técnicas permitem uma baixa acoplagem do cliente e servidor. O cliente "
-"não é mais fortemente vinculado a uma implementação de uma interface, nem é "
-"necessário gerenciar o ciclo de vida da implementação. Esta abordagem deixa "
-"que <emphasis>objetos com estado interajam como se eles fossem serviços</"
-"emphasis>."
+msgid "These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an implementation of an interface, nor is it required to manage the lifecycle of the implementation. This approach lets <emphasis>stateful objects interact as if they were services</emphasis>."
+msgstr "Estas técnicas permitem uma baixa acoplagem do cliente e servidor. O cliente não é mais fortemente vinculado a uma implementação de uma interface, nem é necessário gerenciar o ciclo de vida da implementação. Esta abordagem deixa que <emphasis>objetos com estado interajam como se eles fossem serviços</emphasis>."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system "
-"can respond to change in a well-defined manner. In the past, frameworks that "
-"attempted to provide the facilities listed above invariably did it by "
-"sacrificing type safety (most notably by using XML descriptors). CDI is the "
-"first technology, and certainly the first specification in the Java EE "
-"platform, that achieves this level of loose coupling in a typesafe way."
-msgstr ""
-"Baixo acoplamento torna um sistema mais <emphasis>dinâmico</emphasis>. O "
-"sistema pode responder a mudanças de uma maneira bem definida. No passado, "
-"os frameworks que tentaram fornecer as facilidades listadas acima, "
-"invariavelmente fizeram sacrificando a tipagem segura (mais notavelmente "
-"pelo uso de descritores XML). CDI é a primeira tecnologia, e certamente a "
-"primeira especificação na plataforma Java EE, que alcança este nível de "
-"baixo acoplamento de uma maneira typesafe."
+msgid "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did it by sacrificing type safety (most notably by using XML descriptors). CDI is the first technology, and certainly the first specification in the Java EE platform, that achieves this level of loose coupling in a typesafe way."
+msgstr "Baixo acoplamento torna um sistema mais <emphasis>dinâmico</emphasis>. O sistema pode responder a mudanças de uma maneira bem definida. No passado, os frameworks que tentaram fornecer as facilidades listadas acima, invariavelmente fizeram sacrificando a tipagem segura (mais notavelmente pelo uso de descritores XML). CDI é a primeira tecnologia, e certamente a primeira especificação na plataforma Java EE, que alcança este nível de baixo acoplamento de uma maneira typesafe."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"CDI provides three extra important facilities that further the goal of loose "
-"coupling:"
-msgstr ""
-"CDI fornece três importantes facilidades extras adicionalmente ao objetivo "
-"da baixa acoplagem:"
+msgid "CDI provides three extra important facilities that further the goal of loose coupling:"
+msgstr "CDI fornece três importantes facilidades extras adicionalmente ao objetivo da baixa acoplagem:"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<emphasis>interceptors</emphasis> decouple technical concerns from business "
-"logic,"
-msgstr ""
-"<emphasis>interceptadores</emphasis> desacoplam questões técnicas da lógica "
-"de negócio,"
+msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic,"
+msgstr "<emphasis>interceptadores</emphasis> desacoplam questões técnicas da lógica de negócio,"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<emphasis>decorators</emphasis> may be used to decouple some business "
-"concerns, and"
-msgstr ""
-"<emphasis>decoradores</emphasis> podem ser usados para desacoplar algumas "
-"questões de negócio, e"
+msgid "<emphasis>decorators</emphasis> may be used to decouple some business concerns, and"
+msgstr "<emphasis>decoradores</emphasis> podem ser usados para desacoplar algumas questões de negócio, e"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<emphasis>event notifications</emphasis> decouple event producers from event "
-"consumers."
-msgstr ""
-"<emphasis>notificações de evento</emphasis> desacoplam produtores de evento "
-"dos consumidores de evento."
+msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers."
+msgstr "<emphasis>notificações de evento</emphasis> desacoplam produtores de evento dos consumidores de evento."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The second major theme of CDI is <emphasis>strong typing</emphasis>. The "
-"information about the dependencies, interceptors and decorators of a bean, "
-"and the information about event consumers for an event producer, is "
-"contained in typesafe Java constructs that may be validated by the compiler."
-msgstr ""
-"O segundo grande tema da CDI é a <emphasis>tipificação forte</emphasis>. As "
-"informações sobre as dependências, interceptores e decoradores de um bean, e "
-"as informações sobre os consumidores de eventos para um produtor de evento, "
-"estão contidas em construtores Java typesafe, que podem ser validados pelo "
-"compilador."
+msgid "The second major theme of CDI is <emphasis>strong typing</emphasis>. The information about the dependencies, interceptors and decorators of a bean, and the information about event consumers for an event producer, is contained in typesafe Java constructs that may be validated by the compiler."
+msgstr "O segundo grande tema da CDI é a <emphasis>tipificação forte</emphasis>. As informações sobre as dependências, interceptores e decoradores de um bean, e as informações sobre os consumidores de eventos para um produtor de evento, estão contidas em construtores Java typesafe, que podem ser validados pelo compilador."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "You don&#39;t see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called &#34;configuration by convention&#34;—but because there are simply no strings there to begin with!"
+msgstr "Você não vê identificadores baseados em strings em código CDI, não porque o framework está escondendo eles de você usando padrões de regras inteligentes &#8212; a chamado \"configuração por convenção\" &#8212; mas porque simplesmente não existem strings ali!"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"You don't see string-based identifiers in CDI code, not because the "
-"framework is hiding them from you using clever defaulting rules&#8212;so-"
-"called \"configuration by convention\"&#8212;but because there are simply no "
-"strings there to begin with!"
-msgstr ""
-"Você não vê identificadores baseados em strings em código CDI, não porque o "
-"framework está escondendo eles de você usando padrões de regras inteligentes "
-"&#8212; a chamado \"configuração por convenção\" &#8212; mas porque "
-"simplesmente não existem strings ali!"
+msgid "The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit. It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead of names, you have an opportunity to lift the semantic level of your code."
+msgstr "A  vantagem óbvia dessa abordagem é que <emphasis>qualquer</emphasis> IDE pode fornecer auto completion, validação e refactoring sem necessidade de ferramentas especiais. Mas há uma segunda vantagem, menos imediatamente óbvia. Acontece que quando você começar a pensar na identificação de objetos, eventos ou interceptadores por meio de anotações - em vez de nomes -, você tem uma oportunidade para aumentar o nível semântico do seu código."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The obvious benefit of this approach is that <emphasis>any</emphasis> IDE "
-"can provide autocompletion, validation and refactoring without the need for "
-"special tooling. But there is a second, less-immediately-obvious, benefit. "
-"It turns out that when you start thinking of identifying objects, events or "
-"interceptors via annotations instead of names, you have an opportunity to "
-"lift the semantic level of your code."
-msgstr ""
-"A  vantagem óbvia dessa abordagem é que <emphasis>qualquer</emphasis> IDE "
-"pode fornecer auto completion, validação e refactoring sem necessidade de "
-"ferramentas especiais. Mas há uma segunda vantagem, menos imediatamente "
-"óbvia. Acontece que quando você começar a pensar na identificação de "
-"objetos, eventos ou interceptadores por meio de anotações - em vez de nomes "
-"-, você tem uma oportunidade para aumentar o nível semântico do seu código."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"CDI encourages you develop annotations that model concepts, for example,"
-msgstr ""
-"CDI incentiva você a desenvolver anotações que modelam conceitos. Por "
-"exemplo:"
+msgid "CDI encourages you develop annotations that model concepts, for example,"
+msgstr "CDI incentiva você a desenvolver anotações que modelam conceitos. Por exemplo:"
 
 #. Tag: para
 #, no-c-format
@@ -212,59 +131,18 @@ msgstr "<literal>DocumentUpdatedEvent</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The annotations are reusable. They help describe common qualities of "
-"disparate parts of the system. They help us categorize and understand our "
-"code. They help us deal with common concerns in a common way. They make our "
-"code more literate and more understandable."
-msgstr ""
-"As anotações são reutilizáveis. Elas ajudam a descrever qualidades comuns de "
-"partes diferentes do sistema. Elas nos ajudam a categorizar e entender o "
-"nosso código. Elas nos ajudam a lidar com questões comuns, de uma maneira "
-"comum. Elas tornam o nosso código mais legível e mais compreensível."
+msgid "The annotations are reusable. They help describe common qualities of disparate parts of the system. They help us categorize and understand our code. They help us deal with common concerns in a common way. They make our code more literate and more understandable."
+msgstr "As anotações são reutilizáveis. Elas ajudam a descrever qualidades comuns de partes diferentes do sistema. Elas nos ajudam a categorizar e entender o nosso código. Elas nos ajudam a lidar com questões comuns, de uma maneira comum. Elas tornam o nosso código mais legível e mais compreensível."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"CDI <emphasis>stereotypes</emphasis> take this idea a step further. A "
-"stereotype models a common <emphasis>role</emphasis> in your application "
-"architecture. It encapsulates various properties of the role, including "
-"scope, interceptor bindings, qualifiers, etc, into a single reusable "
-"package. (Of course, there is also the benefit of tucking some of those "
-"annotations away)."
-msgstr ""
-"Os <emphasis>estereótipos</emphasis> CDI levam essa idéia um pouco mais "
-"longe. Um estereótipo modela um <emphasis>papel</emphasis> comum na sua "
-"arquitetura de aplicação. Ele incorpora várias propriedades do papel, "
-"incluindo escopo, vínculações de interceptadores, qualificadores, etc, em um "
-"único pacote reutilizável. (Certamente, existe também o benefício de "
-"aconchegar algumas destas anotações)."
+msgid "CDI <emphasis>stereotypes</emphasis> take this idea a step further. A stereotype models a common <emphasis>role</emphasis> in your application architecture. It encapsulates various properties of the role, including scope, interceptor bindings, qualifiers, etc, into a single reusable package. (Of course, there is also the benefit of tucking some of those annotations away)."
+msgstr "Os <emphasis>estereótipos</emphasis> CDI levam essa idéia um pouco mais longe. Um estereótipo modela um <emphasis>papel</emphasis> comum na sua arquitetura de aplicação. Ele incorpora várias propriedades do papel, incluindo escopo, vínculações de interceptadores, qualificadores, etc, em um único pacote reutilizável. (Certamente, existe também o benefício de aconchegar algumas destas anotações)."
 
 #. Tag: para
-#, no-c-format
-msgid ""
-"We're now ready to meet some more advanced features of CDI. Bear in mind "
-"that these features exist to make our code both easier to validate and more "
-"understandable. Most of the time you don't ever really <emphasis>need</"
-"emphasis> to use these features, but if you use them wisely, you'll come to "
-"appreciate their power."
-msgstr ""
-"Nós agora estamos prontos para verificar mais algumas funcionalidades "
-"avançadas de CDI. Tenha em mente que essas funcionalidades existem para "
-"tornar nosso código fácil para validar e, ao mesmo tempo, mais fácil de "
-"entender. Na maioria das vezes você nem <emphasis>precisa</emphasis> se "
-"preocupar em utilizar essas funcionalidades, mas se forem fáceis de usar, "
-"você apreciará seu poder."
+#, fuzzy, no-c-format
+msgid "We&#39;re now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don&#39;t ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you&#39;ll come to appreciate their power."
+msgstr "Nós agora estamos prontos para verificar mais algumas funcionalidades avançadas de CDI. Tenha em mente que essas funcionalidades existem para tornar nosso código fácil para validar e, ao mesmo tempo, mais fácil de entender. Na maioria das vezes você nem <emphasis>precisa</emphasis> se preocupar em utilizar essas funcionalidades, mas se forem fáceis de usar, você apreciará seu poder."
 
-#~ msgid ""
-#~ "Even Web Beans XML metadata is strongly typed! There's no compiler for "
-#~ "XML, so Web Beans takes advantage of XML schemas to validate the Java "
-#~ "types and attributes that appear in XML. This approach turns out to make "
-#~ "the XML more literate, just like annotations made our Java code more "
-#~ "literate."
-#~ msgstr ""
-#~ "Mesmo os metadados da Web Beans são fortemente tipados! Não há um "
-#~ "compilador para XML, então a Web Beans tira proveito de esquemas XML para "
-#~ "validar os tipos Java e os atributos que aparecem em XML. Essa abordagem "
-#~ "acaba por tornar o XML mais legível, assim como anotações deixam nosso "
-#~ "código Java mais legível."
+#~ msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."
+#~ msgstr "Mesmo os metadados da Web Beans são fortemente tipados! Não há um compilador para XML, então a Web Beans tira proveito de esquemas XML para validar os tipos Java e os atributos que aparecem em XML. Essa abordagem acaba por tornar o XML mais legível, assim como anotações deixam nosso código Java mais legível."

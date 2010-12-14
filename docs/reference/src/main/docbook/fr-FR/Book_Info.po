@@ -5,10 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-12-14T13:35:16\n"
 "PO-Revision-Date: 2009-02-02 22:05+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,12 +21,13 @@ msgstr ""
 
 #. Tag: subtitle
 #, fuzzy, no-c-format
-msgid ""
-"JSR-299: The new Java standard for dependency injection and contextual "
-"lifecycle management"
+msgid "JSR-299: The new Java standard for dependency injection and contextual lifecycle management"
+msgstr "Le nouveau standard pour l'injection de dépendance et la gestion d'état contextuelle"
+
+#. Tag: productname
+#, no-c-format
+msgid "Weld"
 msgstr ""
-"Le nouveau standard pour l'injection de dépendance et la gestion d'état "
-"contextuelle"
 
 #~ msgid "Web Beans: Java Contexts and Dependency Injection"
 #~ msgstr "Web Beans: Injection de Contextes et de Dépendances Java"

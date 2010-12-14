@@ -5,10 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T03:52:15\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2010-11-11 23:43-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,17 +20,9 @@ msgid "Producer methods"
 msgstr "Métodos produtores"
 
 #. Tag: para
-#, no-c-format
-msgid ""
-"Producer methods let us overcome certain limitations that arise when a "
-"container, instead of the application, is responsible for instantiating "
-"objects. They're also the easiest way to integrate objects which are not "
-"beans into the CDI environment."
-msgstr ""
-"Métodos produtores permitem superarmos certas limitações que surgem quando "
-"um contêiner, em vez da aplicação, é responsável por instanciar objetos. "
-"Eles são também a forma mais fácil de integrar os objetos que não são beans "
-"ao ambiente CDI."
+#, fuzzy, no-c-format
+msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They&#39;re also the easiest way to integrate objects which are not beans into the CDI environment."
+msgstr "Métodos produtores permitem superarmos certas limitações que surgem quando um contêiner, em vez da aplicação, é responsável por instanciar objetos. Eles são também a forma mais fácil de integrar os objetos que não são beans ao ambiente CDI."
 
 #. Tag: para
 #, no-c-format
@@ -39,9 +32,7 @@ msgstr "De acordo com a especificação:"
 #. Tag: para
 #, no-c-format
 msgid "A producer method acts as a source of objects to be injected, where:"
-msgstr ""
-"Um método produtor funciona como uma fonte de objetos a serem injetados, "
-"onde:"
+msgstr "Um método produtor funciona como uma fonte de objetos a serem injetados, onde:"
 
 #. Tag: para
 #, no-c-format
@@ -51,18 +42,12 @@ msgstr "os objetos a serem injetados não necessitam ser instâncias de beans,"
 #. Tag: para
 #, no-c-format
 msgid "the concrete type of the objects to be injected may vary at runtime or"
-msgstr ""
-"o tipo concreto dos objetos a serem injetados pode variar em tempo de "
-"execução ou"
+msgstr "o tipo concreto dos objetos a serem injetados pode variar em tempo de execução ou"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"the objects require some custom initialization that is not performed by the "
-"bean constructor"
-msgstr ""
-"os objetos requerem alguma inicialização personalizada que não é realizada "
-"pelo construtor do bean"
+msgid "the objects require some custom initialization that is not performed by the bean constructor"
+msgstr "os objetos requerem alguma inicialização personalizada que não é realizada pelo construtor do bean"
 
 #. Tag: para
 #, no-c-format
@@ -81,12 +66,8 @@ msgstr "expõe qualquer classe do JDK como um bean,"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"define multiple beans, with different scopes or initialization, for the same "
-"implementation class, or"
-msgstr ""
-"definir vários beans, com diferentes escopos ou inicialização, para a mesma "
-"classe de implementação, ou"
+msgid "define multiple beans, with different scopes or initialization, for the same implementation class, or"
+msgstr "definir vários beans, com diferentes escopos ou inicialização, para a mesma classe de implementação, ou"
 
 #. Tag: para
 #, no-c-format
@@ -94,36 +75,57 @@ msgid "vary the implementation of a bean type at runtime."
 msgstr "varia a implementação de um tipo de bean em tempo de execução."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
+msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we&#39;ve seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
+msgstr "Em particular, métodos produtores permitem-nos utilizar polimorfismo em tempo de execução com CDI. Como vimos, os beans alternativos são uma solução para o problema do polimorfismo em tempo de implantação. Mas, uma vez que o sistema está implantado, a implementação do CDI é imutável. Um método produtor não tem essa limitação:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"In particular, producer methods let us use runtime polymorphism with CDI. As "
-"we've seen, alternative beans are one solution to the problem of deployment-"
-"time polymorphism. But once the system is deployed, the CDI implementation "
-"is fixed. A producer method has no such limitation:"
+"@SessionScoped\n"
+"public class Preferences implements Serializable {\n"
+"   private PaymentStrategyType paymentStrategy;\n"
+"   ...\n"
+"   @Produces @Preferred \n"
+"   public PaymentStrategy getPaymentStrategy() {\n"
+"       switch (paymentStrategy) {\n"
+"           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+"           case CHECK: return new CheckPaymentStrategy();\n"
+"           case PAYPAL: return new PayPalPaymentStrategy();\n"
+"           default: return null;\n"
+"       } \n"
+"   }\n"
+"}"
 msgstr ""
-"Em particular, métodos produtores permitem-nos utilizar polimorfismo em "
-"tempo de execução com CDI. Como vimos, os beans alternativos são uma solução "
-"para o problema do polimorfismo em tempo de implantação. Mas, uma vez que o "
-"sistema está implantado, a implementação do CDI é imutável. Um método "
-"produtor não tem essa limitação:"
+"<![CDATA[@SessionScoped\n"
+"public class Preferences implements Serializable {\n"
+"   private PaymentStrategyType paymentStrategy;\n"
+"   ...\n"
+"   @Produces @Preferred \n"
+"   public PaymentStrategy getPaymentStrategy() {\n"
+"       switch (paymentStrategy) {\n"
+"           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
+"           case CHECK: return new CheckPaymentStrategy();\n"
+"           case PAYPAL: return new PayPalPaymentStrategy();\n"
+"           default: return null;\n"
+"       } \n"
+"   }\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
 msgid "Consider an injection point:"
 msgstr "Considere o ponto de injeção:"
 
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "@Inject @Preferred PaymentStrategy paymentStrategy;"
+msgstr "<![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]>"
+
 #. Tag: para
 #, no-c-format
-msgid ""
-"This injection point has the same type and qualifier annotations as the "
-"producer method, so it resolves to the producer method using the usual CDI "
-"injection rules. The producer method will be called by the container to "
-"obtain an instance to service this injection point."
-msgstr ""
-"Este ponto de injeção tem o mesmo tipo e anotações de qualificadoras que o "
-"método produtor. Assim, ele resolve para o método produtor utilizando as "
-"regras de injeção do CDI. O método produtor será invocado pelo contêiner "
-"para obter uma instância para servir esse ponto de injeção."
+msgid "This injection point has the same type and qualifier annotations as the producer method, so it resolves to the producer method using the usual CDI injection rules. The producer method will be called by the container to obtain an instance to service this injection point."
+msgstr "Este ponto de injeção tem o mesmo tipo e anotações de qualificadoras que o método produtor. Assim, ele resolve para o método produtor utilizando as regras de injeção do CDI. O método produtor será invocado pelo contêiner para obter uma instância para servir esse ponto de injeção."
 
 #. Tag: title
 #, no-c-format
@@ -132,56 +134,36 @@ msgstr "Escopo de um método produtor"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The scope of the producer method defaults to <literal>@Dependent</literal>, "
-"and so it will be called <emphasis>every time</emphasis> the container "
-"injects this field or any other field that resolves to the same producer "
-"method. Thus, there could be multiple instances of the "
-"<literal>PaymentStrategy</literal> object for each user session."
-msgstr ""
-"O escopo padrão dos métodos produtores é <literal>@Dependent</literal>, e, "
-"por isso, serão chamados <emphasis>toda vez</emphasis> que o contêiner "
-"injetar esse atributo ou qualquer outro atributo que resolve para o mesmo "
-"método produtor. Assim, pode haver várias instâncias do objeto "
-"<literal>PaymentStrategy</literal> para cada sessão do usuário."
+msgid "The scope of the producer method defaults to <literal>@Dependent</literal>, and so it will be called <emphasis>every time</emphasis> the container injects this field or any other field that resolves to the same producer method. Thus, there could be multiple instances of the <literal>PaymentStrategy</literal> object for each user session."
+msgstr "O escopo padrão dos métodos produtores é <literal>@Dependent</literal>, e, por isso, serão chamados <emphasis>toda vez</emphasis> que o contêiner injetar esse atributo ou qualquer outro atributo que resolve para o mesmo método produtor. Assim, pode haver várias instâncias do objeto <literal>PaymentStrategy</literal> para cada sessão do usuário."
 
 #. Tag: para
 #, no-c-format
+msgid "To change this behavior, we can add a <literal>@SessionScoped</literal> annotation to the method."
+msgstr "Para mudar esse comportamento, nós podemos adicionar a anotação <literal>@SessionScoped</literal> ao método."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"To change this behavior, we can add a <literal>@SessionScoped</literal> "
-"annotation to the method."
+"@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy() {\n"
+"   ...\n"
+"}"
 msgstr ""
-"Para mudar esse comportamento, nós podemos adicionar a anotação "
-"<literal>@SessionScoped</literal> ao método."
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy() {\n"
+"   ...\n"
+"}]]>"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won&#39;t be called again in the same session."
+msgstr "Agora, quando o método produtor é chamado, o <literal>PaymentStrategy</literal> retornado será associado ao contexto de sessão. O método produtor não será invocado novamente na mesma sessão."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Now, when the producer method is called, the returned "
-"<literal>PaymentStrategy</literal> will be bound to the session context. The "
-"producer method won't be called again in the same session."
-msgstr ""
-"Agora, quando o método produtor é chamado, o <literal>PaymentStrategy</"
-"literal> retornado será associado ao contexto de sessão. O método produtor "
-"não será invocado novamente na mesma sessão."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"A producer method does <emphasis>not</emphasis> inherit the scope of the "
-"bean that declares the method. There are two different beans here: the "
-"producer method, and the bean which declares it. The scope of the producer "
-"method determines how often the method will be called, and the lifecycle of "
-"the objects returned by the method. The scope of the bean that declares the "
-"producer method determines the lifecycle of the object upon which the "
-"producer method is invoked."
-msgstr ""
-"Um método produtor <emphasis>não</emphasis> herda o escopo do bean que "
-"declara o método. Existem dois beans diferentes aqui: o método produtor, e o "
-"bean que o declara. O escopo do método produtor determina como o método será "
-"invocado, e o ciclo de vida dos objetos retornados pelo método. O ecopo do "
-"bean que declara o método produtor determina o ciclo de vida do objeto no "
-"qual o método produtor é invocado."
+msgid "A producer method does <emphasis>not</emphasis> inherit the scope of the bean that declares the method. There are two different beans here: the producer method, and the bean which declares it. The scope of the producer method determines how often the method will be called, and the lifecycle of the objects returned by the method. The scope of the bean that declares the producer method determines the lifecycle of the object upon which the producer method is invoked."
+msgstr "Um método produtor <emphasis>não</emphasis> herda o escopo do bean que declara o método. Existem dois beans diferentes aqui: o método produtor, e o bean que o declara. O escopo do método produtor determina como o método será invocado, e o ciclo de vida dos objetos retornados pelo método. O ecopo do bean que declara o método produtor determina o ciclo de vida do objeto no qual o método produtor é invocado."
 
 #. Tag: title
 #, no-c-format
@@ -189,73 +171,56 @@ msgid "Injection into producer methods"
 msgstr "Injeção em métodos produtores"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
+msgid "There&#39;s one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can&#39;t take advantage of dependency injection and don&#39;t have interceptors."
+msgstr "Existe um problema potencial com o código acima. As implementações de <literal>CreditCardPaymentStrategy</literal> são instanciadas utilizando o operador <literal>new</literal> de Java. Objetos instanciados diretamente pela aplicação não usufruem da injeção de dependência e não possuem interceptadores."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "If this isn&#39;t what we want, we can use dependency injection into the producer method to obtain bean instances:"
+msgstr "Se não é isso o que queremos, podemos utilizar a injeção de dependência no método produtor para obter instâncias do bean:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"There's one potential problem with the code above. The implementations of "
-"<literal>CreditCardPaymentStrategy</literal> are instantiated using the Java "
-"<literal>new</literal> operator. Objects instantiated directly by the "
-"application can't take advantage of dependency injection and don't have "
-"interceptors."
+"@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
+"                                          CheckPaymentStrategy cps,\n"
+"                                          PayPalPaymentStrategy ppps) {\n"
+"   switch (paymentStrategy) {\n"
+"      case CREDIT_CARD: return ccps;\n"
+"      case CHEQUE: return cps;\n"
+"      case PAYPAL: return ppps;\n"
+"      default: return null;\n"
+"   } \n"
+"}"
 msgstr ""
-"Existe um problema potencial com o código acima. As implementações de "
-"<literal>CreditCardPaymentStrategy</literal> são instanciadas utilizando o "
-"operador <literal>new</literal> de Java. Objetos instanciados diretamente "
-"pela aplicação não usufruem da injeção de dependência e não possuem "
-"interceptadores."
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,\n"
+"                                          CheckPaymentStrategy cps,\n"
+"                                          PayPalPaymentStrategy ppps) {\n"
+"   switch (paymentStrategy) {\n"
+"      case CREDIT_CARD: return ccps;\n"
+"      case CHEQUE: return cps;\n"
+"      case PAYPAL: return ppps;\n"
+"      default: return null;\n"
+"   } \n"
+"}]]>"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of &#34;promoting&#34; the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left &#34;hanging&#34; in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
+msgstr "Espere, o que ocorre se <literal>CreditCardPaymentStrategy</literal> for um bean com escopo de requisição? Assim o método produtor tem o efeito de \"promover\" a instância atual com escopo de requisição para escopo de sessão. Isso certamente é um erro! O objeto com escopo de requisição será destruído pelo contêiner antes de terminar a sessão, mas a referência ao objeto será deixada \"presa\" ao escopo de sessão. Esse erro <emphasis>não</emphasis> será detectado pelo contêiner. Por isso, tome cuidado adicional ao retornar instâncias de bean em métodos produtores!"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "There&#39;s at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgstr "Existem pelo menos três maneiras de corrigirmos esse problema. Podemos alterar o escopo da implementação de <literal>CreditCardPaymentStrategy</literal>, mas isso poderia afetar outros clientes desse bean. A mehor opção seria alterar o escopo do método produtor para <literal>@Dependent</literal> ou <literal>@RequestScoped</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"If this isn't what we want, we can use dependency injection into the "
-"producer method to obtain bean instances:"
-msgstr ""
-"Se não é isso o que queremos, podemos utilizar a injeção de dependência no "
-"método produtor para obter instâncias do bean:"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-"
-"scoped bean? Then the producer method has the effect of \"promoting\" the "
-"current request scoped instance into session scope. This is almost certainly "
-"a bug! The request scoped object will be destroyed by the container before "
-"the session ends, but the reference to the object will be left \"hanging\" "
-"in the session scope. This error will <emphasis>not</emphasis> be detected "
-"by the container, so please take extra care when returning bean instances "
-"from producer methods!"
-msgstr ""
-"Espere, o que ocorre se <literal>CreditCardPaymentStrategy</literal> for um "
-"bean com escopo de requisição? Assim o método produtor tem o efeito de "
-"\"promover\" a instância atual com escopo de requisição para escopo de "
-"sessão. Isso certamente é um erro! O objeto com escopo de requisição será "
-"destruído pelo contêiner antes de terminar a sessão, mas a referência ao "
-"objeto será deixada \"presa\" ao escopo de sessão. Esse erro <emphasis>não</"
-"emphasis> será detectado pelo contêiner. Por isso, tome cuidado adicional ao "
-"retornar instâncias de bean em métodos produtores!"
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"There's at least three ways we could go about fixing this bug. We could "
-"change the scope of the <literal>CreditCardPaymentStrategy</literal> "
-"implementation, but this would affect other clients of that bean. A better "
-"option would be to change the scope of the producer method to "
-"<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
-msgstr ""
-"Existem pelo menos três maneiras de corrigirmos esse problema. Podemos "
-"alterar o escopo da implementação de <literal>CreditCardPaymentStrategy</"
-"literal>, mas isso poderia afetar outros clientes desse bean. A mehor opção "
-"seria alterar o escopo do método produtor para <literal>@Dependent</literal> "
-"ou <literal>@RequestScoped</literal>."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"But a more common solution is to use the special <literal>@New</literal> "
-"qualifier annotation."
-msgstr ""
-"Mas uma solução mais comum é utilizar a anotação qualificadora especial "
-"<literal>@New</literal>."
+msgid "But a more common solution is to use the special <literal>@New</literal> qualifier annotation."
+msgstr "Mas uma solução mais comum é utilizar a anotação qualificadora especial <literal>@New</literal>."
 
 #. Tag: title
 #, no-c-format
@@ -267,21 +232,37 @@ msgstr "Uso do <literal>@New</literal> em métodos produtores"
 msgid "Consider the following producer method:"
 msgstr "Considere o seguinte método produtor:"
 
-#. Tag: para
-#, no-c-format
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Then a new <emphasis>dependent</emphasis> instance of "
-"<literal>CreditCardPaymentStrategy</literal> will be created, passed to the "
-"producer method, returned by the producer method and finally bound to the "
-"session context. The dependent object won't be destroyed until the "
-"<literal>Preferences</literal> object is destroyed, at the end of the "
-"session."
+"@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,\n"
+"                                          @New CheckPaymentStrategy cps,\n"
+"                                          @New PayPalPaymentStrategy ppps) {\n"
+"   switch (paymentStrategy) {\n"
+"      case CREDIT_CARD: return ccps;\n"
+"      case CHEQUE: return cps;\n"
+"      case PAYPAL: return ppps;\n"
+"      default: return null;\n"
+"   } \n"
+"}"
 msgstr ""
-"Assim a nova instância <emphasis>dependente</emphasis> de "
-"<literal>CreditCardPaymentStrategy</literal> será criada, passada para o "
-"método produtor, retornada pelo método produtor e, finalmente, associada ao "
-"contexto de sessão. O objeto dependente não será destruído até que o objeto "
-"<literal>Preferences</literal> seja destruído, ao término da sessão."
+"<![CDATA[@Produces @Preferred @SessionScoped\n"
+"public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,\n"
+"                                          @New CheckPaymentStrategy cps,\n"
+"                                          @New PayPalPaymentStrategy ppps) {\n"
+"   switch (paymentStrategy) {\n"
+"      case CREDIT_CARD: return ccps;\n"
+"      case CHEQUE: return cps;\n"
+"      case PAYPAL: return ppps;\n"
+"      default: return null;\n"
+"   } \n"
+"}]]>"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won&#39;t be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
+msgstr "Assim a nova instância <emphasis>dependente</emphasis> de <literal>CreditCardPaymentStrategy</literal> será criada, passada para o método produtor, retornada pelo método produtor e, finalmente, associada ao contexto de sessão. O objeto dependente não será destruído até que o objeto <literal>Preferences</literal> seja destruído, ao término da sessão."
 
 #. Tag: title
 #, no-c-format
@@ -290,161 +271,40 @@ msgstr "Métodos destruidores"
 
 #. Tag: para
 #, no-c-format
+msgid "Some producer methods return objects that require explicit destruction. For example, somebody needs to close this JDBC connection:"
+msgstr "Alguns métodos produtores retornam objetos que requerem destruição explícita. Por exemplo, alguém precisa fechar esta conexão JDBC:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Some producer methods return objects that require explicit destruction. For "
-"example, somebody needs to close this JDBC connection:"
+"@Produces @RequestScoped Connection connect(User user) {\n"
+"   return createConnection(user.getId(), user.getPassword());\n"
+"}"
 msgstr ""
-"Alguns métodos produtores retornam objetos que requerem destruição "
-"explícita. Por exemplo, alguém precisa fechar esta conexão JDBC:"
+"<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
+"   return createConnection(user.getId(), user.getPassword());\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "Destruction can be performed by a matching <emphasis>disposer method</emphasis>, defined by the same class as the producer method:"
+msgstr "A destruição pode ser realizada por um <emphasis>método destruidor</emphasis> apropriado, definido pela mesma classe do método produtor:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Destruction can be performed by a matching <emphasis>disposer method</"
-"emphasis>, defined by the same class as the producer method:"
+"void close(@Disposes Connection connection) {\n"
+"   connection.close();\n"
+"}"
 msgstr ""
-"A destruição pode ser realizada por um <emphasis>método destruidor</"
-"emphasis> apropriado, definido pela mesma classe do método produtor:"
+"<![CDATA[void close(@Disposes Connection connection) {\n"
+"   connection.close();\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The disposer method must have at least one parameter, annotated "
-"<literal>@Disposes</literal>, with the same type and qualifiers as the "
-"producer method. The disposer method is called automatically when the "
-"context ends (in this case, at the end of the request), and this parameter "
-"receives the object produced by the producer method. If the disposer method "
-"has additional method parameters, the container will look for a bean that "
-"satisfies the type and qualifiers of each parameter and pass it to the "
-"method automatically."
-msgstr ""
-"O método destruidor deve ter ao menos um parâmetro, anotado com "
-"<literal>@Disposes</literal>, com o mesmo tipo e qualificadores do método "
-"produtor. O método destruidor é chamado automaticamente quando o contexto "
-"termina (neste caso, ao final da requisição), e este parâmetro recebe o "
-"objeto produzido pelo método produtor. Se o método produtor possui "
-"parâmetros adicionais, o contêiner procurará por um bean que satisfaça o "
-"tipo e qualificadores de cada parâmetro e o passará para o método "
-"automaticamente."
-
-#~ msgid ""
-#~ "<![CDATA[@SessionScoped\n"
-#~ "public class Preferences implements Serializable {\n"
-#~ "   private PaymentStrategyType paymentStrategy;\n"
-#~ "   ...\n"
-#~ "   @Produces @Preferred \n"
-#~ "   public PaymentStrategy getPaymentStrategy() {\n"
-#~ "       switch (paymentStrategy) {\n"
-#~ "           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-#~ "           case CHECK: return new CheckPaymentStrategy();\n"
-#~ "           case PAYPAL: return new PayPalPaymentStrategy();\n"
-#~ "           default: return null;\n"
-#~ "       } \n"
-#~ "   }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@SessionScoped\n"
-#~ "public class Preferences implements Serializable {\n"
-#~ "   private PaymentStrategyType paymentStrategy;\n"
-#~ "   ...\n"
-#~ "   @Produces @Preferred \n"
-#~ "   public PaymentStrategy getPaymentStrategy() {\n"
-#~ "       switch (paymentStrategy) {\n"
-#~ "           case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-#~ "           case CHECK: return new CheckPaymentStrategy();\n"
-#~ "           case PAYPAL: return new PayPalPaymentStrategy();\n"
-#~ "           default: return null;\n"
-#~ "       } \n"
-#~ "   }\n"
-#~ "}]]>"
-
-#~ msgid "<![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]>"
-#~ msgstr "<![CDATA[@Inject @Preferred PaymentStrategy paymentStrategy;]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy() {\n"
-#~ "   ...\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy() {\n"
-#~ "   ...\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
-#~ "ccps,\n"
-#~ "                                          CheckPaymentStrategy cps,\n"
-#~ "                                          PayPalPaymentStrategy ppps) {\n"
-#~ "   switch (paymentStrategy) {\n"
-#~ "      case CREDIT_CARD: return ccps;\n"
-#~ "      case CHEQUE: return cps;\n"
-#~ "      case PAYPAL: return ppps;\n"
-#~ "      default: return null;\n"
-#~ "   } \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy "
-#~ "ccps,\n"
-#~ "                                          CheckPaymentStrategy cps,\n"
-#~ "                                          PayPalPaymentStrategy ppps) {\n"
-#~ "   switch (paymentStrategy) {\n"
-#~ "      case CREDIT_CARD: return ccps;\n"
-#~ "      case CHEQUE: return cps;\n"
-#~ "      case PAYPAL: return ppps;\n"
-#~ "      default: return null;\n"
-#~ "   } \n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
-#~ "ccps,\n"
-#~ "                                          @New CheckPaymentStrategy cps,\n"
-#~ "                                          @New PayPalPaymentStrategy "
-#~ "ppps) {\n"
-#~ "   switch (paymentStrategy) {\n"
-#~ "      case CREDIT_CARD: return ccps;\n"
-#~ "      case CHEQUE: return cps;\n"
-#~ "      case PAYPAL: return ppps;\n"
-#~ "      default: return null;\n"
-#~ "   } \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces @Preferred @SessionScoped\n"
-#~ "public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy "
-#~ "ccps,\n"
-#~ "                                          @New CheckPaymentStrategy cps,\n"
-#~ "                                          @New PayPalPaymentStrategy "
-#~ "ppps) {\n"
-#~ "   switch (paymentStrategy) {\n"
-#~ "      case CREDIT_CARD: return ccps;\n"
-#~ "      case CHEQUE: return cps;\n"
-#~ "      case PAYPAL: return ppps;\n"
-#~ "      default: return null;\n"
-#~ "   } \n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
-#~ "   return createConnection(user.getId(), user.getPassword());\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
-#~ "   return createConnection(user.getId(), user.getPassword());\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[void close(@Disposes Connection connection) {\n"
-#~ "   connection.close();\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[void close(@Disposes Connection connection) {\n"
-#~ "   connection.close();\n"
-#~ "}]]>"
+msgid "The disposer method must have at least one parameter, annotated <literal>@Disposes</literal>, with the same type and qualifiers as the producer method. The disposer method is called automatically when the context ends (in this case, at the end of the request), and this parameter receives the object produced by the producer method. If the disposer method has additional method parameters, the container will look for a bean that satisfies the type and qualifiers of each parameter and pass it to the method automatically."
+msgstr "O método destruidor deve ter ao menos um parâmetro, anotado com <literal>@Disposes</literal>, com o mesmo tipo e qualificadores do método produtor. O método destruidor é chamado automaticamente quando o contexto termina (neste caso, ao final da requisição), e este parâmetro recebe o objeto produzido pelo método produtor. Se o método produtor possui parâmetros adicionais, o contêiner procurará por um bean que satisfaça o tipo e qualificadores de cada parâmetro e o passará para o método automaticamente."
 
 #~ msgid "<chapter>.</chapter>"
 #~ msgstr "<chapter>.</chapter>"

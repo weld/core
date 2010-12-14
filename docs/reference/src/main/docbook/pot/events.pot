@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-10-19T01:52:18\n"
-"PO-Revision-Date: 2010-10-19T01:52:18\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"PO-Revision-Date: 2010-12-14T13:35:17\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "observers can specify a combination of \"selectors\" to narrow the set of event notifications they will receive, and"
+msgid "observers can specify a combination of &#34;selectors&#34; to narrow the set of event notifications they will receive, and"
 msgstr ""
 
 #. Tag: para
@@ -44,7 +44,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI event notification facility uses more or less the same typesafe approach that we've already seen with the dependency injection service."
+msgid "The CDI event notification facility uses more or less the same typesafe approach that we&#39;ve already seen with the dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -59,7 +59,15 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here's an example:"
+msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here&#39;s an example:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Target({FIELD, PARAMETER})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated {}"
 msgstr ""
 
 #. Tag: title
@@ -72,19 +80,34 @@ msgstr ""
 msgid "An <emphasis>observer method</emphasis> is a method of a bean with a parameter annotated <literal>@Observes</literal>."
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "public void onAnyDocumentEvent(@Observes Document document) { ... }"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "The annotated parameter is called the <emphasis>event parameter</emphasis>. The type of the event parameter is the observed <emphasis>event type</emphasis>, in this case <literal>Document</literal>. The event parameter may also specify qualifiers."
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "public void afterDocumentUpdate(@Observes @Updated Document document) { ... }"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "An observer method need not specify any event qualifiers&#8212;in this case it is interested in <emphasis>all</emphasis> events of a particular type. If it does specify qualifiers, it's only interested in events which have those qualifiers."
+msgid "An observer method need not specify any event qualifiers—in this case it is interested in <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it&#39;s only interested in events which have those qualifiers."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "The observer method may have additional parameters, which are injection points:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }"
 msgstr ""
 
 #. Tag: title
@@ -97,9 +120,19 @@ msgstr ""
 msgid "Event producers fire events using an instance of the parameterized <literal>Event</literal> interface. An instance of this interface is obtained by injection:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Any Event&#60;Document&#62; documentEvent;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "A producer raises events by calling the <literal>fire()</literal> method of the <literal>Event</literal> interface, passing the event object:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "documentEvent.fire(document);"
 msgstr ""
 
 #. Tag: para
@@ -142,6 +175,11 @@ msgstr ""
 msgid "Specifying the qualifiers at the injection point is far simpler:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Updated Event&#60;Document&#62; documentUpdatedEvent;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Then, every event fired via this instance of <literal>Event</literal> has the event qualifier <literal>@Updated</literal>. The event is delivered to every observer method that:"
@@ -159,7 +197,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
+msgid "The downside of annotating the injection point is that we can&#39;t specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "documentEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
 msgstr ""
 
 #. Tag: para
@@ -174,12 +217,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn't always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
+msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn&#39;t always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "A conditional observer is specified by adding <literal>receive = IF_EXISTS</literal> to the <literal>@Observes</literal> annotation."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }"
 msgstr ""
 
 #. Tag: para
@@ -197,9 +245,24 @@ msgstr ""
 msgid "An event qualifier type may have annotation members:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"   RoleType value();\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "The member value is used to narrow the messages delivered to the observer:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }"
 msgstr ""
 
 #. Tag: para
@@ -207,14 +270,33 @@ msgstr ""
 msgid "Event qualifier type members may be specified statically by the event producer, via annotations at the event notifier injection point:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Role(ADMIN) Event&#60;LoggedIn&#62; loggedInEvent;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Alternatively, the value of the event qualifier type member may be determined dynamically by the event producer. We start by writing an abstract subclass of <literal>AnnotationLiteral</literal>:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "abstract class RoleBinding \n"
+"   extends AnnotationLiteral&#60;Role&#62; \n"
+"   implements Role {}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "The event producer passes an instance of this class to <literal>select()</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "documentEvent.select(new RoleBinding() {\n"
+"   public void value() { return user.getRole(); }\n"
+"}).fire(document);"
 msgstr ""
 
 #. Tag: title
@@ -227,9 +309,51 @@ msgstr ""
 msgid "Event qualifier types may be combined, for example:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Blog Event&#60;Document&#62; blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "When this event occurs, all of the following observer methods will be notified:"
+msgid "Observers must completely match the final qualified type of the event. Assume the following observers in this example:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void onAnyBlogEvent(@Observes @Blog Document document) { ... }"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void onAnyDocumentEvent(@Observes Document document) { ... }}}"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The only observer notified will be:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "However, if there were also an observer:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void afterBlogUpdate(@Observes @Any Document document) { ... }"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "It would also be notified, as <literal>@Any</literal> acts as an alias for any and all qualifiers."
 msgstr ""
 
 #. Tag: title
@@ -240,6 +364,11 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Transactional observers receive their event notifications during the before or after completion phase of the transaction in which the event was raised. For example, the following observer method needs to refresh a query result set that is cached in the application context, but only when transactions that update the <literal>Category</literal> tree succeed:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) CategoryUpdateEvent event) { ... }"
 msgstr ""
 
 #. Tag: para
@@ -282,6 +411,27 @@ msgstr ""
 msgid "Imagine that we have cached a JPA query result set in the application scope:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"   @PersistenceContext EntityManager em;\n"
+"    \n"
+"   List&#60;Product&#62; products;\n"
+"\n"
+"   @Produces @Catalog \n"
+"   List&#60;Product&#62; getCatalog() {\n"
+"      if (products==null) {\n"
+"         products = em.createQuery(&#34;select p from Product p where p.deleted = false&#34;)\n"
+"            .getResultList();\n"
+"      }\n"
+"      return products;\n"
+"   }\n"
+"    \n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "From time to time, a <literal>Product</literal> is created or deleted. When this occurs, we need to refresh the <literal>Product</literal> catalog. But we should wait until <emphasis>after</emphasis> the transaction completes successfully before performing this refresh!"
@@ -292,8 +442,43 @@ msgstr ""
 msgid "The bean that creates and deletes <literal>Product</literal>s could raise events, for example:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Stateless\n"
+"public class ProductManager {\n"
+"   @PersistenceContext EntityManager em;\n"
+"   @Inject @Any Event&#60;Product&#62; productEvent;\n"
+"\n"
+"   public void delete(Product product) {\n"
+"      em.delete(product);\n"
+"      productEvent.select(new AnnotationLiteral&#60;Deleted&#62;(){}).fire(product);\n"
+"   }\n"
+"    \n"
+"   public void persist(Product product) {\n"
+"      em.persist(product);\n"
+"      productEvent.select(new AnnotationLiteral&#60;Created&#62;(){}).fire(product);\n"
+"   }\n"
+"   ...\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "And now <literal>Catalog</literal> can observe the events after successful completion of the transaction:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"   ...\n"
+"   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product product) {\n"
+"      products.add(product);\n"
+"   }\n"
+"    \n"
+"   void removeProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product product) {\n"
+"      products.remove(product);\n"
+"   }\n"
+"}"
 msgstr ""
 

@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-10-19T01:52:18\n"
-"PO-Revision-Date: 2010-10-19T01:52:18\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"PO-Revision-Date: 2010-12-14T13:35:17\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
+msgid "Let&#39;s illustrate these ideas with a full example. We&#39;re going to implement user login/logout for an application that uses JSF. First, we&#39;ll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Named @RequestScoped\n"
+"public class Credentials {\n"
+"    private String username;\n"
+"    private String password;\n"
+"    \n"
+"    @NotNull @Length(min=3, max=25)\n"
+"    public String getUsername() { return username; }\n"
+"    public void setUsername(String username) { this.username = username; }\n"
+"    \n"
+"    @NotNull @Length(min=6, max=20)\n"
+"    public String getPassword() { return password; }\n"
+"    public void setPassword(String password) { this.password = password; }\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -27,14 +44,43 @@ msgstr ""
 msgid "This bean is bound to the login prompt in the following JSF form:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "&#60;h:form&#62;\n"
+"   &#60;h:panelGrid columns=&#34;2&#34; rendered=&#34;#{!login.loggedIn}&#34;&#62;\n"
+"      &#60;f:validateBean&#62;\n"
+"         &#60;h:outputLabel for=&#34;username&#34;&#62;Username:&#60;/h:outputLabel&#62;\n"
+"         &#60;h:inputText id=&#34;username&#34; value=&#34;#{credentials.username}&#34;/&#62;\n"
+"         &#60;h:outputLabel for=&#34;password&#34;&#62;Password:&#60;/h:outputLabel&#62;\n"
+"         &#60;h:inputSecret id=&#34;password&#34; value=&#34;#{credentials.password}&#34;/&#62;\n"
+"      &#60;/f:validateBean&#62;\n"
+"   &#60;/h:panelGrid&#62;\n"
+"   &#60;h:commandButton value=&#34;Login&#34; action=&#34;#{login.login}&#34; rendered=&#34;#{!login.loggedIn}&#34;/&#62;\n"
+"   &#60;h:commandButton value=&#34;Logout&#34; action=&#34;#{login.logout}&#34; rendered=&#34;#{login.loggedIn}&#34;/&#62;\n"
+"&#60;/h:form&#62;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Users are represented by a JPA entity:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Entity\n"
+"public class User {\n"
+"   private @NotNull @Length(min=3, max=25) @Id String username;\n"
+"   private @NotNull @Length(min=6, max=20) String password;\n"
+"   \n"
+"   public String getUsername() { return username; }\n"
+"   public void setUsername(String username) { this.username = username; }\n"
+"   public String setPassword(String password) { this.password = password; }\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "(Note that we're also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
+msgid "(Note that we&#39;re also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
 msgstr ""
 
 #. Tag: para
@@ -42,9 +88,65 @@ msgstr ""
 msgid "The actual work is done by a session-scoped bean that maintains information about the currently logged-in user and exposes the <literal>User</literal> entity to other beans:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@SessionScoped @Named\n"
+"public class Login implements Serializable {\n"
+"\n"
+"   @Inject Credentials credentials;\n"
+"   @Inject @UserDatabase EntityManager userDatabase;\n"
+"\n"
+"   private User user;\n"
+"    \n"
+"   public void login() {\n"
+"      List&#60;User&#62; results = userDatabase.createQuery(\n"
+"         &#34;select u from User u where u.username = :username and u.password = :password&#34;)\n"
+"         .setParameter(&#34;username&#34;, credentials.getUsername())\n"
+"         .setParameter(&#34;password&#34;, credentials.getPassword())\n"
+"         .getResultList();\n"
+"        \n"
+"      if (!results.isEmpty()) {\n"
+"         user = results.get(0);\n"
+"      }\n"
+"      else {\n"
+"         // perhaps add code here to report a failed login\n"
+"      }\n"
+"   }\n"
+"    \n"
+"   public void logout() {\n"
+"      user = null;\n"
+"   }\n"
+"    \n"
+"   public boolean isLoggedIn() {\n"
+"      return user != null;\n"
+"   }\n"
+"    \n"
+"   @Produces @LoggedIn User getCurrentUser() {\n"
+"      return user;\n"
+"   }\n"
+"\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "<literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom qualifier annotations:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, PARAMETER, FIELD})\n"
+"public @interface LoggedIn {}"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({METHOD, PARAMETER, FIELD})\n"
+"public @interface UserDatabase {}"
 msgstr ""
 
 #. Tag: para
@@ -52,9 +154,31 @@ msgstr ""
 msgid "We need an adaptor bean to expose our typesafe <literal>EntityManager</literal>:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "class UserDatabaseProducer {\n"
+"   @Produces @UserDatabase @PersistenceContext \n"
+"   static EntityManager userDatabase;\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Now <literal>DocumentEditor</literal>, or any other bean, can easily inject the current user:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public class DocumentEditor {\n"
+"   @Inject Document document;\n"
+"   @Inject @LoggedIn User currentUser;\n"
+"   @Inject @DocumentDatabase EntityManager docDatabase;\n"
+"    \n"
+"   public void save() {\n"
+"      document.setCreatedBy(currentUser);\n"
+"      docDatabase.persist(document);\n"
+"   }\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -62,8 +186,15 @@ msgstr ""
 msgid "Or we can reference the current user in a JSF view:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "&#60;h:panelGroup rendered=&#34;#{login.loggedIn}&#34;&#62;\n"
+"   signed in as #{currentUser.username}\n"
+"&#60;/h:panelGroup&#62;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we'll explore dependency injection in greater depth."
+msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we&#39;ll explore dependency injection in greater depth."
 msgstr ""
 

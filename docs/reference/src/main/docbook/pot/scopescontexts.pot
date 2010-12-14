@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-10-19T01:52:19\n"
-"PO-Revision-Date: 2010-10-19T01:52:19\n"
+"POT-Creation-Date: 2010-12-14T13:35:18\n"
+"PO-Revision-Date: 2010-12-14T13:35:18\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "So far, we've seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a bean determines the lifecycle of instances of the bean. The scope also determines which clients refer to which instances of the bean. According to the CDI specification, a scope determines:"
+msgid "So far, we&#39;ve seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a bean determines the lifecycle of instances of the bean. The scope also determines which clients refer to which instances of the bean. According to the CDI specification, a scope determines:"
 msgstr ""
 
 #. Tag: para
@@ -44,7 +44,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass an injected instance to the JPA <literal>EntityManager</literal>."
+msgid "JPA entities aren&#39;t a great fit for this model. Entities have their whole own lifecycle and identity model which just doesn&#39;t map naturally to the model used in CDI. Therefore, we recommend against treating entities as CDI beans. You&#39;re certainly going to run into problems if you try to give an entity a scope other than the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass an injected instance to the JPA <literal>EntityManager</literal>."
 msgstr ""
 
 #. Tag: title
@@ -54,12 +54,20 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "CDI features an <emphasis>extensible context model</emphasis>. It's possible to define new scopes by creating a new scope type annotation:"
+msgid "CDI features an <emphasis>extensible context model</emphasis>. It&#39;s possible to define new scopes by creating a new scope type annotation:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@ScopeType\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD})\n"
+"public @interface ClusterScoped {}"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only. You can expect an implementation of the business scope, for instance, in a future version of Seam."
+msgid "Of course, that&#39;s the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only. You can expect an implementation of the business scope, for instance, in a future version of Seam."
 msgstr ""
 
 #. Tag: para
@@ -67,9 +75,15 @@ msgstr ""
 msgid "We can apply a scope type annotation to a bean implementation class to specify the scope of the bean:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@ClusterScoped\n"
+"public class SecondLevelCache { ... }"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "Usually, you'll use one of CDI's built-in scopes."
+msgid "Usually, you&#39;ll use one of CDI&#39;s built-in scopes."
 msgstr ""
 
 #. Tag: title
@@ -169,7 +183,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let's not waste time discussing them here. One of the scopes, however, is new."
+msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let&#39;s not waste time discussing them here. One of the scopes, however, is new."
 msgstr ""
 
 #. Tag: title
@@ -194,7 +208,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A conversation represents a task&#8212;a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
+msgid "A conversation represents a task—a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
 msgstr ""
 
 #. Tag: para
@@ -212,6 +226,11 @@ msgstr ""
 msgid "CDI provides a built-in bean for controlling the lifecycle of conversations in a JSF application. This bean may be obtained by injection:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject Conversation conversation;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "To promote the conversation associated with the current request to a long-running conversation, call the <literal>begin()</literal> method from application code. To schedule the current long-running conversation context for destruction at the end of the current request, call <literal>end()</literal>."
@@ -220,6 +239,38 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "In the following example, a conversation-scoped bean controls the conversation with which it is associated:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@ConversationScoped @Stateful\n"
+"public class OrderBuilder {\n"
+"   private Order order;\n"
+"   private @Inject Conversation conversation;\n"
+"   private @PersistenceContext(type = EXTENDED) EntityManager em;\n"
+"   \n"
+"   @Produces public Order getOrder() {\n"
+"      return order;\n"
+"   }\n"
+"\n"
+"   public Order createOrder() {\n"
+"      order = new Order();\n"
+"      conversation.begin();\n"
+"      return order;\n"
+"   }\n"
+"   \n"
+"   public void addLineItem(Product product, int quantity) {\n"
+"      order.add(new LineItem(product, quantity));\n"
+"   }\n"
+"\n"
+"   public void saveOrder(Order order) {\n"
+"      em.persist(order);\n"
+"      conversation.end();\n"
+"   }\n"
+"   \n"
+"   @Remove\n"
+"   public void destroy() {}\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -247,14 +298,26 @@ msgstr ""
 msgid "Therefore, the following link propagates the conversation:"
 msgstr ""
 
-#. Tag: para
+#. Tag: programlisting
 #, no-c-format
-msgid "It's probably better to use one of the link components in JSF 2:"
+msgid "&#60;a href=&#34;/addProduct.jsp?cid=#{conversation.id}&#34;&#62;Add Product&#60;/a&#62;"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The conversation context propagates across redirects, making it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a \"flash\" object. The container automatically adds the conversation id to the redirect URL as a request parameter."
+msgid "It&#39;s probably better to use one of the link components in JSF 2:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "&#60;h:link outcome=&#34;/addProduct.xhtml&#34; value=&#34;Add Product&#34;&#62;\n"
+"   &#60;f:param name=&#34;cid&#34; value=&#34;#{javax.enterprise.context.conversation.id}&#34;/&#62;\n"
+"&#60;/h:link&#62;"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "The conversation context propagates across redirects, making it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a &#34;flash&#34; object. The container automatically adds the conversation id to the redirect URL as a request parameter."
 msgstr ""
 
 #. Tag: title
@@ -264,12 +327,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The container is permitted to destroy a conversation and all state held in its context at any time in order to conserve resources. A CDI implementation will normally do this on the basis of some kind of timeout&#8212;though this is not required by the specification. The timeout is the period of inactivity before the conversation is destroyed (as opposed to the amount of time the conversation is active)."
+msgid "The container is permitted to destroy a conversation and all state held in its context at any time in order to conserve resources. A CDI implementation will normally do this on the basis of some kind of timeout—though this is not required by the specification. The timeout is the period of inactivity before the conversation is destroyed (as opposed to the amount of time the conversation is active)."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "The <literal>Conversation</literal> object provides a method to set the timeout. This is a hint to the container, which is free to ignore the setting."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "conversation.setTimeout(timeoutInMillis);"
 msgstr ""
 
 #. Tag: title
@@ -289,12 +357,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You can guess what \"singleton\" means here. It means a bean that is instantiated once. Unfortunately, there's a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don't have a proxy object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, or any stateful session bean."
+msgid "You can guess what &#34;singleton&#34; means here. It means a bean that is instantiated once. Unfortunately, there&#39;s a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don&#39;t have a proxy object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, or any stateful session bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, we probably don't mind too much if it gets duplicated via serialization. However, that makes it no stop being a true singleton, and we may as well have just declared it with the default scope."
+msgid "Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, we probably don&#39;t mind too much if it gets duplicated via serialization. However, that makes it no stop being a true singleton, and we may as well have just declared it with the default scope."
 msgstr ""
 
 #. Tag: para
@@ -314,7 +382,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is the bean type of the singleton bean."
+msgid "give the client a reference of type <literal>Instance&#60;X&#62;</literal> where <literal>X</literal> is the bean type of the singleton bean."
 msgstr ""
 
 #. Tag: para
@@ -337,6 +405,11 @@ msgstr ""
 msgid "For example, this bean has the scope type <literal>@Dependent</literal>:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "public class Calculator { ... }"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "An instance of a dependent bean is never shared between different clients or different injection points. It is strictly a <emphasis>dependent object</emphasis> of some other object. It is instantiated when the object it belongs to is created, and destroyed when the object it belongs to is destroyed."
@@ -349,12 +422,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be lost immediately. That's why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page, inject it into a different bean, and expose it to EL via a getter method."
+msgid "If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be lost immediately. That&#39;s why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page, inject it into a different bean, and expose it to EL via a getter method."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference to its instance."
+msgid "Beans with scope <literal>@Dependent</literal> don&#39;t need a proxy object. The client holds a direct reference to its instance."
 msgstr ""
 
 #. Tag: para
@@ -372,6 +445,11 @@ msgstr ""
 msgid "The built-in qualifier <literal>@New</literal> allows us to obtain a dependent object of a specified class."
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @New Calculator calculator;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "The class must be a valid managed bean or session bean, but need not be an enabled bean."
@@ -382,9 +460,23 @@ msgstr ""
 msgid "This works even if <literal>Calculator</literal> is <emphasis>already</emphasis> declared with a different scope type, for example:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@ConversationScoped\n"
+"public class Calculator { ... }"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "So the following injected attributes each get a different instance of <literal>Calculator</literal>:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public class PaymentCalc {\n"
+"   @Inject Calculator calculator;\n"
+"   @Inject @New Calculator newCalculator;\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -394,6 +486,6 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This feature is particularly useful with producer methods, as we'll see in the next chapter."
+msgid "This feature is particularly useful with producer methods, as we&#39;ll see in the next chapter."
 msgstr ""
 

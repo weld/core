@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: next\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T03:52:14\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2009-01-08 10:54+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,102 +24,21 @@ msgstr "接下來的步驟"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Because CDI is so new, there's not yet a lot of information available "
-"online. That will change over time. Regardless, the CDI specification "
-"remains the authority for information on CDI. The spec is less than 100 "
-"pages and is quite readable (don't worry, it's not like your Blu-ray player "
-"manual). Of course, it covers many details we've skipped over here. The spec "
-"is available on the <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-"
-"299 page</ulink> at the JCP website."
+msgid "Because CDI is so new, there&#39;s not yet a lot of information available online. That will change over time. Regardless, the CDI specification remains the authority for information on CDI. The spec is less than 100 pages and is quite readable (don&#39;t worry, it&#39;s not like your Blu-ray player manual). Of course, it covers many details we&#39;ve skipped over here. The spec is available on the <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299 page</ulink> at the JCP website."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"The CDI reference implementation, Weld, is being developed at the <ulink url="
-"\"http://seamframework.org/Weld\">Seam project</ulink>. The RI development "
-"team and the CDI spec lead blog at <ulink url=\"http://in.relation.to\">in."
-"relation.to</ulink>. This guide was originally based on a series of blog "
-"entries published there while the specification was being developed. It's "
-"probably the best source of information about the future of CDI, Weld and "
-"Seam."
-msgstr ""
-"Web Beans Reference 的實做開發於 <literal>http://seamframework.org/WebBeans</"
-"literal>。RI 開發團隊以及 Web Beans spec lead 的 blog 位於 <literal>http://"
-"in.relation.to</literal>。本文件大體上基於發佈於該網頁上的一系列 blog 項目。"
+msgid "The CDI reference implementation, Weld, is being developed at the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. The RI development team and the CDI spec lead blog at <ulink url=\"http://in.relation.to\">in.relation.to</ulink>. This guide was originally based on a series of blog entries published there while the specification was being developed. It&#39;s probably the best source of information about the future of CDI, Weld and Seam."
+msgstr "Web Beans Reference 的實做開發於 <literal>http://seamframework.org/WebBeans</literal>。RI 開發團隊以及 Web Beans spec lead 的 blog 位於 <literal>http://in.relation.to</literal>。本文件大體上基於發佈於該網頁上的一系列 blog 項目。"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"We encourage you to follow the <ulink url=\"https://lists.jboss.org/mailman/"
-"listinfo/weld-dev\">weld-dev</ulink> mailing list and to get involved in "
-"<ulink url=\"http://seamframework.org/Weld/Development\">development</"
-"ulink>. If you are reading this guide, you likely have something to offer."
+msgid "We encourage you to follow the <ulink url=\"https://lists.jboss.org/mailman/listinfo/weld-dev\">weld-dev</ulink> mailing list and to get involved in <ulink url=\"http://seamframework.org/Weld/Development\">development</ulink>. If you are reading this guide, you likely have something to offer."
 msgstr ""
 
-#. Tag: para
-#, no-c-format
-msgid ""
-"We are eager to find volunteers to help revise, proofread or translate this "
-"guide. The first step is getting the source of this guide checked out. To "
-"build against the trunk (latest source), follow these steps:"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Checkout source from <ulink url=\"http://anonsvn.jboss.org/repos/weld/doc/"
-"trunk/reference\">http://anonsvn.jboss.org/repos/weld/doc/trunk/reference</"
-"ulink> using SVN"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Edit the <literal>pom.xml</literal> file in the root of the checkout and "
-"remove the \"<literal>-SNAPSHOT</literal>\" from the version element (so you "
-"don't have to build other Weld modules)."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Build using Maven 2"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"If you experience an out of memory error, try setting this environment "
-"variable: <literal>MAVEN_OPTS=-Xmx1024m</literal>"
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"The PDF version of the reference guide will appear the current directory. "
-"You can find the HTML version in <literal>target/docbook/publish/en-US/html</"
-"literal>."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "We look forward to your participation!"
-msgstr ""
-
-#~ msgid ""
-#~ "Because Web Beans is so new, there's not yet a lot of information "
-#~ "available online."
+#~ msgid "Because Web Beans is so new, there's not yet a lot of information available online."
 #~ msgstr "因為 Web Beans 非常地新，因此還尚未有大量線上資訊以供參閱。"
 
-#~ msgid ""
-#~ "Of course, the Web Beans specification is the best source of more "
-#~ "information about Web Beans. The spec is about 100 pages long, only twice "
-#~ "the length of this article, and almost as readable. But, of course, it "
-#~ "covers many details that we've skipped over. The spec is available from "
-#~ "<literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-#~ msgstr ""
-#~ "當然，Web Beans 的規格為有關於 Web Beans 的最佳來源資訊。該資訊的數量約為 "
-#~ "100 頁，只比此文件的長度多出兩倍，並且一樣地容易閱讀。不過，當然它亦包含了"
-#~ "許多我們所跳過的細節。您可藉由 <literal>http://jcp.org/en/jsr/detail?"
-#~ "id=299</literal> 來取得該規格資訊。"
+#~ msgid "Of course, the Web Beans specification is the best source of more information about Web Beans. The spec is about 100 pages long, only twice the length of this article, and almost as readable. But, of course, it covers many details that we've skipped over. The spec is available from <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
+#~ msgstr "當然，Web Beans 的規格為有關於 Web Beans 的最佳來源資訊。該資訊的數量約為 100 頁，只比此文件的長度多出兩倍，並且一樣地容易閱讀。不過，當然它亦包含了許多我們所跳過的細節。您可藉由 <literal>http://jcp.org/en/jsr/detail?id=299</literal> 來取得該規格資訊。"

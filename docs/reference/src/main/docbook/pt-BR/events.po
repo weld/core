@@ -5,10 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T10:21:23\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2009-12-19 18:11-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,53 +21,32 @@ msgstr "Eventos"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Dependency injection enables loose-coupling by allowing the implementation "
-"of the injected bean type to vary, either a deployment time or runtime. "
-"Events go one step further, allowing beans to interact with no compile time "
-"dependency at all. Event <emphasis>producers</emphasis> raise events that "
-"are delivered to event <emphasis>observers</emphasis> by the container."
+msgid "Dependency injection enables loose-coupling by allowing the implementation of the injected bean type to vary, either a deployment time or runtime. Events go one step further, allowing beans to interact with no compile time dependency at all. Event <emphasis>producers</emphasis> raise events that are delivered to event <emphasis>observers</emphasis> by the container."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"This basic schema might sound like the familiar observer/observable pattern, "
-"but there are a couple of twists:"
+msgid "This basic schema might sound like the familiar observer/observable pattern, but there are a couple of twists:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"not only are event producers decoupled from observers; observers are "
-"completely decoupled from producers,"
-msgstr ""
-"não só os produtores são desacoplados dos observadores; os observadores são "
-"totalmente desacoplados dos produtores,"
+msgid "not only are event producers decoupled from observers; observers are completely decoupled from producers,"
+msgstr "não só os produtores são desacoplados dos observadores; os observadores são totalmente desacoplados dos produtores,"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"observers can specify a combination of \"selectors\" to narrow the set of "
-"event notifications they will receive, and"
-msgstr ""
-"os observadores podem especificar uma combinação de \"seletores\" para "
-"reduzir o conjunto de eventos que irão receber notificações, e"
+msgid "observers can specify a combination of &#34;selectors&#34; to narrow the set of event notifications they will receive, and"
+msgstr "os observadores podem especificar uma combinação de \"seletores\" para reduzir o conjunto de eventos que irão receber notificações, e"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"observers can be notified immediately, or can specify that delivery of the "
-"event should be delayed until the end of the current transaction."
-msgstr ""
-"os observadores podem ser notificados imediatamente ou podem especificar que "
-"a notificação do evento deveria esperar até o término da transação corrente"
+msgid "observers can be notified immediately, or can specify that delivery of the event should be delayed until the end of the current transaction."
+msgstr "os observadores podem ser notificados imediatamente ou podem especificar que a notificação do evento deveria esperar até o término da transação corrente"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The CDI event notification facility uses more or less the same typesafe "
-"approach that we've already seen with the dependency injection service."
+msgid "The CDI event notification facility uses more or less the same typesafe approach that we&#39;ve already seen with the dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -76,21 +56,26 @@ msgstr "Produtores de Eventos"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The event object carries state from producer to consumer. The event object "
-"is nothing more than an instance of a concrete Java class. (The only "
-"restriction is that an event type may not contain type variables). An event "
-"may be assigned qualifiers, which allows observers to distinguish it from "
-"other events of the same type. The qualifiers function like topic selectors, "
-"allowing an observer to narrow the set of events it observes."
+msgid "The event object carries state from producer to consumer. The event object is nothing more than an instance of a concrete Java class. (The only restriction is that an event type may not contain type variables). An event may be assigned qualifiers, which allows observers to distinguish it from other events of the same type. The qualifiers function like topic selectors, allowing an observer to narrow the set of events it observes."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"An event qualifier is just a normal qualifier, defined using "
-"<literal>@Qualifier</literal>. Here's an example:"
+msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here&#39;s an example:"
 msgstr ""
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"@Qualifier\n"
+"@Target({FIELD, PARAMETER})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated {}"
+msgstr ""
+"<![CDATA[@Qualifier\n"
+"@Target({FIELD, PARAMETER})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Updated {}]]>"
 
 #. Tag: title
 #, no-c-format
@@ -99,49 +84,38 @@ msgstr "Observadores de eventos"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"An <emphasis>observer method</emphasis> is a method of a bean with a "
-"parameter annotated <literal>@Observes</literal>."
-msgstr ""
-"Um <emphasis>método observador (observer method)</emphasis> é um método de "
-"um Web Bean com um parâmetro anotado<literal>@Observes</literal>."
+msgid "An <emphasis>observer method</emphasis> is a method of a bean with a parameter annotated <literal>@Observes</literal>."
+msgstr "Um <emphasis>método observador (observer method)</emphasis> é um método de um Web Bean com um parâmetro anotado<literal>@Observes</literal>."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void onAnyDocumentEvent(@Observes Document document) { ... }"
+msgstr "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"The annotated parameter is called the <emphasis>event parameter</emphasis>. "
-"The type of the event parameter is the observed <emphasis>event type</"
-"emphasis>, in this case <literal>Document</literal>. The event parameter may "
-"also specify qualifiers."
-msgstr ""
-"O parâmetro anotado é chamado <emphasis>parâmetro de evento</emphasis>. O "
-"tipo do parâmetro de evento é observado pelo <emphasis>event type</"
-"emphasis>. Os métodos observadores também podem especificar \"seletores\", "
-"que são apenas instâncias de tipo de bindings de Web Beans. Quando um tipo "
-"de binding é utilizado como um seletor de evento, é chamado de "
-"<emphasis>tipo de binding de evento</emphasis>."
+msgid "The annotated parameter is called the <emphasis>event parameter</emphasis>. The type of the event parameter is the observed <emphasis>event type</emphasis>, in this case <literal>Document</literal>. The event parameter may also specify qualifiers."
+msgstr "O parâmetro anotado é chamado <emphasis>parâmetro de evento</emphasis>. O tipo do parâmetro de evento é observado pelo <emphasis>event type</emphasis>. Os métodos observadores também podem especificar \"seletores\", que são apenas instâncias de tipo de bindings de Web Beans. Quando um tipo de binding é utilizado como um seletor de evento, é chamado de <emphasis>tipo de binding de evento</emphasis>."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void afterDocumentUpdate(@Observes @Updated Document document) { ... }"
+msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"An observer method need not specify any event qualifiers&#8212;in this case "
-"it is interested in <emphasis>all</emphasis> events of a particular type. If "
-"it does specify qualifiers, it's only interested in events which have those "
-"qualifiers."
-msgstr ""
-"Um método observador não necessita especificar nenhum binding de evento "
-"&#151; nesse caso, ele está interessado em <emphasis>todos</emphasis> os "
-"eventos de um determinado tipo. Se ele especificar o bindings de evento, ele "
-"estará apenas interessado em eventos que também têm esses bindings de evento."
+msgid "An observer method need not specify any event qualifiers—in this case it is interested in <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it&#39;s only interested in events which have those qualifiers."
+msgstr "Um método observador não necessita especificar nenhum binding de evento &#151; nesse caso, ele está interessado em <emphasis>todos</emphasis> os eventos de um determinado tipo. Se ele especificar o bindings de evento, ele estará apenas interessado em eventos que também têm esses bindings de evento."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"The observer method may have additional parameters, which are injection "
-"points:"
-msgstr ""
-"O método observador pode ter parâmetros adicionais que são injetados de "
-"acordo com a semântica usual de injeção de parâmetros em métodos de Web Beans"
+msgid "The observer method may have additional parameters, which are injection points:"
+msgstr "O método observador pode ter parâmetros adicionais que são injetados de acordo com a semântica usual de injeção de parâmetros em métodos de Web Beans"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }"
+msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }]]>"
 
 #. Tag: title
 #, no-c-format
@@ -150,21 +124,23 @@ msgstr "Produtores de Eventos"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Event producers fire events using an instance of the parameterized "
-"<literal>Event</literal> interface. An instance of this interface is "
-"obtained by injection:"
+msgid "Event producers fire events using an instance of the parameterized <literal>Event</literal> interface. An instance of this interface is obtained by injection:"
 msgstr ""
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "@Inject @Any Event&#60;Document&#62; documentEvent;"
+msgstr "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"A producer raises events by calling the <literal>fire()</literal> method of "
-"the <literal>Event</literal> interface, passing the event object:"
-msgstr ""
-"Um produtor lança eventos chamando o método <literal>fire()</literal> da "
-"interface <literal>Event</literal> e passando um objeto <emphasis>event "
-"object</emphasis>:"
+msgid "A producer raises events by calling the <literal>fire()</literal> method of the <literal>Event</literal> interface, passing the event object:"
+msgstr "Um produtor lança eventos chamando o método <literal>fire()</literal> da interface <literal>Event</literal> e passando um objeto <emphasis>event object</emphasis>:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "documentEvent.fire(document);"
+msgstr "<![CDATA[documentEvent.fire(document);]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -173,9 +149,7 @@ msgstr "O evento será entregue a todo método observador (observer method) que:
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"has an event parameter to which the event object (the <literal>Document</"
-"literal>) is assignable, and"
+msgid "has an event parameter to which the event object (the <literal>Document</literal>) is assignable, and"
 msgstr "tenha um parâmetro evento em que o  evento objeto é atribuído, e"
 
 #. Tag: para
@@ -185,17 +159,8 @@ msgstr "não especifique nenhum evento bindings."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"The container simply calls all the observer methods, passing the event "
-"object as the value of the event parameter. If any observer method throws an "
-"exception, the container stops calling observer methods, and the exception "
-"is rethrown by the <literal>fire()</literal> method."
-msgstr ""
-"O gerenciador do Web Bean simplesmente chama  todos os métodos de "
-"observação, passando o objeto do evento como o valor do parâmetro do evento. "
-"Se algum método observador  lança uma exceção, o gerenciador do Web Bean "
-"deixa de chamar os métodos do observador, e a exceção é relançada pelo "
-"método <literal>fire()</literal>."
+msgid "The container simply calls all the observer methods, passing the event object as the value of the event parameter. If any observer method throws an exception, the container stops calling observer methods, and the exception is rethrown by the <literal>fire()</literal> method."
+msgstr "O gerenciador do Web Bean simplesmente chama  todos os métodos de observação, passando o objeto do evento como o valor do parâmetro do evento. Se algum método observador  lança uma exceção, o gerenciador do Web Bean deixa de chamar os métodos do observador, e a exceção é relançada pelo método <literal>fire()</literal>."
 
 #. Tag: para
 #, no-c-format
@@ -209,9 +174,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"by passing qualifiers to the <literal>select()</literal> of <literal>Event</"
-"literal>."
+msgid "by passing qualifiers to the <literal>select()</literal> of <literal>Event</literal>."
 msgstr ""
 
 #. Tag: para
@@ -219,16 +182,15 @@ msgstr ""
 msgid "Specifying the qualifiers at the injection point is far simpler:"
 msgstr ""
 
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "@Inject @Updated Event&#60;Document&#62; documentUpdatedEvent;"
+msgstr "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
+
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"Then, every event fired via this instance of <literal>Event</literal> has "
-"the event qualifier <literal>@Updated</literal>. The event is delivered to "
-"every observer method that:"
-msgstr ""
-"Em seguida, todos os eventos disparados por essa instância de "
-"<literal>Event</literal> tem o binding de evento anotada. O evento será "
-"entregue a cada método observador que:"
+msgid "Then, every event fired via this instance of <literal>Event</literal> has the event qualifier <literal>@Updated</literal>. The event is delivered to every observer method that:"
+msgstr "Em seguida, todos os eventos disparados por essa instância de <literal>Event</literal> tem o binding de evento anotada. O evento será entregue a cada método observador que:"
 
 #. Tag: para
 #, no-c-format
@@ -237,30 +199,22 @@ msgstr "tenha um parâmetro evento em que o  evento objeto é atribuído, e"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"does not have any event qualifier <emphasis>except</emphasis> for the event "
-"qualifiers that match those specified at the <literal>Event</literal> "
-"injection point."
-msgstr ""
-"não especifique nenhum binding de evento <emphasis>exceto</emphasis> para o "
-"binding de evento passado para o <literal>fire()</literal>."
+msgid "does not have any event qualifier <emphasis>except</emphasis> for the event qualifiers that match those specified at the <literal>Event</literal> injection point."
+msgstr "não especifique nenhum binding de evento <emphasis>exceto</emphasis> para o binding de evento passado para o <literal>fire()</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The downside of annotating the injection point is that we can't specify the "
-"qualifier dynamically. CDI lets us obtain a qualifier instance by "
-"subclassing the helper class <literal>AnnotationLiteral</literal>. That way, "
-"we can pass the qualifier to the <literal>select()</literal> method of "
-"<literal>Event</literal>."
+msgid "The downside of annotating the injection point is that we can&#39;t specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
 msgstr ""
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "documentEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
+msgstr "<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]>"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Events can have multiple event qualifiers, assembled using any combination "
-"of annotations at the <literal>Event</literal> injection point and qualifier "
-"instances passed to the <literal>select()</literal> method."
+msgid "Events can have multiple event qualifiers, assembled using any combination of annotations at the <literal>Event</literal> injection point and qualifier instances passed to the <literal>select()</literal> method."
 msgstr ""
 
 #. Tag: title
@@ -270,25 +224,22 @@ msgstr "Observadores transacionais"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"By default, if there is no instance of an observer in the current context, "
-"the container will instantiate the observer in order to deliver an event to "
-"it. This behavior isn't always desirable. We may want to deliver events only "
-"to instances of the observer that already exist in the current contexts."
+msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn&#39;t always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"A conditional observer is specified by adding <literal>receive = IF_EXISTS</"
-"literal> to the <literal>@Observes</literal> annotation."
+msgid "A conditional observer is specified by adding <literal>receive = IF_EXISTS</literal> to the <literal>@Observes</literal> annotation."
 msgstr ""
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }"
+msgstr "<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }]]>"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"A bean with scope <literal>@Dependent</literal> cannot be a conditional "
-"observer, since it would never be called!"
+msgid "A bean with scope <literal>@Dependent</literal> cannot be a conditional observer, since it would never be called!"
 msgstr ""
 
 #. Tag: title
@@ -301,43 +252,74 @@ msgstr "Bindings de eventos com os membros"
 msgid "An event qualifier type may have annotation members:"
 msgstr "Um tipo de binding de evento pode ter anotações membro:"
 
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"@Qualifier\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"   RoleType value();\n"
+"}"
+msgstr ""
+"<![CDATA[@Qualifier\n"
+"@Target({PARAMETER, FIELD})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Role {\n"
+"   RoleType value();\n"
+"}]]>"
+
 #. Tag: para
 #, no-c-format
-msgid ""
-"The member value is used to narrow the messages delivered to the observer:"
-msgstr ""
-"O valor do membro é utilizado para reduzir as mensagens entregues ao "
-"observador:"
+msgid "The member value is used to narrow the messages delivered to the observer:"
+msgstr "O valor do membro é utilizado para reduzir as mensagens entregues ao observador:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }"
+msgstr "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"Event qualifier type members may be specified statically by the event "
-"producer, via annotations at the event notifier injection point:"
-msgstr ""
-"Membros de tipo de binding de evento podem ser especificados estaticamente "
-"pelo produtor do evento, por meio de anotações no ponto de notificação do "
-"evento:"
+msgid "Event qualifier type members may be specified statically by the event producer, via annotations at the event notifier injection point:"
+msgstr "Membros de tipo de binding de evento podem ser especificados estaticamente pelo produtor do evento, por meio de anotações no ponto de notificação do evento:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "@Inject @Role(ADMIN) Event&#60;LoggedIn&#62; loggedInEvent;"
+msgstr "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
+msgid "Alternatively, the value of the event qualifier type member may be determined dynamically by the event producer. We start by writing an abstract subclass of <literal>AnnotationLiteral</literal>:"
+msgstr "Alternativamente, o valor do membro do tipo de binding de evento pode ser determinado dinamicamente pelo produtor do evento. Vamos começar escrevendo uma subclasse abstrata de <literal>AnnotationLiteral</literal>:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Alternatively, the value of the event qualifier type member may be "
-"determined dynamically by the event producer. We start by writing an "
-"abstract subclass of <literal>AnnotationLiteral</literal>:"
+"abstract class RoleBinding \n"
+"   extends AnnotationLiteral&#60;Role&#62; \n"
+"   implements Role {}"
 msgstr ""
-"Alternativamente, o valor do membro do tipo de binding de evento pode ser "
-"determinado dinamicamente pelo produtor do evento. Vamos começar escrevendo "
-"uma subclasse abstrata de <literal>AnnotationLiteral</literal>:"
+"<![CDATA[abstract class RoleBinding \n"
+"   extends AnnotationLiteral<Role> \n"
+"   implements Role {}]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
+msgid "The event producer passes an instance of this class to <literal>select()</literal>:"
+msgstr "O produtor do evento (event producer) passa uma instância dessa classe para <literal>fire()</literal>:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"The event producer passes an instance of this class to <literal>select()</"
-"literal>:"
+"documentEvent.select(new RoleBinding() {\n"
+"   public void value() { return user.getRole(); }\n"
+"}).fire(document);"
 msgstr ""
-"O produtor do evento (event producer) passa uma instância dessa classe para "
-"<literal>fire()</literal>:"
+"<![CDATA[documentEvent.select(new RoleBinding() {\n"
+"   public void value() { return user.getRole(); }\n"
+"}).fire(document);]]>"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -349,14 +331,56 @@ msgstr "Múltiplos  bindings de eventos"
 msgid "Event qualifier types may be combined, for example:"
 msgstr "Tipos de  binding de evento podem ser combinados, por exemplo:"
 
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"@Inject @Blog Event&#60;Document&#62; blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
+msgstr ""
+"<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
+"...\n"
+"if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]>"
+
 #. Tag: para
 #, no-c-format
-msgid ""
-"When this event occurs, all of the following observer methods will be "
-"notified:"
+msgid "Observers must completely match the final qualified type of the event. Assume the following observers in this example:"
 msgstr ""
-"Quando esse evento ocorre, todos os métodos observadores que seguem esse "
-"evento serão notificados:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }"
+msgstr "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]>"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void onAnyBlogEvent(@Observes @Blog Document document) { ... }"
+msgstr "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]>"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void onAnyDocumentEvent(@Observes Document document) { ... }}}"
+msgstr "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]>"
+
+#. Tag: para
+#, no-c-format
+msgid "The only observer notified will be:"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid "However, if there were also an observer:"
+msgstr ""
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void afterBlogUpdate(@Observes @Any Document document) { ... }"
+msgstr "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]>"
+
+#. Tag: para
+#, no-c-format
+msgid "It would also be notified, as <literal>@Any</literal> acts as an alias for any and all qualifiers."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -365,19 +389,13 @@ msgstr "Observadores transacionais"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Transactional observers receive their event notifications during the before "
-"or after completion phase of the transaction in which the event was raised. "
-"For example, the following observer method needs to refresh a query result "
-"set that is cached in the application context, but only when transactions "
-"that update the <literal>Category</literal> tree succeed:"
-msgstr ""
-"Observadores transacionais recebem notificações de eventos durante, antes ou "
-"após a conclusão da transação em que o evento foi disparado. Por exemplo: o "
-"seguinte método observador necessita atualizar um conjunto de resultados de "
-"uma consulta que está armazenada no contexto da aplicação, mas apenas quando "
-"as transações que atualizam a àrvore de <literal>Category</literal>forem "
-"concluídas com sucesso:"
+msgid "Transactional observers receive their event notifications during the before or after completion phase of the transaction in which the event was raised. For example, the following observer method needs to refresh a query result set that is cached in the application context, but only when transactions that update the <literal>Category</literal> tree succeed:"
+msgstr "Observadores transacionais recebem notificações de eventos durante, antes ou após a conclusão da transação em que o evento foi disparado. Por exemplo: o seguinte método observador necessita atualizar um conjunto de resultados de uma consulta que está armazenada no contexto da aplicação, mas apenas quando as transações que atualizam a àrvore de <literal>Category</literal>forem concluídas com sucesso:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) CategoryUpdateEvent event) { ... }"
+msgstr "<![CDATA[public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -386,461 +404,202 @@ msgstr "Existem três tipos de observadores transacionais:"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"<literal>IN_PROGESS</literal> observers are called immediately (default)"
+msgid "<literal>IN_PROGESS</literal> observers are called immediately (default)"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"<literal>AFTER_SUCCESS</literal> observers are called during the after "
-"completion phase of the transaction, but only if the transaction completes "
-"successfully"
-msgstr ""
-"<literal>@AfterTransactionSuccess</literal> observadores são chamados "
-"durante a fase após a conclusão da transação, mas somente se a transação "
-"tiver sido concluída com sucesso"
+msgid "<literal>AFTER_SUCCESS</literal> observers are called during the after completion phase of the transaction, but only if the transaction completes successfully"
+msgstr "<literal>@AfterTransactionSuccess</literal> observadores são chamados durante a fase após a conclusão da transação, mas somente se a transação tiver sido concluída com sucesso"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"<literal>AFTER_FAILURE</literal> observers are called during the after "
-"completion phase of the transaction, but only if the transaction fails to "
-"complete successfully"
-msgstr ""
-"<literal>@AfterTransactionFailure</literal> observadores são chamados "
-"durante a fase após a conclusão da transação, mas somente se a transação não "
-"tiver sido concluída com sucesso"
+msgid "<literal>AFTER_FAILURE</literal> observers are called during the after completion phase of the transaction, but only if the transaction fails to complete successfully"
+msgstr "<literal>@AfterTransactionFailure</literal> observadores são chamados durante a fase após a conclusão da transação, mas somente se a transação não tiver sido concluída com sucesso"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"<literal>AFTER_COMPLETION</literal> observers are called during the after "
-"completion phase of the transaction"
-msgstr ""
-"<literal>@AfterTransactionCompletion</literal> observadores são chamados "
-"durante a fase  após a conclusão da transação"
+msgid "<literal>AFTER_COMPLETION</literal> observers are called during the after completion phase of the transaction"
+msgstr "<literal>@AfterTransactionCompletion</literal> observadores são chamados durante a fase  após a conclusão da transação"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"<literal>BEFORE_COMPLETION</literal> observers are called during the before "
-"completion phase of the transaction"
-msgstr ""
-"<literal>@BeforeTransactionCompletion</literal> observadores são chamados "
-"durante a fase antes da conclusão da transação"
+msgid "<literal>BEFORE_COMPLETION</literal> observers are called during the before completion phase of the transaction"
+msgstr "<literal>@BeforeTransactionCompletion</literal> observadores são chamados durante a fase antes da conclusão da transação"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid ""
-"Transactional observers are very important in a stateful object model "
-"because state is often held for longer than a single atomic transaction."
-msgstr ""
-"Observadores transacionais  são muito importantes para um modelo de objetos "
-"stateful como o Web Beans, porque o estado é muitas vezes mantido por mais "
-"de uma única transação atômica."
+msgid "Transactional observers are very important in a stateful object model because state is often held for longer than a single atomic transaction."
+msgstr "Observadores transacionais  são muito importantes para um modelo de objetos stateful como o Web Beans, porque o estado é muitas vezes mantido por mais de uma única transação atômica."
 
 #. Tag: para
 #, no-c-format
+msgid "Imagine that we have cached a JPA query result set in the application scope:"
+msgstr "Imagine que fizemos cache do conjunto de resultados da consulta JPA no escopo de aplicação (application scope):"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Imagine that we have cached a JPA query result set in the application scope:"
+"@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"   @PersistenceContext EntityManager em;\n"
+"    \n"
+"   List&#60;Product&#62; products;\n"
+"\n"
+"   @Produces @Catalog \n"
+"   List&#60;Product&#62; getCatalog() {\n"
+"      if (products==null) {\n"
+"         products = em.createQuery(&#34;select p from Product p where p.deleted = false&#34;)\n"
+"            .getResultList();\n"
+"      }\n"
+"      return products;\n"
+"   }\n"
+"    \n"
+"}"
 msgstr ""
-"Imagine que fizemos cache do conjunto de resultados da consulta JPA no "
-"escopo de aplicação (application scope):"
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"\n"
+"   @PersistenceContext EntityManager em;\n"
+"    \n"
+"   List<Product> products;\n"
+"\n"
+"   @Produces @Catalog \n"
+"   List<Product> getCatalog() {\n"
+"      if (products==null) {\n"
+"         products = em.createQuery(\"select p from Product p where p.deleted = false\")\n"
+"            .getResultList();\n"
+"      }\n"
+"      return products;\n"
+"   }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"From time to time, a <literal>Product</literal> is created or deleted. When "
-"this occurs, we need to refresh the <literal>Product</literal> catalog. But "
-"we should wait until <emphasis>after</emphasis> the transaction completes "
-"successfully before performing this refresh!"
-msgstr ""
-"De tempos em tempos, um <literal>Product</literal> é criado ou excluído. "
-"Quando isso ocorre, é preciso atualizar o catálogo de <literal>Product</"
-"literal>. Mas devemos esperar até <emphasis>depois</emphasis> da transação "
-"ser concluída com sucesso antes de realizar essa atualização!"
+msgid "From time to time, a <literal>Product</literal> is created or deleted. When this occurs, we need to refresh the <literal>Product</literal> catalog. But we should wait until <emphasis>after</emphasis> the transaction completes successfully before performing this refresh!"
+msgstr "De tempos em tempos, um <literal>Product</literal> é criado ou excluído. Quando isso ocorre, é preciso atualizar o catálogo de <literal>Product</literal>. Mas devemos esperar até <emphasis>depois</emphasis> da transação ser concluída com sucesso antes de realizar essa atualização!"
 
 #. Tag: para
 #, fuzzy, no-c-format
+msgid "The bean that creates and deletes <literal>Product</literal>s could raise events, for example:"
+msgstr "O Web Bean que cria e remove <literal>Products</literal> pode lançar eventos, por exemplo:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"The bean that creates and deletes <literal>Product</literal>s could raise "
-"events, for example:"
+"@Stateless\n"
+"public class ProductManager {\n"
+"   @PersistenceContext EntityManager em;\n"
+"   @Inject @Any Event&#60;Product&#62; productEvent;\n"
+"\n"
+"   public void delete(Product product) {\n"
+"      em.delete(product);\n"
+"      productEvent.select(new AnnotationLiteral&#60;Deleted&#62;(){}).fire(product);\n"
+"   }\n"
+"    \n"
+"   public void persist(Product product) {\n"
+"      em.persist(product);\n"
+"      productEvent.select(new AnnotationLiteral&#60;Created&#62;(){}).fire(product);\n"
+"   }\n"
+"   ...\n"
+"}"
 msgstr ""
-"O Web Bean que cria e remove <literal>Products</literal> pode lançar "
-"eventos, por exemplo:"
+"<![CDATA[@Stateless\n"
+"public class ProductManager {\n"
+"   @PersistenceContext EntityManager em;\n"
+"   @Inject @Any Event<Product> productEvent;\n"
+"\n"
+"   public void delete(Product product) {\n"
+"      em.delete(product);\n"
+"      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire(product);\n"
+"   }\n"
+"    \n"
+"   public void persist(Product product) {\n"
+"      em.persist(product);\n"
+"      productEvent.select(new AnnotationLiteral<Created>(){}).fire(product);\n"
+"   }\n"
+"   ...\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "And now <literal>Catalog</literal> can observe the events after successful completion of the transaction:"
+msgstr "E agora <literal>Catalog</literal> pode observar os eventos após o término da transação concluída com sucesso:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"And now <literal>Catalog</literal> can observe the events after successful "
-"completion of the transaction:"
+"@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"   ...\n"
+"   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product product) {\n"
+"      products.add(product);\n"
+"   }\n"
+"    \n"
+"   void removeProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product product) {\n"
+"      products.remove(product);\n"
+"   }\n"
+"}"
 msgstr ""
-"E agora <literal>Catalog</literal> pode observar os eventos após o término "
-"da transação concluída com sucesso:"
+"<![CDATA[@ApplicationScoped @Singleton\n"
+"public class Catalog {\n"
+"   ...\n"
+"   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product product) {\n"
+"      products.add(product);\n"
+"   }\n"
+"    \n"
+"   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product product) {\n"
+"      products.remove(product);\n"
+"   }\n"
+"}]]>"
 
-#~ msgid ""
-#~ "<![CDATA[@Qualifier\n"
-#~ "@Target({FIELD, PARAMETER})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Updated {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Qualifier\n"
-#~ "@Target({FIELD, PARAMETER})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Updated {}]]>"
+#~ msgid "When this event occurs, all of the following observer methods will be notified:"
+#~ msgstr "Quando esse evento ocorre, todos os métodos observadores que seguem esse evento serão notificados:"
 
-#~ msgid ""
-#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-#~ "{ ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-#~ "{ ... }]]>"
+#~ msgid "The Web Beans event notification facility allows Web Beans to interact in a totally decoupled manner. Event <emphasis>producers</emphasis> raise events that are then delivered to event <emphasis>observers</emphasis> by the Web Bean manager. This basic schema might sound like the familiar observer/observable pattern, but there are a couple of twists:"
+#~ msgstr "A habilidade de notificação de eventos da Web Beans permite aos Web Beans interagirem de  maneira totalmente desacoplada. <emphasis>Produtores</emphasis> de eventos disparam eventos que são entregues aos <emphasis>observadores</emphasis> de eventos pelo gerenciador do Web Bean. Esse esquema básico pode soar como o familiar padrão observador/observável padrão, mas há várias diferenças:"
 
-#~ msgid ""
-#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-#~ "document) { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-#~ "document) { ... }]]>"
+#~ msgid "We specify the event bindings of the observer method by annotating the event parameter:"
+#~ msgstr "Especificamos os bindings de eventos do observador, anotando o parâmetro do evento:"
 
-#~ msgid ""
-#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-#~ "document, User user) { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document "
-#~ "document, User user) { ... }]]>"
+#~ msgid "The event producer may obtain an <emphasis>event notifier</emphasis> object by injection:"
+#~ msgstr "O evento produtor pode obter um objeto <emphasis>notificador de evento (event notifier)</emphasis> por injeção:"
 
-#~ msgid "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
-#~ msgstr "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
+#~ msgid "The <literal>@Observable</literal> annotation implicitly defines a Web Bean with scope <literal>@Dependent</literal> and deployment type <literal>@Standard</literal>, with an implementation provided by the Web Bean manager."
+#~ msgstr "A anotação <literal>@Observable</literal> define, implicitamente, uma Web Bean com o escopo <literal>@Dependent</literal> e tipo de implantação <literal>@Standard</literal>, com uma implementação fornecida pelo gerenciador do Web Bean."
 
-#~ msgid "<![CDATA[documentEvent.fire(document);]]>"
-#~ msgstr "<![CDATA[documentEvent.fire(document);]]>"
+#~ msgid "An event object may be an instance of any Java class that has no type variables or wildcard type parameters. The event will be delivered to every observer method that:"
+#~ msgstr "Um objeto de evento pode ser uma instância de qualquer classe Java que não tem nenhum tipo de variáveis ou parâmetros tipo curinga. O evento será entregue a cada método observador  que:"
 
-#~ msgid "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
-#~ msgstr "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
+#~ msgid "To specify a \"selector\", the event producer may pass an instance of the event binding type to the <literal>fire()</literal> method:"
+#~ msgstr "Para especificar um \"seletor\", o produtor do evento pode passar uma instância do tipo de binding do evento para o método <literal>fire()</literal>:"
 
-#~ msgid ""
-#~ "<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
-#~ "(document);]]>"
-#~ msgstr ""
-#~ "<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire"
-#~ "(document);]]>"
+#~ msgid "The helper class <literal>AnnotationLiteral</literal> makes it possible to instantiate binding types inline, since this is otherwise difficult to do in Java."
+#~ msgstr "O classe auxiliar <literal>AnnotationLiteral</literal> permite instanciar tipo de binding inline, o que é  difícil de se fazer em Java."
 
-#~ msgid ""
-#~ "<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = "
-#~ "IF_EXISTS) @Updated Document d) { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = "
-#~ "IF_EXISTS) @Updated Document d) { ... }]]>"
+#~ msgid "Alternatively, event bindings may be specified by annotating the event notifier injection point:"
+#~ msgstr "Alternativamente, bindings de eventos podem ser especificados anotando o ponto de injeção do notificador do evento:"
 
-#~ msgid ""
-#~ "<![CDATA[@Qualifier\n"
-#~ "@Target({PARAMETER, FIELD})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Role {\n"
-#~ "   RoleType value();\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Qualifier\n"
-#~ "@Target({PARAMETER, FIELD})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Role {\n"
-#~ "   RoleType value();\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
-#~ "{ ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) "
-#~ "{ ... }]]>"
-
-#~ msgid "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
-#~ msgstr "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
-
-#~ msgid ""
-#~ "<![CDATA[abstract class RoleBinding \n"
-#~ "   extends AnnotationLiteral<Role> \n"
-#~ "   implements Role {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[abstract class RoleBinding \n"
-#~ "   extends AnnotationLiteral<Role> \n"
-#~ "   implements Role {}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[documentEvent.select(new RoleBinding() {\n"
-#~ "   public void value() { return user.getRole(); }\n"
-#~ "}).fire(document);]]>"
-#~ msgstr ""
-#~ "<![CDATA[documentEvent.select(new RoleBinding() {\n"
-#~ "   public void value() { return user.getRole(); }\n"
-#~ "}).fire(document);]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
-#~ "...\n"
-#~ "if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>()"
-#~ "{}).fire(document);]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
-#~ "...\n"
-#~ "if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>()"
-#~ "{}).fire(document);]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
-#~ "document) { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document "
-#~ "document) { ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
-#~ "{ ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) "
-#~ "{ ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-#~ "{ ... }}}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void onAnyDocumentEvent(@Observes Document document) "
-#~ "{ ... }}}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public void refreshCategoryTree(@Observes(during = "
-#~ "AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public void refreshCategoryTree(@Observes(during = "
-#~ "AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@ApplicationScoped @Singleton\n"
-#~ "public class Catalog {\n"
-#~ "\n"
-#~ "   @PersistenceContext EntityManager em;\n"
-#~ "    \n"
-#~ "   List<Product> products;\n"
-#~ "\n"
-#~ "   @Produces @Catalog \n"
-#~ "   List<Product> getCatalog() {\n"
-#~ "      if (products==null) {\n"
-#~ "         products = em.createQuery(\"select p from Product p where p."
-#~ "deleted = false\")\n"
-#~ "            .getResultList();\n"
-#~ "      }\n"
-#~ "      return products;\n"
-#~ "   }\n"
-#~ "    \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@ApplicationScoped @Singleton\n"
-#~ "public class Catalog {\n"
-#~ "\n"
-#~ "   @PersistenceContext EntityManager em;\n"
-#~ "    \n"
-#~ "   List<Product> products;\n"
-#~ "\n"
-#~ "   @Produces @Catalog \n"
-#~ "   List<Product> getCatalog() {\n"
-#~ "      if (products==null) {\n"
-#~ "         products = em.createQuery(\"select p from Product p where p."
-#~ "deleted = false\")\n"
-#~ "            .getResultList();\n"
-#~ "      }\n"
-#~ "      return products;\n"
-#~ "   }\n"
-#~ "    \n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Stateless\n"
-#~ "public class ProductManager {\n"
-#~ "   @PersistenceContext EntityManager em;\n"
-#~ "   @Inject @Any Event<Product> productEvent;\n"
-#~ "\n"
-#~ "   public void delete(Product product) {\n"
-#~ "      em.delete(product);\n"
-#~ "      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
-#~ "(product);\n"
-#~ "   }\n"
-#~ "    \n"
-#~ "   public void persist(Product product) {\n"
-#~ "      em.persist(product);\n"
-#~ "      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
-#~ "(product);\n"
-#~ "   }\n"
-#~ "   ...\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Stateless\n"
-#~ "public class ProductManager {\n"
-#~ "   @PersistenceContext EntityManager em;\n"
-#~ "   @Inject @Any Event<Product> productEvent;\n"
-#~ "\n"
-#~ "   public void delete(Product product) {\n"
-#~ "      em.delete(product);\n"
-#~ "      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire"
-#~ "(product);\n"
-#~ "   }\n"
-#~ "    \n"
-#~ "   public void persist(Product product) {\n"
-#~ "      em.persist(product);\n"
-#~ "      productEvent.select(new AnnotationLiteral<Created>(){}).fire"
-#~ "(product);\n"
-#~ "   }\n"
-#~ "   ...\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@ApplicationScoped @Singleton\n"
-#~ "public class Catalog {\n"
-#~ "   ...\n"
-#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
-#~ "product) {\n"
-#~ "      products.add(product);\n"
-#~ "   }\n"
-#~ "    \n"
-#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
-#~ "product) {\n"
-#~ "      products.remove(product);\n"
-#~ "   }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@ApplicationScoped @Singleton\n"
-#~ "public class Catalog {\n"
-#~ "   ...\n"
-#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product "
-#~ "product) {\n"
-#~ "      products.add(product);\n"
-#~ "   }\n"
-#~ "    \n"
-#~ "   void addProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product "
-#~ "product) {\n"
-#~ "      products.remove(product);\n"
-#~ "   }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "The Web Beans event notification facility allows Web Beans to interact in "
-#~ "a totally decoupled manner. Event <emphasis>producers</emphasis> raise "
-#~ "events that are then delivered to event <emphasis>observers</emphasis> by "
-#~ "the Web Bean manager. This basic schema might sound like the familiar "
-#~ "observer/observable pattern, but there are a couple of twists:"
-#~ msgstr ""
-#~ "A habilidade de notificação de eventos da Web Beans permite aos Web Beans "
-#~ "interagirem de  maneira totalmente desacoplada. <emphasis>Produtores</"
-#~ "emphasis> de eventos disparam eventos que são entregues aos "
-#~ "<emphasis>observadores</emphasis> de eventos pelo gerenciador do Web "
-#~ "Bean. Esse esquema básico pode soar como o familiar padrão observador/"
-#~ "observável padrão, mas há várias diferenças:"
-
-#~ msgid ""
-#~ "We specify the event bindings of the observer method by annotating the "
-#~ "event parameter:"
-#~ msgstr ""
-#~ "Especificamos os bindings de eventos do observador, anotando o parâmetro "
-#~ "do evento:"
-
-#~ msgid ""
-#~ "The event producer may obtain an <emphasis>event notifier</emphasis> "
-#~ "object by injection:"
-#~ msgstr ""
-#~ "O evento produtor pode obter um objeto <emphasis>notificador de evento "
-#~ "(event notifier)</emphasis> por injeção:"
-
-#~ msgid ""
-#~ "The <literal>@Observable</literal> annotation implicitly defines a Web "
-#~ "Bean with scope <literal>@Dependent</literal> and deployment type "
-#~ "<literal>@Standard</literal>, with an implementation provided by the Web "
-#~ "Bean manager."
-#~ msgstr ""
-#~ "A anotação <literal>@Observable</literal> define, implicitamente, uma Web "
-#~ "Bean com o escopo <literal>@Dependent</literal> e tipo de implantação "
-#~ "<literal>@Standard</literal>, com uma implementação fornecida pelo "
-#~ "gerenciador do Web Bean."
-
-#~ msgid ""
-#~ "An event object may be an instance of any Java class that has no type "
-#~ "variables or wildcard type parameters. The event will be delivered to "
-#~ "every observer method that:"
-#~ msgstr ""
-#~ "Um objeto de evento pode ser uma instância de qualquer classe Java que "
-#~ "não tem nenhum tipo de variáveis ou parâmetros tipo curinga. O evento "
-#~ "será entregue a cada método observador  que:"
-
-#~ msgid ""
-#~ "To specify a \"selector\", the event producer may pass an instance of the "
-#~ "event binding type to the <literal>fire()</literal> method:"
-#~ msgstr ""
-#~ "Para especificar um \"seletor\", o produtor do evento pode passar uma "
-#~ "instância do tipo de binding do evento para o método <literal>fire()</"
-#~ "literal>:"
-
-#~ msgid ""
-#~ "The helper class <literal>AnnotationLiteral</literal> makes it possible "
-#~ "to instantiate binding types inline, since this is otherwise difficult to "
-#~ "do in Java."
-#~ msgstr ""
-#~ "O classe auxiliar <literal>AnnotationLiteral</literal> permite instanciar "
-#~ "tipo de binding inline, o que é  difícil de se fazer em Java."
-
-#~ msgid ""
-#~ "Alternatively, event bindings may be specified by annotating the event "
-#~ "notifier injection point:"
-#~ msgstr ""
-#~ "Alternativamente, bindings de eventos podem ser especificados anotando o "
-#~ "ponto de injeção do notificador do evento:"
-
-#~ msgid ""
-#~ "does not specify any event binding <emphasis>except</emphasis> for the "
-#~ "event bindings passed to <literal>fire()</literal> or the annotated event "
-#~ "bindings of the event notifier injection point."
-#~ msgstr ""
-#~ "não especifique nenhum  binding de evento <emphasis>exceto</emphasis> "
-#~ "para os bindings de evento passados para o <literal>fire()</literal> ou "
-#~ "os bindings de evento anotados do ponto de injeção do notificador de "
-#~ "evento."
+#~ msgid "does not specify any event binding <emphasis>except</emphasis> for the event bindings passed to <literal>fire()</literal> or the annotated event bindings of the event notifier injection point."
+#~ msgstr "não especifique nenhum  binding de evento <emphasis>exceto</emphasis> para os bindings de evento passados para o <literal>fire()</literal> ou os bindings de evento anotados do ponto de injeção do notificador de evento."
 
 #~ msgid "Registering observers dynamically"
 #~ msgstr "Resgistrando observadores (observers) dinamicamente"
 
-#~ msgid ""
-#~ "It's often useful to register an event observer dynamically. The "
-#~ "application may implement the <literal>Observer</literal> interface and "
-#~ "register an instance with an event notifier by calling the "
-#~ "<literal>observe()</literal> method."
-#~ msgstr ""
-#~ "Frequentemente, é útil  registrar um evento observador dinamicamente. A "
-#~ "aplicação pode implementar a interface <literal>Observer</literal> e "
-#~ "registrar a instância com um evento notificador chamando o método "
-#~ "<literal>observe()</literal>."
+#~ msgid "It's often useful to register an event observer dynamically. The application may implement the <literal>Observer</literal> interface and register an instance with an event notifier by calling the <literal>observe()</literal> method."
+#~ msgstr "Frequentemente, é útil  registrar um evento observador dinamicamente. A aplicação pode implementar a interface <literal>Observer</literal> e registrar a instância com um evento notificador chamando o método <literal>observe()</literal>."
+
+#~ msgid "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } } );]]>"
+#~ msgstr "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } } );]]>"
+
+#~ msgid "Event binding types may be specified by the event notifier injection point or by passing event binding type instances to the <literal>observe()</literal> method:"
+#~ msgstr "Tipos de binding de eventos podem ser especificados pelo notificador do evento no ponto de injeção, ou passando instâncias do tipo de binding de evento para o método observador <literal>observe()</literal> method:"
 
 #~ msgid ""
-#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
-#~ "notify(Document doc) { ... } } );]]>"
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } }, \n"
+#~ "                                                new AnnotationLiteral<Updated>(){} );]]>"
 #~ msgstr ""
-#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
-#~ "notify(Document doc) { ... } } );]]>"
-
-#~ msgid ""
-#~ "Event binding types may be specified by the event notifier injection "
-#~ "point or by passing event binding type instances to the <literal>observe()"
-#~ "</literal> method:"
-#~ msgstr ""
-#~ "Tipos de binding de eventos podem ser especificados pelo notificador do "
-#~ "evento no ponto de injeção, ou passando instâncias do tipo de binding de "
-#~ "evento para o método observador <literal>observe()</literal> method:"
-
-#~ msgid ""
-#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
-#~ "notify(Document doc) { ... } }, \n"
-#~ "                                                new "
-#~ "AnnotationLiteral<Updated>(){} );]]>"
-#~ msgstr ""
-#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void "
-#~ "notify(Document doc) { ... } }, \n"
-#~ "                                                new "
-#~ "AnnotationLiteral<Updated>(){} );]]>"
+#~ "<![CDATA[documentEvent.observe( new Observer<Document>() { public void notify(Document doc) { ... } }, \n"
+#~ "                                                new AnnotationLiteral<Updated>(){} );]]>"

@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Book_Info\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-03-02T13:07:17\n"
+"POT-Creation-Date: 2010-12-14T13:35:16\n"
 "PO-Revision-Date: 2009-02-07 14:55+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,12 +23,13 @@ msgstr ""
 
 #. Tag: subtitle
 #, fuzzy, no-c-format
-msgid ""
-"JSR-299: The new Java standard for dependency injection and contextual "
-"lifecycle management"
+msgid "JSR-299: The new Java standard for dependency injection and contextual lifecycle management"
+msgstr "Der neue Java Standard für \"Dependency\"-Einspeisung und kontextuelles Status-Management"
+
+#. Tag: productname
+#, no-c-format
+msgid "Weld"
 msgstr ""
-"Der neue Java Standard für \"Dependency\"-Einspeisung und kontextuelles "
-"Status-Management"
 
 #~ msgid "Web Beans: Java Contexts and Dependency Injection"
 #~ msgstr "Web Beans: Java Kontexte und \"Dependency\"-Einspeisung"

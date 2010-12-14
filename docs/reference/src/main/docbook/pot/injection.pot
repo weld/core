@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-10-19T01:52:19\n"
-"PO-Revision-Date: 2010-10-19T01:52:19\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"PO-Revision-Date: 2010-12-14T13:35:17\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "One of the most significant features of CDI&#8212;certainly the most recognized&#8212;is dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency injection."
+msgid "One of the most significant features of CDI—certainly the most recognized—is dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency injection."
 msgstr ""
 
 #. Tag: title
@@ -37,6 +37,20 @@ msgstr ""
 msgid "<emphasis>Bean constructor</emphasis> parameter injection:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "public class Checkout {\n"
+"        \n"
+"   private final ShoppingCart cart;\n"
+"    \n"
+"   @Inject\n"
+"   public Checkout(ShoppingCart cart) {\n"
+"      this.cart = cart;\n"
+"   }\n"
+"\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "A bean can only have one injectable constructor."
@@ -47,6 +61,20 @@ msgstr ""
 msgid "<emphasis>Initializer method</emphasis> parameter injection:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "public class Checkout {\n"
+"        \n"
+"   private ShoppingCart cart;\n"
+"\n"
+"   @Inject\n"
+"   void setShoppingCart(ShoppingCart cart) {\n"
+"      this.cart = cart;\n"
+"   }\n"
+"    \n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "A bean can have multiple initializer methods. If the bean is a session bean, the initializer method is not required to be a business method of the session bean."
@@ -55,6 +83,15 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "And direct field injection:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public class Checkout {\n"
+"\n"
+"   private @Inject ShoppingCart cart;\n"
+"    \n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -79,7 +116,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Next, the container calls all initializer methods of bean (the call order is not portable, don't rely on it)."
+msgid "Next, the container calls all initializer methods of bean (the call order is not portable, don&#39;t rely on it)."
 msgstr ""
 
 #. Tag: para
@@ -102,9 +139,16 @@ msgstr ""
 msgid "CDI also supports parameter injection for some other methods that are invoked by the container. For instance, parameter injection is supported for producer methods:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Produces Checkout createCheckout(ShoppingCart cart) {\n"
+"    return new Checkout(cart);\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the injection point. The same is true for observer methods (which we'll meet in <xref linkend=\"events\"/>) and disposer methods."
+msgid "This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the injection point. The same is true for observer methods (which we&#39;ll meet in <xref linkend=\"events\" />) and disposer methods."
 msgstr ""
 
 #. Tag: title
@@ -114,7 +158,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the container follows when identifying the bean to inject to an injection point. This algorithm looks complex at first, but once you understand it, it's really quite intuitive. Typesafe resolution is performed at system initialization time, which means that the container will inform the developer immediately if a bean's dependencies cannot be satisfied."
+msgid "The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the container follows when identifying the bean to inject to an injection point. This algorithm looks complex at first, but once you understand it, it&#39;s really quite intuitive. Typesafe resolution is performed at system initialization time, which means that the container will inform the developer immediately if a bean&#39;s dependencies cannot be satisfied."
 msgstr ""
 
 #. Tag: para
@@ -139,12 +183,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then bean A is going to go into slot A. That's the simplest possible scenario. When you first start your application, you'll likely have lots of those."
+msgid "Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then bean A is going to go into slot A. That&#39;s the simplest possible scenario. When you first start your application, you&#39;ll likely have lots of those."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But then, things start to get complicated. Let's explore how the container determines which bean to inject in more advanced cases. We'll start by taking a closer look at qualifiers."
+msgid "But then, things start to get complicated. Let&#39;s explore how the container determines which bean to inject in more advanced cases. We&#39;ll start by taking a closer look at qualifiers."
 msgstr ""
 
 #. Tag: title
@@ -157,9 +201,41 @@ msgstr ""
 msgid "If we have more than one bean that implements a particular bean type, the injection point can specify exactly which bean should be injected using a qualifier annotation. For example, there might be two implementations of <literal>PaymentProcessor</literal>:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Synchronous\n"
+"public class SynchronousPaymentProcessor implements PaymentProcessor {\n"
+"   public void process(Payment payment) { ... }\n"
+"}"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Asynchronous\n"
+"public class AsynchronousPaymentProcessor implements PaymentProcessor {\n"
+"   public void process(Payment payment) { ... }\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> are qualifier annotations:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"public @interface Synchronous {}"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"public @interface Asynchronous {}"
 msgstr ""
 
 #. Tag: para
@@ -172,9 +248,25 @@ msgstr ""
 msgid "Using field injection:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Synchronous PaymentProcessor syncPaymentProcessor;\n"
+"@Inject @Asynchronous PaymentProcessor asyncPaymentProcessor;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Using initializer method injection:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject\n"
+"public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProcessor, \n"
+"                                 @Asynchronous PaymentProcessor asyncPaymentProcessor) {\n"
+"   this.syncPaymentProcessor = syncPaymentProcessor;\n"
+"   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -182,9 +274,28 @@ msgstr ""
 msgid "Using constructor injection:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject\n"
+"public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, \n"
+"                @Asynchronous PaymentProcessor asyncPaymentProcessor) {\n"
+"   this.syncPaymentProcessor = syncPaymentProcessor;\n"
+"   this.asyncPaymentProcessor = asyncPaymentProcessor;\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Qualifier annotations can also qualify method arguments of producer, disposer and observer methods. Combining qualified arguments with producer methods is a good way to have an implementation of a bean type selected at runtime based on the state of the system:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Produces\n"
+"PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentProcessor,\n"
+"                                     @Asynchronous PaymentProcessor asyncPaymentProcessor) {\n"
+"   return isSynchronous() ? syncPaymentProcessor : asyncPaymentProcessor;\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -194,7 +305,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, you may be thinking, <emphasis>\"What's the different between using a qualifier and just specifying the exact implementation class you want?\"</emphasis> It's important to understand that a qualifier is like an extension of the interface. It does not create a direct dependency to any particular implementation. There may be multiple alterative implementations of <literal>@Asynchronous PaymentProcessor</literal>!"
+msgid "Now, you may be thinking, <emphasis>&#34;What&#39;s the different between using a qualifier and just specifying the exact implementation class you want?&#34;</emphasis> It&#39;s important to understand that a qualifier is like an extension of the interface. It does not create a direct dependency to any particular implementation. There may be multiple alterative implementations of <literal>@Asynchronous PaymentProcessor</literal>!"
 msgstr ""
 
 #. Tag: title
@@ -204,12 +315,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the qualifier <literal>@Default</literal>. From time to time, you'll need to decare an injection point without specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>. Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default qualifier, without otherwise restricting the beans that are eligible for injection."
+msgid "Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the qualifier <literal>@Default</literal>. From time to time, you&#39;ll need to decare an injection point without specifying a qualifier. There&#39;s a qualifier for that too. All beans have the qualifier <literal>@Any</literal>. Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default qualifier, without otherwise restricting the beans that are eligible for injection."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "This is especially useful if you want to iterate over all beans with a certain bean type. For example:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject \n"
+"void initServices(@Any Instance&#60;Service&#62; services) { \n"
+"   for (Service service: services) {\n"
+"      service.init();\n"
+"   }\n"
+"}"
 msgstr ""
 
 #. Tag: title
@@ -222,14 +343,40 @@ msgstr ""
 msgid "Java annotations can have members. We can use annotation members to further discriminate a qualifier. This prevents a potential explosion of new annotations. For example, instead of creating several qualifiers representing different payment methods, we could aggregate them into a single annotation with a member:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
+"public @interface PayBy {\n"
+"   PaymentMethod value();\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Then we select one of the possible member values when appling the qualifier:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "We can force the container to ignore a member of a qualifier type by annotating the member <literal>@Nonbinding</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Qualifier\n"
+"@Retention(RUNTIME)\n"
+"@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
+"public @interface PayBy {\n"
+"   PaymentMethod value();\n"
+"   @Nonbinding String comment() default &#34;&#34;;\n"
+"}"
 msgstr ""
 
 #. Tag: title
@@ -242,9 +389,22 @@ msgstr ""
 msgid "An injection point may specify multiple qualifiers:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Then only a bean which has <emphasis>both</emphasis> qualifier annotations would be eligible for injection."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@Synchronous @Reliable\n"
+"public class SynchronousReliablePaymentProcessor implements PaymentProcessor {\n"
+"   public void process(Payment payment) { ... }\n"
+"}"
 msgstr ""
 
 #. Tag: title
@@ -257,14 +417,36 @@ msgstr ""
 msgid "Alternatives are beans whose implementation is specific to a particular client module or deployment scenario. This alternative defines a mock implementation of both <literal>@Synchronous PaymentProcessor</literal> and <literal>@Asynchronous PaymentProcessor</literal>, all in one:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Alternative @Synchronous @Asynchronous\n"
+"public class MockPaymentProcessor implements PaymentProcessor {\n"
+"   public void process(Payment payment) { ... }\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "By default, <literal>@Alternative</literal> beans are disabled. We need to <emphasis>enable</emphasis> an alternative in the <literal>beans.xml</literal> descriptor of a bean archive to make it available for instantiation and injection. This activation only applies to the beans in that archive."
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "&#60;beans\n"
+"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
+"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
+"   xsi:schemaLocation=&#34;\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
+"   &#60;alternatives&#62;\n"
+"         &#60;class&#62;org.mycompany.mock.MockPaymentProcessor&#60;/class&#62;\n"
+"   &#60;/alternatives&#62;\n"
+"&#60;/beans&#62;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity by looking for an enabled alternative among the beans that could be injected. If there is exactly one enabled alternative, that's the bean that will be injected."
+msgid "When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity by looking for an enabled alternative among the beans that could be injected. If there is exactly one enabled alternative, that&#39;s the bean that will be injected."
 msgstr ""
 
 #. Tag: title
@@ -279,7 +461,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "During the course of your development, you're going to encounter this situation. Let's learn how to resolve it."
+msgid "During the course of your development, you&#39;re going to encounter this situation. Let&#39;s learn how to resolve it."
 msgstr ""
 
 #. Tag: para
@@ -334,17 +516,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Just remember: \"There can be only one.\""
+msgid "Just remember: &#34;There can be only one.&#34;"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "On the other hand, if you really do have an optional or multivalued injection point, you should change the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\"/>."
+msgid "On the other hand, if you really do have an optional or multivalued injection point, you should change the type of your injection point to <literal>Instance</literal>, as we&#39;ll see in <xref linkend=\"lookup\" />."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now there's one more issue you need to be aware of when using the dependency injection service."
+msgid "Now there&#39;s one more issue you need to be aware of when using the dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -359,7 +541,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request scope. The application-scoped bean is shared between many different requests. However, each request should see a different instance of the request scoped bean&#8212;the current one!"
+msgid "Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request scope. The application-scoped bean is shared between many different requests. However, each request should see a different instance of the request scoped bean—the current one!"
 msgstr ""
 
 #. Tag: para
@@ -384,7 +566,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "classes which don't have a non-private constructor with no parameters, and"
+msgid "classes which don&#39;t have a non-private constructor with no parameters, and"
 msgstr ""
 
 #. Tag: para
@@ -399,7 +581,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It's usually very easy to fix an unproxyable dependency problem. If an injection point of type <literal>X</literal> results in an unproxyable dependency, simply:"
+msgid "It&#39;s usually very easy to fix an unproxyable dependency problem. If an injection point of type <literal>X</literal> results in an unproxyable dependency, simply:"
 msgstr ""
 
 #. Tag: para
@@ -409,7 +591,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "change the type of the injection point to <literal>Instance&lt;X&gt;</literal>,"
+msgid "change the type of the injection point to <literal>Instance&#60;X&#62;</literal>,"
 msgstr ""
 
 #. Tag: para
@@ -439,7 +621,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But we didn't get around to implementing this yet."
+msgid "But we didn&#39;t get around to implementing this yet."
 msgstr ""
 
 #. Tag: title
@@ -472,9 +654,19 @@ msgstr ""
 msgid "In these situations, the application may obtain an instance of the interface <literal>Instance</literal>, parameterized for the bean type, by injection:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject Instance&#60;PaymentProcessor&#62; paymentProcessorSource;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "The <literal>get()</literal> method of <literal>Instance</literal> produces a contextual instance of the bean."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "PaymentProcessor p = paymentProcessorSource.get();"
 msgstr ""
 
 #. Tag: para
@@ -497,6 +689,11 @@ msgstr ""
 msgid "Specifying the qualifiers at the injection point is much, much easier:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Asynchronous Instance&#60;PaymentProcessor&#62; paymentProcessorSource;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "Now, the <literal>PaymentProcessor</literal> returned by <literal>get()</literal> will have the qualifier <literal>@Asynchronous</literal>."
@@ -507,9 +704,20 @@ msgstr ""
 msgid "Alternatively, we can specify the qualifier dynamically. First, we add the <literal>@Any</literal> qualifier to the injection point, to suppress the default qualifier. (All beans have the qualifier <literal>@Any</literal>.)"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject @Any Instance&#60;PaymentProcessor&#62; paymentProcessorSource;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "Next, we need to obtain an instance of our qualifier type. Since annotatons are interfaces, we can't just write <literal>new Asynchronous()</literal>. It's also quite tedious to create a concrete implementation of an annotation type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>."
+msgid "Next, we need to obtain an instance of our qualifier type. Since annotatons are interfaces, we can&#39;t just write <literal>new Asynchronous()</literal>. It&#39;s also quite tedious to create a concrete implementation of an annotation type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "abstract class AsynchronousQualifier\n"
+"extends AnnotationLiteral&#60;Asynchronous&#62; implements Asynchronous {}"
 msgstr ""
 
 #. Tag: para
@@ -517,14 +725,27 @@ msgstr ""
 msgid "In some cases, we can use an anonymous class:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "PaymentProcessor p = paymentProcessorSource\n"
+"   .select(new AnnotationLiteral&#60;Asynchronous&#62;() {});"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "We can't use an anonymous class to implement a qualifier type with members."
+msgid "We can&#39;t use an anonymous class to implement a qualifier type with members."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "Now, finally, we can pass the qualifier to the <literal>select()</literal> method of <literal>Instance</literal>."
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "Annotation qualifier = synchronously ?\n"
+"      new SynchronousQualifier() : new AsynchronousQualifier();\n"
+"PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment);"
 msgstr ""
 
 #. Tag: title
@@ -559,7 +780,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let's look at an example. The following code is verbose, and vulnerable to refactoring problems:"
+msgid "Let&#39;s look at an example. The following code is verbose, and vulnerable to refactoring problems:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "Logger log = Logger.getLogger(MyClass.class.getName());"
 msgstr ""
 
 #. Tag: para
@@ -567,14 +793,40 @@ msgstr ""
 msgid "This clever little producer method lets you inject a JDK <literal>Logger</literal> without explicitly specifying the log category:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "class LogFactory {\n"
+"\n"
+"   @Produces Logger createLogger(InjectionPoint injectionPoint) { \n"
+"      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName()); \n"
+"   }\n"
+"\n"
+"}"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "We can now write:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@Inject Logger log;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
-msgid "Not convinced? Then here's a second example. To inject HTTP parameters, we need to define a qualifier type:"
+msgid "Not convinced? Then here&#39;s a second example. To inject HTTP parameters, we need to define a qualifier type:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "@BindingType\n"
+"@Retention(RUNTIME)\n"
+"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
+"public @interface HttpParam {\n"
+"   @Nonbinding public String value();\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -582,9 +834,28 @@ msgstr ""
 msgid "We would use this qualifier type at injection points as follows:"
 msgstr ""
 
+#. Tag: programlisting
+#, no-c-format
+msgid "@HttpParam(&#34;username&#34;) String username;\n"
+"@HttpParam(&#34;password&#34;) String password;"
+msgstr ""
+
 #. Tag: para
 #, no-c-format
 msgid "The following producer method does the work:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "class HttpParams\n"
+"\n"
+"   @Produces @HttpParam(&#34;&#34;)\n"
+"   String getParamValue(InjectionPoint ip) {\n"
+"      ServletRequest request = (ServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();\n"
+"      return request.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());\n"
+"   }\n"
+"\n"
+"}"
 msgstr ""
 
 #. Tag: para
@@ -600,5 +871,18 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The container provides a built-in bean that implements the <literal>InjectionPoint</literal> interface:"
+msgstr ""
+
+#. Tag: programlisting
+#, no-c-format
+msgid "public interface InjectionPoint { \n"
+"   public Type getType();\n"
+"   public Set&#60;Annotation&#62; getQualifiers();\n"
+"   public Bean&#60;?&#62; getBean();\n"
+"   public Member getMember();\n"
+"   public Annotated getAnnotated();\n"
+"   public boolean isDelegate();\n"
+"   public boolean isTransient();\n"
+"}"
 msgstr ""
 

@@ -5,10 +5,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-07-25T10:21:23\n"
+"POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2010-11-18 23:31-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,22 +21,13 @@ msgstr "Interceptadores"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Interceptor functionality is defined in the Java Interceptors specification. "
-"CDI enhances this functionality with a more sophisticated, semantic, "
-"annotation-based approach to binding interceptors to beans."
-msgstr ""
-"A funcionalidade interceptador é definida na especificação Java "
-"Interceptors. CDI melhora esta funcionalidade com uma abordagem mais "
-"sofisticada, semântica e baseada em anotações para associar interceptores "
-"aos beans."
+msgid "Interceptor functionality is defined in the Java Interceptors specification. CDI enhances this functionality with a more sophisticated, semantic, annotation-based approach to binding interceptors to beans."
+msgstr "A funcionalidade interceptador é definida na especificação Java Interceptors. CDI melhora esta funcionalidade com uma abordagem mais sofisticada, semântica e baseada em anotações para associar interceptores aos beans."
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"The Interceptors specification defines two kinds of interception points:"
-msgstr ""
-"A especificação Interceptors define dois tipos de pontos de interceptação:"
+msgid "The Interceptors specification defines two kinds of interception points:"
+msgstr "A especificação Interceptors define dois tipos de pontos de interceptação:"
 
 #. Tag: para
 #, no-c-format
@@ -50,45 +42,66 @@ msgstr "interceptadores de chamadas de ciclo de vida"
 #. Tag: para
 #, no-c-format
 msgid "In addition, the EJB specification defines timeout method interception."
-msgstr ""
-"Adicionalmente, a especificação EJB define a interceptação do estouro de "
-"tempo."
+msgstr "Adicionalmente, a especificação EJB define a interceptação do estouro de tempo."
 
 #. Tag: para
 #, no-c-format
+msgid "A <emphasis>business method interceptor</emphasis> applies to invocations of methods of the bean by clients of the bean:"
+msgstr "Um <emphasis>interceptador de método de negócio</emphasis> se aplica a invocações de métodos do bean por clientes do bean:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"A <emphasis>business method interceptor</emphasis> applies to invocations of "
-"methods of the bean by clients of the bean:"
+"public class TransactionInterceptor {\n"
+"   @AroundInvoke \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}"
 msgstr ""
-"Um <emphasis>interceptador de método de negócio</emphasis> se aplica a "
-"invocações de métodos do bean por clientes do bean:"
+"<![CDATA[public class TransactionInterceptor {\n"
+"   @AroundInvoke \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations of lifecycle callbacks by the container:"
+msgstr "Um <emphasis>interceptador de chamadas de ciclo de vida</emphasis> se aplica a invocações após algum evento do ciclo de vida do bean pelo contêiner:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations "
-"of lifecycle callbacks by the container:"
+"public class DependencyInjectionInterceptor {\n"
+"   @PostConstruct \n"
+"   public void injectDependencies(InvocationContext ctx) { ... }\n"
+"}"
 msgstr ""
-"Um <emphasis>interceptador de chamadas de ciclo de vida</emphasis> se aplica "
-"a invocações após algum evento do ciclo de vida do bean pelo contêiner:"
+"<![CDATA[public class DependencyInjectionInterceptor {\n"
+"   @PostConstruct \n"
+"   public void injectDependencies(InvocationContext ctx) { ... }\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"An interceptor class may intercept both lifecycle callbacks and business "
-"methods."
-msgstr ""
-"Uma classe de interceptador pode interceptar tanto o ciclo de vida quanto "
-"métodos de negócio."
+msgid "An interceptor class may intercept both lifecycle callbacks and business methods."
+msgstr "Uma classe de interceptador pode interceptar tanto o ciclo de vida quanto métodos de negócio."
 
 #. Tag: para
 #, no-c-format
+msgid "A <emphasis>timeout method interceptor</emphasis> applies to invocations of EJB timeout methods by the container:"
+msgstr "Um <emphasis>interceptador de estouro de tempo</emphasis> se aplica a invocações de métodos EJB limitadores de tempo pelo contêiner:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"A <emphasis>timeout method interceptor</emphasis> applies to invocations of "
-"EJB timeout methods by the container:"
+"public class TimeoutInterceptor {\n"
+"   @AroundTimeout \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}"
 msgstr ""
-"Um <emphasis>interceptador de estouro de tempo</emphasis> se aplica a "
-"invocações de métodos EJB limitadores de tempo pelo contêiner:"
+"<![CDATA[public class TimeoutInterceptor {\n"
+"   @AroundTimeout \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}]]>"
 
 #. Tag: title
 #, no-c-format
@@ -96,31 +109,52 @@ msgid "Interceptor bindings"
 msgstr "Bindings de interceptadores"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
+msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we&#39;re interested in:"
+msgstr "Suponha que queremos declarar que algum de nossos beans são transacionais. A primeira coisa de que precisamos é um <emphasis>tipo vinculador de interceptador</emphasis> para especificar exatamente em quais beans estamos interessados:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Suppose we want to declare that some of our beans are transactional. The "
-"first thing we need is an <emphasis>interceptor binding type</emphasis> to "
-"specify exactly which beans we're interested in:"
+"@InterceptorBinding\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Transactional {}"
 msgstr ""
-"Suponha que queremos declarar que algum de nossos beans são transacionais. A "
-"primeira coisa de que precisamos é um <emphasis>tipo vinculador de "
-"interceptador</emphasis> para especificar exatamente em quais beans estamos "
-"interessados:"
+"<![CDATA[@InterceptorBinding\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Transactional {}]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "Now we can easily specify that our <literal>ShoppingCart</literal> is a transactional object:"
+msgstr "Agora podemos especificar facilmente que nosso <literal>ShoppingCart</literal> é um objeto transacional:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Now we can easily specify that our <literal>ShoppingCart</literal> is a "
-"transactional object:"
+"@Transactional\n"
+"public class ShoppingCart { ... }"
 msgstr ""
-"Agora podemos especificar facilmente que nosso <literal>ShoppingCart</"
-"literal> é um objeto transacional:"
+"<![CDATA[@Transactional\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #, no-c-format
 msgid "Or, if we prefer, we can specify that just one method is transactional:"
+msgstr "Ou, se preferirmos, podemos especificar que apenas um método é transacional:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"public class ShoppingCart {\n"
+"   @Transactional public void checkout() { ... }\n"
+"}"
 msgstr ""
-"Ou, se preferirmos, podemos especificar que apenas um método é transacional:"
+"<![CDATA[public class ShoppingCart {\n"
+"   @Transactional public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: title
 #, no-c-format
@@ -128,22 +162,52 @@ msgid "Implementing interceptors"
 msgstr "Implementando interceptadores (interceptors)"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
+msgid "That&#39;s great, but somewhere along the line we&#39;re going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgstr "Isto é ótimo, mas em algum momento teremos que implementar o interceptador que fornece este aspecto de gerenciamento transacional. Tudo que precisamos fazer é criar um interceptador normal, e anotá-lo com <literal>@Interceptor</literal> e <literal>@Transactional</literal>."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"That's great, but somewhere along the line we're going to have to actually "
-"implement the interceptor that provides this transaction management aspect. "
-"All we need to do is create a standard interceptor, and annotate it "
-"<literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+"@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"   @AroundInvoke \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}"
 msgstr ""
-"Isto é ótimo, mas em algum momento teremos que implementar o interceptador "
-"que fornece este aspecto de gerenciamento transacional. Tudo que precisamos "
-"fazer é criar um interceptador normal, e anotá-lo com <literal>@Interceptor</"
-"literal> e <literal>@Transactional</literal>."
+"<![CDATA[@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"   @AroundInvoke \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
 msgid "Interceptors can take advantage of dependency injection:"
 msgstr "Interceptadores podem tirar vantagem da injeção de dependência:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"\n"
+"    @Resource UserTransaction transaction;\n"
+"\n"
+"    @AroundInvoke \n"
+"    public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"    \n"
+"}"
+msgstr ""
+"<![CDATA[@Transactional @Interceptor\n"
+"public class TransactionInterceptor {\n"
+"\n"
+"    @Resource UserTransaction transaction;\n"
+"\n"
+"    @AroundInvoke \n"
+"    public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"    \n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
@@ -157,15 +221,33 @@ msgstr "Habiliatando interceptadores (interceptors)"
 
 #. Tag: para
 #, no-c-format
+msgid "By default, all interceptors are disabled. We need to <emphasis>enable</emphasis> our interceptor in the <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans in that archive."
+msgstr "Por padrão, todos os interceptadores estão desabilitados. Nós precisamos <emphasis>habilitar</emphasis> nosso interceptador no descritor <literal>beans.xml</literal> de um arquivo de beans. Esta ativação somente se aplica aos beans neste arquivo."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"By default, all interceptors are disabled. We need to <emphasis>enable</"
-"emphasis> our interceptor in the <literal>beans.xml</literal> descriptor of "
-"a bean archive. This activation only applies to the beans in that archive."
+"&#60;beans\n"
+"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
+"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
+"   xsi:schemaLocation=&#34;\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
+"   &#60;interceptors&#62;\n"
+"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
+"   &#60;/interceptors&#62;\n"
+"&#60;/beans&#62;"
 msgstr ""
-"Por padrão, todos os interceptadores estão desabilitados. Nós precisamos "
-"<emphasis>habilitar</emphasis> nosso interceptador no descritor "
-"<literal>beans.xml</literal> de um arquivo de beans. Esta ativação somente "
-"se aplica aos beans neste arquivo."
+"<![CDATA[<beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
+"   <interceptors>\n"
+"      <class>org.mycompany.myapp.TransactionInterceptor</class>\n"
+"   </interceptors>\n"
+"</beans>]]>"
 
 #. Tag: para
 #, no-c-format
@@ -174,46 +256,55 @@ msgstr "Espere! Porque esse monte de elementos?"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Well, having the XML declaration is actually a <emphasis>good thing</"
-"emphasis>. It solves two problems:"
-msgstr ""
-"Bem, a declaração XML é atualmente uma <emphasis>boa coisa</emphasis>. E "
-"resolve dois problemas:"
+msgid "Well, having the XML declaration is actually a <emphasis>good thing</emphasis>. It solves two problems:"
+msgstr "Bem, a declaração XML é atualmente uma <emphasis>boa coisa</emphasis>. E resolve dois problemas:"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"it enables us to specify a total ordering for all the interceptors in our "
-"system, ensuring deterministic behavior, and"
-msgstr ""
-"o que nos possibilita especificar totalmente a ordem para todos os "
-"interceptores em nosso sistema, garantindo um comportamento determinístico, e"
+msgid "it enables us to specify a total ordering for all the interceptors in our system, ensuring deterministic behavior, and"
+msgstr "o que nos possibilita especificar totalmente a ordem para todos os interceptores em nosso sistema, garantindo um comportamento determinístico, e"
 
 #. Tag: para
 #, no-c-format
 msgid "it lets us enable or disable interceptor classes at deployment time."
-msgstr ""
-"o que nos permite habilitar ou desabilitar classes de interceptador em tempo "
-"de implantação."
+msgstr "o que nos permite habilitar ou desabilitar classes de interceptador em tempo de implantação."
 
 #. Tag: para
 #, no-c-format
+msgid "For example, we could specify that our security interceptor runs before our transaction interceptor."
+msgstr "Por exemplo, poderíamos especificar que nosso interceptador de segurança rode antes de nosso interceptador transacional."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"For example, we could specify that our security interceptor runs before our "
-"transaction interceptor."
+"&#60;beans\n"
+"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
+"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
+"   xsi:schemaLocation=&#34;\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
+"   &#60;interceptors&#62;\n"
+"      &#60;class&#62;org.mycompany.myapp.SecurityInterceptor&#60;/class&#62;\n"
+"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
+"   &#60;/interceptors&#62;\n"
+"&#60;/beans&#62;"
 msgstr ""
-"Por exemplo, poderíamos especificar que nosso interceptador de segurança "
-"rode antes de nosso interceptador transacional."
+"<![CDATA[<beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
+"      http://java.sun.com/xml/ns/javaee\n"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
+"   <interceptors>\n"
+"      <class>org.mycompany.myapp.SecurityInterceptor</class>\n"
+"      <class>org.mycompany.myapp.TransactionInterceptor</class>\n"
+"   </interceptors>\n"
+"</beans>]]>"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Or we could turn them both off in our test environment by simply not "
-"mentioning them in <literal>beans.xml</literal>! Ah, so simple."
-msgstr ""
-"Ou poderíamos desabilitá-los em nosso ambiente de teste apenas não os "
-"mencionando em <literal>beans.xml</literal>! Ah, tão simples."
+msgid "Or we could turn them both off in our test environment by simply not mentioning them in <literal>beans.xml</literal>! Ah, so simple."
+msgstr "Ou poderíamos desabilitá-los em nosso ambiente de teste apenas não os mencionando em <literal>beans.xml</literal>! Ah, tão simples."
 
 #. Tag: title
 #, no-c-format
@@ -222,45 +313,81 @@ msgstr "Vinculando interceptadores com membros"
 
 #. Tag: para
 #, no-c-format
+msgid "Suppose we want to add some extra information to our <literal>@Transactional</literal> annotation:"
+msgstr "Suponhamos que queremos acrescentar algumas informações adicionais para o nossa anotação <literal>@Transactional</literal>: "
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Suppose we want to add some extra information to our "
-"<literal>@Transactional</literal> annotation:"
+"@InterceptorBinding\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Transactional {\n"
+"   boolean requiresNew() default false;\n"
+"}"
 msgstr ""
-"Suponhamos que queremos acrescentar algumas informações adicionais para o "
-"nossa anotação <literal>@Transactional</literal>: "
+"<![CDATA[@InterceptorBinding\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Transactional {\n"
+"   boolean requiresNew() default false;\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "CDI will use the value of <literal>requiresNew</literal> to choose between two different interceptors, <literal>TransactionInterceptor</literal> and <literal>RequiresNewTransactionInterceptor</literal>."
+msgstr "CDI utilizará o valor de <literal>requiresNew</literal> para escolher entre fois diferentes interceptadores, <literal>TransactionInterceptor</literal> e <literal>RequiresNewTransactionInterceptor</literal>."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"CDI will use the value of <literal>requiresNew</literal> to choose between "
-"two different interceptors, <literal>TransactionInterceptor</literal> and "
-"<literal>RequiresNewTransactionInterceptor</literal>."
+"@Transactional(requiresNew = true) @Interceptor\n"
+"public class RequiresNewTransactionInterceptor {\n"
+"   @AroundInvoke \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}"
 msgstr ""
-"CDI utilizará o valor de <literal>requiresNew</literal> para escolher entre "
-"fois diferentes interceptadores, <literal>TransactionInterceptor</literal> e "
-"<literal>RequiresNewTransactionInterceptor</literal>."
+"<![CDATA[@Transactional(requiresNew = true) @Interceptor\n"
+"public class RequiresNewTransactionInterceptor {\n"
+"   @AroundInvoke \n"
+"   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "Now we can use <literal>RequiresNewTransactionInterceptor</literal> like this:"
+msgstr "Agora podemos usar <literal>RequiresNewTransactionInterceptor</literal> assim:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Now we can use <literal>RequiresNewTransactionInterceptor</literal> like "
-"this:"
+"@Transactional(requiresNew = true)\n"
+"public class ShoppingCart { ... }"
 msgstr ""
-"Agora podemos usar <literal>RequiresNewTransactionInterceptor</literal> "
-"assim:"
+"<![CDATA[@Transactional(requiresNew = true)\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "But what if we only have one interceptor and we want the container to ignore the value of <literal>requiresNew</literal> when binding interceptors? Perhaps this information is only useful for the interceptor implementation. We can use the <literal>@Nonbinding</literal> annotation:"
+msgstr "Mas e se temos somente um interceptador e queremos que o contêiner ignore o valor de <literal>requiresNew</literal> ao vincular interceptadores? Talvez esta informação seja útil somente para a implementação do interceptador. Nós podemos usar a anotação <literal>@Nonbinding</literal>:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"But what if we only have one interceptor and we want the container to ignore "
-"the value of <literal>requiresNew</literal> when binding interceptors? "
-"Perhaps this information is only useful for the interceptor implementation. "
-"We can use the <literal>@Nonbinding</literal> annotation:"
+"@InterceptorBinding\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Secure {\n"
+"   @Nonbinding String[] rolesAllowed() default {};\n"
+"}"
 msgstr ""
-"Mas e se temos somente um interceptador e queremos que o contêiner ignore o "
-"valor de <literal>requiresNew</literal> ao vincular interceptadores? Talvez "
-"esta informação seja útil somente para a implementação do interceptador. Nós "
-"podemos usar a anotação <literal>@Nonbinding</literal>:"
+"<![CDATA[@InterceptorBinding\n"
+"@Target({METHOD, TYPE})\n"
+"@Retention(RUNTIME)\n"
+"public @interface Secure {\n"
+"   @NonBinding String[] rolesAllowed() default {};\n"
+"}]]>"
 
 #. Tag: title
 #, no-c-format
@@ -269,35 +396,86 @@ msgstr "Múltiplas anotações de vinculação de interceptadores"
 
 #. Tag: para
 #, no-c-format
+msgid "Usually we use combinations of interceptor bindings types to bind multiple interceptors to a bean. For example, the following declaration would be used to bind <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal> to the same bean:"
+msgstr "Usualmente usamos combinações de tipos vinculadores de interceptadores para ligar múltiplos interceptadores a um bean. Por exemplo, a seguinte declaração poderia seria usada para vincular <literal>TransactionInterceptor</literal> e <literal>SecurityInterceptor</literal> ao mesmo bean:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Usually we use combinations of interceptor bindings types to bind multiple "
-"interceptors to a bean. For example, the following declaration would be used "
-"to bind <literal>TransactionInterceptor</literal> and "
-"<literal>SecurityInterceptor</literal> to the same bean:"
+"@Secure(rolesAllowed=&#34;admin&#34;) @Transactional\n"
+"public class ShoppingCart { ... }"
 msgstr ""
-"Usualmente usamos combinações de tipos vinculadores de interceptadores para "
-"ligar múltiplos interceptadores a um bean. Por exemplo, a seguinte "
-"declaração poderia seria usada para vincular "
-"<literal>TransactionInterceptor</literal> e <literal>SecurityInterceptor</"
-"literal> ao mesmo bean:"
+"<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
+"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "However, in very complex cases, an interceptor itself may specify some combination of interceptor binding types:"
+msgstr "No entanto, em casos muito complexos, um interceptador pode em si mesmo especificar algumas combinações de tipos vinculadores de interceptadores:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"However, in very complex cases, an interceptor itself may specify some "
-"combination of interceptor binding types:"
+"@Transactional @Secure @Interceptor\n"
+"public class TransactionalSecureInterceptor { ... }"
 msgstr ""
-"No entanto, em casos muito complexos, um interceptador pode em si mesmo "
-"especificar algumas combinações de tipos vinculadores de interceptadores:"
+"<![CDATA[@Transactional @Secure @Interceptor\n"
+"public class TransactionalSecureInterceptor { ... }]]>"
 
 #. Tag: para
 #, no-c-format
+msgid "Then this interceptor could be bound to the <literal>checkout()</literal> method using any one of the following combinations:"
+msgstr "Então este interceptador poderia ser amarrado ao método <literal>checkout()</literal> usando qualquer uma das seguintes combinações:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"Then this interceptor could be bound to the <literal>checkout()</literal> "
-"method using any one of the following combinations:"
+"public class ShoppingCart {\n"
+"   @Transactional @Secure public void checkout() { ... }\n"
+"}"
 msgstr ""
-"Então este interceptador poderia ser amarrado ao método <literal>checkout()</"
-"literal> usando qualquer uma das seguintes combinações:"
+"<![CDATA[public class ShoppingCart {\n"
+"   @Transactional @Secure public void checkout() { ... }\n"
+"}]]>"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"@Secure\n"
+"public class ShoppingCart {\n"
+"   @Transactional public void checkout() { ... }\n"
+"}"
+msgstr ""
+"<![CDATA[@Secure\n"
+"public class ShoppingCart {\n"
+"   @Transactional public void checkout() { ... }\n"
+"}]]>"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"@Transactional\n"
+"public class ShoppingCart {\n"
+"   @Secure public void checkout() { ... }\n"
+"}"
+msgstr ""
+"<![CDATA[@Transactional\n"
+"public class ShoppingCart {\n"
+"   @Secure public void checkout() { ... }\n"
+"}]]>"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid ""
+"@Transactional @Secure\n"
+"public class ShoppingCart {\n"
+"   public void checkout() { ... }\n"
+"}"
+msgstr ""
+"<![CDATA[@Transactional @Secure\n"
+"public class ShoppingCart {\n"
+"   public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: title
 #, no-c-format
@@ -306,43 +484,38 @@ msgstr "Herança de tipos vinculadores de interceptadores"
 
 #. Tag: para
 #, no-c-format
+msgid "One limitation of the Java language support for annotations is the lack of annotation inheritance. Really, annotations should have reuse built in, to allow this kind of thing to work:"
+msgstr "Uma limitação do suporte a anotações na linguagem Java é a falta de herança em anotações. Realmente, anotações poderiam ter esse reuso embutido, permitindo este tipo de coisa funcionasse:"
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
+msgid "public @interface Action extends Transactional, Secure { ... }"
+msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive — any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
+msgstr "Bem, felizmente, CDI contorna a falta desta funcionalidade em Java. Podemos anotar um tipo vinculador com outros tipos vinculadores de interceptadores (denominado como uma <emphasis>meta-anotação</emphasis>). As vinculações de interceptadores são transitivos &#8212; qualquer bean com o primeiro vínculo a um interceptador herda os vínculos a interceptadores declarados como meta-anotações."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"One limitation of the Java language support for annotations is the lack of "
-"annotation inheritance. Really, annotations should have reuse built in, to "
-"allow this kind of thing to work:"
+"@Transactional @Secure\n"
+"@InterceptorBinding\n"
+"@Target(TYPE)\n"
+"@Retention(RUNTIME)\n"
+"public @interface Action { ... }"
 msgstr ""
-"Uma limitação do suporte a anotações na linguagem Java é a falta de herança "
-"em anotações. Realmente, anotações poderiam ter esse reuso embutido, "
-"permitindo este tipo de coisa funcionasse:"
+"<![CDATA[@Transactional @Secure\n"
+"@InterceptorBinding\n"
+"@Target(TYPE)\n"
+"@Retention(RUNTIME)\n"
+"public @interface Action { ... }]]>"
 
 #. Tag: para
 #, no-c-format
-msgid ""
-"Well, fortunately, CDI works around this missing feature of Java. We may "
-"annotate one interceptor binding type with other interceptor binding types "
-"(termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings "
-"are transitive &#8212; any bean with the first interceptor binding inherits "
-"the interceptor bindings declared as meta-annotations."
-msgstr ""
-"Bem, felizmente, CDI contorna a falta desta funcionalidade em Java. Podemos "
-"anotar um tipo vinculador com outros tipos vinculadores de interceptadores "
-"(denominado como uma <emphasis>meta-anotação</emphasis>). As vinculações de "
-"interceptadores são transitivos &#8212; qualquer bean com o primeiro vínculo "
-"a um interceptador herda os vínculos a interceptadores declarados como meta-"
-"anotações."
-
-#. Tag: para
-#, no-c-format
-msgid ""
-"Now, any bean annotated <literal>@Action</literal> will be bound to both "
-"<literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</"
-"literal>. (And even <literal>TransactionalSecureInterceptor</literal>, if it "
-"exists.)"
-msgstr ""
-"Agora, qualquer bean anotado com <literal>@Action</literal> será amarrado "
-"tanto a <literal>TransactionInterceptor</literal> quanto a "
-"<literal>SecurityInterceptor</literal>. (E mesmo a "
-"<literal>TransactionalSecureInterceptor</literal>, se estiver presente.)"
+msgid "Now, any bean annotated <literal>@Action</literal> will be bound to both <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal>. (And even <literal>TransactionalSecureInterceptor</literal>, if it exists.)"
+msgstr "Agora, qualquer bean anotado com <literal>@Action</literal> será amarrado tanto a <literal>TransactionInterceptor</literal> quanto a <literal>SecurityInterceptor</literal>. (E mesmo a <literal>TransactionalSecureInterceptor</literal>, se estiver presente.)"
 
 #. Tag: title
 #, no-c-format
@@ -351,14 +524,21 @@ msgstr "Uso de <literal>@Interceptors</literal>"
 
 #. Tag: para
 #, no-c-format
+msgid "The <literal>@Interceptors</literal> annotation defined by the interceptor specification (and used by the managed bean and EJB specifications) is still supported in CDI."
+msgstr "A anotação <literal>@Interceptors</literal> definida pela especificação de interceptadores (e utilizada pelas especificações de managed bean e EJB) é ainda suportada em CDI."
+
+#. Tag: programlisting
+#, fuzzy, no-c-format
 msgid ""
-"The <literal>@Interceptors</literal> annotation defined by the interceptor "
-"specification (and used by the managed bean and EJB specifications) is still "
-"supported in CDI."
+"@Interceptors({TransactionInterceptor.class, SecurityInterceptor.class})\n"
+"public class ShoppingCart {\n"
+"   public void checkout() { ... }\n"
+"}"
 msgstr ""
-"A anotação <literal>@Interceptors</literal> definida pela especificação de "
-"interceptadores (e utilizada pelas especificações de managed bean e EJB) é "
-"ainda suportada em CDI."
+"<![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor.class})\n"
+"public class ShoppingCart {\n"
+"   public void checkout() { ... }\n"
+"}]]>"
 
 #. Tag: para
 #, no-c-format
@@ -368,338 +548,31 @@ msgstr "No entanto, esta abordagem sofre os seguintes inconvenientes:"
 #. Tag: para
 #, no-c-format
 msgid "the interceptor implementation is hardcoded in business code,"
-msgstr ""
-"a implementação do interceptador é duramente codificado no código de negócio,"
+msgstr "a implementação do interceptador é duramente codificado no código de negócio,"
 
 #. Tag: para
 #, no-c-format
 msgid "interceptors may not be easily disabled at deployment time, and"
-msgstr ""
-"os interceptadores podem não ser facilmente disabilitados em tempo de "
-"implantação, e"
+msgstr "os interceptadores podem não ser facilmente disabilitados em tempo de implantação, e"
 
 #. Tag: para
-#, no-c-format
-msgid ""
-"the interceptor ordering is non-global &#8212; it is determined by the order "
-"in which interceptors are listed at the class level."
-msgstr ""
-"a ordem dos interceptadores não é global &#8212; ela é determinada pela "
-"ordem em que os interceptadores são listados a nível de classe."
+#, fuzzy, no-c-format
+msgid "the interceptor ordering is non-global — it is determined by the order in which interceptors are listed at the class level."
+msgstr "a ordem dos interceptadores não é global &#8212; ela é determinada pela ordem em que os interceptadores são listados a nível de classe."
 
 #. Tag: para
 #, no-c-format
 msgid "Therefore, we recommend the use of CDI-style interceptor bindings."
-msgstr ""
-"Portanto, recomendamos o uso de vinculadores de interceptadores no estilo da "
-"CDI."
+msgstr "Portanto, recomendamos o uso de vinculadores de interceptadores no estilo da CDI."
 
-#~ msgid ""
-#~ "<![CDATA[public class TransactionInterceptor {\n"
-#~ "   @AroundInvoke \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class TransactionInterceptor {\n"
-#~ "   @AroundInvoke \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public class DependencyInjectionInterceptor {\n"
-#~ "   @PostConstruct \n"
-#~ "   public void injectDependencies(InvocationContext ctx) { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class DependencyInjectionInterceptor {\n"
-#~ "   @PostConstruct \n"
-#~ "   public void injectDependencies(InvocationContext ctx) { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public class TimeoutInterceptor {\n"
-#~ "   @AroundTimeout \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class TimeoutInterceptor {\n"
-#~ "   @AroundTimeout \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@InterceptorBinding\n"
-#~ "@Target({METHOD, TYPE})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Transactional {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@InterceptorBinding\n"
-#~ "@Target({METHOD, TYPE})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Transactional {}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public class ShoppingCart {\n"
-#~ "   @Transactional public void checkout() { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class ShoppingCart {\n"
-#~ "   @Transactional public void checkout() { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional @Interceptor\n"
-#~ "public class TransactionInterceptor {\n"
-#~ "   @AroundInvoke \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional @Interceptor\n"
-#~ "public class TransactionInterceptor {\n"
-#~ "   @AroundInvoke \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional @Interceptor\n"
-#~ "public class TransactionInterceptor {\n"
-#~ "\n"
-#~ "    @Resource UserTransaction transaction;\n"
-#~ "\n"
-#~ "    @AroundInvoke \n"
-#~ "    public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "    \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional @Interceptor\n"
-#~ "public class TransactionInterceptor {\n"
-#~ "\n"
-#~ "    @Resource UserTransaction transaction;\n"
-#~ "\n"
-#~ "    @AroundInvoke \n"
-#~ "    public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "    \n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[<beans\n"
-#~ "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "   xsi:schemaLocation=\"\n"
-#~ "      http://java.sun.com/xml/ns/javaee\n"
-#~ "      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-#~ "   <interceptors>\n"
-#~ "      <class>org.mycompany.myapp.TransactionInterceptor</class>\n"
-#~ "   </interceptors>\n"
-#~ "</beans>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<beans\n"
-#~ "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "   xsi:schemaLocation=\"\n"
-#~ "      http://java.sun.com/xml/ns/javaee\n"
-#~ "      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-#~ "   <interceptors>\n"
-#~ "      <class>org.mycompany.myapp.TransactionInterceptor</class>\n"
-#~ "   </interceptors>\n"
-#~ "</beans>]]>"
-
-#~ msgid ""
-#~ "<![CDATA[<beans\n"
-#~ "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "   xsi:schemaLocation=\"\n"
-#~ "      http://java.sun.com/xml/ns/javaee\n"
-#~ "      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-#~ "   <interceptors>\n"
-#~ "      <class>org.mycompany.myapp.SecurityInterceptor</class>\n"
-#~ "      <class>org.mycompany.myapp.TransactionInterceptor</class>\n"
-#~ "   </interceptors>\n"
-#~ "</beans>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<beans\n"
-#~ "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "   xsi:schemaLocation=\"\n"
-#~ "      http://java.sun.com/xml/ns/javaee\n"
-#~ "      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-#~ "   <interceptors>\n"
-#~ "      <class>org.mycompany.myapp.SecurityInterceptor</class>\n"
-#~ "      <class>org.mycompany.myapp.TransactionInterceptor</class>\n"
-#~ "   </interceptors>\n"
-#~ "</beans>]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@InterceptorBinding\n"
-#~ "@Target({METHOD, TYPE})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Transactional {\n"
-#~ "   boolean requiresNew() default false;\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@InterceptorBinding\n"
-#~ "@Target({METHOD, TYPE})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Transactional {\n"
-#~ "   boolean requiresNew() default false;\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional(requiresNew = true) @Interceptor\n"
-#~ "public class RequiresNewTransactionInterceptor {\n"
-#~ "   @AroundInvoke \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional(requiresNew = true) @Interceptor\n"
-#~ "public class RequiresNewTransactionInterceptor {\n"
-#~ "   @AroundInvoke \n"
-#~ "   public Object manageTransaction(InvocationContext ctx) throws "
-#~ "Exception { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional(requiresNew = true)\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional(requiresNew = true)\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#, fuzzy
-#~ msgid ""
-#~ "<![CDATA[@InterceptorBinding\n"
-#~ "@Target({METHOD, TYPE})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Secure {\n"
-#~ "   @Nonbinding String[] rolesAllowed() default {};\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@InterceptorBinding\n"
-#~ "@Target({METHOD, TYPE})\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Secure {\n"
-#~ "   @NonBinding String[] rolesAllowed() default {};\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional @Secure @Interceptor\n"
-#~ "public class TransactionalSecureInterceptor { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional @Secure @Interceptor\n"
-#~ "public class TransactionalSecureInterceptor { ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public class ShoppingCart {\n"
-#~ "   @Transactional @Secure public void checkout() { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class ShoppingCart {\n"
-#~ "   @Transactional @Secure public void checkout() { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Secure\n"
-#~ "public class ShoppingCart {\n"
-#~ "   @Transactional public void checkout() { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Secure\n"
-#~ "public class ShoppingCart {\n"
-#~ "   @Transactional public void checkout() { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional\n"
-#~ "public class ShoppingCart {\n"
-#~ "   @Secure public void checkout() { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional\n"
-#~ "public class ShoppingCart {\n"
-#~ "   @Secure public void checkout() { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional @Secure\n"
-#~ "public class ShoppingCart {\n"
-#~ "   public void checkout() { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional @Secure\n"
-#~ "public class ShoppingCart {\n"
-#~ "   public void checkout() { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Transactional @Secure\n"
-#~ "@InterceptorBinding\n"
-#~ "@Target(TYPE)\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Action { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Transactional @Secure\n"
-#~ "@InterceptorBinding\n"
-#~ "@Target(TYPE)\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "public @interface Action { ... }]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor."
-#~ "class})\n"
-#~ "public class ShoppingCart {\n"
-#~ "   public void checkout() { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor."
-#~ "class})\n"
-#~ "public class ShoppingCart {\n"
-#~ "   public void checkout() { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "Web Beans re-uses the basic interceptor architecture of EJB 3.0, "
-#~ "extending the functionality in two directions:"
-#~ msgstr ""
-#~ "Web Beans re utiliza a arquitetura básica do interceptor de EJB 3.0, que "
-#~ "extende a funcionalidade em duas direções:"
+#~ msgid "Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending the functionality in two directions:"
+#~ msgstr "Web Beans re utiliza a arquitetura básica do interceptor de EJB 3.0, que extende a funcionalidade em duas direções:"
 
 #~ msgid "Any Web Bean may have interceptors, not just session beans."
 #~ msgstr "Qualquer Web Bean pode ter interceptores, não apenas session beans."
 
-#~ msgid ""
-#~ "Finally, we need to <emphasis>enable</emphasis> our interceptor in "
-#~ "<literal>web-beans.xml</literal>."
-#~ msgstr ""
-#~ "Finalmente, temos que <emphasis>ativar</emphasis> nossos interceptadores "
-#~ "no <literal>web-beans.xml</literal>."
+#~ msgid "Finally, we need to <emphasis>enable</emphasis> our interceptor in <literal>web-beans.xml</literal>."
+#~ msgstr "Finalmente, temos que <emphasis>ativar</emphasis> nossos interceptadores no <literal>web-beans.xml</literal>."
 
 #~ msgid ""
 #~ "<![CDATA[<Interceptors>\n"
