@@ -41,6 +41,7 @@
             <version>2.3.3</version>
             <configuration>
                <sourceDirectory>${jdocbookSourceDirectory}</sourceDirectory>
+               <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.xml</sourceDocumentName>
             </configuration>
          </plugin>
          <plugin>

@@ -1155,13 +1155,13 @@ public class TranslatorControllerBean implements TranslatorController {
    @Remove public void remove() {}
 
 }]]></programlisting>
-
-   </section>
    
    <para>
       That concludes our short tour of the Weld starter examples. For more information on Weld, please visit <ulink
       url="http://www.seamframework.org/Weld">http://www.seamframework.org/Weld</ulink>.
    </para>
+
+   </section>
 
 <!--
 vim:et:ts=3:sw=3:tw=120
