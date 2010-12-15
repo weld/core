@@ -39,7 +39,7 @@
       <cdi.tck.version>1.0.4.CR1</cdi.tck.version>
       <javassist.version>3.14.0-GA</javassist.version>
       <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
-      <jboss.interceptor.version>2.0.0.Alpha3</jboss.interceptor.version>
+      <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
       <jboss.vfs.version>2.1.3.SP1</jboss.vfs.version>
       <slf4j.version>1.5.10</slf4j.version>
       <cal10n.version>0.7.2</cal10n.version>
