@@ -39,11 +39,11 @@ public class MessageDrivenInjectionTarget<T> extends SimpleInjectionTarget<T>
    @Override
    public void inject(final T instance, final CreationalContext<T> ctx)
    {
-      new InjectionContextImpl<T>(beanManager, this, getType(), instance)
+      new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance)
       {
          public void proceed()
          {
-            Beans.injectFieldsAndInitializers(instance, ctx, beanManager, injectableFields, initializerMethods);
+            Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
          }
       }.run();
 

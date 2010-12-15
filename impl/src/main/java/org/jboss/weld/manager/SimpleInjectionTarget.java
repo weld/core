@@ -49,18 +49,18 @@ import org.jboss.weld.util.Beans;
 public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 {
 
-   protected final BeanManagerImpl beanManager;
+   private final BeanManagerImpl beanManager;
    private final WeldClass<T> type;
    private final ConstructorInjectionPoint<T> constructor;
-   protected final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
-   protected final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
+   private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
+   private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
    private final List<WeldMethod<?, ? super T>> postConstructMethods;
    private final List<WeldMethod<?, ? super T>> preDestroyMethods;
    private final Set<InjectionPoint> injectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-   protected final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
+   private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
    public SimpleInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager)
    {
@@ -188,6 +188,21 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
    protected WeldClass<T> getType()
    {
       return type;
+   }
+   
+   protected BeanManagerImpl getBeanManager()
+   {
+      return beanManager;
+   }
+   
+   protected List<Set<FieldInjectionPoint<?, ?>>> getInjectableFields()
+   {
+      return injectableFields;
+   }
+   
+   protected List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods()
+   {
+      return initializerMethods;
    }
 
 }
