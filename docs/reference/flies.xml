@@ -11,7 +11,7 @@
          <locale map-from="ja-JP">ja</locale>
          <locale map-from="ko-KR">ko</locale>
          <locale>pt-BR</locale>
-         <locale map-from="zh-CN">zh-CN-Hans</locale>
-         <locale map-from="zh-TW">zh-TW-Hant</locale>
+         <locale map-from="zh-CN">zh-Hans</locale>
+         <locale map-from="zh-TW">zh-Hant</locale>
       </locales>
 </config>
