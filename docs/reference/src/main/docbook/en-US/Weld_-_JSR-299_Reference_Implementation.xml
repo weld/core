@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding="utf-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
-<book lang="en">
+<book>
 
    <xi:include href="Book_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
    
@@ -32,7 +32,7 @@
    
    <toc/>
    
-   <part id="1">
+   <part id="part-1">
       <title>Beans</title>
       
       <xi:include href="part1.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -45,7 +45,7 @@
      
    </part>
 
-   <part id="2">
+   <part id="part-2">
       <title>Getting Start with Weld, the CDI Reference Implementation</title>
       
       <xi:include href="part2.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -55,7 +55,7 @@
 
    </part>
    
-   <part id="3">
+   <part id="part-3">
       <title>Loose coupling with strong typing</title>
       
       <xi:include href="part3.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -71,7 +71,7 @@
 
    </part>
    
-   <part id="4">
+   <part id="part-4">
       <title>CDI and the Java EE ecosystem</title>
       
       <xi:include href="part4.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -83,7 +83,7 @@
    
    <xi:include href="next.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
    
-   <part id="5">
+   <part id="part-5">
       <title>Weld Reference Guide</title>
       
       <xi:include href="part5.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
