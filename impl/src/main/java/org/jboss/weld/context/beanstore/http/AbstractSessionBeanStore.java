@@ -77,7 +77,7 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore
       }
       else
       {
-         log.trace("Unable to add " + key + " to session " + this.getSession(false).getId() + " as no session could be obtained");
+         log.trace("Unable to add " + key + " to session as no session could be obtained");
       }
    }
 
