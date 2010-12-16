@@ -135,26 +135,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
       return this;
    }
 
-   public void fireProcessAnnotatedTypeForTypesAddedThroughTheSPI()
-   {
-      Iterator<WeldClass<?>> it = classes.iterator();
-      Set<WeldClass<?>> transformed = new HashSet<WeldClass<?>>();
-      while (it.hasNext())
-      {
-         WeldClass<?> c = it.next();
-         if (!c.isDiscovered())
-         {
-            it.remove();
-            ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), c);
-            if (!event.isVeto())
-            {
-               transformed.add(classTransformer.loadClass(ExternalAnnotatedType.of(event.getAnnotatedType())));
-            }
-         }
-      }
-      classes.addAll(transformed);
-   }
-
    public BeanDeployer createBeans()
    {
       Multimap<Class<?>, WeldClass<?>> otherWeldClasses = HashMultimap.create();
