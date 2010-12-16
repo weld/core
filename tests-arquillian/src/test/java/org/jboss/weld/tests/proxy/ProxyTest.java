@@ -79,6 +79,10 @@ public class ProxyTest
       Bean<?> bean = beanManager.resolve(beanManager.getBeans("baz"));
       Baz baz = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
       Assert.assertTrue(baz.hashCode() == baz.getClass().hashCode());
+
+      bean = beanManager.resolve(beanManager.getBeans("burt"));
+      Burt burt = (Burt) beanManager.getReference(bean, Burt.class, beanManager.createCreationalContext(bean));
+      Assert.assertTrue(burt.hashCode() == burt.getClass().hashCode());
    }
 
    @Test
@@ -88,6 +92,11 @@ public class ProxyTest
       Baz baz1 = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
       Baz baz2 = (Baz) beanManager.getReference(bean, Baz.class, beanManager.createCreationalContext(bean));
       Assert.assertEquals(baz1, baz2);
+
+      bean = beanManager.resolve(beanManager.getBeans("burt"));
+      Burt burt1 = (Burt) beanManager.getReference(bean, Burt.class, beanManager.createCreationalContext(bean));
+      Burt burt2 = (Burt) beanManager.getReference(bean, Burt.class, beanManager.createCreationalContext(bean));
+      Assert.assertEquals(burt1, burt2);
    }
 
    @Test
