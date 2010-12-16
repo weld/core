@@ -606,11 +606,23 @@ public class ProxyFactory<T>
       {
          // Add all methods from the class heirachy
          Class<?> cls = beanType;
+         // first add equals/hashCode methods if required
+         MethodInfo equalsMethod = generateEqualsMethod(proxyClassType);
+         if (equalsMethod != null)
+         {
+            proxyClassType.addMethod(equalsMethod);
+         }
+         MethodInfo hashCodeMethod = generateHashCodeMethod(proxyClassType);
+         if (hashCodeMethod != null)
+         {
+            proxyClassType.addMethod(hashCodeMethod);
+         }
+
          while (cls != null)
          {
             for (Method method : cls.getDeclaredMethods())
             {
-               if (!Modifier.isStatic(method.getModifiers()) && (method.getDeclaringClass() != Object.class || method.getName().equals("toString")) && !Modifier.isFinal(method.getModifiers()))
+               if (!Modifier.isStatic(method.getModifiers()) && !Modifier.isFinal(method.getModifiers()) && (method.getDeclaringClass() != Object.class || method.getName().equals("toString")))
                {
                   try
                   {
@@ -620,24 +632,8 @@ public class ProxyFactory<T>
                   }
                   catch (DuplicateMemberException e)
                   {
-                     // do nothing. This will happen if superclass methods have
-                     // been overridden
-                  }
-               }
-               else if (method.getDeclaringClass() == Object.class && method.getName().equals("equals"))
-               {
-                  MethodInfo equalsMethod = generateEqualsMethod(proxyClassType);
-                  if (equalsMethod != null)
-                  {
-                     proxyClassType.addMethod(equalsMethod);
-                  }
-               }
-               else if (method.getDeclaringClass() == Object.class && method.getName().equals("hashCode"))
-               {
-                  MethodInfo hashCodeMethod = generateHashCodeMethod(proxyClassType);
-                  if (hashCodeMethod != null)
-                  {
-                     proxyClassType.addMethod(hashCodeMethod);
+                     // do nothing. This will happen if superclass methods
+                     // have been overridden
                   }
                }
             }
