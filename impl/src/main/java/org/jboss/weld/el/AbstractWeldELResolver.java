@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.el;
 
-import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextStore;
 import static org.jboss.weld.logging.Category.EL;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_LOOKUP;
@@ -144,7 +143,7 @@ public abstract class AbstractWeldELResolver extends ELResolver
       else
       {
          // Need to use a "special" creationalContext that can make sure that we do share dependent instances referenced by the EL Expression
-         final ELCreationalContext<?> creationalContext = getCreationalContextStore(context).peek().get();
+         final ELCreationalContext<?> creationalContext = getELCreationalContext(context);
          String beanName = bean.getName();
          Object value = creationalContext.getDependentInstanceForExpression(beanName);
          if (value == null)
@@ -165,6 +164,19 @@ public abstract class AbstractWeldELResolver extends ELResolver
    @Override
    public void setValue(ELContext context, Object base, Object property, Object value)
    {
+   }
+   
+   private ELCreationalContext<?> getELCreationalContext(ELContext context)
+   {
+      ELCreationalContextStack stack = ELCreationalContextStack.getCreationalContextStore(context);
+      if (!stack.isEmpty())
+      {
+         return stack.peek().get();
+      }
+      else
+      {
+         throw new IllegalStateException("No CreationalContext registered for EL evaluation, it is likely that the the expression factory has not been wrapped by the CDI BeanManager, which must be done to use the ELResolver from CDI");
+      }
    }
 
 }
