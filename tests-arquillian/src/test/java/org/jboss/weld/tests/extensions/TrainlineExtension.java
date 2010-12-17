@@ -132,7 +132,8 @@ public class TrainlineExtension implements Extension
       processSignalBoxManagedBean = true;
    }
    
-   public void processDriverBean(@Observes ProcessBean<Driver> event)
+   // This is intentionally wrong, there are bugs in the API that mean generic type parameter ordering is wrong for ProcessProducerField and ProcessProducerMethod
+   public void processDriverBean(@Observes ProcessBean<Train> event)
    {
       processDriverBean = true;
    }
@@ -162,22 +163,23 @@ public class TrainlineExtension implements Extension
       processSignalManProducer = true;
    }
    
-   public void processDriverProducerMethod(@Observes ProcessProducerMethod<Train, Driver> event)
+   public void processDriverProducerMethod(@Observes ProcessProducerMethod<Driver, Train> event)
    {
       processDriverProducerMethod = true;
    }
    
-   public void processPassengerProducerMethod(@Observes ProcessProducerMethod<RuralStation, Passenger> event)
+   public void processPassengerProducerMethod(@Observes ProcessProducerMethod<Passenger, RuralStation> event)
    {
       processPassengerProducerMethod = true;
    }
    
-   public void processSignalManProducerMethod(@Observes ProcessProducerMethod<SignalBox, SignalMan> event)
+   public void processSignalManProducerMethod(@Observes ProcessProducerMethod<SignalMan, SignalBox> event)
    {
       processSignalManProducerMethod = true;
    }
    
-   public void processFerretBean(@Observes ProcessBean<Ferret> event)
+   // This is intentionally wrong, there are bugs in the API that mean generic type parameter ordering is wrong for ProcessProducerField and ProcessProducerMethod
+   public void processFerretBean(@Observes ProcessBean<Train> event)
    {
       processFerretBean = true;
    }
@@ -207,12 +209,12 @@ public class TrainlineExtension implements Extension
       processMouseProducer = true;
    }
    
-   public void processFerretProducerField(@Observes ProcessProducerField<Train, Ferret> event)
+   public void processFerretProducerField(@Observes ProcessProducerField<Ferret, Train> event)
    {
       processFerretProducerField = true;
    }
    
-   public void processCatProducerField(@Observes ProcessProducerField<RuralStation, Cat> event)
+   public void processCatProducerField(@Observes ProcessProducerField<Cat, RuralStation> event)
    {
       processCatProducerField = true;
    }
@@ -282,7 +284,8 @@ public class TrainlineExtension implements Extension
       processMouseProducerField = true;
    }
    
-   public void processObservesCoalSupply(@Observes ProcessObserverMethod<Train, CoalSupply> event)
+   // This is intentionally wrong, there are bugs in the API that mean generic type parameter ordering is wrong for ProcessProducerField and ProcessProducerMethod
+   public void processObservesCoalSupply(@Observes ProcessObserverMethod<CoalSupply, Train> event)
    {
       processObseversCoalSupply = true;
    }

@@ -52,7 +52,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
    
    public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethodImpl<T, X> observerMethod)
    {
-      super(beanManager, ProcessObserverMethod.class, new Type[] {observerMethod.getMethod().getDeclaringType().getBaseType(), observerMethod.getObservedType() });
+      super(beanManager, ProcessObserverMethod.class, new Type[] { observerMethod.getObservedType(), observerMethod.getMethod().getDeclaringType().getBaseType() });
       this.beanMethod = beanMethod;
       this.observerMethod = observerMethod;
    }
