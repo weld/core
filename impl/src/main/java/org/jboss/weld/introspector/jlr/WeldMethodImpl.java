@@ -179,7 +179,12 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
-      Method method = SecureReflections.lookupMethod(instance.getClass(), getName(), getParameterTypesAsArray());
+      Method method = this.method;
+      // we only look up the method if we really need to, as it is slow
+      if (method.getDeclaringClass() != instance.getClass())
+      {
+         method = SecureReflections.lookupMethod(instance.getClass(), getName(), getParameterTypesAsArray());
+      }
       return SecureReflections.<T>invoke(instance, method, parameters);
    }
 
