@@ -154,6 +154,13 @@ public class ProxyFactory<T>
       {
          this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(superClass);
       }
+      // if the proxied bean type is an actual class, record that instead of java.lang.Object
+      // so that we can retrieve the correct classloader after deserialization
+      // fixes issues with EJB proxies
+      if (superClass.equals(Object.class) && !proxiedBeanType.isInterface())
+      {
+         superClass = proxiedBeanType;
+      }
       this.beanType = superClass;
       addDefaultAdditionalInterfaces();
       baseProxyName = proxyName;
