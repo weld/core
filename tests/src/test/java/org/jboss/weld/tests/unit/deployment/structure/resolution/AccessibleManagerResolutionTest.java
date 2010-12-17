@@ -62,6 +62,7 @@ public class AccessibleManagerResolutionTest
       WeldClass<?> clazz = WeldClassImpl.of(c, classTransformer);
       RIBean<?> bean = ManagedBean.of(clazz, manager, services);
       manager.addBean(bean);
+      manager.getBeanResolver().clear();
       BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptors(), manager);
       bean.initialize(environment);
    }

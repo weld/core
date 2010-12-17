@@ -85,12 +85,12 @@ public class Weld
       // Start the container
       bootstrap.startInitialization();
       bootstrap.deployBeans();
-      getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(ShutdownManager.class)), ShutdownManager.class).setBootstrap(bootstrap);
       bootstrap.validateBeans();
       bootstrap.endInitialization();
 
       // Set up the ShutdownManager for later
       this.shutdownManager = getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(ShutdownManager.class)), ShutdownManager.class);
+      this.shutdownManager.setBootstrap(bootstrap);
 
       return getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class)), WeldContainer.class);
    }

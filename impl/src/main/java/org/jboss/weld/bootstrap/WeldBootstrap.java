@@ -384,6 +384,7 @@ public class WeldBootstrap implements Bootstrap
          log.debug(VALIDATING_BEANS);
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
+            entry.getValue().getBeanManager().getBeanResolver().clear();
             deployment.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
          }
          AfterDeploymentValidationImpl.fire(deploymentManager, beanDeployments);

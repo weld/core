@@ -437,7 +437,6 @@ public class BeanManagerImpl implements WeldManager, Serializable
       }
       this.beans.add(bean);
       this.beanSet.add(bean);
-      beanResolver.clear();
    }
    
    public void addDecorator(Decorator<?> bean)
