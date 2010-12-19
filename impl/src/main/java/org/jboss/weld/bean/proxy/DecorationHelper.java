@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Stack;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -60,10 +61,11 @@ public class DecorationHelper<T>
 
    private BeanManagerImpl beanManager;
    private final ContextualStore contextualStore;
+   private final Bean<?> bean;
 
    List<Decorator<?>> decorators;
 
-   public DecorationHelper(TargetBeanInstance originalInstance, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators)
+   public DecorationHelper(TargetBeanInstance originalInstance, Bean<?> bean, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators)
    {
       this.originalInstance = Reflections.<T>cast(originalInstance.getInstance());
       this.targetBeanInstance = originalInstance;
@@ -71,6 +73,7 @@ public class DecorationHelper<T>
       this.contextualStore = contextualStore;
       this.decorators = new LinkedList<Decorator<?>>(decorators);
       this.proxyClassForDecorator = proxyClassForDecorator;
+      this.bean = bean;
       counter = 0;
    }
 
@@ -100,7 +103,7 @@ public class DecorationHelper<T>
             T proxy = SecureReflections.newInstance(proxyClassForDecorator);
             TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
             newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, Reflections.<Decorator<Object>>cast(decorators.get(counter++))));
-            ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance);
+            ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
             previousDelegate = proxy;
             return proxy;
          }

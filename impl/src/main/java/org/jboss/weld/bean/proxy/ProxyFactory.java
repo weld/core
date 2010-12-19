@@ -57,7 +57,6 @@ import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
@@ -97,6 +96,7 @@ public class ProxyFactory<T>
    private final Set<Class<?>> additionalInterfaces = new HashSet<Class<?>>();
    private final ClassLoader classLoader;
    private final String baseProxyName;
+   private final Bean<?> bean;
 
    private static final String FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME = "firstSerializationPhaseComplete";
 
@@ -114,7 +114,7 @@ public class ProxyFactory<T>
     */
    public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
    {
-      this(proxiedBeanType, typeClosure, getProxyName(proxiedBeanType, typeClosure, bean));
+      this(proxiedBeanType, typeClosure, getProxyName(proxiedBeanType, typeClosure, bean), bean);
    }
 
    /**
@@ -126,8 +126,9 @@ public class ProxyFactory<T>
     * @param the name of the proxy class
     * 
     */
-   public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName)
+   public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean)
    {
+      this.bean = bean;
       for (Type type : typeClosure)
       {
          Class<?> c = Reflections.getRawType(type);
@@ -141,22 +142,15 @@ public class ProxyFactory<T>
       TypeInfo typeInfo = TypeInfo.of(typeClosure);
       Class<?> superClass = typeInfo.getSuperClass();
       superClass = superClass == null ? Object.class : superClass;
-      if (superClass.equals(Object.class))
+      if (superClass.equals(Object.class) && additionalInterfaces.isEmpty())
       {
-         if (additionalInterfaces.isEmpty())
-         {
             // No interface beans must use the bean impl as superclass
             superClass = proxiedBeanType;
-         }
-         this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(proxiedBeanType);
-      }
-      else
-      {
-         this.classLoader = Container.instance().services().get(ProxyServices.class).getClassLoader(superClass);
       }
       this.beanType = superClass;
       addDefaultAdditionalInterfaces();
       baseProxyName = proxyName;
+      this.classLoader = resolveClassLoaderForBeanProxy(bean, typeInfo);
    }
 
    static String getProxyName(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
@@ -251,7 +245,7 @@ public class ProxyFactory<T>
       {
          throw new DefinitionException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
       }
-      ((ProxyObject) proxy).setHandler(new ProxyMethodHandler(beanInstance));
+      ((ProxyObject) proxy).setHandler(new ProxyMethodHandler(beanInstance, bean));
       return proxy;
    }
 
@@ -322,12 +316,12 @@ public class ProxyFactory<T>
     * @param proxy the proxy instance
     * @param beanInstance the instance of the bean
     */
-   public static <T> void setBeanInstance(T proxy, BeanInstance beanInstance)
+   public static <T> void setBeanInstance(T proxy, BeanInstance beanInstance, Bean<?> bean)
    {
       if (proxy instanceof ProxyObject)
       {
          ProxyObject proxyView = (ProxyObject) proxy;
-         proxyView.setHandler(new ProxyMethodHandler(beanInstance));
+         proxyView.setHandler(new ProxyMethodHandler(beanInstance, bean));
       }
    }
 
@@ -970,6 +964,30 @@ public class ProxyFactory<T>
    public Set<Class<?>> getAdditionalInterfaces()
    {
       return additionalInterfaces;
+   }
+
+   /**
+    * Figures out the correct class loader to use for a proxy for a given bean
+    * 
+    */
+   public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean, TypeInfo typeInfo)
+   {
+      Class<?> superClass = typeInfo.getSuperClass();
+      if (superClass.getName().startsWith("java"))
+      {
+         ClassLoader cl = bean.getBeanClass().getClassLoader();
+         if (cl == null)
+         {
+            cl = Thread.currentThread().getContextClassLoader();
+         }
+         return cl;
+      }
+      return superClass.getClassLoader();
+   }
+
+   public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean)
+   {
+      return resolveClassLoaderForBeanProxy(bean, TypeInfo.of(bean.getTypes()));
    }
 
 }

@@ -328,7 +328,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       {
          T instance = SecureReflections.newInstance(proxyClass);
          creationalContext.push(instance);
-         ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getWeldAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)));
+         ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getWeldAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)), this);
          if (hasDecorators())
          {
             instance = applyDecorators(instance, creationalContext, null);
@@ -357,7 +357,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
       T proxy = null;
       TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
       ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
-      DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), getDecorators());
+      DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), getDecorators());
 
       DecorationHelper.getHelperStack().push(decorationHelper);
       proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);

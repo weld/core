@@ -56,9 +56,9 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       super(proxiedBeanType, typeClosure, bean);
    }
 
-   public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName)
+   public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean)
    {
-      super(proxiedBeanType, typeClosure, proxyName);
+      super(proxiedBeanType, typeClosure, proxyName, bean);
    }
 
    /**

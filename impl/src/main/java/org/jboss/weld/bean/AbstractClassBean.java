@@ -32,13 +32,14 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javassist.util.proxy.ProxyObject;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
@@ -53,8 +54,6 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Scope;
 
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyObject;
 import org.jboss.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
@@ -64,8 +63,8 @@ import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReferenc
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.DecorationHelper;
-import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.InterceptedSubclassFactory;
+import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -370,7 +369,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    {
       TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
       ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
-      DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
+      DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
       DecorationHelper.getHelperStack().push(decorationHelper);
       final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
       DecorationHelper.getHelperStack().pop();

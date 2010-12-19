@@ -34,7 +34,6 @@ import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
-import static org.jboss.weld.util.reflection.Reflections.isStatic;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -972,7 +971,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return Container.instance().activityManager(id);
    }
    
-   protected ClientProxyProvider getClientProxyProvider()
+   public ClientProxyProvider getClientProxyProvider()
    {
       return clientProxyProvider;
    }
