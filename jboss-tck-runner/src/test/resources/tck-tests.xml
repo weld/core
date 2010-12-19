@@ -28,12 +28,6 @@
          
          <!-- Issues in JBoss AS -->
          
-         <!-- WELDINT-49 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.broken.not.bean.InjectionPointTest">
-            <methods>
-               <exclude name="testDefinitionErrorDetected" />
-            </methods>
-         </class>
          
          <!-- Requires EJB 3.1 -->
          <!-- TODO Check these -->
@@ -45,58 +39,13 @@
                <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
             </methods>
          </class>
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.definition.EnterpriseBeanDefinitionTest">
-            <methods>
-               <exclude name="testEnterpriseBeanClassLocalView" />
-               <!-- JBAS-8279 -->
-               <exclude name="testConstructorAnnotatedInjectCalled" />
-            </methods>
-         </class>
-         <!-- JBAS-8279 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
-            <methods>
-               <exclude name="testNewBeanHasSameConstructor" />
-            </methods>
-         </class>
          <!-- JBAS-8280 -->
          <class name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.interceptorOrder.SessionBeanInterceptorOrderTest">
             <methods>
                <exclude name="testInterceptorsDeclaredUsingInterceptorsCalledBeforeInterceptorBinding" />
             </methods>
          </class>
-         <!-- JBAS-7046 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.enterprise.SessionBeanInjectionTest">
-            <methods>
-               <exclude name="testInjectionOnEJBInterceptor" />
-            </methods>
-         </class>
-         <!-- JBAS-7046 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
-            <methods>
-               <exclude name="testInjectionIntoWebServiceEndpoint" />
-            </methods>
-         </class>
-         <!-- JBAS-7046 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.enterprise.SessionBeanInjectionTest">
-            <methods>
-               <exclude name="testInjectionOnEJBInterceptor" />
-            </methods>
-         </class>
-         
-         <!-- WELDINT-36 -->
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.InjectionIntoNonContextualComponentTest">
-            <methods>
-               <exclude name="testInjectionIntoTagHandler" />
-               <exclude name="testInjectionIntoJSFManagedBean" />
-            </methods>
-         </class>
-         
-         <!-- JBAS-8284 -->
-         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
-            <methods>
-               <exclude name="testSerializeSFSB" />
-            </methods>
-         </class>
+ 
          
       </classes>
    </test>
