@@ -45,7 +45,13 @@
                <exclude name="testInterceptorsDeclaredUsingInterceptorsCalledBeforeInterceptorBinding" />
             </methods>
          </class>
- 
+
+         <!-- Excluded from the standalone profile, remove when running incontainer -->         
+         <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.definition.EnterpriseBeanDefinitionTest">
+            <methods>
+               <exclude name="testConstructorAnnotatedInjectCalled" />
+            </methods>
+         </class>
          
       </classes>
    </test>
