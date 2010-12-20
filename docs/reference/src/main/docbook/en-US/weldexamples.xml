@@ -374,13 +374,13 @@ public class Game implements Serializable {
             for running Weld in any servlet container (including Jetty), <literal>weld-servlet.jar</literal>.
          </para>
          
-         <tip>
+         <note>
             <para>
                You must also include the jars for JSF, EL, and the common annotations
                (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE
                application server). Are you starting to appreciate why a Java EE platform is worth using?
             </para>
-         </tip>
+         </note>
          
          <para>
             Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the
@@ -420,23 +420,21 @@ public class Game implements Serializable {
          <para>
             To use the Weld SE numberguess example in Eclipse, you can
             open the example natively using the
-            <ulink url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>
-            .
+            <ulink url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>.
          </para>
 
          <para>
             If you have m2eclipse installed, you can open any Maven
             project directly. From within Eclipse, select
-            <emphasis>File -> Import... -> Maven Projects</emphasis>
-            . Then, browse to the location of the Weld SE
+            <emphasis>File -> Import... -> Maven Projects</emphasis>. 
+            Then, browse to the location of the Weld SE
             numberguess example. You should see that Eclipse recognizes the existence of a
             Maven project.
          </para>
 
          <para>
             This will create a project in your workspace called
-            <literal>weld-se-numberguess</literal>
-            .
+            <literal>weld-se-numberguess</literal>.
          </para>
 
          <para>
@@ -449,7 +447,7 @@ public class Game implements Serializable {
 
          <para>
             It's time to get the example running!
-            </para>
+         </para>
 
       </section>
 
@@ -994,7 +992,7 @@ public class Game
          url="http://localhost:8080/weld-translator">http://localhost:8080/weld-translator</ulink>.
       </para>
       
-      <tip>
+      <note>
          <para>
             If you weren't using Maven to generate these files, you would need
             <literal>META-INF/application.xml</literal>:
@@ -1020,7 +1018,7 @@ public class Game
     <ejb>weld-translator.jar</ejb>
   </module>
 </application>]]></programlisting>
-      </tip>
+      </note>
       
       <para>
          Next, lets look at the war, which is located in the example's <literal>war</literal> directory. Just as in the

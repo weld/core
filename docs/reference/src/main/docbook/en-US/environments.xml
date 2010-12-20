@@ -53,8 +53,8 @@
          <literal>weld-servlet.jar</literal> within the <literal>WEB-INF/lib</literal> directory relative to the web
          root. <literal>weld-servlet.jar</literal> is an "uber-jar", meaning it bundles all the bits of Weld and CDI
          required for running in a Servlet container, for your convenience. Alternatively, you can use its component
-         jars. A list of transitive dependencies can be found in the META-INF/DEPENDENCIES.txt file inside the
-         <literal>weld-servlet.jar</literal> artifact.
+         jars. A list of transitive dependencies can be found in the <literal>META-INF/DEPENDENCIES.txt</literal> file 
+         inside the <literal>weld-servlet.jar</literal> artifact.
       </para>
       
       <para>

@@ -83,11 +83,11 @@ PaymentService paymentService;]]></programlisting>
                </listitem>
             </itemizedlist>
             
-            <tip>
+            <note>
                <para>It might feel strange to be declaring resources in Java code. Isn't this stuff that might be
                deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class
                annotated <literal>@Alternative</literal>.</para>
-            </tip>
+            </note>
 
          </section>
          

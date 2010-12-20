@@ -152,7 +152,7 @@ $> run]]></programlisting>
          url="http://localhost:8080/weld-numberguess">http://localhost:8080/weld-numberguess</ulink>.
       </para>
 
-      <tip>
+      <note>
          <para>
             The Ant build script includes additional targets for JBoss AS to deploy and undeploy the archive in either 
             exploded or packaged format and to tidy things up.
@@ -184,7 +184,7 @@ $> run]]></programlisting>
                </para>
             </listitem>
          </itemizedlist>
-      </tip>
+      </note>
 
       <para>
          The second starter example, <literal>weld-translator</literal>, will translate your text into Latin. (Well,
@@ -339,7 +339,7 @@ $> ant package]]></programlisting>
          <programlisting><![CDATA[$> cd examples/jsf/numberguess
 $> ant tomcat.deploy]]></programlisting> 
          
-         <tip>
+         <note>
             <para>
                The Ant build script includes additional targets for Tomcat to deploy and undeploy the archive in either
                exploded or packaged format. They are the same target names used for JBoss AS, prefixed with "tomcat.".
@@ -366,7 +366,7 @@ $> ant tomcat.deploy]]></programlisting>
                   </para>
                </listitem>
             </itemizedlist>
-         </tip>
+         </note>
    
          <para>
             If you haven't already, start Tomcat. You can either start Tomcat from a Linux shell:

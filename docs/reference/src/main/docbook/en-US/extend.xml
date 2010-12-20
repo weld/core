@@ -234,14 +234,14 @@ MyBean(MyExtension myExtension) {
          interface makes this very easy. 
       </para>
       
-      <tip>
+      <note>
       <para>
          We recommend that frameworks let CDI take over the job of actually instantiating the framework-controlled 
          objects. That way, the framework-controlled objects can take advantage of constructor injection. However, 
          if the framework requires use of a constructor with a special signature, the framework will need to 
          instatiate the object itself, and so only method and field injection will be supported.
       </para>
-      </tip>
+      </note>
       
       <programlisting role="JAVA"><![CDATA[//get the BeanManager from JNDI
 BeanManager beanManager = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
@@ -548,10 +548,6 @@ ctx.release();  //clean up dependent objects
    } 
    
 }]]></programlisting>
-
-      <para>
-         
-      </para>
 
       <para>The <literal>AnnotatedType</literal> is not the only thing that can be wrapped by an extension.</para>
 

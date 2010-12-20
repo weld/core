@@ -4,7 +4,7 @@
    <title>Dependency injection and programmatic lookup</title>
 
    <para>
-      One of the most significant features of CDI&#8212;certainly the most recognized&#8212;is dependency injection;
+      One of the most significant features of CDI&mdash;certainly the most recognized&mdash;is dependency injection;
       excuse me, <emphasis>typesafe</emphasis> dependency injection.
    </para>
 
@@ -31,11 +31,9 @@
 
 }]]></programlisting>
 
-      <note>
-         <para>
-            A bean can only have one injectable constructor.
-         </para>
-      </note>
+      <para>
+         A bean can only have one injectable constructor.
+      </para>
 
       <para>
          <emphasis>Initializer method</emphasis> parameter injection:
@@ -108,11 +106,11 @@
       <para>(The only complication is that the container might call initializer methods declared by a superclass 
       before initializing injected fields declared by a subclass.)</para>
 
-      <tip>
+      <note>
          <para>
             One major advantage of constructor injection is that it allows the bean to be immutable.
          </para>
-      </tip>
+      </note>
       
       <para>
          CDI also supports parameter injection for some other methods that are invoked by the container. For instance, 
@@ -272,7 +270,6 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
       Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default
       qualifier, without otherwise restricting the beans that are eligible for injection.</para>
       
-      <tip>
       <para>This is especially useful if you want to iterate over all beans with a certain bean type. For example:</para>
       <programlisting role="JAVA"><![CDATA[@Inject 
 void initServices(@Any Instance<Service> services) { 
@@ -280,7 +277,6 @@ void initServices(@Any Instance<Service> services) {
       service.init();
    }
 }]]></programlisting>
-      </tip>
       
    </section>
 
@@ -452,10 +448,8 @@ public class MockPaymentProcessor implements PaymentProcessor {
          bean type and a producer method that returns the same bean type.
       </para>
       
-      <tip>
-         <para>Just remember: "There can be only one."</para>
-      </tip>
-      
+      <para>Just remember: "There can be only one."</para>
+   
       <para>
          On the other hand, if you really do have an optional or multivalued injection point, you should change
          the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend="lookup"/>.
@@ -478,7 +472,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
       <para>
          Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request
          scope. The application-scoped bean is shared between many different requests. However, each request should see
-         a different instance of the request scoped bean&#8212;the current one!
+         a different instance of the request scoped bean&mdash;the current one!
       </para>
   
       <para>
@@ -661,12 +655,10 @@ extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]></programli
       <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource
    .select(new AnnotationLiteral<Asynchronous>() {});]]></programlisting>
    
-      <note>
-         <para>
-            We can't use an anonymous class to implement a qualifier type with members.
-         </para>
-      </note>
-      
+      <para>
+         However, we can't use an anonymous class to implement a qualifier type with members.
+      </para>
+               
       <para>
          Now, finally, we can pass the qualifier to the <literal>select()</literal> method of <literal>Instance</literal>.
       </para>

@@ -75,7 +75,7 @@ public @interface Updated {}]]></programlisting>
       <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
 
       <para>
-         An observer method need not specify any event qualifiers&#8212;in this case it is interested in
+         An observer method need not specify any event qualifiers&mdash;in this case it is interested in
          <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it's only interested
          in events which have those qualifiers.
       </para>

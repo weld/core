@@ -8,7 +8,7 @@
       integration SPI. In this Appendix we will briefly discuss the steps needed. 
    </para>
    
-   <tip>
+   <note>
       <title>Enterprise Services</title>
       <para>
          If you just want to use managed beans, and not take advantage of enterprise services (EE resource injection,
@@ -16,7 +16,7 @@
          deployments, then the generic servlet support provided by the "Weld: Servlets" extension will be sufficient,
          and will work in any container supporting the Servlet API.
       </para>
-   </tip>
+   </note>
     
    <para>
       All SPIs and APIs described have extensive JavaDoc, which spell out the detailed contract between the container
@@ -65,7 +65,7 @@
          </para>
          
          <para>
-            The CDI specification discusses <emphasis>Bean Deployment Archives</emphasis> (BDAs)&#8212;archives which
+            The CDI specification discusses <emphasis>Bean Deployment Archives</emphasis> (BDAs)&mdash;archives which
             are marked as containing beans which should be deployed to the CDI container, and made available for
             injection and resolution. Weld reuses this description of <emphasis>Bean Deployment Archives</emphasis> in
             its deployment structure SPI. Each deployment exposes the BDAs which it contains; each BDA may also
@@ -105,7 +105,7 @@
 
          <para>
             <literal>BeanDeploymentArchive</literal> provides three methods which allow it's contents to be discovered
-            by Weld&#8212;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the
+            by Weld&mdash;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the
             BDA, <literal>BeanDeploymentArchive.getBeansXml()</literal> must return a data structure representing the 
             <code>beans.xml</code> deployment descriptor for the archive, and 
             <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an EJB descriptor for every EJB in the BDA,
@@ -127,7 +127,7 @@
             describes all the beans resolvable by BDA X.
          </para>
          
-         <tip>
+         <note>
             <title>Matching the classloader structure for the deployment</title>
             
             <para>
@@ -136,19 +136,19 @@
                X can be loaded by another in BDA Y, it is accessible, and therefore BDA Y's accessible BDAs should
                include BDA X. 
             </para>
-         </tip>
+         </note>
          
          <para>
             To specify the directly accessible BDAs, the container should provide an implementation of
             <literal>BeanDeploymentArchive.getBeanDeploymentArchives()</literal>.
          </para>
          
-         <tip>
+         <note>
             <para>
                Weld allows the container to describe a circular graph, and will convert a graph to a tree as part of the
                deployment process.
             </para>
-         </tip>
+         </note>
          
          <para>
             Certain services are provided for the whole deployment, whilst some are provided per-BDA. BDA services are
@@ -232,7 +232,7 @@
          <para>
             <literal>EJBServices</literal> is used to resolve local EJBs used to back session beans, and must always be
             provided in an EE environment.  <literal>EJBServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal>
-            returns a wrapper&#8212;<literal>SessionObjectReference</literal>&#8212;around the EJB reference. This
+            returns a wrapper&mdash;<literal>SessionObjectReference</literal>&mdash;around the EJB reference. This
             wrapper allows Weld to request a reference that implements the given business interface, and, in the case of
             SFSBs, both request the removal of the EJB from the container and query whether the EJB has been previously
             removed.
@@ -349,12 +349,12 @@
             integrator is optional.
          </para>
          
-         <tip>
+         <note>
             <para>
                Most Servlet contains use a classloader-per-war, this may provide
                a good way to identify the BDA in use for web requests.
             </para>
-         </tip>
+         </note>
          
          <para>
             When Weld needs to identify the BDA, it will use one of these services, depending on what is servicing the

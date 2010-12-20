@@ -53,7 +53,7 @@
             </para>
          </note>
          
-         <tip>
+         <note>
             <para>
                Oh, you <emphasis>really</emphasis> want to inject the <literal>FacesContext</literal>? Alright then, try
                this producer method:
@@ -63,7 +63,7 @@
       return FacesContext.getCurrentInstance();
    }
 }]]></programlisting>
-         </tip>
+         </note>
          
       </section>
 
@@ -263,7 +263,7 @@ public void sendMessage(String price) {
       <title>Packaging and deployment</title>
     
       <para>
-         CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars&#8212;any
+         CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars&mdash;any
          deployment location in the application classpath. However, the archive must be a "bean archive". That means
          each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in
          the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web
