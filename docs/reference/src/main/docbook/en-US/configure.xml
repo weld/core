@@ -82,13 +82,13 @@
          hierarchy).
       </para>
       
-      <tip>
+      <note>
          <para>
             If you specify just a system property name, Weld will activate the filter if that system property
             has been set (with any value). If you also specify the system property value, then Weld will only
             activate the filter if the system property's value matches exactly.
          </para>
-      </tip>
+      </note>
       
       <para>
          The fourth filter shows more a advanced configurations, where we use multiple activation conditions to 
@@ -96,17 +96,16 @@
       </para>
       
       <para>
-         You can combine as many activation conditions as you like (<emphasis>all</emphasis> must be true for the filter to be activated).
+         You can combine as many activation conditions as you like (<emphasis>all</emphasis> must be true for the 
+         filter to be activated).
          If you want to a filter that is active if <emphasis>any</emphasis> of the activation conditions are true,
          then you need multiple identical filters, each with different activation conditions.
       </para>
       
-      <tip>
-         <para>
-            In general, the semantics defined by Ant's pattern sets 
-            (http://ant.apache.org/manual/dirtasks.html#patternset) are followed.
-         </para>
-      </tip>
+      <para>
+         In general, the semantics defined by Ant's pattern sets 
+         (http://ant.apache.org/manual/dirtasks.html#patternset) are followed.
+      </para>
 
    </section>
 

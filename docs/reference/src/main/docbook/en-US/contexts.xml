@@ -26,14 +26,12 @@
          after calling activate.
       </para>
       
-      <tip>
-         <para>
-            Weld automatically controls context lifecycle in many scenarios such as Http Requests,
-            EJB remote invocations, and MDB invocations. Many of the extensions for CDI offer context
-            lifecycle for other environments, it's worth checking to see if there is a suitable extension
-            before deciding to manage the context yourself.
-         </para>
-      </tip>
+      <para>
+         Weld automatically controls context lifecycle in many scenarios such as Http Requests,
+         EJB remote invocations, and MDB invocations. Many of the extensions for CDI offer context
+         lifecycle for other environments, it's worth checking to see if there is a suitable extension
+         before deciding to manage the context yourself.
+      </para>
       
       <para>
          Weld provides a number of built in contexts, which are shown in <xref linkend="contexts.available"/>.
@@ -67,7 +65,8 @@
                <entry morerows="1" valign="top"><code>@RequestScoped</code></entry>
                <entry><code>@Bound</code></entry>
                <entry><code>RequestContext</code></entry>               
-               <entry morerows="1" valign="top">A request context bound to a manually propagated map, useful for testing or non-Servlet environments</entry>
+               <entry morerows="1" valign="top">A request context bound to a manually propagated map, 
+                  useful for testing or non-Servlet environments</entry>
             </row>
             <row>
                <entry><code>@Default</code></entry>
@@ -77,7 +76,8 @@
                <entry morerows="1" valign="top"><code>@RequestScoped</code></entry>
                <entry><code>@Http</code></entry>
                <entry><code>RequestContext</code></entry>               
-               <entry morerows="1" valign="top">A request context bound to a Servlet request, used for any Servlet based request context</entry>
+               <entry morerows="1" valign="top">A request context bound to a Servlet request, used for 
+                  any Servlet based request context</entry>
             </row>
             <row>
                <entry><code>@Default</code></entry>
@@ -87,7 +87,8 @@
                <entry morerows="1" valign="top"><code>@RequestScoped</code></entry>
                <entry><code>@Ejb</code></entry>
                <entry><code>RequestContext</code></entry>               
-               <entry morerows="1" valign="top">A request context bound to a an interceptor's invocation context, used for EJB invocations outside of Servlet requests</entry>
+               <entry morerows="1" valign="top">A request context bound to a an interceptor's invocation 
+                  context, used for EJB invocations outside of Servlet requests</entry>
             </row>
             <row>
                <entry><code>@Default</code></entry>
@@ -97,7 +98,9 @@
                <entry morerows="1" valign="top"><code>@ConversationScoped</code></entry>
                <entry><code>@Bound</code></entry>
                <entry><code>ConversationContext</code></entry>               
-               <entry morerows="1" valign="top">A conversation context bound to two manually propagated maps (one which represents the request and one which represents the session), useful for testing or non-Servlet environments</entry>
+               <entry morerows="1" valign="top">A conversation context bound to two manually propagated maps 
+                  (one which represents the request and one which represents the session), useful for testing 
+                  or non-Servlet environments</entry>
             </row>
             <row>
                <entry><code>@Default</code></entry>
@@ -107,7 +110,8 @@
                <entry morerows="1" valign="top"><code>@ConversationScoped</code></entry>
                <entry><code>@Http</code></entry>
                <entry><code>ConversationContext</code></entry>               
-               <entry morerows="1" valign="top">A conversation context bound to a Servlet request, used for any Servlet based conversation context</entry>
+               <entry morerows="1" valign="top">A conversation context bound to a Servlet request, used for 
+                  any Servlet based conversation context</entry>
             </row>
             <row>
                <entry><code>@Default</code></entry>
@@ -117,7 +121,8 @@
                <entry morerows="1" valign="top"><code>@SessionScoped</code></entry>
                <entry><code>@Bound</code></entry>
                <entry><code>SessionContext</code></entry>               
-               <entry morerows="1" valign="top">A session context bound to a manually propagated map, useful for testing or non-Servlet environments</entry>
+               <entry morerows="1" valign="top">A session context bound to a manually propagated map, useful 
+                  for testing or non-Servlet environments</entry>
             </row>
             <row>
                <entry><code>@Default</code></entry>
@@ -127,7 +132,8 @@
                <entry morerows="1" valign="top"><code>@SessionScoped</code></entry>
                <entry><code>@Http</code></entry>
                <entry><code>SessionContext</code></entry>               
-               <entry morerows="1" valign="top">A session context bound to a Servlet request, used for any Servlet based session context</entry>
+               <entry morerows="1" valign="top">A session context bound to a Servlet request, used for any 
+                  Servlet based session context</entry>
             </row>
             <row>
                <entry><code>@Default</code></entry>
@@ -137,13 +143,15 @@
                <entry><code>@ApplicationScoped</code></entry>
                <entry><code>@Default</code></entry>
                <entry><code>ApplicationContext</code></entry>               
-               <entry>An application context backed by an application scoped singleton, it is unmanaged and unbound but does offer an option to destroy all entries</entry>
+               <entry>An application context backed by an application scoped singleton, it is unmanaged and 
+                  unbound but does offer an option to destroy all entries</entry>
             </row>
             <row>
                <entry><code>@SingletonScoped</code></entry>
                <entry><code>@Default</code></entry>
                <entry><code>SingletonContext</code></entry>               
-               <entry>A singleton context backed by an application scoped singleton, it is unmanaged and unbound but does offer an option to destroy all entries</entry>
+               <entry>A singleton context backed by an application scoped singleton, it is unmanaged and 
+                  unbound but does offer an option to destroy all entries</entry>
             </row>
          </tbody>
          </tgroup>
@@ -263,11 +271,11 @@
       non-transient conversations in a session can be obtained from the conversation context, as can the current conversation.
    </para>
    
-   <tip>
+   <note>
       <para>
          Weld's conversations are not assigned ids until they become non-transient.
       </para>
-   </tip>
+   </note>
 
    </section>
 

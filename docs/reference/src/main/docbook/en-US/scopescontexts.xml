@@ -31,7 +31,7 @@
       session, and automatically destroyed when the session ends.
    </para>
 
-      <tip>
+      <note>
          <para>
             JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model
             which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities
@@ -39,7 +39,7 @@
             the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass
             an injected instance to the JPA <literal>EntityManager</literal>.
          </para>
-      </tip>
+      </note>
 
    <section>
       <title>Scope types</title>
@@ -105,9 +105,7 @@ public class SecondLevelCache { ... }]]></programlisting>
         </listitem>
       </itemizedlist>
 
-      <note>
-         <para>A CDI extension can implement support for the conversation scope in other web frameworks.</para>
-      </note>
+      <para>A CDI extension can implement support for the conversation scope in other web frameworks.</para>
 
       <para>The request and application scopes are also active:</para>
 
@@ -171,7 +169,7 @@ public class SecondLevelCache { ... }]]></programlisting>
       </itemizedlist>
   
       <para>
-         A conversation represents a task&#8212;a unit of work from the point of view of the user. The conversation context
+         A conversation represents a task&mdash;a unit of work from the point of view of the user. The conversation context
          holds state associated with what the user is currently working on. If the user is doing multiple things at the
          same time, there are multiple conversations.
       </para>
@@ -267,13 +265,11 @@ public class OrderBuilder {
    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 </h:link>]]></programlisting>
          
-         <tip>
          <para>
             The conversation context propagates across redirects, making it very easy to implement the common 
             POST-then-redirect pattern, without resort to fragile constructs such as a "flash" object. The container 
             automatically adds the conversation id to the redirect URL as a request parameter.
          </para>
-         </tip>
 
       </section>
   
@@ -283,7 +279,7 @@ public class OrderBuilder {
          <para>
             The container is permitted to destroy a conversation and all state held in its context at any time in order
             to conserve resources. A CDI implementation will normally do this on the basis of some kind of 
-            timeout&#8212;though this is not required by the specification. The timeout is the period of inactivity before
+            timeout&mdash;though this is not required by the specification. The timeout is the period of inactivity before
             the conversation is destroyed (as opposed to the amount of time the conversation is active).
          </para>
     
@@ -306,12 +302,10 @@ public class OrderBuilder {
          is the <emphasis>singleton pseudo-scope</emphasis>, which we specify using the annotation <literal>@Singleton</literal>.
       </para>
       
-      <note>
-         <para>
-            Unlike the other scopes, which belong to the package <literal>javax.enterprise.context</literal>, the 
-            <literal>@Singleton</literal> annotation is defined in the package <literal>javax.inject</literal>.
-         </para>
-      </note>
+      <para>
+         Unlike the other scopes, which belong to the package <literal>javax.enterprise.context</literal>, the 
+         <literal>@Singleton</literal> annotation is defined in the package <literal>javax.inject</literal>.
+      </para>
       
       <para>
          You can guess what "singleton" means here. It means a bean that is instantiated once. Unfortunately, there's 
@@ -380,7 +374,7 @@ public class OrderBuilder {
           every time the expression is evaluated. The instance is not reused during any other expression evaluation.
       </para>
       
-      <tip>
+      <note>
          <para>
             If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other
             than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be 
@@ -389,7 +383,7 @@ public class OrderBuilder {
             that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page,
             inject it into a different bean, and expose it to EL via a getter method.
          </para>
-      </tip>
+      </note>
       
       <para>
          Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference
