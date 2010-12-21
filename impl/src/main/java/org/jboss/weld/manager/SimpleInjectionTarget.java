@@ -23,13 +23,11 @@ import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
@@ -62,7 +60,6 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
    private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
    private final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
    private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
-   private final AtomicBoolean validated;
 
    public SimpleInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager)
    {
@@ -96,32 +93,10 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
       this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(null, type, beanManager);
       this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(null, type, beanManager);
       this.resourceInjectionPoints = Beans.getResourceInjectionPoints(null, type, beanManager);
-      for (InjectionPoint ip : this.injectionPoints)
-      {
-         if (ip.getType().equals(InjectionPoint.class))
-         {
-            throw new DefinitionException(INJECTION_ON_NON_CONTEXTUAL, type, ip);
-         }
-      }
-      this.validated = new AtomicBoolean();
-   }
-   
-   protected void validate()
-   {
-      if (!validated.get())
-      {
-         Validator validator = new Validator();
-         for (InjectionPoint ij : this.injectionPoints)
-         {
-            validator.validateInjectionPoint(ij, beanManager);
-         }
-         this.validated.set(true);
-      }
    }
 
    public T produce(CreationalContext<T> ctx)
    {
-      validate();
       if (constructor == null)
       {
          // this means we couldn't find a constructor on instantiation, which
@@ -136,7 +111,6 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public void inject(final T instance, final CreationalContext<T> ctx)
    {
-      validate();
       new InjectionContextImpl<T>(beanManager, this, getType(), instance)
       {
 
@@ -152,7 +126,6 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public void postConstruct(T instance)
    {
-      validate();
       for (WeldMethod<?, ? super T> method : postConstructMethods)
       {
          if (method != null)
@@ -172,7 +145,6 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public void preDestroy(T instance)
    {
-      validate();
       for (WeldMethod<?, ? super T> method : preDestroyMethods)
       {
          if (method != null)
@@ -192,7 +164,6 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T>
 
    public void dispose(T instance)
    {
-      validate();
       // No-op
    }
 

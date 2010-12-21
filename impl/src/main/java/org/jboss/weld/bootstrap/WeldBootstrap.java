@@ -93,6 +93,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.InjectionTargetValidator;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
@@ -384,8 +385,10 @@ public class WeldBootstrap implements Bootstrap
          log.debug(VALIDATING_BEANS);
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
          {
-            entry.getValue().getBeanManager().getBeanResolver().clear();
-            deployment.getServices().get(Validator.class).validateDeployment(entry.getValue().getBeanManager(), entry.getValue().getBeanDeployer().getEnvironment());
+            BeanManagerImpl beanManager = entry.getValue().getBeanManager(); 
+            beanManager.getBeanResolver().clear();
+            deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
+            beanManager.getServices().get(InjectionTargetValidator.class).validate();
          }
          AfterDeploymentValidationImpl.fire(deploymentManager, beanDeployments);
       }

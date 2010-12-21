@@ -326,6 +326,14 @@ public class Validator implements Service
          }
       }
    }
+   
+   public void validateInjectionTarget(InjectionTarget<?> injectionTarget, BeanManagerImpl beanManager)
+   {
+      for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
+      {
+         validateInjectionPoint(injectionPoint, beanManager);
+      }
+   }
 
    private void checkScopeAnnotations(InjectionPoint ij, MetaAnnotationStore metaAnnotationStore)
    {

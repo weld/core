@@ -55,6 +55,7 @@ import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.Enabled;
+import org.jboss.weld.manager.InjectionTargetValidator;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -101,6 +102,7 @@ public class BeanDeployment
       services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
       services.add(WSApiAbstraction.class, new WSApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
       this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, Enabled.of(beanDeploymentArchive.getBeansXml(), beanDeploymentArchive.getServices().get(ResourceLoader.class)));
+      services.add(InjectionTargetValidator.class, new InjectionTargetValidator(beanManager));
       log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternativeClasses(), beanManager.getEnabled().getAlternativeStereotypes());
       log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
       log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
