@@ -90,9 +90,7 @@ public class PopulateDatabase
             c.setText(st.nextToken());
 
             // Manual TX control, commit each record independently
-            utx.begin();
             entityManager.persist(c);
-            utx.commit();
          }
       }
       catch (Exception e)
