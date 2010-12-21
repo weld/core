@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,8 +75,10 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.InjectionContextImpl;
+import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -176,7 +179,7 @@ public class SessionBean<T> extends AbstractClassBean<T>
          initProxyClass();
          checkEJBTypeAllowed();
          checkConflictingRoles();
-         //checkObserverMethods();
+         checkObserverMethods();
          checkScopeAllowed();
          registerInterceptors();
          setInjectionTarget(new InjectionTarget<T>()
@@ -439,36 +442,31 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    protected void checkObserverMethods()
    {
-      // TODO Need to check super classes too
-      for (WeldMethod<?, ?> method : this.annotatedItem.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class))
+
+      Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
+      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
       {
-         if (!method.isStatic())
+         for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods())
          {
-            if (!isMethodExistsOnTypes(method))
-            {
-               throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, method, getWeldAnnotated());
-            }
+            businessMethodSignatures.add(new MethodSignatureImpl(m));
          }
       }
-   }
-   
-   // TODO must be a nicer way to do this!
-   private boolean isMethodExistsOnTypes(WeldMethod<?, ?> method)
-   {
-      for (Type type : getTypes())
+      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getRemoteBusinessInterfaces())
       {
-         if (type instanceof Class<?>)
+         for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods())
          {
-            for (Method m : SecureReflections.getMethods((Class<?>) type))
-            {
-               if (method.getName().equals(m.getName()) && Arrays.equals(method.getParameterTypesAsArray(), m.getParameterTypes()))
-               {
-                  return true;
-               }
-            }
+            businessMethodSignatures.add(new MethodSignatureImpl(m));
          }
       }
-      return false;
+
+      List<WeldMethod<?, ? super T>> observerMethods = Beans.getObserverMethods(this.getWeldAnnotated());
+      for (WeldMethod<?, ? super T> observerMethod : observerMethods)
+      {
+         if (!observerMethod.isStatic() && !businessMethodSignatures.contains(new MethodSignatureImpl(observerMethod)))
+         {
+            throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, observerMethod, getWeldAnnotated());
+         }
+      }
    }
    
    public SessionObjectReference createReference()
