@@ -17,14 +17,18 @@
 
 package org.jboss.weld.tests.interceptors.retry;
 
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+
 /**
  * @author Marius Bogoevici
  */
-public class FailingProcessor
+@Stateless
+public class FailingProcessor implements Processor
 {
    int attempts = 0;
 
-   @Retriable @Transactional
+   @Retriable @Secured @Interceptors(TransactionalInterceptor.class)
    public int tryToProcess()
    {
       if (++attempts < 3)

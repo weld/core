@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.retrySimple;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -38,17 +36,16 @@ public class RetryInterceptorTest
    public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .intercept(RetryInterceptor.class, SecuredInterceptor.class)
+         .intercept(RetryInterceptor.class, TransactionalInterceptor.class)
          .addPackage(RetryInterceptorTest.class.getPackage());
    }
 
-   @Test  @Category(Integration.class)
-   public void testRetry(Processor processor)
+   @Test
+   public void testRetry(FailingProcessor processor)
    {
       System.out.println(processor);
       Assert.assertEquals(3, processor.tryToProcess());
       Assert.assertEquals(3, TransactionalInterceptor.invocationCount);
-      Assert.assertEquals(3, SecuredInterceptor.invocationCount);
    }
 
 }

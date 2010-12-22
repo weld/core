@@ -24,12 +24,14 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-public class TransactionalInterceptor
+@Interceptor @Retriable 
+public class SecuredInterceptor
 {
+
    static int invocationCount = 0;
 
    @AroundInvoke
-   public Object doInTransaction(InvocationContext invocationContext) throws Exception
+   public Object doSecured(InvocationContext invocationContext) throws Exception
    {
       invocationCount++;
       return invocationContext.proceed();

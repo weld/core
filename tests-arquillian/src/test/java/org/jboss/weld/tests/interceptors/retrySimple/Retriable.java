@@ -15,23 +15,26 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.retrySimple;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.interceptor.InterceptorBinding;
 
 /**
  * @author Marius Bogoevici
  */
-public class TransactionalInterceptor
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface Retriable
 {
-   static int invocationCount = 0;
 
-   @AroundInvoke
-   public Object doInTransaction(InvocationContext invocationContext) throws Exception
-   {
-      invocationCount++;
-      return invocationContext.proceed();
-   }
 }
