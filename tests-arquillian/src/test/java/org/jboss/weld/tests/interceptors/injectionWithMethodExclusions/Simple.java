@@ -15,37 +15,17 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.injectionWithMethodExclusions;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import javax.ejb.Local;
 
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Retriable 
-public class RetryInterceptor
+@Local
+public interface Simple
 {
-   static int invocationCount = 0;
+   void doSomething();
 
-   @AroundInvoke
-   public Object retryOnFailure(InvocationContext invocationContext) throws Exception
-   {
-      int attempts = 0;
-      do
-      {
-         try
-         {
-            invocationCount ++;
-            return invocationContext.proceed();
-         }
-         catch (Exception e)
-         {
-
-         }
-         attempts++;
-      } while (attempts < 3);
-      return null;
-   }
+   Helper getHelper();
 }
