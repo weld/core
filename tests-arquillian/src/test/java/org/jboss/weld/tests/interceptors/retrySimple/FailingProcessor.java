@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
-
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+package org.jboss.weld.tests.interceptors.retrySimple;
 
 /**
  * @author Marius Bogoevici
  */
-public class TransactionalInterceptor
+public class FailingProcessor
 {
-   static int invocationCount = 0;
+   int attempts = 0;
 
-   @AroundInvoke
-   public Object doInTransaction(InvocationContext invocationContext) throws Exception
+   @Retriable
+   @Transactional
+   public int tryToProcess()
    {
-      invocationCount++;
-      return invocationContext.proceed();
+      if (++attempts < 3)
+         throw new RuntimeException("Try harder");
+      return attempts;
    }
 }

@@ -17,21 +17,12 @@
 
 package org.jboss.weld.tests.interceptors.retry;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-
 /**
  * @author Marius Bogoevici
  */
-public class TransactionalInterceptor
-{
-   static int invocationCount = 0;
 
-   @AroundInvoke
-   public Object doInTransaction(InvocationContext invocationContext) throws Exception
-   {
-      invocationCount++;
-      return invocationContext.proceed();
-   }
+public interface Processor
+{
+   @Retriable
+   int tryToProcess();
 }

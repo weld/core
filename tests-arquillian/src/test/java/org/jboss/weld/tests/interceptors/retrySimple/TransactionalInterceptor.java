@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.retrySimple;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -24,6 +24,7 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
+@Interceptor @Transactional
 public class TransactionalInterceptor
 {
    static int invocationCount = 0;
