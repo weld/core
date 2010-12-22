@@ -15,37 +15,26 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.interceptorsOrderWithEjbInterceptorOnMethod;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.interceptor.InterceptorBinding;
 
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Retriable 
-public class RetryInterceptor
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface Secured
 {
-   static int invocationCount = 0;
 
-   @AroundInvoke
-   public Object retryOnFailure(InvocationContext invocationContext) throws Exception
-   {
-      int attempts = 0;
-      do
-      {
-         try
-         {
-            invocationCount ++;
-            return invocationContext.proceed();
-         }
-         catch (Exception e)
-         {
-
-         }
-         attempts++;
-      } while (attempts < 3);
-      return null;
-   }
 }

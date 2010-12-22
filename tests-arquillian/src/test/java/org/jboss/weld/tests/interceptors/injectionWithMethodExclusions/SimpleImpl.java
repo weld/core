@@ -15,37 +15,31 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.injectionWithMethodExclusions;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.interceptor.ExcludeDefaultInterceptors;
+import javax.interceptor.Interceptors;
+
 
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Retriable 
-public class RetryInterceptor
+@Stateless  @Interceptors({EjbInterceptor.class, EjbInterceptor2.class})
+public class SimpleImpl implements Simple
 {
-   static int invocationCount = 0;
+   @Inject
+   Helper helper;
 
-   @AroundInvoke
-   public Object retryOnFailure(InvocationContext invocationContext) throws Exception
+   public Helper getHelper()
    {
-      int attempts = 0;
-      do
-      {
-         try
-         {
-            invocationCount ++;
-            return invocationContext.proceed();
-         }
-         catch (Exception e)
-         {
+      return helper;
+   }
 
-         }
-         attempts++;
-      } while (attempts < 3);
-      return null;
+   @ExcludeDefaultInterceptors  @Interceptors({EjbInterceptor3.class, EjbInterceptor4.class})
+   public void doSomething()
+   {
+
    }
 }

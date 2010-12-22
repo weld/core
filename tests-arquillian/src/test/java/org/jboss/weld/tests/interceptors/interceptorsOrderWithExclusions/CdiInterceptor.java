@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.interceptorsOrderWithExclusions;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -24,28 +24,16 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Retriable 
-public class RetryInterceptor
+@Interceptor @Secured
+public class CdiInterceptor
 {
-   static int invocationCount = 0;
+   static int count;
 
    @AroundInvoke
-   public Object retryOnFailure(InvocationContext invocationContext) throws Exception
+   public Object doSecured(InvocationContext invocationContext) throws Exception
    {
-      int attempts = 0;
-      do
-      {
-         try
-         {
-            invocationCount ++;
-            return invocationContext.proceed();
-         }
-         catch (Exception e)
-         {
+      count = Counter.next();
+      return invocationContext.proceed();
 
-         }
-         attempts++;
-      } while (attempts < 3);
-      return null;
    }
 }

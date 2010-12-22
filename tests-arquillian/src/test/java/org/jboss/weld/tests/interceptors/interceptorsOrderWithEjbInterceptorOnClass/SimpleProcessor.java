@@ -15,37 +15,25 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.interceptorsOrderWithEjbInterceptorOnClass;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Retriable 
-public class RetryInterceptor
+@Stateless @Interceptors(EjbInterceptor.class)
+public class SimpleProcessor implements Processor
 {
-   static int invocationCount = 0;
 
-   @AroundInvoke
-   public Object retryOnFailure(InvocationContext invocationContext) throws Exception
+   static  int count;
+
+   @Secured
+   public int add(int x, int y)
    {
-      int attempts = 0;
-      do
-      {
-         try
-         {
-            invocationCount ++;
-            return invocationContext.proceed();
-         }
-         catch (Exception e)
-         {
-
-         }
-         attempts++;
-      } while (attempts < 3);
-      return null;
+      count = Counter.next();
+      return x + y;
    }
+
 }

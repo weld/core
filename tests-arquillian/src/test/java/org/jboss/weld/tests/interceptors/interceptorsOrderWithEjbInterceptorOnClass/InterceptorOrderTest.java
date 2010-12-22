@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.interceptorsOrderWithEjbInterceptorOnClass;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,27 +32,30 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class RetryInterceptorTest
+public class InterceptorOrderTest
 {
    @Deployment
    public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .intercept(RetryInterceptor.class, SecuredInterceptor.class)
-         .addPackage(RetryInterceptorTest.class.getPackage());
+         .intercept(CdiInterceptor.class)
+         .addPackage(InterceptorOrderTest.class.getPackage());
    }
 
-   @Test  @Category(Integration.class)
-   public void testRetry(Processor processor)
+   @Test @Category(Integration.class)
+   public void testOrder(Processor processor)
    {
-      FailingProcessor.intercepts = 0;
-      RetryInterceptor.invocationCount = 0;
-      System.out.println(processor);
-      Assert.assertEquals(3, processor.tryToProcess());
-      Assert.assertEquals(1, TransactionalInterceptor.invocationCount);
-      Assert.assertEquals(3, RetryInterceptor.invocationCount);
-      Assert.assertEquals(3, SecuredInterceptor.invocationCount);
-      Assert.assertEquals(3, FailingProcessor.intercepts);
+      Counter.count = 0;
+      SimpleProcessor.count = 0;
+      CdiInterceptor.count = 0;
+      EjbInterceptor.count = 0;
+
+      int sum = processor.add(8, 13);
+
+      Assert.assertEquals(21, sum);
+      Assert.assertEquals(1, EjbInterceptor.count);
+      Assert.assertEquals(2, CdiInterceptor.count);
+      Assert.assertEquals(3, SimpleProcessor.count);
    }
 
 }

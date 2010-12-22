@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.retry;
+package org.jboss.weld.tests.interceptors.injectionWithExclusions;
 
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -31,28 +31,41 @@ import org.junit.runner.RunWith;
 /**
  * @author Marius Bogoevici
  */
+
+@Category(Integration.class)
 @RunWith(Arquillian.class)
-public class RetryInterceptorTest
+public class TestInjectionWithExclusions
 {
    @Deployment
    public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .intercept(RetryInterceptor.class, SecuredInterceptor.class)
-         .addPackage(RetryInterceptorTest.class.getPackage());
+            .addPackage(TestInjectionWithExclusions.class.getPackage());
    }
 
-   @Test  @Category(Integration.class)
-   public void testRetry(Processor processor)
+   @Test @Category(Integration.class)
+   public void testBeanInjected(Simple simple) throws Exception
    {
-      FailingProcessor.intercepts = 0;
-      RetryInterceptor.invocationCount = 0;
-      System.out.println(processor);
-      Assert.assertEquals(3, processor.tryToProcess());
-      Assert.assertEquals(1, TransactionalInterceptor.invocationCount);
-      Assert.assertEquals(3, RetryInterceptor.invocationCount);
-      Assert.assertEquals(3, SecuredInterceptor.invocationCount);
-      Assert.assertEquals(3, FailingProcessor.intercepts);
-   }
+      Counter.count = 0;
+      EjbInterceptor.count = 0;
+      EjbInterceptor2.count = 0;
+      EjbInterceptor3.count = 0;
+      EjbInterceptor4.count = 0;
+      Assert.assertNotNull(simple.getHelper());
+      Assert.assertEquals(1, EjbInterceptor.count);
+      Assert.assertEquals(2, EjbInterceptor2.count);
+      Assert.assertEquals(0, EjbInterceptor3.count);
+      Assert.assertEquals(0, EjbInterceptor4.count);
 
+      Counter.count = 0;
+      EjbInterceptor.count = 0;
+      EjbInterceptor2.count = 0;
+      EjbInterceptor3.count = 0;
+      EjbInterceptor4.count = 0;
+      simple.doSomething();
+      Assert.assertEquals(1, EjbInterceptor.count);
+      Assert.assertEquals(2, EjbInterceptor2.count);
+      Assert.assertEquals(3, EjbInterceptor3.count);
+      Assert.assertEquals(4, EjbInterceptor4.count);
+   }
 }

@@ -24,7 +24,7 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Retriable 
+@Interceptor @Secured
 public class SecuredInterceptor
 {
 
