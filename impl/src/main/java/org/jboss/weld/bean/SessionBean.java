@@ -442,29 +442,32 @@ public class SessionBean<T> extends AbstractClassBean<T>
     */
    protected void checkObserverMethods()
    {
-
-      Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
-      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
-      {
-         for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods())
-         {
-            businessMethodSignatures.add(new MethodSignatureImpl(m));
-         }
-      }
-      for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getRemoteBusinessInterfaces())
-      {
-         for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods())
-         {
-            businessMethodSignatures.add(new MethodSignatureImpl(m));
-         }
-      }
-
       List<WeldMethod<?, ? super T>> observerMethods = Beans.getObserverMethods(this.getWeldAnnotated());
-      for (WeldMethod<?, ? super T> observerMethod : observerMethods)
+
+      if (!observerMethods.isEmpty())
       {
-         if (!observerMethod.isStatic() && !businessMethodSignatures.contains(new MethodSignatureImpl(observerMethod)))
+         Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
+         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces())
          {
-            throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, observerMethod, getWeldAnnotated());
+            for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods())
+            {
+               businessMethodSignatures.add(new MethodSignatureImpl(m));
+            }
+         }
+         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getRemoteBusinessInterfaces())
+         {
+            for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods())
+            {
+               businessMethodSignatures.add(new MethodSignatureImpl(m));
+            }
+         }
+
+         for (WeldMethod<?, ? super T> observerMethod : observerMethods)
+         {
+            if (!observerMethod.isStatic() && !businessMethodSignatures.contains(new MethodSignatureImpl(observerMethod)))
+            {
+               throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, observerMethod, getWeldAnnotated());
+            }
          }
       }
    }
