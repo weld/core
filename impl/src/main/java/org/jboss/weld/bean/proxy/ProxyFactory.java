@@ -57,6 +57,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
@@ -975,14 +976,14 @@ public class ProxyFactory<T>
       Class<?> superClass = typeInfo.getSuperClass();
       if (superClass.getName().startsWith("java"))
       {
-         ClassLoader cl = bean.getBeanClass().getClassLoader();
+         ClassLoader cl = Container.instance().services().get(ProxyServices.class).getClassLoader(bean.getBeanClass());
          if (cl == null)
          {
             cl = Thread.currentThread().getContextClassLoader();
          }
          return cl;
       }
-      return superClass.getClassLoader();
+      return Container.instance().services().get(ProxyServices.class).getClassLoader(superClass);
    }
 
    public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean)

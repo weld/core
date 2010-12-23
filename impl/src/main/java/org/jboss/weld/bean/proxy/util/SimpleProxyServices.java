@@ -39,33 +39,7 @@ public class SimpleProxyServices implements ProxyServices
 
    public ClassLoader getClassLoader(final Class<?> proxiedBeanType)
    {
-      SecurityManager sm = System.getSecurityManager();
-      if (sm != null)
-      {
-         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>()
-         {
-            public ClassLoader run()
-            {
-               return _getClassLoader(proxiedBeanType);
-            }
-         });
-      }
-      else
-      {
-         return _getClassLoader(proxiedBeanType);
-      }      
-   }
-
-   private ClassLoader _getClassLoader(Class<?> proxiedBeanType)
-   {
-      if (proxiedBeanType.getName().startsWith("java"))
-      {
-         return this.getClass().getClassLoader();
-      }
-      else
-      {
-         return proxiedBeanType.getClassLoader();
-      }
+      return proxiedBeanType.getClassLoader();
    }
 
    public void cleanup()
@@ -74,6 +48,7 @@ public class SimpleProxyServices implements ProxyServices
 
    }
 
+   @Deprecated
    public Class<?> loadBeanClass(final String className)
    {
       try
