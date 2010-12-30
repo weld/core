@@ -33,6 +33,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -390,7 +391,15 @@ public class ProxyFactory<T>
       {
          proxyClassType.addInterface(specialInterface.getName());
       }
-      Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, null));
+      // TODO: change the ProxyServices SPI to allow the container to figure out
+      // which PD to use
+      ProtectionDomain domain = beanType.getProtectionDomain();
+      if (beanType.isInterface() || beanType.equals(Object.class))
+      {
+         domain = ProxyFactory.class.getProtectionDomain();
+      }
+
+      Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
       log.trace("Created Proxy class of type " + proxyClass + " supporting interfaces " + Arrays.toString(proxyClass.getInterfaces()));
       return proxyClass;
    }
