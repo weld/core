@@ -26,8 +26,6 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.util.collections.Arrays2;
-
 public class SimpleInjectionPoint implements InjectionPoint
 {
    
@@ -41,7 +39,7 @@ public class SimpleInjectionPoint implements InjectionPoint
    private final Bean<?> bean;
    private final Annotated annotated;
    
-   public SimpleInjectionPoint(boolean _transient, boolean delegate, Type type, Set<Annotation> qualifiers, Member member, Bean<?> bean, Annotated annotated)
+   private SimpleInjectionPoint(boolean _transient, boolean delegate, Type type, Set<Annotation> qualifiers, Member member, Bean<?> bean, Annotated annotated)
    {
       this._transient = _transient;
       this.delegate = delegate;
@@ -50,11 +48,6 @@ public class SimpleInjectionPoint implements InjectionPoint
       this.member = member;
       this.bean = bean;
       this.annotated = annotated;
-   }
-   
-   public SimpleInjectionPoint(boolean _transient, boolean delegate, Type type, Annotation[] qualifiers, Member member, Bean<?> bean, Annotated annotated)
-   {
-      this(_transient, delegate, type, Arrays2.asSet(qualifiers), member, bean, annotated);
    }
 
    public boolean isTransient()

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.lang.reflect.ParameterizedType;
 
 import javax.enterprise.inject.IllegalProductException;
@@ -73,6 +75,21 @@ public class InjectionPointTest
       Assert.assertEquals("str", ip.getMember().getName());
       InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
       Assert.assertEquals("str", ip1.getMember().getName());
+   }
+   
+   /*
+    * description = "WELD-812"
+    */
+   @Test
+   public void testSerializabilityOfInstance(Estate estate) throws Throwable
+   {
+      // We have to perform some indirection to make sure we are fully inside Weld Injection Points, not third party ones!
+      Instance<Farm> farm = estate.getFarm();
+      farm.get().ping();
+      Farm farm1 = Utils.deserialize(Utils.serialize(farm.get()));
+      assertNotNull(farm1);
+      farm1.ping();
+      assertNotNull(farm1.getInjectionPoint());
    }
    
    @Test
