@@ -19,13 +19,6 @@
          
          <!-- Issues in Weld (the RI) -->
 
-         <!-- WELD-401 -->
-         <class name="org.jboss.jsr299.tck.tests.event.broken.observer.notBusinessMethod.EJBObserverMethodNotBusinessMethodTest">
-            <methods>
-               <exclude name="testObserverMethodOnEnterpriseBeanNotBusinessMethodOrStaticFails" />
-            </methods>
-         </class>
-         
          <!-- Issues in JBoss AS -->
          
          
@@ -37,12 +30,6 @@
             <methods>
                <exclude name="testRequestScopeActiveDuringCallToEjbTimeoutMethod" />
                <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
-            </methods>
-         </class>
-         <!-- JBAS-8280 -->
-         <class name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.interceptorOrder.SessionBeanInterceptorOrderTest">
-            <methods>
-               <exclude name="testInterceptorsDeclaredUsingInterceptorsCalledBeforeInterceptorBinding" />
             </methods>
          </class>
 
