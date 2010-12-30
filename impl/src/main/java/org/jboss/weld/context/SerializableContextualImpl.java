@@ -103,6 +103,10 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
       {
          this.cached = getContextualStore().<C, I>getContextual(id);
       }
+      if (this.cached == null)
+      {
+         throw new IllegalStateException("Error restoring serialized contextual with id " + id);
+      }
    }
    
    @Override
