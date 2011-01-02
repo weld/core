@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.injection;
 
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -29,14 +30,7 @@ public class CurrentInjectionPoint implements Service
    
    public CurrentInjectionPoint()
    {
-      this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>()
-      {
-         @Override
-         protected Stack<InjectionPoint> initialValue()
-         {
-            return new Stack<InjectionPoint>();
-         }
-      };
+      this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>();
    }
       
    /**
@@ -49,12 +43,33 @@ public class CurrentInjectionPoint implements Service
     */
    public void push(InjectionPoint injectionPoint)
    {
-      currentInjectionPoint.get().push(injectionPoint);
+      Stack<InjectionPoint> stack = currentInjectionPoint.get();
+      if (stack == null)
+      {
+         stack = new Stack<InjectionPoint>();
+         currentInjectionPoint.set(stack);
+      }
+      stack.push(injectionPoint);
    }
    
    public InjectionPoint pop()
    {
-      return currentInjectionPoint.get().pop();
+      Stack<InjectionPoint> stack = currentInjectionPoint.get();
+      if (stack == null)
+      {
+         throw new EmptyStackException();
+      }
+      try
+      {
+         return stack.pop();
+      }
+      finally
+      {
+         if (stack.isEmpty())
+         {
+            currentInjectionPoint.remove();
+         }
+      }
    }
    
    /**
@@ -64,9 +79,14 @@ public class CurrentInjectionPoint implements Service
     */
    public InjectionPoint peek()
    {
-      if (!currentInjectionPoint.get().empty())
+      Stack<InjectionPoint> stack = currentInjectionPoint.get();
+      if (stack == null)
       {
-         return currentInjectionPoint.get().peek();
+         return null;
+      }
+      if (!stack.empty())
+      {
+         return stack.peek();
       }
       else
       {
@@ -76,7 +96,7 @@ public class CurrentInjectionPoint implements Service
 
    public void cleanup()
    {
-      this.currentInjectionPoint.remove();
+
    }
 
 }

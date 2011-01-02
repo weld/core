@@ -1,7 +1,6 @@
 package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.endInterceptorContext;
-import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.getDisabledInterceptionContexts;
 import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.startInterceptorContext;
 
 import java.io.Serializable;
@@ -39,7 +38,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
    private Set<CombinedInterceptorAndDecoratorStackMethodHandler> getDisabledHandlers()
    {
 
-      return getDisabledInterceptionContexts().peek();
+      return InterceptionDecorationContext.peek();
    }
 
    public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
@@ -48,7 +47,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
 
       try
       {
-         if (getDisabledInterceptionContexts().empty())
+         if (InterceptionDecorationContext.empty())
          {
             externalContext = true;
             startInterceptorContext();
@@ -100,7 +99,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
 
    public boolean isDisabledHandler()
    {
-      if (getDisabledInterceptionContexts().empty())
+      if (InterceptionDecorationContext.empty())
       {
          return false;
       }

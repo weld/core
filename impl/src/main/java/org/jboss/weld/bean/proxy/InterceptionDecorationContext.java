@@ -17,6 +17,7 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -36,27 +37,77 @@ import java.util.Stack;
  */
 public class InterceptionDecorationContext
 {
-   private static ThreadLocal<Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>()
+   private static ThreadLocal<Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>();
+   
+   public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> pop()
    {
-      @Override
-      protected Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> initialValue()
+      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      if (stack == null)
       {
-         return new Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>();
+         throw new EmptyStackException();
       }
-   };
-
-   public static Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> getDisabledInterceptionContexts()
-   {
-      return interceptionContexts.get();
+      else
+      {
+         try
+         {
+            return stack.pop();
+         }
+         finally
+         {
+            if (stack.isEmpty())
+            {
+               interceptionContexts.remove();
+            }
+         }
+      }
    }
+   
+   public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> push(Set<CombinedInterceptorAndDecoratorStackMethodHandler> item)
+   {
+      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      if (stack == null)
+      {
+         stack = new Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>();
+         interceptionContexts.set(stack);
+      }
+      stack.push(item);
+      return item;
+   }
+   
+   public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> peek()
+   {
+      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      if (stack == null)
+      {
+         throw new EmptyStackException();
+      }
+      else
+      {
+         return stack.peek();
+      }
+   }
+   
+   public static boolean empty()
+   {
+      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      if (stack == null)
+      {
+         return true;
+      }
+      else
+      {
+         return stack.empty();
+      }
+   }
+   
 
    public static void endInterceptorContext()
    {
-      getDisabledInterceptionContexts().pop();
+      pop();
    }
 
    public static void startInterceptorContext()
    {
-      getDisabledInterceptionContexts().push(new HashSet<CombinedInterceptorAndDecoratorStackMethodHandler>());
+      push(new HashSet<CombinedInterceptorAndDecoratorStackMethodHandler>());
    }
 }

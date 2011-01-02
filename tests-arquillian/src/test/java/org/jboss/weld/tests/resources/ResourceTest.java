@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.resources;
 
+import static org.junit.Assert.assertNotNull;
+
+import javax.transaction.UserTransaction;
+
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;

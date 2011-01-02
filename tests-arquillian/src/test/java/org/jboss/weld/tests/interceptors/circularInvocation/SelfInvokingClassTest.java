@@ -64,7 +64,7 @@ public class SelfInvokingClassTest
       {
          Assert.assertTrue(e instanceof UnsupportedOperationException);
       }
-      Assert.assertEquals(0, InterceptionDecorationContext.getDisabledInterceptionContexts().size());
+      Assert.assertTrue(InterceptionDecorationContext.empty());
    }
 
    @Test
@@ -80,7 +80,7 @@ public class SelfInvokingClassTest
       Assert.assertEquals("methodA", SomeBeanDecorator.calls.get(0));
       Assert.assertEquals("methodB", SomeBeanDecorator.calls.get(1));
 
-      Assert.assertEquals(0, InterceptionDecorationContext.getDisabledInterceptionContexts().size());
+      Assert.assertTrue(InterceptionDecorationContext.empty());
    }
 
 }
