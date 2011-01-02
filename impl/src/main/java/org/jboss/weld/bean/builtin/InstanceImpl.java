@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.injection.SimpleInjectionPoint.EMPTY_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.collections.Arrays2.asSet;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
@@ -40,6 +39,7 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -103,7 +103,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    
    public static <I> Instance<I> of(Type type, Annotation[] qualifiers, CreationalContext<I> creationalContext, BeanManagerImpl beanManager)
    {
-      return new InstanceImpl<I>(type, qualifiers, EMPTY_INJECTION_POINT, creationalContext, beanManager);
+      return new InstanceImpl<I>(type, qualifiers, EmptyInjectionPoint.INSTANCE, creationalContext, beanManager);
    }
    
    private InstanceImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)

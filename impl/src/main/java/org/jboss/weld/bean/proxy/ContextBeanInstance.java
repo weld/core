@@ -28,7 +28,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.SimpleInjectionPoint;
+import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
@@ -95,7 +95,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
       try
       {
          // Ensure that there is no injection point associated
-         container.services().get(CurrentInjectionPoint.class).push(SimpleInjectionPoint.EMPTY_INJECTION_POINT);
+         container.services().get(CurrentInjectionPoint.class).push(EmptyInjectionPoint.INSTANCE);
          return context.get(bean, creationalContext);
       }
       finally
