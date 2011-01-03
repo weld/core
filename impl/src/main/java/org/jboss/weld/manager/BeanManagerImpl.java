@@ -31,12 +31,12 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVI
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,6 +58,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -67,6 +68,7 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.interceptor.reader.cache.MetadataCachingReader;
@@ -101,6 +103,7 @@ import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
@@ -119,6 +122,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.CopyOnWriteArrayListSupplier;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -1225,9 +1229,62 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));
    }
    
+   private static class InstanceInjectionPoint implements InjectionPoint, Serializable
+   {
+      
+      private static final InjectionPoint INSTANCE = new InstanceInjectionPoint();
+      
+      private transient Type type;
+      private transient Set<Annotation> qualifiers;
+      
+      public Type getType()
+      {
+         if (type == null)
+         {
+            this.type = new TypeLiteral<Instance<Object>>(){}.getType();
+         }
+         return type;
+      }
+
+      public Set<Annotation> getQualifiers()
+      {
+         if (qualifiers == null)
+         {
+            this.qualifiers = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
+         }
+         return qualifiers;
+      }
+
+      public Bean<?> getBean()
+      {
+         return null;
+      }
+
+      public Member getMember()
+      {
+         return null;
+      }
+
+      public Annotated getAnnotated()
+      {
+         return null;
+      }
+
+      public boolean isDelegate()
+      {
+         return false;
+      }
+
+      public boolean isTransient()
+      {
+         return false;
+      }
+      
+   }
+   
    public Instance<Object> instance()
    {
-      return InstanceImpl.of(Object.class, EMPTY_ANNOTATIONS, createCreationalContext(null), this);
+      return InstanceImpl.of(InstanceInjectionPoint.INSTANCE, createCreationalContext(null), this);
    }
    
 }

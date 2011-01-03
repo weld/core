@@ -101,11 +101,6 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       return new InstanceImpl<I>(getFacadeType(injectionPoint), injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS), injectionPoint, creationalContext, beanManager);
    }
    
-   public static <I> Instance<I> of(Type type, Annotation[] qualifiers, CreationalContext<I> creationalContext, BeanManagerImpl beanManager)
-   {
-      return new InstanceImpl<I>(type, qualifiers, EmptyInjectionPoint.INSTANCE, creationalContext, beanManager);
-   }
-   
    private InstanceImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)
    {
       super(type, qualifiers, injectionPoint, creationalContext, beanManager);
