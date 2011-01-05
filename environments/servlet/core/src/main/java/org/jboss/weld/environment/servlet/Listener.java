@@ -138,7 +138,8 @@ public class Listener extends ForwardingServletListener
    @Override
    public void contextInitialized(ServletContextEvent sce)
    {
-      if (sce.getServletContext().getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) instanceof BeanManager)
+      ServletContext context = sce.getServletContext();
+      if (context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) instanceof BeanManager)
       {
          return;
       }
@@ -155,7 +156,6 @@ public class Listener extends ForwardingServletListener
       };
 
       ClassLoader classLoader = Reflections.getClassLoader();
-      ServletContext context = sce.getServletContext();
 
       URLScanner scanner = createUrlScanner(classLoader, context);
       if (scanner != null)
@@ -211,7 +211,7 @@ public class Listener extends ForwardingServletListener
          tomcat7 = false;
       }
 
-      boolean jetty = sce.getServletContext().getServerInfo().startsWith(JETTY_SERVER_INFO_PREFIX);
+      boolean jetty = context.getServerInfo().startsWith(JETTY_SERVER_INFO_PREFIX);
 
       if (jetty)
       {
