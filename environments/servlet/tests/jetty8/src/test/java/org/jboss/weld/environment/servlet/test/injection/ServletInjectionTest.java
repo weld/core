@@ -8,19 +8,18 @@ import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.api.Run;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
+import org.jboss.weld.environment.servlet.test.injection.ServletInjectionTestBase;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @Run(AS_CLIENT)
-@Ignore // ignore in this branch
-public class ListenerInjectionTest extends ListenerInjectionTestBase
+public class ServletInjectionTest extends ServletInjectionTestBase
 {
-   
+
    @Deployment
    public static WebArchive deployment()
    {
-      return ListenerInjectionTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml").addWebResource(JETTY_WEB, "jetty-web.xml");
+      return ServletInjectionTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml").addWebResource(JETTY_WEB, "jetty-web.xml");
    }
 
 }

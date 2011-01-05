@@ -22,23 +22,26 @@
 
 package org.jboss.weld.environment.servlet.inject;
 
-import org.jboss.weld.manager.api.WeldManager;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionTarget;
-import java.util.Map;
-import java.util.WeakHashMap;
+
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * Provides support for Weld injection into servlets, servlet filters etc.
  *
  * @author Pete Muir
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
+ * @author <a href="mailto:dan.j.allen@gmail.com">Dan Allen</a>
  */
 public abstract class AbstractInjector
 {
    private final WeldManager manager;
    private final Map<Class<?>, InjectionTarget<?>> cache = new WeakHashMap<Class<?>, InjectionTarget<?>>();
+   private final Map<Object, CreationalContext<Object>> contexts = new WeakHashMap<Object, CreationalContext<Object>>();
 
    protected AbstractInjector(WeldManager manager)
    {
@@ -47,7 +50,7 @@ public abstract class AbstractInjector
       this.manager = manager;
    }
 
-   protected void inject(Object instance)
+   public void inject(Object instance)
    {
       // not data-race safe, however doesn't matter, as the injection target created for class A is interchangable for another injection target created for class A
       // TODO Make this a concurrent cache when we switch to google collections
@@ -59,5 +62,25 @@ public abstract class AbstractInjector
       CreationalContext<Object> cc = manager.createCreationalContext(null);
       InjectionTarget<Object> it = (InjectionTarget<Object>) cache.get(clazz);
       it.inject(instance, cc);
+      // QUESTION is holding an instance as a key a bad idea?
+      contexts.put(instance, cc);
+   }
+   
+   public void release(Object instance)
+   {
+      if (contexts.containsKey(instance))
+      {
+         contexts.get(instance).release();
+         contexts.remove(instance);
+      }
+   }
+   
+   public void releaseAll()
+   {
+      for (CreationalContext<Object> cc : contexts.values())
+      {
+         cc.release();
+      }
+      contexts.clear();
    }
 }
