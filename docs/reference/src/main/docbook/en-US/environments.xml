@@ -35,7 +35,7 @@
       <title>Servlet containers (such as Tomcat or Jetty)</title>
       
       <para>
-         JSR-299 does not require support for a standalone Servlet environment (only when used as part of Java EE).
+         JSR-299 is a Java EE specification and standalone servlet containers are not required to support it.
          However, Weld adds support for much of the JSR-299 programming model in Servlet environments, starting with
          Tomcat 6 and Jetty 6.
       </para>
@@ -72,8 +72,8 @@
          <title>Tomcat</title>
 
          <para>
-            Tomcat has a read-only JNDI, so Weld can't automatically bind the <literal>BeanManager</literal> extension
-            SPI. If you need to access the BeanManager via JNDI, first populate the file
+            Tomcat has a read-only JNDI, so Weld can't automatically bind the <literal>BeanManager</literal> to JNDI.
+            If you need to access the BeanManager via JNDI, first populate the file
             <literal>META-INF/context.xml</literal> relative to the web root with the following contents:
          </para>
       
