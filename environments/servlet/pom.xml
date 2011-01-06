@@ -35,8 +35,8 @@
       <jsf.version>2.0.2-FCS</jsf.version>
       <tomcat.version>6.0.26</tomcat.version>
       <jetty.version>6.1.21</jetty.version>
-      <jetty7.version>7.0.0.v20091005</jetty7.version>
-      <jetty8.version>8.0.0.M0</jetty8.version>
+      <jetty7.version>7.2.2.v20101205</jetty7.version>
+      <jetty8.version>8.0.0.M2</jetty8.version>
       <uel.glassfish.version>2.2</uel.glassfish.version>
       <!-- Testing deps -->
       <apache.httpclient.version>3.1</apache.httpclient.version>

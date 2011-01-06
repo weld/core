@@ -117,7 +117,7 @@
       </section>
 
       <section>
-         <title>Jetty</title>
+         <title>Jetty 6</title>
 
          <para>
             Like Tomcat, Jetty has a read-only JNDI, so Weld can't automatically bind the BeanManager. To 
@@ -140,28 +140,6 @@
       </Arg>
    </New>
 </Configure>]]></programlisting>
-
-         <para>
-            Jetty 7 has moved to the Eclipse Foundation; if you are using Jetty 7 put the following in your 
-            <literal>WEB-INF/jetty-env.xml</literal>:
-         </para>
-         
-         <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
-   "http://www.eclipse.org/jetty/configure.dtd">
-
-<Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
-    <New id="BeanManager" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg><Ref id="webAppCtx"/></Arg>
-        <Arg>BeanManager</Arg>
-        <Arg>
-            <New class="javax.naming.Reference">
-                <Arg>javax.enterprise.inject.spi.BeanManager</Arg>
-                <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
-                <Arg/>
-            </New>
-        </Arg>
-    </New>
-</Configure> ]]></programlisting>
 
          <para>
             Just like in Tomcat, you need to make it available to your deployment by adding this to the bottom of <literal>web.xml</literal>:
@@ -199,6 +177,82 @@
 </Configure>]]></programlisting>
 
       </section>
+       <section>
+          <title>Jetty 7+</title>
+          <para>
+             Jetty 7 has moved to the Eclipse Foundation, so the configuration for Jetty 7 and 8 is slightly different
+             to Jetty 6
+          </para>
+
+          <para>
+             Like Jetty 6, Jetty 7 has a read-only JNDI, so Weld can't automatically bind the BeanManager. To
+             bind the BeanManager to JNDI in Jetty 7, you should populate <literal>WEB-INF/jetty-env.xml</literal> with
+             the following contents:
+          </para>
+
+          <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
+    "http://www.eclipse.org/jetty/configure.dtd">
+
+ <Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
+     <New id="BeanManager" class="org.eclipse.jetty.plus.jndi.Resource">
+         <Arg><Ref id="webAppCtx"/></Arg>
+         <Arg>BeanManager</Arg>
+         <Arg>
+             <New class="javax.naming.Reference">
+                 <Arg>javax.enterprise.inject.spi.BeanManager</Arg>
+                 <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
+                 <Arg/>
+             </New>
+         </Arg>
+     </New>
+ </Configure> ]]></programlisting>
+
+          <para>
+             Just like in Jetty 6, you need to make it available to your deployment by adding this to the bottom of <literal>web.xml</literal>:
+          </para>
+
+          <programlisting role="XML"><![CDATA[<resource-env-ref>
+    <resource-env-ref-name>BeanManager</resource-env-ref-name>
+    <resource-env-ref-type>
+       javax.enterprise.inject.spi.BeanManager
+    </resource-env-ref-type>
+ </resource-env-ref>]]></programlisting>
+
+          <para>
+             Notice that Jetty doesn't not have built-in support for an <literal>javax.naming.spi.ObjectFactory</literal>
+             like Tomcat, so it's necessary to manually create the <literal>javax.naming.Reference</literal> to wrap
+             around it.
+          </para>
+
+          <para>
+             Jetty only allows you to bind entries to <literal>java:comp/env</literal>, so the BeanManager will be
+             available at <literal>java:comp/env/BeanManager</literal>
+          </para>
+
+          <para>
+             Weld also supports Servlet injection in Jetty 7.  To enable this for a specific application, add the file
+            <literal>META-INF/jetty-web.xml</literal> with the following content to your war:
+          </para>
+
+          <programlisting role="XML"><![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
+ <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+ <Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
+    <Call class="org.jboss.weld.environment.jetty7.WeldConfiguration" name="register">
+       <Arg><Ref id="webAppCtx"/></Arg>
+    </Call>
+ </Configure>]]></programlisting>
+
+          <para>
+             You may also enable Servlet injection globally for all web applications deployed in your Jetty
+             instance.  To support this the Weld jars and all dependencies must be loaded in the global
+             classpath.  You may then add the <literal>org.jboss.weld.environment.jetty7.WeldConfiguration</literal>
+             class to the webapp configuration set via your preferred method (see Jetty documentation on enabling
+             the plus features for instructions on the various options).
+          </para>
+
+       </section>
+
 
    </section>
    
