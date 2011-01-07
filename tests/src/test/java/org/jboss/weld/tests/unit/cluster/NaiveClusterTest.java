@@ -18,12 +18,18 @@ package org.jboss.weld.tests.unit.cluster;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.weld.context.bound.BoundConversationContext;
+import org.jboss.weld.context.bound.BoundRequest;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
+import org.jboss.weld.test.Utils;
 import org.testng.annotations.Test;
 
 public class NaiveClusterTest extends AbstractClusterTest
@@ -51,6 +57,75 @@ public class NaiveClusterTest extends AbstractClusterTest
       use(2);
       Foo foo2 = (Foo) beanManager2.getReference(fooBean2, Foo.class, beanManager2.createCreationalContext(fooBean2));
       assert foo2.getName().equals("container 1");
+      use(2);
+      container2.stopContainer();
+      use(1);
+      container1.stopContainer();
+   }
+   
+   @Test(description="A simple test to check conversation replication")
+   public void testConversationReplication() throws Exception
+   {
+      
+      TestContainer container1 = bootstrapContainer(1, Arrays.<Class<?>>asList(Baz.class));
+      BeanManagerImpl beanManager1 = getBeanManager(container1);
+      
+      TestContainer container2 = bootstrapContainer(2, Arrays.<Class<?>>asList(Baz.class));
+      BeanManagerImpl beanManager2= getBeanManager(container2);
+      
+      use(1);
+      
+      // Set up the conversation context
+      BoundRequest request1 = new BoundRequestImpl(container1.getSessionStore());
+      BoundConversationContext conversationContext1 = Utils.getReference(beanManager1, BoundConversationContext.class);
+      conversationContext1.associate(request1);
+      conversationContext1.activate();
+      
+      // Set a value into Baz1
+      Baz baz1 = Utils.getReference(beanManager1, Baz.class);
+      baz1.setName("pete");
+      
+      // Begin the conversation
+      Conversation conversation1 = Utils.getReference(beanManager1, Conversation.class);
+      conversation1.begin();
+      
+      // refetch the test bean and check it has the right value
+      baz1 = Utils.getReference(beanManager1, Baz.class);
+      assert baz1.getName().equals("pete");
+      
+      // Simulate ending the request (from the POV of the conversation only!)
+      assert !conversation1.isTransient();
+      String cid = conversation1.getId();
+      conversationContext1.invalidate();
+      conversationContext1.deactivate();
+      conversationContext1.dissociate(request1);
+      
+      // and start another, propagating the conversation
+      request1 = new BoundRequestImpl(container1.getSessionStore());
+      conversationContext1.associate(request1);
+      conversationContext1.activate(cid);
+      
+      // refetch the test bean and check it has the right value
+      baz1 = Utils.getReference(beanManager1, Baz.class);
+      assert baz1.getName().equals("pete");
+      assert !conversation1.isTransient();
+      
+      replicateSession(1, container1, 2, container2);
+      
+      use(2);
+      
+      // Set up the conversation context
+      BoundRequest request2 = new BoundRequestImpl(container2.getSessionStore());
+      BoundConversationContext conversationContext2 = Utils.getReference(beanManager2, BoundConversationContext.class);
+      conversationContext2.associate(request2);
+      conversationContext2.activate(cid);
+      
+      Baz baz2 = Utils.getReference(beanManager2, Baz.class);
+      assert baz2.getName().equals("pete");
+      
+      Conversation conversation2 = Utils.getReference(beanManager2, Conversation.class);
+      assert !conversation2.isTransient();
+       
       use(2);
       container2.stopContainer();
       use(1);

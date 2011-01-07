@@ -17,26 +17,21 @@
 package org.jboss.weld.event;
 
 import static org.jboss.weld.logging.messages.EventMessage.PROXY_REQUIRED;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.AbstractFacade;
+import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -56,26 +51,12 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
    public static <E> EventImpl<E> of(InjectionPoint injectionPoint, BeanManagerImpl beanManager)
    {
-      return new EventImpl<E>(getFacadeType(injectionPoint), getFacadeEventQualifiers(injectionPoint), injectionPoint, beanManager);
+      return new EventImpl<E>(injectionPoint, beanManager);
    }
    
-   private static Annotation[] getFacadeEventQualifiers(InjectionPoint injectionPoint)
+   private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager)
    {
-      if (!injectionPoint.getAnnotated().isAnnotationPresent(Default.class))
-      {
-         Set<Annotation> qualifers = new HashSet<Annotation>(injectionPoint.getQualifiers());
-         qualifers.remove(DefaultLiteral.INSTANCE);
-         return qualifers.toArray(EMPTY_ANNOTATIONS);
-      }
-      else
-      {
-         return injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS);
-      }
-   }
-   
-   private EventImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, BeanManagerImpl beanManager)
-   {
-      super(type, qualifiers, injectionPoint, null, beanManager);
+      super(injectionPoint, null, beanManager);
    }
 
    /**
@@ -112,7 +93,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
    private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers)
    {
       Observers.checkEventObjectType(subtype);
-      return new EventImpl<U>(subtype, Beans.mergeInQualifiers(getQualifiers(), newQualifiers), getInjectionPoint(), getBeanManager());
+      return new EventImpl<U>(new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(), newQualifiers), getBeanManager());
    }
    
    // Serialization

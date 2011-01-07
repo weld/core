@@ -16,14 +16,18 @@
  */
 package org.jboss.weld.util.reflection;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
 import org.jboss.weld.util.collections.Arrays2;
 
-public class ParameterizedTypeImpl implements ParameterizedType
+public class ParameterizedTypeImpl implements ParameterizedType, Serializable
 {
+   
+   private static final long serialVersionUID = -3005183010706452884L;
+   
    private final Type[] actualTypeArguments;
    private final Type rawType;
    private final Type ownerType;

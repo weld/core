@@ -100,7 +100,6 @@ import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Supplier;
@@ -911,6 +910,11 @@ public class Beans
 
    public static Annotation[] mergeInQualifiers(Annotation[] qualifiers, Annotation[] newQualifiers)
    {
+      return mergeInQualifiersAsSet(qualifiers, newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
+   }
+   
+   public static Set<Annotation> mergeInQualifiersAsSet(Annotation[] qualifiers, Annotation[] newQualifiers)
+   {
       Set<Annotation> result = new HashSet<Annotation>();
       result.addAll(Arrays.asList(qualifiers));
       Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
@@ -927,7 +931,7 @@ public class Beans
          checkedNewQualifiers.add(qualifier);
       }
       result.addAll(checkedNewQualifiers);
-      return result.toArray(Reflections.EMPTY_ANNOTATIONS);
+      return result;
    }
 
    public static InjectionPoint getDelegateInjectionPoint(javax.enterprise.inject.spi.Decorator<?> decorator)
