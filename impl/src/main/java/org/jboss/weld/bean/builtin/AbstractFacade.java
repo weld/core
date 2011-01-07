@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.TYPE_PARAMETER_MUST_BE_CONCRETE;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -55,19 +56,15 @@ public abstract class AbstractFacade<T, X>
 
    private final BeanManagerImpl beanManager;
    private final InjectionPoint injectionPoint;
-   private final Type type;
-   private final Annotation[] qualifiers;
    // The CreationalContext used to create the facade which was injected.
    // This allows us to propagate the CreationalContext when get() is called
    private final CreationalContext<? super T> creationalContext;
    
-   protected AbstractFacade(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)
+   protected AbstractFacade(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)
    {
       this.beanManager = beanManager;
       this.injectionPoint = injectionPoint;
       this.creationalContext = creationalContext;
-      this.type = type;
-      this.qualifiers = qualifiers;
    }
 
    protected BeanManagerImpl getBeanManager()
@@ -77,12 +74,12 @@ public abstract class AbstractFacade<T, X>
    
    protected Annotation[] getQualifiers()
    {
-      return qualifiers;
+      return injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS);
    }
    
    protected Type getType()
    {
-      return type;
+      return getFacadeType(injectionPoint);
    }
    
    protected InjectionPoint getInjectionPoint()

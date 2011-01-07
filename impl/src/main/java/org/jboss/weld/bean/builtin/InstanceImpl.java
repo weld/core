@@ -18,7 +18,6 @@ package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.collections.Arrays2.asSet;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
@@ -39,11 +38,9 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -98,12 +95,12 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager)
    {
-      return new InstanceImpl<I>(getFacadeType(injectionPoint), injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS), injectionPoint, creationalContext, beanManager);
+      return new InstanceImpl<I>(injectionPoint, creationalContext, beanManager);
    }
    
-   private InstanceImpl(Type type, Annotation[] qualifiers, InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)
+   private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager)
    {
-      super(type, qualifiers, injectionPoint, creationalContext, beanManager);
+      super(injectionPoint, creationalContext, beanManager);
    }
    
    public T get()
@@ -181,12 +178,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
    
    private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] newQualifiers)
    {
-      return new InstanceImpl<U>(
-            subtype,
-            Beans.mergeInQualifiers(getQualifiers(), newQualifiers), 
-            getInjectionPoint(),
-            getCreationalContext(),
-            getBeanManager());
+      InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(), newQualifiers);
+      return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
    }
    
    // Serialization
