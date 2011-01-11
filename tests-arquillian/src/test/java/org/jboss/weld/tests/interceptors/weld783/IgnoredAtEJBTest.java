@@ -44,7 +44,6 @@ public class IgnoredAtEJBTest
    public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .intercept(MyInterceptor.class)
          .addPackage(IgnoredAtEJBTest.class.getPackage());
    }
 

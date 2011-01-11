@@ -23,7 +23,6 @@
 package org.jboss.weld.tests.interceptors.weld783;
 
 import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import java.io.Serializable;
@@ -31,8 +30,6 @@ import java.io.Serializable;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-@Interceptor
-@SomeBinding
 public class MyInterceptor implements Serializable
 {
    private static final long serialVersionUID = 1L;
