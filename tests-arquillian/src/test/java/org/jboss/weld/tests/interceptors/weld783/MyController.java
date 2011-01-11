@@ -35,7 +35,7 @@ public class MyController
    @EJB
    private MyEJB ejb;
 
-   @SomeBinding
+   @Interceptors(MyInterceptor.class)
    public void control()
    {
       System.err.println("Here: " + getClass());
