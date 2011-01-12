@@ -1,6 +1,6 @@
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.util.Beans.mergeInQualifiersAsSet;
+import static org.jboss.weld.util.Beans.mergeInQualifiers;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -22,11 +22,11 @@ public class FacadeInjectionPoint extends ForwardingInjectionPoint implements Se
    private final Type type;
    private final Set<Annotation> qualifiers;
 
-   public FacadeInjectionPoint(InjectionPoint injectionPoint, Type subtype, Annotation[] existingQualifiers, Annotation[] newQualifiers)
+   public FacadeInjectionPoint(InjectionPoint injectionPoint, Type subtype, Set<Annotation> existingQualifiers, Annotation[] newQualifiers)
    {
       this.injectionPoint = injectionPoint;
       this.type = new ParameterizedTypeImpl(Instance.class, new Type[] {subtype}, null);
-      this.qualifiers = mergeInQualifiersAsSet(existingQualifiers, newQualifiers);
+      this.qualifiers = mergeInQualifiers(existingQualifiers, newQualifiers);
    }
 
    @Override
