@@ -64,11 +64,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
       private final Type type;
       private final Set<Annotation> qualifiers;
 
-      public InstanceInjectionPoint(InjectionPoint injectionPoint, Type type, Annotation[] qualifiers)
+      public InstanceInjectionPoint(InjectionPoint injectionPoint, Type type, Set<Annotation> qualifiers)
       {
          this.injectionPoint = injectionPoint;
          this.type = type;
-         this.qualifiers = asSet(qualifiers);
+         this.qualifiers = qualifiers;
       }
 
       @Override

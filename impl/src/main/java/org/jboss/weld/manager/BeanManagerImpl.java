@@ -468,6 +468,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return cast(observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
    }
    
+   public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers)
+   {
+      // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
+      return cast(observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
+   }
+   
    /**
     * Enabled Alternatives, Interceptors and Decorators
     * 
@@ -484,6 +490,11 @@ public class BeanManagerImpl implements WeldManager, Serializable
    }
    
    public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers)
+   {
+      return beanResolver.resolve(new ResolvableBuilder(beanType).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+   }
+   
+   public Set<Bean<?>> getBeans(Type beanType, Set<Annotation> qualifiers)
    {
       return beanResolver.resolve(new ResolvableBuilder(beanType).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
    }
@@ -603,6 +614,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
    }
    
    public void fireEvent(Type eventType, Object event, Annotation... qualifiers)
+   {
+      Observers.checkEventObjectType(event);
+      notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
+   }
+   
+   public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers)
    {
       Observers.checkEventObjectType(event);
       notifyObservers(event, resolveObserverMethods(eventType, qualifiers));

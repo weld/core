@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.util;
 
+import static java.util.Arrays.asList;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_DEFAULT_CONSTRUCTOR;
@@ -910,13 +911,13 @@ public class Beans
 
    public static Annotation[] mergeInQualifiers(Annotation[] qualifiers, Annotation[] newQualifiers)
    {
-      return mergeInQualifiersAsSet(qualifiers, newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
+      return mergeInQualifiers(asList(qualifiers), newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
    }
    
-   public static Set<Annotation> mergeInQualifiersAsSet(Annotation[] qualifiers, Annotation[] newQualifiers)
+   public static Set<Annotation> mergeInQualifiers(Collection<Annotation> qualifiers, Annotation[] newQualifiers)
    {
       Set<Annotation> result = new HashSet<Annotation>();
-      result.addAll(Arrays.asList(qualifiers));
+      result.addAll(qualifiers);
       Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
       for (Annotation qualifier : newQualifiers)
       {

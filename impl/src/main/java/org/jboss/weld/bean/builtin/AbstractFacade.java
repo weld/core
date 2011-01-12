@@ -17,13 +17,12 @@
 package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.TYPE_PARAMETER_MUST_BE_CONCRETE;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
+import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -72,9 +71,9 @@ public abstract class AbstractFacade<T, X>
       return beanManager.getCurrent();
    }
    
-   protected Annotation[] getQualifiers()
+   protected Set<Annotation> getQualifiers()
    {
-      return injectionPoint.getQualifiers().toArray(EMPTY_ANNOTATIONS);
+      return injectionPoint.getQualifiers();
    }
    
    protected Type getType()
@@ -98,7 +97,7 @@ public abstract class AbstractFacade<T, X>
       if (obj instanceof AbstractFacade<?, ?>)
       {
          AbstractFacade<?, ?> that = (AbstractFacade<?, ?>) obj;
-         return this.getType().equals(that.getType()) && Arrays.equals(this.getQualifiers(), that.getQualifiers());
+         return this.getType().equals(that.getType()) && this.getQualifiers().equals(that.getQualifiers());
       }
       else
       {
@@ -111,7 +110,7 @@ public abstract class AbstractFacade<T, X>
    {
       int hashCode = 17;
       hashCode += getType().hashCode() * 5;
-      hashCode += Arrays.hashCode(getQualifiers()) * 7;
+      hashCode += getQualifiers().hashCode() * 7;
       return hashCode;
    }
    
