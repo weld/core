@@ -33,13 +33,6 @@
             </methods>
          </class>
 
-         <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
-            <methods>
-               <exclude name="testInjectionIntoWebServiceEndpoint" />
-            </methods>
-         </class>
-
-
       </classes>
    </test>
    
