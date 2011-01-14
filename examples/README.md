@@ -29,6 +29,8 @@ through the GUI of the example.
 The functional tests can be run on an individual JSF examples or on all examples. JBoss AS 6 
 must to be installed and running to run the functional tests. 
 
+Make sure you have set the `JBOSS_HOME` environment property to point to your JBoss AS distribution.
+
 To run the functional tests:
 
     mvn -Pftest-jboss-remote-6,jboss6 clean verify
