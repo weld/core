@@ -4,14 +4,14 @@
    <title>Context Management</title>
 
    <section>
-      <title>Managing the built in contexts</title>
+      <title>Managing the built-in contexts</title>
 
       <para>
-         Weld allows you to easiy manage the built in contexts by injecting them and calling
+         Weld allows you to easily manage the built-in contexts by injecting them and calling
          lifecycle methods. Weld defines two types of context, <emphasis>managed</emphasis>
          and <emphasis>unmanaged</emphasis>. Managed contexts can be activated (allowing bean
          instances to be retrieved from the context), invalidated (scheduling bean instances
-         for destruction) and deactivaed (stopping bean instances from being retrieved, and if
+         for destruction) and deactivated (stopping bean instances from being retrieved, and if
          the context has been invalidated, causing the bean instances to destroyed). Unmanaged
          contexts are always active; some may offer the ability to destroy instances.
       </para>
@@ -26,14 +26,14 @@
          after calling activate.
       </para>
       
-      <tip>
+      <note>
          <para>
             Weld automatically controls context lifecycle in many scenarios such as Http Requests,
             EJB remote invocations, and MDB invocations. Many of the extensions for CDI offer context
             lifecycle for other environments, it's worth checking to see if there is a suitable extension
             before deciding to manage the context yourself.
          </para>
-      </tip>
+      </note>
       
       <para>
          Weld provides a number of built in contexts, which are shown in <xref linkend="contexts.available"/>.

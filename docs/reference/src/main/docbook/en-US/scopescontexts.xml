@@ -33,10 +33,10 @@
 
       <note>
          <para>
-            JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model
-            which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities
-            as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than
-            the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass
+            JPA entities do not fit this model. Entities have a separate lifecycle and identity model
+            which does not map naturally to the model used in CDI. Therefore, we recommend against treating entities
+            as CDI beans. You will encounter problems if you try to give an entity a scope other than
+            the default <literal>@Dependent</literal> scope. The client proxy will get in the way if you try to pass
             an injected instance to the JPA <literal>EntityManager</literal>.
          </para>
       </note>
@@ -45,7 +45,7 @@
       <title>Scope types</title>
 
       <para>
-         CDI features an <emphasis>extensible context model</emphasis>. It's possible to define new scopes by creating
+         CDI features an <emphasis>extensible context model</emphasis>, meaning you can define new scopes by creating
          a new scope type annotation:
       </para>
 
@@ -56,7 +56,7 @@ public @interface ClusterScoped {}]]></programlisting>
 
       <para>
          Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a
-         <literal>Context</literal> object that implements the scope!  Implementing a <literal>Context</literal> is
+         <literal>Context</literal> object that implements the scope. Implementing a <literal>Context</literal> is
          usually a very technical task, intended for framework development only. You can expect an implementation of the
          business scope, for instance, in a future version of Seam.
       </para>
@@ -136,13 +136,13 @@ public class SecondLevelCache { ... }]]></programlisting>
       </para>
       
       <para>
-         Managed beans with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal> must be
+         Managed beans with a <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal> scope must be
          serializable, since the container passivates the HTTP session from time to time.
       </para>
 
       <para>
-         Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let's not waste
-         time discussing them here. One of the scopes, however, is new.
+         Three of the four built-in scopes should be extremely familiar to every Java EE developer, and are not
+         discussed here. One of the scopes, however, is new.
       </para>
 
    </section>
@@ -151,7 +151,7 @@ public class SecondLevelCache { ... }]]></programlisting>
       <title>The conversation scope</title>
   
       <para>
-         The conversation scope is a bit like the traditional session scope in that it holds state associated with a
+         The conversation scope is similar to the traditional session scope in that it holds state associated with a
          user of the system, and spans multiple requests to the server. However, unlike the session scope, the
          conversation scope:
       </para>
@@ -162,21 +162,22 @@ public class SecondLevelCache { ... }]]></programlisting>
          </listitem>
          <listitem>
             <para>
-               holds state associated with a particular web browser tab in a JSF application (browsers tend to share
-               domain cookies, and hence the session cookie, between tabs, so this is not the case for the session scope).
+               holds state associated with a particular web browser tab in a JSF application. (Browsers tend to share
+               domain cookies, and hence the session cookie, between tabs, so this is not the case for the session
+               scope.)
             </para>
          </listitem>
       </itemizedlist>
   
       <para>
-         A conversation represents a task&mdash;a unit of work from the point of view of the user. The conversation context
-         holds state associated with what the user is currently working on. If the user is doing multiple things at the
-         same time, there are multiple conversations.
+         A conversation represents a <emphasis>task</emphasis> &mdash; a unit of work from the point of view of the
+         user. The conversation context holds state associated with what the user is currently working on. If the user
+         is doing multiple things at the same time, there are multiple conversations.
       </para>
   
       <para>
          The conversation context is active during any JSF request. Most conversations are destroyed at the end of the
-         request. If a conversation should hold state across multiple requests, it must be explicitly promoted to a
+         request. If a conversation is to hold state across multiple requests, it must be explicitly promoted to a
          <emphasis>long-running conversation</emphasis>.
       </para>
   
@@ -230,8 +231,8 @@ public class OrderBuilder {
 }]]></programlisting>
 
          <para>
-            This bean is able to control its own lifecycle through use of the <literal>Conversation</literal> API. But
-            some other beans have a lifecycle which depends completely upon another object.
+            This bean can control its own lifecycle through use of the <literal>Conversation</literal> API.
+            Some other beans have a lifecycle that depends completely upon another object.
          </para>
          
       </section>
@@ -240,8 +241,8 @@ public class OrderBuilder {
          <title>Conversation propagation</title>
     
          <para>
-            The conversation context automatically propagates with any JSF faces request (JSF form submission) or redirect. 
-            It does  not automatically propagate with non-faces requests, for example, navigation via a link.
+            The conversation context automatically propagates with any JSF faces request (JSF form submission) or
+            redirect. It does not automatically propagate with non-faces requests, for example, navigation via a link.
          </para>
     
          <para>
@@ -258,20 +259,20 @@ public class OrderBuilder {
          <programlisting role="XML"><![CDATA[<a href="/addProduct.jsp?cid=#{conversation.id}">Add Product</a>]]></programlisting>
 
          <para>
-            It's probably better to use one of the link components in JSF 2:
+            For JSF 2, we recommend using a link component:
          </para>
 
          <programlisting role="XML"><![CDATA[<h:link outcome="/addProduct.xhtml" value="Add Product">
    <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 </h:link>]]></programlisting>
          
-         <tip>
-         <para>
-            The conversation context propagates across redirects, making it very easy to implement the common 
-            POST-then-redirect pattern, without resort to fragile constructs such as a "flash" object. The container 
-            automatically adds the conversation id to the redirect URL as a request parameter.
-         </para>
-         </tip>
+         <note>
+            <para>
+               The conversation context propagates across redirects, making it very easy to implement the common 
+               POST-then-redirect pattern, without resort to fragile constructs such as a "flash" object. The container 
+               automatically adds the conversation id to the redirect URL as a request parameter.
+            </para>
+         </note>
 
       </section>
   
@@ -281,8 +282,8 @@ public class OrderBuilder {
          <para>
             The container is permitted to destroy a conversation and all state held in its context at any time in order
             to conserve resources. A CDI implementation will normally do this on the basis of some kind of 
-            timeout&mdash;though this is not required by the specification. The timeout is the period of inactivity before
-            the conversation is destroyed (as opposed to the amount of time the conversation is active).
+            timeout &mdash; though this is not required by the specification. The timeout is the period of inactivity
+            before the conversation is destroyed (as opposed to the amount of time the conversation is active).
          </para>
     
          <para>
@@ -301,7 +302,8 @@ public class OrderBuilder {
       
       <para>
          In addition to the four built-in scopes, CDI also supports two <emphasis>pseudo-scopes</emphasis>. The first 
-         is the <emphasis>singleton pseudo-scope</emphasis>, which we specify using the annotation <literal>@Singleton</literal>.
+         is the <emphasis>singleton pseudo-scope</emphasis>, which we specify using the <literal>@Singleton</literal>
+         annotation.
       </para>
       
       <note>
@@ -312,21 +314,23 @@ public class OrderBuilder {
       </note>
       
       <para>
-         You can guess what "singleton" means here. It means a bean that is instantiated once. Unfortunately, there's 
-         a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don't have a proxy
-         object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client 
+         You can guess what "singleton" means here. It means a bean that is instantiated once. Unfortunately, there 
+         is a problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> do not have a proxy
+         object; clients hold a direct reference to the singleton instance. So we need to consider the case of a client 
          that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or 
-         <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal>
-         or <literal>@ConversationScoped</literal>, or any stateful session bean.
+         <literal>@ConversationScoped</literal>, any dependent object of a bean with a <literal>@SessionScoped</literal>
+         or <literal>@ConversationScoped</literal> scope, or any stateful session bean.
       </para>
       
       <para>
-         Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, 
-         we probably don't mind too much if it gets duplicated via serialization. However, that makes it no stop being a 
-         true singleton, and we may as well have just declared it with the default scope.
+         If the singleton instance is a simple, immutable, serializable object like a string, a number or a date, 
+         duplication via serialization is not a large problem. It does mean that it is not a true singleton, however,
+         and that we could have declared it with the default scope.
       </para>
 
-      <para>There are several ways to ensure that the singleton bean remains a singleton when its client gets serialized:</para>
+      <para>
+         There are several ways to ensure that the singleton bean remains a singleton when its client is serialized:
+      </para>
       
       <itemizedlist>
          <listitem>
@@ -342,14 +346,16 @@ public class OrderBuilder {
          </listitem>
          <listitem>
             <para>
-               give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is the
-               bean type of the singleton bean.
+               give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is
+               the bean type of the singleton bean.
             </para>
          </listitem>
       </itemizedlist>
       
-      <para>A fourth, better solution is to instead use <literal>@ApplicationScoped</literal>, allowing the container to
-      proxy the bean, and take care of serialization problems automatically.</para>
+      <para>
+         A fourth, better solution is to instead use <literal>@ApplicationScoped</literal> annotation, allowing the
+         container to proxy the bean, and take care of serialization problems automatically.
+      </para>
    
    </section>
 
@@ -362,7 +368,7 @@ public class OrderBuilder {
       </para>
 
       <para>
-         For example, this bean has the scope type <literal>@Dependent</literal>:
+         For example, this bean has the <literal>@Dependent</literal> scope type:
       </para>
 
       <programlisting role="JAVA"><![CDATA[public class Calculator { ... }]]></programlisting>
@@ -390,8 +396,8 @@ public class OrderBuilder {
       </note>
       
       <para>
-         Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference
-         to its instance.
+         A bean with the <literal>@Dependent</literal> scope does not need a proxy object. The client holds a direct
+         reference to the instance.
       </para>
 
       <para>
@@ -405,7 +411,7 @@ public class OrderBuilder {
          <title>The <literal>@New</literal> qualifier</title>
 
          <para>
-            The built-in qualifier <literal>@New</literal> allows us to obtain a dependent object of a specified class.
+            The built-in <literal>@New</literal> qualifier allows us to obtain a dependent object of a specified class.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Inject @New Calculator calculator;]]></programlisting>

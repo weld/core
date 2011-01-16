@@ -5,7 +5,7 @@
   
    <para>
       CDI is fully integrated into the Java EE environment. Beans have access to Java EE resources and JPA persistence
-      contexts. They may be used in Unified EL expressions in JSF and JSP pages. They may even be injected into other
+      contexts. They can be used in Unified EL expressions in JSF and JSP pages. They can even be injected into other
       platform components, such as servlets and message-driven Beans, which are not beans themselves.
    </para>
   
@@ -13,8 +13,8 @@
          <title>Built-in beans</title>
 
          <para>
-            In the Java EE environment, the container provides the following built-in beans, all with the qualifier 
-            <literal>@Default</literal>:
+            In the Java EE environment, the container provides the following built-in beans, all with the  
+            <literal>@Default</literal> qualifier:
          </para>
 
          <itemizedlist>
@@ -45,18 +45,17 @@
             <para>
                The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>,
                <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If 
-               you really want to be able to inject these objects, it's easy to create a portable extension to expose them 
+               you really want to be able to inject these objects, it is easy to create a portable extension to expose them 
                as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters 
-               and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec.
-               The <literal>FacesContext</literal> is also not injectable. You can get at it by calling 
+               and servlet event listeners, where they can be obtained in the usual way as defined by the Java Servlets
+               specification. The <literal>FacesContext</literal> is also not injectable. You can get at it by calling 
                <literal>FacesContext.getCurrentInstance()</literal>.
             </para>
          </note>
          
          <note>
             <para>
-               Oh, you <emphasis>really</emphasis> want to inject the <literal>FacesContext</literal>? Alright then, try
-               this producer method:
+               To actually inject the <literal>FacesContext</literal>, use the following producer method:
             </para>
             <programlisting role="JAVA"><![CDATA[class FacesContextProducer {
    @Produces @RequestScoped FacesContext getFacesContext() {
@@ -73,8 +72,7 @@
       <para>
          All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>,
          <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and
-         <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay 
-         much attention at the time:
+         <literal>@WebServiceRef</literal>. We have already seen several examples of this:
       </para>
     
       <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
@@ -98,8 +96,8 @@ public class Login implements Serializable {
       </para>
       
       <para>
-         Of course, we advise that component environment injection be used to define CDI resources, and that typesafe
-         injection be used in application code.
+         We recommend that component environment injection is used to define CDI resources, and that typesafe
+         injection is used in application code.
       </para>
     
    </section>
@@ -108,7 +106,7 @@ public class Login implements Serializable {
       <title>Calling a bean from a servlet</title>
     
       <para>
-         It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method
+         To use a bean from a servlet, inject the bean using field or initializer method
          injection.
       </para>
     
@@ -144,7 +142,7 @@ public class Login implements Serializable {
       <title>Calling a bean from a message-driven bean</title>
     
       <para>
-         CDI injection applies to all EJBs, even when they aren't managed beans. In particular, you can use CDI
+         CDI injection applies to all EJBs, even when they are not managed beans. In particular, you can use CDI
          injection in message-driven beans, which are by nature not contextual objects.
       </para>
     
@@ -263,16 +261,16 @@ public void sendMessage(String price) {
       <title>Packaging and deployment</title>
     
       <para>
-         CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars&mdash;any
+         CDI does not define any special deployment archive. You can package beans in JARs, EJB JARs or WARs &mdash; any
          deployment location in the application classpath. However, the archive must be a "bean archive". That means
          each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in
          the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web
-         root (for war archives). The file may be empty. Beans deployed in archives that do not have a
+         root (for WAR archives). This file can be empty. Beans deployed in archives that do not have a
          <literal>beans.xml</literal> file will not be available for use in the application.
       </para>
     
       <para>
-         In an embeddable EJB container, beans may be deployed in any location in which EJBs may be deployed. Again, each 
+         In an embeddable EJB container, beans can be deployed in any location in which EJBs may be deployed. Again, each 
          location must contain a <literal>beans.xml</literal> file.
       </para>
     

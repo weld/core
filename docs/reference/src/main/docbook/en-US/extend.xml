@@ -16,7 +16,7 @@
       </listitem>
       <listitem>
          <para>
-            integration with third-party frameworks such as Spring, Seam, GWT or Wicket, and
+            integration with third-party frameworks such as Spring, Seam, GWT and Wicket, and
          </para>
       </listitem>
       <listitem>
@@ -60,7 +60,7 @@
       <para>
          The first step in creating a portable extension is to write a class that implements 
          <literal>Extension</literal>. This marker interface does not define any methods, but
-         it's needed to satisfy the requirements of Java SE's service provider architecture.
+         is needed to satisfy the requirements of Java SE's service provider architecture.
       </para>
       
       <programlisting role="JAVA">class MyExtension implements Extension { ... }</programlisting>
@@ -74,7 +74,7 @@
       <programlisting>org.mydomain.extension.MyExtension</programlisting>
       
       <para>
-         An extension is not a bean, exactly, since it is instantiated by the container during the 
+         An extension is not a bean, since it is instantiated by the container during the 
          initialization process, before any beans or contexts exist. However, it can be injected
          into other beans once the initialization process is complete.
       </para>
@@ -132,7 +132,7 @@ MyBean(MyExtension myExtension) {
       </itemizedlist>
       
       <para>
-         Extensions may observe these events:
+         Extensions can observe any of these events:
       </para>
    
       <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
@@ -152,8 +152,7 @@ MyBean(MyExtension myExtension) {
 }]]></programlisting>
 
       <para>
-         In fact, the extension can do a lot more than just observe. The extension is permitted to 
-         modify the container's metamodel and more. Here's a very simple example:
+         Extensions are also permitted to modify the container's metamodel and more. Here's a very simple example:
       </para>
       
       <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
@@ -166,7 +165,7 @@ MyBean(MyExtension myExtension) {
 }]]></programlisting>
 
       <para>
-         The observer method may inject a <literal>BeanManager</literal>
+         The observer method can inject a <literal>BeanManager</literal>
       </para>
 
       <programlisting role="JAVA"><![CDATA[<T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat, BeanManager beanManager) { ... }]]></programlisting>
@@ -282,7 +281,7 @@ ctx.release();  //clean up dependent objects
       </para>
       
       <para>
-         The <literal>Bean</literal> interface exposes all the interesting things we dicussed in
+         The <literal>Bean</literal> interface exposes all the interesting things we discussed in
          <xref linkend="bean-anatomy"/>.
       </para>
       
@@ -299,7 +298,7 @@ ctx.release();  //clean up dependent objects
 }]]></programlisting>
 
       <para>
-         There's an easy way to find out what beans exist in the application:
+         There is an easy way to find out which beans exist in the application:
       </para>
       
       <programlisting role="JAVA"><![CDATA[Set<Bean<?>> allBeans = beanManager.getBeans(Obect.class, new AnnotationLiteral<Any>() {});]]></programlisting>
@@ -322,7 +321,7 @@ ctx.release();  //clean up dependent objects
       
       <para>
          In this example, we make a framework class, <literal>SecurityManager</literal> available
-         for injection. To make things a bit more interesting, we're going to delegate back to 
+         for injection. To make things a bit more interesting, we delegate back to 
          the container's <literal>InjectionTarget</literal> to perform instantiation and injection
          upon the <literal>SecurityManager</literal> instance.
       </para>
@@ -412,7 +411,7 @@ ctx.release();  //clean up dependent objects
 }]]></programlisting>
 
       <para>
-         But a portable extension can also mess with beans that are discovered automatically by the container.
+         But a portable extension can also affect beans that are discovered automatically by the container.
       </para>
       
    </section>
@@ -518,7 +517,7 @@ ctx.release();  //clean up dependent objects
 }]]></programlisting>
 
       <para>
-         Here's a second example, which adds the <literal>@Alternative</literal> annotation to any
+         This next example adds the <literal>@Alternative</literal> annotation to any
          class which implements a certain <literal>Service</literal> interface.
       </para>
       
@@ -558,13 +557,13 @@ ctx.release();  //clean up dependent objects
       
       <para>
           The <literal>InjectionTarget</literal> interface exposes operations for producing and disposing an instance
-          of a component, injecting its dependencies and invoking its lifecycle callbacks. A portable extension may 
+          of a component, injecting its dependencies, and invoking its lifecycle callbacks. A portable extension can 
           wrap the <literal>InjectionTarget</literal> for any Java EE component that supports injection, allowing it
           to intercept any of these operations when they are invoked by the container.
       </para>
       
       <para>
-         Here's a CDI portable extension that reads values from properties files and configures fields of Java EE components, 
+         Here is a CDI portable extension that reads values from properties files and configures fields of Java EE components, 
          including servlets, EJBs, managed beans, interceptors and more. In this example, properties for a class such as 
          <literal>org.mydomain.blog.Blogger</literal> go in a resource named <literal>org/mydomain/blog/Blogger.properties</literal>, 
          and the name of a property must match the name of the field to be configured. So <literal>Blogger.properties</literal> 
@@ -676,8 +675,8 @@ lastName=King</programlisting>
 }]]></programlisting>
 
       <para>
-         There's a lot more to the portable extension SPI than what we've discussed here. Check out the CDI spec or
-         Javadoc for more information. For now, we'll just mention one more extension point.
+         There is much more to the portable extension SPI than what we have discussed here. Check out the CDI specification or
+         Javadoc for more information. For now, we will mention one more extension point.
       </para>
 
    </section>

@@ -26,7 +26,7 @@
       </itemizedlist>
 
       <para>
-         A stereotype may also specify that: 
+         A stereotype can also specify that: 
       </para>
 
       <itemizedlist>
@@ -39,7 +39,7 @@
       </itemizedlist>
   
       <para>
-         A bean may declare zero, one or multiple stereotypes. Stereotype annotations may be applied to a bean class or
+         A bean can declare zero, one or multiple stereotypes. Stereotype annotations can be applied to a bean class or
          producer method or field.
       </para>
   
@@ -71,7 +71,7 @@ public class LoginAction { ... }]]></programlisting>
       <title>Default scope for a stereotype</title>
   
       <para>
-         A stereotype may specify a default scope for beans annotated with the stereotype. For example:
+         A stereotype can specify a default scope for beans annotated with the stereotype. For example:
       </para>
     
       <programlisting role="JAVA"><![CDATA[@RequestScoped
@@ -81,14 +81,14 @@ public class LoginAction { ... }]]></programlisting>
 public @interface Action {}]]></programlisting>
 
       <para>
-         A particular action may still override this default if necessary:
+         A particular action can still override this default if necessary:
       </para>
     
       <programlisting role="JAVA"><![CDATA[@Dependent @Action 
 public class DependentScopedLoginAction { ... }]]></programlisting>
 
       <para>
-         Naturally, overriding a single default isn't much use. But remember, stereotypes can define more than just the
+         Naturally, overriding a single default is not much use. But remember, stereotypes can define more than just the
          default scope.
       </para>
 
@@ -98,7 +98,7 @@ public class DependentScopedLoginAction { ... }]]></programlisting>
       <title>Interceptor bindings for stereotypes</title>
     
       <para>
-         A stereotype may specify a set of interceptor bindings to be inherited by all beans with that stereotype.
+         A stereotype can specify a set of interceptor bindings to be inherited by all beans with that stereotype.
       </para>
     
 <programlisting role="JAVA"><![CDATA[@RequestScoped
@@ -110,7 +110,7 @@ public class DependentScopedLoginAction { ... }]]></programlisting>
 public @interface Action {}]]></programlisting>
 
       <para>
-         This helps us get technical concerns, like transactions and security, even further away from the business code!
+         This helps us to separate technical concerns, like transactions and security, even further from business code.
       </para>
 
    </section>
@@ -173,10 +173,9 @@ public class MockLoginAction extends LoginAction { ... }]]></programlisting>
       <title>Stereotype stacking</title>
 
       <para>
-         This may blow your mind a bit, but stereotypes may declare other stereotypes, which we'll call
-         <emphasis>stereotype stacking</emphasis>. You may want to do this if you have two distinct
-         stereotypes which are meaningful on their own, but in other situation may be meaningful when
-         combined.
+         Stereotypes can declare other stereotypes, which is known as <emphasis>stereotype stacking</emphasis>. 
+         This is useful when you have two distinct stereotypes which are meaningful on their own, but in other 
+         situations may be meaningful when combined.
       </para>
 
       <para>
@@ -197,7 +196,7 @@ public @interface AuditableAction {}]]></programlisting>
       <title>Built-in stereotypes</title>
     
       <para>
-         We've already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal>
+         We have already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal>
          and <literal>@Decorator</literal>.
       </para>
     
@@ -215,7 +214,7 @@ public @interface Model {}]]></programlisting>
 
       <para>
          Instead of using JSF managed beans, just annotate a bean <literal>@Model</literal>, and use it directly in
-         your JSF view!
+         your JSF view.
       </para>
     
   </section>

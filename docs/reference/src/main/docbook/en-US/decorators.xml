@@ -5,10 +5,10 @@
    <title>Decorators</title>
   
    <para>
-      Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the
+      Interceptors are a powerful way to capture and separate concerns that are <emphasis>orthogonal</emphasis> to the
       application (and type system). Any interceptor is able to intercept invocations of any Java type. This makes them
       perfect for solving technical concerns such as transaction management, security and call logging. However, by
-      nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren't
+      nature, interceptors are unaware of the actual semantics of the events they intercept, so they are not
       an appropriate tool for separating business-related concerns.
    </para>
   
@@ -16,7 +16,7 @@
       The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java
       interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly
       implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business
-      concerns. It also means that a decorator doesn't have the generality of an interceptor. Decorators aren't able to
+      concerns. It also means that a decorator does not have the generality of an interceptor. Decorators cannot
       solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many
       ways, are complementary. Let's look at some cases where decorators fit the bill.
    </para>
@@ -32,12 +32,12 @@
 
    <para>
       Several different beans in our system implement the <literal>Account</literal> interface. However, we have a
-      common legal requirement that; for any kind of account, large transactions must be recorded by the system in a
+      common legal requirement that, for any kind of account, large transactions must be recorded by the system in a
       special log. This is a perfect job for a decorator.
    </para>
   
    <para>
-      A decorator is a bean (possibly even an abstract class) that implements the type it decorates and is annotated
+      A decorator is a bean (possibly even an abstract class) that implements the type it decorates, and is annotated
       <literal>@Decorator</literal>.
    </para>
   
@@ -68,8 +68,8 @@ public abstract class LargeTransactionDecorator
 }]]></programlisting>
 
    <para>
-      Unlike other beans, a decorator may be an abstract class. Therefore, if there's nothing special the decorator
-      needs to do for a particular method of the decorated interface, you don't need to implement that method.
+      Unlike other beans, a decorator may be an abstract class. Therefore, if there is nothing special that the decorator
+      needs to do for a particular method of the decorated interface, you do not need to implement that method.
    </para>
   
    <para>

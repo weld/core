@@ -24,10 +24,13 @@
       
       <para>
           All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in
-          the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of
-          <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF
-          2.0, so there's really nothing that we have to configure. Thus, the configuration consists of only the root
-          element.
+          the <literal>src/main/webapp</literal> directory of the example.
+      </para>
+      
+      <para>
+         First, we have the JSF 2.0 version of <literal>faces-config.xml</literal>. A standardized version of Facelets 
+         is the default view handler in JSF 2.0, so there's really nothing that we have to configure. Thus, the 
+         configuration consists of only the root element.
       </para>
       
       <programlisting role="XML"><![CDATA[<faces-config version="2.0"
@@ -93,7 +96,7 @@
             </callout>
             <callout arearefs="faces.servlet.mapping">
                <para>
-                  Configure requests for URLs ending in <literal>.jsf</literal> to be
+                  Specify that requests for URLs ending in <literal>.jsf</literal> be
                   handled by JSF
                </para>
             </callout>
@@ -179,7 +182,7 @@
             </callout>
             <callout arearefs="statusMessages">
                <para>
-                  There are a number of messages which can be sent to the user,
+                  There are a number of messages which can be sent to the user:
                   "Higher!", "Lower!" and "Correct!"
                </para>
             </callout>
@@ -214,7 +217,7 @@
       </programlistingco>
       
       <para>
-         The example exists of 4 classes, the first two of which are qualifiers.  First, there is the
+         The example exists of four classes, the first two of which are qualifiers. First, there is the
          <literal>@Random</literal> qualifier, used for injecting a random number:
       </para>
       
@@ -273,15 +276,15 @@ public class Generator implements Serializable {
       
       <para>
          The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary
-         entry point of the application. It's responsible for setting up or resetting the game, capturing and validating
-         the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used the
-         post-construct lifecycle method to initialize the game by retrieving a random number from the <literal>@Random
+         entry point of the application. It is responsible for setting up and resetting the game, capturing and validating
+         the user's guess, and providing feedback to the user with a <literal>FacesMessage</literal>. The
+         post-construct lifecycle method initializes the game by retrieving a random number from the <literal>@Random
          Instance&lt;Integer&gt;</literal> bean.
       </para>
 
       <para>
-         You'll notice that we've also added the <literal>@Named</literal> annotation to this class. This annotation is
-         only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game}).
+         The <literal>@Named</literal> annotation is required here because we want to make the bean accessible to a JSF view 
+         via EL (for example, #{game}).
       </para>
          
       <programlisting role="JAVA"><![CDATA[@Named
@@ -369,22 +372,22 @@ public class Game implements Serializable {
          
          <para>
             A couple of modifications must be made to the numberguess artifact in order to deploy it to Tomcat or Jetty.
-            First, Weld must be deployed as a Web Application library under <literal>WEB-INF/lib</literal> since the
-            servlet container does not provide the CDI services. For your convenience we provide a single jar suitable
+            First, Weld must be deployed as a Web Application library under <literal>WEB-INF/lib</literal>, since the
+            servlet container does not provide the CDI services. For your convenience we provide a single JAR suitable
             for running Weld in any servlet container (including Jetty), <literal>weld-servlet.jar</literal>.
          </para>
          
          <note>
             <para>
-               You must also include the jars for JSF, EL, and the common annotations
+               You must also include the JARs for JSF, EL, and the common annotations
                (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE
-               application server). Are you starting to appreciate why a Java EE platform is worth using?
+               application server).
             </para>
          </note>
          
          <para>
-            Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the
-            container isn't doing this stuff for you. The servlet listener boots Weld and controls it's interaction with
+            Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because
+            this is not handled by the container. The servlet listener boots Weld and controls its interaction with
             requests.
          </para>
          
@@ -395,7 +398,7 @@ public class Game implements Serializable {
          <para>
             When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI
             for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified
-            interface name. You generally don't need to access this interface, but Weld makes use of it.
+            interface name. You generally do not need to access this interface, but Weld makes use of it.
          </para>
 
       </section>   
@@ -406,8 +409,8 @@ public class Game implements Serializable {
       <title>The numberguess example for Java SE with Swing</title>
 
       <para>
-         This example shows how to use the Weld SE extension to in a
-         Java SE based Swing application with no EJB or servlet
+         This example shows how to use the Weld SE extension in a
+         Java SE-based Swing application with no EJB or servlet
          dependencies.
          This example can be found in the
          <literal>examples/se/numberguess</literal>
@@ -419,8 +422,8 @@ public class Game implements Serializable {
 
          <para>
             To use the Weld SE numberguess example in Eclipse, you can
-            open the example natively using the
-            <ulink url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>.
+            open the example natively using the m2eclipse plugin 
+            (<ulink url="http://m2eclipse.sonatype.org/">http://m2eclipse.sonatype.org/</ulink>).
          </para>
 
          <para>
@@ -442,12 +445,8 @@ public class Game implements Serializable {
             different steps to import the project.
             First, switch into the Weld SE numberguess example, then execute the Maven
             Eclipse plugin with the jetty
-            profile activated, as follows:
-            </para>
-
-         <para>
-            It's time to get the example running!
-         </para>
+            profile activated<!--TODO: Example missing! - , as follows:-->.
+            </para> 
 
       </section>
 
@@ -491,7 +490,7 @@ public class Game implements Serializable {
          </mediaobject>
          
          <para>
-            The application should now launch!
+            The application launches:
          </para>
          
          <mediaobject>
@@ -506,7 +505,7 @@ public class Game implements Serializable {
       <section>
          <title>Running the example from the command line</title>
 
-         <itemizedlist>
+         <orderedlist>
             <listitem>
                <para>
                   Ensure that Maven 3 is installed and in your PATH
@@ -526,11 +525,11 @@ public class Game implements Serializable {
             </listitem>
             <listitem>
                <para>
-                  Execute the following command
+                  Execute the following command:
                </para>
                <programlisting>mvn -Drun</programlisting>
             </listitem>
-         </itemizedlist>
+         </orderedlist>
 
       </section>
 
@@ -650,14 +649,14 @@ public class Game
             <calloutlist>
                <callout arearefs="scope">
                   <para>
-                     The bean is application scoped rather than session scoped,
+                     This bean is application scoped rather than session scoped,
                      since an instance of a Swing application typically represents
                      a single 'session'.
                  </para>
                </callout>
                <callout arearefs="name">
                   <para>
-                     Notice that the bean is not named, since it doesn't need to
+                     Note that the bean is not named, since it does not need to
                      be accessed via EL.
                   </para>
                </callout>
@@ -672,12 +671,12 @@ public class Game
                   <itemizedlist>
                      <listitem>
                         <para>
-                           If the game has been won or lost
+                           whether the game has been won or lost
                         </para>
                      </listitem>
                      <listitem>
                         <para>
-                           If the most recent guess was invalid
+                           the validity of the most recent guess
                         </para>
                      </listitem>
                   </itemizedlist>
@@ -701,7 +700,7 @@ public class Game
                      The <literal>reset()</literal> method makes a call to the 
                      injected <literal>rndGenerator</literal> in order to get 
                      the random number at the start of each game. Note that it
-                     can't use <literal>Instance.get()</literal>  like the JSF 
+                     can't use <literal>Instance.get()</literal> like the JSF 
                      example does because there will not be any active contexts 
                      like there are during a JSF request.
                   </para>
@@ -953,23 +952,23 @@ public class Game
       
       <para>
          The translator example will take any sentences you enter, and translate them to Latin. (Well, not really, but
-         the stub is there for you to implement, at least. Good luck!)
+         the stub is there for you to implement, at least.)
       </para>
       
       <para>
-         The translator example is built as an ear and contains EJBs. As a result, it's structure is more complex than
+         The translator example is built as an ear and contains EJBs. As a result, its structure is more complex than
          the numberguess example.
       </para>
       
       <note>
          <para>
-            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a war, which will make this structure much
-            simpler! Still, there are other advantages of using an ear.
+            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much
+            simpler. Using EARs has other advantages, however.
          </para>
       </note>
       
       <para>
-         First, let's take a look at the ear aggregator, which is located in the example's <literal>ear</literal> directory. Maven
+         First, let's take a look at the EAR aggregator, which is located in the example's <literal>ear</literal> directory. Maven
          automatically generates the <literal>application.xml</literal> for us from this plugin configuration:
       </para>
       
@@ -1021,14 +1020,14 @@ public class Game
       </note>
       
       <para>
-         Next, lets look at the war, which is located in the example's <literal>war</literal> directory. Just as in the
-         numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal>
+         Next, let's look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the
+         numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0, and a <literal>web.xml</literal>
          (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>.
       </para>
       
       <para>
-         More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template,
-         which surrounds the form (ommitted here for brevity):
+         More interesting is the JSF view used to translate text. Just as in the numberguess example, we have a template,
+         which surrounds the form (omitted here for brevity):
       </para>
       
       <programlisting role="XML"><![CDATA[<h:form id="translator">
@@ -1101,11 +1100,10 @@ public class Game
 }]]></programlisting>
       
       <para>
-         <literal>TextTranslator</literal> uses the simple bean (really just a plain Java class!)
-         <literal>SentenceParser</literal> to parse the sentence and then calls on the stateless bean with the local
-         business interface <literal>Translator</literal> to perform the translation. That's where the magic happens.
-         Of course, we couldn't develop a full translator, but it's convincing enough to anyone who doesn't understand
-         Latin!
+         <literal>TextTranslator</literal> uses the simple bean <literal>SentenceParser</literal> (a plain Java class) 
+         to parse the sentence, and then calls on the stateless bean with the local
+         business interface <literal>Translator</literal> to perform the translation, although obviously this example
+         does not have a real Latin translation service.
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Stateless
@@ -1118,8 +1116,8 @@ public class SentenceTranslator implements Translator {
 }]]></programlisting> 
 
       <para>
-         Finally, there is UI orientated controller. This is a request scoped, named, stateful session bean, which
-         injects the translator. It collects the text from the user and dispatches it to the translator. The bean also
+         Finally, there is the UI orientated controller. This is a request scoped, named, stateful session bean, which
+         injects the translator. It collects the text from the user and dispatches it to the translator. This bean also
          has getters and setters for all the fields on the page.
       </para>
       
