@@ -53,8 +53,8 @@ public class User {
 }]]></programlisting>
 
       <para>
-         (Note that we're also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence 
-         unit containing <literal>User</literal>.)
+         We will also need a <literal>persistence.xml</literal> file to configure the JPA persistence 
+         unit containing <literal>User</literal>.
       </para>
 
       <para>

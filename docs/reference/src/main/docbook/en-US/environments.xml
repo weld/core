@@ -8,14 +8,14 @@
       
       <para>
          If you are using JBoss AS 6.0, no additional configuration is required to use Weld (or CDI for that matter).
-         All you need to do is make your application a bean bean archive by adding <literal>META-INF/beans.xml</literal>
-         to the classpath or <literal>WEB-INF/beans.xml</literal> to the web root!
+         All you need to do is make your application a bean archive by adding <literal>META-INF/beans.xml</literal>
+         to the classpath, or <literal>WEB-INF/beans.xml</literal> to the web root.
       </para>
       
       <note>
          <para>
-            Additionally, Weld Servlet supports JBoss EAP 5.1, to do this use the <literal>jboss5</literal> variant
-            of Weld Servlet.
+            Weld Servlet also supports JBoss EAP 5.1. To use Weld with JBoss EAP, you will need the
+            <literal>jboss5</literal> variant of Weld Servlet.
          </para>
       </note>
          
@@ -25,9 +25,8 @@
       <title>GlassFish</title>
       
       <para>
-         Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is the Java EE 6 reference
-         implementation, it must support all features of CDI. What better way for GlassFish to support these features
-         than to use Weld, the JSR-299 reference implementation? Just package up your CDI application and deploy.
+         As a Java EE 6 reference implementation, Glassfish V3 and onward support all features of CDI. Weld is built into
+         Glassfish from V3 onward. Just package up your CDI application and deploy.
       </para>
    </section>
    
@@ -41,24 +40,24 @@
       
       <note>
          <para>
-            There is a major limitation to using a servlet container. Weld doesn't support deploying session beans,
+            There is a major limitation to using a servlet container. Weld does not support deploying session beans,
             injection using <literal>@EJB</literal> or <literal>@PersistenceContext</literal>, or using transactional
-            events in servlet containers. For enterprise features such as these, you should really be looking at a Java
-            EE application server.
+            events in servlet containers. For enterprise features such as these, you will need a Java EE application
+            server.
          </para>
       </note>
       
       <para>
          Weld can be used as a library in an web application that is deployed to a Servlet container. You should place
          <literal>weld-servlet.jar</literal> within the <literal>WEB-INF/lib</literal> directory relative to the web
-         root. <literal>weld-servlet.jar</literal> is an "uber-jar", meaning it bundles all the bits of Weld and CDI
-         required for running in a Servlet container, for your convenience. Alternatively, you can use its component
-         jars. A list of transitive dependencies can be found in the <literal>META-INF/DEPENDENCIES.txt</literal> file 
-         inside the <literal>weld-servlet.jar</literal> artifact.
+         root. <literal>weld-servlet.jar</literal> bundles all the parts of Weld and CDI required for running in a Servlet 
+         container, for your convenience. Alternatively, you can use its component JARs. A list of transitive dependencies 
+         can be found in the <literal>META-INF/DEPENDENCIES.txt</literal> file inside the <literal>weld-servlet.jar</literal>
+         artifact.
       </para>
       
       <para>
-         You also need to explicitly specify the servlet listener (used to boot Weld, and control its interaction
+         You must also explicitly specify the servlet listener (used to boot Weld, and control its interaction
          with requests) in <literal>WEB-INF/web.xml</literal> in the web root:
       </para>
          
@@ -152,7 +151,8 @@
 </Configure> ]]></programlisting>
 
          <para>
-            Just like in Tomcat, you need to make it available to your deployment by adding this to the bottom of <literal>web.xml</literal>:
+            As in Tomcat, you must make the BeanManager available to your deployment by adding the following
+            to the bottom of your <literal>web.xml</literal> file:
          </para>
       
          <programlisting role="XML"><![CDATA[<resource-env-ref>
@@ -163,8 +163,8 @@
 </resource-env-ref>]]></programlisting>
 
          <para>
-            Notice that Jetty doesn't not have built-in support for an <literal>javax.naming.spi.ObjectFactory</literal>
-            like Tomcat, so it's necessary to manually create the <literal>javax.naming.Reference</literal> to wrap
+            Jetty does not have built-in support for an <literal>javax.naming.spi.ObjectFactory</literal>, 
+            so you must manually create the <literal>javax.naming.Reference</literal> to wrap
             around it.
          </para>
 
@@ -175,7 +175,7 @@
 
          <para>
             Weld also supports Servlet injection in Jetty 6. To enable this, add the file
-            <literal>META-INF/jetty-web.xml</literal> with the following content to your war:
+            <literal>META-INF/jetty-web.xml</literal> with the following content to your WAR:
          </para>
 
          <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
@@ -194,11 +194,10 @@
       <title>Java SE</title>
       
       <para>
-         In addition to improved integration of the Enterprise Java stack, the "Contexts and Dependency Injection for
-         the Java EE platform" specification also defines a state of the art typesafe, stateful dependency injection
-         framework, which can prove useful in a wide range of application types. To help developers take advantage of
-         this, Weld provides a simple means for being executed in the Java Standard Edition (SE) environment
-         independently of any Java EE APIs.
+         In addition to improved integration of the Enterprise Java stack, the CDI specification also defines a state of 
+         the art typesafe, stateful dependency injection framework, which can prove useful in a wide range of application 
+         types. To help developers take advantage of this, Weld provides a simple means for being executed in the 
+         Java Standard Edition (SE) environment independently of any Java EE APIs.
       </para>
 
       <para>
@@ -276,7 +275,7 @@
          </note>
 
          <para>
-            Here's an example of a simple CDI SE application:
+            The following is an example of a simple CDI SE application:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Singleton
@@ -302,11 +301,11 @@ public class HelloWorld
                <title>The ContainerInitialized Event</title>
 
                <para>
-                  Thanks to the power of CDI's typesafe event model, application developers
+                  The typesafe event model of CDI means that application developers
                   need not write any bootstrapping code. The Weld SE module comes
-                  with a built-in main method which will bootstrap CDI for you and
-                  then fire a <literal>ContainerInitialized</literal> event. The entry
-                  point for your application code would therefore be a simple bean which observes
+                  with a built-in main method which bootstraps CDI and then fires
+                  a <literal>ContainerInitialized</literal> event. The entry
+                  point for your application code can therefore be a simple bean which observes
                   the <literal>ContainerInitialized</literal> event, as in the previous example.</para>
 
                <para>In this case your application can be started by calling the provided
@@ -352,7 +351,7 @@ public class HelloWorld
 
 }]]></programlisting>
 
-               <para>Here's an example application main method which uses this API
+               <para>The following is an example application main method which uses this API
                to initialize a bean of type <literal>MyApplicationBean</literal>.</para>
 
                <programlisting role="JAVA"><![CDATA[public static void main(String[] args) {
@@ -361,7 +360,7 @@ public class HelloWorld
    weld.shutdown();
 }]]></programlisting>
 
-               <para>Alternatively the application could be started by firing a custom
+               <para>Alternatively, the application can be started by firing a custom
                event which would then be observed by another simple bean. The following
                example fires <literal>MyEvent</literal> on startup.</para>
 
@@ -389,7 +388,7 @@ public class HelloWorld
             </para>
 
             <para>
-               To use the @ThreadScoped annotation you need to enable the <literal>RunnableDecorator</literal>
+               To use the <literal>@ThreadScoped</literal> annotation you need to enable the <literal>RunnableDecorator</literal>,
                which 'listens' for all executions of <literal>Runnable.run()</literal> and
                decorates them by setting up the thread context beforehand, bound to
                the current thread, and destroying the context afterwards.
@@ -402,10 +401,10 @@ public class HelloWorld
 </beans>]]></programlisting>
 
             <note>
-               <para>It is not necessary to use @ThreadScoped in all
+               <para>It is not necessary to use <literal>@ThreadScoped</literal> in all
                   multithreaded applications. The thread context is not intended 
                   as a replacement for defining your own application-specific contexts.
-                  It is generally only useful in situtations where you would otherwise
+                  It is generally only useful in situations where you would otherwise
                   have used ThreadLocal directly, which are typically rare.
                </para>
             </note>
@@ -416,17 +415,17 @@ public class HelloWorld
 
             <title>Setting the Classpath</title>
 
-            <para>Weld SE comes packaged as a 'shaded' jar which includes the CDI API,
-            Weld Core and all dependant classes bundled into a single jar. Therefore the
-            only Weld jar you need on the classpath, in addition to your application's
-            classes and dependant jars, is the Weld SE jar. If you are working with a pure
+            <para>Weld SE comes packaged as a 'shaded' JAR which includes the CDI API,
+            Weld Core and all dependent classes bundled into a single JAR. Therefore the
+            only Weld JAR you need on the classpath, in addition to your application's
+            classes and dependent JARs, is the Weld SE JAR. If you are working with a pure
             Java SE application you launch using <literal>java</literal>, this may be simpler
             for you.
             </para>
             
             <para>
                If you prefer to work with individual dependencies, then you can use the
-               <literal>weld-core</literal> jar which just contains the Weld SE classes.
+               <literal>weld-core</literal> JAR, which just contains the Weld SE classes.
                Of course in this mode you will need to assemble the classpath yourself.
                This mode is useful, for example, if you wish to use an alternative slf4j
                log binding.
@@ -434,7 +433,7 @@ public class HelloWorld
             
             <para>
                If you work with a dependency management solution such as
-               Maven you can declare a dependency on <literal>org.jboss.weld.se:weld-se-core</literal>. 
+               Maven, you can declare a dependency on <literal>org.jboss.weld.se:weld-se-core</literal>. 
             </para>
 
         </section>

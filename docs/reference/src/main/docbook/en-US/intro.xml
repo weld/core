@@ -4,9 +4,9 @@
    <title>Introduction</title>
   
    <para>
-      So you're keen to get started writing your first bean?  Or perhaps you're skeptical, wondering what kinds of hoops
-      the CDI specification will make you jump through! The good news is that you've probably already written and used
-      hundreds, perhaps thousands of beans. CDI just makes it easier to actually use them to build an application!
+      So you're keen to get started writing your first bean? Or perhaps you're skeptical, wondering what kinds of hoops
+      the CDI specification will make you jump through. The good news is that you've probably already written and used
+      hundreds, perhaps thousands of beans. CDI just makes it easier to actually use them to build an application.
    </para>
 
    <section id="bean-definition">
@@ -36,18 +36,18 @@
       <para>
          With very few exceptions, almost every concrete Java class that has a constructor with no parameters (or a
          constructor designated with the annotation <literal>@Inject</literal>) is a bean. This includes every
-         JavaBean and every EJB session bean. If you've already got some JavaBeans or session beans lying around,
-         they're already beans&mdash;you won't need any additional special metadata. There's just little one thing you 
-         need to do before you can start injecting them into stuff: you need to put them in an archive (a jar, or a
-         Java EE module such as a war or EJB jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>.
+         JavaBean and every EJB session bean. If you already have some JavaBeans or session beans lying around,
+         they're already beans &mdash; you won't need any additional special metadata. There's just one thing you 
+         need to do before you can start injecting them into stuff: you need to put them in an archive (a JAR, or a
+         Java EE module such as a WAR or EAR) that contains a special marker file: <literal>META-INF/beans.xml</literal>.
       </para>
       
       <para>
          The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage 
          of the new services defined by the CDI specification. But you'll be able to use every one of them with 
-         CDI&mdash;allowing the container to create and destroy instances of your beans and associate them with a 
+         CDI &mdash; allowing the container to create and destroy instances of your beans and associate them with a 
          designated context, injecting them into other beans, using them in EL expressions, specializing them with 
-         qualifier annotations, even adding interceptors and decorators to them&mdash;without modifying your 
+         qualifier annotations, even adding interceptors and decorators to them &mdash; without modifying your 
          existing code. At most, you'll need to add some annotations.
       </para>
 
@@ -110,13 +110,13 @@ public interface Translator {
 }]]></programlisting>
 
       <para>
-         But wait! <literal>TextTranslator</literal> does not have a constructor with no parameters! Is it still a bean?
+         But wait! <literal>TextTranslator</literal> does not have a constructor with no parameters. Is it still a bean?
          If you remember, a class that does not have a constructor with no parameters can still be a bean if it has a
          constructor annotated <literal>@Inject</literal>.
       </para>
         
       <para>
-         As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection!
+         As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection.
          <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to 
          call that constructor or method when instantiating the bean. The container will inject other beans into the 
          parameters of the constructor or method.
@@ -171,14 +171,14 @@ public class TranslateController {
          </calloutlist>
       </programlistingco>
 
-      <tip>
+      <note>
          <para>
             Notice the controller bean is request-scoped and named. Since this combination is so common in web
             applications, there's a built-in annotation for it in CDI that we could have used as a shorthand. When the
             (stereotype) annotation <literal>@Model</literal> is declared on a class, it creates a request-scoped and
             named bean.
          </para>
-      </tip>
+      </note>
 
       <para>
          Alternatively, we may obtain an instance of <literal>TextTranslator</literal> programmatically from an injected
@@ -199,8 +199,8 @@ public void translate() {
     
       <para>
          At system initialization time, the container must validate that exactly one bean exists which satisfies each
-         injection point. In our example, if no implementation of <literal>Translator</literal> is available&mdash;if 
-         the <literal>SentenceTranslator</literal> EJB was not deployed&mdash;the container would inform us of an
+         injection point. In our example, if no implementation of <literal>Translator</literal> is available &mdash; if 
+         the <literal>SentenceTranslator</literal> EJB was not deployed &mdash; the container would inform us of an
          <emphasis>unsatisfied dependency</emphasis>. If more than one implementation of <literal>Translator</literal> 
          were available, the container would inform us of the <emphasis>ambiguous dependency</emphasis>.
       </para>

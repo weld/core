@@ -55,7 +55,7 @@ tainer, for example, alternative web presentation technologies.
       like Weld (see <xref linkend="weld-se"/>), or even by a container that also implements the subset of EJB 
       defined for embedded usage by the EJB 3.1 specification. CDI is especially useful in the context of web 
       application development, but the problems it solves are general development concerns and it is therefore 
-      applicable to a wide variety of application.
+      applicable to a wide variety of applications.
    </para>
   
    <para>
@@ -73,9 +73,9 @@ tainer, for example, alternative web presentation technologies.
    </itemizedlist>
     
    <para>
-     Both managed beans and EJB session beans may inject other beans. But some other objects, which are not 
-     themselves beans in the sense used here, may also have beans injected via CDI. In the Java EE platform, 
-     the following kinds of component may have beans injected:
+     Both managed beans and EJB session beans can inject other beans. Some other objects, which are not 
+     themselves beans in the sense used here, can also have beans injected via CDI. In the Java EE platform, 
+     the following kinds of component can have beans injected:
    </para>
     
    <itemizedlist>
@@ -169,29 +169,29 @@ tainer, for example, alternative web presentation technologies.
       What's even more powerful (and comforting) is that CDI provides all these facilities in a
       <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating
       objects fit together. Instead, CDI uses the typing information that is already available in the Java object 
-      model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire 
+      model, augmented by a new programming pattern called <emphasis>qualifier annotations</emphasis>, to wire 
       together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of
       XML descriptors is minimized to truly deployment-specific information.
    </para>
   
    <para>
-      But CDI isn't a restrictive programming model. It doesn't tell you how you should to structure your application
-      into layers, how you should handle persistence, or what web framework you have to use. You'll have to decide 
-      those kinds of things for yourself.
+      But CDI isn't a restrictive programming model. You don't need to structure your application into 
+      particular layers, handle persistence in a certain way, or use a specific web framework. You can make these
+      decisions for yourself, based on the needs of your application.
    </para>
   
    <para>
-      CDI even provides a comprehensive SPI, allowing other kinds of object defined by future Java EE specifications 
-      or by third-party frameworks to be cleanly integrated with CDI, take advantage of the CDI services, and interact 
+      CDI also provides a comprehensive SPI, allowing other objects defined by future Java EE specifications 
+      or by third-party frameworks to integrate cleanly with CDI, take advantage of the CDI services, and interact 
       with any other kind of bean.
    </para>
   
    <para>
       CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has 
       its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more 
-      web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration from 
-      the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group
-      (EG).
+      web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration 
+      from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert
+      Group.
    </para>
   
    <para>

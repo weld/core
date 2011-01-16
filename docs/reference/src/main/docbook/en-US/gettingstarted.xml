@@ -6,10 +6,10 @@
 
    <para>
       Weld comes with a number of examples. We recommend you start with <literal>examples/jsf/numberguess</literal>
-      and <literal>examples/jsf/translator</literal>. Numberguess is a web (war) example containing
+      and <literal>examples/jsf/translator</literal>. Numberguess is a web (WAR) example containing
       only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss 
       AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. 
-      Translator is an enterprise (ear) example that contains session beans. This example
+      Translator is an enterprise (EAR) example that contains session beans. This example
       must be run on JBoss AS 6.0, Glassfish 3.0 or any compliant Java EE 6 container.
    </para>
    
@@ -22,7 +22,7 @@
       <title>Prerequisites</title>
 
       <para>
-         To run the examples with the provided build scripts, you'll need the following:
+         To run the examples with the provided build scripts, you will need:
       </para>
    
       <itemizedlist>
@@ -56,21 +56,21 @@
    
       <note>
          <para>
-            You'll need a full install of Ant 1.7.0. Some linux distributions only supply a partial installation of Ant
-            which cause the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath.
+            You'll need a full installation of Ant 1.7.0. Some Linux distributions only supply a partial installation of Ant,
+            which causes the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath.
          </para>
       </note>
    
       <para>
          In the next few sections, you'll be using the Ant command (<literal>ant</literal>) to invoke the Ant build script 
-         in each example to compile, assemble and deploy the example to JBoss AS and, for the war example, Apache Tomcat. 
-         You can also deploy the generated artifact (war or ear) to any other container that supports Java EE 6, such as 
+         in each example to compile, assemble and deploy the example to JBoss AS and, for the WAR example, Apache Tomcat. 
+         You can also deploy the generated artifact (WAR or EAR) to any other container that supports Java EE 6, such as 
          GlassFish 3.
       </para>
    
       <para>
          If you have Maven installed, you can use the Maven command (<literal>mvn</literal>) to compile and assemble the 
-         standalone artifact (war or ear) and, for the war example, run it in an embedded container.
+         standalone artifact (WAR or EAR) and, for the WAR example, run it in an embedded container.
       </para>
       
       <para>The sections below cover the steps for deploying with both Ant and Maven in detail. Let's start with JBoss AS.</para>
@@ -84,9 +84,9 @@
          To deploy the examples to JBoss AS, you'll need <ulink url="http://jboss.org/jbossas/">JBoss AS
          6.0.0</ulink> or above. If a release of the JBoss AS 6.0 line isn't yet available, you can download a
          <ulink url="http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-6.0.x/">nightly snapshot</ulink>.
-         The reason JBoss AS 6.0.0 or above is required is because it's the first release that has both CDI and
-         Bean Validation support built-in, making it close enough to Java EE 6 to run the examples. The good news is
-         that there are no additional modifications you have to make to the server. It's ready to go!
+         JBoss AS 6.0.0 is the first release that has both CDI and Bean Validation support built-in, making it 
+         close enough to Java EE 6 to run the examples. You don't need to make any modifications
+         to the server &mdash; it's ready to go.
       </para>
    
       <para>
@@ -109,7 +109,7 @@ $> mv jboss-6.0.*/ jboss-as-6.0]]></programlisting>
       <programlisting><![CDATA[jboss.home=/path/to/jboss-as-6.0]]></programlisting>
 
       <para>
-         You're now ready to deploy your first example!
+         You are now ready to deploy your first example!
       </para>
 
       <para>
@@ -197,14 +197,14 @@ $> ant deploy]]></programlisting>
 
       <note>
          <para>
-            The translator uses session beans, which are packaged in an EJB module within an ear. Java EE 6 will allow
-            session beans to be deployed in war modules, but that's a topic for a later chapter.
+            The translator uses session beans, which are packaged in an EJB module within an EAR. Java EE 6 also allows
+            session beans to be deployed in WAR modules, but that's a topic for a later chapter.
          </para>
       </note>
 
       <para>
-         Again, wait a few seconds for the application to deploy (if you're really bored, read the log messages), and 
-         visit <ulink url="http://localhost:8080/weld-translator">http://localhost:8080/weld-translator</ulink> to begin
+         Again, wait a few seconds for the application to deploy, and visit 
+         <ulink url="http://localhost:8080/weld-translator">http://localhost:8080/weld-translator</ulink> to begin
          pseudo-translating.
       </para>
    
@@ -214,31 +214,24 @@ $> ant deploy]]></programlisting>
       <title>Deploying to GlassFish</title>
 
       <para>
-         Deploying to GlassFish should be easy and familiar, right? After all, it's the Java EE 6 reference
-         implementation and Weld is the JSR-299 reference implementation, meaning Weld gets bundled with GlassFish.  So
-         yes, it's all quite easy and familiar.
-      </para>
-
-      <para>
          To deploy the examples to GlassFish, you'll need the final <ulink
          url="https://glassfish.dev.java.net/downloads/v3-final.html">GlassFish V3</ulink> release. Select the release
          that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform.
-         After the download is complete, execute the installer. On Linux/Unix, you'll need to first make the script
-         executable.
+         After the download is complete, execute the installer. On Windows you can just click on the executable. 
+         On Linux/Unix, you will need to first make the script executable:
       </para>
 
       <programlisting><![CDATA[$> chmod 755 glassfish-v3-unix.sh
 $> ./glassfish-v3-unix.sh]]></programlisting> 
 
       <para>
-         On Windows you can just click on the executable. Follow the instructions in the installer. It will create a
-         single domain named <literal>domain1</literal>. You'll use that domain to deploy the example. We recommend that
-         you choose <literal>7070</literal> as the main HTTP port to avoid conflicts with a running instance of JBoss AS 
-         (or Apache Tomcat).
+         Follow the instructions in the installer. It will create a single domain named <literal>domain1</literal>. 
+         This domain will be used to deploy the example. We recommend that you choose <literal>7070</literal> as the main 
+         HTTP port to avoid conflicts with a running instance of JBoss AS (or Apache Tomcat).
       </para>
    
       <para>
-         If you've deployed either of the starter examples, <literal>weld-numberguess</literal> or
+         If you have deployed either of the starter examples, <literal>weld-numberguess</literal> or
          <literal>weld-translator</literal>, to JBoss AS, then you already have the deployable artifact you need.
          If not, switch to either of the two directories and build it.
       </para>
@@ -268,7 +261,7 @@ $> ant package]]></programlisting>
          side of the page, click on "Applications", then click on the "Deploy..." button under
          the heading "Applications" and select the deployable artifact for either of the two examples.
          The deployer should recognize that you have selected a Java EE artifact and allow you to
-         start it. You can see the examples running at either <ulink
+         start it. You can then see the examples running at either <ulink
          url="http://localhost:7070/weld-numberguess">http://localhost:7070/weld-numberguess</ulink> or <ulink
          url="http://localhost:7070/weld-translator">http://localhost:7070/weld-translator</ulink>,
          depending on which example you deployed.
@@ -282,8 +275,7 @@ $> ant package]]></programlisting>
 
       <para>
          The reason the same artifact can be deployed to both JBoss AS and GlassFish, without any modifications, is
-         because all of the features being used are part of the standard platform. And what a capable platform it has
-         become!
+         because all of the features being used are part of the standard platform.
       </para>
 
    </section>
@@ -298,7 +290,7 @@ $> ant package]]></programlisting>
       <para>
          Weld comes with a servlet listener which bootstraps the CDI environment, registers the <literal>BeanManager</literal> 
          in JNDI and provides injection into servlets. Basically, it emulates some of the work done by the Java EE 
-         container. (But you don't get enterprise features such as session beans and container-managed transactions.)
+         container, without enterprise features such as session beans or container-managed transactions.
       </para>
 
       <para>
@@ -310,7 +302,7 @@ $> ant package]]></programlisting>
 
       <para>
          You have two choices for how you can deploy the application to Tomcat. You can deploy it by pushing the
-         artifact to the hot deploy directory using Ant or you can deploy to the server across HTTP using a Maven
+         artifact to the hot deploy directory using Ant, or you can deploy to the server across HTTP using a Maven
          plugin. The Ant approach doesn't require that you have Maven installed, so we'll start there. If you want to
          use Maven, you can just skip ahead.
       </para>
@@ -369,7 +361,7 @@ $> ant tomcat.deploy]]></programlisting>
          </note>
    
          <para>
-            If you haven't already, start Tomcat. You can either start Tomcat from a Linux shell:
+            Next, start Tomcat. You can either start Tomcat from a Linux shell:
          </para>
    
          <programlisting><![CDATA[$> cd /path/to/apache-tomcat-6
@@ -389,7 +381,7 @@ $> start]]></programlisting>
          <para>
             Wait a few seconds for the application to deploy (or the application server to start) and see if you can figure
             out the most efficient approach to pinpoint the random number at the local URL
-            <ulink url="http://localhost:8080/weld-numberguess">http://localhost:8080/weld-numberguess</ulink>!
+            <ulink url="http://localhost:8080/weld-numberguess">http://localhost:8080/weld-numberguess</ulink>.
          </para>
 
       </section>
@@ -398,9 +390,11 @@ $> start]]></programlisting>
          <title>Deploying with Maven</title>
 
          <para>
-            You can also deploy the application to Tomcat using Maven. This section is a bit more advanced, so skip it
-            unless you're itching to use Maven natively. Of course, you'll first need to make sure that you have Maven
-            installed on your path, similar to how you setup Ant.
+            You can also deploy the application to Tomcat using Maven. This section is more advanced, so you can jump ahead if
+            you don't want to use Maven natively.
+
+         <para>
+            First, make sure you have Maven installed on your path, similar to how you set up Ant.
          </para>
 
          <para>
@@ -472,9 +466,8 @@ $> start]]></programlisting>
       </para>
 
       <para>
-         If you've read through the entire Tomcat section, then you're all ready to go. The Maven build parallels the
-         embedded Tomcat deployment. If not, don't worry. We'll still go over everything that you need to know again
-         in this section.
+         The Maven build parallels the embedded Tomcat deployment, so if you've read through 
+         the entire Tomcat section, you're ready to go. We'll cover everything again here just in case.
       </para>
 
       <para>
@@ -488,15 +481,15 @@ $> start]]></programlisting>
 
       <para>
          To run the <literal>weld-numberguess</literal> example on Jetty, switch to the example directory and execute
-         the <literal>inplace</literal> goal of the Maven war plugin followed by the <literal>run</literal> goal of 
-         the Maven Jetty plugin with the <literal>jetty</literal> profile enabled, as follows:
+         the <literal>inplace</literal> goal of the Maven war plugin, followed by the <literal>run</literal> goal of 
+         the Maven Jetty plugin with the <literal>jetty</literal> profile enabled, as shown:
       </para>
 
       <programlisting><![CDATA[$> cd examples/jsf/numberguess
 $> mvn war:inplace jetty:run -Pjetty]]></programlisting> 
 
       <para>
-         The log output of Jetty will be shown in the console. Once Jetty reports that the application has deployed, you
+         The log output of Jetty appears in the console. Once Jetty reports that the application has deployed, you
          can access it at the following local URL: <ulink
          url="http://localhost:9090/weld-numberguess">http://localhost:9090/weld-numberguess</ulink>. The port is
          defined in the Maven Jetty plugin configuration within the <literal>jetty</literal> profile.
@@ -504,7 +497,7 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
 
       <para>
          Any changes to assets in <literal>src/main/webapp</literal> take effect immediately. If a change to a webapp 
-         configuration file is made, the application may automatically redeploy. The redeploy behavior can be fined-tuned 
+         configuration file is made, the application may automatically redeploy. The redeploy behavior can be fine-tuned 
          in the plugin configuration. If you make a change to a classpath resource, you need to execute a build and the 
          <literal>inplace</literal> goal of the Maven war plugin, again with the <literal>jetty</literal> profile enabled.
       </para>
@@ -520,7 +513,7 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
 
       <para>
          You have two options if you want to run the example on Jetty from the IDE. You can either install the
-         m2eclispe[link] plugin and run the goals as described above. Your other option is to start the Jetty container
+         m2eclipse[link] plugin and run the goals as described above. Your other option is to start the Jetty container
          from a Java application.
       </para>
 
@@ -538,9 +531,9 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
 
       <para>
          Now, you are ready to run the server in Eclipse. Import the project into your Eclipse workspace using "Import
-         Existing Project into Workspace. Then, find the start class in <literal>src/jetty/java</literal> and run its 
+         Existing Project into Workspace." Then, find the start class in <literal>src/jetty/java</literal> and run its 
          main method as a Java Application. Jetty will launch. You can view the application at the following local URL: <ulink
-         url="http://localhost:8080">http://localhost:8080</ulink>.  Pay particular attention to the port in the URL and
+         url="http://localhost:8080">http://localhost:8080</ulink>. Pay particular attention to the port in the URL and
          the lack of a trailing context path.
       </para>
 

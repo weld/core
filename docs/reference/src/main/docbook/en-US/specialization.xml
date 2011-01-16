@@ -10,7 +10,7 @@
       application grows, multiple occurrences of the same bean type start appearing, either because you have multiple
       implementations or two beans share a common (Java) inheritance. That's when you have to begin studying the
       specialization, inheritance and alternative rules to work through unsatisfied or ambiguous dependencies or to
-      avoid certain beans from being called.
+      prevent certain beans from being called.
    </para>
 
    <para>
@@ -21,7 +21,7 @@
    <itemizedlist>
       <listitem>
          <para>
-            The second bean <emphasis>specializes</emphasis> the first bean in certain deployment scenarios. In these 
+            A second bean can <emphasis>specialize</emphasis> the first bean in certain deployment scenarios. In these 
             deployments, the second bean completely replaces the first, fulfilling the same role in the system.
          </para>
       </listitem>
@@ -35,8 +35,8 @@
    </blockquote>
 
    <para>
-      The second case is the default assumed by CDI. It's possible to have two beans in the system with the same part
-      bean type (interface or parent class). As you've learned, you select between the two implementations using
+      The second case is the default assumed by CDI. It is possible to have two beans in the system with the same part
+      bean type (interface or parent class). As you have learned, you can select between the two implementations using
       qualifiers.
    </para>
 
@@ -88,7 +88,7 @@ class StagingPaymentProcessor
       <para>
          But suppose we have many alternatives in the staging environment. It would be much more convenient to be able
          to enable them all at once. So let's make <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype 
-         and annotate the staging beans with this stereotype instead. You'll see how this level of indirection pays off. 
+         and annotate the staging beans with this stereotype instead.
          First, we create the stereotype:
       </para>
 
@@ -133,7 +133,7 @@ public class StagingPaymentProcessor
       <title>A minor problem with alternatives</title>
     
       <para>
-         When we enable an alternative, does that mean the default implementation is disabled? Well, not exactly. If the 
+         The default implementation is not disabled when an alternative is enabled. If the
          default implementation has a qualifier, for instance <literal>@LargeTransaction</literal>, and the alternative 
          does not, you could still inject the default implementation.
       </para>
@@ -141,10 +141,10 @@ public class StagingPaymentProcessor
       <programlisting role="JAVA"><![CDATA[@Inject @LargeTransaction PaymentProcessor paymentProcessor;]]></programlisting>
 
       <para>
-         So we haven't completely replaced the default implementation in this deployment of the system. The only way one 
+         The default implementation has not been completely replaced in this deployment of the system. The only way one 
          bean can completely override a second bean at all injection points is if it implements all the bean types and 
          declares all the qualifiers of the second bean. However, if the second bean declares a producer method or 
-         observer method, then even this is not enough to ensure that the second bean is never called! We need something 
+         observer method, then even this is not enough to ensure that the second bean is never called. We need something 
          extra.
       </para>
   
@@ -161,7 +161,7 @@ public class StagingPaymentProcessor
 
       <para>
          When the goal is to replace one bean implementation with a second, to help prevent developer error, the first
-         bean may:
+         bean can:
       </para>
 
       <itemizedlist>

@@ -213,12 +213,12 @@
             injection is provided by Weld, the resolved resource must be serializable.
          </para>
           
-         <tip>
+         <note>
             <para>
                If you use a non-EE environment then you may implement any of the EE service SPIs, and Weld will provide
                the associated functionality. There is no need to implement those services you don't need!
             </para>
-         </tip>
+         </note>
          
       </section>
          
@@ -528,13 +528,13 @@
                   registered with JSF for this web application. 
                </para>
                
-               <tip>
+               <note>
                   <para>
                      There are a number of ways you can obtain the bean manager for the module. You could call
                      <literal>Bootstrap.getManager()</literal>, passing in the BDA for this module. Alternatively, you
                      could use the injection into Java EE component classes, or look up the bean manager in JNDI. 
                   </para>
-               </tip>
+               </note>
                
                <para>
                   If you are integrating Weld into a JSF environment you must register
@@ -574,13 +574,13 @@
                   registered with JSP for this web application. 
                </para>
                
-               <tip>
+               <note>
                   <para>
                      There are a number of ways you can obtain the bean manager for the module. You could call
                      <literal>Bootstrap.getManager()</literal>, passing in the BDA for this module. Alternatively, you
                      could use the injection into Java EE component classes, or look up the bean manager in JNDI. 
                   </para>
-               </tip>
+               </note>
                
             </listitem>
          </varlistentry>

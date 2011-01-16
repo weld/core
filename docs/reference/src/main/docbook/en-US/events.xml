@@ -5,7 +5,7 @@
 
    <para>
       Dependency injection enables loose-coupling by allowing the implementation of the injected bean type to vary,
-      either a deployment time or runtime. Events go one step further, allowing beans to interact with no compile
+      either at deployment time or runtime. Events go one step further, allowing beans to interact with no compile
       time dependency at all. Event <emphasis>producers</emphasis> raise events that are delivered to event 
       <emphasis>observers</emphasis> by the container.
    </para>
@@ -15,19 +15,19 @@
    
    <itemizedlist>
       <listitem>
-         <para>not only are event producers decoupled from observers; observers are completely decoupled from 
-         producers,</para>
+         <para>not only are event producers decoupled from observers, but also observers are completely decoupled from 
+         producers;</para>
       </listitem>
       <listitem>
          <para>
             observers can specify a combination of "selectors" to narrow the set of event notifications they will 
-            receive, and
+            receive; and
          </para>
       </listitem>
       <listitem>
          <para>
             observers can be notified immediately, or can specify that delivery of the event should be delayed until 
-            the  end of the current transaction.
+            the end of the current transaction.
          </para>
       </listitem>
    </itemizedlist>
@@ -40,8 +40,8 @@
       
       <para>
          The event object carries state from producer to consumer. The event object is nothing more than an instance of 
-         a concrete Java class. (The only restriction is that an event type may not contain type variables). An event 
-         may be assigned qualifiers, which allows observers to distinguish it from other events of the same type. The 
+         a concrete Java class. (The only restriction is that an event type cannot contain type variables). An event 
+         can be assigned qualifiers, which allows observers to distinguish it from other events of the same type. The 
          qualifiers function like topic selectors, allowing an observer to narrow the set of events it observes.
       </para>
 
@@ -60,28 +60,27 @@ public @interface Updated {}]]></programlisting>
       <title>Event observers</title>
 
       <para>
-         An <emphasis>observer method</emphasis> is a method of a bean with a parameter annotated
-         <literal>@Observes</literal>.
+         An <emphasis>observer method</emphasis> is a method, with a parameter annotated <literal>@Observes</literal>.
       </para>
 
       <programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]></programlisting>
 
       <para>
          The annotated parameter is called the <emphasis>event parameter</emphasis>. The type of the event parameter is
-         the observed <emphasis>event type</emphasis>, in this case <literal>Document</literal>. The event parameter may
+         the observed <emphasis>event type</emphasis>, in this case <literal>Document</literal>. The event parameter can
          also specify qualifiers.
       </para>
 
       <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document) { ... }]]></programlisting>
 
       <para>
-         An observer method need not specify any event qualifiers&mdash;in this case it is interested in
-         <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it's only interested
+         An observer method need not specify any event qualifiers &mdash; in this case, it is interested in
+         <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it is only interested
          in events which have those qualifiers.
       </para>
 
       <para>
-         The observer method may have additional parameters, which are injection points:
+         The observer method can have additional parameters, which are injection points:
       </para>
 
       <programlisting role="JAVA"><![CDATA[public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }]]></programlisting>
@@ -163,7 +162,7 @@ public @interface Updated {}]]></programlisting>
 
       <para>
          The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI 
-         lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. 
+         lets us obtain a qualifier instance by creating a subclass for, or extending, the helper class <literal>AnnotationLiteral</literal>. 
          That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>.
       </para>
 
@@ -194,7 +193,7 @@ public @interface Updated {}]]></programlisting>
       <programlisting role="JAVA"><![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }]]></programlisting> 
 
       <para>
-         A bean with scope <literal>@Dependent</literal> cannot be a conditional observer, since it would never be called!
+         A bean with <literal>@Dependent</literal> scope cannot be a conditional observer, since it would never be called.
       </para>
 
    </section>
@@ -202,7 +201,7 @@ public @interface Updated {}]]></programlisting>
    <section>
       <title>Event qualifiers with members</title>
 
-      <para>An event qualifier type may have annotation members:</para>
+      <para>An event qualifier type can have annotation members:</para>
 
 <programlisting role="JAVA"><![CDATA[@Qualifier
 @Target({PARAMETER, FIELD})
@@ -216,14 +215,14 @@ public @interface Role {
       <programlisting role="JAVA"><![CDATA[public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }]]></programlisting>
 
       <para>
-         Event qualifier type members may be specified statically by the event producer, via annotations at the event
+         Event qualifier type members can be specified statically by the event producer, via annotations at the event
          notifier injection point:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]></programlisting>
 
       <para>
-         Alternatively, the value of the event qualifier type member may be determined dynamically by the event
+         Alternatively, the value of the event qualifier type member can be determined dynamically by the event
          producer. We start by writing an abstract subclass of <literal>AnnotationLiteral</literal>:
       </para>
   
@@ -231,7 +230,7 @@ public @interface Role {
    extends AnnotationLiteral<Role> 
    implements Role {}]]></programlisting>
     
-      <para>The event producer passes an instance of this class to <literal>select()</literal>:</para>
+      <para>The event producer then passes an instance of this class to <literal>select()</literal>:</para>
 
       <programlisting role="JAVA"><![CDATA[documentEvent.select(new RoleBinding() {
    public void value() { return user.getRole(); }
@@ -281,7 +280,7 @@ if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire
 
       <programlisting role="JAVA"><![CDATA[public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) CategoryUpdateEvent event) { ... }]]></programlisting>
 
-      <para>There are five kinds of transactional observers:</para>
+      <para>There are five kinds of transactional observer:</para>
 
       <itemizedlist>
          <listitem>
@@ -315,7 +314,7 @@ if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire
 
       <para>
          Transactional observers are very important in a stateful object model because state is often held for 
-         longer  than a single atomic transaction.
+         longer than a single atomic transaction.
       </para>
   
       <para>Imagine that we have cached a JPA query result set in the application scope:</para>
@@ -341,7 +340,7 @@ public class Catalog {
       <para>
          From time to time, a <literal>Product</literal> is created or deleted. When this occurs, we need to refresh the
          <literal>Product</literal> catalog. But we should wait until <emphasis>after</emphasis> the transaction
-         completes successfully before performing this refresh!
+         completes successfully before performing this refresh.
       </para>
   
       <para>

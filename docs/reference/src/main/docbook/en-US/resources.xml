@@ -69,7 +69,7 @@ Catalog catalog;]]></programlisting>
           <programlisting role="JAVA"><![CDATA[@Produces @EJB(ejbLink="../their.jar#PaymentService") 
 PaymentService paymentService;]]></programlisting>
 
-            <para>The field may be static (but not final).</para>
+            <para>The field can be static (but not final).</para>
             
             <para>A resource declaration really contains two pieces of information:</para>
             
@@ -84,9 +84,8 @@ PaymentService paymentService;]]></programlisting>
             </itemizedlist>
             
             <note>
-               <para>It might feel strange to be declaring resources in Java code. Isn't this stuff that might be
-               deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class
-               annotated <literal>@Alternative</literal>.</para>
+               <para>Declaring resources like this is often deployment-specific, so it is sensible to declare resources in
+                     an <literal>@Alternative</literal> class.</para>
             </note>
 
          </section>
@@ -109,20 +108,19 @@ PaymentService paymentService;]]></programlisting>
          </para>
 
          <para>
-            It might seem like a pain to have to write these extra producer field declarations, just to gain an additional
-            level of indirection. You could just as well use component environment injection directly, right? But remember
-            that you're going to be using resources like the <literal>EntityManager</literal> in several different beans. 
-            Isn't it nicer and more typesafe to write 
+            The additional level of indirection might not seem worth the extra producer field declarations. However, 
+            resources like the <literal>EntityManager</literal> are likely to be used in several different beans.
+            It is much simpler and more typesafe to write:
          </para>
          
             <programlisting>@Inject @CustomerDatabase EntityManager</programlisting> 
             
-         <para>instead of</para>
+         <para>instead of:</para>
             
             <programlisting>@PersistenceContext(unitName="CustomerDatabase") EntityManager</programlisting> 
             
          <para>
-            all over the place?
+            wherever required.
          </para>
 
          </section>
