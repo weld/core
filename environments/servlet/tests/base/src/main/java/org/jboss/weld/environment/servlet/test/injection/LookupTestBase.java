@@ -3,6 +3,8 @@ package org.jboss.weld.environment.servlet.test.injection;
 
 
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -20,15 +22,15 @@ public class LookupTestBase
    @Test
    public void testManagerInJndi(Mouse mouse, BeanManager beanManager) throws Exception 
    {
-      assert mouse.getManager() != null;
-      assert mouse.getManager().equals(beanManager);
+      assertNotNull(mouse.getManager());
+      assertEquals(mouse.getManager(), beanManager);
    }
      
    @Test
    public void testResource(Vole vole, BeanManager beanManager) throws Exception 
    {
-      assert vole.getManager() != null;
-      assert vole.getManager().equals(beanManager);
+      assertNotNull(vole.getManager());
+      assertEquals(vole.getManager(), beanManager);
    }
    
 }

@@ -3,6 +3,7 @@ package org.jboss.weld.environment.servlet.test.injection;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.CONTEXT_PATH;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDefaultWebXml;
+import static org.junit.Assert.assertEquals;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +31,6 @@ public class FilterInjectionTestBase
       HttpClient client = new HttpClient();
       HttpMethod method = new GetMethod(CONTEXT_PATH + "/cat");
       int sc = client.executeMethod(method);
-      assert sc == HttpServletResponse.SC_OK;
+      assertEquals(sc, HttpServletResponse.SC_OK);
    }
 }

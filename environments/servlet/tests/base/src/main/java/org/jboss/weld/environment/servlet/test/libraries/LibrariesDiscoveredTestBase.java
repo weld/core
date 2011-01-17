@@ -1,6 +1,7 @@
 package org.jboss.weld.environment.servlet.test.libraries;
 
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
 
@@ -31,8 +32,8 @@ public class LibrariesDiscoveredTestBase
    @Test
    public void testCamelDeployed(Camel camel, Needle needle)
    {
-      assert camel != null;
-      assert needle != null;
+      assertNotNull(camel);
+      assertNotNull(needle);
    }
 
 }
