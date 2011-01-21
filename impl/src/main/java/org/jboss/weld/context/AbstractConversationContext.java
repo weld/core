@@ -28,6 +28,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
@@ -57,8 +58,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
    private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
    public static final String CONVERSATIONS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".conversations";
 
-   private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000;
-   private static final long CONCURRENT_ACCESS_TIMEOUT = 1 * 1000;
+   private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000L;
+   private static final long CONCURRENT_ACCESS_TIMEOUT = 1000L;
    private static final String PARAMETER_NAME = "cid";
 
    private final AtomicReference<String> parameterName;
@@ -247,12 +248,14 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
          }
          setBeanStore(null);
          // Clean up any expired conversations
-         for (Entry<String, ManagedConversation> entry : getConversationMap().entrySet())
+         Iterator<Entry<String, ManagedConversation>> entryIterator = getConversationMap().entrySet().iterator();
+         while (entryIterator.hasNext())
          {
+            Entry<String, ManagedConversation> entry = entryIterator.next();
             if (entry.getValue().isTransient())
             {
                destroyConversation(getSessionFromRequest(getRequest(), false), entry.getKey());
-               getConversationMap().remove(entry.getKey());
+               entryIterator.remove();
             }
          }
          // deactivate the context
@@ -437,7 +440,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     * @param name the name of the attribute
     * @param create if false, the attribute will only be retrieved if the
     *           session already exists, other wise it will always be retrieved
-    * 
+    *
+    * @return attribute
     * @throws IllegalStateException if create is true, and the session can't be
     *            created
     */
@@ -445,10 +449,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
    
    /**
     * Get an attribute value from the session.
-    * @param request the session to get the session attribute from
+    * @param session the session to get the session attribute from
     * @param name the name of the attribute
-
+    *
     * 
+    * @return attribute
     * @throws IllegalStateException if create is true, and the session can't be
     *            created
     */
@@ -497,7 +502,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
    /**
     * Get the associated store
     * 
-    * @return
+    * @return the request
     */
    private R getRequest()
    {
