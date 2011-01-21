@@ -28,6 +28,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
@@ -47,7 +48,7 @@ import org.jboss.weld.context.conversation.ConversationImpl;
 /**
  * The base of the conversation context, which can use a variety of storage
  * forms
- * 
+ *
  * @author Pete Muir
  */
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext
@@ -57,8 +58,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
    private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
    public static final String CONVERSATIONS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".conversations";
 
-   private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000;
-   private static final long CONCURRENT_ACCESS_TIMEOUT = 1 * 1000;
+   private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000L;
+   private static final long CONCURRENT_ACCESS_TIMEOUT = 1000L;
    private static final String PARAMETER_NAME = "cid";
 
    private final AtomicReference<String> parameterName;
@@ -66,7 +67,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
    private final AtomicLong concurrentAccessTimeout;
 
    private final ThreadLocal<R> associated;
-   
+
    private final Instance<ConversationContext> conversationContexts;
 
    public AbstractConversationContext()
@@ -127,7 +128,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
           * there, otherwise we can create a new conversation id generator and
           * conversations collection. If the the session exists when the request
           * is dissociated, then we store them in the session then.
-          * 
+          *
           * We always store the generator and conversation map in the request
           * for temporary usage.
           */
@@ -247,12 +248,14 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
          }
          setBeanStore(null);
          // Clean up any expired conversations
-         for (Entry<String, ManagedConversation> entry : getConversationMap().entrySet())
+         Iterator<Entry<String, ManagedConversation>> entryIterator = getConversationMap().entrySet().iterator();
+         while (entryIterator.hasNext())
          {
+            Entry<String, ManagedConversation> entry = entryIterator.next();
             if (entry.getValue().isTransient())
             {
                destroyConversation(getSessionFromRequest(getRequest(), false), entry.getKey());
-               getConversationMap().remove(entry.getKey());
+               entryIterator.remove();
             }
          }
          // deactivate the context
@@ -309,14 +312,14 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
       {
          if (isExpired(conversation))
          {
-            if (!conversation.isTransient()) 
+            if (!conversation.isTransient())
             {
                conversation.end();
             }
          }
       }
    }
-   
+
    public boolean destroy(S session)
    {
       try
@@ -343,7 +346,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
          cleanup();
       }
    }
-   
+
    protected void destroyConversation(S session, String id)
    {
       if (session != null)
@@ -424,7 +427,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     * @param value the value of the attribute
     * @param create if false, the attribute will only be set if the session
     *           already exists, other wise it will always be set
-    * 
+    *
     * @throws IllegalStateException if create is true, and the session can't be
     *            created
     */
@@ -432,23 +435,25 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
    /**
     * Get an attribute value from the session.
-    * 
+    *
     * @param request the request to get the session attribute from
     * @param name the name of the attribute
     * @param create if false, the attribute will only be retrieved if the
     *           session already exists, other wise it will always be retrieved
-    * 
+    *
+    * @return attribute
     * @throws IllegalStateException if create is true, and the session can't be
     *            created
     */
    protected abstract Object getSessionAttribute(R request, String name, boolean create);
-   
+
    /**
     * Get an attribute value from the session.
-    * @param request the session to get the session attribute from
+    * @param session the session to get the session attribute from
     * @param name the name of the attribute
-
-    * 
+    *
+    *
+    * @return attribute
     * @throws IllegalStateException if create is true, and the session can't be
     *            created
     */
@@ -473,20 +478,20 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     * Retrieve an attribute value from the request
     * @param request the request to get the attribute from
     * @param name the name of the attribute to get
-    * 
+    *
     * @return the value of the attribute
     */
    protected abstract Object getRequestAttribute(R request, String name);
-   
+
    protected abstract BoundBeanStore createRequestBeanStore(NamingScheme namingScheme, R request);
 
    protected abstract BoundBeanStore createSessionBeanStore(NamingScheme namingScheme, S session);
-   
+
    protected abstract S getSessionFromRequest(R request, boolean create);
-   
+
    /**
     * Check if the context is currently associated
-    * 
+    *
     * @return true if the context is associated
     */
    private boolean isAssociated()
@@ -496,8 +501,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
    /**
     * Get the associated store
-    * 
-    * @return
+    *
+    * @return the request
     */
    private R getRequest()
    {
