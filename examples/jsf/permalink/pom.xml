@@ -336,6 +336,9 @@
                   <directory>src/log/resources</directory>
                </resource>
                <resource>
+                  <directory>src/main/resources-jetty</directory>
+               </resource>
+               <resource>
                   <directory>src/main/resources</directory>
                </resource>
             </resources>
