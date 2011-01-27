@@ -34,7 +34,15 @@
       <note>
          <para>
             JPA entities do not fit this model. Entities have a separate lifecycle and identity model
+<<<<<<< HEAD
+<<<<<<< HEAD
             which doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities
+=======
+            which does not map naturally to the model used in CDI. Therefore, we recommend against treating entities
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            which doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             as CDI beans. You will encounter problems if you try to give an entity a scope other than
             the default <literal>@Dependent</literal> scope. The client proxy will get in the way if you try to pass
             an injected instance to the JPA <literal>EntityManager</literal>.
@@ -136,7 +144,7 @@ public class SecondLevelCache { ... }]]></programlisting>
       </para>
       
       <para>
-         Managed beans with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal> must be
+         Managed beans with a <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal> scope must be
          serializable, since the container passivates the HTTP session from time to time.
       </para>
 
@@ -269,8 +277,18 @@ public class OrderBuilder {
          <note>
             <para>
                The conversation context propagates across redirects, making it very easy to implement the common 
+<<<<<<< HEAD
+<<<<<<< HEAD
                POST-then-redirect pattern, without resorting to fragile constructs such as a "flash" object. The container 
                automatically adds the conversation ID to the redirect URL as a request parameter.
+=======
+               POST-then-redirect pattern, without resort to fragile constructs such as a "flash" object. The container 
+               automatically adds the conversation id to the redirect URL as a request parameter.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+               POST-then-redirect pattern, without resorting to fragile constructs such as a "flash" object. The container 
+               automatically adds the conversation ID to the redirect URL as a request parameter.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             </para>
          </note>
 
@@ -314,12 +332,20 @@ public class OrderBuilder {
       </note>
       
       <para>
+<<<<<<< HEAD
          You can guess what "singleton" means here. It means a bean that is instantiated once. Unfortunately, there's 
          a problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> do not have a proxy
+<<<<<<< HEAD
+=======
+         You can guess what "singleton" means here. It means a bean that is instantiated once. Unfortunately, there 
+         is a problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> do not have a proxy
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          object; clients hold a direct reference to the singleton instance. So we need to consider the case of a client 
          that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or 
-         <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal>
-         or <literal>@ConversationScoped</literal>, or any stateful session bean.
+         <literal>@ConversationScoped</literal>, any dependent object of a bean with a <literal>@SessionScoped</literal>
+         or <literal>@ConversationScoped</literal> scope, or any stateful session bean.
       </para>
       
       <para>
@@ -368,7 +394,7 @@ public class OrderBuilder {
       </para>
 
       <para>
-         For example, this bean has the scope type <literal>@Dependent</literal>:
+         For example, this bean has the <literal>@Dependent</literal> scope type:
       </para>
 
       <programlisting role="JAVA"><![CDATA[public class Calculator { ... }]]></programlisting>
@@ -411,7 +437,7 @@ public class OrderBuilder {
          <title>The <literal>@New</literal> qualifier</title>
 
          <para>
-            The built-in qualifier <literal>@New</literal> allows us to obtain a dependent object of a specified class.
+            The built-in <literal>@New</literal> qualifier allows us to obtain a dependent object of a specified class.
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Inject @New Calculator calculator;]]></programlisting>

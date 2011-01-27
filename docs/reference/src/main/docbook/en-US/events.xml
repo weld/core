@@ -32,7 +32,7 @@
       </listitem>
    </itemizedlist>
       
-   <para>The CDI event notification facility uses more or less the same typesafe approach that we've already 
+   <para>The CDI event notification facility uses more or less the same typesafe approach that we have already 
    seen with the dependency injection service.</para>
    
    <section>
@@ -60,7 +60,15 @@ public @interface Updated {}]]></programlisting>
       <title>Event observers</title>
 
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          An <emphasis>observer method</emphasis> is a method, with a parameter annotated <literal>@Observes</literal>.
+=======
+         An <emphasis>observer method</emphasis> is a method annotated with <literal>@Observes</literal>.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         An <emphasis>observer method</emphasis> is a method, with a parameter annotated <literal>@Observes</literal>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
 
       <programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }]]></programlisting>
@@ -161,8 +169,16 @@ public @interface Updated {}]]></programlisting>
       </itemizedlist>
 
       <para>
+<<<<<<< HEAD
          The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI 
          lets us obtain a qualifier instance by creating a subclass for, or extending, the helper class <literal>AnnotationLiteral</literal>. 
+<<<<<<< HEAD
+=======
+         The downside of annotating the injection point is that we cannot specify the qualifier dynamically. CDI 
+         lets us obtain a qualifier instance by using the helper class <literal>AnnotationLiteral</literal> as a subclass. 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>.
       </para>
 
@@ -181,7 +197,7 @@ public @interface Updated {}]]></programlisting>
 
       <para>
          By default, if there is no instance of an observer in the current context, the container will instantiate the 
-         observer in order to deliver an event to it. This behavior isn't always desirable. We may want to deliver events 
+         observer in order to deliver an event to it. This behavior is not always desirable. We may want to deliver events 
          only to instances of the observer that already exist in the current contexts.
       </para>
 
@@ -193,7 +209,15 @@ public @interface Updated {}]]></programlisting>
       <programlisting role="JAVA"><![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }]]></programlisting> 
 
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          A bean with <literal>@Dependent</literal> scope cannot be a conditional observer, since it would never be called.
+=======
+         A bean with the <literal>@Dependent</literal> scope cannot be a conditional observer, since it would never be called.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         A bean with <literal>@Dependent</literal> scope cannot be a conditional observer, since it would never be called.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
 
    </section>

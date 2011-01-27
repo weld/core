@@ -10,7 +10,15 @@
    </para>
    
    <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
       Weld provides a complete SPI, allowing Java EE containers like JBoss AS and GlassFish to use Weld as their 
+=======
+      Weld provides a complete SPI, allowing Java EE containers such as JBoss AS and GlassFish to use Weld as their 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      Weld provides a complete SPI, allowing Java EE containers like JBoss AS and GlassFish to use Weld as their 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE 
       environment.
    </para>

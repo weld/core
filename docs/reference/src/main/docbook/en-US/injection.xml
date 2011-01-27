@@ -268,7 +268,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
       <title>The built-in qualifiers <literal>@Default</literal> and <literal>@Any</literal></title>
       
       <para>Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the
-      qualifier <literal>@Default</literal>. From time to time, you'll need to decare an injection point without
+      qualifier <literal>@Default</literal>. From time to time, you will need to decare an injection point without
       specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>.
       By explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default
       qualifier, without otherwise restricting the beans that are eligible for injection.</para>
@@ -289,7 +289,15 @@ void initServices(@Any Instance<Service> services) {
          <title>Qualifiers with members</title>
 
          <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
             Java annotations can have members. Annotation members can be used to further discriminate a qualifier. This 
+=======
+            Java annotations can have members. Annotation members are used to further discriminate a qualifier. This 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            Java annotations can have members. Annotation members can be used to further discriminate a qualifier. This 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             prevents a potential explosion of new annotations. For example, instead of creating several qualifiers 
             representing different payment methods, we could aggregate them into a single annotation with a member:
          </para>
@@ -378,7 +386,15 @@ public class MockPaymentProcessor implements PaymentProcessor {
       <para>
          When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity
          by looking for an enabled alternative among the beans that could be injected. If there is exactly one
+<<<<<<< HEAD
+<<<<<<< HEAD
          enabled alternative, then that alternative bean will be injected.
+=======
+         enabled alternative, then that alternative bean that will be injected.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         enabled alternative, then that alternative bean will be injected.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
       
    </section>
@@ -460,8 +476,17 @@ public class MockPaymentProcessor implements PaymentProcessor {
    
       <para>
          On the other hand, if you really do have an optional or multivalued injection point, you should change
+<<<<<<< HEAD
+<<<<<<< HEAD
          the type of your injection point to <literal>Instance</literal>. You can find
          more information in <xref linkend="lookup"/>.
+=======
+         the type of your injection point to <literal>Instance</literal>. See <xref linkend="lookup"/> for more details.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         the type of your injection point to <literal>Instance</literal>. You can find
+         more information in <xref linkend="lookup"/>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
   
       <para>
@@ -522,7 +547,15 @@ public class MockPaymentProcessor implements PaymentProcessor {
       </itemizedlist>
   
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          You might come across an unproxyable dependency problem. These are easily fixed.
+=======
+         You may encounter an unproxyable dependency problem.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         You might come across an unproxyable dependency problem. These are easily fixed.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          If an injection point of type <literal>X</literal> results in an unproxyable dependency, simply:
       </para>
       
@@ -582,7 +615,15 @@ public class MockPaymentProcessor implements PaymentProcessor {
 
       <para>
          In certain situations, injection is not the best way to obtain a contextual reference. For example,
+<<<<<<< HEAD
+<<<<<<< HEAD
          it can't be used when:
+=======
+         it cannot be used when:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         it can't be used when:
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
 
       <itemizedlist>
@@ -650,8 +691,18 @@ public class MockPaymentProcessor implements PaymentProcessor {
       <para>
          Next, we need to obtain an instance of our qualifier type. Since annotatons are interfaces,
          <literal>new Asynchronous()</literal> is incorrect. Creating a concrete implementation of an annotation type
+<<<<<<< HEAD
+<<<<<<< HEAD
          from scratch is tedious. CDI lets us obtain a qualifier instance by giving the helper class 
          <literal>AnnotationLiteral</literal> a subclass:
+=======
+         from scratch is tedious. CDI lets us obtain a qualifier instance by subclassing the helper class 
+         <literal>AnnotationLiteral</literal>:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         from scratch is tedious. CDI lets us obtain a qualifier instance by giving the helper class 
+         <literal>AnnotationLiteral</literal> a subclass:
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
       
       <programlisting role="JAVA"><![CDATA[abstract class AsynchronousQualifier
@@ -723,7 +774,15 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
 
 <programlisting role="JAVA"><![CDATA[@Inject Logger log;]]></programlisting>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   <para>As a second example, to inject HTTP parameters, we need to define a qualifier type:</para>
+=======
+  <para>To inject HTTP parameters, we need to define a qualifier type:</para>
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+  <para>As a second example, to inject HTTP parameters, we need to define a qualifier type:</para>
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
 
 <programlisting role="JAVA"><![CDATA[@BindingType
 @Retention(RUNTIME)

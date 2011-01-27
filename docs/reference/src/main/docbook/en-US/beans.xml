@@ -77,7 +77,15 @@
    <section id="bean-anatomy">
       <title>The anatomy of a bean</title>
   
+<<<<<<< HEAD
+<<<<<<< HEAD
       <para>Enough hand-waving. According to the specification, the anatomy of a bean is:</para>
+=======
+      <para>According to the specification, a bean comprises the following attributes:</para>
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      <para>Enough hand-waving. According to the specification, the anatomy of a bean is:</para>
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
 
       <blockquote>
 
@@ -101,7 +109,15 @@
 
          <para>
             Beans usually acquire references to other beans via dependency injection. Any injected attribute specifies a
+<<<<<<< HEAD
+<<<<<<< HEAD
             "contract" that must be satisfied by the bean to be injected. The contract specified includes:
+=======
+            "contract" that must be satisfied by the bean to be injected. The contract defines:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            "contract" that must be satisfied by the bean to be injected. The contract specified includes:
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          </para>
 
          <itemizedlist>
@@ -144,13 +160,31 @@ public class BookShopBean
             <para>
                The bean types of a session bean include local interfaces and the bean class local view (if any). 
                EJB remote interfaces are not considered bean types of a session bean. You can't inject an EJB using
+<<<<<<< HEAD
+<<<<<<< HEAD
                its remote interface unless you define a <emphasis>resource</emphasis>. If you want to know more,
                skip ahead to <xref linkend="resources"/>.
+=======
+               its remote interface unless you define a <emphasis>resource</emphasis> &mdash; see <xref linkend="resources"/>
+               for details.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+               its remote interface unless you define a <emphasis>resource</emphasis>. If you want to know more,
+               skip ahead to <xref linkend="resources"/>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             </para>
          </note>
 
          <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
             To restrict the bean types to an explicit set, annotate the bean with the <literal>@Typed</literal>
+=======
+            Restrict the bean types to an explicit set by annotating the bean with the <literal>@Typed</literal>
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            To restrict the bean types to an explicit set, annotate the bean with the <literal>@Typed</literal>
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             annotation and listing the classes that should be types. The bean types of the following bean have been
             restricted to <literal>Shop&lt;Book&gt;</literal>, together with <literal>java.lang.Object</literal>:
          </para>
@@ -190,7 +224,7 @@ public @interface CreditCard {}]]></programlisting>
          
          <note>
             <para>
-               Pay attention to the names of the built-in annotations in CDI and EJB. You'll notice that they are 
+               Pay attention to the names of the built-in annotations in CDI and EJB. You will notice that they are 
                often adjectives. We encourage you to follow this convention when creating your custom annotations, 
                since they serve to describe the behaviors and roles of the class.
             </para>
@@ -198,8 +232,16 @@ public @interface CreditCard {}]]></programlisting>
             
          <para>
             Now that we have defined a qualifier annotation, we can use it to disambiguate an injection point. The 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             following injection point has the bean type <literal>PaymentProcessor</literal> and the qualifier
             <literal>@CreditCard</literal>:
+=======
+            following injection point has the <literal>PaymentProcessor</literal> bean type and the 
+            <literal>@CreditCard</literal> qualifier annotation:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Inject @CreditCard PaymentProcessor paymentProcessor]]></programlisting>
@@ -211,8 +253,18 @@ public @interface CreditCard {}]]></programlisting>
          </para>
          
          <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
             We can also specify the qualifiers of a bean by annotating the bean class. The following bean has the
             qualifier <literal>@CreditCard</literal> and implements the bean type <literal>PaymentProcessor</literal>.
+=======
+            To specify the qualifiers of a bean, annotate the bean class. The following bean has the
+            <literal>@CreditCard</literal> qualifier and implements the <literal>PaymentProcessor</literal> bean type. 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            We can also specify the qualifiers of a bean by annotating the bean class. The following bean has the
+            qualifier <literal>@CreditCard</literal> and implements the bean type <literal>PaymentProcessor</literal>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             Therefore, it satisfies our qualified injection point:
          </para>
 
@@ -238,7 +290,15 @@ public class CreditCardPaymentProcessor
          <para>
             CDI also defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what 
             to do if there is more than one bean that satisfies a particular contract. 
+<<<<<<< HEAD
+<<<<<<< HEAD
             We cover this in more detail in <xref linkend="injection"/>.
+=======
+            See <xref linkend="injection"/> for details.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            We cover this in more detail in <xref linkend="injection"/>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          </para>
          
          <!--
@@ -294,7 +354,15 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             were injected, which means their lifecycle is bound to the lifecycle of that object.
          </para>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
          <para>We cover scopes in more detail in <xref linkend="scopescontexts"/>.</para>
+=======
+         <para>Scopes are covered in further detail in <xref linkend="scopescontexts"/>.</para>
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         <para>We cover scopes in more detail in <xref linkend="scopescontexts"/>.</para>
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
 
       </section>
 
@@ -429,7 +497,15 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
 
          <para>
             Interceptors are deployment-specific &mdash; a <literal>TransactionInterceptor</literal> is unnecessary in a
+<<<<<<< HEAD
+<<<<<<< HEAD
             unit test. By default, an interceptor is disabled. You can enable interceptors in the CDI deployment 
+=======
+            unit test. By default, an interceptor is disabled. Enable interceptors in the CDI deployment 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            unit test. By default, an interceptor is disabled. You can enable interceptors in the CDI deployment 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             descriptor file (<literal>META-INF/beans.xml</literal>) of the JAR or Java EE module. This is also where we
             specify the interceptor ordering.
          </para>
@@ -554,7 +630,15 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             Stateful session beans may define a <emphasis>remove method</emphasis>, annotated <literal>@Remove</literal>, 
             that is used by the application to indicate that an instance should be destroyed. However, for a contextual 
             instance of the bean &mdash; an instance under the control of CDI &mdash; this method may only be called by the 
+<<<<<<< HEAD
+<<<<<<< HEAD
             application if the bean has <literal>@Dependent</literal> scope. For beans with other scopes, the application 
+=======
+            application if the bean has the <literal>@Dependent</literal> scope. For beans with other scopes, the application 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            application if the bean has <literal>@Dependent</literal> scope. For beans with other scopes, the application 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             must let the container destroy the bean.
          </para>
 
@@ -729,13 +813,31 @@ public class RandomNumberGenerator {
 }]]></programlisting>
          
          <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
             The rules for determining the bean types of a producer field correspond to the rules for 
             producer methods.
+=======
+            The rules for determining the bean types of a producer field are identical to those of determining the bean 
+            types of a producer method.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            The rules for determining the bean types of a producer field correspond to the rules for 
+            producer methods.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          </para>
 
          <para>
             A producer field can be used as a shortcut to avoid writing a useless getter method. 
+<<<<<<< HEAD
+<<<<<<< HEAD
             Producer fields also serve a specific purpose as adaptors for Java EE component 
+=======
+            However, producer fields serve a specific purpose as adaptors for Java EE component 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            Producer fields also serve a specific purpose as adaptors for Java EE component 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             environment injection. See <xref linkend="resources"/> for more details.
          </para>
 

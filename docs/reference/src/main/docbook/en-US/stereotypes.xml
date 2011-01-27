@@ -39,7 +39,15 @@
       </itemizedlist>
   
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          A bean can declare zero, one, or multiple stereotypes. Stereotype annotations can be applied to a bean class or
+=======
+         A bean can declare zero, one or multiple stereotypes. Stereotype annotations can be applied to a bean class or
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         A bean can declare zero, one, or multiple stereotypes. Stereotype annotations can be applied to a bean class or
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          producer method or field.
       </para>
   
@@ -88,7 +96,7 @@ public @interface Action {}]]></programlisting>
 public class DependentScopedLoginAction { ... }]]></programlisting>
 
       <para>
-         Naturally, overriding a single default isn't much use. But remember, stereotypes can define more than just the
+         Naturally, overriding a single default is not much use. But remember, stereotypes can define more than just the
          default scope.
       </para>
 
@@ -173,7 +181,15 @@ public class MockLoginAction extends LoginAction { ... }]]></programlisting>
       <title>Stereotype stacking</title>
 
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          Stereotypes can also declare other stereotypes, which is known as <emphasis>stereotype stacking</emphasis>. 
+=======
+         Stereotypes can declare other stereotypes, which is known as <emphasis>stereotype stacking</emphasis>. 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         Stereotypes can also declare other stereotypes, which is known as <emphasis>stereotype stacking</emphasis>. 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          This is useful when you have two distinct stereotypes which are meaningful on their own, but in other 
          situations may be meaningful when combined.
       </para>
@@ -196,7 +212,7 @@ public @interface AuditableAction {}]]></programlisting>
       <title>Built-in stereotypes</title>
     
       <para>
-         We've already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal>
+         We have already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal>
          and <literal>@Decorator</literal>.
       </para>
     

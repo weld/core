@@ -6,7 +6,7 @@
   
    <para>
       Producer methods let us overcome certain limitations that arise when a container, instead of the application, is
-      responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into
+      responsible for instantiating objects. They are also the easiest way to integrate objects which are not beans into
       the CDI environment. <!--(We'll meet a second approach in <xref linkend="xml"/>, a chapter covering the Weld XML
       extension).-->
    </para>
@@ -104,7 +104,7 @@ public PaymentStrategy getPaymentStrategy() {
 
          <para>
             Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to
-            the session context. The producer method won't be called again in the same session.
+            the session context. The producer method will not be called again in the same session.
          </para>
   
          <note>
@@ -186,7 +186,7 @@ public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
       <para>
          A new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be
          created, passed to the producer method, returned by the producer method and finally bound to the session
-         context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed,
+         context. The dependent object will not be destroyed until the <literal>Preferences</literal> object is destroyed,
          at the end of the session.
       </para>
 

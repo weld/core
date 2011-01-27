@@ -5,8 +5,8 @@
    <title>Specialization, inheritance and alternatives</title>
 
    <para>
-      When you first start developing with CDI, you'll likely be dealing only with a single bean implementation for each
-      bean type. In this case, it's easy to understand how beans get selected for injection. As the complexity of your
+      When you first start developing with CDI, you will likely be dealing only with a single bean implementation for each
+      bean type. In this case, it is easy to understand how beans get selected for injection. As the complexity of your
       application grows, multiple occurrences of the same bean type start appearing, either because you have multiple
       implementations or two beans share a common (Java) inheritance. That's when you have to begin studying the
       specialization, inheritance and alternative rules to work through unsatisfied or ambiguous dependencies or to
@@ -43,7 +43,7 @@
    <para>
       The first case is the exception, and also requires more care. In any given deployment, only one bean can fulfill a
       given role at a time. That means one bean needs to be enabled and the other disabled. There are a two modifiers
-      involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We'll start by looking at
+      involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We will start by looking at
       alternatives and then show the guarantees that specialization adds.
    </para>
 
@@ -62,7 +62,7 @@
 }]]></programlisting>
 
       <para>
-         But in our staging environment, we don't really want to submit payments to the external system, so we override 
+         But in our staging environment, we do not really want to submit payments to the external system, so we override 
          that implementation of <literal>PaymentProcessor</literal> with a different bean:
       </para>
   
@@ -81,7 +81,7 @@ class StagingPaymentProcessor
 }]]></programlisting>
 
       <para>
-         We've already seen how we can enable this alternative by listing its class in the <literal>beans.xml</literal>
+         We have already seen how we can enable this alternative by listing its class in the <literal>beans.xml</literal>
          descriptor.
       </para>
 
@@ -195,7 +195,7 @@ public class MockCreditCardPaymentProcessor
       </para>
       
       <para>
-         Since we're informing the container that our alternative bean is meant to stand in as a replacement for the
+         Since we are informing the container that our alternative bean is meant to stand in as a replacement for the
          default implementation, the alternative implementation automatically inherits all qualifiers of the default 
          implementation. Thus, in our example, <literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers 
          <literal>@Default</literal> and <literal>@CreditCard</literal>.

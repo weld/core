@@ -64,7 +64,7 @@
 
       <para>
          Suppose we want to declare that some of our beans are transactional. The first thing we need is an
-         <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:
+         <emphasis>interceptor binding type</emphasis> to specify exactly which beans we are interested in:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@InterceptorBinding
@@ -93,7 +93,15 @@ public class ShoppingCart { ... }]]></programlisting>
       <title>Implementing interceptors</title>
 
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          We're also going to need to implement the interceptor that provides this transaction management aspect. All we need to do is create 
+=======
+         We must also implement the interceptor that provides this transaction management aspect. All we need to do is create 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         We're also going to need to implement the interceptor that provides this transaction management aspect. All we need to do is create 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>.
       </para>
 

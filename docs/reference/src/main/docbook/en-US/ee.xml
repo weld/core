@@ -13,8 +13,16 @@
          <title>Built-in beans</title>
 
          <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             In the Java EE environment, the container provides the following built-in beans, all with the qualifier
             <literal>@Default</literal>:
+=======
+            In the Java EE environment, the container provides the following built-in beans, all with the  
+            <literal>@Default</literal> qualifier:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
          </para>
 
          <itemizedlist>
@@ -45,9 +53,17 @@
             <para>
                The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>,
                <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If 
-               you really want to be able to inject these objects, it's easy to create a portable extension to expose them 
+               you really want to be able to inject these objects, it is easy to create a portable extension to expose them 
                as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters 
+<<<<<<< HEAD
+<<<<<<< HEAD
                and servlet event listeners, where they can be obtained in the usual way as defined by the Java Servlet
+=======
+               and servlet event listeners, where they can be obtained in the usual way as defined by the Java Servlets
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+               and servlet event listeners, where they can be obtained in the usual way as defined by the Java Servlet
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
                specification. The <literal>FacesContext</literal> is also not injectable. You can get at it by calling 
                <literal>FacesContext.getCurrentInstance()</literal>.
             </para>
@@ -55,8 +71,17 @@
          
          <note>
             <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
                If you really want to inject the <literal>FacesContext</literal>, you can do so with the following
                producer method:
+=======
+               To actually inject the <literal>FacesContext</literal>, use the following producer method:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+               If you really want to inject the <literal>FacesContext</literal>, you can do so with the following
+               producer method:
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             </para>
             <programlisting role="JAVA"><![CDATA[class FacesContextProducer {
    @Produces @RequestScoped FacesContext getFacesContext() {
@@ -107,7 +132,16 @@ public class Login implements Serializable {
       <title>Calling a bean from a servlet</title>
     
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          To use a bean from a servlet, just inject the bean with field or initializer method injection, as shown:
+=======
+         To use a bean from a servlet, inject the bean using field or initializer method
+         injection.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         To use a bean from a servlet, just inject the bean with field or initializer method injection, as shown:
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
     
       <programlisting role="JAVA"><![CDATA[public class Login extends HttpServlet {
@@ -142,7 +176,15 @@ public class Login implements Serializable {
       <title>Calling a bean from a message-driven bean</title>
     
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          CDI injection applies to all EJBs, even when they're not managed beans. In particular, you can use CDI
+=======
+         CDI injection applies to all EJBs, even when they are not managed beans. In particular, you can use CDI
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         CDI injection applies to all EJBs, even when they're not managed beans. In particular, you can use CDI
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          injection in message-driven beans, which are by nature not contextual objects.
       </para>
     
@@ -261,7 +303,15 @@ public void sendMessage(String price) {
       <title>Packaging and deployment</title>
     
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
          CDI doesn't define any special deployment archive. You can package beans in JARs, EJB JARs or WARs &mdash; any
+=======
+         CDI does not define any special deployment archive. You can package beans in JARs, EJB JARs or WARs &mdash; any
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         CDI doesn't define any special deployment archive. You can package beans in JARs, EJB JARs or WARs &mdash; any
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          deployment location in the application classpath. However, the archive must be a "bean archive". That means
          each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in
          the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web

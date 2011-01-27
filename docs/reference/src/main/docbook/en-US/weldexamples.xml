@@ -276,7 +276,15 @@ public class Generator implements Serializable {
       
       <para>
          The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary
+<<<<<<< HEAD
+<<<<<<< HEAD
          entry point of the application. It's responsible for setting up and resetting the game, capturing and validating
+=======
+         entry point of the application. It is responsible for setting up and resetting the game, capturing and validating
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         entry point of the application. It's responsible for setting up and resetting the game, capturing and validating
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          the user's guess, and providing feedback to the user with a <literal>FacesMessage</literal>. The
          post-construct lifecycle method initializes the game by retrieving a random number from the <literal>@Random
          Instance&lt;Integer&gt;</literal> bean.
@@ -398,7 +406,7 @@ public class Game implements Serializable {
          <para>
             When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI
             for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified
-            interface name. You generally don't need to access this interface, but Weld makes use of it.
+            interface name. You generally do not need to access this interface, but Weld makes use of it.
          </para>
 
       </section>   
@@ -656,7 +664,15 @@ public class Game
                </callout>
                <callout arearefs="name">
                   <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
                      Note that the bean isn't named, since it doesn't need to
+=======
+                     Note that the bean is not named, since it does not need to
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+                     Note that the bean isn't named, since it doesn't need to
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
                      be accessed via EL.
                   </para>
                </callout>

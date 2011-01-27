@@ -175,7 +175,15 @@ tainer, for example, alternative web presentation technologies.
    </para>
   
    <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
       But CDI isn't a restrictive programming model. You don't need to structure your application into 
+=======
+      CDI is not a restrictive programming model. It does not require you to structure your application into 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      But CDI isn't a restrictive programming model. You don't need to structure your application into 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       particular layers, handle persistence in a certain way, or use a specific web framework. You can make these
       decisions for yourself, based on the needs of your application.
    </para>
@@ -189,7 +197,15 @@ tainer, for example, alternative web presentation technologies.
    <para>
       CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has 
       its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more 
+<<<<<<< HEAD
+<<<<<<< HEAD
       web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration 
+=======
+      web and enterprise-application capable than Guice. But it could not have been any of these without inspiration 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert
       Group.
    </para>

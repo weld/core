@@ -16,7 +16,15 @@
       The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java
       interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly
       implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business
+<<<<<<< HEAD
+<<<<<<< HEAD
       concerns. It also means that a decorator can't be used as generally as an interceptor. Decorators can't
+=======
+      concerns. It also means that a decorator does not have the generality of an interceptor. Decorators cannot
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      concerns. It also means that a decorator can't be used as generally as an interceptor. Decorators can't
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many
       ways, are complementary. Let's look at some cases where decorators fit the bill.
    </para>
@@ -68,7 +76,15 @@ public abstract class LargeTransactionDecorator
 }]]></programlisting>
 
    <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
       Unlike other beans, a decorator may be an abstract class. Therefore, if there's nothing special that the decorator
+=======
+      Unlike other beans, a decorator may be an abstract class. Therefore, if there is nothing special that the decorator
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      Unlike other beans, a decorator may be an abstract class. Therefore, if there's nothing special that the decorator
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       needs to do for a particular method of the decorated interface, you do not need to implement that method.
    </para>
   

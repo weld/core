@@ -3,7 +3,14 @@
 <partintro>
 
    <para>
+<<<<<<< HEAD
       The third theme of CDI is <emphasis>integration</emphasis>. We've already seen how CDI helps integrate EJB and
+<<<<<<< HEAD
+=======
+      The third theme of CDI is <emphasis>integration</emphasis>. We have already seen how CDI helps integrate EJB and
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       JSF, allowing EJBs to be bound directly to JSF pages. The CDI services are integrated
       into the very core of the Java EE platform. Even EJB session beans can take advantage of the dependency injection,
       event bus, and contextual lifecycle management that CDI provides.
@@ -21,9 +28,17 @@
    </para>
   
    <para>
-      We're about to see how to take full advantage of the Java EE platform in an application that uses CDI. We'll also
+      We are about to see how to take full advantage of the Java EE platform in an application that uses CDI. We will also
       briefly meet a set of SPIs that are provided to support portable extensions to CDI. You might not ever need to use
+<<<<<<< HEAD
+<<<<<<< HEAD
       these SPIs directly, but you'll use them indirectly when you use a third-party extension, such as Seam.
+=======
+      these SPIs directly, but you will use them indirectly when you use a third-party extension, such as Seam.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      these SPIs directly, but you'll use them indirectly when you use a third-party extension, such as Seam.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
    </para>
   
 <!--

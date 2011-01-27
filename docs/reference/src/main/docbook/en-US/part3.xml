@@ -3,7 +3,7 @@
 <partintro>
 
    <para>
-      The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving
+      The first major theme of CDI is <emphasis>loose coupling</emphasis>. We have already seen three means of achieving
       loose coupling:
    </para>
 
@@ -137,7 +137,15 @@
   
    <para>
       We're now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our
+<<<<<<< HEAD
+<<<<<<< HEAD
       code both easier to validate and more understandable. Most of the time you don't need to use these features, but if you 
+=======
+      code both easier to validate and more understandable. Most of the time you do not need to use these features, but if you 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      code both easier to validate and more understandable. Most of the time you don't need to use these features, but if you 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       use them wisely, you'll come to appreciate their power.
    </para>
 

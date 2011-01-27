@@ -56,7 +56,15 @@
    
       <note>
          <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
             You'll need a full installation of Ant 1.7.0. Some Linux distributions only supply a partial installation of Ant,
+=======
+            You will need a full installation of Ant 1.7.0. Some Linux distributions only supply a partial installation of Ant,
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            You'll need a full installation of Ant 1.7.0. Some Linux distributions only supply a partial installation of Ant,
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             which causes the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath.
          </para>
       </note>
@@ -81,12 +89,21 @@
       <title>Deploying to JBoss AS</title>
 
       <para>
-         To deploy the examples to JBoss AS, you'll need <ulink url="http://jboss.org/jbossas/">JBoss AS
+         To deploy the examples to JBoss AS, you will need <ulink url="http://jboss.org/jbossas/">JBoss AS
          6.0.0</ulink> or above. If a release of the JBoss AS 6.0 line isn't yet available, you can download a
          <ulink url="http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-6.0.x/">nightly snapshot</ulink>.
          JBoss AS 6.0.0 is the first release that has both CDI and Bean Validation support built-in, making it 
+<<<<<<< HEAD
+<<<<<<< HEAD
          close enough to Java EE 6 to run the examples. You don't need to make any modifications
          to the server &mdash; it's ready to go.
+=======
+         close enough to Java EE 6 to run the examples. No modifications to the server are required.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         close enough to Java EE 6 to run the examples. You don't need to make any modifications
+         to the server &mdash; it's ready to go.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
    
       <para>
@@ -214,7 +231,14 @@ $> ant deploy]]></programlisting>
       <title>Deploying to GlassFish</title>
 
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          To deploy the examples to GlassFish, you'll need the final <ulink
+=======
+         To deploy the examples to GlassFish, you will need the final <ulink
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
          url="https://glassfish.dev.java.net/downloads/v3-final.html">GlassFish V3</ulink> release. Select the release
          that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform.
          After the download is complete, execute the installer. On Windows you can just click on the executable. 
@@ -390,11 +414,23 @@ $> start]]></programlisting>
          <title>Deploying with Maven</title>
 
          <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             You can also deploy the application to Tomcat using Maven. This section is more advanced, so you can jump ahead if
             you don't want to use Maven natively.
 
          <para>
             First, make sure you have Maven installed on your path, similar to how you set up Ant.
+<<<<<<< HEAD
+=======
+            You can also deploy the application to Tomcat using Maven. This section is more advanced, so it is not required
+            reading unless you want to use Maven natively. You will first need to make sure that you have Maven
+            installed on your path, similar to how you set up Ant.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          </para>
 
          <para>
@@ -466,11 +502,17 @@ $> start]]></programlisting>
       </para>
 
       <para>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          The Maven build parallels the embedded Tomcat deployment, so if you've read through 
          the entire Tomcat section, you're ready to go. We'll cover everything again here just in case.
       </para>
 
       <para>
+=======
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
          The Maven POM (<literal>pom.xml</literal>) includes a profile named <literal>jetty</literal> that activates the 
          Maven Jetty plugin, which you can use
          to start Jetty in embedded mode and deploy the application in place. You don't need anything else installed
@@ -531,7 +573,15 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
 
       <para>
          Now, you are ready to run the server in Eclipse. Import the project into your Eclipse workspace using "Import
+<<<<<<< HEAD
+<<<<<<< HEAD
          Existing Project into Workspace." Then, find the start class in <literal>src/jetty/java</literal> and run its 
+=======
+         Existing Project into Workspace". Then, find the start class in <literal>src/jetty/java</literal> and run its 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         Existing Project into Workspace." Then, find the start class in <literal>src/jetty/java</literal> and run its 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          main method as a Java Application. Jetty will launch. You can view the application at the following local URL: <ulink
          url="http://localhost:8080">http://localhost:8080</ulink>. Pay particular attention to the port in the URL and
          the lack of a trailing context path.

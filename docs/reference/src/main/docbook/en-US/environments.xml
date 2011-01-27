@@ -9,7 +9,15 @@
       <para>
          If you are using JBoss AS 6.0, no additional configuration is required to use Weld (or CDI for that matter).
          All you need to do is make your application a bean archive by adding <literal>META-INF/beans.xml</literal>
+<<<<<<< HEAD
+<<<<<<< HEAD
          to the classpath, or <literal>WEB-INF/beans.xml</literal> to the web root.
+=======
+         to the classpath or <literal>WEB-INF/beans.xml</literal> to the web root.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         to the classpath, or <literal>WEB-INF/beans.xml</literal> to the web root.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
       </para>
       
       <note>
@@ -69,7 +77,7 @@
          <title>Tomcat</title>
 
          <para>
-            Tomcat has a read-only JNDI, so Weld can't automatically bind the BeanManager extension SPI. To bind
+            Tomcat has a read-only JNDI, so Weld cannot automatically bind the BeanManager extension SPI. To bind
             the BeanManager into JNDI, you should populate <literal>META-INF/context.xml</literal> in the web root with
             the following contents:
          </para>
@@ -416,9 +424,21 @@ public class HelloWorld
             <title>Setting the Classpath</title>
 
             <para>Weld SE comes packaged as a 'shaded' JAR which includes the CDI API,
+<<<<<<< HEAD
+<<<<<<< HEAD
             Weld Core and all dependent classes bundled into a single JAR. Therefore the
             only Weld JAR you need on the classpath, in addition to your application's
             classes and dependent JARs, is the Weld SE JAR. If you are working with a pure
+=======
+            Weld Core and all dependant classes bundled into a single JAR. Therefore the
+            only Weld JAR you need on the classpath, in addition to your application's
+            classes and dependant JARs, is the Weld SE JAR. If you are working with a pure
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            Weld Core and all dependent classes bundled into a single JAR. Therefore the
+            only Weld JAR you need on the classpath, in addition to your application's
+            classes and dependent JARs, is the Weld SE JAR. If you are working with a pure
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             Java SE application you launch using <literal>java</literal>, this may be simpler
             for you.
             </para>
