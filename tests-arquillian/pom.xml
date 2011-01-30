@@ -61,12 +61,24 @@
       <dependency>
          <groupId>org.jboss.ejb3</groupId>
          <artifactId>jboss-ejb3-ext-api</artifactId>
+         <exclusions>
+            <exclusion>
+               <groupId>org.jboss.logging</groupId>
+               <artifactId>jboss-logging-spi</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
          <groupId>org.jboss</groupId>
          <artifactId>jboss-mdr</artifactId>
          <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.jboss.logging</groupId>
+               <artifactId>jboss-logging-spi</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
@@ -310,6 +322,46 @@
                   <directory>src/test/resources</directory>
                </testResource>
             </testResources>
+         </build>
+      </profile>
+
+<!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
+      <profile>
+         <id>jbossas7-remote</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+            <property>
+               <name>jbossas7</name>
+            </property>
+         </activation>
+         <properties>
+            <test>org.jboss.weld.tests.IntegrationSuite</test>
+         </properties>
+
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-arquillian-container-remote</artifactId>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.naming</groupId>
+               <artifactId>jnp-client</artifactId>
+               <version>5.0.4.GA</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <test>${test}</test>
+                     <parallel>none</parallel>
+                  </configuration>
+               </plugin>
+            </plugins>
          </build>
       </profile>
 
