@@ -325,13 +325,53 @@
          </build>
       </profile>
 
-<!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
+      <!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
+      <profile>
+         <id>jbossas7</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+            <property>
+               <name>jbossas7</name>
+            </property>
+         </activation>
+         <properties>
+            <test>org.jboss.weld.tests.IntegrationSuite</test>
+         </properties>
+
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-arquillian-container-managed</artifactId>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.naming</groupId>
+               <artifactId>jnp-client</artifactId>
+               <version>5.0.4.GA</version>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <test>${test}</test>
+                     <parallel>none</parallel>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+
+      <!-- InContainer profile using JBoss AS 7 Remote. Runs the full integration test suite, used by e.g. Hudson. -->
       <profile>
          <id>jbossas7-remote</id>
          <activation>
             <activeByDefault>false</activeByDefault>
             <property>
-               <name>jbossas7</name>
+               <name>jbossas7-remote</name>
             </property>
          </activation>
          <properties>
