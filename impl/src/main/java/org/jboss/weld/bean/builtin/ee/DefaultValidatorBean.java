@@ -46,7 +46,7 @@ public class DefaultValidatorBean extends AbstractEEBean<Validator>
       {
          if (getBeanManager().getServices().contains(ValidationServices.class))
          {
-            return Container.instance().services().get(ValidationServices.class).getDefaultValidatorFactory().getValidator();
+            return getBeanManager().getServices().get(ValidationServices.class).getDefaultValidatorFactory().getValidator();
          }
          else
          {
