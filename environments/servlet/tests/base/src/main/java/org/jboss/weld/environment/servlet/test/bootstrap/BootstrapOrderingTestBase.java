@@ -25,7 +25,7 @@ public class BootstrapOrderingTestBase
    
    public static WebArchive deployment()
    {
-      return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTestBase.class.getPackage()).addManifestResource(EXTENSION, "services/" + Extension.class.getName());
+      return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTestBase.class.getPackage()).addAsResource(EXTENSION, "META-INF/services/" + Extension.class.getName());
    }
    
    @Test

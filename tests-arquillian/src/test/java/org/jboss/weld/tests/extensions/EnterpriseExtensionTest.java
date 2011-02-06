@@ -40,7 +40,7 @@ public class EnterpriseExtensionTest
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(EnterpriseExtensionTest.class.getPackage())
-                  .addServiceProvider(Extension.class, 
+                  .addAsServiceProvider(Extension.class, 
                         SimpleExtension.class, 
                         ExtensionObserver.class,
                         WoodlandExtension.class,

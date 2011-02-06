@@ -51,7 +51,7 @@ public class InterceptorExtensionTest
                   .intercept(IncrementingInterceptor.class, LifecycleInterceptor.class)
                   .addPackage(InterceptorExtensionTest.class.getPackage())
                   .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
-                  .addServiceProvider(Extension.class, InterceptorExtension.class);
+                  .addAsServiceProvider(Extension.class, InterceptorExtension.class);
    }
    
    @Inject

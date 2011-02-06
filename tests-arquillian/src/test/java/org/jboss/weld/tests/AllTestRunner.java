@@ -46,7 +46,7 @@ public class AllTestRunner extends Suite
                   }
                }
             },
-            AllTestRunner.class.getPackage()).scanPackage();
+            AllTestRunner.class.getPackage().getName()).scanPackage();
             //ExampleTest.class.getPackage()).scanPackage();
       
       Collections.sort(classes, new Comparator<Class<?>>()

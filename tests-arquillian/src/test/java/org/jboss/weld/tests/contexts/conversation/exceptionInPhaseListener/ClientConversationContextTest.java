@@ -39,8 +39,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -63,7 +61,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class ClientConversationContextTest 
 {
 
@@ -73,16 +70,16 @@ public class ClientConversationContextTest
 
    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
 
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(ConversationTestPhaseListener.class, Cloud.class)
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
    
    @Test

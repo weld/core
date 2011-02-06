@@ -37,10 +37,10 @@ public class EnterpriseBeanProxyTest
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
+         .addAsModule(
                ShrinkWrap.create(JavaArchive.class)
                   .addPackage(EnterpriseBeanProxyTest.class.getPackage())
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
          );
    }
    

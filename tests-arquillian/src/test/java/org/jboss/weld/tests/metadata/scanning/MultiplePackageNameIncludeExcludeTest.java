@@ -35,7 +35,7 @@ public class MultiplePackageNameIncludeExcludeTest
    {
       return ShrinkWrap.create(JavaArchive.class).addClass(Utils.class)
          .addClasses(Bar.class, Foo.class, Baz.class, Qux.class, Corge.class, Garply.class, Grault.class, Wibble.class)
-         .addManifestResource(BEANS_XML, "beans.xml");
+         .addAsManifestResource(BEANS_XML, "beans.xml");
    }
    
    @Test

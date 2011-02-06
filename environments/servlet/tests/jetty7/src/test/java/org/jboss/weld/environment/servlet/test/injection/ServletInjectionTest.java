@@ -22,25 +22,22 @@
 
 package org.jboss.weld.environment.servlet.test.injection;
 
+import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
+
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
-
-import static org.jboss.arquillian.api.RunModeType.AS_CLIENT;
-import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
 
 /**
  * @author Ales Justin
  */
 @RunWith(Arquillian.class)
-@Run(AS_CLIENT)
 public class ServletInjectionTest extends ServletInjectionTestBase
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive deployment()
    {
-      return ServletInjectionTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml");
+      return ServletInjectionTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
    }
 }

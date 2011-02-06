@@ -36,7 +36,7 @@ public class ResourceCircularDependencyTest
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ResourceCircularDependencyTest.class.getPackage())
-         .addManifestResource(
+         .addAsManifestResource(
                ResourceCircularDependencyTest.class.getPackage(), "persistence.xml", "persistence.xml");
    }
    

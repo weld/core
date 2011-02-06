@@ -53,7 +53,7 @@ public class MultipleBeansTest
                   .addPackage(MultipleBeansTest.class.getPackage())
                   .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
                   .addClass(Utils.class)
-                  .addServiceProvider(Extension.class, MultipleBeansExtension.class);
+                  .addAsServiceProvider(Extension.class, MultipleBeansExtension.class);
    }
    
    @Inject

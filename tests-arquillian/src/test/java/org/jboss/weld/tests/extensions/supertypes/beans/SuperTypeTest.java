@@ -38,7 +38,7 @@ public class SuperTypeTest
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(SuperTypeTest.class.getPackage())
          .addClass(Utils.class)
-         .addServiceProvider(Extension.class, CDIExtension.class);
+         .addAsServiceProvider(Extension.class, CDIExtension.class);
    }
 
    @Test

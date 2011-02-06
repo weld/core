@@ -23,8 +23,6 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -52,19 +50,18 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class ErrorPageTest 
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Storm.class, Rain.class)
-               .addWebResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
-               .addResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
+               .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

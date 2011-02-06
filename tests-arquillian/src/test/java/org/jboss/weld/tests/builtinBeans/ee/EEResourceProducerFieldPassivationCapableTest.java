@@ -48,10 +48,10 @@ public class EEResourceProducerFieldPassivationCapableTest
       return ShrinkWrap.create(BeanArchive.class)
             .addPackage(EEResourceProducerFieldPassivationCapableTest.class.getPackage())
             .addClass(Utils.class)
-            .addManifestResource(
+            .addAsManifestResource(
                   EEResourceProducerFieldPassivationCapableTest.class.getPackage(),
                   "persistence.xml", "persistence.xml")
-            .addManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

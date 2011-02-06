@@ -1,22 +1,14 @@
-<?xml version="1.0"?>
-<arquillian xmlns="http://jboss.com/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:tomcat6="urn:arq:org.jboss.arquillian.container.tomcat.embedded_6">
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://www.jboss.org/arquillian-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.jboss.org/arquillian-1.0 http://www.jboss.org/schema/arquillian/arquillian-1.0.xsd">
 
-   <engine>
-      <deploymentExportPath>target/test-archives</deploymentExportPath>
-   </engine>
+	<engine>
+		<property name="deploymentExportPath">target/</property>
+	</engine>
 
-   <!--
-      Force it to use the target dir, this means we get a clean env each
-      test run
-   -->
-   <tomcat6:container>
-      <tomcat6:tomcatHome>target/tomcat-embedded-6</tomcat6:tomcatHome>
-      <tomcat6:workDir>work</tomcat6:workDir>
-      <tomcat6:appBase>webapps</tomcat6:appBase>
-      <tomcat6:bindHttpPort>8888</tomcat6:bindHttpPort>
-      <!-- unpackArchive must be true if using the Weld Servlet module -->
-      <tomcat6:unpackArchive>true</tomcat6:unpackArchive>
-   </tomcat6:container>
-
+	<container qualifier="tomcat" default="true">
+		<configuration>
+			<property name="unpackArchive">true</property>
+		</configuration>
+	</container>
 </arquillian>

@@ -25,7 +25,7 @@ public class DeploymentOrderingTestBase
    
    public static WebArchive deployment()
    {
-      WebArchive war = baseDeployment().addPackage(DeploymentOrderingTestBase.class.getPackage()).addWebResource(new BeansXml().alternatives(Bar.class), "beans.xml").addWebResource(new BeansXml().alternatives(Garply.class), "classes/META-INF/beans.xml").addManifestResource(EXTENSION, "services/" + Extension.class.getName());
+      WebArchive war = baseDeployment().addPackage(DeploymentOrderingTestBase.class.getPackage()).addAsWebInfResource(new BeansXml().alternatives(Bar.class), "beans.xml").addAsResource(new BeansXml().alternatives(Garply.class), "META-INF/beans.xml").addAsResource(EXTENSION, "META-INF/services/" + Extension.class.getName());
       return war;
    }
    

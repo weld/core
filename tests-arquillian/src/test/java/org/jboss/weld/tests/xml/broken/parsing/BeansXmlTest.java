@@ -18,7 +18,7 @@ public class BeansXmlTest
    {
       return ShrinkWrap.create(JavaArchive.class)
          .addPackage(BeansXmlTest.class.getPackage())
-         .addManifestResource(
+         .addAsManifestResource(
                new StringAsset(
                 "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" xmlns:weld=\"http://jboss.org/schema/weld/beans\">\n" + 
          		"   <alternatives>\n" + 

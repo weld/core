@@ -47,7 +47,7 @@ public class NewEnterpriseBeanTest
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(NewEnterpriseBeanTest.class.getPackage())
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
    }
    
    private static final New NEW_LITERAL = new NewLiteral()

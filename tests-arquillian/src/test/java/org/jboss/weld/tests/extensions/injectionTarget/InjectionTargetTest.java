@@ -44,13 +44,13 @@ public class InjectionTargetTest
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
+         .addAsModule(
                ShrinkWrap.create(BeanArchive.class)
                   .intercept(SecurityInterceptor.class)
                   .decorate(AircraftDecorator.class)
                   .addPackage(InjectionTargetTest.class.getPackage())
                   .addClass(Utils.class)
-                  .addServiceProvider(Extension.class, InjectionTargetExtension.class)
+                  .addAsServiceProvider(Extension.class, InjectionTargetExtension.class)
          );
    }
 

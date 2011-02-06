@@ -50,7 +50,7 @@ public class ManagerTest
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addPackage(ManagerTest.class.getPackage())
                .addClass(Utils.class)
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
    
    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);

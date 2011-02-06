@@ -39,7 +39,7 @@ public class BeanArchiveImpl extends JavaArchiveImpl implements BeanArchive
 
       // add beans.xml descriptor
       descriptor = new BeansXml();
-      addManifestResource(descriptor, ArchivePaths.create("beans.xml"));
+      addAsManifestResource(descriptor, ArchivePaths.create("beans.xml"));
    }
 
    //-------------------------------------------------------------------------------------||

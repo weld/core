@@ -42,7 +42,7 @@ public class MultipleDeepPackagePatternIncludeExcludeTest
       return ShrinkWrap.create(JavaArchive.class).addClass(Utils.class)
          .addClasses(Bar.class, Foo.class, Baz.class, Qux.class, Corge.class, Garply.class, Grault.class)
          .addClasses(Wibble.class, Wobble.class, Wubble.class, Flob.class, Fred.class, Plugh.class, Waldo.class)
-         .addManifestResource(BEANS_XML, "beans.xml");
+         .addAsManifestResource(BEANS_XML, "beans.xml");
    }
    
    @Test

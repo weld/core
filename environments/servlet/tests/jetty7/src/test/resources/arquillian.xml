@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<arquillian xmlns="http://jboss.com/arquillian"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:jetty7="urn:arq:org.jboss.arquillian.container.jetty.embedded_7">
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian-1.0.xsd">
 
-   <jetty7:container>
-      <jetty7:bindHttpPort>8888</jetty7:bindHttpPort>
-      <jetty7:jettyPlus>false</jetty7:jettyPlus> <!-- FIX THIS in ARQ -->
-   </jetty7:container>
+	<engine>
+		<property name="deploymentExportPath">target/</property>
+	</engine>
 
+	<container qualifier="jetty" default="true">
+		<configuration>
+			<property name="jettyPlus">false</property>
+		</configuration>
+	</container>
 </arquillian>

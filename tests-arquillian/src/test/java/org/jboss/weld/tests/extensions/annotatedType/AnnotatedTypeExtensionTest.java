@@ -55,7 +55,7 @@ public class AnnotatedTypeExtensionTest
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(AnnotatedTypeExtensionTest.class.getPackage())
                   .addClass(Utils.class)
-                  .addServiceProvider(Extension.class, AnnotatedTypeExtension.class);
+                  .addAsServiceProvider(Extension.class, AnnotatedTypeExtension.class);
    }
    
    @Inject

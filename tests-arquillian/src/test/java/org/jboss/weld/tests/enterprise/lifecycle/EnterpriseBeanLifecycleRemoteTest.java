@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import static org.jboss.arquillian.api.RunModeType.AS_CLIENT;
 import static org.junit.Assert.assertEquals;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -59,21 +57,20 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(AS_CLIENT)
 public class EnterpriseBeanLifecycleRemoteTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static Archive<?> deploy()
    {
       EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
-      ear.addModule(ShrinkWrap.create(WebArchive.class, "test.war")
+      ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
             .addClass(RemoteClient.class)
-            .addWebResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
       );
-      ear.addModule(ShrinkWrap.create(BeanArchive.class, "test.jar")
+      ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test.jar")
             .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
             .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
-            .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
       );
       return ear;
    }

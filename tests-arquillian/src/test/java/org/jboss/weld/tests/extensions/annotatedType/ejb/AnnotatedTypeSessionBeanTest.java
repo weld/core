@@ -44,7 +44,7 @@ public class AnnotatedTypeSessionBeanTest
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(AnnotatedTypeSessionBeanTest.class.getPackage())
                   .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
-                  .addServiceProvider(Extension.class, AnnotatedTypeEjbExtension.class);
+                  .addAsServiceProvider(Extension.class, AnnotatedTypeEjbExtension.class);
    }
 
    @Test

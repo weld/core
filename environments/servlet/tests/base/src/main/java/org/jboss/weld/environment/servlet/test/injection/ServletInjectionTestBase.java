@@ -1,15 +1,17 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
-import static org.jboss.weld.environment.servlet.test.util.Deployments.CONTEXT_PATH;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDefaultWebXml;
 import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.jboss.arquillian.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,11 +28,11 @@ public class ServletInjectionTestBase
    }
 
    @Test
-   public void testServletInjection() throws Exception
+   public void testServletInjection(@ArquillianResource URL baseURL) throws Exception
    {
       HttpClient client = new HttpClient();
-      HttpMethod method = new GetMethod(CONTEXT_PATH + "/rat");
-      assertEquals(client.executeMethod(method), HttpServletResponse.SC_OK);
+      HttpMethod method = new GetMethod(new URL(baseURL, "rat").toExternalForm());
+      assertEquals(HttpServletResponse.SC_OK, client.executeMethod(method));
    }
 
 }

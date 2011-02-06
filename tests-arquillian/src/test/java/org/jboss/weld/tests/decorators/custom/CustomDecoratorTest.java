@@ -40,7 +40,7 @@ public class CustomDecoratorTest
    {
       return ShrinkWrap.create(BeanArchive.class)
          .decorate(CustomWindowFrame.class)
-         .addManifestResource(new ByteArrayAsset("org.jboss.weld.tests.decorators.custom.CustomDecoratorDeploymentObserver".getBytes()), "services/javax.enterprise.inject.spi.Extension")
+         .addAsManifestResource(new ByteArrayAsset("org.jboss.weld.tests.decorators.custom.CustomDecoratorDeploymentObserver".getBytes()), "services/javax.enterprise.inject.spi.Extension")
          .addPackage(CustomDecoratorTest.class.getPackage())
          .addClass(Utils.class);
    }

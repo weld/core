@@ -49,10 +49,10 @@ public class EJBTest
    public static Archive<?> deploy() 
    {
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
+         .addAsModule(
                ShrinkWrap.create(JavaArchive.class)
                   .addPackage(EJBTest.class.getPackage())
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                   //.addManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
          );
    }

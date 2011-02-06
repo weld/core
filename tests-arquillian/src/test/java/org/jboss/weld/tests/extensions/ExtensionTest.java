@@ -39,7 +39,7 @@ public class ExtensionTest
    {
       return ShrinkWrap.create(BeanArchive.class)
                .addPackage(ExtensionTest.class.getPackage())
-               .addServiceProvider(Extension.class, 
+               .addAsServiceProvider(Extension.class, 
                      SimpleExtension.class, 
                      ExtensionObserver.class,
                      WoodlandExtension.class,

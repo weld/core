@@ -23,8 +23,6 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -48,18 +46,17 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class InvalidateSessionTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Storm.class, SomeBean.class)
-               .addWebResource(InvalidateSessionTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(InvalidateSessionTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(InvalidateSessionTest.class.getPackage(), "storm.jsf", "storm.jspx")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(InvalidateSessionTest.class.getPackage(), "storm.jsf", "storm.jspx")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

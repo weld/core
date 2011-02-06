@@ -39,8 +39,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -65,7 +63,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class ClientConversationContextTest
 {
 
@@ -75,21 +72,21 @@ public class ClientConversationContextTest
 
    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
 
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class, LockingIssueBean.class, Tornado.class)
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "blizzard.xhtml", "blizzard.xhtml")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "blizzard.xhtml", "blizzard.xhtml")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

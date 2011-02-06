@@ -22,8 +22,6 @@ import java.io.IOException;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -50,7 +48,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class JsfStressTest
 {
    protected final String MAIN_PAGE = "/home.jsf";
@@ -68,17 +65,17 @@ public class JsfStressTest
    @Rule
    public ContiPerfRule i = new ContiPerfRule();
 
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Game.class, Generator.class, MaxNumber.class, Random.class)
-               .addWebResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
-               .addResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addAsWebResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
+               .addAsWebResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
    
    // WELD-676

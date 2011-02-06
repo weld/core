@@ -18,9 +18,9 @@ public class JsfTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
          .addPackage(JsfTest.class.getPackage())
-         .addWebResource(JsfTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-         .addWebResource(JsfTest.class.getPackage(), "web.xml", "web.xml")
-         .addWebResource(new ByteArrayAsset(new byte[0]), "beans.xml");
+         .addAsWebInfResource(JsfTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+         .addAsWebInfResource(JsfTest.class.getPackage(), "web.xml", "web.xml")
+         .addAsWebInfResource(new ByteArrayAsset(new byte[0]), "beans.xml");
    }
    
    @Test

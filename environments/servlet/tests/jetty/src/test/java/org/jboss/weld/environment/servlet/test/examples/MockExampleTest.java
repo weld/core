@@ -15,7 +15,7 @@ public class MockExampleTest extends MockExampleTestBase
    @Deployment
    public static WebArchive deployment()
    {
-      return MockExampleTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml").addWebResource(JETTY_WEB, "jetty-web.xml");
+      return MockExampleTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml").addAsWebInfResource(JETTY_WEB, "jetty-web.xml");
    }
    
 }

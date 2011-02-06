@@ -35,7 +35,7 @@ public class SpiAddedQualifierTest
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class).addPackage(SpiAddedQualifierTest.class.getPackage()).addServiceProvider(Extension.class, QuickExtension.class);
+      return ShrinkWrap.create(BeanArchive.class).addPackage(SpiAddedQualifierTest.class.getPackage()).addAsServiceProvider(Extension.class, QuickExtension.class);
    }
 
    @Inject

@@ -34,7 +34,7 @@ public class ParserTest
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(ParserTest.class.getPackage())
-                  .addManifestResource(ParserTest.class.getPackage(), "beans.xml", "beans.xml");
+                  .addAsManifestResource(ParserTest.class.getPackage(), "beans.xml", "beans.xml");
    }
    
    @Test

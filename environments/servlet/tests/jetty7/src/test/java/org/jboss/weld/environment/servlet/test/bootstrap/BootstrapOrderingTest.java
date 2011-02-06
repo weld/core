@@ -38,6 +38,6 @@ public class BootstrapOrderingTest extends BootstrapOrderingTestBase
    @Deployment
    public static WebArchive deployment()
    {
-      return BootstrapOrderingTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml");
+      return BootstrapOrderingTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
    }
 }

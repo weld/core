@@ -38,9 +38,9 @@ public class ServletListenerTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
          .addClasses(ServletContextListenerImpl.class, LogManager.class)
-         .addWebResource(
+         .addAsWebInfResource(
                ServletListenerTest.class.getPackage(), "web.xml", ArchivePaths.create("web.xml"))
-         .addWebResource(
+         .addAsWebInfResource(
                EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
       
    }

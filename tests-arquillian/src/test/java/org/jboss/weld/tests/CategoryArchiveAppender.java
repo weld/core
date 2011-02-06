@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests;
 
-import org.jboss.arquillian.spi.AuxiliaryArchiveAppender;
+import org.jboss.arquillian.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;

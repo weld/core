@@ -21,8 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -47,19 +45,18 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class NamedProducerTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(User.class, NewUserAction.class, Employee.class, SaveAction.class)
-               .addWebResource(NamedProducerTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(NamedProducerTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(NamedProducerTest.class.getPackage(), "view.xhtml", "view.xhtml")
-               .addResource(NamedProducerTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(NamedProducerTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(NamedProducerTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(NamedProducerTest.class.getPackage(), "view.xhtml", "view.xhtml")
+               .addAsWebResource(NamedProducerTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

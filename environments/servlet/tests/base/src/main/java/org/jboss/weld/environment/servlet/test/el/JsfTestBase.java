@@ -6,9 +6,11 @@ import static org.jboss.weld.environment.servlet.test.util.Deployments.FACES_WEB
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.junit.Assert.assertNotNull;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jboss.arquillian.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -47,15 +49,15 @@ public abstract class JsfTestBase
    {
       return baseDeployment(FACES_WEB_XML)
          .add(CHARLIE_XHTML, "charlie.xhtml")
-         .addWebResource(EMPTY_FACES_CONFIG_XML, "faces-config.xml")
+         .addAsWebInfResource(EMPTY_FACES_CONFIG_XML, "faces-config.xml")
          .addClass(Chicken.class);
    }
 
    @Test
-   public void testELWithParameters() throws Exception
+   public void testELWithParameters(@ArquillianResource URL baseURL) throws Exception
    {
       WebClient client = new WebClient();
-      HtmlPage page = client.getPage(getPath("/charlie.jsf"));
+      HtmlPage page = client.getPage(new URL(baseURL, "charlie.jsf"));
       
       String s = page.asXml();
       
@@ -67,8 +69,6 @@ public abstract class JsfTestBase
       assertNotNull(newel);
       assertEquals("Charlie", newel.asText());
    }
-   
-   protected abstract String getPath(String page);
    
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
    {

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<arquillian xmlns="http://jboss.com/arquillian"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:jetty6="urn:arq:org.jboss.arquillian.container.jetty.embedded_6_1">
+<arquillian xmlns="http://www.jboss.org/arquillian-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.jboss.org/arquillian-1.0 http://www.jboss.org/schema/arquillian/arquillian-1.0.xsd">
 
-   <jetty6:container>
-      <jetty6:bindHttpPort>8888</jetty6:bindHttpPort>
-   </jetty6:container>
+	<engine>
+		<property name="deploymentExportPath">target/</property>
+	</engine>
 
 </arquillian>

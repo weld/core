@@ -32,16 +32,14 @@ package org.jboss.weld.tests.jsp;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import junit.framework.Assert;
 
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -55,18 +53,17 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class JspTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addWebResource(JspTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
-               .addResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(JspTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
+               .addAsWebResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

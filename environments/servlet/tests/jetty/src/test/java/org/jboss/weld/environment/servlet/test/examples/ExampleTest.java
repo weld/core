@@ -14,7 +14,7 @@ public class ExampleTest extends ExampleTestBase
    @Deployment
    public static WebArchive deployment()
    {
-      return ExampleTestBase.deployment().addWebResource(JETTY_ENV, "jetty-env.xml").addWebResource(JETTY_WEB, "jetty-web.xml");
+      return ExampleTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml").addAsWebInfResource(JETTY_WEB, "jetty-web.xml");
    }
 
 }

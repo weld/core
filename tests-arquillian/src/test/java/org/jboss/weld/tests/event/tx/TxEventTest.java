@@ -18,8 +18,6 @@ package org.jboss.weld.tests.event.tx;
 
 
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -35,18 +33,17 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
 public class TxEventTest extends AbstractHtmlUnit
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment() 
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Foo.class, Updated.class)
-               .addWebResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*
