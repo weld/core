@@ -19,20 +19,32 @@ package org.jboss.weld.tests.interceptors.ejb3model;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 
 /**
  * @author Marius Bogoevici
  */
-@Artifact
-public class Ejb3InterceptionModelTest extends AbstractWeldTest
+@RunWith(Arquillian.class)
+public class Ejb3InterceptionModelTest 
 {
-   @BeforeMethod
+   @Deployment
+   public static JavaArchive createDeployment()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(Ejb3InterceptionModelTest.class.getPackage());
+   }
+
+   //@Before // ARQ-391
    public void reset()
    {
       Ball.played = false;
@@ -40,12 +52,16 @@ public class Ejb3InterceptionModelTest extends AbstractWeldTest
       Defender.defended = false;
       Ball.aroundInvoke = false;
    }
+   
+   @Inject
+   private BeanManager beanManager;
 
    @Test
    public void testSimpleInterceptor()
    {
-      Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+      reset();
+      Bean bean = beanManager.getBeans(Ball.class).iterator().next();
+      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
       Ball ball = (Ball) bean.create(creationalContext);
       ball.shoot();
       assert Defender.defended;
@@ -58,8 +74,9 @@ public class Ejb3InterceptionModelTest extends AbstractWeldTest
    @Test
    public void testSimpleInterceptor2()
    {
-      Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+      reset();
+      Bean bean = beanManager.getBeans(Ball.class).iterator().next();
+      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
       Ball ball = (Ball) bean.create(creationalContext);
       ball.pass();
       assert Defender.defended;
@@ -71,8 +88,9 @@ public class Ejb3InterceptionModelTest extends AbstractWeldTest
    @Test
    public void testSimpleInterceptor3()
    {
-      Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+      reset();
+      Bean bean = beanManager.getBeans(Ball.class).iterator().next();
+      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
       Ball ball = (Ball) bean.create(creationalContext);
       ball.lob();
       assert !Defender.defended;

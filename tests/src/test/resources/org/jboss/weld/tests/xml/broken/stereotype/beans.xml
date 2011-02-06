@@ -1,5 +1,0 @@
-<beans> 
-   <alternatives>
-      <stereotype>org.jboss.weld.tests.xml.broken.stereotype.Foo</stereotype>
-   </alternatives>
-</beans>

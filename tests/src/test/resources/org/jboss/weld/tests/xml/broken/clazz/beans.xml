@@ -1,5 +1,0 @@
-<beans> 
-   <alternatives>
-      <class>org.jboss.weld.tests.xml.broken.clazz.Bar</class>
-   </alternatives>
-</beans>
