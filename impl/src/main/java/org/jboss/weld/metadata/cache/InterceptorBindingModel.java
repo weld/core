@@ -112,16 +112,19 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
 
    private static boolean isValidTargetType(WeldAnnotation<?> annotation)
    {
-      return Arrays2.unorderedEquals(annotation.getAnnotation(Target.class).value(), ElementType.TYPE, ElementType.METHOD) || Arrays2.unorderedEquals(annotation.getAnnotation(Target.class).value(), ElementType.TYPE);
+      Target target = annotation.getAnnotation(Target.class);
+      return target != null && (Arrays2.unorderedEquals(target.value(), ElementType.TYPE, ElementType.METHOD) || Arrays2.unorderedEquals(target.value(), ElementType.TYPE));
    }
 
    private void checkMetaAnnotations()
    {
-      if (Arrays2.containsAll(getAnnotatedAnnotation().getAnnotation(Target.class).value(), ElementType.METHOD))
+      Target target = getAnnotatedAnnotation().getAnnotation(Target.class);
+      if (target != null && Arrays2.containsAll(target.value(), ElementType.METHOD))
       {
          for (Annotation inheritedBinding : getInheritedInterceptionBindingTypes())
          {
-            if (!Arrays2.containsAll(inheritedBinding.annotationType().getAnnotation(Target.class).value(), ElementType.METHOD))
+            target = inheritedBinding.annotationType().getAnnotation(Target.class);
+            if (target != null && !Arrays2.containsAll(target.value(), ElementType.METHOD))
             {
                log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, getAnnotatedAnnotation(), inheritedBinding);
             }
@@ -193,5 +196,4 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
       }
       return false;
    }
-
 }
