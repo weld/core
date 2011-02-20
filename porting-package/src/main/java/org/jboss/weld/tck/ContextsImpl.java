@@ -21,6 +21,7 @@ import javax.enterprise.context.spi.Context;
 import org.jboss.jsr299.tck.spi.Contexts;
 import org.jboss.testharness.AbstractTest;
 import org.jboss.weld.Container;
+import org.jboss.weld.context.AbstractSharedContext;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.ManagedContext;
@@ -49,9 +50,9 @@ public class ContextsImpl implements Contexts<Context>
       {
          ((ManagedContext) context).activate();
       }
-      else if (context instanceof ApplicationContext)
+      else if (context instanceof AbstractSharedContext)
       {
-         // No-op, always active
+         ((AbstractSharedContext) context).activate();
       }
       else
       {
@@ -75,7 +76,7 @@ public class ContextsImpl implements Contexts<Context>
    {
       return Container.instance().deploymentManager().instance().select(DependentContext.class).get();
    }
-   
+
    public void destroyContext(Context context)
    {
       if (context instanceof ManagedContext)
@@ -94,5 +95,5 @@ public class ContextsImpl implements Contexts<Context>
          throw new UnsupportedOperationException();
       }
    }
-   
+
 }

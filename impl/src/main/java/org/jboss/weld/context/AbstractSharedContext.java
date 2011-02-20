@@ -33,6 +33,8 @@ public abstract class AbstractSharedContext extends AbstractContext
    // The beans
    private final Singleton<BeanStore> beanStore;
 
+   private volatile boolean cleanedUp = false;
+
    /**
     * Constructor
     */
@@ -40,7 +42,13 @@ public abstract class AbstractSharedContext extends AbstractContext
    {
       super(true);
       this.beanStore = SingletonProvider.instance().create(BeanStore.class);
+      activate();
+   }
+
+   public void activate()
+   {
       beanStore.set(new ConcurrentHashMapBeanStore());
+      cleanedUp = false;
    }
 
    /**
@@ -63,18 +71,23 @@ public abstract class AbstractSharedContext extends AbstractContext
    {
       destroy();
    }
-   
+
    @Override
    protected void destroy()
    {
-      super.destroy();
+      if (!cleanedUp)
+      {
+         super.destroy();
+         cleanup();
+      }
    }
-   
+
    @Override
    public void cleanup()
    {
       super.cleanup();
       beanStore.clear();
+      cleanedUp = true;
    }
 
    @Override
@@ -83,6 +96,11 @@ public abstract class AbstractSharedContext extends AbstractContext
       String active = isActive() ? "Active " : "Inactive ";
       String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
       return active + "application context " + beanStoreInfo;
+   }
+
+   public boolean isCleanedUp()
+   {
+      return cleanedUp;
    }
 
 }
