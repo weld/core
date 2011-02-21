@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.manager;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,13 +43,19 @@ public class BeanManagers
    {
       Set<Iterable<BeanManagerImpl>> beanManagers = new HashSet<Iterable<BeanManagerImpl>>();
       beanManagers.add(Collections.singleton(beanManager));
-      beanManagers.addAll(buildAccessibleClosure(beanManager, new HashSet<BeanManagerImpl>(), BeanManagerTransform.INSTANCE));
+      beanManagers.addAll(buildAccessibleClosure(beanManager, BeanManagerTransform.INSTANCE));
       return beanManagers;
    }
-   
-   public static <T> Set<Iterable<T>> buildAccessibleClosure(BeanManagerImpl beanManager, Collection<BeanManagerImpl> hierarchy, Transform<T> transform)
+
+   public static <T> Set<Iterable<T>> buildAccessibleClosure(BeanManagerImpl beanManager, Transform<T> transform)
    {
       Set<Iterable<T>> result = new HashSet<Iterable<T>>();
+      buildAccessibleClosure(beanManager, result, new HashSet<BeanManagerImpl>(), transform);
+      return result;
+   }
+
+   private static <T> void buildAccessibleClosure(BeanManagerImpl beanManager, Set<Iterable<T>> result, Collection<BeanManagerImpl> hierarchy, Transform<T> transform)
+   {
       hierarchy.add(beanManager);
       result.add(transform.transform(beanManager));
       for (BeanManagerImpl accessibleBeanManager : beanManager.getAccessibleManagers())
@@ -58,10 +63,9 @@ public class BeanManagers
          // Only add if we aren't already in the tree (remove cycles)
          if (!hierarchy.contains(accessibleBeanManager))
          {
-            result.addAll(buildAccessibleClosure(accessibleBeanManager, new ArrayList<BeanManagerImpl>(hierarchy), transform));
+            buildAccessibleClosure(accessibleBeanManager, result, hierarchy, transform);
          }
       }
-      return result;
    }
 
 }
