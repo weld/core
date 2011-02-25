@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -35,7 +35,7 @@ import org.jboss.weld.context.http.HttpConversationContext;
  * produce a URL that need to be enhanced are forwarded to the ViewHandler
  * delegate.
  * </p>
- * 
+ *
  * <p>
  * A request parameter was choosen to propagate the conversation because it's
  * the most technology agnostic approach for passing data between requests and
@@ -43,34 +43,53 @@ import org.jboss.weld.context.http.HttpConversationContext;
  * filter, phase listener, etc) to capture the conversation id and restore the
  * long-running conversation.
  * </p>
- * 
+ *
  * @author Dan Allen
  * @author Pete Muir
+ * @author Ales Justin
  */
 public class ConversationAwareViewHandler extends ViewHandlerWrapper
 {
-   
+
    private static enum Source
    {
-      
+
       ACTION,
       BOOKMARKABLE,
       REDIRECT,
-      RESOURCE;
-      
+      RESOURCE
+
    }
 
    private final ViewHandler delegate;
-   private final ConversationContext conversationContext;
-   private final ThreadLocal<Source> source;
-   
+   private volatile ConversationContext conversationContext;
+   private static final ThreadLocal<Source> source = new ThreadLocal<Source>();
+
 
    public ConversationAwareViewHandler(ViewHandler delegate)
    {
       this.delegate = delegate;
-      Container container = Container.instance();
-      this.conversationContext = container.deploymentManager().instance().select(HttpConversationContext.class).get();
-      this.source = new ThreadLocal<ConversationAwareViewHandler.Source>();
+   }
+
+   /**
+    * Get conversation context.
+    *
+    * @return the conversation context
+    */
+   private ConversationContext getConversationContext()
+   {
+      if (conversationContext == null)
+      {
+         synchronized (this)
+         {
+            if (conversationContext == null)
+            {
+               Container container = Container.instance();
+               conversationContext = container.deploymentManager().instance().select(HttpConversationContext.class).get();
+            }
+         }
+      }
+      return conversationContext;
    }
 
    /**
@@ -78,27 +97,27 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
     * long-running, append the conversation id request parameter to the query
     * string part of the URL, but only if the request parameter is not already
     * present.
-    * 
+    *
     * This covers form actions Ajax calls, and redirect URLs (which we want) and
     * link hrefs (which we don't)
-    * 
+    *
     * @see {@link ViewHandler#getActionURL(FacesContext, String)}
     */
    @Override
    public String getActionURL(FacesContext facesContext, String viewId)
    {
       String actionUrl = super.getActionURL(facesContext, viewId);
-      Conversation conversation = conversationContext.getCurrentConversation();
+      Conversation conversation = getConversationContext().getCurrentConversation();
       if (!getSource().equals(Source.BOOKMARKABLE) && !conversation.isTransient())
       {
-         return new FacesUrlTransformer(actionUrl, facesContext).appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).getUrl();
+         return new FacesUrlTransformer(actionUrl, facesContext).appendConversationIdIfNecessary(getConversationContext().getParameterName(), conversation.getId()).getUrl();
       }
       else
       {
          return actionUrl;
       }
    }
-   
+
    private Source getSource()
    {
       if (source.get() == null)
@@ -110,7 +129,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
          return source.get();
       }
    }
-   
+
    @Override
    public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams)
    {
@@ -124,7 +143,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
          source.remove();
       }
    }
-   
+
    @Override
    public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams)
    {
@@ -138,7 +157,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper
          source.remove();
       }
    }
-   
+
    @Override
    public String getResourceURL(FacesContext context, String path)
    {
