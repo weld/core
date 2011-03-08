@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.*;
 import javax.enterprise.inject.Instance;
 
 import org.jboss.weld.Container;
@@ -43,6 +43,7 @@ import org.jboss.weld.context.beanstore.ConversationNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
+import org.jboss.weld.logging.messages.ConversationMessage;
 
 
 /**
@@ -300,7 +301,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             }
             else
             {
-               throw new IllegalStateException("Conversation lock timed out: " + cid);
+               throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
             }
          }
 
