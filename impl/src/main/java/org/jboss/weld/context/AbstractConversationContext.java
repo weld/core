@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.enterprise.context.*;
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Instance;
 
 import org.jboss.weld.Container;
