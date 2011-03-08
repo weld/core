@@ -292,10 +292,16 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
          else
          {
             setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, getConversation(cid));
-            getCurrentConversation().lock(getConcurrentAccessTimeout());
-            NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), cid);
-            setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
-            getBeanStore().attach();
+            if (getCurrentConversation().lock(getConcurrentAccessTimeout()))
+            {
+               NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), cid);
+               setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
+               getBeanStore().attach();
+            }
+            else
+            {
+               throw new IllegalStateException("Conversation lock timed out: " + cid);
+            }
          }
 
       }
