@@ -21,26 +21,13 @@
  */
 package org.jboss.weld.examples.permalink;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * @author Ales Justin
  */
 public interface Repository
 {
-   void seed();
-
    List<BlogEntry> searchEntries(String searchString, int offset, int count);
 
    List<BlogEntry> searchEntries(String searchString, String category, int offset, int count);

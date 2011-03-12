@@ -99,7 +99,13 @@ class Comment
 
    public String getAuthor()
    {
-      return (users != null) ? users.getUsername() : author;
+      if (users != null)
+      {
+         String username = users.getUsername();
+         if (username != null)
+            return username;
+      }
+      return author;
    }
 
    public void setAuthor(String author)
