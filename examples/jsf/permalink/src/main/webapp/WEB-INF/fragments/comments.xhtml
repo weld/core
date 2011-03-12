@@ -39,6 +39,8 @@
                             <p>
                                 <h:inputText id="author" value="#{comment.author}" size="20" tabindex="1" required="true" label="Author"/>
                                 <h:outputLabel for="author" value="Name (required)"/>
+                                <h:selectBooleanCheckbox id="remember" value="#{comment.remember}" label="Remember me?"/>
+                                <h:outputLabel for="remember" value="Remember me?"/>
                                 <br/>
                                 <h:message for="author" style="color: #FF0000;"/>
                             </p>

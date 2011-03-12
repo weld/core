@@ -24,6 +24,7 @@ package org.jboss.weld.examples.permalink;
 import java.util.Date;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -42,7 +43,11 @@ class Comment
 
    private String author;
 
+   private boolean remember;
+
    private String body;
+
+   private Users users;
 
    public Comment()
    {
@@ -64,6 +69,12 @@ class Comment
       this.author = other.getAuthor();
       this.postDate = other.getPostDate();
       this.body = other.getBody();
+   }
+
+   public void checkAuthor()
+   {
+      if (users != null && isRemember())
+         users.setUsername(author);
    }
 
    public BlogEntry getEntry()
@@ -88,12 +99,22 @@ class Comment
 
    public String getAuthor()
    {
-      return author;
+      return (users != null) ? users.getUsername() : author;
    }
 
    public void setAuthor(String author)
    {
       this.author = author;
+   }
+
+   public boolean isRemember()
+   {
+      return remember;
+   }
+
+   public void setRemember(boolean remember)
+   {
+      this.remember = remember;
    }
 
    public String getBody()
@@ -114,6 +135,12 @@ class Comment
    public void setId(Long id)
    {
       this.id = id;
+   }
+
+   @Inject
+   public void setUsers(Users users)
+   {
+      this.users = users;
    }
 
    @Override

@@ -21,47 +21,39 @@
  */
 package org.jboss.weld.examples.permalink;
 
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
- * @author Dan Allen
+ * @author Ales Justin
  */
-public
-@Model
-class CommentBoard
+public interface Repository
 {
-   @Inject
-   Repository repository;
+   void seed();
 
-   @Inject
-   Comment comment;
+   List<BlogEntry> searchEntries(String searchString, int offset, int count);
 
-   @Inject
-   Blog blog;
+   List<BlogEntry> searchEntries(String searchString, String category, int offset, int count);
 
-   public Boolean post()
-   {
-      if (comment == null || blog == null)
-      {
-         return null;
-      }
+   List<BlogEntry> getLatestEntries(String category, int offset, int count);
 
-      BlogEntry entry = repository.getEntry(blog.getEntryId());
-      if (entry == null)
-      {
-         return null;
-      }
+   List<BlogEntry> getLatestEntries(int offset, int count);
 
-      comment.checkAuthor();
+   BlogEntry getEntry(Long entryId);
 
-      repository.addComment(comment, entry);
-      FacesContext ctx = FacesContext.getCurrentInstance();
-      ctx.addMessage(null, new FacesMessage("Thanks for leaving a comment!"));
-      // FIXME doesn't seem to be working; must investigate
-      ctx.getExternalContext().getFlash().setKeepMessages(true);
-      return true;
-   }
+   List<String> getCategories();
+
+   void addComment(Comment comment, Long entryId);
+
+   void addComment(Comment comment, BlogEntry entry);
 }

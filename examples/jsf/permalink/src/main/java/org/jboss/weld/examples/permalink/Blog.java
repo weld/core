@@ -38,7 +38,7 @@ class Blog
 {
    private static final int PAGE_SIZE = 3;
 
-   @Inject BlogEntryRepository repository;
+   @Inject Repository repository;
 
    private Long entryId;
 
