@@ -191,6 +191,12 @@
 
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-jetty-embedded-7</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-glassfish-embedded-3</artifactId>
             <version>${arquillian.version}</version>
          </dependency>

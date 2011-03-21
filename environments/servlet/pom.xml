@@ -19,6 +19,7 @@
       <module>tests/base</module>
       <module>tests/tomcat</module>
       <module>tests/jetty</module>
+      <module>tests/jetty7</module>
    </modules>
 
    <description>
@@ -110,6 +111,24 @@
           <dependency>
              <groupId>org.eclipse.jetty</groupId>
              <artifactId>jetty-servlet</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-plus</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-jndi</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-webapp</artifactId>
              <version>${jetty7.version}</version>
           </dependency>
 

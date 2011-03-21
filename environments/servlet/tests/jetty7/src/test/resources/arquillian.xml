@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://jboss.com/arquillian"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:jetty7="urn:arq:org.jboss.arquillian.container.jetty.embedded_7">
+
+   <jetty7:container>
+      <jetty7:bindHttpPort>8888</jetty7:bindHttpPort>
+      <jetty7:jettyPlus>false</jetty7:jettyPlus>
+   </jetty7:container>
+
+</arquillian>
