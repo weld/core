@@ -25,6 +25,7 @@ package org.jboss.weld.environment.servlet.inject;
 import org.jboss.weld.manager.api.WeldManager;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -34,6 +35,7 @@ import java.util.WeakHashMap;
  *
  * @author Pete Muir
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
+ * @author Ales Justin
  */
 public abstract class AbstractInjector
 {
@@ -59,5 +61,15 @@ public abstract class AbstractInjector
       CreationalContext<Object> cc = manager.createCreationalContext(null);
       InjectionTarget<Object> it = (InjectionTarget<Object>) cache.get(clazz);
       it.inject(instance, cc);
+   }
+
+   public void destroy(Object instance)
+   {
+      if (instance != null)
+      {
+         AnnotatedType type = manager.createAnnotatedType(instance.getClass());
+         InjectionTarget it = manager.createInjectionTarget(type);
+         it.dispose(instance);
+      }
    }
 }

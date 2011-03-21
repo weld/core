@@ -23,6 +23,7 @@ import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.jetty.Jetty6Container;
+import org.jboss.weld.environment.jetty.JettyAtEclipseContainer;
 import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
 import org.jboss.weld.environment.servlet.deployment.URLScanner;
 import org.jboss.weld.environment.servlet.deployment.VFSURLScanner;
@@ -168,15 +169,16 @@ public class Listener extends ForwardingServletListener
       bootstrap.startContainer(Environments.SERVLET, deployment).startInitialization();
       WeldManager manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
 
+      ContainerContext cc = new ContainerContext(sce, manager);
       StringBuilder dump = new StringBuilder();
-      Container container = findContainer(dump);
+      Container container = findContainer(cc, dump);
       if (container == null)
       {
          log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filtersor or Listeners");
          if (log.isDebugEnabled())
             log.debug("Exception dump from Container lookup: " + dump);
       }
-      container.initialize(new ContainerContext(sce, manager));
+      container.initialize(cc);
       this.container = container;
 
       // Push the manager into the servlet context so we can access in JSF
@@ -209,29 +211,31 @@ public class Listener extends ForwardingServletListener
    /**
     * Find container env.
     *
+    * @param cc the container context
     * @param dump the exception dump
     * @return valid container or null
     */
-   protected Container findContainer(StringBuilder dump)
+   protected Container findContainer(ContainerContext cc, StringBuilder dump)
    {
       ServiceLoader<Container> extContainers = ServiceLoader.load(Container.class, getClass().getClassLoader());
-      Container container = checkContainers(dump, extContainers);
+      Container container = checkContainers(cc, dump, extContainers);
       if (container == null)
-         container = checkContainers(dump, Arrays.asList(
+         container = checkContainers(cc, dump, Arrays.asList(
                Tomcat6Container.INSTANCE,
                Tomcat7Container.INSTANCE,
-               Jetty6Container.INSTANCE)
+               Jetty6Container.INSTANCE,
+               JettyAtEclipseContainer.INSTANCE)
          );
       return container;
    }
 
-   protected Container checkContainers(StringBuilder dump, Iterable<Container> containers)
+   protected Container checkContainers(ContainerContext cc, StringBuilder dump, Iterable<Container> containers)
    {
       for (Container c : containers)
       {
          try
          {
-            c.touch();
+            c.touch(cc);
             return c;
          }
          catch (Throwable t)

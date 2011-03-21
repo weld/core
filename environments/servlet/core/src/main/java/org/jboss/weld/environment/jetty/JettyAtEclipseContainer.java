@@ -27,20 +27,28 @@ import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.manager.api.WeldManager;
 
+import javax.servlet.ServletContext;
+import java.lang.reflect.Method;
+
 /**
- * Jetty6 container.
+ * Jetty Eclipse container.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Jetty6Container extends AbstractJettyContainer
+public class JettyAtEclipseContainer extends AbstractJettyContainer
 {
-   public static Container INSTANCE = new Jetty6Container();
-
-   private static final String JETTY_REQUIRED_CLASS_NAME = "org.mortbay.jetty.servlet.ServletHandler";
+   public static Container INSTANCE = new JettyAtEclipseContainer();
 
    protected String classToCheck()
    {
-      return JETTY_REQUIRED_CLASS_NAME;
+      throw new IllegalAccessError("Should not be used!");
+   }
+
+   public boolean touch(ContainerContext context) throws Exception
+   {
+      ServletContext sc = context.getContext();
+      String si = sc.getServerInfo(); // TODO -- better Jetty7/8 test
+      return si.contains("jetty/7") || si.contains("Jetty/7") || si.contains("jetty/8") || si.contains("Jetty/8");
    }
 
    public void initialize(ContainerContext context)
@@ -51,7 +59,12 @@ public class Jetty6Container extends AbstractJettyContainer
          Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
          Object injector = clazz.getConstructor(WeldManager.class).newInstance(context.getManager());
          context.getContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
-         log.info("Jetty detected, JSR-299 injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
+
+         Class<?> decoratorClass = Reflections.classForName("org.jboss.weld.environment.jetty.WeldDecorator");
+         Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
+         processMethod.invoke(null, context.getContext());
+
+         log.info("Jetty7 detected, JSR-299 injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
       }
       catch (Exception e)
       {

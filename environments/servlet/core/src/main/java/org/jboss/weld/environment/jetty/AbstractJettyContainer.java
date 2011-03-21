@@ -20,37 +20,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.weld.environment;
+package org.jboss.weld.environment.jetty;
+
+import org.jboss.weld.environment.AbstractContainer;
+import org.jboss.weld.environment.ContainerContext;
 
 /**
- * Abstract the web container setup notion.
- * e.g. Tomcat, Jetty, GAE, ...
+ * Abstract Jetty container.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public interface Container
+public abstract class AbstractJettyContainer extends AbstractContainer
 {
-   /**
-    * Touch if this container can be used.
-    * We should throw an exception if it cannot be used.
-    *
-    * @param context the container context
-    * @return true if touch was successful, false or exception otherwise
-    * @throws Exception for any error
-    */
-   boolean touch(ContainerContext context) throws Exception;
+   public static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
 
-   /**
-    * Initialize web container.
-    *
-    * @param context the container context
-    */
-   void initialize(ContainerContext context);
-
-   /**
-    * Destroy setup.
-    *
-    * @param context the container context
-    */
-   void destroy(ContainerContext context);
+   public void destroy(ContainerContext context)
+   {
+      context.getContext().removeAttribute(INJECTOR_ATTRIBUTE_NAME);
+   }
 }

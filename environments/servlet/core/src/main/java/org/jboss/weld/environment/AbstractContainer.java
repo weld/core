@@ -42,9 +42,10 @@ public abstract class AbstractContainer implements Container
     */
    protected abstract String classToCheck();
 
-   public void touch() throws Exception
+   public boolean touch(ContainerContext context) throws Exception
    {
       Reflections.classForName(classToCheck());
+      return true;
    }
 
    public void destroy(ContainerContext context)
