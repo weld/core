@@ -235,8 +235,8 @@ public class Listener extends ForwardingServletListener
       {
          try
          {
-            c.touch(cc);
-            return c;
+            if (c.touch(cc))
+               return c;
          }
          catch (Throwable t)
          {
