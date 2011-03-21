@@ -178,8 +178,11 @@ public class Listener extends ForwardingServletListener
          if (log.isDebugEnabled())
             log.debug("Exception dump from Container lookup: " + dump);
       }
-      container.initialize(cc);
-      this.container = container;
+      else
+      {
+         container.initialize(cc);
+         this.container = container;
+      }
 
       // Push the manager into the servlet context so we can access in JSF
       context.setAttribute(BEAN_MANAGER_ATTRIBUTE_NAME, manager);
