@@ -25,15 +25,15 @@ package org.jboss.weld.environment.jetty;
 import org.jboss.weld.environment.Container;
 
 /**
- * Jetty6 container.
+ * Jetty7 container.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Jetty6Container extends AbstractJettyPre72Container
+public class Jetty7Container extends AbstractJettyPre72Container
 {
-   public static Container INSTANCE = new Jetty6Container();
+   public static Container INSTANCE = new Jetty7Container();
 
-   private static final String JETTY_REQUIRED_CLASS_NAME = "org.mortbay.jetty.servlet.ServletHandler";
+   private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
 
    protected String classToCheck()
    {
