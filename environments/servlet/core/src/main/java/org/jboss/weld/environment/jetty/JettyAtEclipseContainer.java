@@ -64,7 +64,7 @@ public class JettyAtEclipseContainer extends AbstractJettyContainer
          Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
          processMethod.invoke(null, context.getContext());
 
-         log.info("Jetty7 detected, JSR-299 injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
+         log.info("Jetty7 detected, JSR-299 injection will be available in Listeners, Servlets and Filters.");
       }
       catch (Exception e)
       {
