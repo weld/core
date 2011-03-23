@@ -23,6 +23,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
@@ -110,7 +111,13 @@ public class ObserverMethodImpl<T, X> extends AbstractReceiverBean<X, T, Method>
       initQualifiers();
       initTypes();
       initStereotypes();
-      addInjectionPoints(Beans.getParameterInjectionPoints(this, observerMethod));
+      for (ParameterInjectionPoint<?,?> ip : Beans.getParameterInjectionPoints(this, observerMethod))
+      {
+         if (ip.isAnnotationPresent(Observes.class) == false)
+         {
+            addInjectionPoint(ip);
+         }
+      }
    }
 
    @Override
