@@ -16,73 +16,9 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
-import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
-import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DISPOSAL_METHODS_WITHOUT_PRODUCER;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_DEPENDENT_BEAN;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_WILDCARD;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_WITH_TYPE_VARIABLE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
-import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Named;
-import javax.inject.Scope;
-
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.spi.model.InterceptionModel;
@@ -98,6 +34,7 @@ import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -117,9 +54,39 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.inject.Named;
+import javax.inject.Scope;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ValidatorMessage.*;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses
@@ -162,14 +129,13 @@ public class Validator implements Service
       validateBean(bean, beanManager);
       if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>))
       {
-         RIBean<?> abstractBean = bean;
-         if (abstractBean.isSpecializing())
+         if (bean.isSpecializing())
          {
-            if (specializedBeans.contains(abstractBean.getSpecializedBean()))
+            if (specializedBeans.contains(bean.getSpecializedBean()))
             {
                throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, bean);
             }
-            specializedBeans.add(abstractBean.getSpecializedBean());
+            specializedBeans.add(bean.getSpecializedBean());
          }
          if ((bean instanceof AbstractClassBean<?>))
          {
@@ -265,9 +231,7 @@ public class Validator implements Service
     * Validate an injection point
     * 
     * @param ij the injection point to validate
-    * @param declaringBean the bean into which the injectionPoint has been
-    *           injected, if null, certain validations aren't available
-    * @param beanManager
+    * @param beanManager the bean manager
     */
    public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager)
    {
@@ -298,7 +262,7 @@ public class Validator implements Service
       }
       checkFacadeInjectionPoint(ij, Instance.class);
       checkFacadeInjectionPoint(ij, Event.class);
-      Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
+      Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()]);
       Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
       if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager))
       {
@@ -373,6 +337,7 @@ public class Validator implements Service
       validateEnabledInterceptorClasses(manager);
       validateEnabledAlternatives(manager);
       validateDisposalMethods(environment);
+      validateObserverMethods(manager, environment);
       validateBeanNames(manager);
    }
 
@@ -564,6 +529,15 @@ public class Validator implements Service
       if (!beans.isEmpty())
       {
          throw new DefinitionException(DISPOSAL_METHODS_WITHOUT_PRODUCER, beans);
+      }
+   }
+
+   private void validateObserverMethods(BeanManagerImpl beanManager, BeanDeployerEnvironment environment)
+   {
+      for (ObserverMethodImpl<?, ?> omi : environment.getObservers())
+      {
+         for (InjectionPoint ip : omi.getInjectionPoints())
+            validateInjectionPoint(ip, beanManager);
       }
    }
 

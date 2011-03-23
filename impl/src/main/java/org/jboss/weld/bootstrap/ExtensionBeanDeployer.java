@@ -16,16 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Extension;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
@@ -40,7 +30,15 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.DeploymentStructures;
-import org.jboss.weld.util.reflection.Reflections;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Extension;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * @author pmuir
@@ -111,7 +109,7 @@ public class ExtensionBeanDeployer
    
    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, ? super X> method, Set<ObserverMethodImpl<?, ?>> observerMethods)
    {
-      ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
+      ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager, deployment.getServices());
       observerMethods.add(observer);
    }
 

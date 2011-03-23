@@ -16,14 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
-
-import java.lang.reflect.Member;
-
-import javax.enterprise.context.spi.CreationalContext;
-
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -31,6 +23,13 @@ import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.slf4j.cal10n.LocLogger;
+
+import javax.enterprise.context.spi.CreationalContext;
+import java.lang.reflect.Member;
+
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
 
 /**
  * @author pmuir
@@ -41,9 +40,9 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
 
    private static final LocLogger log = loggerFactory().getLogger(BEAN);
    
-   private AbstractClassBean<X> declaringBean;
+   private RIBean<X> declaringBean;
 
-   public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
+   public AbstractReceiverBean(String idSuffix, RIBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
    {
       super(idSuffix, beanManager, services);
       this.declaringBean = declaringBean;
@@ -58,7 +57,8 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
 
    /**
     * Gets the receiver of the product
-    * 
+    *
+    * @param creationalContext the creational context
     * @return The receiver
     */
    protected Object getReceiver(CreationalContext<?> creationalContext)
@@ -91,7 +91,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
     * 
     * @return The bean representation
     */
-   public AbstractClassBean<X> getDeclaringBean()
+   public RIBean<X> getDeclaringBean()
    {
       return declaringBean;
    }

@@ -16,18 +16,18 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
-import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.jboss.weld.bean.AbstractBean;
+import org.jboss.weld.bean.AbstractReceiverBean;
+import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.introspector.WeldMember;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Beans;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
@@ -37,23 +37,26 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
+import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 
 /**
  * <p>
@@ -65,9 +68,9 @@ import org.jboss.weld.util.Beans;
  * </p>
  * 
  * @author David Allen
- * 
+ * @author Ales Justin
  */
-public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
+public class ObserverMethodImpl<T, X> extends AbstractReceiverBean<X, T, Method> implements ObserverMethod<T>
 {
    
    public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
@@ -81,42 +84,118 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    protected final RIBean<X> declaringBean;
    protected final MethodInjectionPoint<T, ? super X> observerMethod;
    protected TransactionPhase transactionPhase;
-   private final String id;
-
-   private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
 
    /**
     * Creates an Observer which describes and encapsulates an observer method
     * (8.5).
-    * 
+    *
     * @param observer The observer
     * @param declaringBean The observer bean
     * @param manager The Bean manager
+    * @param services the services
     */
-   protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
+   protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager, ServiceRegistry services)
    {
+      super(new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString(),
+            declaringBean, manager, services);
       this.beanManager = manager;
       this.declaringBean = declaringBean;
       this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
       this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
-      this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
       this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.reception = observesAnnotation.notifyObserver();
       transactionPhase = TransactionPhase.IN_PROGRESS;
-      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-      for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
-      {
-         if (injectionPoint.isAnnotationPresent(New.class))
-         {
-            this.newInjectionPoints.add(injectionPoint);
-         }
-      }
+
+      initQualifiers();
+      initTypes();
+      initStereotypes();
+      addInjectionPoints(Beans.getParameterInjectionPoints(this, observerMethod));
    }
 
-   public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints()
+   @Override
+   public WeldMember<T, ?, Method> getWeldAnnotated()
    {
-      return newInjectionPoints;
+      return observerMethod;
+   }
+
+   @Override
+   protected void initQualifiers()
+   {
+      qualifiers = new HashSet<Annotation>();
+      qualifiers.addAll(observerMethod.getWeldParameters().get(0).getQualifiers());
+      initDefaultQualifiers();
+   }
+
+   @Override
+   protected void initTypes()
+   {
+      Set<Type> types = new HashSet<Type>();
+      types.addAll(observerMethod.getAnnotatedParameters(Observes.class).get(0).getTypeClosure());
+      types.add(Object.class);
+      super.types = types;
+   }
+
+   @Override
+   protected void checkType()
+   {
+      // No-op
+   }
+
+   @Override
+   protected void initScope()
+   {
+      initScopeFromStereotype();
+
+      if (this.scope == null)
+         this.scope = Dependent.class;
+   }
+
+   @Override
+   protected String getDefaultName()
+   {
+      return observerMethod.getPropertyName();
+   }
+
+   @Override
+   public AbstractBean<?, ?> getSpecializedBean()
+   {
+      // Doesn't support specialization
+      return null;
+   }
+
+   @Override
+   public boolean isProxyable()
+   {
+      return true;
+   }
+
+   @Override
+   public boolean isPassivationCapableBean()
+   {
+      return false;  // Not relevant
+   }
+
+   @Override
+   public boolean isPassivationCapableDependency()
+   {
+      return false;  // Not relevant
+   }
+
+   public T create(CreationalContext<T> tCreationalContext)
+   {
+      return null;  // Not relevant
+   }
+
+   public void destroy(T instance, CreationalContext<T> tCreationalContext)
+   {
+      // Nothing to do
+   }
+
+   @Override
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return Collections.emptySet();
    }
 
    /**
@@ -166,14 +245,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       return declaringBean.getType();
    }
    
-   public RIBean<X> getDeclaringBean()
-   {
-      return declaringBean;
-   }
-
    public Annotation[] getBindingsAsArray()
    {
-      return bindings.toArray(new Annotation[0]);
+      return bindings.toArray(new Annotation[bindings.size()]);
    }
 
    public Reception getReception()
@@ -237,11 +311,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       {
          Object receiver = getReceiverIfExists();
          // The observer is conditional, and there is no existing bean
-         if (receiver == null)
-         {
-            return;
-         }
-         else
+         if (receiver != null)
          {
             sendEvent(event, receiver, null);
          }
@@ -309,11 +379,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    public String toString()
    {
       return observerMethod.toString();
-   }
-   
-   public String getId()
-   {
-      return id;
    }
    
    @Override

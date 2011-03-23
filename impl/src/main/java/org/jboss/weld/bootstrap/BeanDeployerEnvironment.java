@@ -16,22 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -58,6 +42,21 @@ import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 public class BeanDeployerEnvironment
 {
@@ -287,11 +286,12 @@ public class BeanDeployerEnvironment
     * beans will be marked as such for the purpose of validating that all
     * disposal methods are used. For internal use.
     * 
-    * @param apiType The API type to match
+    * @param types The API type to match
     * @param qualifiers The binding types to match
+    * @param declaringBean the declaring bean
     * @return The set of matching disposal methods
     */
-   public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean)
+   public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, RIBean<X> declaringBean)
    {
       // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
       Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));

@@ -16,21 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
-
-import java.lang.reflect.Member;
-import java.util.Set;
-
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -67,6 +52,20 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
+
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+import java.lang.reflect.Member;
+import java.util.Set;
+
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
 
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
 {
@@ -230,7 +229,8 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    
    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> method)
    {
-      ObserverMethodImpl<T, ? super X> observer = ObserverFactory.create(method, declaringBean, manager);
+      ObserverMethodImpl<T, ? super X> observer = ObserverFactory.create(method, declaringBean, manager, services);
+      observer.initialize(getEnvironment());
       getEnvironment().addObserverMethod(observer);
    }
 
@@ -285,8 +285,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    /**
     * Indicates if the type is a simple Web Bean
     * 
-    * @param type
-    *           The type to inspect
+    * @param clazz The type to inspect
     * @return True if simple Web Bean, false otherwise
     */
    protected boolean isTypeManagedBeanOrDecoratorOrInterceptor(WeldClass<?> clazz)

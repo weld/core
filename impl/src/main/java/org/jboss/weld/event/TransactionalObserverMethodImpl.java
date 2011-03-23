@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.event;
 
-import javax.enterprise.event.TransactionPhase;
-import javax.transaction.Synchronization;
-
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
+
+import javax.enterprise.event.TransactionPhase;
+import javax.transaction.Synchronization;
 
 /**
  * @author David Allen
@@ -36,11 +37,13 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
     * 
     * @param observer The observer method
     * @param observerBean The bean declaring the observer method
+    * @param transactionPhase The transaction phase
     * @param manager The JCDI manager in use
+    * @param services The service registry
     */
-   protected TransactionalObserverMethodImpl(WeldMethod<T, ? super X> observer, RIBean<X> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager)
+   protected TransactionalObserverMethodImpl(WeldMethod<T, ? super X> observer, RIBean<X> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager, ServiceRegistry services)
    {
-      super(observer, observerBean, manager);
+      super(observer, observerBean, manager, services);
       this.transactionPhase = transactionPhase;
    }
 
@@ -75,7 +78,7 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X>
     */
    private void deferEvent(T event)
    {
-      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);;
+      DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, this);
 
       Synchronization synchronization = null;
       if (transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION))
