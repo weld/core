@@ -90,7 +90,9 @@ public class ExactListener extends Listener
                String line;
                while((line = reader.readLine()) != null)
                {
-                  classes.add(line);
+                  // ignore comments
+                  if (line.startsWith("#") == false)
+                     classes.add(line);
                }
             }
             finally
