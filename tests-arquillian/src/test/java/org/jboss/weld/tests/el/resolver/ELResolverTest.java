@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
+import static org.junit.Assert.assertNotSame;
+
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.inject.Inject;
@@ -71,6 +73,25 @@ public class ELResolverTest
       Object value = exprFactory.createValueExpression(elContext, "#{beer.style}", String.class).getValue(elContext);
       
       Assert.assertEquals("Belgium Strong Dark Ale", value);
+   }
+   
+   @Test // WELD-874
+   public void testResolveNormalScopedBean()
+   {
+      ELContext elContext = EL.createELContext(beanManager);
+      ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
+      
+      Lager value1 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
+      value1.drink();
+      assertNotSame(Lager.class, value1.getClass());
+      
+      Lager value2 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
+      value2.drink();
+      assertNotSame(Lager.class, value2.getClass());
+      
+      Lager value3 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
+      value3.drink();
+      assertNotSame(Lager.class, value3.getClass());
    }
 
    /**
