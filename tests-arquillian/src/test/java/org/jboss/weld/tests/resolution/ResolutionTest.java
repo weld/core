@@ -19,6 +19,7 @@ package org.jboss.weld.tests.resolution;
 import static org.jboss.weld.test.Utils.getReference;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.lang.annotation.Annotation;
 
@@ -52,6 +53,8 @@ public class ResolutionTest
    @Inject
    private BeanManagerImpl beanManager;
    
+   @Inject Wibble wibble;
+   
    @Test
    // WELD-711
    public void testResolveWithAnonymousAnnotationLiteral() throws Exception
@@ -60,6 +63,13 @@ public class ResolutionTest
       assertNotNull(getReference(beanManager, Foo.class, defaultQualifier));
       TypeSafeBeanResolver<?> resolver = beanManager.getBeanResolver();
       assertFalse(resolver.isCached(new ResolvableBuilder().addType(Foo.class).addQualifier(defaultQualifier).create()));
+   }
+   
+   // WELD-873
+   @Test
+   public void testImplementsParameterizedType()
+   {
+      assertNull(wibble.get("bleh"));
    }
    
 }
