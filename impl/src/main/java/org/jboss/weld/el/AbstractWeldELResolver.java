@@ -16,22 +16,22 @@
  */
 package org.jboss.weld.el;
 
-import static org.jboss.weld.logging.Category.EL;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_LOOKUP;
-import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_RESOLVED;
-
-import java.beans.FeatureDescriptor;
-import java.lang.annotation.Annotation;
-import java.util.Iterator;
+import org.jboss.weld.bean.proxy.ClientProxyProvider;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.slf4j.cal10n.LocLogger;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
+import java.beans.FeatureDescriptor;
+import java.lang.annotation.Annotation;
+import java.util.Iterator;
 
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.slf4j.cal10n.LocLogger;
+import static org.jboss.weld.logging.Category.EL;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_LOOKUP;
+import static org.jboss.weld.logging.messages.ElMessage.PROPERTY_RESOLVED;
 
 /**
  * An EL-resolver against the named beans
@@ -130,15 +130,16 @@ public abstract class AbstractWeldELResolver extends ELResolver
       Class<? extends Annotation> scope = bean.getScope();
       if (!scope.equals(Dependent.class))
       {
-         Object value = beanManager.getContext(scope).get(bean);
-         if (value != null)
+         ClientProxyProvider cpp = beanManager.getClientProxyProvider();
+         if (cpp != null)
          {
-            return value;
+            Object value = cpp.getClientProxy(bean);
+            if (value != null)
+            {
+               return value;
+            }
          }
-         else
-         {
-            return beanManager.getReference(bean, beanManager.createCreationalContext(bean), false);
-         }
+         return beanManager.getReference(bean, beanManager.createCreationalContext(bean), false);
       }
       else
       {
