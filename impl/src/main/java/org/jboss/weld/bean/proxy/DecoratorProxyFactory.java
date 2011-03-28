@@ -76,8 +76,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
 
    private void addHandlerInitializerMethod(ClassFile proxyClassType) throws Exception
    {
-      StaticMethodInformation methodInfo = new StaticMethodInformation("_initMH", new Class[] { Object.class }, void.class, proxyClassType.getName());
-      proxyClassType.addMethod(MethodUtils.makeMethod(Modifier.PRIVATE, methodInfo, new Class[] {}, createMethodHandlerInitializerBody(proxyClassType), proxyClassType.getConstPool()));
+      StaticMethodInformation methodInfo = new StaticMethodInformation("_initMH", new Class[] { Object.class }, void.class, proxyClassType.getName(),Modifier.PRIVATE);
+      proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, new Class[] {}, createMethodHandlerInitializerBody(proxyClassType), proxyClassType.getConstPool()));
    }
 
    @Override
@@ -145,7 +145,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
                   if (methodBody != null)
                   {
                      log.trace("Adding method " + method);
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), methodBody, proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), methodBody, proxyClassType.getConstPool()));
                   }
                }
             }
@@ -213,11 +213,11 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T>
    /**
     * When creates the delegate initializer code when the delegate is injected
     * into a method.
-    * 
+    *
     * super initializer method is called first, and then _initMH is called
-    * 
+    *
     * @param file
-    * @param initializerName
+    * @param intializerMethodInfo
     * @param delegateParameterPosition
     * @return
     */

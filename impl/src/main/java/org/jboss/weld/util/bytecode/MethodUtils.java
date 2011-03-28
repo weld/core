@@ -43,21 +43,18 @@ public class MethodUtils
    /**
     * Creates a MethodInfo from the given information. This method must be added
     * to the ClassFile manually
-    * 
-    * @param modifiers the method modifiers
-    * @param returnType the return type
-    * @param mname the method name
-    * @param parameters the methods parameter types
-    * @param exceptions chacked exceptions thrown by the method
+    *
+    * @param methodInfo The method information
+    * @param exceptions checked exceptions thrown by the method
     * @param body the method bytecode. This must have the correct value for
     *           maxLocals already set
     * @param pool the const pool
     * @return the created method
     */
-   public static MethodInfo makeMethod(int modifiers, MethodInformation methodInfo, Class<?>[] exceptions, Bytecode body, ConstPool pool)
+   public static MethodInfo makeMethod(MethodInformation methodInfo, Class<?>[] exceptions, Bytecode body, ConstPool pool)
    {
       MethodInfo meth = new MethodInfo(pool, methodInfo.getName(), methodInfo.getDescriptor());
-      meth.setAccessFlags(modifiers);
+      meth.setAccessFlags(methodInfo.getModifiers());
       String[] ex = new String[exceptions.length];
       for (int i = 0; i < exceptions.length; ++i)
       {

@@ -17,41 +17,10 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.FAILED_TO_SET_THREAD_LOCAL_ON_PROXY;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.security.ProtectionDomain;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import javassist.NotFoundException;
-import javassist.bytecode.AccessFlag;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.DuplicateMemberException;
-import javassist.bytecode.ExceptionTable;
-import javassist.bytecode.FieldInfo;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Opcode;
+import javassist.bytecode.*;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
-
-import javax.enterprise.inject.spi.Bean;
-
 import org.jboss.interceptor.proxy.LifecycleMixin;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.Container;
@@ -60,28 +29,34 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.bytecode.Boxing;
-import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.bytecode.ClassFileUtils;
-import org.jboss.weld.util.bytecode.ConstructorUtils;
-import org.jboss.weld.util.bytecode.DescriptorUtils;
-import org.jboss.weld.util.bytecode.JumpMarker;
-import org.jboss.weld.util.bytecode.JumpUtils;
-import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.MethodUtils;
-import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.bytecode.StaticMethodInformation;
+import org.jboss.weld.util.bytecode.*;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
 
+import javax.enterprise.inject.spi.Bean;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.lang.reflect.*;
+import java.security.ProtectionDomain;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.*;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
  * implementation creates proxies which forward non-static method invocations to
  * a {@link BeanInstance}. All proxies implement the {@link Proxy} interface.
- * 
+ *
  * @author David Allen
  * @author Stuart Douglas
  * @author Marius Bogoevici
@@ -109,10 +84,7 @@ public class ProxyFactory<T>
    /**
     * created a new proxy factory from a bean instance. The proxy name is
     * generated from the bean id
-    * 
-    * @param proxiedBeanType
-    * @param businessInterfaces
-    * @param bean
+    *
     */
    public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
    {
@@ -122,11 +94,11 @@ public class ProxyFactory<T>
    /**
     * Creates a new proxy factory when the name of the proxy class is already
     * known, such as during de-serialization
-    * 
+    *
     * @param proxiedBeanType the super-class for this proxy class
     * @param typeClosure the bean types of the bean
-    * @param the name of the proxy class
-    * 
+    * @param proxyName the name of the proxy class
+    *
     */
    public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean)
    {
@@ -492,10 +464,10 @@ public class ProxyFactory<T>
    /**
     * Adds special serialization code by providing a writeReplace() method on
     * the proxy. This method when first called will substitute the proxy object
-    * with an instance of {@link org.jboss.weld.proxy.util.SerializableProxy}.
+    * with an instance of {@link org.jboss.weld.bean.proxy.util.SerializableProxy}.
     * The next call will receive the proxy object itself permitting the
     * substitute object to serialize the proxy.
-    * 
+    *
     * @param proxyClassType the Javassist class for the proxy class
     */
    protected void addSerializationSupport(ClassFile proxyClassType)
@@ -507,7 +479,7 @@ public class ProxyFactory<T>
          Class<?>[] exceptions = new Class[] { ObjectStreamException.class };
          Bytecode writeReplaceBody = createWriteReplaceBody(proxyClassType);
          MethodInformation writeReplaceInfo = new StaticMethodInformation("writeReplace", new Class[] {}, Object.class, proxyClassType.getName());
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, writeReplaceInfo, exceptions, writeReplaceBody, proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod( writeReplaceInfo, exceptions, writeReplaceBody, proxyClassType.getConstPool()));
 
          // Also add a static method that can be used to deserialize a proxy
          // object.
@@ -515,8 +487,8 @@ public class ProxyFactory<T>
          // class.
          exceptions = new Class[] { ClassNotFoundException.class, IOException.class };
          Bytecode deserializeProxyBody = createDeserializeProxyBody(proxyClassType);
-         MethodInformation deserializeProxy = new StaticMethodInformation("deserializeProxy", new Class[] { ObjectInputStream.class }, Object.class, proxyClassType.getName());
-         proxyClassType.addMethod(MethodUtils.makeMethod(Modifier.STATIC | Modifier.PUBLIC, deserializeProxy, exceptions, deserializeProxyBody, proxyClassType.getConstPool()));
+         MethodInformation deserializeProxy = new StaticMethodInformation("deserializeProxy", new Class[] { ObjectInputStream.class }, Object.class, proxyClassType.getName(), Modifier.STATIC | Modifier.PUBLIC);
+         proxyClassType.addMethod(MethodUtils.makeMethod(deserializeProxy, exceptions, deserializeProxyBody, proxyClassType.getConstPool()));
       }
       catch (Exception e)
       {
@@ -631,7 +603,7 @@ public class ProxyFactory<T>
                   try
                   {
                      MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, methodInfo), methodInfo), proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, methodInfo), methodInfo), proxyClassType.getConstPool()));
                      log.trace("Adding method " + method);
                   }
                   catch (DuplicateMemberException e)
@@ -650,7 +622,7 @@ public class ProxyFactory<T>
                try
                {
                   MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                  proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
+                  proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
                   log.trace("Adding method " + method);
                }
                catch (DuplicateMemberException e)
@@ -684,7 +656,8 @@ public class ProxyFactory<T>
     * If this method returns null, the method will not be added, and the
     * hashCode on the superclass will be used as per normal virtual method
     * resolution rules
-    * 
+    *
+    * @param proxyClassType The class file
     */
    protected MethodInfo generateEqualsMethod(ClassFile proxyClassType)
    {
@@ -731,9 +704,9 @@ public class ProxyFactory<T>
       int offset = cond.currentPc();
       // copy the byecode of the original method
       byte[] methodBodyBytes = existingMethod.get();
-      for (int i = 0; i < methodBodyBytes.length; ++i)
+      for (byte methodBodyByte : methodBodyBytes)
       {
-         cond.add(methodBodyBytes[i]);
+         cond.add(methodBodyByte);
       }
       // copy the exception table of the original method, if any (shift the table values to account for the guard)
       ExceptionTable originalExceptionTable = existingMethod.getExceptionTable();
@@ -778,15 +751,13 @@ public class ProxyFactory<T>
 
    /**
     * calls methodHandler.invoke for a given method
-    * 
+    *
     * @param file the current class file
     * @param b the bytecode to add the methodHandler.invoke call to
-    * @param declaringClass declaring class of the method
-    * @param methodName the name of the method to invoke
-    * @param methodParameters method paramters in internal JVM format
-    * @param returnType return type in internal format
+    * @param method The method information
     * @param addReturnInstruction set to true you want to return the result of
     *           the method invocation
+    * @param bytecodeMethodResolver The resolver that returns the method to invoke
     */
    protected static void invokeMethodHandler(ClassFile file, Bytecode b, MethodInformation method, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver)
    {
@@ -895,20 +866,20 @@ public class ProxyFactory<T>
          {
             log.trace("Adding method " + method);
             MethodInformation methodInfo = new RuntimeMethodInformation(method);
-            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
+            proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
          }
          Method getInstanceMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetInstance");
          Method getInstanceClassMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetClass");
 
          MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceMethodInfo, getInstanceMethod.getExceptionTypes(), createInterceptorBody(proxyClassType, getInstanceMethodInfo), proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod(getInstanceMethodInfo, getInstanceMethod.getExceptionTypes(), createInterceptorBody(proxyClassType, getInstanceMethodInfo), proxyClassType.getConstPool()));
 
          MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceClassMethodInfo, getInstanceClassMethod.getExceptionTypes(), createInterceptorBody(proxyClassType, getInstanceClassMethodInfo), proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod(getInstanceClassMethodInfo, getInstanceClassMethod.getExceptionTypes(), createInterceptorBody(proxyClassType, getInstanceClassMethodInfo), proxyClassType.getConstPool()));
 
          Method setMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("setHandler", MethodHandler.class);
          MethodInformation setMethodHandlerMethodInfo = new RuntimeMethodInformation(setMethodHandlerMethod);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, setMethodHandlerMethodInfo, setMethodHandlerMethod.getExceptionTypes(), generateSetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod(setMethodHandlerMethodInfo, setMethodHandlerMethod.getExceptionTypes(), generateSetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
       }
       catch (Exception e)
       {

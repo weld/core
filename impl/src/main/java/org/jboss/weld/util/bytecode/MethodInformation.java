@@ -59,4 +59,10 @@ public interface MethodInformation
     */
    public String getName();
 
+   /**
+    * The method modifiers
+    * @return The modifiers
+    */
+   public int getModifiers();
+
 }
