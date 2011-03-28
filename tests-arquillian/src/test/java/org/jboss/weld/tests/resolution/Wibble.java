@@ -1,15 +1,14 @@
 package org.jboss.weld.tests.resolution;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 @RequestScoped
 @Named
