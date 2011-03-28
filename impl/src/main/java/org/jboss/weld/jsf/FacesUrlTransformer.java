@@ -107,13 +107,13 @@ public class FacesUrlTransformer
       {
          String queryParameters = url.substring(queryStringIndex + 1);
          String actionUrl = context.getApplication().getViewHandler().getActionURL(context, url);
-         if(actionUrl.indexOf('?') < 0)
+         if(actionUrl.indexOf(QUERY_STRING_DELIMITER) < 0)
          {
-            url = actionUrl + '?' + queryParameters;
+            url = actionUrl + QUERY_STRING_DELIMITER + queryParameters;
          }
          else
          {
-            url = actionUrl + '&' + queryParameters;
+            url = actionUrl + PARAMETER_PAIR_DELIMITER + queryParameters;
          }
       }
       return this;
