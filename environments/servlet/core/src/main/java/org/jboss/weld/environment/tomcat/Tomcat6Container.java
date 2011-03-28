@@ -37,7 +37,7 @@ public class Tomcat6Container extends AbstractContainer
 
    protected String classToCheck()
    {
-      return "org.apache.AnnotationProcessor";
+      return "org.apache.catalina.core.ApplicationContextFacade";
    }
 
    public void initialize(ContainerContext context)
