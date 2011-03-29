@@ -121,8 +121,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
                   {
                      MethodInformation methodInfo = new RuntimeMethodInformation(method);
                      MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes(), methodInfo.getReturnType(), proxyClassType.getName());
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, delegatingMethodInfo, method.getExceptionTypes(), createDelegateToSuper(proxyClassType, methodInfo), proxyClassType.getConstPool()));
-                     proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, methodInfo), methodInfo), proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(delegatingMethodInfo, method.getExceptionTypes(), createDelegateToSuper(proxyClassType, methodInfo), proxyClassType.getConstPool()));
+                     proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, methodInfo), methodInfo), proxyClassType.getConstPool()));
                      log.trace("Adding method " + method);
                   }
                   catch (DuplicateMemberException e)
@@ -141,7 +141,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
                try
                {
                   MethodInformation methodInformation = new RuntimeMethodInformation(method);
-                  proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
+                  proxyClassType.addMethod(MethodUtils.makeMethod(methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
                   log.trace("Adding method " + method);
                }
                catch (DuplicateMemberException e)
@@ -171,7 +171,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
     *
     *
     * @param file the class file
-    * @param method any JLR method
+    * @param methodInfo any JLR method
     * @param delegateToSuper
     * @return the method byte code
     */
@@ -200,11 +200,9 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
     *
     * @param file the current class file
     * @param b the bytecode to add the methodHandler.invoke call to
-    * @param declaringClass declaring class of the method
-    * @param methodName the name of the method to invoke
-    * @param methodParameters method paramters in internal JVM format
-    * @param returnType return type in internal format
+    * @param methodInfo declaring class of the method
     * @param addReturnInstruction set to true you want to return the result of
+    * @param bytecodeMethodResolver The method resolver
     * @param addProceed
     */
    protected static void invokeMethodHandler(ClassFile file, Bytecode b, MethodInformation methodInfo, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed)
@@ -347,23 +345,23 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T>
          {
             log.trace("Adding method " + method);
             MethodInformation methodInfo = new RuntimeMethodInformation(method);
-            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo, false), proxyClassType.getConstPool()));
+            proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo, false), proxyClassType.getConstPool()));
          }
          Method getInstanceMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetInstance");
          Method getInstanceClassMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetClass");
          MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceMethodInfo, getInstanceMethod.getExceptionTypes(), generateGetTargetInstanceBody(proxyClassType), proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod(getInstanceMethodInfo, getInstanceMethod.getExceptionTypes(), generateGetTargetInstanceBody(proxyClassType), proxyClassType.getConstPool()));
 
          MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getInstanceClassMethodInfo, getInstanceClassMethod.getExceptionTypes(), generateGetTargetClassBody(proxyClassType), proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod(getInstanceClassMethodInfo, getInstanceClassMethod.getExceptionTypes(), generateGetTargetClassBody(proxyClassType), proxyClassType.getConstPool()));
 
          Method setMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("setHandler", MethodHandler.class);
          MethodInformation setMethodHandlerMethodInfo = new RuntimeMethodInformation(setMethodHandlerMethod);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, setMethodHandlerMethodInfo, setMethodHandlerMethod.getExceptionTypes(), generateSetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod(setMethodHandlerMethodInfo, setMethodHandlerMethod.getExceptionTypes(), generateSetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
 
          Method getMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("getHandler");
          MethodInformation getMethodHandlerMethodInfo = new RuntimeMethodInformation(getMethodHandlerMethod);
-         proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, getMethodHandlerMethodInfo, getMethodHandlerMethod.getExceptionTypes(), generateGetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
+         proxyClassType.addMethod(MethodUtils.makeMethod(getMethodHandlerMethodInfo, getMethodHandlerMethod.getExceptionTypes(), generateGetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
       }
       catch (Exception e)
       {

@@ -25,7 +25,7 @@ import org.jboss.weld.util.el.ForwardingValueExpression;
 
 /**
  * @author pmuir
- *
+ * @author alesj
  */
 public class WeldValueExpression extends ForwardingValueExpression
 {
@@ -72,6 +72,25 @@ public class WeldValueExpression extends ForwardingValueExpression
       {
          store.push(new CreationalContextCallable());
          delegate().setValue(context, value);
+      }
+      finally
+      {
+         CreationalContextCallable callable = store.pop();
+         if (callable.exists())
+         {
+            callable.get().release();
+         }
+      }
+   }
+
+   @Override
+   public boolean isReadOnly(ELContext context)
+   {
+      ELCreationalContextStack store = getCreationalContextStore(context);
+      try
+      {
+         store.push(new CreationalContextCallable());
+         return delegate().isReadOnly(context);
       }
       finally
       {

@@ -16,16 +16,6 @@
  */
 package org.jboss.weld.tests.resolution;
 
-import static org.jboss.weld.test.Utils.getReference;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.inject.Default;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -38,11 +28,20 @@ import org.jboss.weld.test.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.Default;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
+import static org.jboss.weld.test.Utils.getReference;
+import static org.junit.Assert.*;
+
 @RunWith(Arquillian.class)
-public class ResolutionTest 
+public class ResolutionTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ResolutionTest.class.getPackage())
@@ -51,7 +50,9 @@ public class ResolutionTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
+   @Inject Wibble wibble;
+
    @Test
    // WELD-711
    public void testResolveWithAnonymousAnnotationLiteral() throws Exception
@@ -61,5 +62,19 @@ public class ResolutionTest
       TypeSafeBeanResolver<?> resolver = beanManager.getBeanResolver();
       assertFalse(resolver.isCached(new ResolvableBuilder().addType(Foo.class).addQualifier(defaultQualifier).create()));
    }
-   
+
+   // WELD-873
+   @Test
+   public void testCallingUserMethod()
+   {
+      assertNull(wibble.get("bleh"));
+   }
+
+   // WELD-873
+   @Test
+   public void testCallingBridgeMethod()
+   {
+      assertNull(((Map)wibble).get("bleh"));
+   }
+
 }

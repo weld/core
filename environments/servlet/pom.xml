@@ -19,6 +19,7 @@
       <module>tests/base</module>
       <module>tests/tomcat</module>
       <module>tests/jetty</module>
+      <module>tests/jetty7</module>
    </modules>
 
    <description>
@@ -33,6 +34,7 @@
       <jsf.version>2.0.2-FCS</jsf.version>
       <tomcat.version>6.0.26</tomcat.version>
       <jetty.version>6.1.21</jetty.version>
+      <jetty7.version>7.2.1.v20101111</jetty7.version>
       <uel.glassfish.version>2.2</uel.glassfish.version>
       <!-- Testing deps -->
       <apache.httpclient.version>3.1</apache.httpclient.version>
@@ -99,6 +101,36 @@
             <artifactId>jsp-2.1-jetty</artifactId>
             <version>${jetty.version}</version>
          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-server</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-servlet</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-plus</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-jndi</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
+
+          <dependency>
+             <groupId>org.eclipse.jetty</groupId>
+             <artifactId>jetty-webapp</artifactId>
+             <version>${jetty7.version}</version>
+          </dependency>
 
          <dependency>
             <groupId>org.glassfish.web</groupId>

@@ -429,6 +429,9 @@ public class SecureReflections
     */
    public static Method lookupMethod(Object instance, Method method) throws NoSuchMethodException
    {
+      if(method.getDeclaringClass() == instance.getClass()) {
+         return method;
+      }
       return lookupMethod(instance.getClass(), method.getName(), method.getParameterTypes());
    }
 

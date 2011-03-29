@@ -16,18 +16,15 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
-import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Beans;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
@@ -44,16 +41,19 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
+import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 
 /**
  * <p>
@@ -83,6 +83,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
    protected TransactionPhase transactionPhase;
    private final String id;
 
+   private final Set<WeldInjectionPoint<?, ?>> injectionPoints;
    private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
 
    /**
@@ -104,19 +105,30 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
       Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
       this.reception = observesAnnotation.notifyObserver();
       transactionPhase = TransactionPhase.IN_PROGRESS;
+
+      this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
       for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
       {
-         if (injectionPoint.isAnnotationPresent(New.class))
+         if (injectionPoint.isAnnotationPresent(Observes.class) == false)
          {
-            this.newInjectionPoints.add(injectionPoint);
+            if (injectionPoint.isAnnotationPresent(New.class))
+            {
+               this.newInjectionPoints.add(injectionPoint);
+            }
+            injectionPoints.add(injectionPoint);
          }
       }
    }
 
+   public Set<WeldInjectionPoint<?, ?>> getInjectionPoints()
+   {
+      return Collections.unmodifiableSet(injectionPoints);
+   }
+
    public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints()
    {
-      return newInjectionPoints;
+      return Collections.unmodifiableSet(newInjectionPoints);
    }
 
    /**

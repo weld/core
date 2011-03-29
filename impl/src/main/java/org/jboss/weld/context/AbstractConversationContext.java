@@ -43,6 +43,7 @@ import org.jboss.weld.context.beanstore.ConversationNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
+import org.jboss.weld.logging.messages.ConversationMessage;
 
 
 /**
@@ -292,10 +293,16 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
          else
          {
             setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, getConversation(cid));
-            getCurrentConversation().lock(getConcurrentAccessTimeout());
-            NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), cid);
-            setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
-            getBeanStore().attach();
+            if (getCurrentConversation().lock(getConcurrentAccessTimeout()))
+            {
+               NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), cid);
+               setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
+               getBeanStore().attach();
+            }
+            else
+            {
+               throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
+            }
          }
 
       }
@@ -451,7 +458,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     * Get an attribute value from the session.
     * @param session the session to get the session attribute from
     * @param name the name of the attribute
-    *
     *
     * @return attribute
     * @throws IllegalStateException if create is true, and the session can't be

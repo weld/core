@@ -98,7 +98,24 @@ public class FacesUrlTransformer
 
    public FacesUrlTransformer toActionUrl()
    {
-      url = context.getApplication().getViewHandler().getActionURL(context, url);
+      int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
+      if (queryStringIndex < 0)
+      {
+         url = context.getApplication().getViewHandler().getActionURL(context, url);
+      }
+      else
+      {
+         String queryParameters = url.substring(queryStringIndex + 1);
+         String actionUrl = context.getApplication().getViewHandler().getActionURL(context, url);
+         if(actionUrl.indexOf(QUERY_STRING_DELIMITER) < 0)
+         {
+            url = actionUrl + QUERY_STRING_DELIMITER + queryParameters;
+         }
+         else
+         {
+            url = actionUrl + PARAMETER_PAIR_DELIMITER + queryParameters;
+         }
+      }
       return this;
    }
 

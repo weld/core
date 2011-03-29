@@ -395,7 +395,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
          public Iterator<T> iterator()
          {
-            Set<Iterable<T>> iterable = buildAccessibleClosure(BeanManagerImpl.this, new ArrayList<BeanManagerImpl>(), transform);
+            Set<Iterable<T>> iterable = buildAccessibleClosure(BeanManagerImpl.this, transform);
             return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
          }
          

@@ -68,6 +68,7 @@ public abstract class AbstractSharedContext extends AbstractContext
    protected void destroy()
    {
       super.destroy();
+      cleanup();
    }
    
    @Override

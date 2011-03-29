@@ -9,12 +9,14 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.util.bytecode;
+
+import javassist.bytecode.AccessFlag;
 
 import java.lang.reflect.Method;
 
@@ -25,8 +27,14 @@ public class StaticMethodInformation implements MethodInformation
    private final String[] parameterTypes;
    private final String returnType;
    private final String declaringClass;
+   private final int modifiers;
 
    public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass)
+   {
+      this(name,parameterTypes,returnType,declaringClass,AccessFlag.PUBLIC);
+   }
+
+   public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass, int modifiers)
    {
       this.name = name;
       this.parameterTypes = DescriptorUtils.getParameterTypes(parameterTypes);
@@ -40,6 +48,7 @@ public class StaticMethodInformation implements MethodInformation
       builder.append(')');
       builder.append(this.returnType);
       descriptor = builder.toString();
+      this.modifiers = modifiers;
    }
 
    public StaticMethodInformation(String name, String[] parameterTypes, String returnType, String declaringClass)
@@ -56,6 +65,7 @@ public class StaticMethodInformation implements MethodInformation
       builder.append(')');
       builder.append(returnType);
       descriptor = builder.toString();
+      this.modifiers = AccessFlag.PUBLIC;
    }
 
    public String getDeclaringClass()
@@ -86,5 +96,10 @@ public class StaticMethodInformation implements MethodInformation
    public String getName()
    {
       return name;
+   }
+
+   public int getModifiers()
+   {
+      return modifiers;
    }
 }

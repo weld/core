@@ -16,17 +16,16 @@
  */
 package org.jboss.weld.environment.servlet;
 
-import javax.servlet.ServletContext;
+import org.jboss.weld.environment.servlet.deployment.URLScanner;
 
+import javax.servlet.ServletContext;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-
-import org.jboss.weld.environment.servlet.deployment.URLScanner;
+import java.util.Set;
 
 /**
  * Exact listener.
@@ -75,7 +74,8 @@ public class ExactListener extends Listener
          }
       }
 
-      public void scanResources(String[] resources, List<String> classes, List<URL> urls)
+      @Override
+      public void scanResources(String[] resources, Set<String> classes, Set<URL> urls)
       {
          URL url = getExactBeansURL();
          if (url == null)
@@ -90,7 +90,9 @@ public class ExactListener extends Listener
                String line;
                while((line = reader.readLine()) != null)
                {
-                  classes.add(line);
+                  // ignore comments
+                  if (line.startsWith("#") == false)
+                     classes.add(line);
                }
             }
             finally

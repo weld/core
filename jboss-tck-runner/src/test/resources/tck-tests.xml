@@ -16,7 +16,16 @@
       <classes>
       
          <!-- Issues in the TCK -->
-         
+         <class name="org.jboss.jsr299.tck.tests.context.DestroyForSameCreationalContext2Test" >
+            <methods>
+               <exclude name="testDestroyForSameCreationalContextOnly"/>
+            </methods>
+         </class>
+         <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest" >
+            <methods>
+               <exclude name="testDestroyedInstanceMustNotBeReturnedByGet"/>
+            </methods>
+         </class>
          <!-- Issues in Weld (the RI) -->
 
          <!-- Issues in JBoss AS -->

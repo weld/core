@@ -39,7 +39,7 @@ import javax.enterprise.context.ApplicationScoped;
  */
 public
 @ApplicationScoped
-class BlogEntryRepository
+class BlogEntryRepository implements Repository
 {
    private static AtomicLong uniqueEntryId = new AtomicLong(0);
 

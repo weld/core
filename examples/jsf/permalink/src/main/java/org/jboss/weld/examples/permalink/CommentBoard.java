@@ -33,11 +33,14 @@ public
 @Model
 class CommentBoard
 {
-   @Inject BlogEntryRepository repository;
+   @Inject
+   Repository repository;
 
-   @Inject Comment comment;
+   @Inject
+   Comment comment;
 
-   @Inject Blog blog;
+   @Inject
+   Blog blog;
 
    public Boolean post()
    {
@@ -52,11 +55,13 @@ class CommentBoard
          return null;
       }
 
+      comment.checkAuthor();
+
       repository.addComment(comment, entry);
-	  FacesContext ctx = FacesContext.getCurrentInstance();
-	  ctx.addMessage(null, new FacesMessage("Thanks for leaving a comment!"));
-	  // FIXME doesn't seem to be working; must investigate
-	  ctx.getExternalContext().getFlash().setKeepMessages(true);
+      FacesContext ctx = FacesContext.getCurrentInstance();
+      ctx.addMessage(null, new FacesMessage("Thanks for leaving a comment!"));
+      // FIXME doesn't seem to be working; must investigate
+      ctx.getExternalContext().getFlash().setKeepMessages(true);
       return true;
    }
 }

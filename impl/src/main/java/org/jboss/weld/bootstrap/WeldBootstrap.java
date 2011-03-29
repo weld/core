@@ -190,12 +190,18 @@ public class WeldBootstrap implements Bootstrap
          seenBeanDeploymentArchives.add(beanDeploymentArchive);
          for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives())
          {
+            BeanDeployment child;
             // Cut any circularties
             if (!seenBeanDeploymentArchives.contains(archive))
             {
-               BeanDeployment child = visit(archive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives, validate);
-               parent.getBeanManager().addAccessibleBeanManager(child.getBeanManager());
+               child = visit(archive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives, validate);
             }
+            else
+            {
+               // already visited
+               child = managerAwareBeanDeploymentArchives.get(archive);
+            }
+            parent.getBeanManager().addAccessibleBeanManager(child.getBeanManager());
          }
          return parent;
       }

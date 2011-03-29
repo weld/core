@@ -42,7 +42,7 @@ public class WeldServletHandler extends ServletHandler
    protected void inject(Object injectable) {
       if (injector == null)
       {
-         injector = (JettyWeldInjector) sco.getAttribute(org.jboss.weld.environment.servlet.Listener.INJECTOR_ATTRIBUTE_NAME);
+         injector = (JettyWeldInjector) sco.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
       }
       if (injector == null)
       {

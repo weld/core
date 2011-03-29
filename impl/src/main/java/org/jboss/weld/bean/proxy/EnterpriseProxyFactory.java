@@ -61,7 +61,7 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
          {
             log.trace("Adding method " + method);
             MethodInformation methodInfo = new RuntimeMethodInformation(method);
-            proxyClassType.addMethod(MethodUtils.makeMethod(AccessFlag.PUBLIC, methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
+            proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
          }
       }
       catch (Exception e)
