@@ -5,6 +5,9 @@
 .idea
 *.iws
 *.iml
+*.xml.next
+*.xml.tag
+*.xml.releaseBackup
 target
 examples/jsf/login/src/main/webapp/META-INF/MANIFEST.MF
 examples/jsf/numberguess/src/main/webapp/META-INF/MANIFEST.MF

@@ -241,7 +241,7 @@
    <!-- SCM and distribution management -->
    <scm>
       <connection>scm:git:git://github.com/weld/core.git</connection>
-      <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
+      <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
       <url>scm:git:git://github.com/weld/core.git</url>
    </scm>
 
