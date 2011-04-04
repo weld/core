@@ -3,7 +3,7 @@
    <groupId>org.jboss.weld</groupId>
    <artifactId>weld-core-build-aggregator</artifactId>
    <packaging>pom</packaging>
-   <version>1.1.1.Final</version>
+   <version>1.1.2-SNAPSHOT</version>
 
    <parent>
       <groupId>org.jboss.weld</groupId>
