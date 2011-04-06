@@ -320,7 +320,9 @@ public class Beans
       List<WeldMethod<?, ?>> annotatedMethods = new ArrayList<WeldMethod<?, ?>>();
       for (WeldMethod<?, ?> annotatedMethod : type.getWeldMethods())
       {
-         boolean businessMethod = !annotatedMethod.isStatic() && !annotatedMethod.isAnnotationPresent(Inject.class);
+         boolean businessMethod = !annotatedMethod.isStatic()
+               && !annotatedMethod.isAnnotationPresent(Inject.class)
+               && !annotatedMethod.getJavaMember().isBridge();
 
          if (businessMethod)
          {

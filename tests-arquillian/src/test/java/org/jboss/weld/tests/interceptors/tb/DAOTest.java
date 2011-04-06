@@ -48,7 +48,7 @@ public class DAOTest
    @Test
    public void testInterceptors(Filter filter) throws Exception
    {
-      TxInterceptor.ignoreDup = true; // change this!
+      TxInterceptor.ignoreDup = false;
 
       Client c = filter.verify();
       Assert.assertNotNull(c);
