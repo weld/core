@@ -25,7 +25,7 @@ package org.jboss.weld.tests.interceptors.tb;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Client extends Timestamped
+public interface TDAO<T extends Timestamped> extends DAO<T>
 {
-   String name;
+   boolean isExpired(T timestamped);
 }

@@ -55,5 +55,6 @@ public class DAOTest
       c = filter.check();
       Assert.assertNotNull(c);
       Assert.assertEquals("TxInterceptor_TEMP", c.name);
+      filter.save(c);
    }
 }

@@ -25,7 +25,7 @@ package org.jboss.weld.tests.interceptors.tb;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class ClientDAO extends GenericDAO<Client> implements CDAO
+public class ClientDAO extends TimestampedDAO<Client> implements CDAO
 {
    Class<Client> entityClass()
    {

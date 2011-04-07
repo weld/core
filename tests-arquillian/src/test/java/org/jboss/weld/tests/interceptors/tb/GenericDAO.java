@@ -33,6 +33,10 @@ public abstract class GenericDAO<T extends Entity> implements DAO<T>
 {
    abstract Class<T> entityClass();
 
+   public void save(T t)
+   {
+   }
+
    @Tx(1)
    public T find(Long id)
    {

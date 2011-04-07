@@ -31,6 +31,11 @@ public class Filter
 {
    private CDAO cdao;
 
+   public void save(Client c)
+   {
+      cdao.save(c);
+   }
+
    public Client verify()
    {
       return cdao.find(123L);

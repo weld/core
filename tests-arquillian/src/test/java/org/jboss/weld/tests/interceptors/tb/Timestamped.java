@@ -25,7 +25,7 @@ package org.jboss.weld.tests.interceptors.tb;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Client extends Timestamped
+public abstract class Timestamped extends Entity
 {
-   String name;
+   Long timestamp;
 }

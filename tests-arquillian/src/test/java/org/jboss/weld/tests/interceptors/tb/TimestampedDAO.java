@@ -25,7 +25,10 @@ package org.jboss.weld.tests.interceptors.tb;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Client extends Timestamped
+public abstract class TimestampedDAO<T extends Timestamped> extends GenericDAO<T> implements TDAO<T>
 {
-   String name;
+   public boolean isExpired(T t)
+   {
+      return System.currentTimeMillis() - 10000 > t.timestamp;
+   }
 }

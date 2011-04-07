@@ -27,6 +27,8 @@ package org.jboss.weld.tests.interceptors.tb;
  */
 public interface DAO<T>
 {
+   void save(T t);
+
    T find(Long id);
 
    <U> U find(Class<U> clazz, Long id);
