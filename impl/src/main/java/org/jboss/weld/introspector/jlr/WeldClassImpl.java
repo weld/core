@@ -276,10 +276,15 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
                }
             }
             methodsTemp = new ArraySet<WeldMethod<?, ? super T>>(declaredMethodsTemp).trimToSize();
-            if ((superclass != null) && (superclass.getJavaClass() != Object.class))
+            if (superclass != null)
             {
-               Set<WeldMethod<?, ? super T>> superClassMethods = Reflections.cast(superclass.getDeclaredWeldMethods());
-               methodsTemp = Sets.union(methodsTemp, superClassMethods);
+               WeldClass<?> current = superclass;
+               while (current.getJavaClass() != Object.class)
+               {
+                  Set<WeldMethod<?, ? super T>> superClassMethods = Reflections.cast(current.getDeclaredWeldMethods());
+                  methodsTemp = Sets.union(methodsTemp, superClassMethods);
+                  current = current.getWeldSuperclass();
+               }
             }
          }
          this.declaredMethods = new ArraySet<WeldMethod<?, ? super T>>(declaredMethodsTemp);
