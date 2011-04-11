@@ -184,7 +184,7 @@ public class ClassTransformer implements Service
       }
       catch (ComputationException e)
       {
-         if (e.getCause() instanceof NoClassDefFoundError || e.getCause() instanceof TypeNotPresentException || e.getCause() instanceof ResourceLoadingException)
+         if (e.getCause() instanceof NoClassDefFoundError || e.getCause() instanceof TypeNotPresentException || e.getCause() instanceof ResourceLoadingException || e.getCause() instanceof LinkageError)
          {
             throw new ResourceLoadingException("Error loading class " + clazz.getName(), e.getCause());
          }
