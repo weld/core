@@ -363,6 +363,14 @@ public class WeldBootstrap implements Bootstrap
    {
       synchronized (this)
       {
+         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
+         {
+            entry.getValue().createBeans(environment);
+         }
+         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
+         {
+            entry.getValue().deploySpecialized(environment);
+         }
          // TODO keep a list of new bdas, add them all in, and deploy beans for
          // them, then merge into existing
          for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())

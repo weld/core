@@ -88,11 +88,11 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    {
       return manager;
    }
-   
-   public AbstractBeanDeployer<E> deploy()
+
+   // interceptors, decorators and observers go first
+   public AbstractBeanDeployer<E> deploySpecialized()
    {
-      Set<? extends RIBean<?>> beans = getEnvironment().getBeans();
-      // ensure that all decorators are initialized before initializing 
+      // ensure that all decorators are initialized before initializing
       // the rest of the beans
       for (DecoratorImpl<?> bean : getEnvironment().getDecorators())
       {
@@ -108,6 +108,12 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
          manager.addInterceptor(bean);
          log.debug(FOUND_INTERCEPTOR, bean);
       }
+      return this;
+   }
+
+   public AbstractBeanDeployer<E> deploy()
+   {
+      Set<? extends RIBean<?>> beans = getEnvironment().getBeans();
       for (RIBean<?> bean : beans)
       {
          bean.initialize(getEnvironment());
@@ -145,6 +151,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
          manager.addBean(bean);
          log.debug(FOUND_BEAN, bean);
       }
+      // TODO -- why do observers have to be the last?
       for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers())
       {
          log.debug(FOUND_OBSERVER_METHOD, observer);
@@ -285,7 +292,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment>
    /**
     * Indicates if the type is a simple Web Bean
     * 
-    * @param type
+    * @param clazz
     *           The type to inspect
     * @return True if simple Web Bean, false otherwise
     */

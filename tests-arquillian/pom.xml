@@ -206,7 +206,7 @@
 	
 	<!-- Default standalone profile using weld-ee-embedded container. Used to run fast embedded tests. -->
       <profile>
-         <id>defualt</id>
+         <id>default</id>
          <activation>
             <activeByDefault>true</activeByDefault>
             <property>

@@ -184,10 +184,9 @@ public class BeanDeployment
       }
       return classNames;
    }
-   
-   // TODO Move class stuff into startContainer phase
-   // TODO read EJB descriptors after reading classes
-   public void deployBeans(Environment environment)
+
+   // TODO -- OK?
+   public void createBeans(Environment environment)
    {
       beanDeployer.addClasses(loadClasses());
       beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
@@ -213,7 +212,19 @@ public class BeanDeployment
          beanDeployer.getEnvironment().addBuiltInBean(ContextBean.of(context, beanManager));
       }
       // TODO Register the context beans
-      beanDeployer.createBeans().deploy();
+      beanDeployer.createBeans();
+   }
+
+   public void deploySpecialized(Environment environment)
+   {
+      beanDeployer.deploySpecialized();
+   }
+
+   // TODO Move class stuff into startContainer phase
+   // TODO read EJB descriptors after reading classes
+   public void deployBeans(Environment environment)
+   {
+      beanDeployer.deploy();
    }
    
    public void afterBeanDiscovery(Environment environment)
