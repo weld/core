@@ -9,9 +9,9 @@ set -eu
 draft_dir=target/draft
 mkdir -p $draft_dir
 
-echo "Pulling latest translations from Flies server"
+echo "Pulling latest translations from Zanata server"
 # write PO files to a different directory under target
-mvn flies:publican-pull -e -Dflies.dstDir=$draft_dir
+mvn zanata:publican-pull -e -Dzanata.dstDir=$draft_dir
 
 # draft build the translated documents
 # (alternative: run Ant from weld/build/dist)
