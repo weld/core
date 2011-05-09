@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<config xmlns="http://flies.openl10n.net/config/v1/">
-      <url>https://translate.jboss.org/flies/</url>
+<config xmlns="http://zanata.org/namespace/config/">
+      <url>https://translate.jboss.org/</url>
       <project>weld-ref-guide</project>
       <project-version>1.1.0</project-version>
       <locales>
