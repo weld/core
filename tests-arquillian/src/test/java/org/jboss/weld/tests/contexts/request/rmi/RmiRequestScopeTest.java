@@ -25,9 +25,6 @@ public class RmiRequestScopeTest {
     {
         return ShrinkWrap.create(WebArchive.class, "test.war")
                 .addClasses(Bridge.class, BridgeBean.class, Config.class, Manager.class, My.class)
-                .addWebResource(RmiRequestScopeTest.class.getPackage(), "web.xml", "web.xml")
-                .addWebResource(RmiRequestScopeTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-//                .addWebResource(RmiRequestScopeTest.class.getPackage(), "beans.xml", "beans.xml")
                 .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
