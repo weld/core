@@ -9,7 +9,6 @@ public class User
    @Id
    private String username;
    private String name;
-   @SuppressWarnings("unused")
    private String password;
    
    public User() {}
@@ -42,6 +41,12 @@ public class User
    public String getPassword()
    {
       return password;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "User (username = " + username + ", name = " + name +")";
    }
 
 }

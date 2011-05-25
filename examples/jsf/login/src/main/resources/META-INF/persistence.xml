@@ -5,10 +5,10 @@
              version="1.0">
    <persistence-unit name="loginDatabase">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <jta-data-source>java:/DefaultDS</jta-data-source>
+      <jta-data-source>java:/H2DS</jta-data-source>
       <properties>
          <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-         <property name="hibernate.show_sql" value="true"/>
+         <property name="hibernate.show_sql" value="false"/>
       </properties>
    </persistence-unit>
 </persistence>
