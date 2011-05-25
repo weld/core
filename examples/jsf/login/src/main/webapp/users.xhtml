@@ -22,12 +22,33 @@
 				<h:outputText value="#{u.name}" />
 			</h:column>
 			<h:column>
-            <f:facet name="header">
+				<f:facet name="header">
                Password
             </f:facet>
-            <h:outputText value="#{u.password}" />
-         </h:column>
+				<h:outputText value="#{u.password}" />
+			</h:column>
 		</h:dataTable>
+		<h1>Add user</h1>
+		<h:form>
+			<table>
+				<tr>
+					<td>Username</td>
+					<td><h:inputText value="#{userManager.newUser.username}"/></td>
+				</tr>
+				<tr>
+					<td>Name</td>
+					<td><h:inputText value="#{userManager.newUser.name}"/></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><h:inputText value="#{userManager.newUser.password}"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><h:commandButton action="#{userManager.addUser}" value="Add User" /></td>
+				</tr>
+			</table>
+		</h:form>
 	</ui:define>
 </ui:composition>
 </html>

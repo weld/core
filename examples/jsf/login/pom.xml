@@ -24,12 +24,6 @@
    </licenses>
 
    <dependencies>
-      <dependency>
-         <groupId>org.testng</groupId>
-         <artifactId>testng</artifactId>
-         <scope>test</scope>
-         <classifier>jdk15</classifier>
-      </dependency>
 
       <dependency>
          <groupId>javax.enterprise</groupId>
@@ -48,16 +42,23 @@
          <artifactId>persistence-api</artifactId>
          <scope>provided</scope>
       </dependency>
-
+      
       <dependency>
-         <groupId>org.glassfish.web</groupId>
-         <artifactId>el-impl</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.el</groupId>
-               <artifactId>el-api</artifactId>
-            </exclusion>
-         </exclusions>
+         <groupId>javax.transaction</groupId>
+         <artifactId>jta</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.spec.javax.ejb</groupId>
+         <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+         <scope>provided</scope>
       </dependency>
 
    </dependencies>
