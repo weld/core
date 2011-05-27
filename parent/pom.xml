@@ -78,7 +78,7 @@
       <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
       <arquillian.version>1.0.0.Alpha4</arquillian.version>
-      <jbossas7.version>7.0.0.Alpha2-SNAPSHOT</jbossas7.version>
+      <jbossas7.version>7.0.0.Beta3</jbossas7.version>
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
       <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
