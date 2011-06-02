@@ -43,9 +43,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.*;
 import java.security.ProtectionDomain;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -66,7 +64,7 @@ public class ProxyFactory<T>
    // The log provider
    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
    // Default proxy class name suffix
-   public static final String PROXY_SUFFIX = "Proxy";
+   public static final String PROXY_SUFFIX = "$Proxy$";
    public static final String DEFAULT_PROXY_PACKAGE = "org.jboss.weld.proxies";
 
    private final Class<?> beanType;
@@ -154,9 +152,61 @@ public class ProxyFactory<T>
             proxyPackage = proxiedBeanType.getPackage().getName();
          }
       }
-      String beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-      String className = beanId.replace('.', '$').replace(' ', '_').replace('/', '$').replace(';', '$').replace(':','$').replace('[', '$').replace(']', '$');
+      final String className;
+
+      if(typeInfo.getSuperClass() == Object.class)
+      {
+         final StringBuilder name = new StringBuilder();
+         //interface only bean.
+         className = createCompoundProxyName(bean, typeInfo, name) + PROXY_SUFFIX;
+      } else
+      {
+         boolean typeModified = false;
+         for(Class<?> iface : typeInfo.getInterfaces())
+         {
+            if(!iface.isAssignableFrom(typeInfo.getSuperClass()))
+            {
+               typeModified = true;
+               break;
+            }
+         }
+         if(typeModified)
+         {
+            //this bean has interfaces that the base type is not assignable to
+            //which can happen with some creative use of the SPI
+            //interface only bean.
+            StringBuilder name = new StringBuilder(typeInfo.getSuperClass().getSimpleName() + "$");
+            className = createCompoundProxyName(bean, typeInfo, name) + PROXY_SUFFIX;
+         } else {
+            className = typeInfo.getSuperClass().getSimpleName() + PROXY_SUFFIX;
+         }
+      }
+
+
       return proxyPackage + '.' + className;
+   }
+
+   private static String createCompoundProxyName(Bean<?> bean, TypeInfo typeInfo, StringBuilder name)
+   {
+      String className;
+      final List<String> interfaces = new ArrayList<String>();
+      for(Class<?> type : typeInfo.getInterfaces())
+      {
+         interfaces.add(type.getSimpleName());
+      }
+      Collections.sort(interfaces);
+      for(final String iface : interfaces)
+      {
+         name.append(iface);
+         name.append('$');
+      }
+      //there is a remote chance that this could generate the same
+      //proxy name for two interfaces with the same simple name.
+      //append the hash code of the bean id to be sure
+      final String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+      name.append(id.hashCode());
+      className = name.toString();
+      return className;
    }
 
    /**

@@ -16,27 +16,23 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_FINAL_TYPE_OR_METHOD;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_NO_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIMITIVE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_UNKNOWN;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.*;
 
 /**
  * Utilties for working with Javassist proxies
@@ -99,7 +95,7 @@ public class Proxies
          return superclass;
       }
 
-      public TypeInfo add(Type type)
+      private TypeInfo add(Type type)
       {
          if (type instanceof Class<?>)
          {
@@ -124,19 +120,24 @@ public class Proxies
          return this;
       }
 
+      public Set<Class<?>> getClasses()
+      {
+         return Collections.unmodifiableSet(classes);
+      }
+
+      public Set<Class<?>> getInterfaces()
+      {
+         return Collections.unmodifiableSet(interfaces);
+      }
+
       public static TypeInfo of(Set<? extends Type> types)
       {
-         TypeInfo typeInfo = create();
+         TypeInfo typeInfo = new TypeInfo();
          for (Type type : types)
          {
             typeInfo.add(type);
          }
          return typeInfo;
-      }
-
-      public static TypeInfo create()
-      {
-         return new TypeInfo();
       }
 
    }
