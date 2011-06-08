@@ -32,8 +32,8 @@
    </issueManagement>
 
    <organization>
-      <name>Seam Framework</name>
-      <url>http://seamframework.org</url>
+      <name>JBoss by Red Hat</name>
+      <url>http://www.jboss.org</url>
    </organization>
 
    <inceptionYear>2008</inceptionYear>
@@ -49,7 +49,7 @@
       <developer>
          <name>Pete Muir</name>
          <roles>
-            <role>Project Lead</role>
+            <role>Project Founder</role>
          </roles>
          <email>pete.muir@jboss.org</email>
          <organization>Red Hat, Inc.</organization>
@@ -57,7 +57,27 @@
       </developer>
 
       <developer>
+         <name>Ales Justin</name>
+         <roles>
+            <role>Project Lead</role>
+         </roles>
+         <email>ales.justin@jboss.org</email>
+         <organization>Red Hat, Inc.</organization>
+         <url>http://in.relation.to/Bloggers/Ales</url>
+      </developer>
+
+      <developer>
          <name>Shane Bryzak</name>
+         <organization>Red Hat, Inc.</organization>
+      </developer>
+
+      <developer>
+         <name>Stuart Douglas</name>
+         <organization>Red Hat, Inc.</organization>
+      </developer>
+
+      <developer>
+         <name>Marius Bogoevici</name>
          <organization>Red Hat, Inc.</organization>
       </developer>
 
