@@ -225,11 +225,11 @@ public class Listener extends ForwardingServletListener
       Container container = checkContainers(cc, dump, extContainers);
       if (container == null)
          container = checkContainers(cc, dump, Arrays.asList(
-               Tomcat6Container.INSTANCE,
                Tomcat7Container.INSTANCE,
+               Tomcat6Container.INSTANCE,
                Jetty6Container.INSTANCE,
-               Jetty7Container.INSTANCE,
-               JettyPost72Container.INSTANCE)
+               JettyPost72Container.INSTANCE,
+               Jetty7Container.INSTANCE)
          );
       return container;
    }
