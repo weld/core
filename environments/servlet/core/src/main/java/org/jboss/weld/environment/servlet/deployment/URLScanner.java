@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -87,6 +88,7 @@ public class URLScanner
             while (urlEnum.hasMoreElements())
             {
                String urlPath = urlEnum.nextElement().getFile();
+               urlPath = URLDecoder.decode(urlPath, "UTF-8"); // WELD-834
 
                if (urlPath.startsWith("file:"))
                {
