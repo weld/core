@@ -23,6 +23,7 @@ import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_IS_NULL;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
 import static org.jboss.weld.logging.messages.ContextMessage.NO_BEAN_STORE_AVAILABLE;
 
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.enterprise.context.ContextNotActiveException;
@@ -56,7 +57,7 @@ public abstract class AbstractContext implements Context
 {
    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
-   private static ReentrantLock creationLock = new ReentrantLock();
+   private Lock creationLock = new ReentrantLock();
    
    private final boolean multithreaded;
    
