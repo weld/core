@@ -38,6 +38,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -113,7 +114,7 @@ import com.google.common.collect.Multimaps;
  * @author Pete Muir
  * @author David Allen
  * @author Marius Bogoevici
- * 
+ * @author Ales Justin
  */
 public class Beans
 {
@@ -913,27 +914,37 @@ public class Beans
 
    public static Annotation[] mergeInQualifiers(Annotation[] qualifiers, Annotation[] newQualifiers)
    {
+      if (qualifiers == null || newQualifiers == null)
+         return EMPTY_ANNOTATIONS;
+
       return mergeInQualifiers(asList(qualifiers), newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
    }
    
    public static Set<Annotation> mergeInQualifiers(Collection<Annotation> qualifiers, Annotation[] newQualifiers)
    {
       Set<Annotation> result = new HashSet<Annotation>();
-      result.addAll(qualifiers);
-      Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
-      for (Annotation qualifier : newQualifiers)
+
+      if (qualifiers != null && qualifiers.isEmpty() == false)
+         result.addAll(qualifiers);
+
+      if (newQualifiers != null && newQualifiers.length > 0)
       {
-         if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
+         Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
+         for (Annotation qualifier : newQualifiers)
          {
-            throw new IllegalArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
+            if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid())
+            {
+               throw new IllegalArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
+            }
+            if (checkedNewQualifiers.contains(qualifier))
+            {
+               throw new IllegalArgumentException(REDUNDANT_QUALIFIER, qualifier, Arrays.asList(newQualifiers));
+            }
+            checkedNewQualifiers.add(qualifier);
          }
-         if (checkedNewQualifiers.contains(qualifier))
-         {
-            throw new IllegalArgumentException(REDUNDANT_QUALIFIER, qualifier, Arrays.asList(newQualifiers));
-         }
-         checkedNewQualifiers.add(qualifier);
+         result.addAll(checkedNewQualifiers);
       }
-      result.addAll(checkedNewQualifiers);
+
       return result;
    }
 
