@@ -16,13 +16,16 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 
 
 /**
  * @author pmuir
- *
+ * @author alesj
  */
 public class WeldApplicationFactory extends ForwardingApplicationFactory
 {
@@ -30,7 +33,9 @@ public class WeldApplicationFactory extends ForwardingApplicationFactory
    private final ApplicationFactory applicationFactory;
    
    private Application application;
-   
+
+   private ReadWriteLock lock = new ReentrantReadWriteLock();
+
    public WeldApplicationFactory(ApplicationFactory applicationFactory)
    {
       this.applicationFactory = applicationFactory;
@@ -45,11 +50,32 @@ public class WeldApplicationFactory extends ForwardingApplicationFactory
    @Override
    public Application getApplication()
    {
-      if (application == null)
+      lock.readLock().lock();
+      try
       {
-         application = new WeldApplication(delegate().getApplication());
+         if (application == null)
+            application = new WeldApplication(delegate().getApplication());
+
+         return application;
       }
-      return application;
+      finally
+      {
+         lock.readLock().unlock();
+      }
    }
 
+   @Override
+   public void setApplication(Application application)
+   {
+      lock.writeLock().lock();
+      try
+      {
+         this.application = null; // invalidate the instance, so it picks up new application
+         super.setApplication(application);
+      }
+      finally
+      {
+         lock.writeLock().unlock();
+      }
+   }
 }
