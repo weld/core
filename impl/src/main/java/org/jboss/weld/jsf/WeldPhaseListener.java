@@ -33,6 +33,7 @@ import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATIO
 import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
+import java.util.Map;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
@@ -70,12 +71,15 @@ import org.slf4j.cal10n.LocLogger;
  * 
  * @author Nicklas Karlsson
  * @author Dan Allen
+ * @author Ales Justin
  */
 public class WeldPhaseListener implements PhaseListener
 {
    private static final long serialVersionUID = 1L;
 
    private static final LocLogger log = loggerFactory().getLogger(JSF);
+
+   public static final String NO_CID = "nocid";
 
    public void beforePhase(PhaseEvent phaseEvent)
    {
@@ -152,8 +156,12 @@ public class WeldPhaseListener implements PhaseListener
     */
    public static String getConversationId(FacesContext facesContext, ConversationContext conversationContext)
    {
+      Map<String,String> map = facesContext.getExternalContext().getRequestParameterMap();
+      if (map.containsKey(NO_CID))
+         return null; // ignore cid; WELD-919
+
       String cidName = conversationContext.getParameterName();
-      String cid = facesContext.getExternalContext().getRequestParameterMap().get(cidName);
+      String cid = map.get(cidName);
       log.trace(FOUND_CONVERSATION_FROM_REQUEST, cid);
       return cid;
    }
