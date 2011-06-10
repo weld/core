@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
@@ -20,7 +19,7 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 
-@WebServlet("*")
+@WebServlet("/")
 public class RemoteClient extends HttpServlet
 {
 

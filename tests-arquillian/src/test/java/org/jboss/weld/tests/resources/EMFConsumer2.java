@@ -3,7 +3,6 @@ package org.jboss.weld.tests.resources;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 import java.io.IOException;
-
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletException;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("emfconsumer2")
+@WebServlet("/emfconsumer2")
 public class EMFConsumer2 extends HttpServlet
 {
    
