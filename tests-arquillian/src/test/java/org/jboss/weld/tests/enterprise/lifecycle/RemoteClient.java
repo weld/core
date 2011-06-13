@@ -32,11 +32,16 @@ public class RemoteClient extends HttpServlet
    @Override
    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
    {
+      // TODO -- who's actually issuing empty path request?
+      String pathInfo = req.getPathInfo();
+      if (pathInfo == null)
+         return;
+
       try
       {
          RequestContext requestContext = getActiveContext(beanManager, RequestContext.class);
          Bean<KleinStadt> stadtBean = Utils.getBean(beanManager, KleinStadt.class);
-         if (req.getPathInfo().equals("/request1"))
+         if (pathInfo.equals("/request1"))
          {
             assertNotNull("Expected a bean for stateful session bean Kassel", stadtBean);
             CreationalContext<KleinStadt> creationalContext = beanManager.createCreationalContext(stadtBean);
@@ -46,7 +51,7 @@ public class RemoteClient extends HttpServlet
             assertTrue("Expected SFSB bean to be destroyed", frankfurt.isKleinStadtDestroyed());
             return;
          }
-         else if (req.getPathInfo().equals("/request2"))
+         else if (pathInfo.equals("/request2"))
          {
             KleinStadt kassel = requestContext.get(stadtBean);
             assertNull("SFSB bean should not exist after being destroyed", kassel);
