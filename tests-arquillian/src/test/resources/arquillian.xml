@@ -13,7 +13,7 @@
 <!--		<jboss:jbossHome>/home/aslak/dev/servers/jboss-6.0.0.M3/</jboss:jbossHome> --> <!-- default %JBOSS_HOME% -->
 <!--		<jboss:javaHome>/usr/lib/jvm/java-6-openjdk</jboss:javaHome> -->  <!-- default %JAVA_HOME% -->
       <!-- Increase the permgen space by default, heap space is default -->
-      <jboss:javaVmArguments>-Xmx512m -XX:MaxPermSize=256m</jboss:javaVmArguments>
+      <jboss:javaVmArguments>-Xmx512m -XX:MaxPermSize=256m -Dlogging.configuration=file:./logging.properties</jboss:javaVmArguments>
 	</jboss:container>	
 
 	<glassfish:container>
