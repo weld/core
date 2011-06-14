@@ -74,6 +74,22 @@ public class URLScanner
       }
    }
 
+   /**
+    * Decode the url path.
+    *
+    * e.g. sub-class migh wanna override this method
+    * with custom decode mechanism
+    *
+    * @param urlPath the current url path
+    * @return decoded url path
+    */
+   protected String decodeURLPath(String urlPath)
+   {
+      // WELD-834
+      urlPath = urlPath.replaceAll("%", "%25");
+      return urlPath.replaceAll(" ", "%20");
+   }
+
    public void scanResources(String[] resources, Set<String> classes, Set<URL> urls)
    {
       Set<String> paths = new HashSet<String>();
@@ -87,9 +103,7 @@ public class URLScanner
             while (urlEnum.hasMoreElements())
             {
                String urlPath = urlEnum.nextElement().getFile();
-               // WELD-834
-               urlPath = urlPath.replaceAll("%", "%25");
-               urlPath = urlPath.replaceAll(" ", "%20");
+               urlPath = decodeURLPath(urlPath);
 
                if (urlPath.startsWith("file:"))
                {
