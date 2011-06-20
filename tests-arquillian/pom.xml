@@ -44,6 +44,12 @@
 
       <dependency>
          <groupId>org.jboss.arquillian.container</groupId>
+         <artifactId>arquillian-container-test-spi</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.container</groupId>
          <artifactId>arquillian-container-test-api</artifactId>
          <scope>provided</scope>
       </dependency>
