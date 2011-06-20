@@ -4,7 +4,7 @@ import static org.jboss.weld.environment.servlet.test.util.TomcatDeployments.CON
 
 import java.util.logging.Logger;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;

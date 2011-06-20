@@ -22,11 +22,13 @@ public class DeploymentOrderingTestBase
 
    public static final Asset EXTENSION = new ByteArrayAsset(ContainerLifecycleObserver.class.getName().getBytes());
 
-
    public static WebArchive deployment()
    {
-      WebArchive war = baseDeployment().addPackage(DeploymentOrderingTestBase.class.getPackage()).addAsWebResource(new BeansXml().alternatives(Bar.class), "beans.xml").addWebResource(new BeansXml().alternatives(Garply.class), "classes/META-INF/beans.xml").addAsManifestResource(EXTENSION, "services/" + Extension.class.getName());
-      return war;
+      return baseDeployment()
+            .addPackage(DeploymentOrderingTestBase.class.getPackage())
+            .addAsWebResource(new BeansXml().alternatives(Bar.class), "beans.xml")
+            .addAsWebResource(new BeansXml().alternatives(Garply.class), "classes/META-INF/beans.xml")
+            .addAsManifestResource(EXTENSION, "services/" + Extension.class.getName());
    }
 
    @Test

@@ -37,6 +37,12 @@
       </dependency>
 
       <dependency>
+         <groupId>org.jboss.arquillian.container</groupId>
+         <artifactId>arquillian-container-test-api</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
          <groupId>org.jboss.weld.servlet</groupId>
          <artifactId>weld-servlet-test-base</artifactId>
          <scope>test</scope>
