@@ -16,12 +16,7 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -34,27 +29,32 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+
 /**
  * Sections
- * 
- * 6.5. Lifecycle of stateful session beans 
- * 6.6. Lifecycle of stateless session and singleton beans 
+ *
+ * 6.5. Lifecycle of stateful session beans
+ * 6.6. Lifecycle of stateless session and singleton beans
  * 6.11. Lifecycle of EJBs
- * 
+ *
  * Mostly overlapping with other tests...
- * 
+ *
  * @author Nicklas Karlsson
  * @author David Allen
- * 
+ *
  * Spec version: Public Release Draft 2
- * 
+ *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class EnterpriseBeanLifecycleTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .decorate(AlarmedChickenHutch.class)
@@ -62,9 +62,9 @@ public class EnterpriseBeanLifecycleTest
                   .addClass(Utils.class);
    }
 
-   @Inject 
+   @Inject
    private BeanManagerImpl beanManager;
-   
+
    /**
     * When the create() method of a Bean object that represents a stateful
     * session bean that is called, the container creates and returns a session
@@ -80,13 +80,13 @@ public class EnterpriseBeanLifecycleTest
       Assert.assertNotNull("Expected instance to be created by container", stadtInstance);
       Assert.assertTrue("PostConstruct should be invoked when bean instance is created", frankfurt.isKleinStadtCreated());
       frankfurt.resetCreatedFlags();
-      
+
       // Create a second one to make sure create always does create a new session bean
       KleinStadt anotherStadtInstance = stadtBean.create(creationalContext);
       Assert.assertNotNull("Expected second instance of session bean", anotherStadtInstance);
       Assert.assertTrue(frankfurt.isKleinStadtCreated());
       Assert.assertNotSame("create() should not return same bean as before", anotherStadtInstance, stadtInstance);
-      
+
       // Verify that the instance returned is a proxy by checking for all local interfaces
       Assert.assertTrue(stadtInstance instanceof KleinStadt);
       Assert.assertTrue(stadtInstance instanceof SchoeneStadt);
@@ -101,9 +101,9 @@ public class EnterpriseBeanLifecycleTest
       BeanLocal instance = bean.create(creationalContext);
       bean.destroy(instance, creationalContext);
    }
-   
+
    @Inject @MassProduced Instance<ChickenHutch> chickenHutchInstance;
-   
+
    @Test
    // WELD-556
    public void testDecoratedSFSBsAreRemoved()
@@ -113,7 +113,7 @@ public class EnterpriseBeanLifecycleTest
       chickenHutchInstance.get();
       assert StandardChickenHutch.isPing();
       assert AlarmedChickenHutch.isPing();
-      assert StandardChickenHutch.isPredestroy(); 
+      assert StandardChickenHutch.isPredestroy();
    }
- 
+
 }

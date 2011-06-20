@@ -7,7 +7,7 @@ import java.util.Iterator;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -18,9 +18,9 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class InstanceTest
 {
-   
+
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(InstanceTest.class.getPackage());
@@ -28,7 +28,7 @@ public class InstanceTest
 
    @Inject
    private Instance<Object> instance;
-   
+
    @Test
    public void testSelect() throws Exception
    {

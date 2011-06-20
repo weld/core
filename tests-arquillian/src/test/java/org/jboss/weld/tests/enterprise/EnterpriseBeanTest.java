@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import javax.ejb.EJBException;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -39,10 +39,10 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EnterpriseBeanTest 
+public class EnterpriseBeanTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(EnterpriseBeanTest.class.getPackage())
@@ -51,7 +51,7 @@ public class EnterpriseBeanTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    /*
     * description="WBRI-179"
     */
@@ -60,7 +60,7 @@ public class EnterpriseBeanTest
    {
       // TODO: Need implementation ?
    }
-   
+
    /*
     * description="WELD-326"
     */
@@ -79,8 +79,8 @@ public class EnterpriseBeanTest
          }
       }
       Assert.fail("Expected a BowlerHatException to be thrown");
-   }   
-   
+   }
+
    /*
     * description="WBRI-275"
     */
@@ -91,7 +91,7 @@ public class EnterpriseBeanTest
       {
          fedora.causeRuntimeException();
       }
-      catch (Throwable t) 
+      catch (Throwable t)
       {
          if (Utils.isExceptionInHierarchy(t, BowlerHatException.class))
          {
@@ -100,7 +100,7 @@ public class EnterpriseBeanTest
       }
       Assert.fail("Expected a BowlerHatException to be in the cause stack");
    }
-   
+
    /*
     * description = "WELD-364"
     */
@@ -112,7 +112,7 @@ public class EnterpriseBeanTest
       beanManager.fireEvent(feed);
       Assert.assertEquals(feed, scottish.getFeed());
    }
-   
+
    /*
     * description = "WELD-381"
     */
@@ -121,7 +121,7 @@ public class EnterpriseBeanTest
    {
       Assert.assertEquals("pete", client.lookupPete().getUsername());
    }
-   
+
    /*
     * description = "WELD-80"
     */
@@ -133,7 +133,7 @@ public class EnterpriseBeanTest
       Assert.assertEquals("hello", action.getHello());
       Assert.assertEquals("goodbye", action.getGoodBye());
    }
-   
+
    /*
     * description = "Simple test for no-interface views"
     */
@@ -145,7 +145,7 @@ public class EnterpriseBeanTest
       Assert.assertTrue(castle.isPinged());
       Assert.assertTrue(Utils.getBean(beanManager, Castle.class) instanceof SessionBean<?>);
    }
-   
+
    @Test
    @Category(Broken.class)
    // WELD-492
@@ -154,5 +154,5 @@ public class EnterpriseBeanTest
    {
       assertNotNull(grault);
    }
-   
+
 }

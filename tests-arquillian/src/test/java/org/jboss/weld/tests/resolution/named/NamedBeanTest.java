@@ -19,7 +19,7 @@ package org.jboss.weld.tests.resolution.named;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -33,10 +33,10 @@ import org.junit.runner.RunWith;
  * @author Dan Allen
  */
 @RunWith(Arquillian.class)
-public class NamedBeanTest 
+public class NamedBeanTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(NamedBeanTest.class.getPackage());
@@ -44,7 +44,7 @@ public class NamedBeanTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    public void testGetNamedBeanWithBinding()
    {
@@ -52,7 +52,7 @@ public class NamedBeanTest
       NamedBeanWithBinding instance = (NamedBeanWithBinding) beanManager.getReference(bean, Object.class, beanManager.createCreationalContext(bean));
       Assert.assertNotNull(instance);
    }
-   
+
    /*
     * description = "WELD-435"
     */
@@ -61,5 +61,5 @@ public class NamedBeanTest
    {
       Assert.assertNotNull(consumer.getFoo());
    }
-   
+
 }

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.decorators.stackoverflow;
 
 import java.math.BigDecimal;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -30,15 +30,15 @@ import org.junit.runner.RunWith;
 public class StackOverFlowTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .decorate(SecurePaymentService.class)
          .addPackage(StackOverFlowTest.class.getPackage());
    }
-   
+
    /**
-    * description="WELD-296" 
+    * description="WELD-296"
     */
    @Test
    public void test(@SimpleService PaymentService paymentService)

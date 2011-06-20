@@ -20,7 +20,7 @@ package org.jboss.weld.tests.extensions.multipleBeans;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -38,24 +38,24 @@ import org.junit.runner.RunWith;
 /**
  * Tests that it is possible to add multiple beans with the same java class type
  * through the SPI
- * 
+ *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
- * 
+ *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class MultipleBeansTest 
+public class MultipleBeansTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(MultipleBeansTest.class.getPackage())
                   .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
                   .addClass(Utils.class)
-                  .addServiceProvider(Extension.class, MultipleBeansExtension.class);
+                  .addAsServiceProvider(Extension.class, MultipleBeansExtension.class);
    }
-   
+
    @Inject
    private BeanManagerImpl beanManager;
 
@@ -86,7 +86,7 @@ public class MultipleBeansTest
    /**
     * Apparently it is not possible to add two beans that are exactly the same.
     * Even though this is not very useful it should still be possible.
-    * 
+    *
     */
    @Test
    @Category(Broken.class)

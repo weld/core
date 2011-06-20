@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
@@ -34,13 +34,13 @@ import org.junit.runner.RunWith;
 public class SimpleDecoratorTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
-         .decorate(SimpleDecorator1.class, SimpleDecorator2.class)   
+         .decorate(SimpleDecorator1.class, SimpleDecorator2.class)
          .addPackage(SimpleDecoratorTest.class.getPackage());
    }
-   
+
    @Test
    public void testSimpleDecorator(SimpleBean simpleBean)
    {

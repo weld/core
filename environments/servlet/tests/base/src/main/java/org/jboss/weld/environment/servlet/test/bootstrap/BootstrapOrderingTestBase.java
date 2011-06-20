@@ -19,15 +19,15 @@ import org.junit.Test;
 
 public class BootstrapOrderingTestBase
 {
-   
+
    public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<listener><listener-class>" + MyServletContextListener.class.getName() + "</listener-class></listener>").getBytes());
    public static final Asset EXTENSION = new ByteArrayAsset(MyExtension.class.getName().getBytes());
-   
+
    public static WebArchive deployment()
    {
-      return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTestBase.class.getPackage()).addManifestResource(EXTENSION, "services/" + Extension.class.getName());
+      return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTestBase.class.getPackage()).addAsManifestResource(EXTENSION, "services/" + Extension.class.getName());
    }
-   
+
    @Test
    public void testContextInitializedCalledBeforeBeanValidation()
    {
@@ -37,5 +37,5 @@ public class BootstrapOrderingTestBase
       assertTrue(events.get(2) instanceof AfterDeploymentValidation);
       assertTrue(events.get(3) instanceof ServletContextEvent);
    }
-   
+
 }

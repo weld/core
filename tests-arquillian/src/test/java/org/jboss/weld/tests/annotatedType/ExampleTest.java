@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
@@ -43,44 +43,44 @@ import org.junit.runner.RunWith;
 public class ExampleTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ExampleTest.class.getPackage());
    }
-   
+
    @Inject
    private BeanManager beanManager;
-   
+
    @Test
-   public void testAnnotatedCallableGetParameters() throws Exception 
+   public void testAnnotatedCallableGetParameters() throws Exception
    {
       AnnotatedType<Bean> type = beanManager.createAnnotatedType(Bean.class);
-      
+
       assertNoAnnotations(type);
-      
+
       Assert.assertEquals(1, type.getConstructors().size());
       for (AnnotatedConstructor<Bean> ctor : type.getConstructors())
       {
          assertNoAnnotations(ctor);
-         
+
          for (AnnotatedParameter<Bean> param : ctor.getParameters())
          {
             assertNoAnnotations(param);
          }
       }
-      
+
       Assert.assertEquals(1, type.getMethods().size());
       for (AnnotatedMethod<? super Bean> method : type.getMethods())
       {
          assertNoAnnotations(method);
-         
+
          for (AnnotatedParameter<? super Bean> param : method.getParameters())
          {
             assertNoAnnotations(param);
          }
       }
-      
+
       Assert.assertEquals(1, type.getFields().size());
       for (AnnotatedField<? super Bean> field : type.getFields())
       {

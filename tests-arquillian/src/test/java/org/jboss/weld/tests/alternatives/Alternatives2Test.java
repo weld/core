@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.alternatives;
 
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 public class Alternatives2Test
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(Alternatives2Test.class.getPackage());

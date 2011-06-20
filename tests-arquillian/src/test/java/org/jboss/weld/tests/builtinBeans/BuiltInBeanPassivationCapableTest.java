@@ -36,7 +36,7 @@ import javax.transaction.UserTransaction;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -50,10 +50,10 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class BuiltInBeanPassivationCapableTest 
+public class BuiltInBeanPassivationCapableTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
@@ -88,15 +88,15 @@ public class BuiltInBeanPassivationCapableTest
       UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
       Assert.assertTrue(checkUserTransaction(userTransaction1));
    }
-   
-   @Test 
+
+   @Test
    public void testBeanManagerBean(BeanManager beanManager) throws Throwable
    {
       BeanManager beanManager1 = Utils.deserialize(Utils.serialize(beanManager));
       Assert.assertTrue(checkBeanManager(beanManager1));
       Assert.assertTrue(checkEquality(beanManager, beanManager1));
    }
-   
+
    @Test
    public void testInstance(Consumer consumer) throws Throwable
    {
@@ -105,7 +105,7 @@ public class BuiltInBeanPassivationCapableTest
       Assert.assertTrue(checkInstance(instance1));
       Assert.assertTrue(checkEquality(instance, instance1));
    }
-   
+
    @Test
    public void testEvent(Consumer consumer, CowEventObserver observer) throws Throwable
    {
@@ -114,7 +114,7 @@ public class BuiltInBeanPassivationCapableTest
       Assert.assertTrue(checkEvent(event1, observer));
       Assert.assertTrue(checkEquality(event, event1));
    }
-   
+
    @Test
    public void testFieldInjectionPoint(FieldInjectionPointConsumer consumer) throws Throwable
    {
@@ -125,7 +125,7 @@ public class BuiltInBeanPassivationCapableTest
       Assert.assertTrue(checkInjectionPoint(injectionPoint1, FieldInjectionPointConsumer.class));
       Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
    }
-   
+
    @Test
    public void testConstructorInjectionPoint(ConstructorInjectionPointConsumer consumer) throws Throwable
    {
@@ -136,7 +136,7 @@ public class BuiltInBeanPassivationCapableTest
       Assert.assertTrue(checkInjectionPoint(injectionPoint1, ConstructorInjectionPointConsumer.class));
       Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
    }
-   
+
    @Test
    public void testMethodInjectionPoint(MethodInjectionPointConsumer consumer) throws Throwable
    {
@@ -147,7 +147,7 @@ public class BuiltInBeanPassivationCapableTest
       Assert.assertTrue(checkInjectionPoint(injectionPoint1, MethodInjectionPointConsumer.class));
       Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
    }
-   
+
    @Test
    public void testAllOnBean(Consumer consumer) throws Throwable
    {

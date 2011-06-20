@@ -16,19 +16,7 @@
  */
 package org.jboss.weld.tests.beanManager.serializability;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -41,26 +29,37 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 @RunWith(Arquillian.class)
-public class ManagerTest 
+public class ManagerTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addPackage(ManagerTest.class.getPackage())
                .addClass(Utils.class)
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
-   
+
    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
-   
+
    private static interface Dummy {}
-   
+
    private static class DummyBean implements Bean<Dummy>
    {
       private static final Set<Type> TYPES = new HashSet<Type>();
-      
+
       static
       {
          TYPES.add(Dummy.class);
@@ -104,7 +103,7 @@ public class ManagerTest
 
       public void destroy(Dummy instance, CreationalContext<Dummy> creationalContext)
       {
-         
+
       }
 
       public Class<?> getBeanClass()
@@ -121,12 +120,12 @@ public class ManagerTest
       {
          return Collections.emptySet();
       }
-      
+
    }
 
-   @Inject 
+   @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    public void testRootManagerSerializability() throws Exception
    {
@@ -136,10 +135,10 @@ public class ManagerTest
       Assert.assertEquals(1, beanManager.getBeans(Foo.class).size());
       Assert.assertEquals(1, deserializedRootManager.getBeans(Foo.class).size());
       Assert.assertEquals(
-            deserializedRootManager.getBeans(Foo.class).iterator().next(), 
+            deserializedRootManager.getBeans(Foo.class).iterator().next(),
             beanManager.getBeans(Foo.class).iterator().next());
    }
-   
+
    @Test
    public void testChildManagerSerializability() throws Exception
    {

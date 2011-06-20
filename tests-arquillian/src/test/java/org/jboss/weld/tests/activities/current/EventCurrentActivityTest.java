@@ -28,7 +28,7 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -43,15 +43,15 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * Spec version: 20090519
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class EventCurrentActivityTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(EventCurrentActivityTest.class.getPackage())
@@ -85,7 +85,7 @@ public class EventCurrentActivityTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    @Category(Broken.class)
    public void testEventProcessedByCurrentActivity()
@@ -132,7 +132,7 @@ public class EventCurrentActivityTest
          {
             return TransactionPhase.IN_PROGRESS;
          }
-         
+
       };
       childActivity.addObserver(observer);
       childActivity.setCurrent(dummyContext.getScope());

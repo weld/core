@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import junit.framework.Assert;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -40,17 +40,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class EnterpriseBeanInterceptionTest 
+public class EnterpriseBeanInterceptionTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .intercept(Goalkeeper.class, Defender.class, Referee.class)
                   .addPackage(EnterpriseBeanInterceptionTest.class.getPackage());
    }
-   
-   @Inject 
+
+   @Inject
    private BeanManagerImpl beanManager;
 
    @Test
@@ -71,7 +71,7 @@ public class EnterpriseBeanInterceptionTest
       Assert.assertEquals(0, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getType().getMethod("shoot")).size());
       Assert.assertEquals(1, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("shoot")).size());
       Assert.assertEquals(Goalkeeper.class, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("shoot")).get(0).getBeanClass());
-      
+
       Assert.assertEquals(0, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getType().getMethod("pass")).size());
       Assert.assertEquals(1, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("pass")).size());
       Assert.assertEquals(Defender.class, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("pass")).get(0).getBeanClass());

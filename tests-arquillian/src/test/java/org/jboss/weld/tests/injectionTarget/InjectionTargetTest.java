@@ -20,7 +20,7 @@ import static org.junit.Assert.fail;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -31,10 +31,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class InjectionTargetTest 
+public class InjectionTargetTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(InjectionTargetTest.class.getPackage())
@@ -51,11 +51,11 @@ public class InjectionTargetTest
       {
          beanManager.createInjectionTarget(beanManager.createAnnotatedType(Foo.class));
       }
-      catch (DefinitionException e) 
+      catch (DefinitionException e)
       {
          return;
       }
       fail();
    }
-   
+
 }

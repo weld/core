@@ -22,7 +22,7 @@
 
 package org.jboss.weld.tests.event.observer.validation;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -45,7 +45,7 @@ public class ObserverMethodParameterInjectionValidationTest
    public static JavaArchive getDeployment()
    {
       return ShrinkWrap.create(JavaArchive.class, "test.jar")
-            .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
             .addClasses(SimpleTarget.class, SimpleObserver.class);
    }
 

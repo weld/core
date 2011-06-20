@@ -19,7 +19,7 @@ package org.jboss.weld.tests.decorators.abstractDecorator;
 
 import static org.jboss.weld.tests.decorators.abstractDecorator.AbstractDecoratorTestHelper.resetAll;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,14 +32,14 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @RunWith(Arquillian.class)
-public class SimpleAbstractDecoratorWithAbstractMethodTest 
+public class SimpleAbstractDecoratorWithAbstractMethodTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .decorate(
-               FrameWithFieldInjectedDelegateAndAbstractMethod.class, 
+               FrameWithFieldInjectedDelegateAndAbstractMethod.class,
                FrameWithFieldInjectedDelegate.class)
          .addPackage(SimpleAbstractDecoratorWithAbstractMethodTest.class.getPackage());
    }

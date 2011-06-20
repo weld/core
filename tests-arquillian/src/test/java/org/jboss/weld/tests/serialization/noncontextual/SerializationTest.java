@@ -23,7 +23,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -50,7 +50,7 @@ public class SerializationTest
    @Test
    public void testSerializationOfEventInNonContextual() throws Exception
    {
-		  
+
 		  NonContextual instance = new NonContextual();
 		  beanManager.createInjectionTarget(beanManager.createAnnotatedType(NonContextual.class)).inject(
 				instance, beanManager.createCreationalContext((Contextual<NonContextual>)null));

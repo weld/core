@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.weld56;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -32,15 +32,15 @@ import org.junit.runner.RunWith;
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 @Ignore // WELD-687
-public class ProxyTest 
+public class ProxyTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addPackage(ProxyTest.class.getPackage())
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml")
-               .addWebResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies");
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml")
+               .addAsWebResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies");
    }
 
    @Test

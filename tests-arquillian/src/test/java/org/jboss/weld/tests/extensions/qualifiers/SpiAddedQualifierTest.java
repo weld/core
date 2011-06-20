@@ -20,7 +20,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -35,7 +35,7 @@ public class SpiAddedQualifierTest
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class).addPackage(SpiAddedQualifierTest.class.getPackage()).addServiceProvider(Extension.class, QuickExtension.class);
+      return ShrinkWrap.create(BeanArchive.class).addPackage(SpiAddedQualifierTest.class.getPackage()).addAsServiceProvider(Extension.class, QuickExtension.class);
    }
 
    @Inject

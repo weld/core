@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author kkahn
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class DeclaringTypeTest

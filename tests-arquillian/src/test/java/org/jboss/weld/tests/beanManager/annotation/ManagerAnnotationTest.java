@@ -20,7 +20,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.PersistenceContext;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -30,17 +30,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class ManagerAnnotationTest 
+public class ManagerAnnotationTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class);
    }
 
-   @Inject 
+   @Inject
    private BeanManager beanManager;
-   
+
    /*
     * description="WELD-299"
     */
@@ -49,7 +49,7 @@ public class ManagerAnnotationTest
    {
       Assert.assertFalse(beanManager.isQualifier(PersistenceContext.class));
    }
-   
+
    /*
     * description="WELD-299"
     */
@@ -58,7 +58,7 @@ public class ManagerAnnotationTest
    {
       Assert.assertFalse(beanManager.isInterceptorBinding(PersistenceContext.class));
    }
-   
+
    /*
     * description="WELD-299"
     */
@@ -67,7 +67,7 @@ public class ManagerAnnotationTest
    {
       Assert.assertFalse(beanManager.isNormalScope(PersistenceContext.class));
    }
-   
+
    /*
     * description="WELD-299"
     */
@@ -76,7 +76,7 @@ public class ManagerAnnotationTest
    {
       Assert.assertFalse(beanManager.isPassivatingScope(PersistenceContext.class));
    }
-   
+
    /*
     * description="WELD-299"
     */
@@ -85,7 +85,7 @@ public class ManagerAnnotationTest
    {
       Assert.assertFalse(beanManager.isScope(PersistenceContext.class));
    }
-   
+
    /*
     * description="WELD-299"
     */
@@ -94,6 +94,6 @@ public class ManagerAnnotationTest
    {
       Assert.assertFalse(beanManager.isStereotype(PersistenceContext.class));
    }
-   
-   
+
+
 }

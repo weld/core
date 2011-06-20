@@ -31,7 +31,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -44,7 +44,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * Spec version: 20090519
  *
  */
@@ -52,7 +52,7 @@ import org.junit.runner.RunWith;
 public class SameBeanTypeInChildActivityTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(SameBeanTypeInChildActivityTest.class.getPackage());
@@ -129,9 +129,9 @@ public class SameBeanTypeInChildActivityTest
       return bean;
    }
 
-   @Inject 
+   @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test(expected = InjectionException.class)
    @Category(Broken.class)
    public void testSameBeanTypeInChildAsParentInjection()

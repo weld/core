@@ -58,7 +58,6 @@
             </property>
          </activation>
          <modules>
-            <module>arquillian/weld-ee-container</module>
             <module>porting-package</module>
             <module>tests</module>
             <module>tests-arquillian</module>

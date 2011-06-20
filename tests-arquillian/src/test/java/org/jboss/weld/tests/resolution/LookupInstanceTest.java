@@ -22,7 +22,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -35,10 +35,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class LookupInstanceTest 
+public class LookupInstanceTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(LookupInstanceTest.class.getPackage())
@@ -47,14 +47,14 @@ public class LookupInstanceTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    public void testLookupInstance() throws Exception
    {
       Assert.assertNull(
             Utils.getReference(
-                  beanManager, 
-                  new TypeLiteral<Instance<List<?>>>(){}.getRawType(), DefaultLiteral.INSTANCE)); 
+                  beanManager,
+                  new TypeLiteral<Instance<List<?>>>(){}.getRawType(), DefaultLiteral.INSTANCE));
    }
-   
+
 }

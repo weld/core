@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,15 +32,15 @@ import org.junit.runner.RunWith;
 
 // TODO Move to TCK in 1.1
 @RunWith(Arquillian.class)
-public class ExtensionTest 
+public class ExtensionTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                .addPackage(ExtensionTest.class.getPackage())
-               .addServiceProvider(Extension.class, 
-                     SimpleExtension.class, 
+               .addAsServiceProvider(Extension.class,
+                     SimpleExtension.class,
                      ExtensionObserver.class,
                      WoodlandExtension.class,
                      TrainlineExtension.class);
@@ -49,12 +49,12 @@ public class ExtensionTest
    /*
     * description = "WELD-234"
     */
-   @Test 
+   @Test
    public void testExtensionInjectableAsBean(SimpleExtension extension)
    {
       assertTrue(extension.isObservedBeforeBeanDiscovery());
    }
-   
+
    /*
     * description = "WELD-572"
     */
@@ -63,7 +63,7 @@ public class ExtensionTest
    {
       assertNull(extensionObserver.getProcessProducerMethodInstance().getAnnotatedDisposedParameter());
    }
-      
+
    @Test
    public void testInjectionTargetWrapped(Capercaillie capercaillie)
    {
@@ -73,7 +73,7 @@ public class ExtensionTest
       assertTrue(WoodlandExtension.isPreDestroyCalled());
       assertTrue(WoodlandExtension.isProduceCalled());
    }
-   
+
    /*
     * WELD-503
     */
@@ -90,13 +90,13 @@ public class ExtensionTest
       assertFalse(extension.isProcessStationInjectionTarget());
       assertFalse(extension.isProcessSignalBoxInjectionTarget());
    }
-   
+
    /*
     * WELD-503
     */
    @Test
    public void testProcessStarOnlyCalledForEnabledProducerMethods(TrainlineExtension extension)
-   {  
+   {
       assertTrue(extension.isProcessDriverBean());
       assertFalse(extension.isProcessPassengerBean());
       assertFalse(extension.isProcessSignalManBean());
@@ -106,7 +106,7 @@ public class ExtensionTest
       assertTrue(extension.isProcessDriverProducer());
       assertFalse(extension.isProcessPassengerProducer());
       assertFalse(extension.isProcessSignalManProducer());
-      
+
       assertFalse(extension.isProcessStokerBean());
       assertFalse(extension.isProcessGuardBean());
       assertFalse(extension.isProcessStokerProducerMethod());
@@ -114,13 +114,13 @@ public class ExtensionTest
       assertFalse(extension.isProcessStokerProducer());
       assertFalse(extension.isProcessGuardProducer());
    }
-   
+
    /*
     * WELD-503
     */
    @Test
    public void testProcessStarOnlyCalledForEnabledProducerFields(TrainlineExtension extension)
-   {  
+   {
       assertTrue(extension.isProcessFerretBean());
       assertFalse(extension.isProcessCatBean());
       assertFalse(extension.isProcessMouseBean());
@@ -130,7 +130,7 @@ public class ExtensionTest
       assertTrue(extension.isProcessFerretProducer());
       assertFalse(extension.isProcessCatProducer());
       assertFalse(extension.isProcessMouseProducer());
-      
+
       assertFalse(extension.isProcessRabbitBean());
       assertFalse(extension.isProcessWeaselBean());
       assertFalse(extension.isProcessRabbitProducerField());
@@ -138,7 +138,7 @@ public class ExtensionTest
       assertFalse(extension.isProcessRabbitProducer());
       assertFalse(extension.isProcessWeaselProducer());
    }
-   
+
    /*
     * WELD-503
     */
@@ -149,7 +149,7 @@ public class ExtensionTest
       assertFalse(extension.isProcessObseversFatController());
       assertFalse(extension.isProcessObseversSignals());
    }
-   
+
    /*
     * WELD-503
     */
@@ -159,5 +159,5 @@ public class ExtensionTest
       assertFalse(extension.isProcessSafetyInterceptor());
       assertFalse(extension.isProcessEngineeringWorks());
    }
-   
+
 }

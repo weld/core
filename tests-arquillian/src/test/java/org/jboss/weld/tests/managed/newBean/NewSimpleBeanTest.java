@@ -22,7 +22,7 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class NewSimpleBeanTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(NewSimpleBeanTest.class.getPackage());
@@ -48,18 +48,18 @@ public class NewSimpleBeanTest
 
    private ManagedBean<WrappedSimpleBean> wrappedSimpleBean;
    private NewManagedBean<WrappedSimpleBean> newSimpleBean;
-   
+
    private static final New NEW_LITERAL = new NewLiteral();
-   
+
    @Inject
    private BeanManager beanManager;
-   
+
    public void initNewBean() {
-      
+
       Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class).size());
       Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class).iterator().next() instanceof ManagedBean);
       wrappedSimpleBean = (ManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class).iterator().next();
-      
+
       Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).size());
       Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewManagedBean);
       newSimpleBean = (NewManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
@@ -72,7 +72,7 @@ public class NewSimpleBeanTest
       initNewBean();
       Assert.assertEquals(WrappedSimpleBean.class, newSimpleBean.getType());
    }
-   
+
    // groups = { "new" }
    @Test
    public void testNewBeanIsSimpleWebBeanIfParameterTypeIsSimpleWebBean()
@@ -106,5 +106,5 @@ public class NewSimpleBeanTest
       Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newSimpleBean.getWeldInjectionPoints();
       Assert.assertEquals(wrappedBeanInjectionPoints, newBeanInjectionPoints);
    }
-   
+
 }

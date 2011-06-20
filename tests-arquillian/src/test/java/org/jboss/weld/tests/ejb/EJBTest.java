@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.ejb;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -29,15 +29,15 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EJBTest 
+public class EJBTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(EJBTest.class.getPackage());
    }
-   
+
    @Test
    public void testNoInterface(Cow cow)
    {

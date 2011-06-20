@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.decoratedTypes;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,13 +32,13 @@ import org.junit.runner.RunWith;
 public class TypedDecoratorTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .decorate(TypedDecorator.class)
          .addPackage(TypedDecoratorTest.class.getPackage());
    }
-   
+
    @Test
    public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean)
    {

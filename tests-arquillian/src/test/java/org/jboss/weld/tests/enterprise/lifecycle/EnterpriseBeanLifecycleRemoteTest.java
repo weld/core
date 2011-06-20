@@ -16,15 +16,12 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import static org.jboss.arquillian.api.RunModeType.AS_CLIENT;
-import static org.junit.Assert.assertEquals;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -40,40 +37,41 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
+import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Sections
- * 
+ *
  * 6.5. Lifecycle of stateful session beans 6.6. Lifecycle of stateless session
  * and singleton beans 6.11. Lifecycle of EJBs
- * 
+ *
  * Mostly overlapping with other tests...
- * 
+ *
  * @author Nicklas Karlsson
  * @author David Allen
- * 
+ *
  *         Spec version: Public Release Draft 2
- * 
+ *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(AS_CLIENT)
+@RunAsClient
 public class EnterpriseBeanLifecycleRemoteTest
 {
    @Deployment
    public static Archive<?> deploy()
    {
       EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
-      ear.addModule(ShrinkWrap.create(WebArchive.class, "test.war")
+      ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
             .addClass(RemoteClient.class)
-            .addWebResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml")
       );
-      ear.addModule(ShrinkWrap.create(BeanArchive.class, "test.jar")
+      ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test.jar")
             .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
             .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
-            .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
       );
       return ear;
    }
@@ -87,7 +85,7 @@ public class EnterpriseBeanLifecycleRemoteTest
       page = client.getPage(getPath("request2"));
       assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
    }
-   
+
    protected String getPath(String viewId)
    {
       // TODO: this should be moved out and be handled by Arquillian

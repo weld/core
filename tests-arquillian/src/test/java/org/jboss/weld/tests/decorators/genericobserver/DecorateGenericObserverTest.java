@@ -19,7 +19,7 @@ package org.jboss.weld.tests.decorators.genericobserver;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -31,13 +31,13 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * 
- *  5.5.6: "Invoke the observer method on the resulting instance, if any, as a business method invocation, 
+ *
+ *  5.5.6: "Invoke the observer method on the resulting instance, if any, as a business method invocation,
  *  		as defined in Section 7.2, “Container invocations and interception”.
- *  
- *  7.2  : "Invocations of producer, disposer and observer methods by the container are business method invocations 
+ *
+ *  7.2  : "Invocations of producer, disposer and observer methods by the container are business method invocations
  *  		and are intercepted by method interceptors and decorators."
- *  
+ *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  *
  */
@@ -63,9 +63,9 @@ public class DecorateGenericObserverTest
    {
       ServiceImpl.invocationCount = 0;
       ServiceDecorator.invocationCount = 0;
-      
+
       dogEvent.fire(new Dog());
-      
+
       Assert.assertEquals(1, ServiceImpl.invocationCount);
       Assert.assertEquals(1, ServiceDecorator.invocationCount);
    }

@@ -18,7 +18,7 @@ package org.jboss.weld.tests.resolution.wbri293;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,7 +32,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @author Jozef Hartinger
  *
  */
@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class ContextualReferenceTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ContextualReferenceTest.class.getPackage())
@@ -49,7 +49,7 @@ public class ContextualReferenceTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    @Category(Broken.class)
    public void testReferencesEqual() {
@@ -59,5 +59,5 @@ public class ContextualReferenceTest
       Assert.assertEquals(sheep.getAge(), sheep2.getAge());
       Assert.assertEquals(sheep, sheep2);
    }
-   
+
 }

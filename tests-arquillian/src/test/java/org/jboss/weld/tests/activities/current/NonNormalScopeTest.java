@@ -23,7 +23,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -35,10 +35,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class NonNormalScopeTest 
+public class NonNormalScopeTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(NonNormalScopeTest.class.getPackage())
@@ -90,7 +90,7 @@ public class NonNormalScopeTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test(expected = IllegalArgumentException.class)
    public void testNonNormalScope()
    {

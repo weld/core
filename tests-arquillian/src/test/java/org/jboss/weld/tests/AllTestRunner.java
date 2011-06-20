@@ -1,14 +1,14 @@
 package org.jboss.weld.tests;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.jboss.shrinkwrap.impl.base.URLPackageScanner;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.RunnerBuilder;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class AllTestRunner extends Suite
 {
@@ -17,13 +17,13 @@ public class AllTestRunner extends Suite
       super(builder, superClass, getAllClasses());
    }
 
-   private static Class<?>[] getAllClasses() 
+   private static Class<?>[] getAllClasses()
    {
       final List<Class<?>> classes = new ArrayList<Class<?>>();
       final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       URLPackageScanner.newInstance(
             true,
-            classLoader, 
+            classLoader,
             new URLPackageScanner.Callback()
             {
                public void classFound(String className)
@@ -39,16 +39,16 @@ public class AllTestRunner extends Suite
                   try
                   {
                      classes.add(classLoader.loadClass(className));
-                  } 
-                  catch (Exception e) 
+                  }
+                  catch (Exception e)
                   {
                      throw new RuntimeException(e);
                   }
                }
             },
-            AllTestRunner.class.getPackage()).scanPackage();
+            AllTestRunner.class.getPackage().getName()).scanPackage();
             //ExampleTest.class.getPackage()).scanPackage();
-      
+
       Collections.sort(classes, new Comparator<Class<?>>()
       {
          public int compare(Class<?> o1, Class<?> o2)

@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -17,13 +17,15 @@
 
 package org.jboss.weld.tests.stress;
 
-import java.io.IOException;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSpan;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.junit.ContiPerfRule;
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -36,21 +38,17 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import java.io.IOException;
 
 /**
  * Stress test of basically the JSF NumberGuess game example.
- * 
+ *
  * @author David Allen
  *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
+@RunAsClient
 public class JsfStressTest
 {
    protected final String MAIN_PAGE = "/home.jsf";
@@ -69,18 +67,18 @@ public class JsfStressTest
    public ContiPerfRule i = new ContiPerfRule();
 
    @Deployment
-   public static WebArchive createDeployment() 
+   public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Game.class, Generator.class, MaxNumber.class, Random.class)
-               .addWebResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
-               .addResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addAsResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
+               .addAsResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
-   
+
    // WELD-676
    @Category(Broken.class)
    @Test
@@ -90,7 +88,7 @@ public class JsfStressTest
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
       HtmlPage page = client.getPage(getPath(MAIN_PAGE));
-      
+
       int min;
       int max;
       int guess;
@@ -108,7 +106,7 @@ public class JsfStressTest
       }
       reset(page);
       Assert.assertTrue("Win page expected after playing smart.", isOnWinPage(page));
-      
+
       client.closeAllWindows();
    }
 

@@ -17,9 +17,11 @@
 package org.jboss.weld.tests.event.tx;
 
 
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -29,24 +31,20 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
+@RunAsClient
 public class TxEventTest extends AbstractHtmlUnit
 {
    @Deployment
-   public static WebArchive createDeployment() 
+   public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Foo.class, Updated.class)
-               .addWebResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*
@@ -60,7 +58,7 @@ public class TxEventTest extends AbstractHtmlUnit
       HtmlSubmitInput beginConversationButton = getFirstMatchingElement(home, HtmlSubmitInput.class, "SaveButton");
       beginConversationButton.click();
    }
- 
+
    protected String getPath(String page)
    {
       // TODO: this should be moved out and be handled by Arquillian

@@ -39,42 +39,13 @@ public class BeanArchiveImpl extends JavaArchiveImpl implements BeanArchive
 
       // add beans.xml descriptor
       descriptor = new BeansXml();
-      addManifestResource(descriptor, ArchivePaths.create("beans.xml"));
+      addAsManifestResource(descriptor, ArchivePaths.create("beans.xml"));
    }
 
    //-------------------------------------------------------------------------------------||
    // Required Implementations -----------------------------------------------------------||
    //-------------------------------------------------------------------------------------||
 
-   @Override
-   protected ArchivePath getManifestPath()
-   {
-      return PATH_MANIFEST;
-   }
-
-   @Override
-   protected ArchivePath getClassesPath()
-   {
-      return PATH_CLASSES;
-   }
-
-   @Override
-   protected ArchivePath getResourcePath()
-   {
-      return PATH_RESOURCE;
-   }
-
-   /**
-    * Libraries are not supported by JavaArchive.
-    * 
-    * @throws UnsupportedOperationException Libraries are not supported by
-    *            JavaArchive
-    */
-   @Override
-   public ArchivePath getLibraryPath()
-   {
-      throw new UnsupportedOperationException("JavaArchive spec does not support Libraries");
-   }
 
    //-------------------------------------------------------------------------------------||
    // Required Implementations - BeanArchive ---------------------------------------------||
@@ -93,7 +64,7 @@ public class BeanArchiveImpl extends JavaArchiveImpl implements BeanArchive
       addClasses(classes);
       return covarientReturn();
    }
-   
+
    public BeanArchive alternate(Class<?>... classes)
    {
       descriptor.alternatives(classes);

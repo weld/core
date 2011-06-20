@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.examples;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -29,26 +29,26 @@ import org.junit.runner.RunWith;
 public class ExampleTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ExampleTest.class.getPackage());
    }
 
    @Test
-   public void testGameGenerator(Game game1, Game game2, Generator gen1, Generator gen2) throws Exception 
+   public void testGameGenerator(Game game1, Game game2, Generator gen1, Generator gen2) throws Exception
    {
      Assert.assertNotSame(game1, game2);
      Assert.assertNotSame(game1.getNumber(), game2.getNumber());
-     
+
      Assert.assertNotNull(gen1.getRandom());
      Assert.assertEquals(gen1.getRandom(), gen2.getRandom());
    }
 
    @Test
-   public void testSentenceTranslator(TextTranslator tt1) throws Exception 
+   public void testSentenceTranslator(TextTranslator tt1) throws Exception
    {
-      try 
+      try
       {
          tt1.translate("hello world");
          Assert.fail();
@@ -58,5 +58,5 @@ public class ExampleTest
          //expected
       }
    }
-   
+
 }

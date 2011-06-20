@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.examples;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -26,22 +26,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class MockExampleTest 
+public class MockExampleTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .alternate(MockSentenceTranslator.class)
          .addPackage(ExampleTest.class.getPackage());
    }
-   
+
    @Test
-   public void testMockSentenceTranslator(TextTranslator tt2) throws Exception 
-   {   
+   public void testMockSentenceTranslator(TextTranslator tt2) throws Exception
+   {
       Assert.assertEquals(
             "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.",
             tt2.translate("Hello world. How's tricks?") );
    }
-   
+
 }

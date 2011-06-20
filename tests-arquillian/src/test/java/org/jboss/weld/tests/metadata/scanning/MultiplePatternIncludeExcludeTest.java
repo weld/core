@@ -5,7 +5,7 @@ import static org.jboss.weld.tests.metadata.scanning.Utils.escapeClassName;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class MultiplePatternIncludeExcludeTest
 {
-   
+
    public static final Asset BEANS_XML = createBeansXml(
          "<weld:scan>" +
             "<weld:exclude pattern=\"" + escapeClassName(Bar.class) + "\"/>" +
@@ -30,15 +30,15 @@ public class MultiplePatternIncludeExcludeTest
             "<weld:exclude pattern=\"" + escapeClassName(Corge.class) + "\"/>" +
             "<weld:include pattern=\"" + escapeClassName(Garply.class) + "\"/>" +
          "</weld:scan>");
-   
+
    @Deployment
    public static Archive<?> deployment()
    {
       return ShrinkWrap.create(JavaArchive.class).addClass(Utils.class)
          .addClasses(Bar.class, Foo.class, Baz.class, Qux.class, Corge.class, Garply.class)
-         .addManifestResource(BEANS_XML, "beans.xml");
+         .addAsManifestResource(BEANS_XML, "beans.xml");
    }
-   
+
    @Test
    public void test(BeanManager beanManager)
    {

@@ -33,14 +33,14 @@ package org.jboss.weld.tests.contexts.conversation.exceptionInPhaseListener;
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSpan;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -50,12 +50,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Nicklas Karlsson
@@ -63,8 +61,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
-public class ClientConversationContextTest 
+@RunAsClient
+public class ClientConversationContextTest
 {
 
    public static final String CID_REQUEST_PARAMETER_NAME = "cid";
@@ -74,43 +72,43 @@ public class ClientConversationContextTest
    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
 
    @Deployment
-   public static WebArchive createDeployment() 
+   public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(ConversationTestPhaseListener.class, Cloud.class)
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
-               .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
-   
+
    @Test
    public void testExceptionPhaseListener() throws Exception
    {
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
-      
+
       // First, try a transient conversation
-      
-      
+
+
       // Access a page that throws an exception
       client.getPage(getPath("/thunderstorm.jsf"));
-      
+
       // Then access another page that doesn't and check the contexts are ok
       HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
       String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
       assertEquals(Cloud.NAME, cloudName);
-      
+
       // Now start a conversation
       HtmlPage thunderstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "beginConversation").click();
       String cid = getCid(thunderstorm);
 
       //  and access the page that throws an exception again
       getFirstMatchingElement(cloud, HtmlSubmitInput.class, "thunderstorm").click();
-      
+
       cloud = client.getPage(getPath("/cloud.jsf", cid));
-      
+
       // And navigate to another page, checking the conversation exists by verifying that state is maintained
       cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
       assertEquals("gavin", cloudName);
@@ -121,39 +119,39 @@ public class ClientConversationContextTest
       // TODO: this should be moved out and be handled by Arquillian
       return "http://localhost:8080/test/" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
    }
-   
+
    protected String getPath(String viewId)
    {
       // TODO: this should be moved out and be handled by Arquillian
       return "http://localhost:8080/test/" + viewId;
    }
-   
+
    protected String getCid(Page page)
    {
       String url = page.getWebResponse().getRequestUrl().toString();
       return url.substring(url.indexOf("cid=") + 4);
    }
-   
+
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
    {
      Set<T> result = new HashSet<T>();
-     
+
      for (HtmlElement element : rootElement.getAllHtmlChildElements())
      {
         result.addAll(getElements(element, elementClass));
      }
-     
+
      if (elementClass.isInstance(rootElement))
      {
         result.add(elementClass.cast(rootElement));
      }
      return result;
-     
+
    }
- 
+
    protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id)
    {
-     
+
      Set<T> inputs = getElements(page.getBody(), elementClass);
      for (T input : inputs)
      {

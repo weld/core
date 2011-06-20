@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -36,27 +36,27 @@ import org.junit.runner.RunWith;
 
 /**
  * Tests that interceptors registered via the SPI work correctly
- * 
+ *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
- * 
+ *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class InterceptorExtensionTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .intercept(IncrementingInterceptor.class, LifecycleInterceptor.class)
                   .addPackage(InterceptorExtensionTest.class.getPackage())
                   .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
-                  .addServiceProvider(Extension.class, InterceptorExtension.class);
+                  .addAsServiceProvider(Extension.class, InterceptorExtension.class);
    }
-   
+
    @Inject
    private BeanManager beanManager;
-   
+
    @Test
    public void testInterceptorCalled(NumberSource ng)
    {
@@ -71,7 +71,7 @@ public class InterceptorExtensionTest
       Bean bean = beanManager.getBeans(Marathon.class).iterator().next();
       CreationalContext creationalContext = beanManager.createCreationalContext(bean);
       Marathon m = (Marathon)bean.create(creationalContext);
-      
+
       Assert.assertTrue(LifecycleInterceptor.isPostConstructCalled());
       Assert.assertEquals(42, m.getLength());
       bean.destroy(m, creationalContext);

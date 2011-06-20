@@ -23,7 +23,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.metadata.validation.ValidationException;
 import org.jboss.shrinkwrap.api.Archive;
@@ -37,29 +37,29 @@ import org.junit.runner.RunWith;
 public class ExampleTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addClasses(External.class, WebBean.class);
    }
-   
+
    @Inject
    private BeanManager beanManager;
-   
+
    @Test
-   public void testNonContextual() throws Exception 
+   public void testNonContextual() throws Exception
    {
       NonContextual<External> nonContextual = new NonContextual<External>(beanManager, External.class);
-      
+
       External external = new External();
       Assert.assertNull(external.bean);
       nonContextual.postConstruct(external);
       Assert.assertNotNull(external.bean);
       nonContextual.preDestroy(external);
       // preDestroy doesn't cause any dis-injection
-      Assert.assertNotNull(external.bean);      
+      Assert.assertNotNull(external.bean);
    }
-   
+
    @Test
    public void validateNonContextual() throws Exception
    {
@@ -77,8 +77,8 @@ public class ExampleTest
          }
       }
    }
-   
-   
+
+
    public class NonContextual<T> {
 
       final InjectionTarget<T> it;

@@ -24,7 +24,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -36,10 +36,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class NamedProducerTest 
+public class NamedProducerTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(NamedProducerTest.class.getPackage())
@@ -59,9 +59,9 @@ public class NamedProducerTest
       String[] itoen = (String[]) beanManager.getReference(itoenBean, Object.class, beanManager.createCreationalContext(itoenBean));
       Assert.assertEquals(2, itoen.length);
    }
-   
+
    @Test
-   public void testDefaultNamedProducerMethod() 
+   public void testDefaultNamedProducerMethod()
    {
       Set<Bean<?>> beans = beanManager.getBeans(JmsTemplate.class);
       Assert.assertEquals(2, beans.size());

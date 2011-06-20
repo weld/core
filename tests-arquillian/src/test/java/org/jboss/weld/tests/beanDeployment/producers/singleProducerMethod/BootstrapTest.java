@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -40,12 +40,12 @@ import org.junit.runner.RunWith;
 public class BootstrapTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(BootstrapTest.class.getPackage());
    }
-   
+
    @Inject
    private BeanManagerImpl beanManager;
 
@@ -64,9 +64,9 @@ public class BootstrapTest
       }
       Assert.assertTrue(classes.containsKey(TarantulaProducer.class));
       Assert.assertTrue(classes.containsKey(Tarantula.class));
-      
+
       Assert.assertTrue(classes.get(TarantulaProducer.class) instanceof ManagedBean<?>);
       Assert.assertTrue(classes.get(Tarantula.class) instanceof ProducerMethod<?, ?>);
    }
-   
+
 }

@@ -17,14 +17,11 @@
 
 package org.jboss.weld.tests.contexts.errorpage;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.*;
 import junit.framework.Assert;
-
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -35,36 +32,32 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlDivision;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>This test was mostly developed to test the scenario related to WELD-29.  Essentially
  * a JSF action throws an exception, and the error page is then rendered during which
  * all relevant scopes for CDI are tested.</p>
- * 
+ *
  * @author David Allen
  *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
-public class ErrorPageTest 
+@RunAsClient
+public class ErrorPageTest
 {
    @Deployment
-   public static WebArchive createDeployment() 
+   public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Storm.class, Rain.class)
-               .addWebResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
-               .addResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
+               .addAsResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*
@@ -76,17 +69,17 @@ public class ErrorPageTest
    {
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
-      
+
       HtmlPage page = client.getPage(getPath("/storm.jsf"));
       HtmlSubmitInput disasterButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "disasterButton");
       HtmlTextInput strength = getFirstMatchingElement(page, HtmlTextInput.class, "stormStrength");
       strength.setValueAttribute("10");
       page = disasterButton.click();
       Assert.assertEquals("Application Error", page.getTitleText());
-      
+
       HtmlDivision conversationValue = getFirstMatchingElement(page, HtmlDivision.class, "conversation");
       Assert.assertEquals("10", conversationValue.asText());
-      
+
       HtmlDivision requestValue = getFirstMatchingElement(page, HtmlDivision.class, "request");
       Assert.assertEquals("medium", requestValue.asText());
    }
@@ -100,23 +93,23 @@ public class ErrorPageTest
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
    {
      Set<T> result = new HashSet<T>();
-     
+
      for (HtmlElement element : rootElement.getAllHtmlChildElements())
      {
         result.addAll(getElements(element, elementClass));
      }
-     
+
      if (elementClass.isInstance(rootElement))
      {
         result.add(elementClass.cast(rootElement));
      }
      return result;
-     
+
    }
- 
+
    protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id)
    {
-     
+
      Set<T> inputs = getElements(page.getBody(), elementClass);
      for (T input : inputs)
      {

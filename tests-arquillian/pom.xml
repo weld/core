@@ -33,13 +33,24 @@
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.arquillian</groupId>
-         <artifactId>arquillian-junit</artifactId>
+         <groupId>org.jboss.arquillian.junit</groupId>
+         <artifactId>arquillian-junit-core</artifactId>
          <scope>provided</scope>
          <!--
             should be test, but we need shrinkwrap-impl for compiling
             BeanArchive
          -->
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.container</groupId>
+         <artifactId>arquillian-container-test-api</artifactId>
+         <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.jboss.shrinkwrap</groupId>
+          <artifactId>shrinkwrap-impl-base</artifactId>
       </dependency>
 
       <dependency>
@@ -203,7 +214,7 @@
    </build>
 
    <profiles>
-	
+
 	<!-- Default standalone profile using weld-ee-embedded container. Used to run fast embedded tests. -->
       <profile>
          <id>default</id>
@@ -215,7 +226,7 @@
          </activation>
          <dependencies>
             <dependency>
-               <groupId>org.jboss.weld.arquillian.container</groupId>
+               <groupId>org.jboss.arquillian.container</groupId>
                <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
                <scope>provided</scope>
                <!--
@@ -237,7 +248,7 @@
             </plugins>
          </build>
       </profile>
-	
+
 	<!-- InContainer profile using JBoss AS Managed. Runs the full integration test suite, used by e.g. Hudson. -->
       <profile>
          <id>incontainer</id>
@@ -282,7 +293,7 @@
          </build>
       </profile>
 
-	<!-- InContainer profile using JBoss AS Remote container. Used for debugging single tests, -Dtest=.. -->      
+	<!-- InContainer profile using JBoss AS Remote container. Used for debugging single tests, -Dtest=.. -->
       <profile>
          <id>incontainer-remote</id>
          <activation>
@@ -314,7 +325,7 @@
                   </configuration>
                </plugin>
             </plugins>
-            <testResources> 
+            <testResources>
                <testResource>
                   <directory>src/test/jboss-resources</directory>
                </testResource>
@@ -406,7 +417,7 @@
       </profile>
 
 	<!-- Performance test related profiles -->
-	
+
 	<!-- Standalone performance test profile using weld-ee-embedded container -->
       <profile>
          <id>standalone-perf</id>
@@ -485,7 +496,7 @@
       </profile>
 
 	<!-- GlassFish Profiles -->
-	
+
       <profile>
          <id>glassfish-embedded</id>
          <activation>
@@ -562,7 +573,7 @@
             </plugins>
          </build>
       </profile>
-	
+
    </profiles>
 
 </project>

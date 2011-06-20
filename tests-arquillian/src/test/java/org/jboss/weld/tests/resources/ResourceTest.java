@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.transaction.UserTransaction;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -36,12 +36,12 @@ import org.junit.runner.RunWith;
 public class ResourceTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addClasses(ResourceTest.class, UTConsumer.class);
    }
-   
+
    /*
     * description = "WELD-385"
     */

@@ -16,29 +16,7 @@
  */
 package org.jboss.weld.tests.activities;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Reception;
-import javax.enterprise.event.TransactionPhase;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -53,16 +31,33 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Reception;
+import javax.enterprise.event.TransactionPhase;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.*;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * 
+ *
  * Spec version: 20090519
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class ActivitiesTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ActivitiesTest.class.getPackage())
@@ -209,7 +204,7 @@ public class ActivitiesTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    public void testBeanBelongingToParentActivityBelongsToChildActivity()
    {
@@ -229,7 +224,7 @@ public class ActivitiesTest
       childActivity.addBean(dummyBean);
       Assert.assertNotNull(
             childActivity.getInjectableReference(
-                  dummyBean.getInjectionPoints().iterator().next(), 
+                  dummyBean.getInjectionPoints().iterator().next(),
                   childActivity.createCreationalContext(dummyBean)));
    }
 

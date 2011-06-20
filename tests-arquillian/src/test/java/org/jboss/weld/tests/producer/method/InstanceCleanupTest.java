@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -19,7 +19,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class InstanceCleanupTest
 {
-   
+
    @Deployment
    public static Archive<?> deployment()
    {
@@ -27,7 +27,7 @@ public class InstanceCleanupTest
          .addPackage(InstanceCleanupTest.class.getPackage())
          .addClass(Utils.class);
    }
-  
+
    @Test
    public void testInstanceCleansUpDependents(BeanManagerImpl beanManager)
    {

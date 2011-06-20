@@ -16,17 +16,8 @@
  */
 package org.jboss.weld.tests.ejb.mdb;
 
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.naming.InitialContext;
-
 import junit.framework.Assert;
-
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -39,21 +30,24 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.jms.*;
+import javax.naming.InitialContext;
+
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EJBTest 
+public class EJBTest
 {
    public static final String MESSAGE = "Hello!";
-   
+
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
+         .addAsModule(
                ShrinkWrap.create(JavaArchive.class)
                   .addPackage(EJBTest.class.getPackage())
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                  //.addManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
+                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                  //.addAsManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
          );
    }
 
@@ -69,11 +63,11 @@ public class EJBTest
       Queue queue = (Queue) ctx.lookup("queue/testQueue");
       QueueSender sender = session.createSender(queue);
       sender.send(session.createTextMessage(MESSAGE));
-      
+
       // TODO: rewrite to use CountDownLatch, avoid Thread.sleep in tests
       Thread.sleep(1000);
       Assert.assertTrue(control.isMessageDelivered());
       Assert.assertTrue(control.isContextSet());
    }
-   
+
 }

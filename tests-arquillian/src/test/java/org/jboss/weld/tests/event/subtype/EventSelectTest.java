@@ -25,7 +25,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -33,24 +33,24 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class) 
+@RunWith(Arquillian.class)
 public class EventSelectTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(EventSelectTest.class.getPackage());
    }
-   
+
    @Inject
    private Event<Object> event;
-   
+
    @Inject Event<Bar> barEvent;
-   
+
    @Inject
    private Observers observers;
-   
+
    @Test
    public void testSelectSubType()
    {
@@ -60,7 +60,7 @@ public class EventSelectTest
       assertNotNull(observers.getBar());
       assertNull(observers.getFoo());
    }
-   
+
    @Test
    public void testInjectedSubType()
    {
@@ -70,5 +70,5 @@ public class EventSelectTest
       assertNotNull(observers.getBar());
       assertNull(observers.getFoo());
    }
-   
+
 }

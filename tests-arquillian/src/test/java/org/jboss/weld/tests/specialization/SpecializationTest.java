@@ -19,7 +19,7 @@ package org.jboss.weld.tests.specialization;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,15 +32,15 @@ import org.junit.runner.RunWith;
 public class SpecializationTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(SpecializationTest.class.getPackage());
    }
-   
+
    @Inject
    private BeanManager beanManager;
-   
+
    /**
     * WELD-321
     */

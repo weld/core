@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.proxy.enterprise;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -34,19 +34,19 @@ import org.junit.runner.RunWith;
 public class EnterpriseBeanProxyTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
+         .addAsModule(
                ShrinkWrap.create(JavaArchive.class)
                   .addPackage(EnterpriseBeanProxyTest.class.getPackage())
-                  .addManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
          );
    }
-   
+
    /*
     * description = "WBRI-109"
-    * 
+    *
     * <a href="https://jira.jboss.org/jira/browse/WBRI-109">WBRI-109</a>
     */
    // Broken due to WELDINT-45
@@ -57,5 +57,5 @@ public class EnterpriseBeanProxyTest
       Assert.assertTrue(Utils.isProxy(mouse));
       Assert.assertTrue(mouse instanceof Mouse);
    }
-   
+
 }

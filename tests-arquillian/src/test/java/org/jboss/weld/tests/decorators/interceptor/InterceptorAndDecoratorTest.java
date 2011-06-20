@@ -17,7 +17,7 @@
 
 package org.jboss.weld.tests.decorators.interceptor;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -30,14 +30,14 @@ import org.junit.runner.RunWith;
 public class InterceptorAndDecoratorTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .decorate(ServiceDecorator.class)
          .intercept(ServiceInterceptor.class)
          .addPackage(InterceptorAndDecoratorTest.class.getPackage());
    }
-   
+
    @Test // description="WELD-314"
    public void test(Service service)
    {

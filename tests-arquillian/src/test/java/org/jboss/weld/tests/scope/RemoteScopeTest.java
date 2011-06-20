@@ -16,15 +16,12 @@
  */
 package org.jboss.weld.tests.scope;
 
-import static org.jboss.arquillian.api.RunModeType.AS_CLIENT;
-import static org.junit.Assert.assertEquals;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -38,22 +35,23 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
+import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
-@Run(AS_CLIENT)
+@RunAsClient
 @Category(Integration.class)
 public class RemoteScopeTest
 {
-   
+
    @Deployment
    public static Archive<?> deploy()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
          .addClasses(Bar.class, Foo.class, RemoteClient.class, Special.class, Temp.class, TempConsumer.class, TempProducer.class, Useless.class)
          .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
-         .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+         .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

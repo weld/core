@@ -22,7 +22,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class PassivatingContextTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(PassivatingContextTest.class.getPackage());
@@ -85,5 +85,5 @@ public class PassivatingContextTest
    {
       Assert.assertFalse(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(RequestScoped.class).isPassivating());
    }
-   
+
 }

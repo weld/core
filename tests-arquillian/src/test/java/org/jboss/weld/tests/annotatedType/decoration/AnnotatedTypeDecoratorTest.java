@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
@@ -42,44 +42,44 @@ import org.junit.runner.RunWith;
 public class AnnotatedTypeDecoratorTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(AnnotatedTypeDecoratorTest.class.getPackage());
    }
-   
+
    @Inject
    private BeanManager beanManager;
-   
+
    @Test
-   public void testAnnotationDecorator() throws Exception 
+   public void testAnnotationDecorator() throws Exception
    {
       NotAnnotated.reset();
       AnnotatedType<NotAnnotated> type = beanManager.createAnnotatedType(NotAnnotated.class);
       checkAnnotations(type, new NoAnnotationsChecker());
-      
+
       type = new MockAnnotatedType<NotAnnotated>(type);
       checkAnnotations(type, new MockAnnotationsChecker());
-      
+
       NonContextual<NotAnnotated> nonContextual = new NonContextual<NotAnnotated>(beanManager, type);
       NotAnnotated instance = nonContextual.create();
       Assert.assertNotNull(instance);
       nonContextual.postConstruct(instance);
-      
+
       Assert.assertNotNull(instance.getFromField());
       Assert.assertNotNull(NotAnnotated.getFromConstructor());
       Assert.assertNotNull(NotAnnotated.getFromInitializer());
    }
-   
+
    private void checkAnnotations(AnnotatedType<NotAnnotated> type, TypeChecker checker)
    {
       checker.assertAnnotations(type);
-      
+
       Assert.assertEquals(1, type.getConstructors().size());
-      
+
       checker.assertAnnotations(type.getConstructors().iterator().next());
       checker.assertAnnotations(type.getConstructors().iterator().next().getParameters().get(0));
-      
+
       Assert.assertEquals(3, type.getFields().size());
       for (AnnotatedField<? super NotAnnotated> field : type.getFields())
       {
@@ -103,7 +103,7 @@ public class AnnotatedTypeDecoratorTest
    {
       void assertAnnotations(Annotated annotated);
    }
-   
+
    class NoAnnotationsChecker implements TypeChecker
    {
 
@@ -112,7 +112,7 @@ public class AnnotatedTypeDecoratorTest
          Assert.assertEquals(0, annotated.getAnnotations().size());
       }
    }
-   
+
    class MockAnnotationsChecker implements TypeChecker
    {
 
@@ -130,7 +130,7 @@ public class AnnotatedTypeDecoratorTest
          }
       }
    }
-   
+
    public class NonContextual<T> {
 
       final InjectionTarget<T> it;
@@ -147,7 +147,7 @@ public class AnnotatedTypeDecoratorTest
       {
          return it.produce(cc);
       }
-      
+
       public CreationalContext<T> postConstruct(T instance) {
          it.inject(instance, cc);
          it.postConstruct(instance);

@@ -25,7 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -40,18 +40,18 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EEResourceProducerFieldPassivationCapableTest 
+public class EEResourceProducerFieldPassivationCapableTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
             .addPackage(EEResourceProducerFieldPassivationCapableTest.class.getPackage())
             .addClass(Utils.class)
-            .addManifestResource(
+            .addAsManifestResource(
                   EEResourceProducerFieldPassivationCapableTest.class.getPackage(),
                   "persistence.xml", "persistence.xml")
-            .addManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test
@@ -60,28 +60,28 @@ public class EEResourceProducerFieldPassivationCapableTest
       UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
       Assert.assertTrue(checkUserTransaction(userTransaction1));
    }
-   
+
    @Test
    public void testEntityManager(@Produced EntityManager entityManager) throws Throwable
    {
       EntityManager entityManager1 = Utils.deserialize(Utils.serialize(entityManager));
       Assert.assertTrue(checkEntityManager(entityManager1));
    }
-   
+
    @Test
    public void testEntityManagerFactory(@Produced EntityManagerFactory entityManagerFactory) throws Throwable
    {
       EntityManagerFactory entityManagerFactory1 = Utils.deserialize(Utils.serialize(entityManagerFactory));
       Assert.assertTrue(checkEntityManagerFactory(entityManagerFactory1));
    }
-   
+
    @Test
    public void testRemoteEjb(@Produced HorseRemote horse) throws Throwable
    {
       HorseRemote horse1 = Utils.deserialize(Utils.serialize(horse));
       Assert.assertTrue(checkRemoteEjb(horse1));
    }
-   
+
    @Test
    public void testAllOnBean(EEResourceConsumer consumer) throws Throwable
    {

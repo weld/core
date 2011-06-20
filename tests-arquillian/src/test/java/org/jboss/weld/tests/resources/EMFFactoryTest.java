@@ -16,11 +16,10 @@
  */
 package org.jboss.weld.tests.resources;
 
-import static org.jboss.arquillian.api.RunModeType.AS_CLIENT;
-import static org.junit.Assert.assertEquals;
-
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -32,29 +31,28 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
+import static org.junit.Assert.assertEquals;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(AS_CLIENT)
+@RunAsClient
 public class EMFFactoryTest
 {
-   
+
    public static final Asset PERSISTENCE_XML = new ByteArrayAsset("<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"1.0\"><persistence-unit name=\"pu1\"><jta-data-source>java:/DefaultDS</jta-data-source></persistence-unit></persistence>".getBytes());
    public static final Asset EMPTY_BEANS_XML = new ByteArrayAsset("<beans />".getBytes());
-   
+
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
          .addClasses(JPAResourceProducerSingletonEJB_StaticField.class, ProducedViaStaticFieldOnEJB.class, EMFConsumer1.class)
          .addClasses(JPAResourceProducerManagedBean_InstanceField.class, ProducedViaInstanceFieldOnManagedBean.class, EMFConsumer2.class)
          .addClasses(JPAResourceProducerManagedBean_StaticField.class, ProducedViaStaticFieldOnManagedBean.class, EMFConsumer3.class)
-         .addManifestResource(PERSISTENCE_XML, "persistence.xml")
-         .addWebResource(EMPTY_BEANS_XML, "beans.xml");
+         .addAsManifestResource(PERSISTENCE_XML, "persistence.xml")
+         .addAsWebResource(EMPTY_BEANS_XML, "beans.xml");
    }
-   
+
    /*
     * description = "WELD-632"
     */
@@ -64,10 +62,10 @@ public class EMFFactoryTest
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
       Page page = client.getPage(getPath("emfconsumer1"));
-      
+
       assertEquals(200, page.getWebResponse().getStatusCode());
    }
-   
+
    /*
     * description = "WELD-632"
     */
@@ -77,10 +75,10 @@ public class EMFFactoryTest
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
       Page page = client.getPage(getPath("emfconsumer2"));
-      
+
       assertEquals(200, page.getWebResponse().getStatusCode());
    }
-   
+
    /*
     * description = "WELD-632"
     */
@@ -90,10 +88,10 @@ public class EMFFactoryTest
       WebClient client = new WebClient();
       client.setThrowExceptionOnFailingStatusCode(false);
       Page page = client.getPage(getPath("emfconsumer3"));
-      
+
       assertEquals(200, page.getWebResponse().getStatusCode());
    }
-   
+
    protected String getPath(String viewId)
    {
       // TODO: this should be moved out and be handled by Arquillian

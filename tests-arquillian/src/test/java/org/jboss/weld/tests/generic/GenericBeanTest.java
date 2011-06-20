@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.generic;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 public class GenericBeanTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(GenericBeanTest.class.getPackage());
@@ -43,11 +43,11 @@ public class GenericBeanTest
    {
       Assert.assertEquals("Hello", testBean.echo("Hello"));
       Assert.assertEquals(Integer.valueOf(1), testBean.echo(1));
-      
+
       Subclass subclassInstance = new Subclass();
       Assert.assertSame(subclassInstance, testBean.echo(subclassInstance));
       Assert.assertSame(subclassInstance, testBean.echo((BaseClass)subclassInstance));
-      
+
       BaseClass baseInstance = new BaseClass();
       Assert.assertSame(baseInstance, testBean.echo(baseInstance));
    }

@@ -24,7 +24,7 @@ import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -35,10 +35,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class InjectionPointTest 
+public class InjectionPointTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(InjectionPointTest.class.getPackage())
@@ -52,7 +52,7 @@ public class InjectionPointTest
    public void testCorrectInjectionPointUsed(IntConsumer intConsumer, DoubleConsumer doubleConsumer)
    {
       intConsumer.ping();
-      
+
       try
       {
          doubleConsumer.ping();
@@ -62,7 +62,7 @@ public class InjectionPointTest
          Assert.assertTrue(e.getMessage().contains("Injection Point: field org.jboss.weld.tests.injectionPoint.DoubleGenerator.timer"));
       }
    }
-   
+
    /*
     * description = "WELD-316"
     */
@@ -76,7 +76,7 @@ public class InjectionPointTest
       InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
       Assert.assertEquals("str", ip1.getMember().getName());
    }
-   
+
    /*
     * description = "WELD-812"
     */
@@ -91,13 +91,13 @@ public class InjectionPointTest
       farm1.ping();
       assertNotNull(farm1.getInjectionPoint());
    }
-   
+
    @Test
    public void testGetDeclaringType(GrassyField field)
    {
       Assert.assertEquals("daisy", field.getCow().getName());
    }
-   
+
    /*
     * description = "WELD-438"
     */

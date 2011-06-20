@@ -16,12 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.injectionTarget;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -35,28 +30,33 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+
 //@Category(Integration.class)
 @Category(Broken.class)
 @RunWith(Arquillian.class)
-public class InjectionTargetTest 
+public class InjectionTargetTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addModule(
+         .addAsModule(
                ShrinkWrap.create(BeanArchive.class)
                   .intercept(SecurityInterceptor.class)
                   .decorate(AircraftDecorator.class)
                   .addPackage(InjectionTargetTest.class.getPackage())
                   .addClass(Utils.class)
-                  .addServiceProvider(Extension.class, InjectionTargetExtension.class)
+                  .addAsServiceProvider(Extension.class, InjectionTargetExtension.class)
          );
    }
 
-   @Inject 
+   @Inject
    private BeanManagerImpl beanManager;
-   
+
    /*
     * description = "WELD-557"
     */
@@ -68,7 +68,7 @@ public class InjectionTargetTest
       aircraft.isFlying();
       Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.injectInstance));
    }
-   
+
    /*
     * description = "WELD-557"
     */
@@ -80,7 +80,7 @@ public class InjectionTargetTest
       aircraft.isFlying();
       Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.postConstructInstance));
    }
-   
+
    /*
     * description = "WELD-557"
     */
@@ -97,7 +97,7 @@ public class InjectionTargetTest
       aircraft.isFlying();
       // destroy instance
       bean.destroy(aircraft, ctx);
-      
+
       Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.preDestroyInstance));
    }
 }

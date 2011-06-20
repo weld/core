@@ -97,8 +97,8 @@
       <!-- Testing deps -->
       <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
-      <arquillian.version>1.0.0.Alpha4</arquillian.version>
-      <jbossas7.version>7.0.0.Beta3</jbossas7.version>
+      <arquillian.version>1.0.0.CR1-SNAPSHOT</arquillian.version>
+      <jbossas7.version>7.0.0.Beta4-SNAPSHOT</jbossas7.version>
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
       <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
@@ -174,15 +174,21 @@
          </dependency>
 
          <dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-junit</artifactId>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-core</artifactId>
             <version>${arquillian.version}</version>
          </dependency>
-	
+
          <dependency>
-            <groupId>org.jboss.weld.arquillian.container</groupId>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-api</artifactId>
+            <version>${arquillian.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
          </dependency>
 
          <dependency>
@@ -196,7 +202,7 @@
             <artifactId>arquillian-jbossas-remote-6</artifactId>
             <version>${arquillian.version}</version>
          </dependency>
-         
+
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-tomcat-embedded-6</artifactId>
@@ -237,6 +243,12 @@
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-container-remote</artifactId>
             <version>${jbossas7.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-impl-base</artifactId>
+            <version>1.0.0-beta-2</version>
          </dependency>
 
          <dependency>

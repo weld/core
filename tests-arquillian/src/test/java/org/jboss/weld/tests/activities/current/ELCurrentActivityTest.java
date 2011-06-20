@@ -32,7 +32,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
 import com.sun.el.ExpressionFactoryImpl;
 
 /**
- * 
+ *
  * Spec version: 20090519
  *
  */
@@ -55,7 +55,7 @@ import com.sun.el.ExpressionFactoryImpl;
 public class ELCurrentActivityTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ELCurrentActivityTest.class.getPackage())
@@ -178,7 +178,7 @@ public class ELCurrentActivityTest
 
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    public void testELEvaluationProcessedByCurrentActivty()
    {

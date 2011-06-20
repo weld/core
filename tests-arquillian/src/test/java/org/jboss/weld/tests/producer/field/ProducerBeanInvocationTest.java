@@ -9,14 +9,14 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.tests.producer.field;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
  * Simple test which invokes a method directly on a normal scoped producer
  * bean to ensure that it's proxy is for that bean and not the product
  * of a producer method.
- * 
+ *
  * @author David Allen
  *
  */
@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class ProducerBeanInvocationTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(ProducerBeanInvocationTest.class.getPackage());

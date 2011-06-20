@@ -19,7 +19,7 @@ package org.jboss.weld.tests.enterprise;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -34,16 +34,16 @@ import org.junit.runner.RunWith;
 public class EnterpriseBeanDefinitionTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(EnterpriseBeanDefinitionTest.class.getPackage())
          .addClass(Utils.class);
    }
-   
+
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    /*
     * description="WELD-305"
     */

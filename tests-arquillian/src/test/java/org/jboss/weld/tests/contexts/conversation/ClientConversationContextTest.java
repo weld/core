@@ -33,14 +33,11 @@ package org.jboss.weld.tests.contexts.conversation;
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.*;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -51,13 +48,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Nicklas Karlsson
@@ -65,7 +59,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
+@RunAsClient
 public class ClientConversationContextTest
 {
 
@@ -80,39 +74,39 @@ public class ClientConversationContextTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class, LockingIssueBean.class, Tornado.class)
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
-               .addResource(ClientConversationContextTest.class.getPackage(), "blizzard.xhtml", "blizzard.xhtml")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
+               .addAsResource(ClientConversationContextTest.class.getPackage(), "blizzard.xhtml", "blizzard.xhtml")
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test
    public void testConversationNotPropagatedByHLink() throws Exception
    {
       WebClient client = new WebClient();
-    
+
       // Access the start page
       HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
       String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
       assertEquals(Cloud.NAME, cloudName);
-      
+
       // Now start a conversation and check the cloud name changes
       HtmlPage blizzard = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "blizzard").click();
       cloudName = getFirstMatchingElement(blizzard, HtmlSpan.class, "cloudName").getTextContent();
       assertEquals("henry", cloudName);
-      
+
       // Now use the h:link to navigate back and check the conversation isn't propagated
       cloud = getFirstMatchingElement(blizzard, HtmlAnchor.class, "cloud-link").click();
       cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
       assertEquals(Cloud.NAME, cloudName);
    }
-   
+
    @Test
    public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception
    {
@@ -135,7 +129,7 @@ public class ClientConversationContextTest
       name = getFirstMatchingElement(snowstorm, HtmlSpan.class, "snowstormName").getTextContent();
       assertEquals(Snowstorm.NAME, name);
    }
-   
+
    // WELD-755
    @Test
    public void testEndAndBeginInSameRequestsKeepsSameCid() throws Exception
@@ -156,9 +150,9 @@ public class ClientConversationContextTest
    public void testLockingIssue() throws Exception
    {
       /*
-       * click start 
-       * click redirect 
-       * click dummy 
+       * click start
+       * click redirect
+       * click dummy
        * refresh browser or retry url.
        */
       WebClient client = new WebClient();

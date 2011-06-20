@@ -32,11 +32,12 @@ package org.jboss.weld.tests.jsp;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import junit.framework.Assert;
 
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import junit.framework.Assert;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -46,27 +47,24 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-
 /**
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Run(RunModeType.AS_CLIENT)
+@RunAsClient
 public class JspTest
 {
    @Deployment
-   public static WebArchive createDeployment() 
+   public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addWebResource(JspTest.class.getPackage(), "web.xml", "web.xml")
-               .addWebResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
-               .addResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
-               .addWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebResource(JspTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
+               .addAsResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
+               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

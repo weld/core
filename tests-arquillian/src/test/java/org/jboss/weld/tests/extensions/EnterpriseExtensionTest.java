@@ -16,12 +16,7 @@
  */
 package org.jboss.weld.tests.extensions;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import javax.enterprise.inject.spi.Extension;
-
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -31,22 +26,27 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Extension;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EnterpriseExtensionTest 
+public class EnterpriseExtensionTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(EnterpriseExtensionTest.class.getPackage())
-                  .addServiceProvider(Extension.class, 
-                        SimpleExtension.class, 
+                  .addAsServiceProvider(Extension.class,
+                        SimpleExtension.class,
                         ExtensionObserver.class,
                         WoodlandExtension.class,
                         TrainlineExtension.class);
    }
-   
+
    /*
     * description = "WELD-243"
     */
@@ -57,63 +57,63 @@ public class EnterpriseExtensionTest
       assertTrue(extensionObserver.isAllBeforeBeanDiscovery());
       assertFalse(otherObserver.isBeforeBeanDiscovery());
       assertFalse(otherObserver.isAllBeforeBeanDiscovery());
-      
+
       assertTrue(extensionObserver.isAfterBeanDiscovery());
       assertTrue(extensionObserver.isAllAfterBeanDiscovery());
       assertFalse(otherObserver.isAfterBeanDiscovery());
       assertFalse(otherObserver.isAllAfterBeanDiscovery());
-      
+
       assertTrue(extensionObserver.isProcessAnnotatedType());
       assertTrue(extensionObserver.isAllProcessAnnnotatedType());
       assertFalse(otherObserver.isProcessAnnotatedType());
       assertFalse(otherObserver.isAllProcessAnnotatedType());
-      
+
       assertTrue(extensionObserver.isProcessBean());
       assertTrue(extensionObserver.isAllProcessBean());
       assertFalse(otherObserver.isProcessBean());
       assertFalse(otherObserver.isAllProcessBean());
-      
+
       assertTrue(extensionObserver.isProcessInjectionTarget());
       assertTrue(extensionObserver.isAllProcessInjectionTarget());
       assertFalse(otherObserver.isProcessInjectionTarget());
       assertFalse(otherObserver.isAllProcessInjectionTarget());
-      
+
       assertTrue(extensionObserver.isProcessManagedBean());
       assertTrue(extensionObserver.isAllProcessManagedBean());
       assertFalse(otherObserver.isProcessManagedBean());
       assertFalse(otherObserver.isAllProcessManagedBean());
-      
+
       assertTrue(extensionObserver.isProcessObserverMethod());
       assertTrue(extensionObserver.isAllProcessObserverMethod());
       assertFalse(otherObserver.isProcessObserverMethod());
       assertFalse(otherObserver.isAllProcessObserverMethod());
-      
+
       assertTrue(extensionObserver.isProcessProducer());
       assertTrue(extensionObserver.isAllProcessProducer());
       assertFalse(otherObserver.isProcessProducer());
       assertFalse(otherObserver.isAllProcessProducer());
-      
+
       assertTrue(extensionObserver.isProcessProducerField());
       assertTrue(extensionObserver.isAllProcessProducerField());
       assertFalse(otherObserver.isProcessProducerField());
       assertFalse(otherObserver.isAllProcessProducerField());
-      
+
       assertTrue(extensionObserver.isProcessProducerMethod());
       assertTrue(extensionObserver.isAllProcessProducerField());
       assertFalse(otherObserver.isProcessProducerMethod());
       assertFalse(otherObserver.isAllProcessProducerMethod());
-      
+
       assertTrue(extensionObserver.isProcessSessionBean());
       assertTrue(extensionObserver.isAllProcessSessionBean());
       assertFalse(otherObserver.isProcessSessionBean());
       assertFalse(otherObserver.isAllProcessSessionBean());
-      
+
       assertTrue(extensionObserver.isAfterDeploymentValidation());
       assertTrue(extensionObserver.isAllAfterDeploymentValidation());
       assertFalse(otherObserver.isAfterDeploymentValidation());
       assertFalse(otherObserver.isAllAfterDeploymentValidation());
    }
-   
+
    /*
     * WELD-503
     */

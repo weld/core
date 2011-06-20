@@ -22,7 +22,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -31,29 +31,29 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class) 
+@RunWith(Arquillian.class)
 public class SimpleEventTest
 {
    @Deployment
-   public static Archive<?> deploy() 
+   public static Archive<?> deploy()
    {
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(SimpleEventTest.class.getPackage());
    }
-   
+
    private static boolean RECEIVE_1_OBSERVED;
    private static boolean RECEIVE_2_OBSERVED;
    private static boolean RECEIVE_3_OBSERVED;
-   
+
    private static void initFlags() {
       RECEIVE_1_OBSERVED = false;
       RECEIVE_2_OBSERVED = false;
       RECEIVE_3_OBSERVED = false;
    }
-   
+
    @Inject
    private BeanManagerImpl beanManager;
-   
+
    @Test
    public void testFireEventOnManager()
    {
@@ -64,47 +64,47 @@ public class SimpleEventTest
       assert RECEIVE_1_OBSERVED == true;
       assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_3_OBSERVED == true;
-      
+
       initFlags();
-      
+
       beanManager.fireEvent("Fired using Manager Interface.");
-      
+
       assert RECEIVE_1_OBSERVED == false; // not called
       assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_3_OBSERVED == true;
    }
-   
+
    @Test
    public void testFireEventOnEvent(App app)
    {
       initFlags();
-      
+
       app.fireEventByBindingDeclaredAtInjectionPoint();
 
       assert RECEIVE_1_OBSERVED == true;
       assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_3_OBSERVED == true;
-      
+
       initFlags();
-      
+
       app.fireEventByAnnotationLiteral();
-      
+
       assert RECEIVE_1_OBSERVED == true;
       assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_3_OBSERVED == true;
-      
+
       initFlags();
-      
+
       app.fireEventViaAny();
-      
+
       assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_1_OBSERVED == false; // not called
       assert RECEIVE_3_OBSERVED == true;
-      
+
       initFlags();
-      
+
       app.fireEventViaWithNoQualifier();
-      
+
       assert RECEIVE_1_OBSERVED == false; // not called
       assert RECEIVE_2_OBSERVED == true;
       assert RECEIVE_3_OBSERVED == true;
@@ -114,10 +114,10 @@ public class SimpleEventTest
    {
       @Inject @Any
       Event<String> event1;
-      
+
       @Inject @Updated
       Event<String> event2;
-      
+
       @Inject
       Event<String> event4;
 
@@ -125,17 +125,17 @@ public class SimpleEventTest
       {
          event1.select(new AnnotationLiteral<Updated>(){}).fire("Fired using Event Interface with AnnotationLiteral.");
       }
-      
+
       public void fireEventByBindingDeclaredAtInjectionPoint()
       {
          event2.fire("Fired using Event Interface with Binding Declared.");
       }
-      
+
       public void fireEventViaAny()
       {
          event1.fire("Fired using Event Interface");
       }
-      
+
       public void fireEventViaWithNoQualifier()
       {
          event4.fire("Fired using Event Interface with no qualifier");
@@ -153,7 +153,7 @@ public class SimpleEventTest
       {
          RECEIVE_2_OBSERVED = true;
       }
-      
+
       public void receive3(@Observes String s)
       {
          RECEIVE_3_OBSERVED = true;

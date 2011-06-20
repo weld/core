@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNull;
 
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -38,7 +38,7 @@ public class SuperTypeTest
       return ShrinkWrap.create(BeanArchive.class)
          .addPackage(SuperTypeTest.class.getPackage())
          .addClass(Utils.class)
-         .addServiceProvider(Extension.class, CDIExtension.class);
+         .addAsServiceProvider(Extension.class, CDIExtension.class);
    }
 
    @Test
