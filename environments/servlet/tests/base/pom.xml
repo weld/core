@@ -43,7 +43,7 @@
 
       <dependency>
          <groupId>org.jboss.arquillian.junit</groupId>
-         <artifactId>arquillian-junit-core</artifactId>
+         <artifactId>arquillian-junit-container</artifactId>
       </dependency>
 
       <dependency>

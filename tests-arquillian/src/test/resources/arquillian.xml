@@ -1,30 +1,12 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://www.jboss.org/arquillian-1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.jboss.org/arquillian-1.0 http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-<arquillian xmlns="http://jboss.com/arquillian"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:jboss="urn:arq:org.jboss.arquillian.container.jbossas.managed_6"
-		xmlns:glassfish="urn:arq:org.jboss.arquillian.container.glassfish.remote_3">
+	<container qualifier="jboss" default="true">
 
-	<engine>
-		<maxDeploymentsBeforeRestart>20</maxDeploymentsBeforeRestart>
-	</engine>
-	
-	<jboss:container>
-<!--		<jboss:jbossHome>/home/aslak/dev/servers/jboss-6.0.0.M3/</jboss:jbossHome> --> <!-- default %JBOSS_HOME% -->
-<!--		<jboss:javaHome>/usr/lib/jvm/java-6-openjdk</jboss:javaHome> -->  <!-- default %JAVA_HOME% -->
-      <!-- Increase the permgen space by default, heap space is default -->
-      <jboss:javaVmArguments>-Xmx512m -XX:MaxPermSize=256m -Dlogging.configuration=file:./logging.properties</jboss:javaVmArguments>
-	</jboss:container>	
-
-	<glassfish:container>
-		<glassfish:deploymentUri>deployer:Sun:AppServer::localhost:4848</glassfish:deploymentUri>
-		<glassfish:deploymentFactoryClass>org.glassfish.deployapi.SunDeploymentFactory</glassfish:deploymentFactoryClass>
-		<glassfish:remoteServerAddress>localhost</glassfish:remoteServerAddress>
-		<glassfish:remoteServerHttpPort>8080</glassfish:remoteServerHttpPort>
-		<glassfish:deploymentUsername>admin</glassfish:deploymentUsername>
-		
-		<!-- Set if admin password is set  
-		<glassfish:deploymentUsername>admin</glassfish:deploymentUsername>
-		 -->
-	</glassfish:container>
+		<protocol type="jmx-as7">
+			<property name="executionType">REMOTE</property>
+		</protocol>
+	</container>
 </arquillian>
