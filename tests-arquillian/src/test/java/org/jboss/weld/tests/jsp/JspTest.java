@@ -64,7 +64,7 @@ public class JspTest
                .addAsWebResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                .addAsResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
                .addAsResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

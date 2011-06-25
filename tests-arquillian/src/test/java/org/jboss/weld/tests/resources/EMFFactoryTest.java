@@ -49,8 +49,8 @@ public class EMFFactoryTest
          .addClasses(JPAResourceProducerSingletonEJB_StaticField.class, ProducedViaStaticFieldOnEJB.class, EMFConsumer1.class)
          .addClasses(JPAResourceProducerManagedBean_InstanceField.class, ProducedViaInstanceFieldOnManagedBean.class, EMFConsumer2.class)
          .addClasses(JPAResourceProducerManagedBean_StaticField.class, ProducedViaStaticFieldOnManagedBean.class, EMFConsumer3.class)
-         .addAsManifestResource(PERSISTENCE_XML, "persistence.xml")
-         .addAsWebResource(EMPTY_BEANS_XML, "beans.xml");
+         .addAsResource(PERSISTENCE_XML, "META-INF/persistence.xml")
+         .addAsWebInfResource(EMPTY_BEANS_XML, "beans.xml");
    }
 
    /*

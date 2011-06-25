@@ -17,41 +17,50 @@
 package org.jboss.weld.tests.event.tx;
 
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import java.net.URL;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.formatter.Formatters;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 @RunAsClient
 public class TxEventTest extends AbstractHtmlUnit
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment()
    {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
+      WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Foo.class, Updated.class)
                .addAsWebResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
                .addAsWebResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
                .addAsResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      
+      war.toString(Formatters.VERBOSE);
+      
+      return war;
    }
 
    /*
     * description = "WBRI-401"
     */
    @Test
-   public void testRequestContextLifecycle() throws Exception
+   public void testRequestContextLifecycle) throws Exception
    {
       WebClient webClient = new WebClient();
       HtmlPage home = webClient.getPage(getPath("/home.jsf"));

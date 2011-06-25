@@ -48,16 +48,16 @@ import java.util.Set;
 @RunAsClient
 public class NamedProducerTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(User.class, NewUserAction.class, Employee.class, SaveAction.class)
-               .addAsWebResource(NamedProducerTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(NamedProducerTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(NamedProducerTest.class.getPackage(), "view.xhtml", "view.xhtml")
-               .addAsResource(NamedProducerTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(NamedProducerTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(NamedProducerTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(NamedProducerTest.class.getPackage(), "view.xhtml", "view.xhtml")
+               .addAsWebResource(NamedProducerTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

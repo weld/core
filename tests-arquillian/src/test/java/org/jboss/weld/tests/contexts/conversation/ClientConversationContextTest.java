@@ -74,16 +74,16 @@ public class ClientConversationContextTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(ConversationTestPhaseListener.class, Cloud.class, Thunderstorm.class, Hailstorm.class, Hurricane.class, Snowstorm.class, LockingIssueBean.class, Tornado.class)
-               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "blizzard.xhtml", "blizzard.xhtml")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.xhtml", "cloud.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "tornado.xhtml", "tornado.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.xhtml", "thunderstorm.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "snowstorm.xhtml", "/winter/snowstorm.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "hailstorm.xhtml", "hailstorm.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "locking-issue.xhtml", "locking-issue.xhtml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "blizzard.xhtml", "blizzard.xhtml")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

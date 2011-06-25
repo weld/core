@@ -39,8 +39,8 @@ public class ProxyTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addPackage(ProxyTest.class.getPackage())
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml")
-               .addAsWebResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies");
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+               .addAsResource(EmptyAsset.INSTANCE, "META-INF/org.jboss.weld.enableUnsafeProxies");
    }
 
    @Test

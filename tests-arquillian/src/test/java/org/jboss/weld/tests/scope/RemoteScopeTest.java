@@ -51,7 +51,7 @@ public class RemoteScopeTest
       return ShrinkWrap.create(WebArchive.class, "test.war")
          .addClasses(Bar.class, Foo.class, RemoteClient.class, Special.class, Temp.class, TempConsumer.class, TempProducer.class, Useless.class)
          .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
-         .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+         .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

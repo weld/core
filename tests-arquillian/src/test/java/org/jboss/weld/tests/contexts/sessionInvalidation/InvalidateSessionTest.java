@@ -55,10 +55,10 @@ public class InvalidateSessionTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Storm.class, SomeBean.class)
-               .addAsWebResource(InvalidateSessionTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(InvalidateSessionTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(InvalidateSessionTest.class.getPackage(), "storm.jsf", "storm.jspx")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(InvalidateSessionTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(InvalidateSessionTest.class.getPackage(), "storm.jsf", "storm.jspx")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

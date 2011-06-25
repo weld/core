@@ -53,11 +53,11 @@ public class ErrorPageTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Storm.class, Rain.class)
-               .addAsWebResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
-               .addAsResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
+               .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    /*

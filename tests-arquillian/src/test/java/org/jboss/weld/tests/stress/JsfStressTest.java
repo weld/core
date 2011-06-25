@@ -76,7 +76,7 @@ public class JsfStressTest
                .addAsResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
                .addAsResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
                .addAsResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    // WELD-676
