@@ -406,6 +406,9 @@ public class BeanManagerImpl implements WeldManager, Serializable
    {
       accessibleManagers.add(accessibleBeanManager);
       beanResolver.clear();
+      interceptorResolver.clear();
+      decoratorResolver.clear();
+      observerResolver.clear();
    }
    
    public HashSet<BeanManagerImpl> getAccessibleManagers()

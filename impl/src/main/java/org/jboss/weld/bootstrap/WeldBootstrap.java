@@ -378,14 +378,14 @@ public class WeldBootstrap implements Bootstrap
             entry.getValue().deployBeans(environment);
          }
          AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
-         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
-         {
-            entry.getValue().afterBeanDiscovery(environment);
-         }
          // Re-read the deployment structure, this will be the physical
          // structure, extensions, classes, and any beans added using addBean
          // outside the physical structure
          beanDeployments = deploymentVisitor.visit();
+         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet())
+         {
+            entry.getValue().afterBeanDiscovery(environment);
+         }
          Container.instance().putBeanDeployments(beanDeployments);
          Container.instance().setState(ContainerState.INITIALIZED);
       }

@@ -132,9 +132,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       return foundInterceptionBindingTypes;
    }
 
-   private InterceptorMetadata<SerializableContextual<?,?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors)
+   private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors)
    {
-      List<InterceptorMetadata<SerializableContextual<Interceptor<?>,?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>,?>>>();
+      List<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
       for (Interceptor<?> interceptor : interceptors)
       {
 
@@ -202,13 +202,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
       super.initialize(environment);
       checkBeanImplementation();
       initTargetClassInterceptors();
-      if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType()))
-      {
-         initInterceptionModelForType();
-      }
    }
 
-   private void initInterceptionModelForType()
+   protected void initInterceptionModelForType()
    {
       ClassMetadata<?> classMetadata = beanManager.getInterceptorMetadataReader().getClassMetadata(getType());
 
@@ -347,11 +343,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
    @Override
    public void initializeAfterBeanDiscovery()
    {
+      if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType()))
+      {
+         initInterceptionModelForType();
+      }
       initDecorators();
       super.initializeAfterBeanDiscovery();
       if (isSubclassed())
       {
-          initEnhancedSubclass();
+         initEnhancedSubclass();
       }
    }
 

@@ -181,7 +181,6 @@ public class SessionBean<T> extends AbstractClassBean<T>
          checkConflictingRoles();
          checkObserverMethods();
          checkScopeAllowed();
-         registerInterceptors();
          setInjectionTarget(new InjectionTarget<T>()
          {
 
@@ -222,12 +221,19 @@ public class SessionBean<T> extends AbstractClassBean<T>
             {
                return SessionBean.this.createInstance(ctx);
             }
-            
+
          });
       }
    }
-   
-   protected T createInstance(CreationalContext<T> ctx) 
+
+   @Override
+   public void initializeAfterBeanDiscovery()
+   {
+      super.initializeAfterBeanDiscovery();
+      registerInterceptors();
+   }
+
+   protected T createInstance(CreationalContext<T> ctx)
    {
       return getConstructor().newInstance(beanManager, ctx);
    }
