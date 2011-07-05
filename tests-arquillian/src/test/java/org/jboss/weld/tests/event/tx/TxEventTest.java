@@ -17,12 +17,9 @@
 package org.jboss.weld.tests.event.tx;
 
 
-import java.net.URL;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.formatter.Formatters;
@@ -60,7 +57,7 @@ public class TxEventTest extends AbstractHtmlUnit
     * description = "WBRI-401"
     */
    @Test
-   public void testRequestContextLifecycle) throws Exception
+   public void testRequestContextLifecycle() throws Exception
    {
       WebClient webClient = new WebClient();
       HtmlPage home = webClient.getPage(getPath("/home.jsf"));
