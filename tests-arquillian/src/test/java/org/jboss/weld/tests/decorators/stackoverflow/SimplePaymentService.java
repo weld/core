@@ -18,11 +18,10 @@
 package org.jboss.weld.tests.decorators.stackoverflow;
 
 import java.math.BigDecimal;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
 
 /**
  * 
@@ -37,7 +36,7 @@ public class SimplePaymentService implements PaymentService
 
    public boolean pay(String account, BigDecimal amount)
    {
-      logger.info("Pay ${} for {}.", amount, account);
+      logger.info("Pay " + amount + " for " + account);
 
       return true;
    }

@@ -21,20 +21,20 @@ import static org.junit.Assert.assertNotNull;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class ParserTest
 {
-   @Deployment
+   @Deployment // changed to .war, from .jar
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(WebArchive.class)
                   .addPackage(ParserTest.class.getPackage())
-                  .addAsManifestResource(ParserTest.class.getPackage(), "beans.xml", "beans.xml");
+                  .addAsWebInfResource(ParserTest.class.getPackage(), "beans.xml", "beans.xml");
    }
 
    @Test

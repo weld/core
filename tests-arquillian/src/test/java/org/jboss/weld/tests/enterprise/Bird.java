@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 
-@Remote
+@Local
 public interface Bird
 {
 

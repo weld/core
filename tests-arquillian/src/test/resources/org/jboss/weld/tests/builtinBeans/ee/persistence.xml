@@ -4,6 +4,6 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" 
              version="1.0">
    <persistence-unit name="test">
-      <jta-data-source>java:/DefaultDS</jta-data-source>
+      <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
    </persistence-unit>
 </persistence>

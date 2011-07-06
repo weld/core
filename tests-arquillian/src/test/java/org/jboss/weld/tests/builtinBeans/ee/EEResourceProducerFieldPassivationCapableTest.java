@@ -28,9 +28,9 @@ import javax.transaction.UserTransaction;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
@@ -42,16 +42,16 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class EEResourceProducerFieldPassivationCapableTest
 {
-   @Deployment
+   @Deployment // changed to .war, from .jar
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(WebArchive.class)
             .addPackage(EEResourceProducerFieldPassivationCapableTest.class.getPackage())
             .addClass(Utils.class)
-            .addAsManifestResource(
+            .addAsResource(
                   EEResourceProducerFieldPassivationCapableTest.class.getPackage(),
-                  "persistence.xml", "persistence.xml")
-            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+                  "persistence.xml", "META-INF/persistence.xml")
+            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

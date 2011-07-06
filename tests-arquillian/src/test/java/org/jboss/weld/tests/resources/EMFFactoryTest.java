@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 public class EMFFactoryTest
 {
 
-   public static final Asset PERSISTENCE_XML = new ByteArrayAsset("<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"1.0\"><persistence-unit name=\"pu1\"><jta-data-source>java:/DefaultDS</jta-data-source></persistence-unit></persistence>".getBytes());
+   public static final Asset PERSISTENCE_XML = new ByteArrayAsset("<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"1.0\"><persistence-unit name=\"pu1\"><jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source></persistence-unit></persistence>".getBytes());
    public static final Asset EMPTY_BEANS_XML = new ByteArrayAsset("<beans />".getBytes());
 
    @Deployment

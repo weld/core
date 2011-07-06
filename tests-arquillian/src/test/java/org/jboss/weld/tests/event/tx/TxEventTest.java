@@ -43,9 +43,9 @@ public class TxEventTest extends AbstractHtmlUnit
    {
       WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(Foo.class, Updated.class)
-               .addAsWebResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
+               .addAsWebInfResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
       
       war.toString(Formatters.VERBOSE);
@@ -60,7 +60,7 @@ public class TxEventTest extends AbstractHtmlUnit
    public void testRequestContextLifecycle() throws Exception
    {
       WebClient webClient = new WebClient();
-      HtmlPage home = webClient.getPage(getPath("/home.jsf"));
+      HtmlPage home = webClient.getPage(getPath("home.jsf"));
       HtmlSubmitInput beginConversationButton = getFirstMatchingElement(home, HtmlSubmitInput.class, "SaveButton");
       beginConversationButton.click();
    }

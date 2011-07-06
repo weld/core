@@ -76,11 +76,11 @@ public class ClientConversationContextTest
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
                .addClasses(ConversationTestPhaseListener.class, Cloud.class)
-               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
-               .addAsResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
-               .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml");
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
+               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
+               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 
    @Test

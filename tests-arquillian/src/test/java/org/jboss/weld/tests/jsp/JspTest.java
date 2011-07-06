@@ -60,10 +60,10 @@ public class JspTest
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addAsWebResource(JspTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
-               .addAsResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
+               .addAsWebInfResource(JspTest.class.getPackage(), "web.xml", "web.xml")
+               .addAsWebInfResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+               .addAsWebResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
+               .addAsWebResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
    }
 

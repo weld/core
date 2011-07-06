@@ -18,12 +18,11 @@
 package org.jboss.weld.tests.decorators.stackoverflow;
 
 import java.math.BigDecimal;
+import java.util.logging.Logger;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
 
 /**
  * Secure PaymentService implemented by decator

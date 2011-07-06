@@ -33,12 +33,16 @@ public class RemoteClient extends HttpServlet
    @Override
    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
    {
+      String pathInfo = req.getPathInfo();
+      if (pathInfo == null)
+         return;
+
       try
       {
          Bean<Temp> specialTempBean = Utils.getBean(beanManager, Temp.class, SPECIAL_LITERAL);
          Bean<Temp> uselessTempBean = Utils.getBean(beanManager, Temp.class, USELESS_LITERAL);
          TempConsumer tempConsumer = Utils.getReference(beanManager, TempConsumer.class);
-         if (req.getPathInfo().equals("/request1"))
+         if (pathInfo.equals("/request1"))
          {
 
             Assert.assertEquals(RequestScoped.class, specialTempBean.getScope());
@@ -55,7 +59,7 @@ public class RemoteClient extends HttpServlet
             Assert.assertEquals(102, Utils.getReference(beanManager, uselessTempBean).getNumber());
             return;
          }
-         else if (req.getPathInfo().equals("/request2"))
+         else if (pathInfo.equals("/request2"))
          {
 
             Assert.assertEquals(10, tempConsumer.getSpecialTemp().getNumber());

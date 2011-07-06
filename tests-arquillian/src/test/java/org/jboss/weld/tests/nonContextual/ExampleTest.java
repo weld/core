@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.metadata.validation.ValidationException;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -71,7 +70,7 @@ public class ExampleTest
          {
             beanManager.validate(point);
          }
-         catch(ValidationException e)
+         catch(Exception e)
          {
             Assert.fail("Should have been valid");
          }
