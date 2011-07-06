@@ -22,7 +22,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,7 +42,7 @@ public class InterceptorOrderTest
          .addPackage(InterceptorOrderTest.class.getPackage());
    }
 
-   @Test @Category(Broken.class) // TODO -- fix this for AS7.1
+   @Test @Category(Integration.class)
    public void testOrder(Processor processor)
    {
       Counter.count = 0;
@@ -63,7 +62,7 @@ public class InterceptorOrderTest
       Assert.assertEquals(5, SimpleProcessor.count);
    }
 
-   @Test @Category(Broken.class) // TODO -- fix this for AS7.1
+   @Test @Category(Integration.class)
    public void testOrder2(Processor processor)
    {
       Counter.count = 0;
