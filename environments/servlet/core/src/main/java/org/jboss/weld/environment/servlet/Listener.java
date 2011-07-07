@@ -22,6 +22,7 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
 import org.jboss.weld.environment.jetty.Jetty6Container;
 import org.jboss.weld.environment.jetty.Jetty7Container;
 import org.jboss.weld.environment.jetty.JettyPost72Container;
@@ -225,6 +226,8 @@ public class Listener extends ForwardingServletListener
       Container container = checkContainers(cc, dump, extContainers);
       if (container == null)
          container = checkContainers(cc, dump, Arrays.asList(
+               // Needs to be first: gwt-dev jar has tomcat classes but uses jetty
+               GwtDevHostedModeContainer.INSTANCE,
                Tomcat7Container.INSTANCE,
                Tomcat6Container.INSTANCE,
                Jetty6Container.INSTANCE,
