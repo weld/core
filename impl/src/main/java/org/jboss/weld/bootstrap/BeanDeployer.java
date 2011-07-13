@@ -57,6 +57,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    private transient XLogger xlog = loggerFactory().getXLogger(Category.CLASS_LOADING);
    
    private final Set<WeldClass<?>> classes;
+   private final Set<Class<?>> vetoedClasses;
    private final ResourceLoader resourceLoader;
    private final ClassTransformer classTransformer;
 
@@ -68,6 +69,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
    {
       super(manager, services, new BeanDeployerEnvironment(ejbDescriptors, manager));
       this.classes = new HashSet<WeldClass<?>>();
+      this.vetoedClasses = new HashSet<Class<?>>();
       this.resourceLoader = manager.getServices().get(ResourceLoader.class);
       this.classTransformer = Container.instance().services().get(ClassTransformer.class);
    }
@@ -111,6 +113,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
                {
                   classes.add(classTransformer.loadClass(ExternalAnnotatedType.of(event.getAnnotatedType())));
                }
+            } else if (weldClass.isDiscovered()) {
+               vetoedClasses.add(weldClass.getJavaClass());
             }
          }
       }
@@ -159,6 +163,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
       }
       for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors())
       {
+         if(vetoedClasses.contains(ejbDescriptor.getBeanClass())) {
+            continue;
+         }
          if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless())
          {
             if (otherWeldClasses.containsKey(ejbDescriptor.getBeanClass()))
