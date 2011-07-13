@@ -16,22 +16,6 @@
  */
 package org.jboss.weld.xml;
 
-import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
-import static org.jboss.weld.logging.messages.XmlMessage.CONFIGURATION_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.inject.spi.BeanManager;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -40,6 +24,21 @@ import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.ScanningImpl;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+
+import javax.enterprise.inject.spi.BeanManager;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
+import static org.jboss.weld.logging.messages.XmlMessage.*;
 
 /**
  * Simple parser for beans.xml
@@ -94,6 +93,10 @@ public class BeansXmlParser
          }
          catch (IllegalArgumentException e)
          {
+            // No op, we just don't validate the XML
+         } catch (SAXNotRecognizedException e) {
+            // No op, we just don't validate the XML
+         } catch (SAXNotSupportedException e){
             // No op, we just don't validate the XML
          }
          
