@@ -3,10 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.jboss.org/arquillian-1.0 http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-	<container qualifier="jboss" default="true">
+    <container qualifier="weld" default="true">
+		<configuration>
+			<property name="enableConversationScope">true</property>
+		</configuration>
+	</container>
+    
+	<container qualifier="jboss" >
 
 		<protocol type="jmx-as7">
 			<property name="executionType">REMOTE</property>
 		</protocol>
 	</container>
+
 </arquillian>

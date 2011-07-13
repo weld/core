@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.sessionbean;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -39,7 +39,7 @@ public class SessionBeanExtensionTest
    {
       return ShrinkWrap.create(BeanArchive.class)
                   .addPackage(SessionBeanExtensionTest.class.getPackage())
-                  .addServiceProvider(Extension.class, 
+                  .addAsServiceProvider(Extension.class,
                         VetoExtension.class);
    }
    
