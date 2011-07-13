@@ -16,15 +16,13 @@
  */
 package org.jboss.weld.context;
 
-import java.io.Serializable;
-
-import javax.enterprise.context.spi.Contextual;
-
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.weld.Container;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import javax.enterprise.context.spi.Contextual;
+import java.io.Serializable;
 
 /**
  * A serializable version of contextual that knows how to restore the

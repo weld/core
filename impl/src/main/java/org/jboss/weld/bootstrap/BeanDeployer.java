@@ -16,20 +16,8 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
-import static org.slf4j.ext.XLogger.Level.DEBUG;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.decorator.Decorator;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.interceptor.Interceptor;
-
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
@@ -38,6 +26,7 @@ import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -46,8 +35,16 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import javax.decorator.Decorator;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.interceptor.Interceptor;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
+import static org.slf4j.ext.XLogger.Level.DEBUG;
 
 /**
  * @author pmuir
@@ -56,8 +53,8 @@ import com.google.common.collect.Multimap;
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
 {
    
-   private transient LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
-   private transient XLogger xlog = loggerFactory().getXLogger(BOOTSTRAP);
+   private transient LocLogger log = loggerFactory().getLogger(Category.CLASS_LOADING);
+   private transient XLogger xlog = loggerFactory().getXLogger(Category.CLASS_LOADING);
    
    private final Set<WeldClass<?>> classes;
    private final ResourceLoader resourceLoader;
