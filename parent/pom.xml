@@ -98,7 +98,7 @@
       <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
       <arquillian.version>1.0.0.CR1</arquillian.version>
-      <jbossas7.version>7.0.0.Final-SNAPSHOT</jbossas7.version>
+      <jbossas7.version>7.0.0.Final</jbossas7.version>
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
       <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
@@ -116,6 +116,7 @@
       <!-- TODO move to weld-parent -->
       <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
       <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
+       <jnp-client.version>4.0.2</jnp-client.version>
    </properties>
 
 
@@ -265,11 +266,23 @@
             <version>${jbossas7.version}</version>
          </dependency>
 
+         <dependency>
+             <groupId>org.jboss.arquillian.protocol</groupId>
+             <artifactId>arquillian-protocol-jmx</artifactId>
+             <version>${arquillian.version}</version>
+         </dependency>
+
           <dependency>
               <groupId>org.jboss.arquillian.testenricher</groupId>
               <artifactId>arquillian-testenricher-cdi</artifactId>
               <version>${arquillian.version}</version>
           </dependency>
+
+         <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>jnp-client</artifactId>
+            <version>${jnp-client.version}</version>
+         </dependency>
 
          <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>

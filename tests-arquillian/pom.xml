@@ -281,13 +281,13 @@
             <dependency>
                <groupId>org.jboss.jbossas</groupId>
                <artifactId>jboss-server-manager</artifactId>
-		<version>1.0.4.Final</version>
+		       <version>1.0.4.Final</version>
                <scope>test</scope>
             </dependency>
             <dependency>
                <groupId>org.jboss.jbossas</groupId>
                <artifactId>jboss-as-client</artifactId>
-		<version>6.1.0-SNAPSHOT</version>
+               <version>6.1.0-SNAPSHOT</version>
                <type>pom</type>
                <scope>test</scope>
             </dependency>
@@ -368,6 +368,16 @@
                <artifactId>jboss-as-arquillian-container-managed</artifactId>
                <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>jboss</groupId>
+                <artifactId>jnp-client</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                 <groupId>org.jboss.arquillian.protocol</groupId>
+                 <artifactId>arquillian-protocol-jmx</artifactId>
+                 <scope>test</scope>
+            </dependency>
          </dependencies>
          <build>
             <plugins>
@@ -403,6 +413,16 @@
                <artifactId>jboss-as-arquillian-container-remote</artifactId>
                <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>jboss</groupId>
+                <artifactId>jnp-client</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                 <groupId>org.jboss.arquillian.protocol</groupId>
+                 <artifactId>arquillian-protocol-jmx</artifactId>
+                 <scope>test</scope>
+             </dependency>
          </dependencies>
          <build>
             <plugins>

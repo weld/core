@@ -9,8 +9,7 @@
 		</configuration>
 	</container>
     
-	<container qualifier="jboss" >
-
+	<container qualifier="jboss" default="true" >
 		<protocol type="jmx-as7">
 			<property name="executionType">REMOTE</property>
 		</protocol>
