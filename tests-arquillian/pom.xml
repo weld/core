@@ -20,16 +20,6 @@
    </licenses>
    <url>http://www.seamframework.org/Weld</url>
 	
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>1.0.0.Final-SNAPSHOT</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
    <dependencies>
 
       <dependency>
@@ -181,12 +171,6 @@
          </exclusions>
       </dependency>
 
-      <dependency>
-         <groupId>org.jboss.arquillian.testenricher</groupId>
-         <artifactId>arquillian-testenricher-cdi</artifactId>
-          <scope>test</scope>
-      </dependency>
-
    </dependencies>
 
    <build>
@@ -240,11 +224,6 @@
                <groupId>org.jboss.arquillian.container</groupId>
                <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
                <scope>test</scope>
-               <!--
-                  should be test, but we need shrinkwrap-impl for compiling
-                  BeanArchive, having this in test scopes override the
-                  shrinkwrap-api scope. ??
-               -->
             </dependency>
          </dependencies>
          <build>
@@ -373,11 +352,6 @@
                 <artifactId>jnp-client</artifactId>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                 <groupId>org.jboss.arquillian.protocol</groupId>
-                 <artifactId>arquillian-protocol-jmx</artifactId>
-                 <scope>test</scope>
-            </dependency>
          </dependencies>
          <build>
             <plugins>
@@ -418,11 +392,6 @@
                 <artifactId>jnp-client</artifactId>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                 <groupId>org.jboss.arquillian.protocol</groupId>
-                 <artifactId>arquillian-protocol-jmx</artifactId>
-                 <scope>test</scope>
-             </dependency>
          </dependencies>
          <build>
             <plugins>
