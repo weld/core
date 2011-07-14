@@ -29,7 +29,8 @@ public enum Category
    EVENT("Event"),
    CONVERSATION("Conversation"),
    CONTEXT("Context"),
-   EL("El");
+   EL("El"),
+   CLASS_LOADING("ClassLoading");
    
    private static final String LOG_PREFIX = "org.jboss.weld.";
    
