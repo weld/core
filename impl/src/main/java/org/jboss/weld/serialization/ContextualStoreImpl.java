@@ -31,10 +31,6 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Maps;
-
 /**
  * Implementation of {@link org.jboss.weld.serialization.spi.ContextualStore}
  * 
@@ -47,7 +43,9 @@ public class ContextualStoreImpl implements ContextualStore
    private static final String GENERATED_ID_PREFIX = ContextualStoreImpl.class.getName();
 
    // The map containing container-local contextuals
-   private final BiMap<Contextual<?>, String> contextuals;
+   private final ConcurrentMap<Contextual<?>, String> contextuals;
+   // Inverse mapping of container-local contextuals
+   private final ConcurrentMap<String, Contextual<?>> contextualsInverse;
 
    // The map containing passivation capable contextuals
    private final ConcurrentMap<String, Contextual<?>> passivationCapableContextuals;
@@ -57,9 +55,8 @@ public class ContextualStoreImpl implements ContextualStore
    public ContextualStoreImpl()
    {
       this.idGenerator = new AtomicInteger(0);
-      BiMap<Contextual<?>, String> map = HashBiMap.create();
-      // TODO Somehow remove this sync if it shows bad in a profiler
-      this.contextuals = Maps.synchronizedBiMap(map);
+      this.contextuals = new ConcurrentHashMap<Contextual<?>, String>();
+      this.contextualsInverse = new ConcurrentHashMap<String, Contextual<?>>();
       this.passivationCapableContextuals = new ConcurrentHashMap<String, Contextual<?>>();
    }
 
@@ -76,7 +73,7 @@ public class ContextualStoreImpl implements ContextualStore
    {
       if (id.startsWith(GENERATED_ID_PREFIX))
       {
-         return (C) contextuals.inverse().get(id);
+         return (C) contextualsInverse.get(id);
       }
       else
       {
@@ -98,24 +95,33 @@ public class ContextualStoreImpl implements ContextualStore
       if (contextual instanceof PassivationCapable)
       {
          PassivationCapable passivationCapable = (PassivationCapable) contextual;
-         passivationCapableContextuals.putIfAbsent(passivationCapable.getId(), contextual);
-         return passivationCapable.getId();
-      }
-      else if (contextuals.containsKey(contextual))
-      {
-         return contextuals.get(contextual);
+         String id = passivationCapable.getId();
+         if (!passivationCapableContextuals.containsKey(id))
+         {
+            passivationCapableContextuals.putIfAbsent(id, contextual);
+         }
+         return id;
       }
       else
       {
-         synchronized (contextual)
+         String id = contextuals.get(contextual);
+         if (id != null)
          {
-            if (contextuals.containsKey(contextual))
-            {
-               return contextuals.get(contextual);
-            }
-            String id = new StringBuilder().append(GENERATED_ID_PREFIX).append(idGenerator.incrementAndGet()).toString();
-            contextuals.put(contextual, id);
             return id;
+         }
+         else
+         {
+            synchronized (contextual)
+            {
+               id = contextuals.get(contextual);
+               if (id == null)
+               {
+                  id = new StringBuilder().append(GENERATED_ID_PREFIX).append(idGenerator.incrementAndGet()).toString();
+                  contextuals.put(contextual, id);
+                  contextualsInverse.put(id, contextual);
+               }
+               return id;
+            }
          }
       }
    }
@@ -133,6 +139,7 @@ public class ContextualStoreImpl implements ContextualStore
    public void cleanup()
    {
       contextuals.clear();
+      contextualsInverse.clear();
       passivationCapableContextuals.clear();
    }
 }
