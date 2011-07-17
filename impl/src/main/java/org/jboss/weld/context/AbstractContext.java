@@ -91,7 +91,8 @@ public abstract class AbstractContext implements Context
       {
          throw new ContextNotActiveException();
       }
-      if (getBeanStore() == null)
+      BeanStore beanStore = getBeanStore();
+      if (beanStore == null)
       {
          return null;
       }
@@ -100,7 +101,7 @@ public abstract class AbstractContext implements Context
          throw new IllegalArgumentException(CONTEXTUAL_IS_NULL);
       }
       String id = getId(contextual);
-      ContextualInstance<T> beanInstance = getBeanStore().get(id);
+      ContextualInstance<T> beanInstance = beanStore.get(id);
       if (beanInstance != null)
       {
          return beanInstance.getInstance();
@@ -113,7 +114,7 @@ public abstract class AbstractContext implements Context
             {
                
                creationLock.lock();
-               beanInstance = getBeanStore().get(id);
+               beanInstance = beanStore.get(id);
                if (beanInstance != null)
                {
                   return beanInstance.getInstance();
@@ -123,7 +124,7 @@ public abstract class AbstractContext implements Context
             if (instance != null)
             {
                beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, serviceRegistry.get(ContextualStore.class));
-               getBeanStore().put(id, beanInstance);
+               beanStore.put(id, beanInstance);
             }
             return instance;
          }
