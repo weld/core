@@ -17,27 +17,24 @@
 
 package org.jboss.weld.bean.proxy;
 
+import javassist.NotFoundException;
+import javassist.bytecode.*;
+import javassist.util.proxy.MethodHandler;
+import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.util.bytecode.*;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.spi.Bean;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-
-import javassist.NotFoundException;
-import javassist.bytecode.AccessFlag;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Opcode;
-import javassist.util.proxy.MethodHandler;
-
-import javax.enterprise.inject.spi.Bean;
-
-import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.bytecode.DescriptorUtils;
-import org.jboss.weld.util.bytecode.JumpMarker;
-import org.jboss.weld.util.bytecode.JumpUtils;
-import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.MethodUtils;
 
 /**
  * Proxy factory that generates client proxies, it uses optimizations that 
@@ -49,7 +46,20 @@ import org.jboss.weld.util.bytecode.MethodUtils;
 public class ClientProxyFactory<T> extends ProxyFactory<T>
 {
 
+   private static final Set<Class<? extends Annotation>> CACHABLE_SCOPES;
+
    public final static String CLIENT_PROXY_SUFFIX = "ClientProxy";
+
+   private static final String CACHE_FIELD = "BEAN_INSTANCE_CACHE";
+
+   static {
+      Set<Class<? extends Annotation>> scopes = new HashSet<Class<? extends Annotation>>();
+      scopes.add(RequestScoped.class);
+      scopes.add(ConversationScoped.class);
+      scopes.add(SessionScoped.class);
+      scopes.add(ApplicationScoped.class);
+      CACHABLE_SCOPES = Collections.unmodifiableSet(scopes);
+   }
 
    public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
    {
@@ -60,6 +70,58 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
    {
       super(proxiedBeanType, typeClosure, proxyName, bean);
    }
+
+   @Override
+   protected void addFields(ClassFile proxyClassType, Bytecode initialValueBytecode)
+   {
+      super.addFields(proxyClassType, initialValueBytecode);
+      if(CACHABLE_SCOPES.contains(getBean().getScope()))
+      {
+         try
+         {
+            FieldInfo sfield = new FieldInfo(proxyClassType.getConstPool(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+            sfield.setAccessFlags(AccessFlag.TRANSIENT | AccessFlag.PRIVATE);
+            proxyClassType.addField(sfield);
+            initialValueBytecode.addAload(0);
+            initialValueBytecode.addNew(ThreadLocal.class.getName());
+            initialValueBytecode.add(Opcode.DUP);
+            initialValueBytecode.addInvokespecial(ThreadLocal.class.getName(), "<init>", "()V");
+            initialValueBytecode.addPutfield(proxyClassType.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+         }
+         catch (DuplicateMemberException e)
+         {
+            throw new RuntimeException(e);
+         }
+      }
+   }
+
+   /**
+    * creates a bytecode fragment that returns $1.readObject()
+    *
+    */
+   protected Bytecode createDeserializeProxyBody(ClassFile file)
+   {
+      Bytecode b = new Bytecode(file.getConstPool(), 3, 2);
+      b.addAload(0);
+      b.addInvokevirtual("java.io.ObjectInputStream", "readObject", "()Ljava/lang/Object;");
+      // initialize the transient threadlocals
+      b.add(Opcode.DUP);
+      b.addCheckcast(file.getName());
+      b.addNew("java/lang/ThreadLocal");
+      b.add(Opcode.DUP);
+      b.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
+      b.addPutfield(file.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
+      b.add(Opcode.DUP);
+      b.addCheckcast(file.getName());
+      b.addNew("java/lang/ThreadLocal");
+      b.add(Opcode.DUP);
+      b.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
+      b.addPutfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+      
+      b.addOpcode(Opcode.ARETURN);
+      return b;
+   }
+
 
    /**
     * Calls methodHandler.invoke with a null method parameter in order to 
@@ -95,20 +157,16 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       int start = b.currentPc();
       b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "startInterceptorContext", "()V");
 
-      b.add(Opcode.ALOAD_0);
-      b.addGetfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
-      //pass null arguments to methodHandler.invoke
-      b.add(Opcode.ALOAD_0);
-      b.add(Opcode.ACONST_NULL);
-      b.add(Opcode.ACONST_NULL);
-      b.add(Opcode.ACONST_NULL);
+      final Class<? extends Annotation> scope = getBean().getScope();
 
-      // now we have all our arguments on the stack
-      // lets invoke the method
-      b.addInvokeinterface(MethodHandler.class.getName(), "invoke", "(Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", 5);
-
-      b.addCheckcast(methodInfo.getDeclaringClass());
-
+      if(CACHABLE_SCOPES.contains(scope))
+      {
+         loadCachableBeanInstance(file, methodInfo, b);
+      }
+      else
+      {
+         loadBeanInstance(file, methodInfo, b);
+      }
       //now we should have the target bean instance on top of the stack
       // we need to dup it so we still have it to compare to the return value
       b.add(Opcode.DUP);
@@ -174,6 +232,67 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
          b.setMaxLocals(localCount);
       }
       return b;
+   }
+
+   /**
+    * If the bean is part of a well known scope then this code caches instances in a thread local for the life of the
+    * request, as a performance enhancement. 
+    */
+   private void loadCachableBeanInstance(ClassFile file, MethodInformation methodInfo, Bytecode b)
+   {
+      //first we need to see if the scope is active
+      b.addInvokestatic(RequestScopedBeanCache.class.getName(), "isActive", "()Z");
+      //if it is not active we just get the bean directly
+
+
+      b.add(Opcode.IFEQ);
+      final JumpMarker returnInstruction = JumpUtils.addJumpInstruction(b);
+      //get the bean from the cache
+      b.addAload(0);
+      b.addGetfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+      b.addInvokevirtual(ThreadLocal.class.getName(), "get", "()Ljava/lang/Object;");
+      b.add(Opcode.DUP);
+      b.add(Opcode.IFNULL);
+      final JumpMarker createNewInstance = JumpUtils.addJumpInstruction(b);
+      //so we have a not-null bean instance in the cache
+      b.addCheckcast(methodInfo.getDeclaringClass());
+      b.add(Opcode.GOTO);
+      final JumpMarker loadedFromCache = JumpUtils.addJumpInstruction(b);
+      createNewInstance.mark();
+      //we need to get a bean instance and cache it
+      //first clear the null off the top of the stack
+      b.add(Opcode.POP);
+      loadBeanInstance(file, methodInfo, b);
+      b.add(Opcode.DUP);
+      b.addAload(0);
+      b.addGetfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+      b.add(Opcode.DUP_X1);
+      b.add(Opcode.SWAP);
+      b.addInvokevirtual(ThreadLocal.class.getName(), "set", "(Ljava/lang/Object;)V");
+      b.addInvokestatic(RequestScopedBeanCache.class.getName(), "addItem", "(Ljava/lang/ThreadLocal;)V");
+      b.add(Opcode.GOTO);
+      final JumpMarker endOfIfStatement = JumpUtils.addJumpInstruction(b);
+      returnInstruction.mark();
+      loadBeanInstance(file, methodInfo, b);
+      endOfIfStatement.mark();
+      loadedFromCache.mark();
+   }
+
+   private void loadBeanInstance(ClassFile file, MethodInformation methodInfo, Bytecode b)
+   {
+      b.add(Opcode.ALOAD_0);
+      b.addGetfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+      //pass null arguments to methodHandler.invoke
+      b.add(Opcode.ALOAD_0);
+      b.add(Opcode.ACONST_NULL);
+      b.add(Opcode.ACONST_NULL);
+      b.add(Opcode.ACONST_NULL);
+
+      // now we have all our arguments on the stack
+      // lets invoke the method
+      b.addInvokeinterface(MethodHandler.class.getName(), "invoke", "(Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", 5);
+
+      b.addCheckcast(methodInfo.getDeclaringClass());
    }
 
    /**

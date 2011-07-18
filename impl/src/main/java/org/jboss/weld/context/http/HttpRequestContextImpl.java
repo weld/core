@@ -22,15 +22,15 @@
  */
 package org.jboss.weld.context.http;
 
-import java.lang.annotation.Annotation;
+import org.jboss.weld.context.AbstractBoundContext;
+import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.context.beanstore.SimpleNamingScheme;
+import org.jboss.weld.context.beanstore.http.RequestBeanStore;
+import org.jboss.weld.context.cache.RequestScopedBeanCache;
 
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.ServletRequest;
-
-import org.jboss.weld.context.AbstractBoundContext;
-import org.jboss.weld.context.beanstore.SimpleNamingScheme;
-import org.jboss.weld.context.beanstore.NamingScheme;
-import org.jboss.weld.context.beanstore.http.RequestBeanStore;
+import java.lang.annotation.Annotation;
 
 public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest> implements HttpRequestContext
 {
@@ -83,6 +83,26 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
          return false;
       }
 
+   }
+
+   @Override
+   public void activate()
+   {
+      super.activate();
+      RequestScopedBeanCache.beginRequest();
+   }
+
+   @Override
+   public void deactivate()
+   {
+      try
+      {
+         RequestScopedBeanCache.endRequest();
+      }
+      finally
+      {
+         super.deactivate();
+      }
    }
 
    public Class<? extends Annotation> getScope()

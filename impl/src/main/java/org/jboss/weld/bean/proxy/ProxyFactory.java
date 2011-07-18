@@ -73,7 +73,7 @@ public class ProxyFactory<T>
    private final String baseProxyName;
    private final Bean<?> bean;
 
-   private static final String FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME = "firstSerializationPhaseComplete";
+   protected static final String FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME = "firstSerializationPhaseComplete";
 
    public static final String CONSTRUCTED_FLAG_NAME = "constructed";
 
@@ -551,7 +551,7 @@ public class ProxyFactory<T>
     * creates a bytecode fragment that returns $1.readObject()
     * 
     */
-   private Bytecode createDeserializeProxyBody(ClassFile file)
+   protected Bytecode createDeserializeProxyBody(ClassFile file)
    {
       Bytecode b = new Bytecode(file.getConstPool(), 3, 2);
       b.addAload(0);
@@ -995,6 +995,11 @@ public class ProxyFactory<T>
    public Set<Class<?>> getAdditionalInterfaces()
    {
       return additionalInterfaces;
+   }
+
+   public Bean<?> getBean()
+   {
+      return bean;
    }
 
    /**
