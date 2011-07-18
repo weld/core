@@ -112,7 +112,7 @@ public class WeldSEResourceLoader implements ResourceLoader
       }
       else
       {
-         return WeldSEResourceLoader.getClassLoader();
+         return WeldSEResourceLoader.class.getClassLoader();
       }
    }
    

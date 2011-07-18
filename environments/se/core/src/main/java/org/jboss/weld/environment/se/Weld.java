@@ -18,7 +18,6 @@ package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
@@ -60,11 +59,13 @@ public class Weld
    /**
     * Boots Weld and creates and returns a WeldContainer instance, through which
     * beans and events can be accessed.
+    *
+    * @return weld container
     */
    public WeldContainer initialize()
    {
       ResourceLoader resourceLoader = new WeldSEResourceLoader();
-      Bootstrap bootstrap = null;
+      Bootstrap bootstrap;
       try
       {
          bootstrap = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
@@ -77,6 +78,10 @@ public class Weld
       {
          throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
       }
+
+      // check for beans.xml
+      if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null)
+         throw new IllegalStateException("Missing beans.xml file in META-INF!");
 
       Deployment deployment = createDeployment(resourceLoader, bootstrap);
       // Set up the container
