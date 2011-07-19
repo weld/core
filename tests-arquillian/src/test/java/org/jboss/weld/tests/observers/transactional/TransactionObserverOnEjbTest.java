@@ -16,12 +16,11 @@
  */
 package org.jboss.weld.tests.observers.transactional;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +28,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import javax.transaction.*;
+import javax.transaction.UserTransaction;
 import java.util.concurrent.*;
 
 /**
