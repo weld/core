@@ -55,6 +55,7 @@
 
    <properties>
       <osgi.version>1.0</osgi.version>
+      <parsedVersion.osgiVersion>${project.version}</parsedVersion.osgiVersion>
    </properties>
    <build>
       <plugins>
