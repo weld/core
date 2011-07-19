@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Caches beans over the life of a request, to allow for efficient bean lookups from proxies.
- * 
+ *
  * @author Stuart Douglas
  */
 public class RequestScopedBeanCache
@@ -70,13 +70,20 @@ public class RequestScopedBeanCache
       CACHE.set(new LinkedList<RequestScopedItem>());
    }
 
+   /**
+    * ends the request and clears the cache. This can be called before the request is over,
+    * in which case the cache will be unavailable for the rest of the request.
+    */
    public static void endRequest()
    {
       final List<RequestScopedItem> result = CACHE.get();
       CACHE.remove();
-      for (final RequestScopedItem item : result)
+      if (result != null)
       {
-         item.invalidate();
+         for (final RequestScopedItem item : result)
+         {
+            item.invalidate();
+         }
       }
    }
 
