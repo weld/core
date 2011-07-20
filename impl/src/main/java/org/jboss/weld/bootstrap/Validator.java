@@ -365,17 +365,22 @@ public class Validator implements Service
          // only found on Weld interceptors?
          if (interceptor instanceof InterceptorImpl<?>)
          {
-            if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
+            WeldClass<?> annotated = ((InterceptorImpl<?>) interceptor).getWeldAnnotated();
+            while (annotated != null && annotated.getJavaClass() != Object.class)
+            {
+            if (!annotated.getDeclaredWeldMethods(Produces.class).isEmpty())
             {
                throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
             }
-            if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getWeldFields(Produces.class).isEmpty())
+            if (!annotated.getDeclaredWeldFields(Produces.class).isEmpty())
             {
                throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS, interceptor);
             }
-            if (!((InterceptorImpl<?>) interceptor).getWeldAnnotated().getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
+            if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
             {
                throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
+            }
+               annotated = annotated.getWeldSuperclass();
             }
          }
       }
@@ -391,17 +396,22 @@ public class Validator implements Service
 
             if (bean instanceof WeldDecorator<?>)
             {
-               if (!((WeldDecorator<?>) bean).getWeldAnnotated().getWeldMethods(Produces.class).isEmpty())
+               WeldClass<?> annotatated = ((WeldDecorator<?>) bean).getWeldAnnotated();
+               while (annotatated != null && annotatated.getJavaClass() != Object.class)
                {
-                  throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, bean);
-               }
-               if (!((WeldDecorator<?>) bean).getWeldAnnotated().getWeldFields(Produces.class).isEmpty())
-               {
-                  throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, bean);
-               }
-               if (!((WeldDecorator<?>) bean).getWeldAnnotated().getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
-               {
-                  throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
+                  if (!annotatated.getDeclaredWeldMethods(Produces.class).isEmpty())
+                  {
+                     throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, bean);
+                  }
+                  if (!annotatated.getDeclaredWeldFields(Produces.class).isEmpty())
+                  {
+                     throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, bean);
+                  }
+                  if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
+                  {
+                     throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
+                  }
+                  annotatated = annotatated.getWeldSuperclass();
                }
             }
 
