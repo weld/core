@@ -21,8 +21,6 @@
  */
 package org.jboss.weld.tests.inheritance.weld824;
 
-import javax.inject.Inject;
-
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -34,6 +32,9 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
