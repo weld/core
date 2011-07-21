@@ -102,12 +102,12 @@
          then you need multiple identical filters, each with different activation conditions.
       </para>
       
-      <tip>
+      <note>
          <para>
             In general, the semantics defined by Ant's pattern sets 
             (http://ant.apache.org/manual/dirtasks.html#patternset) are followed.
          </para>
-      </tip>
+      </note>
 
    </section>
 

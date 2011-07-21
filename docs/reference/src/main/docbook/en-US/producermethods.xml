@@ -6,12 +6,12 @@
   
    <para>
       Producer methods let us overcome certain limitations that arise when a container, instead of the application, is
-      responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into
+      responsible for instantiating objects. They are also the easiest way to integrate objects which are not beans into
       the CDI environment. <!--(We'll meet a second approach in <xref linkend="xml"/>, a chapter covering the Weld XML
       extension).-->
    </para>
 
-   <para>According to the spec:</para>
+   <para>According to the specification:</para>
 
    <blockquote>
 
@@ -22,7 +22,7 @@
             <para>the objects to be injected are not required to be instances of beans,</para>
          </listitem>
          <listitem>
-            <para>the concrete type of the objects to be injected may vary at runtime or</para>
+            <para>the concrete type of the objects to be injected may vary at runtime, or</para>
          </listitem>
          <listitem>
             <para>
@@ -87,8 +87,8 @@ public class Preferences implements Serializable {
          <title>Scope of a producer method</title>
 
          <para>
-            The scope of the producer method defaults to <literal>@Dependent</literal>, and so it will be called
-            <emphasis>every time</emphasis> the container injects this field or any other field that resolves to the
+            The scope of the producer method defaults to <literal>@Dependent</literal>, so it will be called
+            <emphasis>every time</emphasis> the container injects this field, or any other field that resolves to the
             same producer method. Thus, there could be multiple instances of the <literal>PaymentStrategy</literal>
             object for each user session.
          </para>
@@ -104,7 +104,7 @@ public PaymentStrategy getPaymentStrategy() {
 
          <para>
             Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to
-            the session context. The producer method won't be called again in the same session.
+            the session context. The producer method will not be called again in the same session.
          </para>
   
          <note>
@@ -123,14 +123,14 @@ public PaymentStrategy getPaymentStrategy() {
          <title>Injection into producer methods</title>
 
          <para>
-            There's one potential problem with the code above. The implementations of
+            There is one potential problem with the code above. The implementations of
             <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal>
-            operator. Objects instantiated directly by the application can't take advantage of dependency injection and
-            don't have interceptors.
+            operator. Objects instantiated directly by the application cannot take advantage of dependency injection and
+            do not have interceptors.
          </para>
    
          <para>
-            If this isn't what we want, we can use dependency injection into the producer method to obtain bean
+            If this is not what we want, we can use dependency injection into the producer method to obtain bean
             instances:
          </para>
 
@@ -147,18 +147,18 @@ public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,
 }]]></programlisting>
 
          <para>
-            Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer
-            method has the effect of "promoting" the current request scoped instance into session scope. This is almost
-            certainly a bug! The request scoped object will be destroyed by the container before the session ends, but
+            However, if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean, the producer
+            method has the effect of "promoting" the current request scoped instance into session scope.
+            This means the request scoped object will be destroyed by the container before the session ends, but
             the reference to the object will be left "hanging" in the session scope. This error will
-            <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean
-            instances from producer methods!
+            <emphasis>not</emphasis> be detected by the container, so take extra care when returning bean
+            instances from producer method.
          </para>
   
          <para>
-            There's at least three ways we could go about fixing this bug. We could change the scope of the
+            There are several ways to fix this bug. We could change the scope of the
             <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that
-            bean.  A better option would be to change the scope of the producer method to <literal>@Dependent</literal>
+            bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal>
             or <literal>@RequestScoped</literal>.
          </para>
   
@@ -184,9 +184,9 @@ public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
 }]]></programlisting>
 
       <para>
-         Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be
+         A new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be
          created, passed to the producer method, returned by the producer method and finally bound to the session
-         context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed,
+         context. The dependent object will not be destroyed until the <literal>Preferences</literal> object is destroyed,
          at the end of the session.
       </para>
 

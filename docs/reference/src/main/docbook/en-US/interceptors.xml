@@ -27,8 +27,7 @@
    </para>
   
    <para>
-      A <emphasis>business method interceptor</emphasis> applies to invocations of methods of the bean by clients of the
-      bean:
+      A <emphasis>business method interceptor</emphasis> applies to the invocation of bean methods by a bean's clients:
    </para>
   
    <programlisting role="JAVA"><![CDATA[public class TransactionInterceptor {
@@ -65,7 +64,7 @@
 
       <para>
          Suppose we want to declare that some of our beans are transactional. The first thing we need is an
-         <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:
+         <emphasis>interceptor binding type</emphasis> to specify exactly which beans we are interested in:
       </para>
 
       <programlisting role="JAVA"><![CDATA[@InterceptorBinding
@@ -94,9 +93,16 @@ public class ShoppingCart { ... }]]></programlisting>
       <title>Implementing interceptors</title>
 
       <para>
-         That's great, but somewhere along the line we're going to have to actually implement the interceptor that
-         provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate
-         it <literal>@Interceptor</literal> and <literal>@Transactional</literal>.
+<<<<<<< HEAD
+<<<<<<< HEAD
+         We're also going to need to implement the interceptor that provides this transaction management aspect. All we need to do is create 
+=======
+         We must also implement the interceptor that provides this transaction management aspect. All we need to do is create 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         We're also going to need to implement the interceptor that provides this transaction management aspect. All we need to do is create 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
+         a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>.
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Transactional @Interceptor
@@ -120,7 +126,7 @@ public class TransactionInterceptor {
 }]]></programlisting>
 
       <para>
-         Multiple interceptors may use the same interceptor binding type.
+         Multiple interceptors can use the same interceptor binding type.
       </para>
 
    </section>
@@ -145,16 +151,14 @@ public class TransactionInterceptor {
    </interceptors>
 </beans>]]></programlisting>
 
-      <para>Whoah! Why the angle bracket stew?</para> 
-
       <para>
-         Well, having the XML declaration is actually a <emphasis>good thing</emphasis>. It solves two problems:
+         This XML declaration solves two problems:
       </para>
 
       <itemizedlist>
          <listitem>
             <para>
-               it enables us to specify a total ordering for all the interceptors in our system, ensuring deterministic
+               it lets us specify a total ordering for all the interceptors in our system, ensuring deterministic
                behavior, and
             </para>
          </listitem>
@@ -164,7 +168,7 @@ public class TransactionInterceptor {
       </itemizedlist> 
 
       <para>
-         For example, we could specify that our security interceptor runs before our transaction interceptor.
+         For example, we could specify that our security interceptor runs before our transaction interceptor:
       </para>
 
       <programlisting role="XML"><![CDATA[<beans
@@ -179,8 +183,8 @@ public class TransactionInterceptor {
    </interceptors>
 </beans>]]></programlisting>
 
-      <para>Or we could turn them both off in our test environment by simply not mentioning them in 
-      <literal>beans.xml</literal>! Ah, so simple.</para>
+      <para>Or we can turn them both off in our test environment by simply not mentioning them in 
+      <literal>beans.xml</literal>.</para>
 
    </section>
 
@@ -288,7 +292,7 @@ public class ShoppingCart {
       <programlisting role="JAVA"><![CDATA[public @interface Action extends Transactional, Secure { ... }]]></programlisting>
 
       <para>
-         Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type
+         CDI works around this missing feature of Java by letting us annotate one interceptor binding type
          with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings
          are transitive &mdash; any bean with the first interceptor binding inherits the interceptor bindings declared as
          meta-annotations.
@@ -302,8 +306,8 @@ public @interface Action { ... }]]></programlisting>
 
       <para>
          Now, any bean annotated <literal>@Action</literal> will be bound to both
-         <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal>.  (And even
-         <literal>TransactionalSecureInterceptor</literal>, if it exists.)
+         <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal>, and 
+         <literal>TransactionalSecureInterceptor</literal>, if it exists.
       </para>
 
    </section>
@@ -329,7 +333,7 @@ public class ShoppingCart {
          </listitem>
          <listitem>
             <para>
-               interceptors may not be easily disabled at deployment time, and
+               interceptors cannot be easily disabled at deployment time, and
             </para>
          </listitem>
          <listitem>

@@ -4,14 +4,14 @@
    <title>More about beans</title>
   
       <para>
-         A bean is usually an application class that contains business logic. It may be called directly from Java code,
-         or it may be invoked via the Unified EL. A bean may access transactional resources. Dependencies between beans
+         A bean is usually an application class that contains business logic. It can be called directly from Java code,
+         or it can be invoked via the Unified EL. A bean can access transactional resources. Dependencies between beans
          are managed automatically by the container. Most beans are <emphasis>stateful</emphasis> and
          <emphasis>contextual</emphasis>. The lifecycle of a bean is always managed by the container.
       </para>
 
       <para>
-         Let's back up a second. What does it really mean to be <emphasis>contextual</emphasis>? Since beans may be
+         Let's back up a second. What does it really mean to be <emphasis>contextual</emphasis>? Since beans can be
          stateful, it matters <emphasis>which</emphasis> bean instance I have. Unlike a stateless component model (for
          example, stateless session beans) or a singleton component model (such as servlets, or singleton beans),
          different clients of a bean see the bean in different states. The client-visible state depends upon which
@@ -34,7 +34,7 @@
       </itemizedlist>
   
       <para>
-         For a given thread in a CDI application, there may be an <emphasis>active context</emphasis> associated with
+         For a given thread in a CDI application, there can be an <emphasis>active context</emphasis> associated with
          the scope of the bean. This context may be unique to the thread (for example, if the bean is request scoped),
          or it may be shared with certain other threads (for example, if the bean is session scoped) or even all other
          threads (if it is application scoped).
@@ -55,33 +55,39 @@
 
       <itemizedlist>
          <listitem>
-            <para>they interact via well-defined public APIs</para>
+            <para>they interact via well-defined public APIs, and</para>
          </listitem>
          <listitem>
-            <para>their lifecycles are completely decoupled</para>
+            <para>their lifecycles are completely decoupled.</para>
          </listitem>
       </itemizedlist>
 
       <para>
-         We can replace one bean with another different bean that implements the same interface and has a different lifecycle
-         (a different scope) without affecting the other bean implementation. In fact, CDI defines a simple facility for
-         overriding bean implementations at deployment time, as we will see in <xref linkend="alternatives"/>.
+         We can replace one bean with a different bean that implements the same interface and has a different lifecycle
+         (a different scope) without affecting the first bean implementation. See <xref linkend="alternatives"/> for
+         information about overriding bean implementations at deployment time.
       </para>
   
       <para>
-         Note that not all clients of a bean are beans themselves. Other objects such as servlets or message-driven
-         beans&mdash;which are by nature not injectable, contextual objects&mdash;may also obtain references to beans by
+         Not all clients of a bean are beans themselves. Other objects such as servlets or message-driven beans &mdash; 
+         which are by nature not injectable, contextual objects &mdash; can also obtain references to beans by
          injection.
       </para>
 
    <section id="bean-anatomy">
       <title>The anatomy of a bean</title>
   
-      <para>Enough hand-waving. More formally, the anatomy of a bean, according to the spec:</para>
+<<<<<<< HEAD
+<<<<<<< HEAD
+      <para>Enough hand-waving. According to the specification, the anatomy of a bean is:</para>
+=======
+      <para>According to the specification, a bean comprises the following attributes:</para>
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      <para>Enough hand-waving. According to the specification, the anatomy of a bean is:</para>
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
 
       <blockquote>
-
-         <para>A bean comprises the following attributes:</para>
 
          <itemizedlist>
             <listitem><para>A (nonempty) set of bean types</para></listitem>
@@ -103,7 +109,15 @@
 
          <para>
             Beans usually acquire references to other beans via dependency injection. Any injected attribute specifies a
-            "contract" that must be satisfied by the bean to be injected. The contract is:
+<<<<<<< HEAD
+<<<<<<< HEAD
+            "contract" that must be satisfied by the bean to be injected. The contract specified includes:
+=======
+            "contract" that must be satisfied by the bean to be injected. The contract defines:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            "contract" that must be satisfied by the bean to be injected. The contract specified includes:
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          </para>
 
          <itemizedlist>
@@ -146,15 +160,33 @@ public class BookShopBean
             <para>
                The bean types of a session bean include local interfaces and the bean class local view (if any). 
                EJB remote interfaces are not considered bean types of a session bean. You can't inject an EJB using
-               its remote interface unless you define a <emphasis>resource</emphasis>, which we'll meet in 
-               <xref linkend="resources"/>.
+<<<<<<< HEAD
+<<<<<<< HEAD
+               its remote interface unless you define a <emphasis>resource</emphasis>. If you want to know more,
+               skip ahead to <xref linkend="resources"/>.
+=======
+               its remote interface unless you define a <emphasis>resource</emphasis> &mdash; see <xref linkend="resources"/>
+               for details.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+               its remote interface unless you define a <emphasis>resource</emphasis>. If you want to know more,
+               skip ahead to <xref linkend="resources"/>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             </para>
          </note>
 
          <para>
-            Bean types may be restricted to an explicit set by annotating the bean with the <literal>@Typed</literal>
-            annotation and listing the classes that should be bean types. For instance, the bean types of this bean have 
-            been restricted to <literal>Shop&lt;Book&gt;</literal>, together with <literal>java.lang.Object</literal>:
+<<<<<<< HEAD
+<<<<<<< HEAD
+            To restrict the bean types to an explicit set, annotate the bean with the <literal>@Typed</literal>
+=======
+            Restrict the bean types to an explicit set by annotating the bean with the <literal>@Typed</literal>
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            To restrict the bean types to an explicit set, annotate the bean with the <literal>@Typed</literal>
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
+            annotation and listing the classes that should be types. The bean types of the following bean have been
+            restricted to <literal>Shop&lt;Book&gt;</literal>, together with <literal>java.lang.Object</literal>:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Typed(Shop.class)
@@ -192,7 +224,7 @@ public @interface CreditCard {}]]></programlisting>
          
          <note>
             <para>
-               Pay attention to the names of the built-in annotations in CDI and EJB. You'll notice that they are 
+               Pay attention to the names of the built-in annotations in CDI and EJB. You will notice that they are 
                often adjectives. We encourage you to follow this convention when creating your custom annotations, 
                since they serve to describe the behaviors and roles of the class.
             </para>
@@ -200,8 +232,16 @@ public @interface CreditCard {}]]></programlisting>
             
          <para>
             Now that we have defined a qualifier annotation, we can use it to disambiguate an injection point. The 
-            following injection point has the bean type <literal>PaymentProcessor</literal> and qualifier 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
+            following injection point has the bean type <literal>PaymentProcessor</literal> and the qualifier
             <literal>@CreditCard</literal>:
+=======
+            following injection point has the <literal>PaymentProcessor</literal> bean type and the 
+            <literal>@CreditCard</literal> qualifier annotation:
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
          </para>
 
          <programlisting role="JAVA"><![CDATA[@Inject @CreditCard PaymentProcessor paymentProcessor]]></programlisting>
@@ -213,8 +253,18 @@ public @interface CreditCard {}]]></programlisting>
          </para>
          
          <para>
-            How do we specify that qualifiers of a bean? By annotating the bean class, of course! The following bean 
-            has the qualifier <literal>@CreditCard</literal> and implements the bean type <literal>PaymentProcessor</literal>. 
+<<<<<<< HEAD
+<<<<<<< HEAD
+            We can also specify the qualifiers of a bean by annotating the bean class. The following bean has the
+            qualifier <literal>@CreditCard</literal> and implements the bean type <literal>PaymentProcessor</literal>.
+=======
+            To specify the qualifiers of a bean, annotate the bean class. The following bean has the
+            <literal>@CreditCard</literal> qualifier and implements the <literal>PaymentProcessor</literal> bean type. 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            We can also specify the qualifiers of a bean by annotating the bean class. The following bean has the
+            qualifier <literal>@CreditCard</literal> and implements the bean type <literal>PaymentProcessor</literal>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             Therefore, it satisfies our qualified injection point:
          </para>
 
@@ -224,7 +274,8 @@ public class CreditCardPaymentProcessor
 
          <note>
             <para>
-               If a bean or an injection point does not explicitly specify a qualifier, it has the default qualifier, <literal>@Default</literal>.
+               If a bean or an injection point does not explicitly specify a qualifier, it has the default qualifier,
+               <literal>@Default</literal>.
             </para>
          </note>
          
@@ -237,9 +288,17 @@ public class CreditCardPaymentProcessor
          -->
          
          <para>
-            That's not quite the end of the story. CDI also defines a simple <emphasis>resolution rule</emphasis> that helps 
-            the container decide what to do if there is more than one bean that satisfies a particular contract. We'll get 
-            into the details in <xref linkend="injection"/>.
+            CDI also defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what 
+            to do if there is more than one bean that satisfies a particular contract. 
+<<<<<<< HEAD
+<<<<<<< HEAD
+            We cover this in more detail in <xref linkend="injection"/>.
+=======
+            See <xref linkend="injection"/> for details.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            We cover this in more detail in <xref linkend="injection"/>.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          </para>
          
          <!--
@@ -259,7 +318,7 @@ public class CreditCardPaymentProcessor
 
       <section>
          <title>Scope</title>
-         <!-- I wonder whether the explaination of contextual above would fit better here -->
+         <!-- I wonder whether the explanation of contextual above would fit better here -->
 
          <para>
             The <emphasis>scope</emphasis> of a bean defines the lifecycle and visibility of its instances.
@@ -275,14 +334,16 @@ public class CreditCardPaymentProcessor
          <programlisting role="JAVA"><![CDATA[public @SessionScoped
 class ShoppingCart implements Serializable { ... }]]></programlisting>
 
-         <para>An instance of a session-scoped bean is bound to a user session
-  and is shared by all requests that execute in the context of that session.</para>
+         <para>
+            An instance of a session-scoped bean is bound to a user session
+            and is shared by all requests that execute in the context of that session.
+         </para>
 
          <note>
             <para>
                Keep in mind that once a bean is bound to a context, it remains in that context until the context is
                destroyed. There is no way to manually remove a bean from a context. If you don't want the bean to sit 
-               in the session indefinitely, consider using another scope with a shorted lifespan, such as the request 
+               in the session indefinitely, consider using another scope with a shorter lifespan, such as the request 
                or conversation scope.
             </para>
          </note>
@@ -293,7 +354,15 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             were injected, which means their lifecycle is bound to the lifecycle of that object.
          </para>
 
-         <para>We'll talk more about scopes in <xref linkend="scopescontexts"/>.</para>
+<<<<<<< HEAD
+<<<<<<< HEAD
+         <para>We cover scopes in more detail in <xref linkend="scopescontexts"/>.</para>
+=======
+         <para>Scopes are covered in further detail in <xref linkend="scopescontexts"/>.</para>
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+         <para>We cover scopes in more detail in <xref linkend="scopescontexts"/>.</para>
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
 
       </section>
 
@@ -301,8 +370,8 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          <title>EL name</title>
 
          <para>
-            If you want to reference a bean in non-Java code that supports Unified EL expressions, for example, in a 
-            JSP or JSF page, you must assign the bean an <emphasis>EL name</emphasis>.
+            To reference a bean in non-Java code that supports Unified Expression Language (EL) expressions, for example, 
+            in a JSP or JSF page, you must assign the bean an <emphasis>EL name</emphasis>.
          </para>
          
          <para>
@@ -360,7 +429,7 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
             We normally annotate a bean <literal>@Alternative</literal> only when there is some other
             implementation of an interface it implements (or of any of its bean types). We can choose between 
             alternatives at deployment time by <emphasis>selecting</emphasis> an alternative in the CDI 
-            deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module that uses 
+            deployment descriptor <literal>META-INF/beans.xml</literal> of the JAR or Java EE module that uses 
             it. Different modules can specify that they use different alternatives.
          </para>
          
@@ -376,19 +445,17 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
          <para>
             You might be familiar with the use of interceptors in EJB 3.0. In Java EE 6, this functionality has
             been generalized to work with other managed beans. That's right, you no longer have to make your bean 
-            an EJB just to intercept its methods. Holler. So what does CDI have to offer above and beyond that? Well, 
-            quite a lot actually. Let's cover some background.
+            an EJB just to intercept its methods.
          </para>
 
          <para>
             The way that interceptors were defined in Java EE 5 was counter-intuitive. You were required to specify the
             <emphasis>implementation</emphasis> of the interceptor directly on the <emphasis>implementation</emphasis>
             of the EJB, either in the <literal>@Interceptors</literal> annotation or in the XML descriptor. You might as
-            well just put the interceptor code <emphasis>in</emphasis> the implementation! Second, the order in which
-            the interceptors are applied is taken from the order in which they are declared in the annotation or the XML
-            descriptor. Perhaps this isn't so bad if you're applying the interceptors to a single bean. But, if you are
-            applying them repeatedly, then there's a good chance that you'll inadvertently define a different order for 
-            different beans. Now that's a problem.
+            well just put the interceptor code <emphasis>in</emphasis> the implementation! Additionally, the order in which
+            the interceptors were applied was taken from the order in which they were declared in the annotation or the XML
+            descriptor. This was not so bad if the interceptors were applied to a single bean, but when applied repeatedly
+            there was a possibility of inadvertently defining a different order for different beans. Now that's a problem.
          </para>
 
          <para>
@@ -399,7 +466,8 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
          
          <para>
             An interceptor binding type is a user-defined annotation that is itself annotated <literal>@InterceptorBinding</literal>.
-            It lets us bind interceptor classes to bean classes with no direct dependency between the two classes.
+            It lets us bind interceptor classes to bean classes with no direct dependency between the two classes. The following
+            code defines the <literal>Transactional</literal> interceptor binding type:
          </para>
 
          <programlisting role="JAVA"><![CDATA[@InterceptorBinding
@@ -428,15 +496,23 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          </para>
 
          <para>
-            Interceptors are deployment-specific. (We don't need a <literal>TransactionInterceptor</literal> in our
-            unit tests!) By default, an interceptor is disabled. We can enable an interceptor using the CDI deployment 
-            descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module. This is also where we
+            Interceptors are deployment-specific &mdash; a <literal>TransactionInterceptor</literal> is unnecessary in a
+<<<<<<< HEAD
+<<<<<<< HEAD
+            unit test. By default, an interceptor is disabled. You can enable interceptors in the CDI deployment 
+=======
+            unit test. By default, an interceptor is disabled. Enable interceptors in the CDI deployment 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            unit test. By default, an interceptor is disabled. You can enable interceptors in the CDI deployment 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
+            descriptor file (<literal>META-INF/beans.xml</literal>) of the JAR or Java EE module. This is also where we
             specify the interceptor ordering.
          </para>
          
          <para>
-            We'll discuss interceptors, and their cousins, decorators, in <xref linkend="interceptors"/> and <xref
-            linkend="decorators"/>.
+            For more information about interceptors and decorators, see <xref linkend="interceptors"/> and <xref
+            linkend="decorators"/> respectively.
          </para>
 
       </section>
@@ -447,9 +523,8 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
       <title>What kinds of classes are beans?</title>
      
       <para>
-         We've already seen two types of beans: JavaBeans and EJB session beans. Is that the whole story? Actually, 
-         it's just the beginning. Let's explore the various kinds of beans that CDI implementations must support 
-         out-of-the-box.
+         We've already seen two types of beans: JavaBeans and EJB session beans. CDI implementations support several other
+         bean types out-of-the-box.
       </para>
      
       <section>
@@ -480,7 +555,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             </listitem>
             <listitem>
                <para>
-                  It has an appropriate constructor&mdash;either:
+                  It has an appropriate constructor &mdash; either:
                </para>
                <itemizedlist>
                   <listitem>
@@ -503,7 +578,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
            </para>
          </note>
 
-         <para>The unrestricted set of bean types for a managed bean contains the bean class, every superclass and all 
+         <para>The unrestricted set of bean types for a managed bean contains the bean class, every superclass, and all 
          interfaces it implements directly or indirectly.</para>
 
          <para>If a managed bean has a public field, it must have the default scope <literal>@Dependent</literal>.</para>
@@ -534,7 +609,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             <para>
                Message-driven and entity beans are by nature non-contextual objects and may not be injected into other
                objects. However, message-driven beans can take advantage of some CDI functionality, such as dependency 
-               injection, interceptors and decorators. In fact, CDI will perform injection into any session or 
+               injection, interceptors, and decorators. In fact, CDI will perform injection into any session or 
                message-driven bean, even those which are not contextual instances.
             </para>
          </note>
@@ -543,7 +618,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             The unrestricted set of bean types for a session bean contains all local interfaces of the bean and their
             superinterfaces. If the session bean has a bean class local view, the unrestricted set of bean types
             contains the bean class and all superclasses. In addition, <literal>java.lang.Object</literal> is a bean
-            type of every session bean. But remote interfaces are <emphasis>not</emphasis> included in the set of bean
+            type of every session bean. However, remote interfaces are <emphasis>not</emphasis> included in the set of bean
             types.
          </para>
 
@@ -554,8 +629,16 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          <para>
             Stateful session beans may define a <emphasis>remove method</emphasis>, annotated <literal>@Remove</literal>, 
             that is used by the application to indicate that an instance should be destroyed. However, for a contextual 
-            instance of the bean&mdash;an instance under the control of CDI&mdash;this method may only be called by the 
-            application if the bean has scope <literal>@Dependent</literal>. For beans with other scopes, the application 
+            instance of the bean &mdash; an instance under the control of CDI &mdash; this method may only be called by the 
+<<<<<<< HEAD
+<<<<<<< HEAD
+            application if the bean has <literal>@Dependent</literal> scope. For beans with other scopes, the application 
+=======
+            application if the bean has the <literal>@Dependent</literal> scope. For beans with other scopes, the application 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            application if the bean has <literal>@Dependent</literal> scope. For beans with other scopes, the application 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
             must let the container destroy the bean.
          </para>
 
@@ -579,7 +662,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
               <para>remote or web service invocation, or</para>
             </listitem>
             <listitem>
-              <para>timers and asynchronous methods,</para>
+              <para>timers and asynchronous methods.</para>
             </listitem>
          </itemizedlist>
        
@@ -592,7 +675,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
          </para>
        
          <para>
-            Beans which hold references to heavy-weight resources, or hold a lot of internal state benefit from the
+            Beans that hold references to heavy-weight resources, or hold a lot of internal state, benefit from the
             advanced container-managed lifecycle defined by the EJB stateless/stateful/singleton model, with its
             support for passivation and instance pooling.
          </para>
@@ -609,14 +692,6 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             it into an EJB just by adding one of the following annotations: <literal>@Stateless</literal>, 
             <literal>@Stateful</literal> or <literal>@Singleton</literal>.
          </para>
-            
-         <para>
-            On the other hand, don't be scared to use session beans just because you've heard your friends say 
-            they're "heavyweight". It's nothing more than superstition to think that something is "heavier" just 
-            because it's hosted natively within the Java EE container, instead of by a proprietary bean container 
-            or dependency injection framework that runs as an additional layer of obfuscation. And as a general
-            principle, you should be skeptical of folks who use vaguely defined terminology like "heavyweight".
-         </para>
          
      </section>
      
@@ -627,7 +702,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             Not everything that needs to be injected can be boiled down to a bean class instantiated by the container
             using <literal>new</literal>. There are plenty of cases where we need additional control. What if we need 
             to decide at runtime which implementation of a type to instantiate and inject? What if we need to inject  
-            an object that is obtained by querying a service or transactional resource, for example by executing a JPA 
+            an object that is obtained by querying a service or transactional resource, for example, by executing a JPA 
             query?
          </para>
 
@@ -655,12 +730,11 @@ public class RandomNumberGenerator {
 }]]></programlisting>
 
          <para>
-            We can't write a bean class that is itself a random number. But we can certainly write a method that returns 
-            a random number. By making the method a producer method, we allow the return value of the method&mdash;in this 
-            case an <literal>Integer</literal>&mdash;to be injected. We can even specify a qualifier&mdash;in this case 
-            <literal>@Random</literal>, a scope&mdash;which in this case defaults to <literal>@Dependent</literal>, 
-            and an EL name&mdash;which in this case defaults to <literal>randomNumber</literal> according to the JavaBeans 
-            property name convention. Now we can get a random number anywhere:
+            We can't write a bean class that is itself a random number, but we can write a method that returns 
+            a random number. By making this method a producer method, we allow the return value of the method (in this 
+            case, an <literal>Integer</literal>) to be injected. We can even specify a qualifier (in this instance, 
+            <literal>@Random</literal>, a scope) and an EL name (which in this case defaults to <literal>randomNumber</literal>
+            according to the JavaBeans property name convention). Now we can get a random number anywhere:
          </para>
    
          <programlisting role="JAVA"><![CDATA[@Inject @Random int randomNumber;]]></programlisting>
@@ -673,7 +747,7 @@ public class RandomNumberGenerator {
          
          <para>
             A producer method must be a non-abstract method of a managed bean class or session bean class. A producer
-            method may be either static or non-static. If the bean is a session bean, the producer method must be either
+            method can be either static or non-static. If the bean is a session bean, the producer method must be either
             a business method of the EJB or a static method of the bean class.
          </para>
 
@@ -685,7 +759,7 @@ public class RandomNumberGenerator {
             <listitem>
                <para>
                   If the return type is an interface, the unrestricted set of bean types contains the return type, all
-                  interfaces it extends directly or indirectly and <literal>java.lang.Object</literal>.
+                  interfaces it extends directly or indirectly, and <literal>java.lang.Object</literal>.
                </para>
             </listitem>
             <listitem>
@@ -697,22 +771,22 @@ public class RandomNumberGenerator {
             <listitem>
                <para>
                   If the return type is a class, the unrestricted set of bean types contains the return type, every
-                  superclass and all interfaces it implements directly or indirectly.
+                  superclass, and all interfaces it implements directly or indirectly.
                </para>
             </listitem>
          </itemizedlist>
 
          <note>
             <para>
-               Producer methods and fields may have a primitive bean type. For the purpose of resolving dependencies,
+               Producer methods and fields can have a primitive bean type. For the purpose of resolving dependencies,
                primitive types are considered to be identical to their corresponding wrapper types in 
                <literal>java.lang</literal>.
             </para>
          </note>
 
          <para>
-            If the producer method has method parameters, the container will look for a bean that satisfies the type
-            and qualifiers of each parameter and pass it to the method automatically&#8212;another form of 
+            If the producer method has method parameters, the container looks for a bean that satisfies the type
+            and qualifiers of each parameter and passes it to the method automatically &mdash; another form of 
             dependency injection.
          </para>
    
@@ -720,7 +794,7 @@ public class RandomNumberGenerator {
    return user.getRoles();
 }]]></programlisting>
    
-         <para>We'll talk much more about producer methods in <xref linkend="producermethods"/>.</para>
+         <para>We cover producer methods in more detail in <xref linkend="producermethods"/>.</para>
    
      </section>
 
@@ -729,7 +803,7 @@ public class RandomNumberGenerator {
 
          <para>
             A <emphasis>producer field</emphasis> is a simpler alternative to a producer method. A producer field is 
-            declared by annotating a field of a bean class with the <literal>@Produces</literal> annotation&mdash;the 
+            declared by annotating a field of a bean class with the <literal>@Produces</literal> annotation &mdash; the 
             same annotation used for producer methods.
          </para>
 
@@ -739,14 +813,32 @@ public class RandomNumberGenerator {
 }]]></programlisting>
          
          <para>
-            The rules for determining the bean types of a producer field parallel the rules for producer methods.
+<<<<<<< HEAD
+<<<<<<< HEAD
+            The rules for determining the bean types of a producer field correspond to the rules for 
+            producer methods.
+=======
+            The rules for determining the bean types of a producer field are identical to those of determining the bean 
+            types of a producer method.
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            The rules for determining the bean types of a producer field correspond to the rules for 
+            producer methods.
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
          </para>
 
          <para>
-            A producer field is really just a shortcut that lets us avoid writing a useless getter method. However, 
-            in addition to convenience, producer fields serve a specific purpose as an adaptor for Java EE component 
-            environment injection, but to learn more about that, you'll have to wait until <xref linkend="resources"/>. 
-            Because we can't wait to get to work on some examples.
+            A producer field can be used as a shortcut to avoid writing a useless getter method. 
+<<<<<<< HEAD
+<<<<<<< HEAD
+            Producer fields also serve a specific purpose as adaptors for Java EE component 
+=======
+            However, producer fields serve a specific purpose as adaptors for Java EE component 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+            Producer fields also serve a specific purpose as adaptors for Java EE component 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
+            environment injection. See <xref linkend="resources"/> for more details.
          </para>
 
       </section>
@@ -762,7 +854,7 @@ public class RandomNumberGenerator {
          First, it's important to understand that the XML bean descriptor in CDI (beans.xml) is not there to define
          beans in XML, like in other popular bean containers. Rather, you use this file to enable CDI services for the
          current bean archive that is difficult to define consistently in Java or which you don't want to define in Java
-         (e.g., to accomodate testing).
+         (e.g. to accommodate testing).
       </para>
       
       <para>

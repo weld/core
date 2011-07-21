@@ -3,23 +3,23 @@
 <partintro>
 
    <para>
-      The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving
+      The first major theme of CDI is <emphasis>loose coupling</emphasis>. We have already seen three means of achieving
       loose coupling:
    </para>
 
    <itemizedlist>
       <listitem>
          <para>
-            <emphasis>alternatives</emphasis> enable deployment time polymorphism,
+            <emphasis>alternatives</emphasis>, which enable deployment time polymorphism,
          </para>
       </listitem>
       <listitem>
          <para>
-            <emphasis>producer methods</emphasis> enable runtime polymorphism, and</para>
+            <emphasis>producer methods</emphasis>, which enable runtime polymorphism, and</para>
       </listitem>
       <listitem>
          <para>
-            <emphasis>contextual lifecycle management</emphasis> decouples bean lifecycles.
+            <emphasis>contextual lifecycle management</emphasis>, which decouples bean lifecycles.
          </para>
       </listitem>
    </itemizedlist>
@@ -67,12 +67,12 @@
   
    <para>
       You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever
-      defaulting rules&mdash;so-called "configuration by convention"&mdash;but because there are simply no strings
-      there to begin with!
+      defaulting rules &mdash; so-called "configuration by convention" &mdash; but because there are simply no strings
+      there to begin with.
    </para>
 
    <para>
-      The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation
+      The obvious benefit of this approach is that <emphasis>any</emphasis> IDE can provide autocompletion, validation,
       and refactoring without the need for special tooling. But there is a second, less-immediately-obvious, benefit.
       It turns out that when you start thinking of identifying objects, events or interceptors via annotations instead
       of names, you have an opportunity to lift the semantic level of your code.
@@ -90,7 +90,7 @@
          <para><literal>@Mock</literal>,</para>
       </listitem>
       <listitem>
-         <para><literal>@Secure</literal> or</para>
+         <para><literal>@Secure</literal>, or</para>
       </listitem>
       <listitem>
          <para><literal>@Updated</literal>,</para>
@@ -124,7 +124,7 @@
       CDI <emphasis>stereotypes</emphasis> take this idea a step further. A stereotype models a common
       <emphasis>role</emphasis> in your application architecture. It encapsulates various properties of the role,
       including scope, interceptor bindings, qualifiers, etc, into a single reusable package. (Of course, there is also
-      the benefit of tucking some of those annotations away).
+      the benefit of tucking some of those annotations away.)
    </para>
   
    <!--
@@ -137,9 +137,16 @@
   
    <para>
       We're now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our
-      code both easier to validate and more understandable. Most of the time you don't ever really
-      <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their
-      power.
+<<<<<<< HEAD
+<<<<<<< HEAD
+      code both easier to validate and more understandable. Most of the time you don't need to use these features, but if you 
+=======
+      code both easier to validate and more understandable. Most of the time you do not need to use these features, but if you 
+>>>>>>> b63c52c6e5f95bb1a6e0263ce462eb67ed0790ef
+=======
+      code both easier to validate and more understandable. Most of the time you don't need to use these features, but if you 
+>>>>>>> 14b5c34... Spelling and grammar changes, and minor paragraph rewrites for clarity.
+      use them wisely, you'll come to appreciate their power.
    </para>
 
 <!--
