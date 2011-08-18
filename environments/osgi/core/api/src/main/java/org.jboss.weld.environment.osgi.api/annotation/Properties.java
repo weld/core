@@ -41,17 +41,18 @@ import static java.lang.annotation.ElementType.TYPE;
  * @see org.jboss.weld.environment.osgi.api.Service
  * @see org.jboss.weld.environment.osgi.api.ServiceRegistry
  */
-@Target({ TYPE })
+@Target({TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface Properties {
+public @interface Properties
+{
 
-    /**
-     * The properties of the annotated class as OSGi service properties (for LDAP filtering).
-     *
-     * @return the properties of the service implementation as an array of {@link Property}.
-     */
-    public Property[] value() default {};
+   /**
+    * The properties of the annotated class as OSGi service properties (for LDAP filtering).
+    *
+    * @return the properties of the service implementation as an array of {@link Property}.
+    */
+   public Property[] value() default {};
 
 }

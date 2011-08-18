@@ -40,16 +40,17 @@ import static java.lang.annotation.ElementType.*;
  * @see org.jboss.weld.environment.osgi.api.Service
  * @see org.jboss.weld.environment.osgi.api.ServiceRegistry
  */
-@Target({ TYPE, METHOD, PARAMETER, FIELD })
+@Target({TYPE, METHOD, PARAMETER, FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface Filter {
+public @interface Filter
+{
 
-    /**
-     * The LDAP filter.
-     *
-     * @return the LDAP filter as a String.
-     */
-    String value();
+   /**
+    * The LDAP filter.
+    *
+    * @return the LDAP filter as a String.
+    */
+   String value();
 }

@@ -44,70 +44,82 @@ import org.osgi.framework.ServiceReference;
  * @see ServiceEventType
  * @see javax.enterprise.event.Observes
  */
-public class ServiceEvents {
+public class ServiceEvents
+{
 
-    /**
-     * Represents the service events for the {@link ServiceEventType#SERVICE_ARRIVAL} state.
-     */
-    public static class ServiceArrival extends AbstractServiceEvent
-    {
+   /**
+    * Represents the service events for the {@link ServiceEventType#SERVICE_ARRIVAL} state.
+    */
+   public static class ServiceArrival extends AbstractServiceEvent
+   {
 
-        /**
-         * Construct a new {@link ServiceArrival} event.
-         * @param ref the firing {@link ServiceReference}
-         * @param context the firing {@link BundleContext}
-         */
-        public ServiceArrival(
-                ServiceReference ref, BundleContext context) {
-            super(ref, context);
-        }
+      /**
+       * Construct a new {@link ServiceArrival} event.
+       *
+       * @param ref     the firing {@link ServiceReference}
+       * @param context the firing {@link BundleContext}
+       */
+      public ServiceArrival(
+            ServiceReference ref, BundleContext context)
+      {
+         super(ref, context);
+      }
 
-        @Override
-        public ServiceEventType eventType() {
-            return ServiceEventType.SERVICE_ARRIVAL;
-        }
-    }
+      @Override
+      public ServiceEventType eventType()
+      {
+         return ServiceEventType.SERVICE_ARRIVAL;
+      }
+   }
 
-    /**
-     * Represents the service events for the {@link ServiceEventType#SERVICE_CHANGED} state.
-     */
-    public static class ServiceChanged extends AbstractServiceEvent {
+   /**
+    * Represents the service events for the {@link ServiceEventType#SERVICE_CHANGED} state.
+    */
+   public static class ServiceChanged extends AbstractServiceEvent
+   {
 
-        /**
-         * Construct a new {@link ServiceChanged} event.
-         * @param ref the firing {@link ServiceReference}
-         * @param context the firing {@link BundleContext}
-         */
-        public ServiceChanged(
-                ServiceReference ref, BundleContext context) {
-            super(ref, context);
-        }
+      /**
+       * Construct a new {@link ServiceChanged} event.
+       *
+       * @param ref     the firing {@link ServiceReference}
+       * @param context the firing {@link BundleContext}
+       */
+      public ServiceChanged(
+            ServiceReference ref, BundleContext context)
+      {
+         super(ref, context);
+      }
 
-        @Override
-        public ServiceEventType eventType() {
-            return ServiceEventType.SERVICE_CHANGED;
-        }
-    }
+      @Override
+      public ServiceEventType eventType()
+      {
+         return ServiceEventType.SERVICE_CHANGED;
+      }
+   }
 
-    /**
-     * Represents the service events for the {@link ServiceEventType#SERVICE_DEPARTURE} state.
-     */
-    public static class ServiceDeparture extends AbstractServiceEvent {
+   /**
+    * Represents the service events for the {@link ServiceEventType#SERVICE_DEPARTURE} state.
+    */
+   public static class ServiceDeparture extends AbstractServiceEvent
+   {
 
-        /**
-         * Construct a new {@link ServiceDeparture} event.
-         * @param ref the firing {@link ServiceReference}
-         * @param context the firing {@link BundleContext}
-         */
-        public ServiceDeparture(
-                ServiceReference ref, BundleContext context) {
-            super(ref, context);
-        }
+      /**
+       * Construct a new {@link ServiceDeparture} event.
+       *
+       * @param ref     the firing {@link ServiceReference}
+       * @param context the firing {@link BundleContext}
+       */
+      public ServiceDeparture(
+            ServiceReference ref, BundleContext context)
+      {
+         super(ref, context);
+      }
 
-        @Override
-        public ServiceEventType eventType() {
-            return ServiceEventType.SERVICE_DEPARTURE;
-        }
-    }
+      @Override
+      public ServiceEventType eventType()
+      {
+         return ServiceEventType.SERVICE_DEPARTURE;
+      }
+   }
 
 }

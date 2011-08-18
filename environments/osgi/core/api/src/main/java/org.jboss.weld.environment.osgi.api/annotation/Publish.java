@@ -40,7 +40,7 @@ import static java.lang.annotation.ElementType.TYPE;
  * <p>The published implementation might be discriminated using regular
  * {@link javax.inject.Qualifier} annotations or a LDAP filter with {@link Filter}
  * annotation.</p>
- * <p>
+ * <p/>
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
@@ -50,23 +50,24 @@ import static java.lang.annotation.ElementType.TYPE;
  * @see org.jboss.weld.environment.osgi.api.Service
  * @see org.jboss.weld.environment.osgi.api.ServiceRegistry
  */
-@Target({ TYPE })
+@Target({TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Publish {
+public @interface Publish
+{
 
-    /**
-     * The contracts the annotated class fulfills.
-     *
-     * @return the contracts of the annotated implementation as an array of interfaces.
-     */
-    public Class[] contracts() default {};
+   /**
+    * The contracts the annotated class fulfills.
+    *
+    * @return the contracts of the annotated implementation as an array of interfaces.
+    */
+   public Class[] contracts() default {};
 
-    /**
-     * The rank of the service to find the best available service on lookups.
-     *
-     * @return the rank of the service. Default is 0.
-     */
-    public int rank() default 0;
+   /**
+    * The rank of the service to find the best available service on lookups.
+    *
+    * @return the rank of the service. Default is 0.
+    */
+   public int rank() default 0;
 
 }

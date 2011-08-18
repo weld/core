@@ -41,9 +41,10 @@ import static java.lang.annotation.ElementType.*;
  * @see BundleVersion
  * @see BundleHeader
  */
-@Target({ METHOD, PARAMETER, FIELD })
+@Target({METHOD, PARAMETER, FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface BundleHeaders {
+public @interface BundleHeaders
+{
 }

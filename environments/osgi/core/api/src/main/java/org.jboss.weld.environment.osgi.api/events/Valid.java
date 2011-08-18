@@ -29,7 +29,7 @@ package org.jboss.weld.environment.osgi.api.events;
  * </ul></p>
  * <p>It may be used in <code>Observes</code> method in order to listen all bean
  * bundle validation events.</p>
- * <p>
+ * <p/>
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
@@ -37,8 +37,9 @@ package org.jboss.weld.environment.osgi.api.events;
  * @see org.osgi.cdi.api.extension.BundleState
  * @see Invalid
  */
-public class Valid {
-    // TODO : find a better name
-    // as @ConsistantDependencies
-    // or make it as a start/stop event for container only when deps. are OK
+public class Valid
+{
+   // TODO : find a better name
+   // as @ConsistantDependencies
+   // or make it as a start/stop event for container only when deps. are OK
 }

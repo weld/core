@@ -42,45 +42,53 @@ import org.osgi.framework.BundleContext;
  * @see BundleContainerEventType
  * @see javax.enterprise.event.Observes
  */
-public class BundleContainerEvents {
+public class BundleContainerEvents
+{
 
-    /**
-     * Represents the bundle events for the {@link BundleContainerEventType#INITIALIZED} state.
-     */
-    public static class BundleContainerInitialized extends AbstractBundleContainerEvent
-    {
+   /**
+    * Represents the bundle events for the {@link BundleContainerEventType#INITIALIZED} state.
+    */
+   public static class BundleContainerInitialized extends AbstractBundleContainerEvent
+   {
 
-        /**
-         * Construct a new {@link BundleContainerInitialized} event.
-         * @param context the firing {@link BundleContext}.
-         */
-        public BundleContainerInitialized(BundleContext context) {
-            super(context);
-        }
+      /**
+       * Construct a new {@link BundleContainerInitialized} event.
+       *
+       * @param context the firing {@link BundleContext}.
+       */
+      public BundleContainerInitialized(BundleContext context)
+      {
+         super(context);
+      }
 
-        @Override
-        public BundleContainerEventType getType() {
-            return BundleContainerEventType.INITIALIZED;
-        }
-    }
+      @Override
+      public BundleContainerEventType getType()
+      {
+         return BundleContainerEventType.INITIALIZED;
+      }
+   }
 
-    /**
-     * Represents the bundle events for the {@link BundleContainerEventType#SHUTDOWN} state.
-     */
-    public static class BundleContainerShutdown extends AbstractBundleContainerEvent {
+   /**
+    * Represents the bundle events for the {@link BundleContainerEventType#SHUTDOWN} state.
+    */
+   public static class BundleContainerShutdown extends AbstractBundleContainerEvent
+   {
 
-        /**
-         * Construct a new {@link BundleContainerShutdown} event.
-         * @param context the firing {@link BundleContext}.
-         */
-        public BundleContainerShutdown(BundleContext context) {
-            super(context);
-        }
+      /**
+       * Construct a new {@link BundleContainerShutdown} event.
+       *
+       * @param context the firing {@link BundleContext}.
+       */
+      public BundleContainerShutdown(BundleContext context)
+      {
+         super(context);
+      }
 
-        @Override
-        public BundleContainerEventType getType() {
-            return BundleContainerEventType.SHUTDOWN;
-        }
-    }
+      @Override
+      public BundleContainerEventType getType()
+      {
+         return BundleContainerEventType.SHUTDOWN;
+      }
+   }
 
 }

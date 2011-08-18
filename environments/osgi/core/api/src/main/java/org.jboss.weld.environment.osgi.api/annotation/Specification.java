@@ -39,16 +39,17 @@ import static java.lang.annotation.ElementType.PARAMETER;
  * @see javax.enterprise.event.Event
  * @see javax.enterprise.event.Observes
  */
-@Target({ PARAMETER })
+@Target({PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface Specification {
+public @interface Specification
+{
 
-    /**
-     * The specification class filtering the received {@link javax.enterprise.event.Event}.
-     *
-     * @return the specification class.
-     */
-    Class value();
+   /**
+    * The specification class filtering the received {@link javax.enterprise.event.Event}.
+    *
+    * @return the specification class.
+    */
+   Class value();
 }

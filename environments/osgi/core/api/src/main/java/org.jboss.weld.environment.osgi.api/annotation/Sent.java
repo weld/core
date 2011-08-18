@@ -38,9 +38,10 @@ import static java.lang.annotation.ElementType.PARAMETER;
  * @see org.jboss.weld.environment.osgi.api.events.InterBundleEvent
  * @see org.osgi.framework.Bundle
  */
-@Target({ PARAMETER })
+@Target({PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface Sent {
+public @interface Sent
+{
 }

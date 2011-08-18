@@ -30,6 +30,8 @@ package org.jboss.weld.environment.osgi.api;
  * @see org.jboss.weld.environment.osgi.api.events.Valid
  * @see org.jboss.weld.environment.osgi.api.events.Invalid
  */
-public enum BundleState {
-    VALID, INVALID
+public enum BundleState
+{
+   VALID,
+   INVALID
 }
