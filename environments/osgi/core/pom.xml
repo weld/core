@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-core-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <version>1.1.0-SNAPSHOT</version>
+      <relativePath>../../../parent/pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld.osgi</groupId>
+   <artifactId>weld-osgi-core</artifactId>
+    <version>1.0-SNAPSHOT</version>
+   <packaging>parent</packaging>
+   <name>Weld OSGi (Core)</name>
+
+   <description>Weld support for OSGi environments</description>
+
+   <url>http://www.seamframework.org/Weld</url>
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Mathieu Ancelin</name>
+         <email>mathieu.ancelin@serli.com</email>
+      </developer>
+       <developer>
+         <name>Matthieu Clochard</name>
+         <email>matthieu.clochard@serli.com</email>
+      </developer>
+   </developers>
+
+    <modules>
+        <module>weld-osgi-core-api</module>
+        <module>weld-osgi-core-spi</module>
+        <module>weld-osgi-core-extension</module>
+        <module>weld-osgi-core-integration</module>
+    </modules>
+
+</project>
