@@ -24,16 +24,17 @@ package org.jboss.weld.environment.osgi.api.events;
  * @see AbstractBundleEvent
  * @see BundleEvents
  */
-public enum BundleEventType {
+public enum BundleEventType
+{
 
-    INSTALLED,
-    LAZY_ACTIVATION,
-    RESOLVED,
-    STARTED,
-    STARTING,
-    STOPPED,
-    STOPPING,
-    UNINSTALLED,
-    UNRESOLVED,
-    UPDATED,
+   INSTALLED,
+   LAZY_ACTIVATION,
+   RESOLVED,
+   STARTED,
+   STARTING,
+   STOPPED,
+   STOPPING,
+   UNINSTALLED,
+   UNRESOLVED,
+   UPDATED,
 }

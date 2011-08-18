@@ -44,16 +44,17 @@ import static java.lang.annotation.ElementType.*;
  * @see OSGiBundle
  * @see BundleVersion
  */
-@Target({ METHOD, PARAMETER, FIELD })
+@Target({METHOD, PARAMETER, FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface BundleName {
+public @interface BundleName
+{
 
-    /**
-     * The bundle symbolic name. Discriminatory value for the typesafe resolution algorithm.
-     *
-     * @return the bundle symbolic name.
-     */
-    @Nonbinding String value();
+   /**
+    * The bundle symbolic name. Discriminatory value for the typesafe resolution algorithm.
+    *
+    * @return the bundle symbolic name.
+    */
+   @Nonbinding String value();
 }

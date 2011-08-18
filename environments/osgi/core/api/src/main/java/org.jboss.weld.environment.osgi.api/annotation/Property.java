@@ -47,19 +47,20 @@ import java.lang.annotation.Target;
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Property {
+public @interface Property
+{
 
-    /**
-     * The property name.
-     *
-     * @return the property name.
-     */
-    String name();
+   /**
+    * The property name.
+    *
+    * @return the property name.
+    */
+   String name();
 
-    /**
-     * The property value.
-     *
-     * @return the property value.
-     */
-    String value();
+   /**
+    * The property value.
+    *
+    * @return the property value.
+    */
+   String value();
 }

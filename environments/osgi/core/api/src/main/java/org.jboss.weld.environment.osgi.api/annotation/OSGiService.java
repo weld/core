@@ -33,7 +33,7 @@ import static java.lang.annotation.ElementType.*;
  * interface or directly the service contract interface. The injected service might
  * be filtered using regular {@link Qualifier} annotations or a LDAP filter
  * with {@link Filter} annotation. It also might be mark as required for
- bundle running using {@link Required} annotation.</p>
+ * bundle running using {@link Required} annotation.</p>
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
@@ -43,10 +43,11 @@ import static java.lang.annotation.ElementType.*;
  * @see org.jboss.weld.environment.osgi.api.Service
  * @see org.jboss.weld.environment.osgi.api.ServiceRegistry
  */
-@Target({ METHOD, PARAMETER, FIELD })
+@Target({METHOD, PARAMETER, FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface OSGiService {
-    @Nonbinding int value() default 1;
+public @interface OSGiService
+{
+   @Nonbinding int value() default 1;
 }

@@ -48,16 +48,17 @@ import static java.lang.annotation.ElementType.*;
  * @see BundleVersion
  * @see BundleHeaders
  */
-@Target({ METHOD, PARAMETER, FIELD })
+@Target({METHOD, PARAMETER, FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface BundleHeader {
+public @interface BundleHeader
+{
 
-    /**
-     * The name of the specific bundle header. Nondiscriminatory value for the typesafe resolution algorithm.
-     *
-     * @return the name of the bundle header.
-     */
-    @Nonbinding String value();
+   /**
+    * The name of the specific bundle header. Nondiscriminatory value for the typesafe resolution algorithm.
+    *
+    * @return the name of the bundle header.
+    */
+   @Nonbinding String value();
 }

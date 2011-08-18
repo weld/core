@@ -46,16 +46,17 @@ import static java.lang.annotation.ElementType.*;
  * @see BundleName
  * @see BundleVersion
  */
-@Target({ METHOD, PARAMETER, FIELD })
+@Target({METHOD, PARAMETER, FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface BundleDataFile {
+public @interface BundleDataFile
+{
 
-    /**
-     * The data file that should be injected. Nondiscriminatory value for the typesafe resolution algorithm.
-     *
-     * @return the relative path of the data file in the current bundle.
-     */
-    @Nonbinding String value();
+   /**
+    * The data file that should be injected. Nondiscriminatory value for the typesafe resolution algorithm.
+    *
+    * @return the relative path of the data file in the current bundle.
+    */
+   @Nonbinding String value();
 }
