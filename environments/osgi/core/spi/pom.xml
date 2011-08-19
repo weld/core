@@ -25,6 +25,7 @@
    <url>http://www.seamframework.org/Weld</url>
 
    <dependencies>
+      
       <dependency>
          <groupId>org.osgi</groupId>
          <artifactId>org.osgi.core</artifactId>
@@ -36,7 +37,7 @@
          <artifactId>weld-osgi-core-api</artifactId>
          <version>1.0-SNAPSHOT</version>
       </dependency>
-
+      
    </dependencies>
 
    <build>

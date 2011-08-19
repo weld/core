@@ -676,6 +676,8 @@
                 <module>environments/se/core</module>
                 <module>environments/se/build</module>
                 <module>environments/servlet</module>
+                <module>environments/osgi/build</module>
+                <module>environments/osgi/core</module>
             </modules>
         </profile>
         <profile>
@@ -729,5 +731,4 @@
             </pluginRepositories>
         </profile>
     </profiles>
-
 </project>
