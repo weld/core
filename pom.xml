@@ -629,6 +629,7 @@
                 <module>tests-arquillian</module>
                 <module>inject-tck-runner</module>
                 <module>jboss-tck-runner</module>
+                <!--<module>environments/osgi/tests</module>-->
             </modules>
         </profile>
         <profile>
