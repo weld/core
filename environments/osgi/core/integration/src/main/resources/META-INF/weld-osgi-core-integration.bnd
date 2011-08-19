@@ -1,9 +1,8 @@
-Embed-Dependency *; scope=compile; inline=true; artifactId=!org.osgi.core|org.osgi.compendium|weld-osgi-core-api|weld-osgi-core-spi
+Embed-Dependency *; scope=compile; inline=true; artifactId=!weld-osgi-core-spi|weld-osgi-core-extension|jboss-interceptor-api|javax.inject|jsr250-api|cdi-api|el-api
 
-Export-Package org.jboss.weld.environment.osgi.impl.extension; \
-               org.jboss.weld.environment.osgi.impl.extension.beans;version=${pom.version}
-
-Import-Package org.jboss.weld.environment.osgi.api; \
+Import-Package org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=1.6.1; resolution:=optional, \
+               ch.qos.cal10n; version=0.7.2; resolution:=optional, \
+               org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.osgi.api.annotation; \
                org.jboss.weld.environment.osgi.api.events; \
                org.jboss.weld.environment.osgi.spi;version=${pom.version}, \
@@ -17,7 +16,6 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                javax.enterprise.inject.spi; \
                javax.enterprise.util; version=1.0.0, \
                javax.interceptor; version=1.1.0, \
-               org.osgi.framework, \
                javassist; \
                javassist.bytecode; \
                javassist.bytecode.analysis; \
@@ -36,5 +34,17 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                javassist.tools.rmi; \
                javassist.tools.web; version=3.14.0
 
+Private-Package !javax.interceptor.*, \
+                org.slf4j.*; -split-package:=merge-first, \
+                ch.qos.cal10n.*
+
 DynamicImport-Package *
-Bundle-Activator org.jboss.weld.environment.osgi.impl.Activator
+Bundle-Activator org.jboss.weld.environment.osgi.impl.WeldActivator
+
+Export-Package org.jboss.weld.environment.osgi.impl.embedded; \
+               org.jboss.weld.environment.osgi.impl.integration; \
+               org.jboss.weld.environment.osgi.impl.integration.discovery; \
+               org.jboss.weld.environment.osgi.impl.integration.discovery.bundle; \
+               org.jboss.weld.environment.osgi.impl; version=${pom.version}, \
+               org.jboss.weld.environment.se; \
+               org.jboss.weld.environment.se.beans
