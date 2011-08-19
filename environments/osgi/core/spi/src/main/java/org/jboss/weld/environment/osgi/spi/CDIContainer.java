@@ -17,14 +17,15 @@
 
 package org.jboss.weld.environment.osgi.spi;
 
-import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceRegistration;
+import java.util.Collection;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
-import java.util.Collection;
+
+import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * <p>This interface represents an iterable list of CDI containers used by

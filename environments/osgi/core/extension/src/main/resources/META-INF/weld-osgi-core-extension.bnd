@@ -1,0 +1,40 @@
+Embed-Dependency *; scope=compile; inline=true; artifactId=!org.osgi.core|org.osgi.compendium|weld-osgi-core-api|weld-osgi-core-spi
+
+Export-Package org.jboss.weld.environment.osgi.impl.extension; \
+               org.jboss.weld.environment.osgi.impl.extension.beans;version=${pom.version}
+
+Import-Package org.jboss.weld.environment.osgi.api; \
+               org.jboss.weld.environment.osgi.api.annotation; \
+               org.jboss.weld.environment.osgi.api.events; \
+               org.jboss.weld.environment.osgi.spi;version=${pom.version}, \
+               javax.el;version=2.2.0, \
+               javax.inject;version=1.0.0, \
+               javax.decorator; \
+               javax.enterprise.context; \
+               javax.enterprise.context.spi; \
+               javax.enterprise.event; \
+               javax.enterprise.inject; \
+               javax.enterprise.inject.spi; \
+               javax.enterprise.util; version=1.0.0, \
+               javax.interceptor; version=1.1.0, \
+               org.osgi.framework, \
+               javassist; \
+               javassist.bytecode; \
+               javassist.bytecode.analysis; \
+               javassist.bytecode.annotation; \
+               javassist.bytecode.stackmap; \
+               javassist.compiler; \
+               javassist.compiler.ast; \
+               javassist.convert; \
+               javassist.expr; \
+               javassist.runtime; \
+               javassist.scopedpool; \
+               javassist.util; \
+               javassist.util.proxy; \
+               javassist.tools; \
+               javassist.tools.reflect; \
+               javassist.tools.rmi; \
+               javassist.tools.web; version=3.14.0
+
+DynamicImport-Package *
+Bundle-Activator org.osgi.cdi.impl.Activator
