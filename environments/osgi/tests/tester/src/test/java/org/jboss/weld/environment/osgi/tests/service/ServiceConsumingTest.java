@@ -105,12 +105,12 @@ public class ServiceConsumingTest {
 //        PropertyService constructorService = provider.getConstructorService();
 //        Assert.assertNotNull("The constructor service was null", constructorService);
 //        Assert.assertEquals("The constructor service method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl1",constructorService.whoAmI());
-//        PropertyService constructorFilteredService = provider.getConstructorFilteredService();
-//        Assert.assertNotNull("The constructor filtered service was null", constructorFilteredService);
-//        Assert.assertEquals("The constructor filtered service method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl2",constructorFilteredService.whoAmI());
-//        PropertyService constructorQualifiedService = provider.getConstructorQualifiedService();
-//        Assert.assertNotNull("The constructor qualified service was null", constructorQualifiedService);
-//        Assert.assertEquals("The constructor qualified service method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl3",constructorQualifiedService.whoAmI());
+        PropertyService constructorFilteredService = provider.getConstructorFilteredService();
+        Assert.assertNotNull("The constructor filtered service was null", constructorFilteredService);
+        Assert.assertEquals("The constructor filtered service method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl2",constructorFilteredService.whoAmI());
+        PropertyService constructorQualifiedService = provider.getConstructorQualifiedService();
+        Assert.assertNotNull("The constructor qualified service was null", constructorQualifiedService);
+        Assert.assertEquals("The constructor qualified service method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl3",constructorQualifiedService.whoAmI());
 //        PropertyService constructorFilteredFromQualifierService = provider.getConstructorFilteredFromQualifierService();
 //        Assert.assertNotNull("The constructor filtered from qualifier service was null", constructorFilteredFromQualifierService);
 //        Assert.assertEquals("The constructor filtered from qualifier service method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.impl.PropertyServiceImpl3",constructorFilteredFromQualifierService.whoAmI());

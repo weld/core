@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<book>
+    <bookinfo>
+        <title>CDI OSGi integration</title>
+        <subtitle>Design Specification</subtitle>
+        <authorgroup>
+            <author>
+                <firstname>Mathieu</firstname>
+                <surname>Ancelin</surname>
+                <email>mathieu.ancelin@serli.com</email>
+            </author>
+            <author>
+                <firstname>Matthieu</firstname>
+                <surname>Clochard</surname>
+                <email>matthieu.clochard@serli.com</email>
+            </author>
+        </authorgroup>
+    </bookinfo>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                href="modules/introduction.xml"/>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                href="modules/osgicdi.xml"/>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                href="modules/usages.xml"/>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                href="modules/weldosgi.xml"/>
+
+</book>

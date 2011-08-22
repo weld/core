@@ -1,0 +1,856 @@
+<chapter>
+    <title>Getting started with Weld-OSGi</title>
+    <para>In this chapter you will see:<itemizedlist>
+            <listitem>
+                <para>how to setup the environment in order to use CDI-OSGi</para>
+            </listitem>
+            <listitem>
+                <para>how to build your first bean bundle using CDI in OSGi</para>
+            </listitem>
+            <listitem>
+                <para>how to build a more complex example with advanced CDI usage</para>
+            </listitem>
+        </itemizedlist></para>
+    <section>
+        <title>Setting up your environment</title>
+        <para>Weld-OSGi may run in an OSGi environment, you should setup one:<itemizedlist>
+                <listitem>
+                    <para>Download the last version of Felix framework here: <ulink
+                            url="http://felix.apache.org/site/downloads.cgi"
+                            >http://felix.apache.org/site/downloads.cgi</ulink></para>
+                </listitem>
+                <listitem>
+                    <para>Extract the files anywhere you want, this location will be called the
+                        Felix home</para>
+                </listitem>
+                <listitem>
+                    <para>Open a terminal in the Felix home and run the Felix framework with
+                            <code>java -jar bin/felix.jar</code></para>
+                </listitem>
+                <listitem>
+                    <para>You should now have a running OSGi environment with the Felix framework
+                        prompt:<programlisting>____________________________
+Welcome to Apache Felix Gogo
+
+g! </programlisting></para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Try your Felix installation a bit with these three main command:<itemizedlist>
+                <listitem>
+                    <para>The <code>lb</code> command, that lists all the bundles in the OSGi
+                        environment, with their id and state (currently you only have the Felix
+                        framework utility
+                        bundles)<programlisting>g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+g! </programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>The <code>stop &lt;bundle_id></code> command, that stops the corresponding
+                        bundle<programlisting>g! <emphasis role="bold">stop 1</emphasis>
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    <emphasis role="bold">1</emphasis>|<emphasis role="bold">Resolved</emphasis>   |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+g! </programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>The <code>start &lt;bundle_id></code> command, that starts the
+                        corresponding
+                        bundle<programlisting>g! <emphasis role="bold">start 1</emphasis>
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    <emphasis role="bold">1</emphasis>|<emphasis role="bold">Active </emphasis>    |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+g! </programlisting></para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Felix framework currently auto start all bundles, although it is a good thing for
+            utility bundles it may be inconvenient with application bundles. You should configure
+            the Felix framework by editing the Felix home <code>conf/config.properties</code> file:<itemizedlist>
+                <listitem>
+                    <para>Unable the auto start option by replacing the
+                        line<programlisting>felix.auto.deploy.action=install,start</programlisting>by<programlisting><emphasis role="bold">#</emphasis>felix.auto.deploy.action=install,start</programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>Ask for auto start of utility bundle by replacing the
+                        line<programlisting>#felix.auto.start.1=</programlisting>by</para>
+                    <programlisting>felix.auto.start.1= file:bundle/org.apache.felix.bundlerepository-1.6.2.jar \
+file:bundle/org.apache.felix.gogo.command-0.8.0.jar \
+file:bundle/org.apache.felix.gogo.runtime-0.8.0.jar \
+file:bundle/org.apache.felix.gogo.shell-0.8.0.jar</programlisting>
+                </listitem>
+            </itemizedlist></para>
+        <para>Install Weld-OSGi in the Felix framework:<itemizedlist>
+                <listitem>
+                    <para>Add some bundle in the Felix framework by simply drop the corresponding
+                            <code>jar</code> files into the <code>bundle</code> directory of Felix
+                        home</para>
+                </listitem>
+                <listitem>
+                    <para>Download the last version of Weld-OSGi here: <ulink url=""
+                        >TBA</ulink></para>
+                </listitem>
+                <listitem>
+                    <para>Extract the five bundles into the <code>bundle</code> directory of Felix
+                        home</para>
+                    <note>
+                        <title>Get Felix up to date</title>
+                        <para>Felix framework keeps a cache of old bundles and actions you
+                            performed. You may  remove the Felix home <code>felix-cache</code>
+                            directory to avoid older versions of bundle and configuration to be
+                            taken into account when:<itemizedlist>
+                                <listitem>
+                                    <para>You add/remove bundles from <code>bundle</code>
+                                        directory</para>
+                                </listitem>
+                                <listitem>
+                                    <para>You modify the <code>conf/config.properties</code>
+                                        file</para>
+                                </listitem>
+                                <listitem>
+                                    <para>You restart the Felix framework after running some
+                                        commands</para>
+                                </listitem>
+                            </itemizedlist></para>
+                    </note>
+                </listitem>
+                <listitem>
+                    <para>Update the Felix framework configuration file in order to auto install the
+                        Weld-OSGi bundle by replacing the
+                        line<programlisting>#felix.auto.install.1=</programlisting>by<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-extension-impl-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-impl-1.0-SNAPSHOT.jar</programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>Check the bundle are in the OSGi environment by starting the Felix
+                        framework<programlisting>____________________________
+Welcome to Apache Felix Gogo
+
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+    5|Installed  |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    6|Installed  |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    7|Installed  |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    8|Installed  |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+    9|Installed  |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+g! </programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>Run the bundles <code>CDI-OSGi :: Core :: Extension Impl</code> and
+                            <code>CDI OSGi :: Implementation :: Weld Integration</code> in order to
+                        get the Weld-OSGi running in the Felix
+                        framework<programlisting>g! start 6
+g! start 9
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+    5|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    6|<emphasis role="bold">Active</emphasis>     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+    9|<emphasis role="bold">Active </emphasis>    |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+g! </programlisting></para>
+                </listitem>
+            </itemizedlist></para>
+        <para>It would be easier if these two bundles were auto started with Felix framework.<itemizedlist>
+                <listitem>
+                    <para>Modify the Felix configuration file to do
+                        so<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar
+...
+felix.auto.start.1= file:bundle/org.apache.felix.bundlerepository-1.6.2.jar \
+file:bundle/org.apache.felix.gogo.command-0.8.0.jar \
+file:bundle/org.apache.felix.gogo.runtime-0.8.0.jar \
+file:bundle/org.apache.felix.gogo.shell-0.8.0.jar \
+file:bundle/cdi-osgi-extension-impl-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-impl-1.0-SNAPSHOT.jar</programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>Try this new
+                        configuration<programlisting>____________________________
+Welcome to Apache Felix Gogo
+
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+g! </programlisting></para>
+                </listitem>
+            </itemizedlist></para>
+    </section>
+    <section>
+        <title>Say hello to the World: your first bean bundle</title>
+        <para>It is time to test your installation with your first application bean bundle. The goal
+            here is to provide a "Hello World!" (and "Goodbye World!") service and use CDI to inject
+            it into the main class of your bean bundle. It will be the <code>hello-world</code>
+            bundle.</para>
+        <para>First you need to write down the "Hello World!" service:<itemizedlist>
+                <listitem>
+                    <para>The <code>com.sample.api.HelloWorld.java</code>
+                        interface<programlisting>package com.sample.api;
+
+public interface HelloWorld {
+
+    void sayHello();
+    void sayGoodbye();
+}</programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>The <code>com.sample.impl.HelloWorldImpl.java</code> implementation
+                        class<programlisting>package com.sample.impl;
+
+import com.sample.api.HelloWorld;
+
+public class HelloWorldImpl implements HelloWorld {
+
+    @Override
+    public void sayHello() {
+        System.out.println("Hello World!");
+    }
+
+    @Override
+    public void sayGoodbye() {
+        System.out.println("Goodbye World!");
+    }
+}</programlisting></para>
+                </listitem>
+            </itemizedlist>Nothing fancy here.</para>
+        <para>Next you need to write the entry point of your application (i.e the main class of the
+            bean bundle). That is the <code>com.sample.App.java</code> main
+            class<programlisting>package com.sample;
+
+import com.sample.api.HelloWorld; <emphasis role="bold">(1)</emphasis>
+import org.osgi.cdi.api.extension.events.BundleContainerEvents; <emphasis role="bold">(2)</emphasis>
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+public class App {
+
+    @Inject <emphasis role="bold">(3)</emphasis>
+    HelloWorld helloWorld;
+
+    public void onStartup(@Observes BundleContainerEvents.BundleContainerInitialized event) { <emphasis role="bold">(4)</emphasis>
+        helloWorld.sayHello();
+    }
+
+    public void onShutdown(@Observes BundleContainerEvents.BundleContainerShutdown event) { <emphasis role="bold">(5)</emphasis>
+        helloWorld.sayGoodbye();
+    }
+}</programlisting>You
+            import your service interface <emphasis role="bold">(1)</emphasis> and the CDI and
+            Weld-OSGi dependencies <emphasis role="bold">(2)</emphasis>. You ask CDI for an
+            injection of the <code>HelloWorld</code> service <emphasis role="bold">(3)</emphasis>.
+                <code>onStartup</code> method<emphasis role="bold">(4)</emphasis> and
+                <code>onShutdown</code> method <emphasis role="bold">(5)</emphasis> are called when
+            CDI usage is enable for the bean bundle <emphasis role="bold">(4)</emphasis> (i.e the
+            bean bundle application can start) or when CDI usage is disable for the bean bundle
+                <emphasis role="bold">(5)</emphasis> (i.e the bean bundle application may
+            stop).</para>
+        <para>Finally you should write the configuration files of your bean bundle:<itemizedlist>
+                <listitem>
+                    <para>The <code>pom.xml</code> Maven configuration
+                        file<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    &lt;modelVersion>4.0.0&lt;/modelVersion>
+
+    &lt;groupId>com.sample&lt;/groupId>
+    &lt;artifactId>hello-world&lt;/artifactId>
+    &lt;version>1.0&lt;/version>
+    &lt;packaging>bundle&lt;/packaging> <emphasis role="bold">(1)</emphasis>
+
+    &lt;dependencies> <emphasis role="bold">(2)</emphasis>
+        &lt;dependency>
+            &lt;groupId>javax.inject&lt;/groupId>
+            &lt;artifactId>javax.inject&lt;/artifactId>
+            &lt;version>1&lt;/version>
+        &lt;/dependency>
+        &lt;dependency>
+            &lt;groupId>javax.enterprise&lt;/groupId>
+            &lt;artifactId>cdi-api&lt;/artifactId>
+            &lt;version>1.0-SP4&lt;/version>
+        &lt;/dependency>
+        &lt;dependency>
+            &lt;groupId>org.osgi.cdi&lt;/groupId>
+            &lt;artifactId>cdi-osgi-extension-api&lt;/artifactId>
+            &lt;version>1.0-SNAPSHOT&lt;/version>
+        &lt;/dependency>
+    &lt;/dependencies>
+
+    &lt;build>
+        &lt;plugins>
+            &lt;plugin>
+                &lt;groupId>org.apache.felix&lt;/groupId>
+                &lt;artifactId>maven-bundle-plugin&lt;/artifactId> <emphasis role="bold">(3)</emphasis>
+                &lt;extensions>true&lt;/extensions>
+                &lt;configuration>
+                    &lt;instructions>
+                        &lt;_include>-target/classes/META-INF/${project.artifactId}.bnd&lt;/_include> <emphasis role="bold">(4)</emphasis>
+                    &lt;/instructions>
+                &lt;/configuration>
+            &lt;/plugin>
+        &lt;/plugins>
+    &lt;/build>
+
+&lt;/project></programlisting>You
+                        setup the dependencies for the <code>com.sample.App.java</code> main class
+                            <emphasis role="bold">(2)</emphasis>. You say that Maven may build an
+                        OSGi bundle <emphasis role="bold">(1)</emphasis> using the
+                            <code>maven-bundle-plugin</code>
+                        <emphasis role="bold">(3)</emphasis> with the
+                            <code>META-INF/hello-world.bnd</code>
+                        <emphasis role="bold">(4)</emphasis> configuration file.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>META-INF\beans.xml</code> CDI marker
+                        file<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;beans xmlns="http://java.sun.com/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+&lt;/beans></programlisting>This
+                        is an empty <code>beans.xml</code> file that only tells the bundle is a bean
+                        bundle (i.e Weld-OSGi may managed it).</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>META-INF\hello-world.bnd</code> OSGi configuration
+                        file<programlisting># Let bnd handle the MANIFEST.MF generation</programlisting>The
+                        bnd tool will generate the OSGi <code>MANIFEST.MF</code> configuration file
+                        just fine for this simple example.</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Your project should now looks like
+            that:<programlisting>hello-world
+      pom.xml
+    - src
+        - main
+            - java
+                - com.sample
+                  App.java
+                    - api
+                      HelloWorld.java
+                    - impl
+                      HelloWorldImpl.java
+            - resources
+                - META-INF
+                  beans.xml
+                  hello-world.bnd </programlisting></para>
+        <para>It is time to try out this first bean bundle:<itemizedlist>
+                <listitem>
+                    <para>Build your project using Maven: <code>mvn clean install</code></para>
+                </listitem>
+                <listitem>
+                    <para>Copy the generated <code>hello-world-1.0.jar</code> file to the Felix home
+                            <code>bundle</code> directory</para>
+                </listitem>
+                <listitem>
+                    <para>Update the Felix configuration file to auto install the bean
+                        bundle<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar \
+<emphasis role="bold">file:bundle/hello-world-1.0.jar</emphasis></programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>Start the Felix
+                        framework<programlisting>____________________________
+Welcome to Apache Felix Gogo
+
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+   <emphasis role="bold">10|Installed  |    1|hello-world (1.0.0)</emphasis>
+g! </programlisting>and
+                        start your bean
+                        bundle<programlisting>g! start 10
+g! Hello World!</programlisting>It is
+                        greeting the World ! Now stop the bean
+                        bundle<programlisting>stop 10
+g! Goodbye World!</programlisting>and it says
+                        goodbye.</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Congratulations, you just use CDI in an OSGi environment thank to Weld-OSGi. When you
+            started your bean bundle Weld-OSGi started to manage it by providing it a Weld
+            container. Once the container was completely started (and so the <code>HelloWorld</code>
+            service injection completed) the <code>onStartup</code> method was called and the bean
+            bundle application started.</para>
+    </section>
+    <section>
+        <title>CDI usage in bean bundle: a more complex example</title>
+        <para>This first bean bundle was very simple, is Weld-OSGi really enabling complex CDI usage
+            in bean bundle? This section will pick up the <code>hello-world</code> example again and
+            improve it by:<itemizedlist>
+                <listitem>
+                    <para>Providing three implementations of the <code>HelloWorld</code> service to
+                        make your bean bundle multilingual (english, french and german)</para>
+                </listitem>
+                <listitem>
+                    <para>Force your bean bundle to present itself when is greeting</para>
+                </listitem>
+            </itemizedlist>It will be the <code>hello-world-multilingual</code> bean bundle.</para>
+        <para>
+            <note>
+                <title>CDI usage limits in bean bundle</title>
+                <para>Every bean bundle gets its own Weld container from the extension bundle, so
+                    the CDI usage may stay within the bean bundle boundary:<itemizedlist>
+                        <listitem>
+                            <para>Any bean in the bean bundle can be injected only in that bean
+                                bundle (even exported package classes)</para>
+                        </listitem>
+                        <listitem>
+                            <para>Reciprocally, a bean from another bean bundle cannot be injected
+                                in the bean bundle (even imported package classes)</para>
+                        </listitem>
+                        <listitem>
+                            <para>Any decorator, interceptor or alternative declaration in the
+                                    <code>beans.xml</code> file of a bean bundle applies only for
+                                this bean bundle</para>
+                        </listitem>
+                    </itemizedlist>Furthermore, Weld-OSGi provides Weld container to a bean bundle
+                    when it becomes active in the OSGi environment, so any bundle in another state
+                    is not managed by Weld-OSGi. And an active bean bundle has CDI usage available
+                    only after the Weld container has initialized. In the same way CDI usage is
+                    unavailable once the Weld container has shutdown. That's the reason of
+                        <code>onStartup</code> and <code>onShutdown</code> methods from previous section:<itemizedlist>
+                        <listitem>
+                            <para>A <code>BundleContainerEvents.BundleContainerInitialized</code>
+                                event is fired when CDI usage gets available for the bean
+                                bundle</para>
+                        </listitem>
+                        <listitem>
+                            <para>A <code>BundleContainerEvents.BundleContainerShutdown</code> event
+                                is fired when CDI usage gets unavailable for the bean bundle</para>
+                        </listitem>
+                    </itemizedlist>These two events are CDI events and may be observed with regular
+                    CDI mechanisms.</para>
+                <para><programlisting>public void onStartup(@Observes BundleContainerEvents.BundleContainerInitialized event) {
+    //CDI usage are available in the bean bundle
+}
+
+public void onShutdown(@Observes BundleContainerEvents.BundleContainerShutdown event) {
+    //CDI usage are unavailable in the bean bundle
+}</programlisting>Trying
+                    to use CDI mechanisms before the
+                        <code>BundleContainerEvents.BundleContainerInitialized</code> or after the
+                        <code>BundleContainerEvents.BundleContainerShutdown</code> event may result
+                    in errors.</para>
+            </note>
+        </para>
+        <para>First you need to upgrade your <code>HelloWorld</code> service and make it multilingual:<itemizedlist>
+                <listitem>
+                    <para>The <code>com.sample.api.HelloWorld.java</code>
+                        interface<programlisting>package com.sample.api;
+
+public interface HelloWorld {
+
+    void sayHello();
+    void sayGoodbye();
+}</programlisting>Nothing
+                        has changed here.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>com.sample.api.Language.java</code> qualifier
+                        annotation<programlisting>package com.sample.api;
+
+import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+
+@Qualifier <emphasis role="bold">(1)</emphasis>
+@Target({ TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Language {
+    String value() default "ENGLISH"; <emphasis role="bold">(2)</emphasis>
+}</programlisting>You
+                        create a regular CDI qualifier <emphasis role="bold">(1)</emphasis> in order
+                        to choose the language of your bean bundle. The language will be choose by
+                        providing a string (ENGLISH, FRENCH or GERMAN) to the qualifier <emphasis
+                            role="bold">(2)</emphasis>.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>com.sample.impl.HelloWorldImpl*.java</code> implementation
+                        classes<programlisting>package com.sample.impl;
+
+import com.sample.api.HelloWorld;
+import com.sample.api.Language;
+
+@Language("ENGLISH") <emphasis role="bold">(1)</emphasis>
+public class HelloWorldEnglish implements HelloWorld {
+
+    @Override
+    public void sayHello() {
+        System.out.println("Hello World!"); <emphasis role="bold">(2)</emphasis>
+    }
+
+    @Override
+    public void sayGoodbye() {
+        System.out.println("Goodbye World!"); <emphasis role="bold">(3)</emphasis>
+    }
+}</programlisting><programlisting>package com.sample.impl;
+
+import com.sample.api.HelloWorld;
+import com.sample.api.Language;
+
+@Language("FRENCH") <emphasis role="bold">(1)</emphasis>
+public class HelloWorldFrench implements HelloWorld {
+
+    @Override
+    public void sayHello() {
+        System.out.println("Bonjour le Monde !"); <emphasis role="bold">(2)</emphasis>
+    }
+
+    @Override
+    public void sayGoodbye() {
+        System.out.println("Au revoir le Monde !"); <emphasis role="bold">(3)</emphasis>
+    }
+}</programlisting><programlisting>package com.sample.impl;
+
+import com.sample.api.HelloWorld;
+import com.sample.api.Language;
+
+@Language("GERMAN") <emphasis role="bold">(1)</emphasis>
+public class HelloWorldGerman implements HelloWorld {
+    
+    @Override
+    public void sayHello() {
+        System.out.println("Hallo Welt!"); <emphasis role="bold">(2)</emphasis>
+    }
+
+    @Override
+    public void sayGoodbye() {
+        System.out.println("Auf Wiedersehen Welt!"); <emphasis role="bold">(3)</emphasis>
+    }
+}</programlisting>Here
+                        you just give the language of the implementation using the
+                            <code>Language</code> qualifier <emphasis role="bold">(1)</emphasis>,
+                        then you translate the outputs <emphasis role="bold">(2)</emphasis>
+                        <emphasis role="bold">(3)</emphasis>.</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Now you will use CDI interceptor to force the bean bundle to present itself every time
+            he greets the World:<itemizedlist>
+                <listitem>
+                    <para>The <code>com.sample.api.Presentation.java</code> interceptor
+                        binding<programlisting>package com.sample.api;
+
+import javax.interceptor.InterceptorBinding;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+
+@InterceptorBinding <emphasis role="bold">(1)</emphasis>
+@Target({ TYPE, METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Presentation {
+}</programlisting>You
+                        create a regular CDI interceptor binding <emphasis role="bold"
+                            >(1)</emphasis> in order to add a bean bundle presentation everytime it
+                        greets the World.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>com.sample.impl.HelloWorldImpl*.java</code> implementation
+                        classes<programlisting>...
+public class HelloWorld* implements HelloWorld {
+
+    @Override @Presentation <emphasis role="bold">(1)</emphasis>
+    public void sayHello() {
+        System.out.println("Hello World!");
+    }
+...
+}</programlisting>You
+                        add the interceptor binding on the <code>sayHello</code> method to force
+                        presentation only when the bean bundle is greeting and not saying
+                        goodbye.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>com.sample.impl.PresentationInterceptor.java</code>
+                        interceptor<programlisting>package com.sample.impl;
+
+import com.sample.api.Presentation;
+
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+
+@Interceptor <emphasis role="bold">(1)</emphasis>
+@Presentation
+public class PresentationInterceptor {
+
+    @AroundInvoke
+    public Object present(InvocationContext ctx) throws Exception {
+        ctx.proceed(); <emphasis role="bold">(2)</emphasis>
+        Language language = ctx.getMethod().getDeclaringClass().getAnnotation(Language.class); <emphasis role="bold">(3)</emphasis>
+        if(language != null) {
+            String lang = language.value();
+            if(lang != null) {
+                if(lang.equals("FRENCH")) {
+                    System.out.println("Je suis le bundle hello-world-multilingual"); <emphasis role="bold">(4)</emphasis>
+                    return null;
+                } else if(lang.equals("GERMAN")) {
+                    System.out.println("Ich bin das bundle hello-world-multilingual"); <emphasis role="bold">(5)</emphasis>
+                    return null;
+                }
+            }
+        }
+        System.out.println("I am the bundle hello-world-multilingual"); <emphasis role="bold">(6)</emphasis>
+        return null;
+    }
+}</programlisting>The
+                        interceptor is declared so by its annotations <emphasis role="bold"
+                            >(1)</emphasis>. It prints the normal sentence using the intercepted
+                        method <emphasis role="bold">(2)</emphasis>, then it detects the current
+                        language <emphasis role="bold">(3)</emphasis> and prints the corresponding
+                        description <emphasis role="bold">(4)</emphasis>
+                        <emphasis role="bold">(5)</emphasis>
+                        <emphasis role="bold">(6)</emphasis>.</para>
+                </listitem>
+            </itemizedlist>Now the <code>HelloWorld</code> service is a bit more complex and you use
+            several CDI features.</para>
+        <para>Next you need to update the <code>com.sample.App.java</code> main
+            class<programlisting>package com.sample;
+
+import com.sample.api.HelloWorld;
+import com.sample.api.Language;
+import org.osgi.cdi.api.extension.events.BundleContainerEvents;
+
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+public class App {
+
+    @Inject @Language("ENGLISH") <emphasis role="bold">(1)</emphasis>
+    HelloWorld helloWorldEnglish;
+
+    @Inject @Language("FRENCH") <emphasis role="bold">(2)</emphasis>
+    HelloWorld helloWorldFrench;
+
+    @Inject @Language("GERMAN") <emphasis role="bold">(3)</emphasis>
+    HelloWorld helloWorldGerman;
+
+    public void onStartup(@Observes BundleContainerEvents.BundleContainerInitialized event) { <emphasis role="bold">(4)</emphasis>
+        helloWorldEnglish.sayHello();
+        helloWorldFrench.sayHello();
+        helloWorldGerman.sayHello();
+    }
+
+    public void onShutdown(@Observes BundleContainerEvents.BundleContainerShutdown event) { <emphasis role="bold">(5)</emphasis>
+        helloWorldEnglish.sayGoodbye();
+        helloWorldFrench.sayGoodbye();
+        helloWorldGerman.sayGoodbye();
+    }
+}</programlisting>You
+            replace the initial <code>HelloWorld</code> service injection by three qualified
+            injection, one for each language <emphasis role="bold">(1)</emphasis>
+            <emphasis role="bold">(2)</emphasis>
+            <emphasis role="bold">(3)</emphasis>. You also update <code>onStartup</code> and
+                <code>onShutdown</code> methods to greet and say goodbye in the three languages
+                <emphasis role="bold">(4)</emphasis>
+            <emphasis role="bold">(5)</emphasis>.</para>
+        <para>Finally you should write the configuration files of your bean bundle:<itemizedlist>
+                <listitem>
+                    <para>The <code>pom.xml</code> Maven configuration
+                        file<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    &lt;modelVersion>4.0.0&lt;/modelVersion>
+
+    &lt;groupId>com.sample&lt;/groupId>
+    &lt;artifactId>hello-world-multilingual&lt;/artifactId>
+    &lt;version>1.0&lt;/version>
+    &lt;packaging>bundle&lt;/packaging>
+
+    &lt;dependencies>
+        &lt;dependency>
+            &lt;groupId>javax.inject&lt;/groupId>
+            &lt;artifactId>javax.inject&lt;/artifactId>
+            &lt;version>1&lt;/version>
+        &lt;/dependency>
+        &lt;dependency>
+            &lt;groupId>javax.enterprise&lt;/groupId>
+            &lt;artifactId>cdi-api&lt;/artifactId>
+            &lt;version>1.0-SP4&lt;/version>
+        &lt;/dependency>
+        &lt;dependency>
+            &lt;groupId>org.osgi.cdi&lt;/groupId>
+            &lt;artifactId>cdi-osgi-extension-api&lt;/artifactId>
+            &lt;version>1.0-SNAPSHOT&lt;/version>
+        &lt;/dependency>
+    &lt;/dependencies>
+
+    &lt;build>
+        &lt;plugins>
+            &lt;plugin>
+                &lt;groupId>org.apache.felix&lt;/groupId>
+                &lt;artifactId>maven-bundle-plugin&lt;/artifactId>
+                &lt;extensions>true&lt;/extensions>
+                &lt;configuration>
+                    &lt;instructions>
+                        &lt;_include>-target/classes/META-INF/${project.artifactId}.bnd&lt;/_include>
+                    &lt;/instructions>
+                &lt;/configuration>
+            &lt;/plugin>
+        &lt;/plugins>
+    &lt;/build>
+
+&lt;/project></programlisting>Nothing
+                        has changed here, but the <code>artifactId</code>.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>META-INF\beans.xml</code> CDI marker
+                        file<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;beans xmlns="http://java.sun.com/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+    &lt;interceptors> <emphasis role="bold">(1)</emphasis>
+        &lt;class>com.sample.impl.PresentationInterceptor&lt;/class>
+    &lt;/interceptors>
+&lt;/beans></programlisting>You
+                        declare your interceptor in order to activate it <emphasis role="bold"
+                            >(1)</emphasis>.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>META-INF\hello-world-multilingual.bnd</code> OSGi configuration
+                        file<programlisting># Let bnd handle the MANIFEST.MF generation</programlisting>Nothing
+                        has changed here.<note>
+                            <title>Update bnd files name</title>
+                            <para>Every time you change the <code>artifactId</code> of one of your
+                                bean bundle you may also update the name of its bnd file.
+                                    <code>artifactId</code> and bnd file name should be the same in
+                                order to generate a bundle.</para>
+                        </note></para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Your project should now looks like
+            that:<programlisting>hello-world-multilingual
+      pom.xml
+    - src
+        - main
+            - java
+                - com.sample
+                  App.java
+                    - api
+                      HelloWorld.java
+                      Language.java
+                      Presentation.java
+                    - impl
+                      HelloWorldEnglish.java
+                      HelloWorldFrench.java
+                      HelloWorldGerman.java
+                      PresentationInterceptor.java
+            - resources
+                - META-INF
+                  beans.xml
+                  hello-world-multilingual.bnd </programlisting></para>
+        <para>It is time to try out these CDI features in an OSGi environment:<itemizedlist>
+                <listitem>
+                    <para>Build your project using Maven: <code>mvn clean install</code></para>
+                </listitem>
+                <listitem>
+                    <para>Copy the generated <code>hello-world-multilingual-1.0.jar</code> file to
+                        the Felix home <code>bundle</code> directory and the remove the old
+                            <code>hello-world-1.0.jar</code> file.</para>
+                </listitem>
+                <listitem>
+                    <para>Update the Felix configuration file to auto install the bean
+                        bundle<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
+file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar \
+<emphasis role="bold">file:bundle/hello-world-multilingual-1.0.jar</emphasis></programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>Start the Felix
+                        framework<programlisting>____________________________
+Welcome to Apache Felix Gogo
+
+g! lb
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+   <emphasis role="bold">10|Installed  |    1|hello-world-multilingual (1.0.0)</emphasis>
+g! 
+</programlisting>and
+                        start your bean
+                        bundle<programlisting>g! start 10
+g! Hello World!
+I am the bundle hello-world-multilingual
+Bonjour le Monde !
+Je suis le bundle hello-world-multilingual
+Hallo Welt!
+Ich bin das bundle hello-world-multilingual</programlisting>It
+                        is greeting the World in the three languages (and in the right order)! And
+                        it is also presenting itself. Now stop the bean
+                        bundle<programlisting>stop 10
+g! Goodbye World!
+Au revoir le Monde !
+Auf Wiedersehen Welt!</programlisting>and
+                        it also says goodbye in the three languages.</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>CDI seems to respond perfectly in an OSGi environment, thank to Weld-OSGi. But it is
+            sad to use only one bundle for your application, in the next chapter we will see how
+            Weld-OSGi allow to use OSGi powerfulness coupled with CDI easiness in multi bundles
+            application.</para>
+    </section>
+</chapter>

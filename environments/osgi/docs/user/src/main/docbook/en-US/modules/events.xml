@@ -1,0 +1,476 @@
+<chapter>
+    <title>Weld-OSGi addressing event notification and comunication</title>
+    <para>Weld-OSGi is enabling CDI in bean bundles, so you can use CDI event notification in your
+        bean bundles. But Weld-OSGi also provide the support of OSGi framework events through CDI
+        event mechanisms. And following the same principle Weld-OSGi also allows a full uncouple
+        communication between bean bundles based on CDI events.</para>
+    <para>In this chapter you will see:<itemizedlist>
+            <listitem>
+                <para>How to fire and observe OSGi framework and Weld-OSGi events in bean
+                    bundles</para>
+            </listitem>
+            <listitem>
+                <para>How to send and receive inter-bundle communication between your bean
+                    bundles</para>
+            </listitem>
+        </itemizedlist></para>
+    <section>
+        <title>Get OSGi event notifications in your bean bundles</title>
+        <para>From here you will create a new application based on bean bundles. So far your bundles
+            your bundles were greeting and saying goodbye, let them be a bit more interactive. You
+            will have three bean bundles that present themselves when they start and greet newcomers
+            (and say goodbye to leavers) when they start (or stop).</para>
+        <para>Create your three bean bundles following this scheme. They will be the
+                <code>welcoming-tom</code>, <code>welcoming-dick</code> and
+                <code>welcoming-harry</code> bean bundles.</para>
+        <para>First write the <code>com.sample.App</code> main
+            classes:<programlisting>package com.sample;
+
+import org.osgi.cdi.api.extension.events.BundleContainerEvents;
+import org.osgi.cdi.api.extension.events.BundleEvents;
+
+import javax.enterprise.event.Observes;
+
+public class App {
+
+    public void onStartup(@Observes BundleContainerEvents.BundleContainerInitialized event) { <emphasis role="bold">(1)</emphasis>
+        System.out.println("Tom: Hi everyone!");
+    }
+
+    public void onShutdown(@Observes BundleContainerEvents.BundleContainerShutdown event) { <emphasis role="bold">(2)</emphasis>
+        System.out.println("Tom: Bye everyone!");
+    }
+
+    public void greetNewcomer(@Observes BundleEvents.BundleStarted event) { <emphasis role="bold">(3)</emphasis>
+        String name = event.getSymbolicName().substring(21, event.getSymbolicName().length()); <emphasis role="bold">(4)</emphasis>
+        if (!name.equals("tom")) { <emphasis role="bold">(5)</emphasis>
+            System.out.println("Tom: Welcome " + name +'!');
+        }
+    }
+
+    public void sayGoodbyeToLeaver(@Observes BundleEvents.BundleStopped event) { (<emphasis role="bold">(6)</emphasis>
+        String name = event.getSymbolicName().substring(21, event.getSymbolicName().length()); <emphasis role="bold">(7)</emphasis>
+        if (!name.equals("tom")) { <emphasis role="bold">(8)</emphasis>
+            System.out.println("Tom: Goodbye " + name +'!');
+        }
+    }
+}</programlisting>You
+            monitor four different Weld-OSGi events, two events about the CDI life cycle (your
+            entry point from the previous chapter) <emphasis role="bold">(1)</emphasis>
+            <emphasis role="bold">(2)</emphasis> an two events about the bundle life cycle (from the
+            OSGi framework) <emphasis role="bold">(3)</emphasis>
+            <emphasis role="bold">(6)</emphasis>. It allows to perform actions when the bean bundle
+            is started (both for OSGi and CDI point of view) <emphasis role="bold">(1)</emphasis> or
+            stopped <emphasis role="bold">(2)</emphasis>. Here you just greet or say goodbye. When a
+            bundle (every bundle) starts <emphasis role="bold">(3)</emphasis> or stops <emphasis
+                role="bold">(6)</emphasis> you get its name <emphasis role="bold">(4)</emphasis>
+            <emphasis role="bold">(7)</emphasis> and say the appropriate sentence to other bundle
+                <emphasis role="bold">(5)</emphasis>
+            <emphasis role="bold">(8)</emphasis>. Do not forget to change the name accordingly to
+            the current bundle !</para>
+        <note>
+            <title>What are the events broadcast by Weld-OSGi</title>
+            <para>Weld-OSGi broadcast five types of events, two for OSGi framework events, two for
+                CDI events and one for bean bundle communications.</para>
+            <para>OSGi events monitor:<itemizedlist>
+                    <listitem>
+                        <para>Bundle life cycle events. They all respect the
+                                <code>AbstractBundleEvent</code> abstract class:<itemizedlist>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleInstalled</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleLazyActivation</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleResolved</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleStarted</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleStarting</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleStopped</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleStopping</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleUninstalled</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleUnresolved</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleEvents.BundleUpdated</code></para>
+                                </listitem>
+                            </itemizedlist></para>
+                    </listitem>
+                    <listitem>
+                        <para>Service life cycle events. They all respect the
+                                <code>AbstractServiceEvent</code> abstract class:<itemizedlist>
+                                <listitem>
+                                    <para><code>ServiceEvents.ServiceArrival</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>ServiceEvents.ServiceChanged</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>ServiceEvents.ServiceDeparture</code></para>
+                                </listitem>
+                            </itemizedlist></para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>CDI events monitor.<itemizedlist>
+                    <listitem>
+                        <para>Bean bundle CDI containers life cycle. They all respect the
+                                <code>AbstractBundleContainerEvent</code> abstract class:<itemizedlist>
+                                <listitem>
+                                    <para><code>BundleContainerEvents.BundleContainerInitialized</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>BundleContainerEvents.BundleContainerShutdown</code></para>
+                                </listitem>
+                            </itemizedlist></para>
+                    </listitem>
+                    <listitem>
+                        <para>Bean bundle service dependency validation:<itemizedlist>
+                                <listitem>
+                                    <para><code>Valid</code></para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>Invalid</code></para>
+                                </listitem>
+                            </itemizedlist></para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>Communication events broadcast message between bean bundle:
+                    <code>InterBundleEvent</code></para>
+            <para>Each type of event carries its own set of information and has its own range,
+                please refer to the Weld-OSGi specification for more information.</para>
+        </note>
+        <caution>
+            <title>CDI events summon contextual beans</title>
+            <para>Be careful when you use Weld-OSGi in order to handle OSGi events, you are still
+                using CDI mechanisms. Thus when an event is observed it generate a contextual
+                instance of the bean that declares the observing method. Class state might be
+                different between calls.</para>
+        </caution>
+        <para>Now configure your three bean bundles:<itemizedlist>
+                <listitem>
+                    <para>The <code>pom.xml</code> Maven configuration
+                        file<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    &lt;modelVersion>4.0.0&lt;/modelVersion>
+
+    &lt;groupId>com.sample&lt;/groupId>
+    &lt;artifactId>welcoming-*&lt;/artifactId>
+    &lt;version>1.0&lt;/version>
+    &lt;packaging>bundle&lt;/packaging>
+
+    &lt;dependencies>
+        &lt;dependency>
+            &lt;groupId>javax.inject&lt;/groupId>
+            &lt;artifactId>javax.inject&lt;/artifactId>
+            &lt;version>1&lt;/version>
+        &lt;/dependency>
+        &lt;dependency>
+            &lt;groupId>javax.enterprise&lt;/groupId>
+            &lt;artifactId>cdi-api&lt;/artifactId>
+            &lt;version>1.0-SP4&lt;/version>
+        &lt;/dependency>
+        &lt;dependency>
+            &lt;groupId>org.osgi.cdi&lt;/groupId>
+            &lt;artifactId>cdi-osgi-extension-api&lt;/artifactId>
+            &lt;version>1.0-SNAPSHOT&lt;/version>
+        &lt;/dependency>
+    &lt;/dependencies>
+
+    &lt;build>
+        &lt;plugins>
+            &lt;plugin>
+                &lt;groupId>org.apache.felix&lt;/groupId>
+                &lt;artifactId>maven-bundle-plugin&lt;/artifactId>
+                &lt;extensions>true&lt;/extensions>
+                &lt;configuration>
+                    &lt;instructions>
+                        &lt;_include>-target/classes/META-INF/${project.artifactId}.bnd&lt;/_include>
+                    &lt;/instructions>
+                &lt;/configuration>
+            &lt;/plugin>
+        &lt;/plugins>
+    &lt;/build>
+
+&lt;/project></programlisting>Just
+                        put the right <code>artifactId</code> here.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>welcoming-*.bnd</code> OSGi configuration
+                        file<programlisting># Let bnd handle the MANIFEST.MF generation</programlisting>Here
+                        it is the file name that may match the <code>artifactId</code>.</para>
+                </listitem>
+                <listitem>
+                    <para>The <code>META-INF\beans.xml</code> CDI marker
+                        file:<programlisting>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;beans xmlns="http://java.sun.com/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+&lt;/beans></programlisting>Nothing
+                        to say !</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>Your three projects should now looks like
+            that:<programlisting>welcoming-*
+      pom.xml
+    - src
+        - main
+            - java
+                - com.sample
+                  App.java
+            - resources
+                - META-INF
+                  beans.xml
+                  welcoming-*.bnd</programlisting></para>
+        <para>Try everything out:<itemizedlist>
+                <listitem>
+                    <para>Build your project,copy the generated files and update the Felix
+                        configuration ... you know the deal.</para>
+                </listitem>
+                <listitem>
+                    <para>Play with your three bean
+                        bundles<programlisting>____________________________
+Welcome to Apache Felix Gogo
+
+<emphasis role="bold">g! lb</emphasis>
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+   10|Installed  |    1|welcoming-dick (1.0.0)
+   11|Installed  |    1|welcoming-harry (1.0.0)
+   12|Installed  |    1|welcoming-tom (1.0.0)
+<emphasis role="bold">g! start 10</emphasis>
+Dick: Hi everyone!
+<emphasis role="bold">g! start 11</emphasis>
+Harry: Hi everyone!
+Dick: Welcome harry!
+<emphasis role="bold">g! start 12</emphasis>
+Tom: Hi everyone!
+Harry: Welcome tom!
+Dick: Welcome tom!
+<emphasis role="bold">g! stop 10</emphasis>
+Dick: Bye everyone!
+Tom: Goodbye dick!
+Harry: Goodbye dick!
+<emphasis role="bold">g! start 10</emphasis>
+Dick: Hi everyone!
+Tom: Welcome dick!
+Harry: Welcome dick!
+<emphasis role="bold">g! stop 12</emphasis>
+Tom: Bye everyone!
+Harry: Goodbye tom!
+Dick: Goodbye tom!
+<emphasis role="bold">g! stop 11</emphasis>
+Harry: Bye everyone!
+Dick: Goodbye harry!
+<emphasis role="bold">g! stop 10</emphasis>
+Dick: Bye everyone!
+<emphasis role="bold">g! start 10</emphasis>
+Dick: Hi everyone!
+<emphasis role="bold">g! start 11</emphasis>
+Harry: Hi everyone!
+Dick: Welcome harry!
+<emphasis role="bold">g! start 12</emphasis>
+Tom: Hi everyone!
+Dick: Welcome tom!
+Harry: Welcome tom!</programlisting>You
+                        can now make interactive application using multiple bean bundles and CDI
+                        event mechanisms.</para>
+                </listitem>
+            </itemizedlist></para>
+    </section>
+    <section>
+        <title>Use your own inter bundle notifications</title>
+        <para>You can now use inter bundle notification in order to make your bean bundles aware of
+            the other bundles. But the choice of events seems a bit limited, more or less is about
+            bundle (and bean bundle) and service life cycle. But what if you want to fire and listen
+            custom events ?</para>
+        <para>Weld-OSGi allows it with its <code>InterBundleEvent</code> events. In this section you
+            will update your three bean bundles to make them chat even when no movement is
+            occurring. For example your bean bundles can ask if the others are still here on regular
+            basis.</para>
+        <para>Update your three bean bundles following this scheme. They will be the
+                <code>talkative-tom</code>, <code>talkative-dick</code> and
+                <code>talkative-harry</code> bean bundles.</para>
+        <para>Update the <code>com.sample.App</code> main
+            classes:<programlisting>package com.sample;
+
+import org.osgi.cdi.api.extension.annotation.Sent;
+import org.osgi.cdi.api.extension.annotation.Specification;
+import org.osgi.cdi.api.extension.events.BundleContainerEvents;
+import org.osgi.cdi.api.extension.events.BundleEvents;
+import org.osgi.cdi.api.extension.events.InterBundleEvent;
+import org.osgi.framework.Bundle;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+public class App {
+
+    @Inject
+    private Event&lt;InterBundleEvent> communication; <emphasis role="bold">(1)</emphasis>
+
+    public void onStartup(@Observes BundleContainerEvents.BundleContainerInitialized event) { <emphasis role="bold">(2)</emphasis>
+        System.out.println("Harry: Hi everyone!");
+        AskThread askThread = new AskThread(communication, event.getBundleContext().getBundle()); <emphasis role="bold">(3)</emphasis>
+        askThread.start();
+    }
+
+    public void onShutdown(@Observes BundleContainerEvents.BundleContainerShutdown event) { <emphasis role="bold">(4)</emphasis>
+        System.out.println("Harry: Bye everyone!");
+    }
+
+    public void greetNewcomer(@Observes BundleEvents.BundleStarted event) { <emphasis role="bold">(5)</emphasis>
+        String name = event.getSymbolicName().substring(21, event.getSymbolicName().length());
+        if (!name.equals("harry")) {
+            System.out.println("Harry: Welcome " + name + '!');
+        }
+    }
+
+    public void sayGoodbyeToLeaver(@Observes BundleEvents.BundleStopped event) { <emphasis role="bold">(6)</emphasis>
+        String name = event.getSymbolicName().substring(21, event.getSymbolicName().length());
+        if (!name.equals("harry")) {
+            System.out.println("Harry: Goodbye " + name + '!');
+        }
+    }
+
+    public void acknowledge(@Observes @Sent @Specification(String.class) InterBundleEvent message) { <emphasis role="bold">(7)</emphasis>
+        System.out.println("Harry: Hey " + message.get() + " i'm still here.");
+    }
+
+    private class AskThread extends Thread { <emphasis role="bold">(8)</emphasis>
+        Event&lt;InterBundleEvent> communication;
+        Bundle bundle;
+
+        AskThread(Event&lt;InterBundleEvent> communication, Bundle bundle) {
+            this.communication = communication;
+            this.bundle = bundle;
+        }
+
+        public void run() {
+            while(true) { <emphasis role="bold">(9)</emphasis>
+                try {
+                    sleep(5000);
+                } catch (InterruptedException e) {
+                }
+                if(bundle.getState() == Bundle.ACTIVE) { <emphasis role="bold">(10)</emphasis>
+                    System.out.println("Harry: is there still someone here ?");
+                    communication.fire(new InterBundleEvent("harry")); <emphasis role="bold">(11)</emphasis>
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+}
+</programlisting>There
+            is no modification for the previous chat action <emphasis role="bold">(2)</emphasis>
+            <emphasis role="bold">(4)</emphasis>
+            <emphasis role="bold">(5)</emphasis>
+            <emphasis role="bold">(6)</emphasis>; except that you start a thread when the bean
+            bundle has started <emphasis role="bold">(3)</emphasis>. This thread <emphasis
+                role="bold">(8)</emphasis> is an infinite loop <emphasis role="bold">(9)</emphasis>
+            that ask the active bundle to acknowledge there presence by firing an
+                <code>InterBundleEvent</code>
+            <emphasis role="bold">(11)</emphasis>. This <code>InterBundleEvent</code> is listened by
+            your three bean bundles in order to print the answer. The listening method catch only
+            communication from outside the bean bundle (<code>@Sent</code>) and that has a
+                <code>String</code> message (<code>@Specification(String.class)</code>) <emphasis
+                role="bold">(7)</emphasis>.</para>
+        <para>There is nothing to update in the bean bundles configuration files.</para>
+        <para>Your three projects should now looks like
+            that:<programlisting>talkative-*
+      pom.xml
+    - src
+        - main
+            - java
+                - com.sample
+                  App.java
+            - resources
+                - META-INF
+                  beans.xml
+                  talkative-*.bnd</programlisting></para>
+        <para>Install everything and let your bundle chat:
+            <programlisting>____________________________
+Welcome to Apache Felix Gogo
+
+<emphasis role="bold">g! lb</emphasis>
+START LEVEL 1
+   ID|State      |Level|Name
+    0|Active     |    0|System Bundle (3.2.2)
+    1|Active     |    1|Apache Felix Bundle Repository (1.6.2)
+    2|Active     |    1|Apache Felix Gogo Command (0.8.0)
+    3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
+    4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
+    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+   10|Installed  |    1|talkative-dick (1.0.0)
+   11|Installed  |    1|talkative-harry (1.0.0)
+   12|Installed  |    1|talkative-tom (1.0.0)
+<emphasis role="bold">g! start 10 11 12</emphasis>
+Dick: Hi everyone!
+Harry: Hi everyone!
+Dick: Welcome harry!
+Tom: Hi everyone!
+Dick: Welcome tom!
+Harry: Welcome tom!
+<emphasis role="italic">g! Dick: is there still someone here ?</emphasis>
+Harry: Hey dick i'm still here.
+Tom: Hey dick i'm still here.
+<emphasis role="italic">Harry: is there still someone here ?</emphasis>
+Dick: Hey harry i'm still here.
+Tom: Hey harry i'm still here.
+<emphasis role="italic">Tom: is there still someone here ?</emphasis>
+Dick: Hey tom i'm still here.
+Harry: Hey tom i'm still here.
+<emphasis role="italic">Dick: is there still someone here ?</emphasis>
+Harry: Hey dick i'm still here.
+Tom: Hey dick i'm still here.
+<emphasis role="italic">Harry: is there still someone here ?</emphasis>
+Dick: Hey harry i'm still here.
+Tom: Hey harry i'm still here.
+<emphasis role="italic">Tom: is there still someone here ?</emphasis>
+Dick: Hey tom i'm still here.
+Harry: Hey tom i'm still here.
+<emphasis role="bold">stop 10</emphasis>
+Dick: Bye everyone!
+Tom: Goodbye dick!
+Harry: Goodbye dick!
+<emphasis role="bold">g! stop 11</emphasis>
+Harry: Bye everyone!
+Tom: Goodbye harry!
+<emphasis role="bold">g! stop 12</emphasis>
+Tom: Bye everyone!
+g! </programlisting>You
+            can play with your bean bundles, looking them chat with each other. The
+                <code>InterBundleEvent</code> allow you to fire any object you want, so it is a
+            powerful communication system between your bean bundle. You may refer to the Weld-OSGi
+            specifications for a complete review of <code>InterBundleEvent</code> usage.</para>
+    </section>
+</chapter>

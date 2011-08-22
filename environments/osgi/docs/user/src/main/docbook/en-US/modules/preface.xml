@@ -1,0 +1,77 @@
+<chapter>
+    <title>Weld-OSGi user documentation</title>
+    <section>
+        <title>What is this documentation</title>
+        <para>This documentation allows new users to quickly setup and try Weld-OSGi. It covers most
+            of Weld-OSGi features with lot of practical code examples allowing users to directly get
+            their hands dirty.</para>
+        <para>The final chapter offers a complete walk-through of a sample application showing the
+            power of Weld-OSGi.</para>
+    </section>
+    <section>
+        <title>What is Weld-OSGi</title>
+        <para>Weld-OSGi is a framework that allows CDI usages within an OSGi environment. It is an
+            extension of Weld providing CDI for OSGi environment (like Weld-SE for Java SE
+            environment) but it also brings numerous pieces of OSGi facilitation. </para>
+        <para>It is a set of five bundles that extends the behavior of client bundles once they are
+            deployed in an OSGi framework.</para>
+        <para>Weld-OSGi provides:<itemizedlist>
+                <listitem>
+                    <para>CDI usages in client bundles by obtaining a Weld container</para>
+                </listitem>
+                <listitem>
+                    <para>OSGi service layer support for CDI injection</para>
+                </listitem>
+                <listitem>
+                    <para>CDI event notification mechanism for OSGi event and inter bundle
+                        communication</para>
+                </listitem>
+                <listitem>
+                    <para>OSGi utilities facilitation using CDI injection</para>
+                </listitem>
+            </itemizedlist></para>
+    </section>
+    <section>
+        <title>Naming convention</title>
+        <para>An OSGi bundle is a regular bundle that is not managed by Weld-OSGi.</para>
+        <para>A bean bundle is an OSGi bundle managed by Weld-OSGi. It has one or more valid <code>META-INF/bean.xml</code> marker
+            files.</para>
+        <para>A bundle refers indifferently to an OSGi bundle or a bean bundle.</para>
+        <para>The extension bundle is the Weld-OSGi bundle that manages the bean bundles.</para>
+        <para>The implementation bundle is the Weld-OSGi bundle that provide Weld container to the
+            extension bundle.</para>
+        <para>The API bundles are the Weld-OSGi bundles that provide all necessary API in order to
+            use Weld-OSGi in bean bundles.</para>
+    </section>
+    <section>
+        <title>What tools are used in this documentation</title>
+        <para>All examples in this user documentation are made with these tools:<itemizedlist>
+                <listitem>
+                    <para>Maven for managing dependencies at compile time and building the
+                        bundles</para>
+                </listitem>
+                <listitem>
+                    <para>Java 6 for the java sources</para>
+                </listitem>
+                <listitem>
+                    <para>Felix framework as the OSGi environment</para>
+                </listitem>
+            </itemizedlist>All examples were tested on a Linux system with the latest version of
+            each tools at the moment of redaction. Version may have evolved so little ajustement
+            might be needed (like for bundle or package versions).</para>
+    </section>
+    <section>
+        <title>References and other documentations</title>
+        <para>This documentation assumes that you have at least an overview of OSGi and CDI. But for
+            more advanced usages of Weld-OSGi information can be found in other documents.</para>
+        <para>The specification of OSGi can be found here: <ulink
+                url="http://www.osgi.org/Specifications/HomePage"
+                >http://www.osgi.org/Specifications/HomePage</ulink>.</para>
+        <para>The documentation of Weld can be found here: <ulink
+                url="http://docs.jboss.org/weld/reference/latest/en-US/html/"
+                >http://docs.jboss.org/weld/reference/latest/en-US/html/</ulink>.</para>
+        <para>The complete specification of Weld-OSGi can be found here: <ulink
+                url="http://mathieuancelin.github.com/weld-osgi/html/index.html"
+                >http://mathieuancelin.github.com/weld-osgi/html/index.html</ulink>.</para>
+    </section>
+</chapter>
