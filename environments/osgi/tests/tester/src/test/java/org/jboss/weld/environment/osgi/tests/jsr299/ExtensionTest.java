@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.jsr299;
 
+import org.junit.Ignore;
 import org.jboss.weld.osgi.tests.cdispi.ServiceExtensionProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,10 +52,10 @@ public class ExtensionTest {
         Bundle bundle1 = null, bundleExtension = null;
         for(Bundle b : context.getBundles()) {
             Assert.assertEquals("Bundle" + b.getSymbolicName() + " is not ACTIVE", Bundle.ACTIVE, b.getState());
-            if(b.getSymbolicName().equals("com.sample.osgi.cdi-osgi-tests-bundle1")) {
+            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
                 bundle1=b;
             }
-            else if(b.getSymbolicName().equals("com.sample.osgi.cdi-osgi-tests-extension")) {
+            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
                 bundleExtension=b;
             }
         }

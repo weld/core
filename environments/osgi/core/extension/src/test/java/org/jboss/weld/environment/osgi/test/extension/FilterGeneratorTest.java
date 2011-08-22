@@ -31,7 +31,7 @@ import static java.lang.annotation.ElementType.*;
 public class FilterGeneratorTest {
 
     @Test
-    //@Ignore
+    Ignore
     public void filterTest() {
 
         Set<String> testSet = new HashSet<String>();

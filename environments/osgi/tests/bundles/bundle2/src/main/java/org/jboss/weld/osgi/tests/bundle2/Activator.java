@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.osgi.tests.tests.bundle2;
+package org.jboss.weld.osgi.tests.bundle2;
 
 import org.jboss.weld.osgi.tests.bundle1.api.ManualPublishedService;
 import com.sample.osgi.bundle2.impl.ManualPublishedServiceImpl;

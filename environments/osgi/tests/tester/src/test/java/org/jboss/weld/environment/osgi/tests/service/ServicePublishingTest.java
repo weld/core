@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
+import org.junit.Ignore;
 import org.jboss.weld.osgi.tests.bundle1.api.AutoPublishedService;
 import org.jboss.weld.osgi.tests.bundle1.api.ContractInterface;
 import org.jboss.weld.osgi.tests.bundle1.api.ManualPublishedService;
@@ -51,7 +52,7 @@ public class ServicePublishingTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void servicePublishingTest(BundleContext context) throws InterruptedException, InvalidSyntaxException, BundleException {
         Environment.waitForEnvironment(context);
 

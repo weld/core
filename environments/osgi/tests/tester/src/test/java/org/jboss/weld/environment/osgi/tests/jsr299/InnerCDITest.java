@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.jsr299;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class InnerCDITest {

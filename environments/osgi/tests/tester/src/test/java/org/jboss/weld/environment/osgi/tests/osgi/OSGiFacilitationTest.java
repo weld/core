@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.osgi;
 
+import org.junit.Ignore;
 import org.jboss.weld.osgi.tests.bundle1.util.BundleProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,9 +58,9 @@ public class OSGiFacilitationTest {
 
         Bundle bundle1 = null, bundle2 = null;
         for(Bundle b : context.getBundles()) {
-            if(b.getSymbolicName().equals("com.sample.osgi.cdi-osgi-tests-bundle1")) {
+            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
                 bundle1=b;
-            } else if(b.getSymbolicName().equals("com.sample.osgi.cdi-osgi-tests-bundle2")) {
+            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle2")) {
                 bundle2=b;
             }
         }
