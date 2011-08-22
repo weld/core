@@ -1,0 +1,737 @@
+<chapter>
+    <title id="usages">How to make OSGi easy peasy</title>
+    <section>
+        <title>Injecting easiness in OSGi world</title>
+        <para>CDI-OSGi provides more functionality using CDI in a OSGi environment.</para>
+        <para>It mainly focuses on the OSGi service layer. It addresses the difficulties in
+            publishing and consuming services. CDI-OSGi allows developers to: <itemizedlist>
+                <listitem>
+                    <para>Automatically publish CDI beans as OSGi services</para>
+                </listitem>
+                <listitem>
+                    <para>Consume OSGi services as CDI beans</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>CDI-OSGi also provides utilities for event notification and communication in and
+            between bundles as well as some general OSGi utilities. CDI-OSGi brings a complete
+            support of CDI into bean bundles too.</para>
+    </section>
+    <section>
+        <title>CDI usage in bean bundles</title>
+        <para>CDI-OSGi detects a bundle as a bean bundle if:<itemizedlist>
+                <listitem>
+                    <para>it possesses a META-INF/beans.xml file at its root path</para>
+                </listitem>
+                <listitem>
+                    <para>or/and it possesses one or more inner jar or zip files that possesses a
+                        META-INF/beans.xml file at their root paths</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>The managed set of bean classes of a bean class contains all the class file under all
+            META-INF/beans.xml root paths.</para>
+        <para>CDI and CDI-OSGi features are enabled for all these manageable paths.</para>
+        <para>Everything possible in CDI application is possible in bean bundle. They can take
+            advantage of injection, producers, interceptors, decorators and alternative. But
+            influence boundary of the CDI compliant container stay within the bean bundle managed
+            paths for classic CDI usages. So external dependencies cannot be injected and
+            interceptor, decorator or alternative of another bean bundle cannot be used (yet
+            interceptors, decorators and alternatives still need to be declares in the bean bundle
+            bean.xml file). </para>
+        <para>That is all we will say about classic CDI usages, please report to CDI documentation
+            for more information.</para>
+    </section>
+    <section>
+        <title>Service bean and auto-published OSGi service</title>
+        <para>A CDI-OSGi auto-published service is described by these attributes (and their
+            equivalents for a regular OSGi service): <itemizedlist>
+                <listitem>
+                    <para>A (nonempty) set of service contracts (service class names)</para>
+                </listitem>
+                <listitem>
+                    <para>A set of qualifiers (service properties)</para>
+                </listitem>
+                <listitem>
+                    <para>A scope</para>
+                </listitem>
+                <listitem>
+                    <para>A <code>Publish</code> annotated CDI bean instance (service
+                        instance)</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>A CDI-OSGi service bean  is described by these attributes (and their equivalents for
+            OSGi service lookup): <itemizedlist>
+                <listitem>
+                    <para>An <code>OSGiService</code> annotated or <code>Service&lt;T></code> typed
+                        injection point</para>
+                </listitem>
+                <listitem>
+                    <para>A type (lookup type)</para>
+                </listitem>
+                <listitem>
+                    <para>A <code>Filter</code> qualifier (lookup LDAP filter)</para>
+                </listitem>
+                <listitem>
+                    <para>A (possibly empty) set of reachable instance (lookup result)</para>
+                </listitem>
+            </itemizedlist></para>
+    </section>
+    <section>
+        <title>OSGi service auto-publication with <code>Publish</code> annotation </title>
+        <para>Annotate a CDI bean class with a <code>Publish</code> annotation makes CDI-OSGi
+            register this bean as a OSGi service. </para>
+        <para>Such a service is accessible through CDI-OSGi service injection and OSGi classic
+            mechanisms.</para>
+        <para>Automatically publish a new service implementation:
+            <programlisting>@Publish
+public class MyServiceImpl implements MyService {
+}</programlisting></para>
+        <para>However, such an implementation also provides a regular CDI managed bean, so
+            MyServiceImpl can also be injected using CDI within the bean bundle.</para>
+        <section>
+            <title>Service type resolution</title>
+            <para>CDI-OSGi auto-published service get their types from the following algorithm:<itemizedlist>
+                    <listitem>
+                        <para>If a (nonempty) contract list is provided (as an array of
+                                <code>Class</code>) with the <code>Publish</code> annotation the
+                            service is registered for all these types. This is how define a contract
+                            list:<programlisting>@Publish(contracts = {
+        MyService.class,
+        AbstractClass.class
+})
+public class MyServiceImpl extends AbstractClass implements MyService, OtherInterface {
+}</programlisting>The
+                            implementation class may be assignable for all of the contract types. If
+                            not, CDI-OSGi detects the problem and treats it as an error.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Else if the implementation class possesses a (nonempty) list of
+                            non-blacklisted interfaces the service is registered for all these
+                            interface types.The blacklist is described below.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Else if CDI-OSGi the implementation class possesses a non-blacklisted
+                            superclass the service is registered for this superclass type.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Last if the implementation class has neither contract nor
+                            non-blacklisted interface or superclass, the service is register with is
+                            the implementation class type.</para>
+                    </listitem>
+                </itemizedlist></para>
+        </section>
+        <section>
+            <title>Service type blacklist</title>
+            <para>An CDI implementation bundle might provide a type blacklist in order to filter
+                auto-published OSGi service allowed type. Please refer to the CDI implementation
+                bundle documentation to see if such a blacklist is enable and how to configure
+                it.</para>
+        </section>
+    </section>
+    <section>
+        <title><code>OSGiService</code> annotated or <code>Service&lt;T></code> typed injection
+            points</title>
+        <para>A <code>OSGiService</code> annotated or a <code>Service&lt;T></code> typed injection
+            point is managed by CDI-OSGi through the creation of a new service
+                bean.<code>OSGiService</code> annotation and <code>Service&lt;T></code> type are
+            exclusive on injection point. If an injection point has both, CDI-OSGi detects the
+            problem and treats it as an error.</para>
+        <itemizedlist>
+            <listitem>
+                <para>Direct injection with <code>OSGiService</code> annotation and
+                        <code>OSGiServiceBean</code>:
+                    <programlisting>@Inject @OSGiService MyService service;</programlisting>Such an
+                    injection point (an OSGi service injection point) will match an unique CDI-OSGi
+                        <code>OSGiServiceBean</code>.</para>
+                <para>For every different OSGi service injection point an unique
+                        <code>OSGiServiceBean</code> is generated by CDI-OSGi.</para>
+            </listitem>
+            <listitem>
+                <para>Injection using programmatic lookup with <code>Service&lt;T></code> type and
+                        <code>OSGiServiceProviderBean</code>:
+                    <programlisting>@Inject Service&lt;MyService> services;</programlisting>Such an
+                    injection point (an OSGi service provider injection point) will match an unique
+                    CDI-OSGi <code>OSGiServiceProviderBean</code>.</para>
+                <para>For every different OSGi service provider injection point an unique
+                        <code>OSGiServiceProviderBean</code> is generated by CDI-OSGi.</para>
+            </listitem>
+        </itemizedlist>
+        <para>
+            <code>OSGiService</code> annotated or a <code>Service&lt;T></code> typed injection
+            points are not eligible to regular CDI injection.</para>
+    </section>
+    <section>
+        <title><code>OSGiServiceBean</code> and <code>OSGiServiceProviderBean</code></title>
+        <para><code>OSGiServiceBean</code> injects an instance of the first service implementation
+            matching the injection point.</para>
+        <para><code>OSGiServiceProviderBean</code> injects a service provider (as a
+                <code>Service&lt;T></code>) for all the service implementations matching the
+            injection point.</para>
+        <para>Service provider allows to over-specify the matching service implementation set with
+            additional OSGi service properties.</para>
+        <para>Service provider does not allow to subtype the matching service implementation
+            set.</para>
+        <para>Service provider allows to instantiate the first service implementation matching the
+            (possibly) over-specified injection point.</para>
+        <para>Service implementation are search into the OSGi service registry, it may be:<itemizedlist>
+                <listitem>
+                    <para>An CDI-OSGi auto-published service</para>
+                </listitem>
+                <listitem>
+                    <para>An regular OSGi service</para>
+                </listitem>
+            </itemizedlist></para>
+    </section>
+    <section>
+        <title>Clearly specify a service implementation</title>
+        <para><code>Qualifier</code> annotated annotations might be use for both specifying
+            auto-published services and service injection points. Such qualifiers should be seen as
+            OSGi service properties, thus every set of qualifiers corresponds to a set of OSGi
+            service properties and so to a OSGi service LDAP filter.</para>
+        <para>However qualifiers keep a regular meaning for the CDI generated bean of an
+            auto-published service class.</para>
+        <section>
+            <title>Link between qualifiers and OSGi LDAP properties</title>
+            <para>A qualifier will generate an OSGi service property for each of its valued element
+                (an element with a default value is always considered valued) following these rules:<itemizedlist>
+                    <listitem>
+                        <para>A valued element generate a property with this
+                            template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>.<emphasis role="italic">decapitalized_element_name</emphasis>=<emphasis role="italic">element_value.toString()</emphasis></programlisting><programlisting>@MyQualifier(lang="EN", country="US")</programlisting>will
+                            generate:<programlisting>(myqualifier.lang=EN)
+(myqualifier.country=US)</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>A non valued element with a default value generate a property with
+                            this
+                            template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>.<emphasis role="italic">decapitalized_element_name</emphasis>=<emphasis role="italic">element_default_value.toString()</emphasis></programlisting><programlisting>@MyQualifier(lang="EN")</programlisting>will
+                            generate:<programlisting>(myqualifier.lang=EN)
+(myqualifier.country=US) //admitting US is the default value for the element country</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>A non valued element with no default value generate a property with
+                            this
+                            template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>.<emphasis role="italic">decapitalized_element_name</emphasis>=*</programlisting><programlisting>@MyQualifier(lang="EN")</programlisting>will
+                            generate:<programlisting>(myqualifier.lang=EN)
+(myqualifier.country=*) //admitting there is no default value for the element country</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>A qualifier with no element generate a property with this
+                            template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>=*</programlisting><programlisting>@MyQualifier()</programlisting>will
+                            generate:<programlisting>(myqualifier=*)</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>Some qualifiers follow a specific processing:<itemizedlist>
+                                <listitem>
+                                    <para><code>OSGiService</code> qualifier will not generate any
+                                        service property</para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>Required</code> qualifier will not generate any
+                                        service property</para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>Default</code> qualifier will not generate any
+                                        service property</para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>Any</code> qualifier will not generate any service
+                                        property</para>
+                                </listitem>
+                                <listitem>
+                                    <para><code>Filter</code> and <code>Properties</code> qualifiers
+                                        processing is described below</para>
+                                </listitem>
+                            </itemizedlist></para>
+                    </listitem>
+                </itemizedlist></para>
+        </section>
+        <section>
+            <title><code>Filter</code> and <code>Properties</code> qualifiers</title>
+            <para><code>Filter</code> qualifier allows to specify a OSGi LDAP filter for a
+                    <code>OSGiServiceBean</code> or a <code>OSGiServiceProducerBean</code> injection
+                point.</para>
+            <para>A <code>Filter</code> qualifier generate a "as it is" OSGi LDAP filter.</para>
+            <para><code>Properties</code> qualifier allows to specify OSGi LDAP properties for a
+                auto-published service class or for a <code>OSGiServiceBean</code> or a
+                    <code>OSGiServiceProducerBean</code> injection point.</para>
+            <para>A <code>Properties</code> qualifier generate a property for every one of its
+                    <code>Property</code> annotation with this
+                template:<programlisting><emphasis role="italic">Property.name()</emphasis>=<emphasis role="italic">Property.value()</emphasis></programlisting><programlisting>@Properties({@Property(name = "lang", value = "EN")
+             @Property(name = "country", value = "US"
+})</programlisting>will
+                generate:<programlisting>(lang=EN)
+(country=US)</programlisting></para>
+            <para>If a <code>Filter</code> qualifier is used on a bean class CDI-OSGi detects the
+                problem and treats it as an error.</para>
+            <para>It is discourage to use the <code>Properties</code> qualifier on a bean that might
+                be use as a regular CDI bean.</para>
+        </section>
+        <section>
+            <title><code>Filter</code> and <code>Properties</code> stereotypes</title>
+            <para>An annotation annotated with a <code>Filter</code> qualifier is considered similar
+                to the <code>Filter</code> qualifier alone.</para>
+            <para>An annotation annotated with a <code>Properties</code> qualifier is considered
+                similar to the <code>Properties</code> qualifier alone.</para>
+            <para>Declaring a filter
+                stereotype:<programlisting>@Filter("name=1")
+public @Interface Name1 {
+}</programlisting><programlisting>@Inject @Name1 Service&lt;MyService> named1Services;</programlisting>is
+                similar
+                to:<programlisting>@Inject @Filter("name=1") Service&lt;MyService> named1Services;</programlisting>Declaring
+                a properties
+                stereotype:<programlisting>@Properties({@Property(name = "name", value = "1")})
+public @Interface Name1 {
+}</programlisting><programlisting>@Publish
+@Name1 
+public class MyServiceImpl implements MyService {
+}</programlisting>is
+                similar
+                to:<programlisting>@Publish
+@Properties({@Property(name = "name", value = "1")})
+public class MyServiceImpl implements MyService {
+}</programlisting></para>
+        </section>
+        <section>
+            <title>Final LDAP filter</title>
+            <para>CDI-OSGi processes all the OSGi LDAP properties (from regular qualifiers and
+                    <code>Properties</code> qualifier) and provided OSGi LDAP filter (from
+                    <code>Filter</code> qualifier) to generate a global OSGi LDAP filter as:<itemizedlist>
+                    <listitem>
+                        <para>With multiple OSGi LDAP properties and a provided OSGi LDAP
+                            filter<programlisting>(&amp; <emphasis role="italic">provided_ldap_filter</emphasis> (<emphasis role="italic">ldap_property_1</emphasis>) (<emphasis role="italic">ldap_property_2</emphasis>) ... (<emphasis role="italic">ldap_property_i</emphasis>) )</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>With multiple OSGi LDAP properties and no provided OSGi LDAP
+                            filter<programlisting>(&amp; (<emphasis role="italic">ldap_property_1</emphasis>) (<emphasis role="italic">ldap_property_2</emphasis>) ... (<emphasis role="italic">ldap_property_i</emphasis>) )</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>With one OSGi LDAP properties and a provided OSGi LDAP
+                            filter<programlisting>(&amp; <emphasis role="italic">provided_ldap_filter</emphasis> (<emphasis role="italic">ldap_property</emphasis>) )</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>With one OSGi LDAP properties and no provided OSGi LDAP
+                            filter<programlisting>(<emphasis role="italic">ldap_property</emphasis>)</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>With no OSGi LDAP properties and a provided OSGi LDAP
+                            filter<programlisting><emphasis role="italic">provided_ldap_filter</emphasis></programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>With no OSGi LDAP properties and no provided OSGi LDAP
+                            filter<programlisting><emphasis role="italic">null</emphasis></programlisting></para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>CDI-OSGi never ensure that, neither the provided OSGi LDAP properties, neither the
+                provided OSGi LDAP filter, neither the generated OSGi LDAP filter, are valid.
+            </para>
+        </section>
+        <section>
+            <title>Using service filtering</title>
+            <itemizedlist>
+                <listitem>
+                    <para>On an auto-published service class:
+                        <programlisting>@Publish
+@AnyQualifier
+public class MyServiceQualifiedImpl implements MyService {
+}</programlisting>Will
+                        generate an <code>AnyQualifier</code> qualified regular CDI bean and
+                        register an OSGi service with the property (anyqualifier=*).</para>
+                </listitem>
+                <listitem>
+                    <para>On an OSGi service injection point:
+                        <programlisting>@Inject @OSGiService @AnyQualifier MyService qualifiedService;
+@Inject @AnyQualifier Service&lt;MyService> qualifiedServices;</programlisting>Will
+                        generate an <code>OSGiServiceBean</code> and an
+                            <code>OSGiServiceProducerBean</code> looking up for OSGi services with
+                        the  property (anyqualifier=*).</para>
+                </listitem>
+                <listitem>
+                    <para>With an
+                        <code>OSGiServiceProducerBean</code>:<programlisting>services.select(new AnnotationLiteral&lt;AnyQualifier>() {}).get().deSomething();</programlisting>Will
+                        over-specify the valid service implementation set to those matching the
+                        property (anyqualifier=*).</para>
+                </listitem>
+                <listitem>
+                    <para>Using the special <code>Properties</code>
+                        qualifier:<programlisting>@Publish
+@Properties({@Property(name = "country", value = "US")
+             @Property(name = "lang", value = "EN")
+})
+public class MyServiceQualifiedImpl implements MyService {
+}</programlisting>Will
+                        generate an <code>Properties(...)</code> qualified regular CDI bean and
+                        register an OSGi service with the properties (lang=EN) and
+                        (country=US).</para>
+                </listitem>
+                <listitem>
+                    <para>Using the special <code>Filter</code>
+                        qualifier:<programlisting>@Inject @OSGiService @Filter("(&amp;(lang=EN)(country=US))") MyService qualifiedService;
+@Inject @Filter("(&amp;(lang=EN)(country=US))") Service&lt;MyService> qualifiedServices;</programlisting>Will
+                        generate an <code>OSGiServiceBean</code> and an
+                            <code>OSGiServiceProducerBean</code> looking up for OSGi services
+                        matching the OSGi LDAP filter <emphasis role="italic"
+                            >(&amp;(lang=EN)(country=US))</emphasis>.</para>
+                </listitem>
+            </itemizedlist>
+        </section>
+    </section>
+    <section>
+        <title>Bean disambiguation and annotated type processing</title>
+        <para>CDI-OSGi ensures that every <code>OSGiService</code> annotated or
+                <code>Service&lt;T></code> typed injection point matches an unique
+                <code>OSGiServiceBean</code> or <code>OSGiServiceProviderBean</code>.</para>
+        <para>Therefore, for every bean bundle CDI-OSGi:<itemizedlist>
+                <listitem>
+                    <para>Processes annotated types</para>
+                </listitem>
+                <listitem>
+                    <para>Wraps every <code>OSGiService</code> annotated injection point</para>
+                </listitem>
+            </itemizedlist></para>
+        <para><code>OSGiService</code> annotated injection points are wrapped
+            as:<programlisting>@Inject @OSGiService @Filter(<emphasis role="italic">Calculated_filter</emphasis>) <emphasis role="italic">Type</emphasis> <emphasis role="italic">var_name</emphasis>;</programlisting></para>
+        <para>The global OSGi LDAP filter of the final <code>Filter</code> qualifier is calculated from:<itemizedlist>
+                <listitem>
+                    <para>The original set of qualifiers (except <code>OSGiService</code> and
+                            <code>Filter</code>)</para>
+                </listitem>
+                <listitem>
+                    <para>The OSGi LDAP filter value of the original <code>Filter</code>
+                        qualifier</para>
+                </listitem>
+                <listitem>
+                    <para>The set of properties of the original <code>Filter</code>
+                        annotation</para>
+                </listitem>
+            </itemizedlist></para>
+        <section>
+            <title>Examples</title>
+            <itemizedlist>
+                <listitem>
+                    <para><programlisting>@Inject @OSGiService MyService qualifiedService;</programlisting>will
+                        become:<programlisting>@Inject @OSGiService <emphasis role="bold">@Filter("")</emphasis> MyService qualifiedService;</programlisting></para>
+                </listitem>
+                <listitem>
+                    <para><programlisting>@Inject @OSGiService <emphasis role="bold">@AnyQualifier</emphasis> MyService qualifiedService;</programlisting>will
+                        become:<programlisting>@Inject @OSGiService <emphasis role="bold">@Filter("(anyqualifier=*)")</emphasis> MyService qualifiedService;</programlisting></para>
+                </listitem>
+                <listitem>
+                    <para><programlisting>@Inject <emphasis role="bold">@OSGiService</emphasis> @AnyQualifier <emphasis role="bold">Service&lt;</emphasis>MyService<emphasis role="bold">></emphasis> qualifiedServices;</programlisting>will
+                        generate an error.</para>
+                </listitem>
+                <listitem>
+                    <para><programlisting>@Inject @OSGiService <emphasis role="bold">@AnyQualifier</emphasis> <emphasis role="bold">@Filter(value="(lang=EN)",properties={"country=US","currency=*"})</emphasis> MyService qualifiedService;</programlisting>will
+                        become:<programlisting>@Inject @OSGiService <emphasis role="bold">@Filter("(&amp;(anyqualifier=*)(lang=EN)(country=US)(currency=*))</emphasis> MyService qualifiedService;</programlisting></para>
+                </listitem>
+            </itemizedlist>
+        </section>
+        <section>
+            <title>Justification</title>
+            <figure>
+                <title>Annotated type processing justification</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata
+                            fileref="../../../../../../../../../../T%C3%A9l%C3%A9chargements/CDI-OSGipublishconsumecycle.png"
+                            depth="800"/>
+                    </imageobject>
+                    <caption>This figure show the need for a annotated type processing in order to
+                        remove the ambiguous dependency between regular CDI and CDI-OSGi injection
+                        points.</caption>
+                </mediaobject>
+            </figure>
+        </section>
+    </section>
+    <section>
+        <title>Contextual services</title>
+        <para>An auto-published service instance is a CDI contextual instance, so:<itemizedlist>
+                <listitem>
+                    <para>The instance injected through a <code>OSGiService</code> annotated or
+                            <code>Service&lt;T></code> typed injection point might be a CDI
+                        contextual instance</para>
+                </listitem>
+                <listitem>
+                    <para>The instance obtained through a regular OSGi service checkout might be a
+                        CDI contextual instance</para>
+                </listitem>
+                <listitem>
+                    <para>In either cases CDI-OSGi ensures that the injected or obtained instance is
+                        contextual if <emphasis role="bold">no</emphasis> similar service is
+                        published using regular OSGi mechanism</para>
+                </listitem>
+            </itemizedlist></para>
+        <para>It is discourage to use regular OSGi service publication mechanisms in a CDI-OSGi
+            application.</para>
+        <section>
+            <title>OSGi service scopes</title>
+            <para>A CDI scope might be precised for every auto-published service class:<itemizedlist>
+                    <listitem>
+                        <para>If no scope is provided <code>Dependent</code> is assumed, granting a
+                            capacity similar to regular OSGi service</para>
+                    </listitem>
+                    <listitem>
+                        <para>Only one scope may be precised for every auto-published service
+                            class</para>
+                    </listitem>
+                    <listitem>
+                        <para>The scope is shared by both generated regular CDI bean and OSGi
+                            service</para>
+                    </listitem>
+                    <listitem>
+                        <para>The available scopes are: <code>Dependent</code>,
+                                <code>Singleton</code>, <code>ApplicationScoped</code>,
+                                <code>SessionScoped</code>, <code>ConversationScoped</code> and
+                                <code>RequestScoped</code>
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>Other scope or pseudo-scope may not be supported by CDI-OSGi</para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>
+                <programlisting>@Publish
+@ApplicationScoped
+public class MyServiceImpl implements MyService {
+    @Override
+    public void doSomething() {
+    }
+}</programlisting>
+            </para>
+        </section>
+    </section>
+    <section>
+        <title>Required services</title>
+        <para>A <code>OSGiService</code> annotated or <code>Service&lt;T></code> typed injection
+            point might be annotated <code>Required</code><itemizedlist>
+                <listitem>
+                    <para>with no influence on this injection point</para>
+                </listitem>
+                <listitem>
+                    <para>with influence on the <code>Valid</code> and <code>Invalid</code> events
+                        management in the current bean bundle</para>
+                </listitem>
+            </itemizedlist></para>
+    </section>
+    <section>
+        <title>Inaccessible service at runtime</title>
+        <para><code>OSGiServiceBean</code> and <code>OSGiServiceProviderBeans</code> bean instances
+            are dynamically obtained OSGi service instance.</para>
+        <para>No instance might be available at runtime due to OSGi dynamism, in such case a
+                <code>OSGiServiceUnavailableException</code> is thrown with any
+                <code>OSGiServiceBean</code> method call or the
+                <code>OSGiServiceProviderBeans</code>
+            <code>get</code> method call.</para>
+    </section>
+    <section>
+        <title>OSGi facilitation</title>
+        <section>
+            <title>Service registry</title>
+            <para>CDI-OSGi allows bean bundles to directly interact with the OSGi service registry
+                by getting a <code>ServiceRegistry</code>
+                bean:<programlisting>@Inject ServiceRegistry registry;</programlisting>This bean is
+                injectable everywhere into a bean bundle.</para>
+            <para>It allows to:<itemizedlist>
+                    <listitem>
+                        <para>Register a service implementation</para>
+                    </listitem>
+                    <listitem>
+                        <para>Obtain a service provider as a <code>Service&lt;T></code></para>
+                    </listitem>
+                    <listitem>
+                        <para>Obtain all existing registrations</para>
+                    </listitem>
+                    <listitem>
+                        <para>Obtain a specific set of registrations </para>
+                    </listitem>
+                </itemizedlist></para>
+        </section>
+        <section>
+            <title>OSGi utilities</title>
+            <para>CDI-OSGi allows to obtain, by injection into bean bundles, some of the useful
+                objects of the OSGi environment:<itemizedlist>
+                    <listitem>
+                        <para>The current
+                            bundle<programlisting>@Inject Bundle bundle;</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>The current bundle
+                            context<programlisting>@Inject BundleContext bundleContext;</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>The current bundle
+                            headers<programlisting>@Inject @BundleHeaders Map&lt;String,String>metadata;</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>A specific current bundle
+                            header<programlisting>@Inject @BundleHeader("Bundle-SymbolicName") String symbolicName;</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>A specific current bundle resource
+                            file<programlisting>@Inject @BundleDataFile("test.txt") File file;</programlisting></para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>It is possible to precise an external bundle by bundle symbolic name and
+                (optional)
+                version<programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") bundle;
+@Inject @BundleName("com.sample.gui") bundle;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") BundleContext bundleContext;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") @BundleHeaders Map&lt;String,String>metadata;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") @BundleHeader("Bundle-SymbolicName") String symbolicName;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") @BundleDataFile("test.txt") File file;</programlisting>If
+                a <code>BundleVersion</code> annotation is provided without a
+                    <code>BundleName</code> annotation CDI-OSGi detects the problem and treats it as
+                an error.</para>
+        </section>
+        <section>
+            <title>The registration</title>
+            <para>CDI-OSGi allows to obtain, by injection into bean bundles,
+                    <code>Registration&lt;T></code> of a specific type. A registration object
+                represent all the bindings between a service contract class and its OSGi
+                    <code>ServiceRegistration</code>.<programlisting>@Inject Registration&lt;MyService> registrations;</programlisting>It
+                is possible to filter the obtained bindings by specifying OSGi LDAP properties and
+                filter.<programlisting>@Inject @AnyQualifier Registration&lt;MyService> qualifiedRegistrations;
+@Inject @Filter("(&amp;(lang=EN)(country=US))") Registration&lt;MyService> qualifiedRegistrations;</programlisting></para>
+            <para>A <code>Registration&lt;T></code> allows to:<itemizedlist>
+                    <listitem>
+                        <para>Iterate over the contained bindings</para>
+                    </listitem>
+                    <listitem>
+                        <para>Select a subset of the bindings using OSGi LDAP properties and
+                            filter</para>
+                    </listitem>
+                    <listitem>
+                        <para>Obtain a service provider, as a <code>Service&lt;T></code> for the
+                            current bindings</para>
+                    </listitem>
+                    <listitem>
+                        <para>Unregister all the services for the current bindings</para>
+                    </listitem>
+                </itemizedlist></para>
+        </section>
+    </section>
+    <section>
+        <title>CDI-OSGi events</title>
+        <para>CDI-OSGi provides numerous events about OSGi events and bean bundle lifecycle events.
+            It also allows decoupled bean bundle communication.</para>
+        <para>All these features uses CDI events mechanisms:<itemizedlist>
+                <listitem>
+                    <para>These events may be listened with a <code>Observes</code> annotated
+                        parameter
+                        method<programlisting>public void bindBundle(@Observes AbstractBundleEvent event) {
+}</programlisting></para>
+                </listitem>
+                <listitem>
+                    <para>These events may be fires with the regular CDI
+                        mechanisms<programlisting>BeanManager beanManager;
+...
+beanManager.fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));</programlisting><programlisting>Event&lt;Object> event;
+...
+event.select(AbstractBundleEvent.class).fire(new BundleInstalled(bundle));</programlisting></para>
+                </listitem>
+            </itemizedlist></para>
+        <section>
+            <title>CDI container lifecycle events</title>
+            <para>CDI-OSGi provides a CDI event notification for bean bundle about bean bundle CDI
+                container lifecycle events:<itemizedlist>
+                    <listitem>
+                        <para>A <code>BundleContainerInitialized</code> event is fired every time a
+                            bean bundle CDI container is initialized</para>
+                    </listitem>
+                    <listitem>
+                        <para>A <code>BundleContainerShutdown</code> event is fired every time a bean
+                            bundle CDI container is shutdown</para>
+                    </listitem>
+                </itemizedlist></para>
+        </section>
+        <section>
+            <title>Bundle lifecycle events</title>
+            <para>CDI-OSGi provides a CDI event notification for bean bundle about bundle lifecycle events:<itemizedlist>
+                    <listitem>
+                        <para>Such an event is fired every time the correspondent OSGi bundle event
+                            is fired</para>
+                    </listitem>
+                    <listitem>
+                        <para>All bundle lifecycle events may be listen using the
+                                <code>AbstractBundleEvent</code> event</para>
+                    </listitem>
+                    <listitem>
+                        <para>Specific bundle lifecycle events are: <code>BundleInstalled</code>,
+                                <code>BundleUninstalled</code>, <code>BundleLazyActivation</code>,
+                                <code>BundleResolved</code>, <code>BundleUnresolved</code>,
+                                <code>BundleUpdated</code>, <code>BundleStarted</code>,
+                                <code>BundleStarting</code>, <code>BundleStopped</code> and
+                                <code>BundleStopping</code></para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>It is possible to filter the listened source bundle by bundle symbolic name and
+                (optional)
+                version<programlisting>public void bindBundle(@Observes @BundleName("com.sample.gui") @BundleVersion("4.2.1") AbstractBundleEvent event) {
+}
+public void bindBundle(@Observes @BundleName("com.sample.gui") BundleInstalled event) {
+}</programlisting>Only
+                the events from the corresponding bundle are listened.</para>
+            <para>If a <code>BundleVersion</code> annotation is provided without a
+                    <code>BundleName</code> annotation CDI-OSGi detects the problem and treats it as
+                an error.</para>
+        </section>
+        <section>
+            <title>Service lifecyle events</title>
+            <para>CDI-OSGi provides a CDI event notification for bean bundle about service lifecycle events:<itemizedlist>
+                    <listitem>
+                        <para>Such an event is fired every time the correspondent OSGi service event
+                            is fired</para>
+                    </listitem>
+                    <listitem>
+                        <para>All service lifecycle events may be listen using the
+                                <code>AbstractServiceEvent</code> event</para>
+                    </listitem>
+                    <listitem>
+                        <para>Specific bundle lifecycle events are: <code>ServiceArrival</code>,
+                                <code>ServiceDeparture</code> and <code>ServiceChanged</code></para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>It is possible to filter the listened source service by specification and or OSGi
+                LDAP properties and
+                filter<programlisting>public void bindService(@Observes @Specification(MyService.class) AbstractServiceEvent event) {
+}
+public void bindService(@Observes @AnyQualifier ServiceArrival event) {
+}
+public void bindService(@Observes @Specification(MyService.class) @Filter("(&amp;(lang=EN)(country=US))") ServiceChanged event) {
+}</programlisting>Only
+                the corresponding service events are listened.</para>
+        </section>
+        <section>
+            <title>Bean bundle required service dependency validation events</title>
+            <para>CDI-OSGi provides a CDI event notification for bean bundle about bean bundle
+                required service dependency validation:<itemizedlist>
+                    <listitem>
+                        <para>A <code>Valid</code> event is fired every time a bean bundle got all
+                            its  required service dependency validated</para>
+                    </listitem>
+                    <listitem>
+                        <para>A <code>Invalid</code> event is fired every time a bean bundle got one
+                            of its  required service dependency invalidated</para>
+                    </listitem>
+                </itemizedlist></para>
+        </section>
+        <section>
+            <title>Intra and inter bundles communication events</title>
+            <para>CDI-OSGi provides a way to communicate within and between bean bundles:<itemizedlist>
+                    <listitem>
+                        <para>A <code>InterBundleEvent</code> is fired by a bean
+                            bundle<programlisting>@Inject Event&lt;InterBundleEvent> event;
+MyMessage myMessage = new MyMessage();
+event.fire(new InterBundleEvent(myMessage));</programlisting></para>
+                    </listitem>
+                    <listitem>
+                        <para>A <code>InterBundleEvent</code> may be listened by every active bean
+                            bundle</para>
+                    </listitem>
+                </itemizedlist></para>
+            <para>It is possible to filter the listened source message by message type and ignoring
+                the events from the current
+                bundle<programlisting>public void listenAllEventsFromOtherBundles(@Observes @Sent InterBundleEvent event) {
+}
+public void listenMyMessageEvents(@Observes @Specification(MyMessage.class) InterBundleEvent event) {
+}
+public void listenMyMessageEventsFromOtherBundles(@Observes @Sent @Specification(MyMessage.class) InterBundleEvent event) {
+}</programlisting>Only
+                the corresponding events are listened.</para>
+        </section>
+    </section>
+</chapter>

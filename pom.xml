@@ -659,6 +659,7 @@
             </activation>
             <modules>
                 <module>docs/reference</module>
+                <module>environments/osgi/docs</module>
             </modules>
         </profile>
         <profile>

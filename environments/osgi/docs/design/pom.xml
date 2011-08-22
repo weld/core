@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <groupId>org.jboss.weld.osgi.docs</groupId>
+      <artifactId>weld-osgi-docs</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld.osgi.docs</groupId>
+   <artifactId>weld-osgi-design</artifactId>
+   <packaging>jdocbook</packaging>
+   <name>Weld OSGi (Specifications)</name>
+   <version>1.0-SNAPSHOT</version>
+   <description>Weld support for OSGi environments specifications</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+   <developers>
+      <developer>
+         <name>Mathieu Ancelin</name>
+         <email>mathieu.ancelin@serli.com</email>
+      </developer>
+      <developer>
+         <name>Matthieu Clochard</name>
+         <email>matthieu.clochard@serli.com</email>
+      </developer>
+   </developers>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.jboss.maven.plugins</groupId>
+            <artifactId>maven-jdocbook-plugin</artifactId>
+            <version>2.3.3</version>
+            <extensions>true</extensions>
+            <dependencies>
+               <dependency>
+                  <groupId>org.jboss.weld</groupId>
+                  <artifactId>weld-docbook-xslt</artifactId>
+                  <version>1.1.1-Beta5</version>
+               </dependency>
+               <dependency>
+                  <groupId>org.jboss.seam</groupId>
+                  <artifactId>seam-docbook-xslt</artifactId>
+                  <version>1.1.0.GA</version>
+               </dependency>
+               <dependency>
+                  <groupId>org.jboss.seam</groupId>
+                  <artifactId>seam-jdocbook-style</artifactId>
+                  <version>1.1.0.GA</version>
+                  <type>jdocbook-style</type>
+               </dependency>
+               <dependency>
+                  <groupId>org.jboss</groupId>
+                  <artifactId>jbossorg-jdocbook-style</artifactId>
+                  <version>1.1.1</version>
+                  <type>jdocbook-style</type>
+               </dependency>
+            </dependencies>
+            <configuration>
+               <sourceDocumentName>master.xml</sourceDocumentName>
+               <masterTranslationFile>master.xml</masterTranslationFile>
+               <sourceDirectory>${project.basedir}/src/main/docbook</sourceDirectory>
+               <imageDirectory>${project.basedir}/src/main/docbook/en-US/images</imageDirectory>
+               <imageResource>
+                  <directory>${project.basedir}/src/main/docbook/en-US/images</directory>
+               </imageResource>
+               <formats>
+                  <format>
+                     <formatName>pdf</formatName>
+                     <stylesheetResource>classpath:/xslt/org/jboss/weld/pdf.xsl</stylesheetResource>
+                     <finalName>weld_osgi_design.pdf</finalName>
+                  </format>
+                  <format>
+                     <formatName>html</formatName>
+                     <stylesheetResource>classpath:/xslt/org/jboss/weld/xhtml.xsl</stylesheetResource>
+                     <finalName>index.html</finalName>
+                  </format>
+                  <format>
+                     <formatName>html_single</formatName>
+                     <stylesheetResource>classpath:/xslt/org/jboss/weld/xhtml-single.xsl</stylesheetResource>
+                     <finalName>index.html</finalName>
+                  </format>
+               </formats>
+               <options>
+                  <xincludeSupported>true</xincludeSupported>
+                  <xmlTransformerType>saxon</xmlTransformerType>
+                  <docbookVersion>1.72.0</docbookVersion>
+                  <localeSeparator>-</localeSeparator>
+               </options>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+   <pluginRepositories>
+      <pluginRepository>
+         <id>jboss-public-repository-group</id>
+         <name>JBoss Public Maven Repository Group</name>
+         <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+         <layout>default</layout>
+         <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+         </snapshots>
+      </pluginRepository>
+   </pluginRepositories>
+    
+</project>
