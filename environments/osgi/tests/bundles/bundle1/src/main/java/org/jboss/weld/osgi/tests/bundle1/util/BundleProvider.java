@@ -67,19 +67,19 @@ public class BundleProvider {
         return file;
     }
 
-    @Inject @BundleName("com.sample.osgi.cdi-osgi-tests-bundle2")
+    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2")
     Bundle bundle2;
 
-    @Inject @BundleName("com.sample.osgi.cdi-osgi-tests-bundle2")
+    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2")
     BundleContext bundleContext2;
 
-    @Inject @BundleName("com.sample.osgi.cdi-osgi-tests-bundle2") @BundleHeaders
+    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2") @BundleHeaders
     Map<String,String> metadata2;
 
-    @Inject @BundleName("com.sample.osgi.cdi-osgi-tests-bundle2") @BundleHeader("Bundle-SymbolicName")
+    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2") @BundleHeader("Bundle-SymbolicName")
     String symbolicName2;
 
-    @Inject @BundleName("com.sample.osgi.cdi-osgi-tests-bundle2") @BundleDataFile("test.txt")
+    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2") @BundleDataFile("test.txt")
     File file2;
 
     public Bundle getBundle2() {

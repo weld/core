@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.framework;
 
+import org.junit.Ignore;
 import org.jboss.weld.environment.osgi.api.BundleState;
 import org.jboss.weld.environment.osgi.api.annotation.BundleDataFile;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleContainerEvent;
@@ -54,15 +55,15 @@ public class InfrastructureTest {
 
         Bundle extAPI = null, intAPI = null, extImpl = null, intImpl = null, mand = null;
         for(Bundle b : context.getBundles()) {
-            if(b.getSymbolicName().equals("org.osgi.cdi.osgi-extension-api")) {
+            if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-api")) {
                 extAPI=b;
-            } else if(b.getSymbolicName().equals("org.osgi.cdi.osgi-integration-api")) {
+            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-spi")) {
                 intAPI=b;
-            } else if(b.getSymbolicName().equals("org.osgi.cdi.osgi-extension-impl")) {
+            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
                 extImpl=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-impl")) {
+            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-integration")) {
                 intImpl=b;
-            } else if(b.getSymbolicName().equals("org.osgi.cdi.osgi-mandatory")) {
+            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-mandatory")) {
                 mand=b;
             }
         }
@@ -80,32 +81,32 @@ public class InfrastructureTest {
 
         Bundle importingBundle = null;
         for(Bundle b : context.getBundles()) {
-            if(b.getSymbolicName().equals("org.osgi.cdi.osgi-tests-importing-bundle")) {
+            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-importing")) {
                 importingBundle=b;
             }
         }
         Assert.assertNotNull("Importing bundle is not present", importingBundle);
 
         try {
-            Assert.assertEquals("Unable to access the package org.osgi.cdi.api.extension", "org.osgi.cdi.api.extension", importingBundle.loadClass(BundleState.class.getName()).getPackage().getName());
+            Assert.assertEquals("Unable to access the package org.jboss.weld.environment.osgi.api", "org.jboss.weld.environment.osgi.api", importingBundle.loadClass(BundleState.class.getName()).getPackage().getName());
         } catch (ClassNotFoundException e) {
-            Assert.fail("Unable to access the package org.osgi.cdi.api.extension" + e.getMessage());
+            Assert.fail("Unable to access the package org.jboss.weld.environment.osgi.api " + e.getMessage());
         }
         try {
-            Assert.assertEquals("Unable to access the package org.osgi.cdi.api.extension.annotation", "org.osgi.cdi.api.extension.annotation", importingBundle.loadClass(BundleDataFile.class.getName()).getPackage().getName());
+            Assert.assertEquals("Unable to access the package org.jboss.weld.environment.osgi.api.annotation", "org.jboss.weld.environment.osgi.api.annotation", importingBundle.loadClass(BundleDataFile.class.getName()).getPackage().getName());
         } catch (ClassNotFoundException e) {
-            Assert.fail("Unable to access the package org.osgi.cdi.api.extension.annotation" + e.getMessage());
+            Assert.fail("Unable to access the package org.jboss.weld.environment.osgi.api.annotation " + e.getMessage());
         }
         try {
-            Assert.assertEquals("Unable to access the package org.osgi.cdi.api.extension.events", "org.osgi.cdi.api.extension.events", importingBundle.loadClass(AbstractBundleContainerEvent.class.getName()).getPackage().getName());
+            Assert.assertEquals("Unable to access the package org.jboss.weld.environment.osgi.api.events", "org.jboss.weld.environment.osgi.api.events", importingBundle.loadClass(AbstractBundleContainerEvent.class.getName()).getPackage().getName());
         } catch (ClassNotFoundException e) {
-            Assert.fail("Unable to access the package org.osgi.cdi.api.extension.events" + e.getMessage());
+            Assert.fail("Unable to access the package org.jboss.weld.environment.osgi.api.events " + e.getMessage());
         }
 
         try {
-            Assert.assertEquals("Unable to access the package org.osgi.cdi.api.integration", "org.osgi.cdi.api.integration", importingBundle.loadClass(CDIContainer.class.getName()).getPackage().getName());
+            Assert.assertEquals("Unable to access the package org.jboss.weld.environment.osgi.spi", "org.jboss.weld.environment.osgi.spi", importingBundle.loadClass(CDIContainer.class.getName()).getPackage().getName());
         } catch (ClassNotFoundException e) {
-            Assert.fail("Unable to access the package org.osgi.cdi.api.integration" + e.getMessage());
+            Assert.fail("Unable to access the package org.jboss.weld.environment.osgi.spi " + e.getMessage());
         }
     }
 }

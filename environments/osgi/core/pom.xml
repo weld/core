@@ -11,13 +11,11 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.osgi</groupId>
    <artifactId>weld-osgi-core</artifactId>
-   <version>1.0-SNAPSHOT</version>
    <packaging>pom</packaging>
    <name>Weld OSGi (Core)</name>
-
+   <version>1.0-SNAPSHOT</version>
    <description>Weld support for OSGi environments</description>
 
-   <url>http://www.seamframework.org/Weld</url>
    <licenses>
       <license>
          <name>Apache License, Version 2.0</name>
@@ -25,6 +23,7 @@
          <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
       </license>
    </licenses>
+   <url>http://www.seamframework.org/Weld</url>
 
    <developers>
       <developer>
@@ -42,6 +41,7 @@
       <module>spi</module>
       <module>extension</module>
       <module>integration</module>
+      <module>mandatory</module>
    </modules>
 
    <build>

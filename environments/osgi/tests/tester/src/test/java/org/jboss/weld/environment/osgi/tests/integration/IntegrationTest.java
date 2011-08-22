@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.integration;
 
+import org.junit.Ignore;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import junit.framework.Assert;

@@ -32,6 +32,7 @@ public class Environment {
 
     public static Option[] CDIOSGiEnvironment(Option... options) {
         List<Option> result = new ArrayList<Option>();
+        result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-mandatory").version("1.0-SNAPSHOT"));
         result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-api").version("1.0-SNAPSHOT"));
         result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-spi").version("1.0-SNAPSHOT"));
         result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-extension").version("1.0-SNAPSHOT"));
