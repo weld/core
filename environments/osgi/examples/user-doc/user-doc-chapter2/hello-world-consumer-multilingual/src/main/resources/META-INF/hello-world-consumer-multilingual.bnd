@@ -1,0 +1,3 @@
+# Let bnd handle the MANIFEST.MF generation
+# Precise that this bundle as an activator
+Bundle-Activator org.jboss.weld.osgi.examples.userdoc.helloworld.consumer.multilingual.Activator

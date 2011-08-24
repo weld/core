@@ -1,0 +1,5 @@
+Export-Package org.jboss.weld.osgi.examples.standalone;version=${pom.version}
+
+Bundle-Activator org.jboss.weld.osgi.examples.standalone.StandaloneActivator
+
+Embedded-CDIContainer true

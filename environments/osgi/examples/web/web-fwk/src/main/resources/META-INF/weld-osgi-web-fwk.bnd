@@ -1,0 +1,21 @@
+Embed-Dependency *; scope=compile; inline=true; artifactId=!weld-osgi-core-api|cdi-api|web-api|servlet-api|javax.inject|groovy-all|org.osgi.compendium|jsr311-api
+
+Import-Package !com.sun.grizzly.*,\
+               !com.sun.net.httpserver,\
+               !org.apache.tools.ant.*, \
+               !javax.ejb.*, \
+               !javax.mail.*, \
+               !javax.persistence.*, \
+               !javax.servlet.annotation.*, \
+               !javax.servlet.jsp.*, \
+
+Export-Package org.jboss.weld.osgi.examples.web.fwk; \
+               org.jboss.weld.osgi.examples.web.fwk.api; \
+               org.jboss.weld.osgi.examples.web.fwk.view;version=${pom.version}
+
+-exportcontents com.sun.jersey.*; \
+                com.sun.ws.*; \
+                javax.ws.rs; \
+                javax.ws.rs.*
+
+DynamicImport-Package *

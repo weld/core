@@ -1,0 +1,1 @@
+Export-Package org.jboss.weld.osgi.examples.paint.triangle;version=${pom.version}
