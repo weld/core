@@ -5,13 +5,13 @@
    <parent>
       <groupId>org.jboss.weld.osgi.tests</groupId>
       <artifactId>weld-osgi-tests</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>org.jboss.weld.osgi.tests</groupId>
    <artifactId>weld-osgi-scanner</artifactId>
-   <version>1.0-SNAPSHOT</version>
+   <version>1.1.0-SNAPSHOT</version>
    <packaging>bundle</packaging>
    <name>Weld OSGi (Test scanner bundle)</name>
 
@@ -42,7 +42,7 @@
       <dependency>
          <groupId>org.jboss.weld.osgi.tests</groupId>
          <artifactId>weld-osgi-innerscanner</artifactId>
-         <version>1.0-SNAPSHOT</version>
+         <version>1.1.0-SNAPSHOT</version>
       </dependency>
         
    </dependencies>

@@ -5,7 +5,7 @@
    <parent>
       <groupId>org.jboss.weld.osgi.docs</groupId>
       <artifactId>weld-osgi-docs</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
    <artifactId>weld-osgi-design</artifactId>
    <packaging>jdocbook</packaging>
    <name>Weld OSGi (Specifications)</name>
-   <version>1.0-SNAPSHOT</version>
+   <version>1.1.0-SNAPSHOT</version>
    <description>Weld support for OSGi environments specifications</description>
 
    <licenses>
