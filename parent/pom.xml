@@ -97,12 +97,13 @@
       <!-- Testing deps -->
       <testng.version>5.10</testng.version>
       <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
-      <arquillian.version>1.0.0.CR2</arquillian.version>
-      <arquillian.jboss.version>1.0.0.CR1</arquillian.jboss.version>
+      <jboss.as7.tck-runner>1.0.0.CR1</jboss.as7.tck-runner>
+      <arquillian.version>1.0.0.CR4</arquillian.version>
+      <arquillian.jboss.version>1.0.0.CR4</arquillian.jboss.version>
       <arquillian.weld.version>1.0.0.CR2</arquillian.weld.version>
-      <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
-      <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
-      <jbossas7.version>7.0.0.Final</jbossas7.version>
+      <arquillian.tomcat.version>1.0.0.CR4</arquillian.tomcat.version>
+      <arquillian.jetty.version>1.0.0.CR4</arquillian.jetty.version>
+      <jbossas7.version>7.0.1.Final</jbossas7.version>
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
       <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
@@ -115,7 +116,7 @@
       <javax.jms.version>1.1</javax.jms.version>
 
       <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
-      <jbossas.client.version>6.0.0.Final</jbossas.client.version>
+      <jbossas.client.version>6.1.0.Final</jbossas.client.version>
 
       <!-- TODO move to weld-parent -->
       <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
@@ -154,16 +155,28 @@
             <version>${jboss.test.harness.version}</version>
          </dependency>
 
+          <dependency>
+             <groupId>org.jboss.test-harness</groupId>
+             <artifactId>jboss-test-harness-jboss-as-60</artifactId>
+             <version>${jboss.test.harness.version}</version>
+             <exclusions>
+                <exclusion>
+                   <groupId>woodstox</groupId>
+                   <artifactId>wstx-asl</artifactId>
+                </exclusion>
+             </exclusions>
+          </dependency>
+
          <dependency>
-            <groupId>org.jboss.test-harness</groupId>
-            <artifactId>jboss-test-harness-jboss-as-60</artifactId>
-            <version>${jboss.test.harness.version}</version>
-            <exclusions>
-               <exclusion>
-                  <groupId>woodstox</groupId>
-                  <artifactId>wstx-asl</artifactId>
-               </exclusion>
-            </exclusions>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-arquillian-common</artifactId>
+            <version>${jbossas7.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.jboss.jbossas.as7-cdi-tck</groupId>
+            <artifactId>jbossas-container</artifactId>
+            <version>${jboss.as7.tck-runner}</version>
          </dependency>
 
          <dependency>
@@ -177,6 +190,12 @@
             <artifactId>jboss-test-harness-tomcat</artifactId>
             <version>${jboss.test.harness.version}</version>
          </dependency>
+
+          <dependency>
+              <groupId>org.jboss.arquillian.container</groupId>
+              <artifactId>arquillian-container-spi</artifactId>
+              <version>${arquillian.version}</version>
+          </dependency>
 
          <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>

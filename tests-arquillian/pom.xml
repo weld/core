@@ -241,11 +241,11 @@
 
 	<!-- InContainer profile using JBoss AS Managed. Runs the full integration test suite, used by e.g. Hudson. -->
       <profile>
-         <id>incontainer</id>
+         <id>jbossas6</id>
          <activation>
             <activeByDefault>false</activeByDefault>
             <property>
-               <name>incontainer</name>
+               <name>jbossas6</name>
             </property>
          </activation>
          <properties>
@@ -266,7 +266,7 @@
             <dependency>
                <groupId>org.jboss.jbossas</groupId>
                <artifactId>jboss-as-client</artifactId>
-               <version>6.1.0-SNAPSHOT</version>
+               <version>6.1.0.Final</version>
                <type>pom</type>
                <scope>test</scope>
             </dependency>
@@ -290,11 +290,11 @@
 
 	<!-- InContainer profile using JBoss AS Remote container. Used for debugging single tests, -Dtest=.. -->
       <profile>
-         <id>incontainer-remote</id>
+         <id>jbossas6-remote</id>
          <activation>
             <activeByDefault>false</activeByDefault>
             <property>
-               <name>incontainer-remote</name>
+               <name>jbossas6-remote</name>
             </property>
          </activation>
          <dependencies>
@@ -336,11 +336,11 @@
 
       <!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
       <profile>
-         <id>jbossas7</id>
+         <id>incontainer</id>
          <activation>
             <activeByDefault>false</activeByDefault>
             <property>
-               <name>jbossas7</name>
+               <name>incontainer</name>
             </property>
          </activation>
          <properties>
@@ -379,11 +379,11 @@
 
       <!-- InContainer profile using JBoss AS 7 Remote. Runs the full integration test suite, used by e.g. Hudson. -->
       <profile>
-         <id>jbossas7-remote</id>
+         <id>incontainer-remote</id>
          <activation>
             <activeByDefault>false</activeByDefault>
             <property>
-               <name>jbossas7-remote</name>
+               <name>incontainer-remote</name>
             </property>
          </activation>
          <properties>
@@ -457,7 +457,7 @@
 
 	<!-- InContianer Performance test profile using JBoss AS Managed container -->
       <profile>
-         <id>incontainer-perf</id>
+         <id>jbossas6-perf</id>
          <activation>
             <activeByDefault>false</activeByDefault>
             <property>

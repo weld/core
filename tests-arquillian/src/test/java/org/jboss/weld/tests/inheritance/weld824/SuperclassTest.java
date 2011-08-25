@@ -21,7 +21,7 @@
  */
 package org.jboss.weld.tests.inheritance.weld824;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -51,8 +51,8 @@ public class SuperclassTest
    public static WebArchive createWebArchive()
    {
       WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
-      war.addLibrary(createJavaArchive());
-      war.addManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+      war.addAsLibrary(createJavaArchive());
+      war.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
       return war;
    }
 
@@ -64,7 +64,7 @@ public class SuperclassTest
    {
       JavaArchive war = ShrinkWrap.create(JavaArchive.class, "test.jar");
       war.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-      war.addManifestResource("org/jboss/weld/tests/inheritance/weld824/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
+      war.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
       return war;
    }
    
