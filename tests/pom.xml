@@ -34,17 +34,30 @@
          <artifactId>jboss-test-harness</artifactId>
       </dependency>
 
-      <dependency>
-         <groupId>org.jboss.test-harness</groupId>
-         <artifactId>jboss-test-harness-jboss-as-60</artifactId>
-         <exclusions>
-            <exclusion>
-               <groupId>org.jboss.slf4j</groupId>
-               <artifactId>slf4j-jboss-logging</artifactId>
-            </exclusion>
-         </exclusions>
-         <scope>test</scope>
-      </dependency>
+       <dependency>
+           <groupId>org.jboss.arquillian.container</groupId>
+           <artifactId>arquillian-container-spi</artifactId>
+       </dependency>
+
+       <dependency>
+           <groupId>org.jboss.as</groupId>
+           <artifactId>jboss-as-arquillian-common</artifactId>
+       </dependency>
+
+       <dependency>
+          <groupId>org.jboss.jbossas.as7-cdi-tck</groupId>
+          <artifactId>jbossas-container</artifactId>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.jboss.arquillian.container</groupId>
+                  <artifactId>arquillian-container-spi</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>org.jboss.as</groupId>
+                  <artifactId>jboss-as-arquillian-common</artifactId>
+              </exclusion>
+          </exclusions>
+       </dependency>
 
       <dependency>
          <groupId>javax.el</groupId>
@@ -100,6 +113,11 @@
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-simple</artifactId>
          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.jms</groupId>
+         <artifactId>jms</artifactId>
       </dependency>
 
       <dependency>
@@ -242,6 +260,22 @@
                            <name>org.jboss.testharness.outputDirectory</name>
                            <value>target</value>
                         </property>
+                         <property>
+                             <name>org.jboss.testharness.spi.Containers</name>
+                             <value>org.jboss.jbossas.cdiTck.container.ArquillianContainerAdaptor</value>
+                         </property>
+                         <property>
+                             <name>org.jboss.har2arq.container</name>
+                             <value>org.jboss.as.arquillian.container.managed.ManagedDeployableContainer</value>
+                         </property>
+                         <property>
+                             <name>jboss.options</name>
+                             <value>-Xmx2048m -XX:MaxPermSize=512m -enableassertions</value>
+                         </property>
+                         <property>
+                            <name>jboss.datasource.add</name>
+                            <value>true</value>
+                         </property>
                      </systemProperties>
                   </configuration>
                </plugin>
