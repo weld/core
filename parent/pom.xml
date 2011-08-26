@@ -101,8 +101,9 @@
       <arquillian.version>1.0.0.CR4</arquillian.version>
       <arquillian.jboss.version>1.0.0.CR4</arquillian.jboss.version>
       <arquillian.weld.version>1.0.0.CR2</arquillian.weld.version>
-      <arquillian.tomcat.version>1.0.0.CR4</arquillian.tomcat.version>
-      <arquillian.jetty.version>1.0.0.CR4</arquillian.jetty.version>
+      <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
+      <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
+      <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
       <jbossas7.version>7.1.0.Alpha1-SNAPSHOT</jbossas7.version>
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
@@ -241,13 +242,13 @@
 
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-glassfish-embedded-3</artifactId>
+            <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
             <version>${arquillian.glassfish.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-glassfish-remote-3</artifactId>
+            <artifactId>arquillian-glassfish-remote-3.1</artifactId>
             <version>${arquillian.glassfish.version}</version>
          </dependency>
 

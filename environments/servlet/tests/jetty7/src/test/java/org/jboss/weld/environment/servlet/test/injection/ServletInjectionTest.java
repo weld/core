@@ -34,10 +34,9 @@ import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETT
  * @author Ales Justin
  */
 @RunWith(Arquillian.class)
-@RunAsClient
 public class ServletInjectionTest extends ServletInjectionTestBase
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive deployment()
    {
       return ServletInjectionTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml");

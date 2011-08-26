@@ -1,7 +1,7 @@
 package org.jboss.weld.tests.beanDeployment.circular;
 
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.ShouldThrowException;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -13,7 +13,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DependentSelfInjectionTest
 {
-   @Deployment @ShouldThrowException(DeploymentException.class)
+   @Deployment
+   @ShouldThrowException(DeploymentException.class)
    public static JavaArchive createDeployment()
    {
       return ShrinkWrap.create(BeanArchive.class)

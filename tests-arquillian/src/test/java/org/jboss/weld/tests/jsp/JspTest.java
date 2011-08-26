@@ -37,7 +37,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -53,10 +52,9 @@ import org.junit.runner.RunWith;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@RunAsClient
 public class JspTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")

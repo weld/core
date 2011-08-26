@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.xml.broken.parsing;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -18,7 +18,7 @@ public class BeansXmlTest
    {
       return ShrinkWrap.create(JavaArchive.class)
          .addPackage(BeansXmlTest.class.getPackage())
-         .addManifestResource(
+         .addAsManifestResource(
                new StringAsset(
                 "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" xmlns:weld=\"http://jboss.org/schema/weld/beans\">\n" + 
          		"   <alternatives>\n" + 

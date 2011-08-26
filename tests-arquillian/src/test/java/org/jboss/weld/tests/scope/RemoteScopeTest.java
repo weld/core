@@ -16,13 +16,18 @@
  */
 package org.jboss.weld.tests.scope;
 
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
+import javax.servlet.http.HttpServletResponse;
+
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -35,17 +40,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import javax.servlet.http.HttpServletResponse;
-
-import static org.junit.Assert.assertEquals;
-
 @RunWith(Arquillian.class)
-@RunAsClient
 @Category(Integration.class)
 public class RemoteScopeTest
 {
 
-   @Deployment
+   @Deployment(testable = false)
    public static Archive<?> deploy()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")
@@ -58,19 +58,13 @@ public class RemoteScopeTest
     * description = "WELD-311"
     */
    @Test
-   public void testScopeOfProducerMethod() throws Exception
+   public void testScopeOfProducerMethod(@ArquillianResource URL baseURL) throws Exception
    {
       WebClient client = new WebClient();
-      Page page = client.getPage(getPath("request1"));
+      Page page = client.getPage(new URL(baseURL, "request1"));
       assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
-      page = client.getPage(getPath("request2"));
+      page = client.getPage(new URL(baseURL, "request2"));
       assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
-   }
-
-   protected String getPath(String viewId)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + viewId;
    }
 
 }

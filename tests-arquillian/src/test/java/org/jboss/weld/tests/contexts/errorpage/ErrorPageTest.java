@@ -17,11 +17,17 @@
 
 package org.jboss.weld.tests.contexts.errorpage;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.html.HtmlDivision;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -31,9 +37,6 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * <p>This test was mostly developed to test the scenario related to WELD-29.  Essentially
@@ -45,10 +48,9 @@ import java.util.Set;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@RunAsClient
 public class ErrorPageTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")

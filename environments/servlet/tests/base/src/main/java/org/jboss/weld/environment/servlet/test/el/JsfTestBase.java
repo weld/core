@@ -4,11 +4,13 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,12 +51,12 @@ public abstract class JsfTestBase
    }
 
    @Test
-   public void testELWithParameters() throws Exception
+   public void testELWithParameters(@ArquillianResource URL baseURL) throws Exception
    {
       WebClient client = new WebClient();
-      HtmlPage page = client.getPage(getPath("/charlie.jsf"));
+      HtmlPage page = client.getPage(new URL(baseURL, "charlie.jsf"));
 
-      String s = page.asXml();
+      page.asXml();
 
       HtmlSpan oldel = getFirstMatchingElement(page, HtmlSpan.class, "oldel");
       assertNotNull(oldel);
@@ -64,8 +66,6 @@ public abstract class JsfTestBase
       assertNotNull(newel);
       assertEquals("Charlie", newel.asText());
    }
-
-   protected abstract String getPath(String page);
 
    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
    {

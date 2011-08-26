@@ -33,6 +33,11 @@ package org.jboss.weld.tests.contexts.conversation.exceptionInPhaseListener;
  * limitations under the License.
  */
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -40,7 +45,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -50,18 +54,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@RunAsClient
 public class ClientConversationContextTest
 {
 
@@ -71,7 +69,7 @@ public class ClientConversationContextTest
 
    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
 
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")

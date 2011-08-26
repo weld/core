@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.stress;
 
+import java.io.IOException;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -25,7 +27,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -38,8 +39,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
 /**
  * Stress test of basically the JSF NumberGuess game example.
  *
@@ -48,7 +47,6 @@ import java.io.IOException;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@RunAsClient
 public class JsfStressTest
 {
    protected final String MAIN_PAGE = "/home.jsf";
@@ -66,7 +64,7 @@ public class JsfStressTest
    @Rule
    public ContiPerfRule i = new ContiPerfRule();
 
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive createDeployment()
    {
       return ShrinkWrap.create(WebArchive.class, "test.war")

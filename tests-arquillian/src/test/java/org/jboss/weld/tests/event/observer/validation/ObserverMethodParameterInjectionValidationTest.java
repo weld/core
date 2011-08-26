@@ -23,14 +23,13 @@
 package org.jboss.weld.tests.event.observer.validation;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.tests.category.Broken;
-import org.junit.Assert;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -38,10 +37,9 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-@Category(Broken.class) // TODO -- enable this when upgraded to Arq Alpha5
 public class ObserverMethodParameterInjectionValidationTest
 {
-   @Deployment
+   @Deployment @ShouldThrowException(DeploymentException.class)
    public static JavaArchive getDeployment()
    {
       return ShrinkWrap.create(JavaArchive.class, "test.jar")
@@ -52,7 +50,8 @@ public class ObserverMethodParameterInjectionValidationTest
    @Test
    public void testDeployment()
    {
-      Assert.fail("Excepted deployment error: 'Unsatisfied dependencies for type [File] with qualifiers [@Default] on observer method injection point'");
+      // Arquillian ShouldThrowException marks it as allowed, does not stop @Test from execution
+      //Assert.fail();
    }
 
    /**

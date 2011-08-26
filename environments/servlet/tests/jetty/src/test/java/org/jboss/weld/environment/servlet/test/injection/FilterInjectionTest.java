@@ -4,17 +4,15 @@ import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETT
 import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_WEB;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@RunAsClient
 public class FilterInjectionTest extends FilterInjectionTestBase
 {
 
-   @Deployment
+   @Deployment(testable = false)
    public static WebArchive deployment()
    {
       return FilterInjectionTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml").addAsWebResource(JETTY_WEB, "jetty-web.xml");

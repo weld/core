@@ -16,12 +16,15 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
+import static org.junit.Assert.assertEquals;
+
+import javax.servlet.http.HttpServletResponse;
+
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -36,10 +39,6 @@ import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.servlet.http.HttpServletResponse;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Sections
@@ -57,10 +56,9 @@ import static org.junit.Assert.assertEquals;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@RunAsClient
 public class EnterpriseBeanLifecycleRemoteTest
 {
-   @Deployment
+   @Deployment(testable = false)
    public static Archive<?> deploy()
    {
       EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");

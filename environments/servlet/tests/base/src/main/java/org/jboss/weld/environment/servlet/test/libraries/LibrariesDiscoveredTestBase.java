@@ -26,7 +26,7 @@ public class LibrariesDiscoveredTestBase
       log.fine("Library");
       log.fine("-------------------------");
       log.fine(library.toString(true));
-      return baseDeployment().addClass(Needle.class).addAsLibrary(library);
+      return baseDeployment().addClasses(Needle.class, LibrariesDiscoveredTestBase.class).addAsLibrary(library);
    }
 
    @Test
