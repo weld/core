@@ -47,16 +47,19 @@
        <dependency>
            <groupId>org.jboss.arquillian.container</groupId>
            <artifactId>arquillian-container-spi</artifactId>
+           <scope>test</scope>
        </dependency>
 
        <dependency>
            <groupId>org.jboss.as</groupId>
            <artifactId>jboss-as-arquillian-common</artifactId>
+           <scope>test</scope>
        </dependency>
 
        <dependency>
           <groupId>org.jboss.jbossas.as7-cdi-tck</groupId>
           <artifactId>jbossas-container</artifactId>
+          <scope>test</scope>
           <exclusions>
               <exclusion>
                   <groupId>org.jboss.arquillian.container</groupId>
