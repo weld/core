@@ -22,25 +22,40 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
+import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Artifact
-@BeansXml("beans.xml")
-public class SimpleInterceptorTest extends AbstractWeldTest
+@RunWith(Arquillian.class)
+public class SimpleInterceptorTest 
 {
+   @Deployment
+   public static JavaArchive createDeployment()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+         .intercept(SimpleInterceptor.class, TwoBindingsInterceptor.class)
+         .decorate(SimpleDecorator.class)
+         .addPackage(SimpleInterceptorTest.class.getPackage());
+   }
 
-   @BeforeMethod
+   @Inject
+   private BeanManager beanManager;
+   
+   @Before
    public void resetInterceptors()
    {
       SimpleInterceptor.aroundInvokeCalled = false;
@@ -64,8 +79,8 @@ public class SimpleInterceptorTest extends AbstractWeldTest
    @Test
    public void testSimpleInterceptor()
    {
-      Bean bean = getCurrentManager().getBeans(SimpleBeanImpl.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+      Bean bean = beanManager.getBeans(SimpleBeanImpl.class).iterator().next();
+      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
       SimpleBeanImpl simpleBean = (SimpleBeanImpl) bean.create(creationalContext);
       String result = simpleBean.doSomething();
       assert "decorated-Hello!-decorated".equals(result);
@@ -80,8 +95,8 @@ public class SimpleInterceptorTest extends AbstractWeldTest
    @Test
    public void testSimpleInterceptorWithStereotype()
    {
-      Bean bean = getCurrentManager().getBeans(SimpleBeanWithStereotype.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+      Bean bean = beanManager.getBeans(SimpleBeanWithStereotype.class).iterator().next();
+      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
       SimpleBeanWithStereotype simpleBean = (SimpleBeanWithStereotype) bean.create(creationalContext);
       String result = simpleBean.doSomething();
       assert "Hello!".equals(result);

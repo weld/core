@@ -1,8 +1,0 @@
-<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:weld="http://jboss.org/schema/weld/beans">
-   <alternatives>
-      <foo></foo>
-   </alternatives>
-   <weld:scan>
-   	<bar></bar>
-   </weld:scan>
-</beans>
