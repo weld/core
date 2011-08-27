@@ -38,6 +38,6 @@ public class ListenerInjectionTest extends ListenerInjectionTestBase
    @Deployment(testable = false)
    public static WebArchive deployment()
    {
-      return ListenerInjectionTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml");
+      return ListenerInjectionTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
    }
 }

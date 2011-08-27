@@ -40,6 +40,6 @@ public class JsfTest extends JsfTestBase
    @Deployment(testable = false)
    public static WebArchive deployment()
    {
-      return JsfTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml");
+      return JsfTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
    }
 }

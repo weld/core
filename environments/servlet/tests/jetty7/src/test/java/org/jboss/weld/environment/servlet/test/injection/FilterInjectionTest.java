@@ -38,6 +38,6 @@ public class FilterInjectionTest extends FilterInjectionTestBase
    @Deployment(testable = false)
    public static WebArchive deployment()
    {
-      return FilterInjectionTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml");
+      return FilterInjectionTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
    }
 }

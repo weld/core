@@ -15,7 +15,7 @@ public class ServletInjectionTest extends ServletInjectionTestBase
    @Deployment(testable = false)
    public static WebArchive deployment()
    {
-      return ServletInjectionTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml").addAsWebResource(JETTY_WEB, "jetty-web.xml");
+      return ServletInjectionTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml").addAsWebInfResource(JETTY_WEB, "jetty-web.xml");
    }
 
 }

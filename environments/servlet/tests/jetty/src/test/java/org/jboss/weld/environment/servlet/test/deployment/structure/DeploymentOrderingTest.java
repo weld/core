@@ -16,8 +16,8 @@ public class DeploymentOrderingTest extends DeploymentOrderingTestBase
    public static WebArchive deployment()
    {
       return DeploymentOrderingTestBase.deployment()
-         .addAsWebResource(JETTY_ENV, "jetty-env.xml")
-         .addAsWebResource(JETTY_WEB, "jetty-web.xml");
+         .addAsWebInfResource(JETTY_ENV, "jetty-env.xml")
+         .addAsWebInfResource(JETTY_WEB, "jetty-web.xml");
    }
 
 }

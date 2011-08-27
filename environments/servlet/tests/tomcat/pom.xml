@@ -152,6 +152,12 @@
             </dependency>
 
             <dependency>
+               <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+               <artifactId>shrinkwrap-descriptors-impl</artifactId>
+               <scope>test</scope>
+            </dependency>
+
+            <dependency>
                <groupId>org.apache.tomcat</groupId>
                <artifactId>catalina</artifactId>
                <scope>test</scope>

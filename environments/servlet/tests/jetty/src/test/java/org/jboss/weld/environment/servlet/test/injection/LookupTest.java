@@ -17,7 +17,7 @@ public class LookupTest extends LookupTestBase
    @Deployment
    public static WebArchive deployment()
    {
-      return LookupTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml").addAsWebResource(JETTY_WEB, "jetty-web.xml");
+      return LookupTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml").addAsWebInfResource(JETTY_WEB, "jetty-web.xml");
    }
    
 }

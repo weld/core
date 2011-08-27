@@ -15,7 +15,7 @@ public class ListenerInjectionTest extends ListenerInjectionTestBase
    @Deployment(testable = false)
    public static WebArchive deployment()
    {
-      return ListenerInjectionTestBase.deployment().addAsWebResource(JETTY_ENV, "jetty-env.xml").addAsWebResource(JETTY_WEB, "jetty-web.xml");
+      return ListenerInjectionTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml").addAsWebInfResource(JETTY_WEB, "jetty-web.xml");
    }
 
 }

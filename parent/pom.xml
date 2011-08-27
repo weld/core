@@ -105,6 +105,7 @@
       <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
       <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
       <jbossas7.version>7.1.0.Alpha1-SNAPSHOT</jbossas7.version>
+      <jboss.shrinkwrap.descriptors>1.1.0-alpha-3</jboss.shrinkwrap.descriptors>
       <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
       <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
       <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
@@ -166,6 +167,12 @@
                    <artifactId>wstx-asl</artifactId>
                 </exclusion>
              </exclusions>
+          </dependency>
+
+          <dependency>
+              <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+              <artifactId>shrinkwrap-descriptors-impl</artifactId>
+              <version>${jboss.shrinkwrap.descriptors}</version>
           </dependency>
 
          <dependency>
