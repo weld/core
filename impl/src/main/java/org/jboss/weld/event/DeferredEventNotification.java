@@ -16,18 +16,17 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.logging.Category.EVENT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
+
+import static org.jboss.weld.logging.Category.EVENT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
 
 /**
  * A task that will notify the observer of a specific event at some future time.
@@ -100,7 +99,7 @@ public class DeferredEventNotification<T> implements Runnable
          }
          else
          {
-            RequestContext requestContext = Container.instance().deploymentManager().instance().select(EjbRequestContext.class, UnboundLiteral.INSTANCE).get();
+            RequestContext requestContext = Container.instance().deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
             try
             {
                requestContext.activate();

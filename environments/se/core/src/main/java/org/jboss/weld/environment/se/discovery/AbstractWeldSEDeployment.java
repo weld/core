@@ -17,12 +17,14 @@ import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
  * implementations.
  * 
  * @author Pete Muir
- * 
+ * @author Ales Justin
+ *
  */
 public abstract class AbstractWeldSEDeployment implements Deployment
 {
 
-   public static final String[] RESOURCES = { "META-INF/beans.xml" };
+   public static final String BEANS_XML = "META-INF/beans.xml";
+   public static final String[] RESOURCES = { BEANS_XML };
 
    private final ServiceRegistry serviceRegistry;
    private final Iterable<Metadata<Extension>> extensions;

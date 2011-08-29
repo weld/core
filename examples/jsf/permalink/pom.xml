@@ -5,7 +5,7 @@
    <parent>
       <groupId>org.jboss.weld.examples</groupId>
       <artifactId>weld-examples-parent</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.1.3-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
 
@@ -337,6 +337,9 @@
                </resource>
                <resource>
                   <directory>src/main/resources</directory>
+               </resource>
+               <resource>
+                  <directory>src/main/resources-jetty</directory>
                </resource>
             </resources>
             <plugins>

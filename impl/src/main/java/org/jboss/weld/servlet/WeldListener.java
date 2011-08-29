@@ -22,23 +22,22 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.logging.Category.SERVLET;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
-import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
-import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
-
-import javax.servlet.ServletRequestEvent;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSessionEvent;
-
 import org.jboss.weld.Container;
+import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.slf4j.cal10n.LocLogger;
+
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSessionEvent;
+
+import static org.jboss.weld.logging.Category.SERVLET;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ServletMessage.*;
 
 /**
  * The Weld listener
@@ -95,6 +94,7 @@ public class WeldListener extends AbstractServletListener
          // Mark the session context and conversation contexts to destroy
          // instances when appropriate
          sessionContext().destroy(event.getSession());
+         RequestScopedBeanCache.endRequest();
       }
    }
 

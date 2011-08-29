@@ -10,7 +10,7 @@ public class BeanOne
 {
 
    @Inject
-   BeanManager beanManager;
+   private BeanManager beanManager;
 
    public BeanManager getBeanManager()
    {

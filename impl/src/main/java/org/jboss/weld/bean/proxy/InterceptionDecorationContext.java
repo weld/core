@@ -17,10 +17,11 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
+import java.util.List;
 
 /**
  * A class that holds the interception (and decoration) contexts which are currently in progress.
@@ -37,11 +38,11 @@ import java.util.Stack;
  */
 public class InterceptionDecorationContext
 {
-   private static ThreadLocal<Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>();
+   private static ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>();
    
-   public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> pop()
+   private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> pop()
    {
-      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
       if (stack == null)
       {
          throw new EmptyStackException();
@@ -50,7 +51,7 @@ public class InterceptionDecorationContext
       {
          try
          {
-            return stack.pop();
+            return stack.remove(stack.size() - 1);
          }
          finally
          {
@@ -62,41 +63,48 @@ public class InterceptionDecorationContext
       }
    }
    
-   public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> push(Set<CombinedInterceptorAndDecoratorStackMethodHandler> item)
+   private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> push(Set<CombinedInterceptorAndDecoratorStackMethodHandler> item)
    {
-      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
       if (stack == null)
       {
-         stack = new Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>();
+         stack = new ArrayList<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>();
          interceptionContexts.set(stack);
       }
-      stack.push(item);
+      stack.add(item);
       return item;
    }
    
    public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> peek()
    {
-      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
       if (stack == null)
       {
          throw new EmptyStackException();
       }
       else
       {
-         return stack.peek();
+         int last = stack.size() - 1;
+         Set<CombinedInterceptorAndDecoratorStackMethodHandler> result = stack.get(last);
+         if (result == null)
+         {
+            result = new HashSet<CombinedInterceptorAndDecoratorStackMethodHandler>();
+            stack.set(last, result);
+         }
+         return result;
       }
    }
    
    public static boolean empty()
    {
-      Stack<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
       if (stack == null)
       {
          return true;
       }
       else
       {
-         return stack.empty();
+         return stack.isEmpty();
       }
    }
    
@@ -108,6 +116,6 @@ public class InterceptionDecorationContext
 
    public static void startInterceptorContext()
    {
-      push(new HashSet<CombinedInterceptorAndDecoratorStackMethodHandler>());
+      push(null);
    }
 }

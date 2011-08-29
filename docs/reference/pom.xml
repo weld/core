@@ -4,7 +4,7 @@
 
    <groupId>org.jboss.weld.reference-guide</groupId>
    <artifactId>weld-reference-guide</artifactId>
-   <version>1.1.0-SNAPSHOT</version>
+   <version>1.1.3-SNAPSHOT</version>
    <packaging>jdocbook</packaging>
    <name>Weld Reference Guide</name>
    <url>http://www.seamframework.org/Weld</url>
@@ -19,7 +19,7 @@
    <parent>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core-parent</artifactId>
-      <version>1.1.0-SNAPSHOT</version>
+      <version>1.1.3-SNAPSHOT</version>
       <relativePath>../../parent/pom.xml</relativePath>
    </parent>
   
@@ -27,9 +27,9 @@
       <pdf.name>weld-reference.pdf</pdf.name>
       <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
       <jdocbookSourceDirectory>src/main/docbook</jdocbookSourceDirectory>
-      <flies.plugin.version>1.1-alpha-1</flies.plugin.version>
-      <flies.srcDir>src/main/docbook</flies.srcDir>
-      <flies.dstDir>src/main/docbook</flies.dstDir>
+      <zanata.plugin.version>1.3</zanata.plugin.version>
+      <zanata.srcDir>src/main/docbook</zanata.srcDir>
+      <zanata.dstDir>src/main/docbook</zanata.dstDir>
    </properties>
 
    <build>
@@ -82,9 +82,9 @@
             </executions>
          </plugin>
          <plugin>
-            <groupId>net.openl10n.flies</groupId>
-            <artifactId>flies-maven-plugin</artifactId>
-            <version>${flies.plugin.version}</version>
+            <groupId>org.zanata</groupId>
+            <artifactId>zanata-maven-plugin</artifactId>
+            <version>${zanata.plugin.version}</version>
          </plugin>
       </plugins>
    </build>

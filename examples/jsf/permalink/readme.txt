@@ -1,11 +1,13 @@
 Weld Permalink Example (Servlet Environment)
 ============================================
 
-This example demonstrates the use of Weld in a Servlet environment (Tomcat 6
-/ Jetty 6). Contextual state management and dependency injection are handled by
-JSR-299. Transaction and persistence context management is handled by the EJB 3
-container. No alterations are required to be made to the Servlet container. All
-services are self-contained within the deployment.
+This example demonstrates the use of Weld in a both a Java EE 6 container and a
+Servlet environment (Tomcat 6 / Jetty 6). Contextual state management and
+dependency injection are handled by JSR-299. For the purpose of demonstration,
+data is only stored in-memory.  Additional setup is required to setup
+transaction and persistence context management.  separately. No alterations are
+required to be made to the Servlet container. All services are self-contained
+within the deployment.
 
 This example uses a Maven 2 build. Execute the following command to build the
 WAR. The WAR will will be located in the target directory after completion of
@@ -13,12 +15,12 @@ the build.
 
  mvn
 
-Now you are ready to deploy.
+Now you are ready to deploy to a Java EE 6 container.
 
-== Deploying to JBoss AS
+== Deploying to JBoss AS 6
 
-If you run a normal Maven build, the artifact it produces is deployable to JBoss
-AS by default:
+If you run a normal Maven build, the artifact produced is deployable to JBoss AS
+6 (or any Java EE 6-compliant container) by default:
 
  mvn package
 
@@ -28,6 +30,29 @@ local URL to access the running application:
  http://localhost:8080/weld-permalink
  
 Alternatively, run ant restart to have the app copied to you ${jboss.home}
+
+== Deploying to GlassFish 3
+
+The application can also be deployed to GlassFish 3, the Java EE 6 reference
+implementation.
+
+First ensure that GlassFish has been started. You can start GlassFish from the
+commandline using the asadmin provided by the GlassFish installation:
+
+ asadmin start-domain domain1
+
+Now you can deploy the target/weld-permalink.war through the web-based GlassFish
+admininstration console or using asadmin:
+
+ asadmin deploy target/weld-permalink.war
+
+Once again, open this local URL to access the running application:
+
+ http://localhost:8080/weld-permalink
+
+To undeploy the application, run:
+
+ asadmin undeploy weld-permalink
 
 == Deploying to standalone Tomcat
 
@@ -71,7 +96,22 @@ The application is available at the following local URL:
 
  http://localhost:8080/weld-permalink
 
-= Importing the project into Eclipse
+== Deploying to embedded Jetty
+
+You can deploy the application without moving any files around using the
+embedded Jetty containers.
+
+To run the application using embedded Jetty, execute this command:
+
+ mvn jetty:run
+
+The application will be running at the following local URL:
+ 
+ http://localhost:9090/weld-permalink
+
+To stop the application, terminate the running process using Ctrl+C.
+
+== Importing the project into Eclipse
 
 The recommended way to setup a Weld example in Eclipse is to use the m2eclipse
 plugin. This plugin derives the build classpath from the dependencies listed in

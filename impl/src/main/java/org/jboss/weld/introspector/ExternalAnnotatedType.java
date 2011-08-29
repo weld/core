@@ -28,7 +28,7 @@ public class ExternalAnnotatedType<X> extends ForwardingAnnotatedType<X>
    
    private final AnnotatedType<X> delegate;
 
-   private ExternalAnnotatedType(AnnotatedType<X> delegate)
+   protected ExternalAnnotatedType(AnnotatedType<X> delegate)
    {
       this.delegate = delegate;
    }

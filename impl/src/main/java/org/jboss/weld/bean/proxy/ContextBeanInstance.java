@@ -76,9 +76,10 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
       }
       Context context = container.deploymentManager().getContext(bean.getScope());
       
-      if(context.get(bean) != null)
+      T existingInstance = context.get(bean);
+      if (existingInstance != null)
       {
-         return context.get(bean);
+         return existingInstance;
       }
       
       WeldCreationalContext<T> creationalContext;

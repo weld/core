@@ -16,32 +16,22 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.TypeClosureLazyValueHolder;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.introspector.*;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
+
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Represents an annotated method
@@ -65,6 +55,8 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
    private final String propertyName;
 
    private final MethodSignature signature;
+
+   private volatile Map<Class<?>, Method> methods;
 
    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer)
    {
@@ -90,6 +82,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
       super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
       this.method = method;
       this.parameters = new ArrayList<WeldParameter<?, X>>(method.getParameterTypes().length);
+      this.methods = Collections.<Class<?>, Method>singletonMap(method.getDeclaringClass(), method);
 
       if (annotatedMethod == null)
       {
@@ -179,11 +172,18 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
    {
-      Method method = this.method;
-      // we only look up the method if we really need to, as it is slow
-      if (method.getDeclaringClass() != instance.getClass())
+      final Map<Class<?>, Method> methods = this.methods;
+      Method method = methods.get(instance.getClass());
+      if (method == null)
       {
+         //the same method may be written to the map twice, but that is ok
+         //lookupMethod is very slow
          method = SecureReflections.lookupMethod(instance.getClass(), getName(), getParameterTypesAsArray());
+         synchronized (this) {
+            final Map<Class<?>, Method> newMethods = new HashMap<Class<?>, Method>(methods);
+            newMethods.put(instance.getClass(), method);
+            this.methods = Collections.unmodifiableMap(newMethods);
+         }
       }
       return SecureReflections.<T>invoke(instance, method, parameters);
    }

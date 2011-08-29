@@ -16,37 +16,9 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-
-import org.jboss.weld.introspector.ConstructorSignature;
-import org.jboss.weld.introspector.ExternalAnnotatedType;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.TypeClosureLazyValueHolder;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMethod;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Sets;
+import org.jboss.weld.introspector.*;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
@@ -56,8 +28,10 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Sets;
+import javax.enterprise.inject.spi.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Represents an annotated class
@@ -128,16 +102,24 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
    {
       super(annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
 
-      if (annotatedType instanceof ExternalAnnotatedType)
+      boolean modified;
+      if(annotatedType instanceof DiscoveredExternalAnnotatedType)
+      {
+         discovered = true;
+         modified = true;
+      }
+      else if (annotatedType instanceof ExternalAnnotatedType)
       {
          discovered = false;
+         modified = false;
       }
       else
       {
          discovered = true;
+         modified = false;
       }
 
-      if (!discovered)
+      if (modified)
       {
          this.superclass = classTransformer.loadClass(Object.class);
       }

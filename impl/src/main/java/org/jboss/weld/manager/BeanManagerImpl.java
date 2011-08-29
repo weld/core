@@ -158,7 +158,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    
    // Contexts are shared across the application
-   private transient final ListMultimap<Class<? extends Annotation>, Context> contexts;
+   private transient final Map<Class<? extends Annotation>, List<Context>> contexts;
    
    // Client proxies can be used application wide
    private transient final ClientProxyProvider clientProxyProvider;
@@ -249,7 +249,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
     */
    public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry, Enabled enabled)
    {  
-      ListMultimap<Class<? extends Annotation>, Context> contexts = Multimaps.newListMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Context>>(), CopyOnWriteArrayListSupplier.<Context>instance());
+      Map<Class<? extends Annotation>, List<Context>> contexts = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
 
       return new BeanManagerImpl(
             serviceRegistry, 
@@ -347,7 +347,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
          List<String> namespaces,
          Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans, 
          ClientProxyProvider clientProxyProvider, 
-         ListMultimap<Class<? extends Annotation>, Context> contexts, 
+         Map<Class<? extends Annotation>, List<Context>> contexts,
          Set<CurrentActivity> currentActivities, 
          Map<Contextual<?>, Contextual<?>> specializedBeans, 
          Enabled enabled,
@@ -584,7 +584,14 @@ public class BeanManagerImpl implements WeldManager, Serializable
 
    public void addContext(Context context)
    {
-      contexts.put(context.getScope(), context);
+      Class<? extends Annotation> scope = context.getScope();
+      List<Context> contextList = contexts.get(scope);
+      if (contextList == null)
+      {
+         contextList = new CopyOnWriteArrayList<Context>();
+         contexts.put(scope, contextList);
+      }
+      contextList.add(context);
    }
 
    /**
@@ -1000,7 +1007,7 @@ public class BeanManagerImpl implements WeldManager, Serializable
       return clientProxyProvider;
    }
    
-   protected ListMultimap<Class<? extends Annotation>, Context> getContexts()
+   protected Map<Class<? extends Annotation>, List<Context>> getContexts()
    {
       return contexts;
    }

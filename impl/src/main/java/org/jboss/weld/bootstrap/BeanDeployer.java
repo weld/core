@@ -24,7 +24,7 @@ import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.introspector.ExternalAnnotatedType;
+import org.jboss.weld.introspector.DiscoveredExternalAnnotatedType;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -111,7 +111,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment>
                }
                else
                {
-                  classes.add(classTransformer.loadClass(ExternalAnnotatedType.of(event.getAnnotatedType())));
+                  classes.add(classTransformer.loadClass(DiscoveredExternalAnnotatedType.of(event.getAnnotatedType())));
                }
             } else if (weldClass.isDiscovered()) {
                vetoedClasses.add(weldClass.getJavaClass());
