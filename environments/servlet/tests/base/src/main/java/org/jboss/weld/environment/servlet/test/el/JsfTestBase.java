@@ -15,7 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
-import static org.jboss.weld.environment.servlet.test.util.Deployments.*;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.EMPTY_FACES_CONFIG_XML;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.FACES_WEB_XML;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.junit.Assert.assertNotNull;
 
 public abstract class JsfTestBase
@@ -46,7 +48,7 @@ public abstract class JsfTestBase
    {
       return baseDeployment(FACES_WEB_XML)
          .add(CHARLIE_XHTML, "charlie.xhtml")
-         .addAsWebResource(EMPTY_FACES_CONFIG_XML, "faces-config.xml")
+         .addAsWebInfResource(EMPTY_FACES_CONFIG_XML, "faces-config.xml")
          .addClass(Chicken.class);
    }
 
