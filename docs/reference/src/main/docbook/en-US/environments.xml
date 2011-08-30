@@ -175,7 +175,7 @@
 
          <para>
             Weld also supports Servlet injection in Jetty 6. To enable this, add the file
-            <literal>META-INF/jetty-web.xml</literal> with the following content to your war:
+            <literal>WEB-INF/jetty-web.xml</literal> with the following content to your war:
          </para>
 
          <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
