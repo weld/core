@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -173,13 +172,17 @@ public class URLScanner
 
          ZipFile zip = new ZipFile(file);
          Enumeration<? extends ZipEntry> entries = zip.entries();
-         // Replace out the default classloader with one for the zip
-         URLClassLoader classLoader = new URLClassLoader(new URL[] { file.toURI().toURL() });
          while (entries.hasMoreElements())
          {
             ZipEntry entry = entries.nextElement();
             String name = entry.getName();
-            handle(name, classLoader.getResource(name), classes, urls);
+            // By using File, the correct URL chars are escaped (such as space) and others are not (such as / and $)
+            String entryUrlString = "jar:" + new File(file.getPath() + "!/" + name).toURI().toURL().toExternalForm();
+            if (name.endsWith("/") && !entryUrlString.endsWith("/")) {
+               entryUrlString += "/";
+            }
+            URL entryUrl = new URL(entryUrlString);
+            handle(name, entryUrl, classes, urls);
          }
       }
       catch (ZipException e)
