@@ -13,6 +13,7 @@
       <method-selectors>
          <method-selector>
             <selector-class name="org.jboss.jsr299.tck.impl.WebProfileMethodSelector" />
+            <selector-class name="org.jboss.testharness.impl.testng.DisableIntegrationTestsMethodSelector" />
          </method-selector>
       </method-selectors>
 

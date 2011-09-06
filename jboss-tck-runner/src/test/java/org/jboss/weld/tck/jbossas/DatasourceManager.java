@@ -66,8 +66,16 @@ public class DatasourceManager implements ITestListener
       {
          return;
       }
-
       dataSourceChecked = true;
+
+      final String createString = System.getProperty("jboss.datasource.add");
+      final boolean create = createString != null && createString.toLowerCase().equals("true");
+
+      if (!create)
+      {
+         return;
+      }
+
       String test = System.getProperty(SingleTestMethodListener.TEST_CLASS_PROPERTY);
 
       try
@@ -90,8 +98,7 @@ public class DatasourceManager implements ITestListener
          }
          if (!found)
          {
-            String create = System.getProperty("jboss.datasource.add");
-            if (create != null && !create.equals("false"))
+            if (create)
             {
                request = new ModelNode();
                request.get("address").add("subsystem", "datasources");
@@ -110,8 +117,7 @@ public class DatasourceManager implements ITestListener
                {
                   throw new RuntimeException("DataSource java:/DefaultDS was not found and could not be created automatically: " + result);
                }
-            }
-            else
+            } else
             {
                if (test != null && !test.isEmpty())
                {
@@ -121,8 +127,7 @@ public class DatasourceManager implements ITestListener
                throw new RuntimeException("DataSource java:/DefaultDS was not found. This DataSource must be defined, or the TCK will hang half way through due to missing MSC dependencies. To create this DataSource automatically run the TCK with -Djboss.datasource.add=true");
             }
          }
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
          throw new RuntimeException(e);
       }

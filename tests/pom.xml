@@ -44,21 +44,6 @@
            <artifactId>jboss-as-arquillian-common</artifactId>
        </dependency>
 
-       <dependency>
-          <groupId>org.jboss.jbossas.as7-cdi-tck</groupId>
-          <artifactId>jbossas-container</artifactId>
-          <exclusions>
-              <exclusion>
-                  <groupId>org.jboss.arquillian.container</groupId>
-                  <artifactId>arquillian-container-spi</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>org.jboss.as</groupId>
-                  <artifactId>jboss-as-arquillian-common</artifactId>
-              </exclusion>
-          </exclusions>
-       </dependency>
-
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
@@ -226,6 +211,22 @@
                <name>incontainer</name>
             </property>
          </activation>
+         <dependencies>
+           <dependency>
+              <groupId>org.jboss.jbossas.as7-cdi-tck</groupId>
+              <artifactId>jbossas-container</artifactId>
+              <exclusions>
+                  <exclusion>
+                      <groupId>org.jboss.arquillian.container</groupId>
+                      <artifactId>arquillian-container-spi</artifactId>
+                  </exclusion>
+                  <exclusion>
+                      <groupId>org.jboss.as</groupId>
+                      <artifactId>jboss-as-arquillian-common</artifactId>
+                  </exclusion>
+              </exclusions>
+           </dependency>
+         </dependencies>
          <build>
             <plugins>
                <plugin>
