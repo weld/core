@@ -68,8 +68,7 @@ public class DatasourceManager implements ITestListener
       }
       dataSourceChecked = true;
 
-      final String createString = System.getProperty("jboss.datasource.add");
-      final boolean create = createString != null && createString.toLowerCase().equals("true");
+      final boolean create = Boolean.getBoolean("jboss.datasource.add");
 
       if (!create)
       {
