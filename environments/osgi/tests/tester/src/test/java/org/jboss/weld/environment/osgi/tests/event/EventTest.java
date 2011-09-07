@@ -47,7 +47,7 @@ public class EventTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void eventTest(BundleContext context) throws InterruptedException, InvalidSyntaxException, BundleException {
         Environment.waitForEnvironment(context);
 

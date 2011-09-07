@@ -11,6 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 
@@ -27,7 +28,7 @@ public class ListenerInjectionTestBase {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     // Injection doesn't work in listeners in Tomcat
     public void testListenerInjection(@ArquillianResource URL baseURL) throws Exception {
         HttpClient client = new HttpClient();

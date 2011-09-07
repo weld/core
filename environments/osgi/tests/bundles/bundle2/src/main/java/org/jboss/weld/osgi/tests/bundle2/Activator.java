@@ -18,7 +18,7 @@
 package org.jboss.weld.osgi.tests.bundle2;
 
 import org.jboss.weld.osgi.tests.bundle1.api.ManualPublishedService;
-import com.sample.osgi.bundle2.impl.ManualPublishedServiceImpl;
+import org.jboss.weld.osgi.tests.bundle2.impl.ManualPublishedServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
