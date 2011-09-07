@@ -87,7 +87,7 @@ public class BundleSingletonProvider extends SingletonProvider {
                         if (maybeBundle != null) {
                             if (!maybeBundle.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi")) {
                                 CDIOSGiExtension.currentBundle.set(maybeBundle.getBundleId());
-                                maybeObject = get(contextId);
+                                maybeObject = get(null);
                                 CDIOSGiExtension.currentBundle.remove();
                                 if (maybeObject != null) {
                                     return maybeObject;
