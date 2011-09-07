@@ -1,0 +1,34 @@
+<!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [ ]>
+<bookinfo>
+   <title>Weld-OSGi - Weld OSGi integration</title>
+   <subtitle>
+      Design specification
+   </subtitle>
+   <edition>1.0</edition>
+   <pubsnumber>1</pubsnumber>
+   <productname>Weld-OSGi</productname>
+   <productnumber>1.1.0</productnumber>
+   <copyright>
+      <year>2011
+      </year>
+      <holder>Red Hat, Inc
+      </holder>
+   </copyright>
+   <authorgroup>
+      <author>
+         <firstname>Mathieu</firstname>
+         <surname>Ancelin</surname>
+         <email>mathieu.ancelin@serli.com</email>
+      </author>
+      <author>
+         <firstname>Matthieu</firstname>
+         <surname>Clochard</surname>
+         <email>matthieu.clochard@serli.com</email>
+      </author>
+   </authorgroup>
+   
+<!--
+   vim:et:ts=3:sw=3:tw=120
+-->
+</bookinfo>
