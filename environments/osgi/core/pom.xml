@@ -10,7 +10,7 @@
    <groupId>org.jboss.weld.osgi</groupId>
    <artifactId>weld-osgi-core</artifactId>
     <version>1.0-SNAPSHOT</version>
-   <packaging>parent</packaging>
+   <packaging>pom</packaging>
    <name>Weld OSGi (Core)</name>
 
    <description>Weld support for OSGi environments</description>
@@ -36,10 +36,28 @@
    </developers>
 
     <modules>
-        <module>weld-osgi-core-api</module>
-        <module>weld-osgi-core-spi</module>
-        <module>weld-osgi-core-extension</module>
-        <module>weld-osgi-core-integration</module>
+        <module>api</module>
+        <module>spi</module>
+        <module>extension</module>
+        <module>integration</module>
     </modules>
+
+   <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>2.1.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <_include>-target/classes/META-INF/${project.artifactId}.bnd</_include>
+                        </instructions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
