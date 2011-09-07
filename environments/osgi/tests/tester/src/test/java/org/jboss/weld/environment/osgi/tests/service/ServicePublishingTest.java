@@ -17,12 +17,12 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
-import org.junit.Ignore;
-import org.jboss.weld.osgi.tests.bundle1.api.AutoPublishedService;
-import org.jboss.weld.osgi.tests.bundle1.api.ContractInterface;
-import org.jboss.weld.osgi.tests.bundle1.api.ManualPublishedService;
-import org.jboss.weld.osgi.tests.bundle1.api.NotContractInterface;
 import org.jboss.weld.osgi.tests.bundle1.api.PropertyService;
+import java.io.Serializable;
+import org.jboss.weld.osgi.tests.bundle1.api.ContractInterface;
+import org.jboss.weld.osgi.tests.bundle1.api.NotContractInterface;
+import org.jboss.weld.osgi.tests.bundle1.api.ManualPublishedService;
+import org.jboss.weld.osgi.tests.bundle1.api.AutoPublishedService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,6 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.osgi.framework.*;
 
-import java.io.Serializable;
 
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -52,7 +51,7 @@ public class ServicePublishingTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void servicePublishingTest(BundleContext context) throws InterruptedException, InvalidSyntaxException, BundleException {
         Environment.waitForEnvironment(context);
 
@@ -60,17 +59,21 @@ public class ServicePublishingTest {
 
         for(Bundle b : context.getBundles()) {
             Assert.assertEquals("Bundle " + b.getSymbolicName() + " is not ACTIVE but " + Environment.state(b.getState()), Bundle.ACTIVE, b.getState());
-            if(b.getSymbolicName().equals("com.sample.osgi.cdi-osgi-tests-bundle1")) {
+            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
                 bundle1=b;
             }
-            else if(b.getSymbolicName().equals("com.sample.osgi.cdi-osgi-tests-bundle2")) {
+            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle2")) {
                 bundle2=b;
             }
-            else if(b.getSymbolicName().equals("com.sample.osgi.cdi-osgi-tests-bundle3")) {
+            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle3")) {
                 bundle3=b;
             }
         }
-
+        
+        Assert.assertNotNull("The bundle1 was not retrieved",bundle1);
+        Assert.assertNotNull("The bundle2 was not retrieved",bundle2);
+        Assert.assertNotNull("The bundle3 was not retrieved",bundle3);
+        
         ServiceReference[] autoPublishedServiceReferences = context.getServiceReferences(AutoPublishedService.class.getName(),null);
         AutoPublishedService autoPublishedService1 = null;
         AutoPublishedService autoPublishedService2 = null;
@@ -86,8 +89,8 @@ public class ServicePublishingTest {
         }
         Assert.assertNotNull("The auto published service 1 was null",autoPublishedService1);
         Assert.assertNotNull("The auto published service 2 was null",autoPublishedService2);
-        Assert.assertEquals("The auto published service 1 method result was wrong","com.sample.osgi.bundle1.impl.AutoPublishedServiceImpl",autoPublishedService1.whoAmI());
-        Assert.assertEquals("The auto published service 2 method result was wrong","com.sample.osgi.bundle2.impl.AutoPublishedServiceImpl",autoPublishedService2.whoAmI());
+        Assert.assertEquals("The auto published service 1 method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.AutoPublishedServiceImpl",autoPublishedService1.whoAmI());
+        Assert.assertEquals("The auto published service 2 method result was wrong","org.jboss.weld.osgi.tests.bundle2.impl.AutoPublishedServiceImpl",autoPublishedService2.whoAmI());
 
         ServiceReference[] manualPublishedServiceReferences = context.getServiceReferences(ManualPublishedService.class.getName(),null);
         ManualPublishedService manualPublishedService1 = null;
@@ -109,9 +112,9 @@ public class ServicePublishingTest {
         Assert.assertNotNull("The manual published service 1 was null",manualPublishedService1);
         Assert.assertNotNull("The manual published service 2 was null",manualPublishedService2);
         Assert.assertNotNull("The manual published service 3 was null",manualPublishedService3);
-        Assert.assertEquals("The manual published service 1 method result was wrong","com.sample.osgi.bundle1.impl.ManualPublishedServiceImpl",manualPublishedService1.whoAmI());
-        Assert.assertEquals("The manual published service 2 method result was wrong","com.sample.osgi.bundle2.impl.ManualPublishedServiceImpl",manualPublishedService2.whoAmI());
-        Assert.assertEquals("The manual published service 3 method result was wrong","com.sample.osgi.bundle3.impl.ManualPublishedServiceImpl",manualPublishedService3.whoAmI());
+        Assert.assertEquals("The manual published service 1 method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.ManualPublishedServiceImpl",manualPublishedService1.whoAmI());
+        Assert.assertEquals("The manual published service 2 method result was wrong","org.jboss.weld.osgi.tests.bundle2.impl.ManualPublishedServiceImpl",manualPublishedService2.whoAmI());
+        Assert.assertEquals("The manual published service 3 method result was wrong","org.jboss.weld.osgi.tests.bundle3.impl.ManualPublishedServiceImpl",manualPublishedService3.whoAmI());
 
         ServiceReference[] contractPublishedServiceReferences = context.getServiceReferences(ContractInterface.class.getName(),null);
         ContractInterface contractPublishedService = null;
@@ -157,8 +160,8 @@ public class ServicePublishingTest {
         Assert.assertNotNull("The property service 1 was null",propertyService1);
         Assert.assertNotNull("The property service 2 was null",propertyService2);
         Assert.assertNotNull("The property service 3 was null",propertyService3);
-        Assert.assertEquals("The property service 1 method result was wrong","com.sample.osgi.bundle1.impl.PropertyServiceImpl1",propertyService1.whoAmI());
-        Assert.assertEquals("The property service 2 method result was wrong","com.sample.osgi.bundle1.impl.PropertyServiceImpl2",propertyService2.whoAmI());
-        Assert.assertEquals("The property service 3 method result was wrong","com.sample.osgi.bundle1.impl.PropertyServiceImpl3",propertyService3.whoAmI());
+        Assert.assertEquals("The property service 1 method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl1",propertyService1.whoAmI());
+        Assert.assertEquals("The property service 2 method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl2",propertyService2.whoAmI());
+        Assert.assertEquals("The property service 3 method result was wrong","org.jboss.weld.osgi.tests.bundle1.impl.PropertyServiceImpl3",propertyService3.whoAmI());
     }
 }

@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
+import org.junit.Ignore;
 import org.jboss.weld.osgi.tests.bundle1.api.PropertyService;
 import org.jboss.weld.osgi.tests.bundle1.api.TestPublished;
 import org.junit.Assert;

@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-package com.sample.osgi.bundle2.impl;
+package org.jboss.weld.osgi.tests.bundle2.impl;
 
-import org.jboss.weld.osgi.tests.bundle1.api.Name;
-import org.jboss.weld.osgi.tests.bundle1.api.RequiredService;
-import org.jboss.weld.environment.osgi.api.annotation.Publish;
+import org.jboss.weld.osgi.tests.bundle1.api.ManualPublishedService;
 
-@Publish
-@Name("2")
-public class RequiredServiceImpl implements RequiredService {
+public class ManualPublishedServiceImpl implements ManualPublishedService {
+
 
     @Override
     public String whoAmI() {

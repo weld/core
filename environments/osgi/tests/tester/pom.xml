@@ -84,12 +84,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>3.0.6</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-api</artifactId>
             <version>${project.version}</version>
@@ -229,5 +223,4 @@
         </dependency>
 
     </dependencies>
-
 </project>
