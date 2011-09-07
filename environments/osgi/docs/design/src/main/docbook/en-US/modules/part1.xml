@@ -1,0 +1,257 @@
+<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<part id="part-1">
+   
+   <title>Architecture of Weld-OSGi</title>
+   
+   <chapter>
+      <title>Framework organisation</title>
+      <para xmlns:xi="http://www.w3.org/2001/XInclude">Weld-OSGi is composed of five bundles: <itemizedlist>
+            <listitem>
+               <para>The <emphasis>API bundle</emphasis> that describes the programming model and the OSGi extension
+                  mechanism.</para>
+            </listitem>
+            <listitem>
+               <para>The <emphasis>SPI bundle</emphasis> that describes the CDI implementatio hooking mechanism.</para>
+            </listitem>
+            <listitem>
+               <para>The <emphasis>third party API bundle</emphasis> that provides all the needed third party
+                  API.</para>
+            </listitem>
+            <listitem>
+               <para>The <emphasis>extension bundle</emphasis> that extends the OSGi environment by managing bean
+                  bundles,</para>
+            </listitem>
+            <listitem>
+               <para>The <emphasis>integration bundle</emphasis> that provides OSGi ready Weld containers to the
+                  extension bundle.</para>
+            </listitem>
+         </itemizedlist></para>
+      <para>Note that as Weld-OSGi runs in an OSGi environment it is implicit
+         that there is an OSGi core bundle too. This one provide OSGi features for all other bundles, including bean
+         bundles. But it is not an actual part of Weld-OSGi.</para>
+      <figure>
+         <title>The five bundles of Weld-OSGi</title>
+         <mediaobject>
+            <imageobject>
+               <imagedata align="center" format="PNG" depth="800"/>
+            </imageobject>
+            <caption>This figure shows the five bundles of Weld-OSGi and the links between them.</caption>
+         </mediaobject>
+      </figure>
+      <para>These bundles could regroup in two part (as shown in the figure above):<itemizedlist>
+            <listitem>
+               <para>Extension part: this part represents the actual OSGi extension. It detects and manages bean bundles
+                  and provides the programming model. This part is more described in chapter 2.</para>
+            </listitem>
+            <listitem>
+               <para>Integration part: this part represents the Weld integration. It provides all the Weld containers
+                  needed by the extension part and defines how these containers should hookup with bean bundles. This
+                  part is more described in chapter 3.</para>
+            </listitem>
+            <listitem>
+               <para>The third party API bundle : this bundle does not actually belong to a part.</para>
+            </listitem>
+         </itemizedlist></para>
+   </chapter>
+   
+   <chapter>
+      <title>Extension part</title>
+      <section>
+         <title>API bundle</title>
+         <para>The extension API defines all the features provided to OSGi
+            environment using CDI specification. It exposes all the new utilities and defines the comportment of the
+            extension bundle.</para>
+         <para>It exposes all the interfaces, events and annotations usable by a developers in order to develop its
+            client bean bundles. It defines the programming model of bean bundle. Mostly it is about publishing and
+            consuming injectable services in a CDI way.</para>
+         <para>It also describes the object the extension bundle needs to
+            orchestrate bean bundles.</para>
+         <para>So this is where to search for new usages of OSGi.</para>
+      </section>
+      <section>
+         <title>Extension bundle: the puppet master</title>
+         <para>The extension bundle is the orchestrator of Weld-OSGi. It may be use by any application that requires
+            Weld-OSGi. It may be just started at the beginning of a Weld-OSGi application. It requests the extension API
+            bundle as a dependency.</para>
+         <para>The extension bundle is the heart of Weld-OSGi applications. Once it is started, provided that it finds a
+            started integration bundle, it manages all the bean bundles. It is in charge of service automatic
+            publishing, service injections, CDI event notifications and bundle communications.</para>
+         <para>It runs in background, it just need to be started with the OSGi environment, then everything is
+            transparent to the user. Client bean bundles do not have to do anything in order to use Weld-OSGi
+            functionality.</para>
+         <para>In order to perform injections the extension bundle search for a CDI compliant container service provider
+            once it is started. Thus it can only work coupled with a bundle providing such a service: the integration
+            bundle.</para>
+         <para>The extension bundle provides an extension to OSGi as an
+            extender pattern. The extension bundle, the extender, tracks for bean bundles, the extensions, to be
+            started. Then CDI utilities are enabled for these bean bundles over OSGi environment.</para>
+         <para>The extension bundle works that
+            way:<programlisting>BEGIN
+    start
+    WHILE ! integration_bundle.isStarted
+        wait
+    END_WHILE
+    obtain_container_factory
+    FOR bean_bundle : started_bundles
+        manage_bean_bundle
+        provide_container
+    END_FOR
+    WHILE integration_bundle.isStarted
+        wait_event
+        OnBeanBundleStart
+            manage_bean_bundle
+            provide_container
+        OnBeanBundleStop
+            unmanage_bean_bundle
+    END_WHILE
+    stop
+    FOR bean_bundle : namaged_bundles
+        unmanage_bean_bundle
+        stop_bean_bundle
+    END_FOR
+END</programlisting></para>
+         <para>So this is where the magic happens and where OSGi applications
+            become much more simple.</para>
+      </section>
+   </chapter>
+   
+   <chapter>
+      <title>Integration part</title>
+      <section>
+         <title>SPI bundle</title>
+         <para>The SPI bundle defines how a CDI container, such as Weld, should bootstrap with the extension bundle. So
+            any CDI environment implementation could be used by the extension bundle transparently. The CDI compliant
+            container may be provided using an integration bundle.</para>
+         <para>This aims at providing the minimum integration in order to
+            start a CDI compliant container with every managed bean bundle. Then the extension bundle can get a CDI
+            container to provide to every one of its manages bean bundle.</para>
+         <para>Moreover the integration API allows to mix CDI compliant
+            container in the same application by providing an embedded mode. In this mode a bean bundle is decoupled
+            from the extension bundle and is managed on its own. Thus various implementations of CDI container can be
+            used or the behavior of a particular bean bundle can be particularized.</para>
+         <para>All this bootstrapping mechanism works using the service layer of OSGi. A CDI compliant integration
+            bundle may provide a service that allows the extension bundle to obtain a new container for every bean
+            bundle.</para>
+         <para>So this is where to search to make Weld-OSGi use a specific CDI compliant container.</para>
+         
+      </section>
+      <section>
+         <title>Integration bundle: provide Weld containers</title>
+         <para>The integration bundle is responsible for providing Weld containers to the extension bundle. It may be
+            started with the extension bundle and publish a CDI container factory service. It request the integration
+            API bundle as a dependency.</para>
+         <para>The integration bundle may work that way:</para>
+         <programlisting>BEGIN
+    start
+    register_container_factory_service
+    WHILE true
+        wait
+        OnContainerRequest
+            provide_container
+    END_WHILE
+    unregister_container_factory_service
+END</programlisting>
+      </section>
+   </chapter>
+   
+   <chapter>
+      <title>Weld-OSGi features</title>
+      
+      <para> As an extension to OSGi, Weld-OSGi provides several features : <itemizedlist>
+            <listitem>
+               <para>Complete integration with OSGi world by the use of extender pattern and extension bundle. Thus
+                  complete compatibility with already existing tools.</para>
+            </listitem>
+            <listitem>
+               <para>Non intruding, configurable and customizable behavior in new or upgraded application. Simple
+                  configuration and usage with annotations, completely xml free.</para>
+            </listitem>
+            <listitem>
+               <para>Full internal CDI support for bean bundles: injection, producers, interceptors, decorators
+                  ...</para>
+            </listitem>
+            <listitem>
+               <para>Lot of ease features for OSGi usages: injectable services, event notifications, inter-bundle
+                  communication ...</para>
+            </listitem>
+            <listitem>
+               <para>OSGi and CDI compliance all along the way ensuring compatibility with all CDI compliant container
+                  and easy application realisation or portage.</para>
+            </listitem>
+         </itemizedlist></para>
+   </chapter>
+   
+   <chapter>
+      <title>Weld-OSGi workflow</title>
+      <figure>
+         <title>Weld-OSGi framework start and stop protocol</title>
+         <mediaobject>
+            <imageobject>
+               <imagedata format="PNG" align="center" width="800" depth="600"/>
+            </imageobject>
+            <caption>This figure shows the steps of the Weld-OSGi starting and stopping protocol. Between step 8 and
+               step 11 the framework is in stable state and manages bean bundles.</caption>
+         </mediaobject>
+      </figure>
+   </chapter>
+   
+   <chapter>
+      <title>Bean bundles life cycle</title>
+      <para>This section presents the lifecycle of a bean bundle and how it
+         impacts CDI and OSGi regular behaviors. Mostly bean bundles follow the same lifecycle than a regular bundle.
+         There are only two new possible states and they do not modify the behavior from OSGi side.</para>
+      <figure>
+         <title>The bean bundle lifecycle</title>
+         <mediaobject>
+            <imageobject>
+               <imagedata align="center" format="PNG" depth="800"/>
+            </imageobject>
+            <caption>This figure shows the two new states a bean bundle can be in. These states are triggered by two new
+               events and address the CDI container dependency resolution (i.e. services annotated @Required).</caption>
+         </mediaobject>
+      </figure>
+      <para>The regular OSGi lifecycle is not modified by the new Weld-OSGi states as they have the same meaning than
+         the ACTIVE state from an OSGi point of view. They only add information about the validation of required service
+         availability.</para>
+   </chapter>
+   
+   <chapter>
+      <title>Bean bundle characteristics</title>
+      <para>There are very few things to do in order to obtain a bean bundle
+         from a bean archive or a bundle. Mostly it is just adding the missing marker files and headers in the archive: <itemizedlist>
+            <listitem>
+               <para> Make a bean archive a bean bundle by adding special OSGi marker headers in its
+                     <code>META-INF/Manifest.MF</code> file.</para>
+            </listitem>
+            <listitem>
+               <para> Or, in the other way, make a bundle a bean bundle by adding a <code>META-INF/bean.xml</code>
+                  file.</para>
+            </listitem>
+         </itemizedlist></para>
+      <para>Thus a bean bundle has both <code>META-INF/bean.xml</code> file
+         and OSGi marker headers in its <code>META-INF/Manifest.MF</code> file.</para>
+      <para>However there is a few other information that Weld-OSGi might need in order to perform a correct extension.
+         In particular a bean bundle can not be manage by the extension bundle but by his own embedded CDI container.
+         For that there is a new manifest header.</para>
+      <section>
+         <title>The <code>META-INF/bean.xml</code> file </title>
+         <para>The beans.xml file follows no particular rules and should be the same as in a native CDI environment.
+            Thus it can be completely empty or declare interceptors, decorators or alternatives as a regular CDI
+            beans.xml file.</para>
+         <para>There will be no different behavior with a classic bean archive except for CDI OSGi extension new
+            utilities. But these don't need any modification on the <code>META-INF/bean.xml</code> file.</para>
+      </section>
+      <section>
+         <title>The Embedded-CDIContainer <code>META-INF/Manifest.MF</code> header </title>
+         <para>This header prevents the extension bundle to automatically manage the bean bundle that set this manifest
+            header to true. So the bean bundle can be manage more finely by the user or use a different CDI container.
+            If this header is set to false or is not present in the <code>META-INF/Manifest.MF</code> file then the bean
+            bundle will be automatically manage by the extension bundle (if it is started).</para>
+      </section>
+   </chapter>
+   
+<!--
+   vim:et:ts=3:sw=3:tw=120
+-->
+</part>
