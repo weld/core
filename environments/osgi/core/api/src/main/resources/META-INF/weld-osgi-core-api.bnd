@@ -1,0 +1,3 @@
+Export-Package org.jboss.weld.environment.osgi.api; \
+               org.jboss.weld.environment.osgi.api.annotation; \
+               org.jboss.weld.environment.osgi.api.events;version=${pom.version}
