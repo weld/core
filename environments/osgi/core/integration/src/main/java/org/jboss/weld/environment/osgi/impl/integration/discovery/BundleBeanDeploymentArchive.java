@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.integration.discovery;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -29,55 +28,66 @@ import java.util.Collections;
 /**
  * Represents a BeanDeploymentArchive for a Bundle. It has no linked BDA.
  */
-public class BundleBeanDeploymentArchive implements BeanDeploymentArchive {
+public class BundleBeanDeploymentArchive implements BeanDeploymentArchive
+{
+   private String id;
 
-    private String id;
-    private Collection<String> beanClasses;
-    private BeansXml beansXml;
-    private ServiceRegistry serviceRegistry;
+   private Collection<String> beanClasses;
 
-    public BundleBeanDeploymentArchive(String id) {
-        this.id = id;
-        this.serviceRegistry = new SimpleServiceRegistry();
-    }
+   private BeansXml beansXml;
 
-    @Override
-    public Collection<String> getBeanClasses() {
-        return beanClasses;
-    }
+   private ServiceRegistry serviceRegistry;
 
-    @Override
-    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.emptyList();
-    }
+   public BundleBeanDeploymentArchive(String id)
+   {
+      this.id = id;
+      this.serviceRegistry = new SimpleServiceRegistry();
+   }
 
-    @Override
-    public BeansXml getBeansXml() {
-        return beansXml;
-    }
+   @Override
+   public Collection<String> getBeanClasses()
+   {
+      return beanClasses;
+   }
 
-    @Override
-    public Collection<EjbDescriptor<?>> getEjbs() {
-        return Collections.emptyList();
-    }
+   @Override
+   public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
+   {
+      return Collections.emptyList();
+   }
 
-    @Override
-    public String getId() {
-        return id;
-    }
+   @Override
+   public BeansXml getBeansXml()
+   {
+      return beansXml;
+   }
 
-    @Override
-    public ServiceRegistry getServices() {
-        return serviceRegistry;
-    }
+   @Override
+   public Collection<EjbDescriptor<?>> getEjbs()
+   {
+      return Collections.emptyList();
+   }
 
-    public void setBeanClasses(Collection<String> classes) {
-        this.beanClasses = Collections.unmodifiableCollection(classes);
-    }
+   @Override
+   public String getId()
+   {
+      return id;
+   }
 
-    public void setBeansXml(BeansXml beansXml) {
-        this.beansXml = beansXml;
-    }
+   @Override
+   public ServiceRegistry getServices()
+   {
+      return serviceRegistry;
+   }
+
+   public void setBeanClasses(Collection<String> classes)
+   {
+      this.beanClasses = Collections.unmodifiableCollection(classes);
+   }
+
+   public void setBeansXml(BeansXml beansXml)
+   {
+      this.beansXml = beansXml;
+   }
 
 }
-

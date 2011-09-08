@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.embedded;
 
 import org.jboss.weld.environment.osgi.impl.WeldCDIContainer;
@@ -26,53 +25,63 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 
 /**
- * Embedded Weld container used for bean bundles that are not managed by CDI-OSGi directly.
+ * Embedded Weld container used for bean bundles that are not managed by
+ * CDI-OSGi directly.
  * <p/>
- * It is responsible for initialization of a Weld container requested by the bean bundles.
+ * It is responsible for initialization of a Weld container requested by the
+ * bean bundles.
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class WeldOSGi extends org.jboss.weld.environment.se.Weld {
+public class WeldOSGi extends org.jboss.weld.environment.se.Weld
+{
+   private WeldCDIContainer container;
 
-    private WeldCDIContainer container;
+   public WeldOSGi(BundleContext context)
+   {
+      super();
+      container = new WeldCDIContainer(context.getBundle());
+   }
 
-    public WeldOSGi(BundleContext context) {
-        super();
-        container = new WeldCDIContainer(context.getBundle());
-    }
+   public WeldContainer initialize()
+   {
+      container.initialize();
+      return new WeldOSGiContainer(this);
+   }
 
-    public WeldContainer initialize() {
-        container.initialize();
-        return new WeldOSGiContainer(this);
-    }
+   public void shutdown()
+   {
+      container.shutdown();
+   }
 
-    public void shutdown() {
-        container.shutdown();
-    }
+   public static class WeldOSGiContainer extends WeldContainer
+   {
+      private final WeldOSGi weld;
 
-    public static class WeldOSGiContainer extends WeldContainer {
+      public WeldOSGiContainer(WeldOSGi weld)
+      {
+         super(null, null);
+         this.weld = weld;
+      }
 
-        private final WeldOSGi weld;
+      @Override
+      public Instance<Object> instance()
+      {
+         return weld.container.getInstance();
+      }
 
-        public WeldOSGiContainer(WeldOSGi weld) {
-            super(null, null);
-            this.weld = weld;
-        }
+      @Override
+      public Event<Object> event()
+      {
+         return weld.container.getEvent();
+      }
 
-        @Override
-        public Instance<Object> instance() {
-            return weld.container.getInstance();
-        }
+      @Override
+      public BeanManager getBeanManager()
+      {
+         return weld.container.getBeanManager();
+      }
 
-        @Override
-        public Event<Object> event() {
-            return weld.container.getEvent();
-        }
-
-        @Override
-        public BeanManager getBeanManager() {
-            return weld.container.getBeanManager();
-        }
-    }
+   }
 }

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.integration.discovery.bundle;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
@@ -31,39 +30,49 @@ import java.util.List;
 /**
  * Weld Deployment for OSGi environment.
  * <p/>
- * It allows to create a complete {@link org.jboss.weld.bootstrap.spi.Deployment} for CDI manageable OSGi {@link
- * Bundle}.
+ * It allows to create a complete
+ * {@link org.jboss.weld.bootstrap.spi.Deployment} for CDI manageable OSGi
+ * {@link Bundle}.
  *
  * @author Peter Royle
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class BundleDeployment extends AbstractWeldOSGiDeployment {
+public class BundleDeployment extends AbstractWeldOSGiDeployment
+{
+   private org.slf4j.Logger logger = LoggerFactory.getLogger(Weld.class);
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(Weld.class);
+   private final BeanDeploymentArchive beanDeploymentArchive;
 
-    private final BeanDeploymentArchive beanDeploymentArchive;
+   public BundleDeployment(Bundle bundle,
+                           Bootstrap bootstrap,
+                           BundleBeanDeploymentArchiveFactory factory)
+   {
+      super(bootstrap);
+      this.beanDeploymentArchive = factory.scan(bundle, bootstrap);
+      if (beanDeploymentArchive != null)
+      {
+         ResourceLoader loader = new BundleResourceLoader(bundle);
+         this.beanDeploymentArchive.getServices().
+                 add(ResourceLoader.class, loader);
+      }
+   }
 
-    public BundleDeployment(Bundle bundle, Bootstrap bootstrap, BundleBeanDeploymentArchiveFactory factory) {
-        super(bootstrap);
-        this.beanDeploymentArchive = factory.scan(bundle, bootstrap);
-        if (beanDeploymentArchive != null) {
-            ResourceLoader loader = new BundleResourceLoader(bundle);
-            this.beanDeploymentArchive.getServices().add(ResourceLoader.class, loader);
-        }
-    }
+   @Override
+   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
+   {
+      return Collections.singletonList(beanDeploymentArchive);
+   }
 
-    @Override
-    public List<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.singletonList(beanDeploymentArchive);
-    }
+   @Override
+   public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
+   {
+      return beanDeploymentArchive;
+   }
 
-    @Override
-    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
-        return beanDeploymentArchive;
-    }
+   public BeanDeploymentArchive getBeanDeploymentArchive()
+   {
+      return beanDeploymentArchive;
+   }
 
-    public BeanDeploymentArchive getBeanDeploymentArchive() {
-        return beanDeploymentArchive;
-    }
 }

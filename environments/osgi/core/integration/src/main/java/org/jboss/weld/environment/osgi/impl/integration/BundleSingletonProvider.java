@@ -71,7 +71,8 @@ public class BundleSingletonProvider extends SingletonProvider {
                             //System.out.println("\u001b[0;31m" + className + "." + element.getMethodName() + "\u001b[m");
                             Class<?> maybe = null;
                             try {
-                                maybe = this.getClass().getClassLoader().loadClass(className);
+                                maybe = this.getClass().getClassLoader()
+                                .loadClass(className);
                             } catch (ClassNotFoundException ex) {
                                 //System.out.println("CNFE " + element.getClassName());
                                 // Ignore
@@ -85,8 +86,10 @@ public class BundleSingletonProvider extends SingletonProvider {
                         }
                         Bundle maybeBundle = classes.get(className);
                         if (maybeBundle != null) {
-                            if (!maybeBundle.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi")) {
-                                CDIOSGiExtension.currentBundle.set(maybeBundle.getBundleId());
+                            if (!maybeBundle.getSymbolicName()
+                                    .equals("org.jboss.weld.osgi.weld-osgi")) {
+                                CDIOSGiExtension.currentBundle.
+                                        set(maybeBundle.getBundleId());
                                 maybeObject = get(null);
                                 CDIOSGiExtension.currentBundle.remove();
                                 if (maybeObject != null) {
@@ -97,7 +100,9 @@ public class BundleSingletonProvider extends SingletonProvider {
                         }
                     }
                 }
-                throw new IllegalStateException("Singleton is not set for bundle " + getId());
+                throw new IllegalStateException("Singleton is not set for "
+                                                + "bundle "
+                                                + getId());
             }
             return store.get(getId());
         }
