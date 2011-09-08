@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.integration;
 
 import org.jboss.weld.bootstrap.api.Environment;
@@ -31,19 +30,24 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class OSGiEnvironment implements Environment {
+public class OSGiEnvironment implements Environment
+{
+   @Override
+   public Set<Class<? extends Service>> getRequiredDeploymentServices()
+   {
+      HashSet<Class<? extends Service>> set =
+                                        new HashSet<Class<? extends Service>>();
+      set.add(ScheduledExecutorServiceFactory.class);
+      return set;
+   }
 
-    @Override
-    public Set<Class<? extends Service>> getRequiredDeploymentServices() {
-        HashSet<Class<? extends Service>> set = new HashSet<Class<? extends Service>>();
-        set.add(ScheduledExecutorServiceFactory.class);
-        return set;
-    }
+   @Override
+   public Set<Class<? extends Service>> getRequiredBeanDeploymentArchiveServices()
+   {
+      HashSet<Class<? extends Service>> set =
+                                        new HashSet<Class<? extends Service>>();
+      set.add(ResourceLoader.class);
+      return set;
+   }
 
-    @Override
-    public Set<Class<? extends Service>> getRequiredBeanDeploymentArchiveServices() {
-        HashSet<Class<? extends Service>> set = new HashSet<Class<? extends Service>>();
-        set.add(ResourceLoader.class);
-        return set;
-    }
 }

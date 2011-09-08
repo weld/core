@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.integration.discovery.bundle;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -29,64 +28,79 @@ import java.util.Collection;
 /**
  * A simple resource loader.
  * <p/>
- * Uses {@link BundleResourceLoader}'s classloader if the Thread Context Classloader isn't available
+ * Uses {@link BundleResourceLoader}'s classloader if the Thread Context
+ * Classloader isn't available
  *
  * @author Pete Muir
  */
-public class BundleResourceLoader implements ResourceLoader {
+public class BundleResourceLoader implements ResourceLoader
+{
+   private final Bundle bundle;
 
-    private final Bundle bundle;
+   public BundleResourceLoader(Bundle bundle)
+   {
+      this.bundle = bundle;
+   }
 
-    public BundleResourceLoader(Bundle bundle) {
-        this.bundle = bundle;
-    }
+   @Override
+   public Class<?> classForName(String name)
+   {
+      try
+      {
+         //Class<?> clazz = getClassLoader().loadClass(name);
+         //Class<?> clazz = getClass().getClassLoader().loadClass(name);
+         Class<?> clazz = bundle.loadClass(name);
+         // if the class relies on optional dependencies that are not present
+         // then a CNFE can be thrown later in the deployment process when the
+         // Introspector is inspecting the class. We call getMethods, getFields
+         // and getConstructors now over the whole type heirachey to force
+         // these errors to occur early.
+         // NOTE it is still possible for a CNFE to be thrown at runtime if
+         // a class has methods that refer to classes that are not present in
+         // their bytecode, this only checks for classes that form part of the
+         // class schema that are not present
+         Class<?> obj = clazz;
+         while (obj != null && obj != Object.class)
+         {
+            obj.getDeclaredConstructors();
+            obj.getDeclaredFields();
+            obj.getDeclaredMethods();
+            obj = obj.getSuperclass();
+         }
+         return clazz;
+      }
+      catch(ClassNotFoundException e)
+      {
+         throw new ResourceLoadingException(e);
+      }
+      catch(NoClassDefFoundError e)
+      {
+         throw new ResourceLoadingException(e);
+      }
+   }
 
-    @Override
-    public Class<?> classForName(String name) {
-        try {
-            //Class<?> clazz = getClassLoader().loadClass(name);
-            //Class<?> clazz = getClass().getClassLoader().loadClass(name);
-            Class<?> clazz = bundle.loadClass(name);
-            // if the class relies on optional dependencies that are not present
-            // then a CNFE can be thrown later in the deployment process when the
-            // Introspector is inspecting the class. We call getMethods, getFields
-            // and getConstructors now over the whole type heirachey to force
-            // these errors to occur early.
-            // NOTE it is still possible for a CNFE to be thrown at runtime if
-            // a class has methods that refer to classes that are not present in
-            // their bytecode, this only checks for classes that form part of the
-            // class schema that are not present
-            Class<?> obj = clazz;
-            while (obj != null && obj != Object.class) {
-                obj.getDeclaredConstructors();
-                obj.getDeclaredFields();
-                obj.getDeclaredMethods();
-                obj = obj.getSuperclass();
-            }
-            return clazz;
-        } catch (ClassNotFoundException e) {
-            throw new ResourceLoadingException(e);
-        } catch (NoClassDefFoundError e) {
-            throw new ResourceLoadingException(e);
-        }
-    }
+   @Override
+   public URL getResource(String name)
+   {
+      return bundle.getResource(name);
+   }
 
-    @Override
-    public URL getResource(String name) {
-        return bundle.getResource(name);
-    }
+   @Override
+   public Collection<URL> getResources(String name)
+   {
+      try
+      {
+         return new EnumerationList<URL>(bundle.getResources(name));
+      }
+      catch(IOException e)
+      {
+         throw new ResourceLoadingException(e);
+      }
+   }
 
-    @Override
-    public Collection<URL> getResources(String name) {
-        try {
-            return new EnumerationList<URL>(bundle.getResources(name));
-        } catch (IOException e) {
-            throw new ResourceLoadingException(e);
-        }
-    }
+   @Override
+   public void cleanup()
+   {
+   }
 
-    @Override
-    public void cleanup() {
-    }
 }
-

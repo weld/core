@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl;
 
 import org.jboss.weld.environment.osgi.impl.integration.Weld;
@@ -32,58 +31,68 @@ import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class WeldCDIContainerFactory implements CDIContainerFactory {
+public class WeldCDIContainerFactory implements CDIContainerFactory
+{
+   private Logger logger = LoggerFactory.getLogger(WeldCDIContainerFactory.class);
 
-    private Logger logger = LoggerFactory.getLogger(WeldCDIContainerFactory.class);
+   private final Set<String> blackList;
 
-    private final Set<String> blackList;
-    private Map<Long, CDIContainer> containers = new HashMap<Long, CDIContainer>();
+   private Map<Long, CDIContainer> containers = new HashMap<Long, CDIContainer>();
 
-    public WeldCDIContainerFactory() {
-        logger.debug("Creation of a new Weld CDI container factory");
-        blackList = new HashSet<String>();
-        blackList.add("java.io.Serializable");
-        blackList.add("org.jboss.interceptor.proxy.LifecycleMixin");
-        blackList.add("org.jboss.interceptor.util.proxy.TargetInstanceProxy");
-        blackList.add("javassist.util.proxy.ProxyObject");
-    }
+   public WeldCDIContainerFactory()
+   {
+      logger.debug("Creation of a new Weld CDI container factory");
+      blackList = new HashSet<String>();
+      blackList.add("java.io.Serializable");
+      blackList.add("org.jboss.interceptor.proxy.LifecycleMixin");
+      blackList.add("org.jboss.interceptor.util.proxy.TargetInstanceProxy");
+      blackList.add("javassist.util.proxy.ProxyObject");
+   }
 
-    @Override
-    public CDIContainer createContainer(Bundle bundle) {
-        return new WeldCDIContainer(bundle);
-    }
+   @Override
+   public CDIContainer createContainer(Bundle bundle)
+   {
+      return new WeldCDIContainer(bundle);
+   }
 
-    @Override
-    public CDIContainer container(Bundle bundle) {
-        if(!containers.containsKey(bundle.getBundleId())) {
-            return null;
-        }
-        return containers.get(bundle.getBundleId());
-    }
+   @Override
+   public CDIContainer container(Bundle bundle)
+   {
+      if (!containers.containsKey(bundle.getBundleId()))
+      {
+         return null;
+      }
+      return containers.get(bundle.getBundleId());
+   }
 
-    @Override
-    public Collection<CDIContainer> containers() {
-        return containers.values();
-    }
+   @Override
+   public Collection<CDIContainer> containers()
+   {
+      return containers.values();
+   }
 
-    @Override
-    public void removeContainer(Bundle bundle) {
-        containers.remove(bundle.getBundleId());
-    }
+   @Override
+   public void removeContainer(Bundle bundle)
+   {
+      containers.remove(bundle.getBundleId());
+   }
 
-    @Override
-    public void addContainer(CDIContainer container) {
-        containers.put(container.getBundle().getBundleId(),container);
-    }
+   @Override
+   public void addContainer(CDIContainer container)
+   {
+      containers.put(container.getBundle().getBundleId(), container);
+   }
 
-    @Override
-    public String getID() {
-        return Weld.class.getName();
-    }
+   @Override
+   public String getID()
+   {
+      return Weld.class.getName();
+   }
 
-    @Override
-    public Set<String> getContractBlacklist() {
-        return blackList;
-    }
+   @Override
+   public Set<String> getContractBlacklist()
+   {
+      return blackList;
+   }
 
 }

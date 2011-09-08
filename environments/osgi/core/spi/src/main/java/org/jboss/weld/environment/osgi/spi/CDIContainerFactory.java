@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.spi;
 
 import org.osgi.framework.Bundle;
@@ -23,12 +22,12 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * <p>This interface represents a CDI container factory used by CDI-OSGi in order to
- * obtain {@link CDIContainer}.</p>
+ * <p>This interface represents a CDI container factory used by CDI-OSGi in
+ * order to obtain {@link CDIContainer}.</p>
  * <p>It allows to: <ul>
  * <li>
- * <p>Obtain the CDI container of a specific bean {@link org.osgi.framework.Bundle}
- * (singleton for each bean bundle),</p>
+ * <p>Obtain the CDI container of a specific bean
+ * {@link org.osgi.framework.Bundle} (singleton for each bean bundle),</p>
  * </li>
  * <li>
  * <p>Provide a interface black list for service publishing,</p>
@@ -45,7 +44,6 @@ import java.util.Set;
  */
 public interface CDIContainerFactory
 {
-
    /**
     * Obtain the ID of the used CDI implementation.
     *
@@ -56,23 +54,28 @@ public interface CDIContainerFactory
    /**
     * Obtain the interface black list for service publishing,
     *
-    * @return the interface black list for service publishing as a {@link java.util.List} of {@link String}.
+    * @return the interface black list for service publishing as a
+    * {@link java.util.List} of {@link String}.
     */
    Set<String> getContractBlacklist();
 
    /**
     * Obtain the singleton {@link CDIContainer} for the given bundle.
     *
-    * @param bundle the {@link org.osgi.framework.Bundle} which {@link CDIContainer} is wanted.
-    * @return the {@link CDIContainer} for the given {@link org.osgi.framework.Bundle}.
+    * @param bundle the {@link org.osgi.framework.Bundle} which
+    * {@link CDIContainer} is wanted.
+    * @return the {@link CDIContainer} for the given
+    * {@link org.osgi.framework.Bundle}.
     */
    CDIContainer createContainer(Bundle bundle);
 
    /**
     * Obtain the singleton {@link CDIContainer} for the given bundle.
     *
-    * @param bundle the {@link org.osgi.framework.Bundle} which {@link CDIContainer} is wanted.
-    * @return the {@link CDIContainer} for the given {@link org.osgi.framework.Bundle}.
+    * @param bundle the {@link org.osgi.framework.Bundle} which
+    * {@link CDIContainer} is wanted.
+    * @return the {@link CDIContainer} for the given
+    * {@link org.osgi.framework.Bundle}.
     */
    CDIContainer container(Bundle bundle);
 
@@ -86,4 +89,5 @@ public interface CDIContainerFactory
     * @return all {@link CDIContainer}s.
     */
    Collection<CDIContainer> containers();
+
 }
