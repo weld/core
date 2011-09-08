@@ -82,7 +82,7 @@
       <dependency>
          <groupId>org.jboss.weld.osgi.examples</groupId>
          <artifactId>weld-osgi-paint-core</artifactId>
-         <version>${project.version}T</version>
+         <version>${project.version}</version>
       </dependency>
         
       <dependency>
@@ -184,6 +184,7 @@
       <dependency>
          <groupId>org.osgi</groupId>
          <artifactId>org.osgi.core</artifactId>
+         <version>4.2.0</version>
       </dependency>
         
       <dependency>
@@ -250,6 +251,12 @@
    </dependencies>
 
    <build>
+      <resources>
+         <resource>
+            <directory>src/main/resources</directory>
+             <filtering>true</filtering>
+         </resource>
+      </resources>
       <plugins>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -257,13 +264,13 @@
             <executions>
                <execution>
                   <id>compile</id>
-                  <phase>install</phase>
+                  <phase>package</phase>
                   <goals>
                      <goal>run</goal>
                   </goals>
                   <configuration>
                      <tasks>
-                        <copy file="src/main/resources/config.properties" tofile="${project.build.directory}/config.properties"/>
+                        <copy file="target/classes/config.properties" tofile="${project.build.directory}/config.properties"/>
                         <copy file="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}" tofile="${project.build.directory}/felix.jar"/>
                      </tasks>
                   </configuration>
@@ -277,13 +284,13 @@
             <executions>
                <execution>
                   <id>create-executable-jar</id>
-                  <phase>install</phase>
+                  <phase>package</phase>
                   <goals>
                      <goal>single</goal>
                   </goals>
                   <configuration>
                      <descriptors>
-                        <descriptor>${basedir}/src/main/assembly/felix.xml</descriptor>
+                        <descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
                      </descriptors>
                      <finalName>${project.artifactId}-${project.version}</finalName>
                   </configuration>

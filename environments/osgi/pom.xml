@@ -40,7 +40,7 @@
 
     <properties>
         <javassist.version>3.14.0-GA</javassist.version>
-        <logback.version>0.9.26</logback.version>
+        <logback.version>0.9.9</logback.version>
         <osgi.version>4.2.0</osgi.version>
     </properties>
 
