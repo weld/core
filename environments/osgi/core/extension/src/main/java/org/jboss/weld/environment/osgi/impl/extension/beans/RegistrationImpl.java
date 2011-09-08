@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
@@ -37,85 +36,114 @@ import org.jboss.weld.environment.osgi.api.Service;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class RegistrationImpl<T> implements Registration<T> {
+public class RegistrationImpl<T> implements Registration<T>
+{
+   private static Logger logger = LoggerFactory.getLogger(RegistrationImpl.class);
 
-    private static Logger logger = LoggerFactory.getLogger(RegistrationImpl.class);
+   private final Class<T> contract;
 
-    private final Class<T> contract;
-    private final BundleContext registry;
-    private final Bundle bundle;
-    private final RegistrationHolder holder;
-    private List<Registration<T>> registrations = new ArrayList<Registration<T>>();
+   private final BundleContext registry;
 
-    public RegistrationImpl(Class<T> contract,
-            BundleContext registry, Bundle bundle,
-            RegistrationHolder holder) {
-        this.contract = contract;
-        this.registry = registry;
-        this.holder = holder;
-        this.bundle = bundle;
-    }
+   private final Bundle bundle;
 
-    @Override
-    public void unregister() {
-        for(ServiceRegistration reg : holder.getRegistrations()) {
-            holder.removeRegistration(reg);
-            reg.unregister();
-        }
-    }
+   private final RegistrationHolder holder;
 
-    @Override
-    public <T> Service<T> getServiceReference() {
-        return new ServiceImpl<T>(contract, registry);
-    }
+   private List<Registration<T>> registrations = new ArrayList<Registration<T>>();
 
-    @Override
-    public Registration<T> select(Annotation... qualifiers) {
-        if (qualifiers == null) {
-            throw new IllegalArgumentException("You can't pass null array of qualifiers");
-        }
-        String filter = FilterGenerator.makeFilter(Arrays.asList(qualifiers)).value();
-        return null;
-    }
+   public RegistrationImpl(Class<T> contract,
+                           BundleContext registry, Bundle bundle,
+                           RegistrationHolder holder)
+   {
+      this.contract = contract;
+      this.registry = registry;
+      this.holder = holder;
+      this.bundle = bundle;
+   }
 
-    @Override
-    public Registration<T> select(String filter) {
-        Filter osgiFilter = null;
-        try {
-            osgiFilter = FrameworkUtil.createFilter(filter);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException("Invalid LDAP filter : " + e.getMessage());
-        }
-        RegistrationHolder holder = new RegistrationsHolderImpl();
-        for(ServiceRegistration registration : holder.getRegistrations()) {
-            if(osgiFilter.match(registration.getReference())) {
-                holder.addRegistration(registration);
-            }
-        }
-        return new RegistrationImpl<T>(contract,registry,bundle,holder);
-    }
+   @Override
+   public void unregister()
+   {
+      for (ServiceRegistration reg : holder.getRegistrations())
+      {
+         holder.removeRegistration(reg);
+         reg.unregister();
+      }
+   }
 
-    @Override
-    public int size() {
-        return holder.size();
-    }
+   @Override
+   public <T> Service<T> getServiceReference()
+   {
+      return new ServiceImpl<T>(contract, registry);
+   }
 
-    @Override
-    public Iterator<Registration<T>> iterator() {
-        populate();
-        return registrations.iterator();
-    }
+   @Override
+   public Registration<T> select(Annotation... qualifiers)
+   {
+      if (qualifiers == null)
+      {
+         throw new IllegalArgumentException("You can't pass null array"
+                 + " of qualifiers");
+      }
+      String filter = FilterGenerator.makeFilter(
+              Arrays.asList(qualifiers)).value();
+      return null;
+   }
 
-    private void populate() {
-        registrations.clear();
-        try {
-            List<ServiceRegistration> regs = holder.getRegistrations();
-            for (ServiceRegistration reg : regs) {
-                registrations.add(new RegistrationImpl<T>(contract, registry, bundle, holder));
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+   @Override
+   public Registration<T> select(String filter)
+   {
+      Filter osgiFilter = null;
+      try
+      {
+         osgiFilter = FrameworkUtil.createFilter(filter);
+      }
+      catch(InvalidSyntaxException e)
+      {
+         throw new IllegalArgumentException("Invalid LDAP filter : "
+                                            + e.getMessage());
+      }
+      RegistrationHolder holder = new RegistrationsHolderImpl();
+      for (ServiceRegistration registration : holder.getRegistrations())
+      {
+         if (osgiFilter.match(registration.getReference()))
+         {
+            holder.addRegistration(registration);
+         }
+      }
+      return new RegistrationImpl<T>(contract, registry, bundle, holder);
+   }
+
+   @Override
+   public int size()
+   {
+      return holder.size();
+   }
+
+   @Override
+   public Iterator<Registration<T>> iterator()
+   {
+      populate();
+      return registrations.iterator();
+   }
+
+   private void populate()
+   {
+      registrations.clear();
+      try
+      {
+         List<ServiceRegistration> regs = holder.getRegistrations();
+         for (ServiceRegistration reg : regs)
+         {
+            registrations.add(new RegistrationImpl<T>(contract,
+                                                      registry,
+                                                      bundle,
+                                                      holder));
+         }
+      }
+      catch(Exception ex)
+      {
+         ex.printStackTrace();
+      }
+   }
 
 }

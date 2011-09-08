@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
@@ -54,176 +53,222 @@ import org.osgi.framework.ServiceRegistration;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
-public class ServiceRegistryImpl implements ServiceRegistry {
+public class ServiceRegistryImpl implements ServiceRegistry
+{
+   @Inject
+   private BundleContext registry;
 
-    @Inject
-    private BundleContext registry;
+   @Inject
+   private Bundle bundle;
 
-    @Inject
-    private Bundle bundle;
+   @Inject
+   private Instance<Object> instances;
 
-    @Inject
-    private Instance<Object> instances;
-    
-    @Inject
-    private RegistrationsHolderImpl holder;
+   @Inject
+   private RegistrationsHolderImpl holder;
 
-    @Inject
-    private BeanManager manager;
+   @Inject
+   private BeanManager manager;
 
-    @Inject
-    private Event<Valid> validEvent;
+   @Inject
+   private Event<Valid> validEvent;
 
-    @Inject
-    private Event<Invalid> invalidEvent;
+   @Inject
+   private Event<Invalid> invalidEvent;
 
-    @Inject
-    private CDIOSGiExtension extension;
+   @Inject
+   private CDIOSGiExtension extension;
 
-    @Inject
-    private BundleHolder bundleHolder;
+   @Inject
+   private BundleHolder bundleHolder;
 
-    private  Map<Class, Set<Filter>> osgiServiceDependencies;
-    
-    private Map<Class<?>, Beantype<?>> types = new HashMap<Class<?>, Beantype<?>>();
+   private Map<Class, Set<Filter>> osgiServiceDependencies;
 
-    @Override
-    public <T> Registration<T> registerService(Class<T> contract, Class<? extends T> implementation) {
-        ServiceRegistration reg = registry.registerService(contract.getName(),
-                instances.select(implementation).get(), null);
-        holder.addRegistration(reg);
-        return new RegistrationImpl<T>(
-                contract, registry, bundle, holder);
-    }
+   private Map<Class<?>, Beantype<?>> types = new HashMap<Class<?>, Beantype<?>>();
 
-    @Override
-    public <T, U extends T> Registration<T> registerService(Class<T> contract, U implementation) {
-        ServiceRegistration reg = registry.registerService(contract.getName(),
-                implementation, null);
-        holder.addRegistration(reg);
-        return new RegistrationImpl<T>(
-                contract, registry, bundle, holder);
-    }
+   @Override
+   public <T> Registration<T> registerService(Class<T> contract, Class<? extends T> implementation)
+   {
+      ServiceRegistration reg = registry.registerService(contract.getName(),
+                                                         instances.select(implementation).get(), null);
+      holder.addRegistration(reg);
+      return new RegistrationImpl<T>(
+              contract, registry, bundle, holder);
+   }
 
-    @Override
-    public <T> Service<T> getServiceReferences(Class<T> contract) {
-        return new ServiceImpl<T>(contract, registry);
-    }
+   @Override
+   public <T, U extends T> Registration<T> registerService(Class<T> contract, U implementation)
+   {
+      ServiceRegistration reg = registry.registerService(contract.getName(),
+                                                         implementation, null);
+      holder.addRegistration(reg);
+      return new RegistrationImpl<T>(
+              contract, registry, bundle, holder);
+   }
 
-    @PreDestroy
-    public void stop() {
-        for (Beantype<?> type : types.values()) {
-            type.destroy();
-        }
-    }
+   @Override
+   public <T> Service<T> getServiceReferences(Class<T> contract)
+   {
+      return new ServiceImpl<T>(contract, registry);
+   }
 
-    public <T> void registerNewType(Class<T> type) {
-        if (!types.containsKey(type)) {
-            types.put(type, new Beantype<T>(type, manager));
-        }
-    }
+   @PreDestroy
+   public void stop()
+   {
+      for (Beantype<?> type : types.values())
+      {
+         type.destroy();
+      }
+   }
 
-    public void listenStartup(@Observes BundleContainerEvents.BundleContainerInitialized event) {
-        osgiServiceDependencies = extension.getRequiredOsgiServiceDependencies();
-        checkForValidDependencies(null);
-    }
+   public <T> void registerNewType(Class<T> type)
+   {
+      if (!types.containsKey(type))
+      {
+         types.put(type, new Beantype<T>(type, manager));
+      }
+   }
 
-    public void bind(@Observes ServiceEvents.ServiceArrival arrival) {
-        checkForValidDependencies(arrival);
-    }
+   public void listenStartup(@Observes BundleContainerEvents.BundleContainerInitialized event)
+   {
+      osgiServiceDependencies = extension.getRequiredOsgiServiceDependencies();
+      checkForValidDependencies(null);
+   }
 
-    public void changed(@Observes ServiceEvents.ServiceChanged changed) {
-        checkForValidDependencies(changed);
-    }
+   public void bind(@Observes ServiceEvents.ServiceArrival arrival)
+   {
+      checkForValidDependencies(arrival);
+   }
 
-    public void unbind(@Observes ServiceEvents.ServiceDeparture departure) {
-        checkForValidDependencies(departure);
-    }
+   public void changed(@Observes ServiceEvents.ServiceChanged changed)
+   {
+      checkForValidDependencies(changed);
+   }
 
-    private void checkForValidDependencies(AbstractServiceEvent event) {
-        if (event == null || applicable(event.getServiceClasses(getClass()))) {
-            boolean valid = true;
-            if (!osgiServiceDependencies.isEmpty()) {
-                invalid:
-                for (Map.Entry<Class, Set<Filter>> entry : osgiServiceDependencies.entrySet()) {
-                    Class clazz = entry.getKey();
-                    for (Filter filter : entry.getValue()) {
-                        try {
-                             ServiceReference[] refs = null;
-                            if(filter != null && filter.value() != null && filter.value().length() > 0) {
-                                refs = registry.getServiceReferences(clazz.getName(), filter.value());
-                            } else {
-                                refs = registry.getServiceReferences(clazz.getName(), null);
-                            }
-                            if (refs != null) {
-                                int available = refs.length;
-                                if (available <= 0) {
-                                    valid = false;
-                                    break invalid;
-                                }
-                            } else {
-                                valid = false;
-                                break invalid;
-                            }
-                        } catch (InvalidSyntaxException ex) {
-                            valid = false;
-                            break invalid;
+   public void unbind(@Observes ServiceEvents.ServiceDeparture departure)
+   {
+      checkForValidDependencies(departure);
+   }
+
+   private void checkForValidDependencies(AbstractServiceEvent event)
+   {
+      if (event == null || applicable(event.getServiceClasses(getClass())))
+      {
+         boolean valid = true;
+         if (!osgiServiceDependencies.isEmpty())
+         {
+            invalid:
+            for (Map.Entry<Class, Set<Filter>> entry : osgiServiceDependencies.entrySet())
+            {
+               Class clazz = entry.getKey();
+               for (Filter filter : entry.getValue())
+               {
+                  try
+                  {
+                     ServiceReference[] refs = null;
+                     if (filter != null
+                         && filter.value() != null
+                         && filter.value().length() > 0)
+                     {
+                        refs = registry.getServiceReferences(clazz.getName(),
+                                                             filter.value());
+                     }
+                     else
+                     {
+                        refs = registry.getServiceReferences(clazz.getName(),
+                                                             null);
+                     }
+                     if (refs != null)
+                     {
+                        int available = refs.length;
+                        if (available <= 0)
+                        {
+                           valid = false;
+                           break invalid;
                         }
-                    }
-                }
+                     }
+                     else
+                     {
+                        valid = false;
+                        break invalid;
+                     }
+                  }
+                  catch(InvalidSyntaxException ex)
+                  {
+                     valid = false;
+                     break invalid;
+                  }
+               }
             }
-            // TODO : synchronize here to change the state of the bundle
-            if (valid && bundleHolder.getState().equals(BundleState.INVALID)) {
-                bundleHolder.setState(BundleState.VALID);
-                validEvent.fire(new Valid());
-            } else if (!valid && bundleHolder.getState().equals(BundleState.VALID)) {
-                bundleHolder.setState(BundleState.INVALID);
-                invalidEvent.fire(new Invalid());
-            }
-        }
-    }
+         }
+         // TODO : synchronize here to change the state of the bundle
+         if (valid && bundleHolder.getState().equals(BundleState.INVALID))
+         {
+            bundleHolder.setState(BundleState.VALID);
+            validEvent.fire(new Valid());
+         }
+         else if (!valid && bundleHolder.getState().equals(BundleState.VALID))
+         {
+            bundleHolder.setState(BundleState.INVALID);
+            invalidEvent.fire(new Invalid());
+         }
+      }
+   }
 
-    private boolean applicable(List<Class<?>> classes) {
-        for (Class<?> clazz : classes) {
-            if (osgiServiceDependencies.containsKey(clazz)) {
-                return true;
-            }
-        }
-        return false;
-    }
+   private boolean applicable(List<Class<?>> classes)
+   {
+      for (Class<?> clazz : classes)
+      {
+         if (osgiServiceDependencies.containsKey(clazz))
+         {
+            return true;
+         }
+      }
+      return false;
+   }
 
-    private class Beantype<T> implements Provider<T> {
+   private class Beantype<T> implements Provider<T>
+   {
+      private final Class<T> clazz;
 
-        private final Class<T> clazz;
-        private final BeanManager manager;
-        private final AnnotatedType annoted;
-        private final InjectionTarget it;
-        private final CreationalContext<?> cc;
-        private Collection<T> instances = new ArrayList<T>();
+      private final BeanManager manager;
 
-        public Beantype(Class<T> clazz, BeanManager manager) {
-            this.clazz = clazz;
-            this.manager = manager;
-            annoted = manager.createAnnotatedType(clazz);
-            it = manager.createInjectionTarget(annoted);
-            cc = manager.createCreationalContext(null);
-        }
+      private final AnnotatedType annoted;
 
-        public void destroy() {
-            for (T instance : instances) {
-                it.preDestroy(instance);
-                it.dispose(instance);
-            }
-            cc.release();
-        }
+      private final InjectionTarget it;
 
-        @Override
-        public T get() {
-            T instance = (T) it.produce(cc);
-            it.inject(instance, cc);
-            it.postConstruct(instance);
-            instances.add(instance);
-            return instance;
-        }
-    }
+      private final CreationalContext<?> cc;
+
+      private Collection<T> instances = new ArrayList<T>();
+
+      public Beantype(Class<T> clazz, BeanManager manager)
+      {
+         this.clazz = clazz;
+         this.manager = manager;
+         annoted = manager.createAnnotatedType(clazz);
+         it = manager.createInjectionTarget(annoted);
+         cc = manager.createCreationalContext(null);
+      }
+
+      public void destroy()
+      {
+         for (T instance : instances)
+         {
+            it.preDestroy(instance);
+            it.dispose(instance);
+         }
+         cc.release();
+      }
+
+      @Override
+      public T get()
+      {
+         T instance = (T) it.produce(cc);
+         it.inject(instance, cc);
+         it.postConstruct(instance);
+         instances.add(instance);
+         return instance;
+      }
+
+   }
 }

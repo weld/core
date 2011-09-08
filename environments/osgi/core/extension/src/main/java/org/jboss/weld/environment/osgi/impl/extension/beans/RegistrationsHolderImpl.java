@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.osgi.framework.ServiceRegistration;
@@ -31,28 +30,39 @@ import org.jboss.weld.environment.osgi.api.RegistrationHolder;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
-public class RegistrationsHolderImpl implements RegistrationHolder {
+public class RegistrationsHolderImpl implements RegistrationHolder
+{
+   private List<ServiceRegistration> registrations =
+            new ArrayList<ServiceRegistration>();
 
-    private List<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
+   @Override
+   public List<ServiceRegistration> getRegistrations()
+   {
+      return registrations;
+   }
 
-    @Override public List<ServiceRegistration> getRegistrations() {
-        return registrations;
-    }
+   @Override
+   public void addRegistration(ServiceRegistration reg)
+   {
+      registrations.add(reg);
+   }
 
-    @Override public void addRegistration(ServiceRegistration reg) {
-        registrations.add(reg);
-    }
+   @Override
+   public void removeRegistration(ServiceRegistration reg)
+   {
+      registrations.remove(reg);
+   }
 
-    @Override public void removeRegistration(ServiceRegistration reg) {
-        registrations.remove(reg);
-    }
+   @Override
+   public void clear()
+   {
+      registrations.clear();
+   }
 
-    @Override public void clear() {
-        registrations.clear();
-    }
-
-    @Override public int size() {
-        return registrations.size();
-    }
+   @Override
+   public int size()
+   {
+      return registrations.size();
+   }
 
 }
