@@ -37,7 +37,7 @@
    </developers>
 
    <modules>
-      <!--<module>container</module>-->
+      <module>container</module>
       <module>paint</module>
       <module>calculator</module>
       <module>web</module>

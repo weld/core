@@ -47,15 +47,17 @@ public class Weld {
 
     private final Bundle bundle;
     private boolean started = false;
-    private Bootstrap bootstrap;
+    private WeldBootstrap bootstrap;
     private boolean hasShutdownBeenCalled = false;
     private BundleBeanDeploymentArchiveFactory factory;
     private WeldManager manager;
     private Collection<String> beanClasses;
+    private final String id;
 
     public Weld(Bundle bundle) {
         logger.debug("Creation of a new Weld instance for bundle {}", bundle);
         this.bundle = bundle;
+        this.id = bundle.getSymbolicName() + "-" + bundle.getBundleId();
         factory = new BundleBeanDeploymentArchiveFactory();
     }
 
@@ -83,7 +85,7 @@ public class Weld {
             }
             logger.info("Starting Weld instance for bundle {}", bundle);
             // Set up the container
-            bootstrap.startContainer(new OSGiEnvironment(), deployment);
+            bootstrap.startContainer(id, new OSGiEnvironment(), deployment);
             // Start the container
             bootstrap.startInitialization();
             bootstrap.deployBeans();

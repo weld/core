@@ -49,7 +49,7 @@
       <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
       <slf4j.version>1.5.10</slf4j.version>
       <cal10n.version>0.7.2</cal10n.version>
-	  <logback.version>0.9.26</logback.version>
+	  <logback.version>0.9.9</logback.version>
 	  <osgi.version>4.2.0</osgi.version>
       <junit.version>4.8.1</junit.version>
    </properties>
