@@ -207,6 +207,12 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
         CDIContainer holder = managed.get(bundle.getBundleId());
         if (holder != null) {
+            BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
+            //if (bundleHolder.getState().equals(BundleState.VALID)) {
+                logger.trace("Firing the BundleState.INVALID event");
+                //bundleHolder.setState(BundleState.INVALID);
+                holder.getBeanManager().fireEvent(new Invalid());
+            //}
             if(started.get()) {
                 factory().removeContainer(bundle);
             }
@@ -214,16 +220,9 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
             holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
 
-            BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
-            if (bundleHolder.getState().equals(BundleState.VALID)) {
-                logger.trace("Firing the BundleState.INVALID event");
-                bundleHolder.setState(BundleState.INVALID);
-                holder.getBeanManager().fireEvent(new Invalid());
-            }
-
             Collection<ServiceRegistration> regs = holder.getRegistrations();
             logger.trace("Unregistering the container registrations");
-            for (ServiceRegistration reg : regs) {
+            /**for (ServiceRegistration reg : regs) {
                 try {
                     reg.unregister();
                 } catch (IllegalStateException e) {// Ignore
@@ -245,7 +244,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                 }
             } catch (Throwable t) {
                 t.printStackTrace();
-            }
+            }   **/
 
             logger.trace("Shutting down the container {}", holder);
             holder.shutdown();

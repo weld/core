@@ -133,7 +133,7 @@ public class ExtensionActivator implements BundleActivator, SynchronousBundleLis
                     //broadcast the OSGi event through CDI event system
                     e.select(BundleEvent.class).fire(event);
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    //t.printStackTrace();
                 }
                 if (bundleEvent != null) {
                     //broadcast the corresponding CDI-OSGi event
@@ -171,16 +171,16 @@ public class ExtensionActivator implements BundleActivator, SynchronousBundleLis
                 boolean set = CDIOSGiExtension.currentBundle.get() != null;
                 CDIOSGiExtension.currentBundle.set(reference.getBundle().getBundleId());
                 Instance<Object> instance = (Instance<Object>) context.getService(reference);
-                Event<Object> e = instance.select(Event.class).get();
                 try {
+                    Event<Object> e = instance.select(Event.class).get();
                     //broadcast the OSGi event through CDI event system
                     e.select(ServiceEvent.class).fire(event);
+                    if (serviceEvent != null) {
+                        //broadcast the corresponding CDI-OSGi event
+                        fireAllEvent(serviceEvent, e, instance);
+                    }
                 } catch (Throwable t) {
-                    t.printStackTrace();
-                }
-                if (serviceEvent != null) {
-                    //broadcast the corresponding CDI-OSGi event
-                    fireAllEvent(serviceEvent, e, instance);
+                    //t.printStackTrace();
                 }
                 if (!set) {
                     CDIOSGiExtension.currentBundle.remove();
@@ -242,7 +242,7 @@ public class ExtensionActivator implements BundleActivator, SynchronousBundleLis
                new BundleVersionAnnotation(event.getVersion().toString()))
                    .fire(event);
         } catch (Throwable t) {
-            t.printStackTrace();
+            //t.printStackTrace();
         }
     }
 
