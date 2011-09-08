@@ -14,25 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension;
-
 
 import javax.enterprise.util.AnnotationLiteral;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 
 public class OSGiServiceQualifier
         extends AnnotationLiteral<OSGiService>
-        implements OSGiService {
+        implements OSGiService
+{
+   private final int timeout;
 
-    private final int timeout;
+   public OSGiServiceQualifier(int timeout)
+   {
+      this.timeout = timeout;
+   }
 
-    public OSGiServiceQualifier(int timeout) {
-        this.timeout = timeout;
-    }
+   @Override
+   public int value()
+   {
+      return timeout;
+   }
 
-    @Override
-    public int value() {
-        return timeout;
-    }
 }

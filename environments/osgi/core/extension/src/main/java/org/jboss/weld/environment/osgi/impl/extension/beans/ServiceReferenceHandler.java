@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.osgi.framework.BundleContext;
@@ -30,23 +29,30 @@ import java.lang.reflect.Method;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class ServiceReferenceHandler implements InvocationHandler {
+public class ServiceReferenceHandler implements InvocationHandler
+{
+   private final ServiceReference ref;
 
-    private final ServiceReference ref;
-    private final BundleContext registry;
+   private final BundleContext registry;
 
-    public ServiceReferenceHandler(ServiceReference ref, BundleContext registry) {
-        this.ref = ref;
-        this.registry = registry;
-    }
+   public ServiceReferenceHandler(ServiceReference ref, BundleContext registry)
+   {
+      this.ref = ref;
+      this.registry = registry;
+   }
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object instanceToUse = registry.getService(ref);
-        try {
-            return method.invoke(instanceToUse, args);
-        } finally {
-            registry.ungetService(ref);
-        }
-    }
+   @Override
+   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+   {
+      Object instanceToUse = registry.getService(ref);
+      try
+      {
+         return method.invoke(instanceToUse, args);
+      }
+      finally
+      {
+         registry.ungetService(ref);
+      }
+   }
+
 }

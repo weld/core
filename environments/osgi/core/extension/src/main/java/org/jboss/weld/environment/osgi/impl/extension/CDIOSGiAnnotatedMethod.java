@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension;
 
 import java.lang.annotation.Annotation;
@@ -33,73 +32,92 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * CDI-OSGi annotated method. Wrap regular CDI methods in order to enable CDI-OSGi features.
+ * CDI-OSGi annotated method. Wrap regular CDI methods in order to enable
+ * CDI-OSGi features.
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class CDIOSGiAnnotatedMethod<T> implements AnnotatedMethod<T> {
+public class CDIOSGiAnnotatedMethod<T> implements AnnotatedMethod<T>
+{
+   private static Logger logger = LoggerFactory.getLogger(
+           CDIOSGiAnnotatedMethod.class);
 
-    private static Logger logger = LoggerFactory.getLogger(CDIOSGiAnnotatedMethod.class);
+   AnnotatedMethod method;
 
-    AnnotatedMethod method;
-    List<AnnotatedParameter<T>> parameters = new ArrayList<AnnotatedParameter<T>>();
+   List<AnnotatedParameter<T>> parameters = new ArrayList<AnnotatedParameter<T>>();
 
-    public CDIOSGiAnnotatedMethod(AnnotatedMethod<? super T> method) {
-        logger.debug("Creation of a new CDIOSGiAnnotatedMethod wrapping {}", method);
-        this.method = method;
-        for(AnnotatedParameter parameter : method.getParameters()) {
-            logger.trace("Processing parameter {}", parameter);
-            if(parameter.isAnnotationPresent(OSGiService.class)) {
-                parameters.add(new CDIOSGIAnnotatedParameter(parameter));
-            } else {
-                parameters.add(parameter);
-            }
-        }
-    }
+   public CDIOSGiAnnotatedMethod(AnnotatedMethod<? super T> method)
+   {
+      logger.debug("Creation of a new CDIOSGiAnnotatedMethod wrapping {}",
+                   method);
+      this.method = method;
+      for (AnnotatedParameter parameter : method.getParameters())
+      {
+         logger.trace("Processing parameter {}", parameter);
+         if (parameter.isAnnotationPresent(OSGiService.class))
+         {
+            parameters.add(new CDIOSGIAnnotatedParameter(parameter));
+         }
+         else
+         {
+            parameters.add(parameter);
+         }
+      }
+   }
 
-    @Override
-    public Method getJavaMember() {
-        return method.getJavaMember();
-    }
+   @Override
+   public Method getJavaMember()
+   {
+      return method.getJavaMember();
+   }
 
-    @Override
-    public boolean isStatic() {
-        return method.isStatic();
-    }
+   @Override
+   public boolean isStatic()
+   {
+      return method.isStatic();
+   }
 
-    @Override
-    public AnnotatedType<T> getDeclaringType() {
-        return method.getDeclaringType();
-    }
+   @Override
+   public AnnotatedType<T> getDeclaringType()
+   {
+      return method.getDeclaringType();
+   }
 
-    @Override
-    public List<AnnotatedParameter<T>> getParameters() {
-        return parameters;
-    }
+   @Override
+   public List<AnnotatedParameter<T>> getParameters()
+   {
+      return parameters;
+   }
 
-    @Override
-    public Type getBaseType() {
-        return method.getBaseType();
-    }
+   @Override
+   public Type getBaseType()
+   {
+      return method.getBaseType();
+   }
 
-    @Override
-    public Set<Type> getTypeClosure() {
-        return method.getTypeClosure();
-    }
+   @Override
+   public Set<Type> getTypeClosure()
+   {
+      return method.getTypeClosure();
+   }
 
-    @Override
-    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        return method.getAnnotation(annotationType);
-    }
+   @Override
+   public <T extends Annotation> T getAnnotation(Class<T> annotationType)
+   {
+      return method.getAnnotation(annotationType);
+   }
 
-    @Override
-    public Set<Annotation> getAnnotations() {
-        return method.getAnnotations();
-    }
+   @Override
+   public Set<Annotation> getAnnotations()
+   {
+      return method.getAnnotations();
+   }
 
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        return method.isAnnotationPresent(annotationType);
-    }
+   @Override
+   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
+   {
+      return method.isAnnotationPresent(annotationType);
+   }
+
 }

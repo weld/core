@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.slf4j.Logger;
@@ -34,36 +33,52 @@ import org.jboss.weld.environment.osgi.spi.CDIContainer;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
-public class ContainerObserver {
+public class ContainerObserver
+{
+   private static Logger logger = LoggerFactory.getLogger(ContainerObserver.class);
 
-    private static Logger logger = LoggerFactory.getLogger(ContainerObserver.class);
+   private CDIContainer currentContainer;
 
-    private CDIContainer currentContainer;
-    private Collection<CDIContainer> containers;
+   private Collection<CDIContainer> containers;
 
-    public void setCurrentContainer(CDIContainer currentContainer) {
-        this.currentContainer = currentContainer;
-    }
+   public void setCurrentContainer(CDIContainer currentContainer)
+   {
+      this.currentContainer = currentContainer;
+   }
 
-    public void setContainers(Collection<CDIContainer> containers) {
-        this.containers = containers;
-    }
+   public void setContainers(Collection<CDIContainer> containers)
+   {
+      this.containers = containers;
+   }
 
-    public void listenInterBundleEvents(@Observes InterBundleEvent event) {
-        logger.trace("Receiving an inter bundle event");
-        if (!event.isSent()) {
-            logger.debug("Broadcasting the inter bundle event: {}; from bundle {}", event, currentContainer.getBundle());
-            event.sent();
-            for (CDIContainer container : containers) {
-                if (!container.equals(currentContainer)) {
-                    try {
-                        logger.trace("Broadcasting the inter bundle event: {}; to bundle {}", event, container.getBundle());
-                        container.fire(event);
-                    } catch (Throwable t) {
-                        logger.warn("InterBundle event broadcast failed", t);
-                    }
-                }
+   public void listenInterBundleEvents(@Observes InterBundleEvent event)
+   {
+      logger.trace("Receiving an inter bundle event");
+      if (!event.isSent())
+      {
+         logger.debug("Broadcasting the inter bundle event: {}; from bundle {}",
+                      event,
+                      currentContainer.getBundle());
+         event.sent();
+         for (CDIContainer container : containers)
+         {
+            if (!container.equals(currentContainer))
+            {
+               try
+               {
+                  logger.trace("Broadcasting the inter bundle event: {}; "
+                               + "to bundle {}",
+                               event,
+                               container.getBundle());
+                  container.fire(event);
+               }
+               catch(Throwable t)
+               {
+                  logger.warn("InterBundle event broadcast failed", t);
+               }
             }
-        }
-    }
+         }
+      }
+   }
+
 }

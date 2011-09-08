@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.osgi.framework.Bundle;
@@ -30,35 +29,42 @@ import org.jboss.weld.environment.osgi.api.BundleState;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
-public class BundleHolder {
+public class BundleHolder
+{
+   private BundleState state = BundleState.INVALID;
 
-    private BundleState state = BundleState.INVALID;
+   private Bundle bundle;
 
-    private Bundle bundle;
-    
-    private BundleContext context;
+   private BundleContext context;
 
-    public Bundle getBundle() {
-        return bundle;
-    }
+   public Bundle getBundle()
+   {
+      return bundle;
+   }
 
-    public void setBundle(Bundle bundle) {
-        this.bundle = bundle;
-    }
+   public void setBundle(Bundle bundle)
+   {
+      this.bundle = bundle;
+   }
 
-    public BundleContext getContext() {
-        return context;
-    }
+   public BundleContext getContext()
+   {
+      return context;
+   }
 
-    public void setContext(BundleContext context) {
-        this.context = context;
-    }
+   public void setContext(BundleContext context)
+   {
+      this.context = context;
+   }
 
-    public BundleState getState() {
-        return state;
-    }
+   public BundleState getState()
+   {
+      return state;
+   }
 
-    public void setState(BundleState state) {
-        this.state = state;
-    }
+   public void setState(BundleState state)
+   {
+      this.state = state;
+   }
+
 }

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.extension;
 
 import java.lang.annotation.Annotation;
@@ -35,81 +34,104 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * CDI-OSGi annotated field. Wrap {@link OSGiService} annotated fields in order to enable CDI-OSGi features.
+ * CDI-OSGi annotated field. Wrap {@link OSGiService} annotated fields in order
+ * to enable CDI-OSGi features.
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class CDIOSGiAnnotatedField<T> implements AnnotatedField<T> {
+public class CDIOSGiAnnotatedField<T> implements AnnotatedField<T>
+{
+   private static Logger logger = LoggerFactory.getLogger(
+           CDIOSGiAnnotatedField.class);
 
-    private static Logger logger = LoggerFactory.getLogger(CDIOSGiAnnotatedField.class);
+   AnnotatedField field;
 
-    AnnotatedField field;
-    Set<Annotation> annotations = new HashSet<Annotation>();
-    Filter filter;
+   Set<Annotation> annotations = new HashSet<Annotation>();
 
-    public CDIOSGiAnnotatedField(final AnnotatedField<? super T> field) {
-        logger.debug("Creation of a new CDIOSGiAnnotatedField wrapping {}", field);
-        this.field = field;
-        filter = FilterGenerator.makeFilter(filter,field.getAnnotations());
-        annotations.add(filter);
-        //annotations.add(new AnnotationLiteral<OSGiService>() {});
-        annotations.add(new OSGiServiceQualifier(field.getJavaMember().getAnnotation(OSGiService.class).value()));
-        if(field.getAnnotation(Required.class) != null) {
-            annotations.add(new AnnotationLiteral<Required>() {});
-        }
-        for(Annotation annotation : field.getAnnotations()) {
-            if(!annotation.annotationType().isAnnotationPresent(Qualifier.class)) {
-                annotations.add(annotation);
-            }
-        }
-    }
+   Filter filter;
 
-    @Override
-    public Field getJavaMember() {
-        return field.getJavaMember();
-    }
+   public CDIOSGiAnnotatedField(final AnnotatedField<? super T> field)
+   {
+      logger.debug("Creation of a new CDIOSGiAnnotatedField wrapping {}", field);
+      this.field = field;
+      filter = FilterGenerator.makeFilter(filter, field.getAnnotations());
+      annotations.add(filter);
+      //annotations.add(new AnnotationLiteral<OSGiService>() {});
+      annotations.add(new OSGiServiceQualifier(
+              field.getJavaMember().getAnnotation(OSGiService.class).value()));
+      if (field.getAnnotation(Required.class) != null)
+      {
+         annotations.add(new AnnotationLiteral<Required>()
+         {
+         });
+      }
+      for (Annotation annotation : field.getAnnotations())
+      {
+         if (!annotation.annotationType().isAnnotationPresent(Qualifier.class))
+         {
+            annotations.add(annotation);
+         }
+      }
+   }
 
-    @Override
-    public boolean isStatic() {
-        return field.isStatic();
-    }
+   @Override
+   public Field getJavaMember()
+   {
+      return field.getJavaMember();
+   }
 
-    @Override
-    public AnnotatedType<T> getDeclaringType() {
-        return field.getDeclaringType();
-    }
+   @Override
+   public boolean isStatic()
+   {
+      return field.isStatic();
+   }
 
-    @Override
-    public Type getBaseType() {
-        return field.getBaseType();
-    }
+   @Override
+   public AnnotatedType<T> getDeclaringType()
+   {
+      return field.getDeclaringType();
+   }
 
-    @Override
-    public Set<Type> getTypeClosure() {
-        return field.getTypeClosure();
-    }
+   @Override
+   public Type getBaseType()
+   {
+      return field.getBaseType();
+   }
 
-    @Override
-    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        for(Annotation annotation : annotations) {
-            if(annotation.annotationType().equals(annotationType)) {
-                return (T)annotation;
-            }
-        }
-        return null;
-    }
+   @Override
+   public Set<Type> getTypeClosure()
+   {
+      return field.getTypeClosure();
+   }
 
-    @Override
-    public Set<Annotation> getAnnotations() {
-        return annotations;
-    }
+   @Override
+   public <T extends Annotation> T getAnnotation(Class<T> annotationType)
+   {
+      for (Annotation annotation : annotations)
+      {
+         if (annotation.annotationType().equals(annotationType))
+         {
+            return (T) annotation;
+         }
+      }
+      return null;
+   }
 
-    @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        if(getAnnotation(annotationType) == null) {
-            return false;
-        }
-        return true;
-    }
+   @Override
+   public Set<Annotation> getAnnotations()
+   {
+      return annotations;
+   }
+
+   @Override
+   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
+   {
+      if (getAnnotation(annotationType) == null)
+      {
+         return false;
+      }
+      return true;
+   }
+
 }
