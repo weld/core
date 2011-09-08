@@ -18,6 +18,7 @@
 package org.jboss.weld.environment.osgi.impl;
 
 import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.environment.osgi.impl.integration.BundleSingletonProvider;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.osgi.framework.BundleActivator;
@@ -44,7 +45,7 @@ public class WeldActivator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         logger.debug("Weld implementation bundle for CDI-OSGi is starting ...");
-        SingletonProvider.initialize(new BundleSingletonProvider());
+        SingletonProvider.initialize(new RegistrySingletonProvider());
         reg = context.registerService(CDIContainerFactory.class.getName(), factory, null);
         logger.debug("Weld implementation bundle for CDI-OSGi STARTED");
     }
