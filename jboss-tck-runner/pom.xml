@@ -233,6 +233,9 @@
                      <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                      </suiteXmlFiles>
+                     <systemPropertyVariables>
+                         <jboss.server.config.file.name>standalone-preview.xml</jboss.server.config.file.name>
+                     </systemPropertyVariables>
                      <systemProperties>
                         <property>
                            <name>org.jboss.testharness.standalone</name>
@@ -264,7 +267,7 @@
                          </property>
                          <property>
                              <name>jboss.options</name>
-                             <value>-Xmx2048m -XX:MaxPermSize=512m -enableassertions -Dorg.jboss.testharness.api.ConfigurationBuilder=org.jboss.jsr299.tck.impl.JSR299PropertiesBasedConfigurationBuilder</value>
+                             <value>-Xmx2048m -XX:MaxPermSize=512m -enableassertions -Dorg.jboss.testharness.api.ConfigurationBuilder=org.jboss.jsr299.tck.impl.JSR299PropertiesBasedConfigurationBuilder -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=y</value>
                          </property>
                          <property>
                            <name>jboss.datasource.add</name>
@@ -292,6 +295,9 @@
                      <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                      </suiteXmlFiles>
+                     <systemPropertyVariables>
+                         <jboss.server.config.file.name>standalone-preview.xml</jboss.server.config.file.name>
+                     </systemPropertyVariables>
                      <systemProperties>
                         <property>
                            <name>java.io.tmpdir</name>
