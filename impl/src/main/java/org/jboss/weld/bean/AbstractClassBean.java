@@ -16,44 +16,7 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.beans.Introspector;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javassist.util.proxy.ProxyObject;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Scope;
-
 import org.jboss.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
@@ -61,11 +24,7 @@ import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
-import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
-import org.jboss.weld.bean.proxy.DecorationHelper;
-import org.jboss.weld.bean.proxy.InterceptedSubclassFactory;
-import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.bean.proxy.TargetBeanInstance;
+import org.jboss.weld.bean.proxy.*;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.SerializableContextualImpl;
@@ -91,6 +50,23 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.*;
+import javax.inject.Scope;
+import java.beans.Introspector;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.*;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -250,30 +226,26 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>>
                throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
             }
 
-            if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS))
+            List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+            if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
             {
-               List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
-               if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
+               if (method.isFinal())
                {
-                  if (method.isFinal())
-                  {
-                     throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
-                  }
-                  builder.interceptAroundTimeout(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
                }
+               builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
             }
-            else
+            
+            methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
+            if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
             {
-               List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
-               if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0)
+               if (method.isFinal())
                {
-                  if (method.isFinal())
-                  {
-                     throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
-                  }
-                  builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
+                  throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
                }
+               builder.interceptAroundTimeout(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
             }
+
          }
       }
 
