@@ -718,28 +718,6 @@
             </configuration>
          </plugin>
          <plugin>
-            <groupId>com.pyx4j</groupId>
-            <artifactId>maven-junction-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>unlink</id>
-                  <phase>clean</phase>
-                  <goals>
-                     <goal>unlink</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <links>
-                  <!-- link src/main/webapp -> war/ for IDEs -->
-                  <link>
-                     <dst>${basedir}/war</dst>
-                     <src>${basedir}/src/main/webapp</src>
-                  </link>
-               </links>
-            </configuration>
-         </plugin>
-         <plugin>
             <artifactId>maven-clean-plugin</artifactId>
             <configuration>
                <failOnError>false</failOnError>
