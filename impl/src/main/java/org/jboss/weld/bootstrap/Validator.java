@@ -344,15 +344,28 @@ public class Validator implements Service
 
    public void validateBeans(Collection<? extends Bean<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager)
    {
+      final List<RuntimeException> problems = new ArrayList<RuntimeException>();
+
       for (Bean<?> bean : beans)
       {
-         if (bean instanceof RIBean<?>)
-         {
-            validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+         try {
+            if (bean instanceof RIBean<?>)
+            {
+               validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+            }
+            else
+            {
+               validateBean(bean, manager);
+            }
+         } catch (RuntimeException e) {
+            problems.add(e);
          }
-         else
-         {
-            validateBean(bean, manager);
+      }
+      if(!problems.isEmpty()) {
+         if(problems.size() == 1) {
+            throw problems.get(0);
+         } else {
+            throw new DeploymentException((List)problems);
          }
       }
    }

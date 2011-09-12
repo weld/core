@@ -16,26 +16,19 @@
  */
 package org.jboss.weld.tests.scope.unproxyable;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
+import java.io.Serializable;
 
 @SessionScoped
 public class Foo implements Serializable
 {
 
-   @Inject
-   @HttpParam("username")
-   String username;
-
    @Produces
    @RequestScoped
    @HttpParam("")
-   public String produceHttpParam(InjectionPoint ip)
+   public String produceHttpParam()
    {
       return "pete";
    }
