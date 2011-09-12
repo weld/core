@@ -655,7 +655,12 @@ public class BeanManagerImpl implements WeldManager, Serializable
    public Context getContext(Class<? extends Annotation> scopeType)
    {
       Context activeContext = null;
-      for (Context context : contexts.get(scopeType))
+      final List<Context> ctx = contexts.get(scopeType);
+      if(ctx == null) {
+         //this happens if no context is registered
+         throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
+      }
+      for (Context context : ctx)
       {
          if (context.isActive())
          {
