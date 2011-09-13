@@ -513,7 +513,13 @@
       <profile>
          <id>update-jboss-as</id>
          <modules>
-            <module>jboss-as</module>
+            <module>jboss-as/jboss-as-7</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>update-jboss-as6</id>
+         <modules>
+            <module>jboss-as/jboss-as-6</module>
          </modules>
       </profile>
       <profile>

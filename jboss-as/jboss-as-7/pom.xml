@@ -1,0 +1,144 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-core-jboss-as7-updater</artifactId>
+   <packaging>pom</packaging>
+   <version>1.1.3-SNAPSHOT</version>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core-parent</artifactId>
+      <version>1.1.3-SNAPSHOT</version>
+      <relativePath>../../pom.xml</relativePath>
+   </parent>
+
+   <name>JBoss AS7 Updater</name>
+
+   <!-- Minimal metadata -->
+   <description>A script to update Weld in JBoss AS7</description>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+
+   <properties>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+   </dependencies>
+   <build>
+      <defaultGoal>package</defaultGoal>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy-dependencies</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                     <overWriteSnapshots>true</overWriteSnapshots>
+                     <stripVersion>true</stripVersion>
+                     <includeArtifactIds>cdi-api,weld-api,weld-core,weld-spi</includeArtifactIds>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>update-jboss-as</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <tasks>
+                        <property file="${basedir}/local.build.properties" />
+                        <property file="${basedir}/build.properties" />
+                        <property name="jboss.home" value="${env.JBOSS_HOME}" />
+                        <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld" />
+
+                        <delete>
+                           <fileset dir="${module.dir}/core/main" includes="*.jar"/>
+                           <fileset dir="${module.dir}/spi/main" includes="*.jar"/>
+                           <fileset dir="${module.dir}/api/main" includes="*.jar"/>
+                           <fileset dir="${module.dir}/core/main" includes="*.index"/>
+                           <fileset dir="${module.dir}/spi/main" includes="*.index"/>
+                           <fileset dir="${module.dir}/api/main" includes="*.index"/>
+                        </delete>
+
+                        <copy todir="${module.dir}/core/main"  overwrite="true">
+                           <fileset dir="target/dependency/lib">
+                              <include name="weld-core.jar"/>
+                           </fileset>
+                        </copy>
+
+                        <replaceregexp file="${module.dir}/core/main/module.xml"
+                           match="path=&quot;.*?&quot;"
+                           replace="path=&quot;weld-core.jar&quot;"
+                           byline="true" />
+
+                        <copy todir="${module.dir}/spi/main" overwrite="true">
+                           <fileset dir="target/dependency/lib">
+                              <include name="weld-spi.jar" />
+                           </fileset>
+                        </copy>
+
+                        <replaceregexp file="${module.dir}/spi/main/module.xml"
+                           match="path=&quot;.*?&quot;"
+                           replace="path=&quot;weld-spi.jar&quot;"
+                           byline="true" />
+
+                        <copy todir="${module.dir}/api/main" overwrite="true">
+                           <fileset dir="target/dependency/lib">
+                              <include name="weld-api.jar" />
+                           </fileset>
+                        </copy>
+
+                        <replaceregexp file="${module.dir}/api/main/module.xml"
+                           match="path=&quot;.*?&quot;"
+                           replace="path=&quot;weld-api.jar&quot;"
+                           byline="true" />
+
+                     </tasks>
+                  </configuration>
+               </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+              <groupId>ant</groupId>
+              <artifactId>ant-nodeps</artifactId>
+              <version>1.6.5</version>
+              </dependency>
+          </dependencies>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+               <skip>true</skip>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
