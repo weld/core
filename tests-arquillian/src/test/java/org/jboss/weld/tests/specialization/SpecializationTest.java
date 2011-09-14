@@ -50,4 +50,10 @@ public class SpecializationTest
       Assert.assertEquals(User2.class, beanManager.resolve(beanManager.getBeans(User.class)).getBeanClass());
    }
 
+   @Test
+   public void testSpecializationWithAlternative()
+   {
+      Assert.assertEquals(NamedFoo.class, beanManager.resolve(beanManager.getBeans(NamedFoo.class)).getBeanClass());
+   }
+
 }
