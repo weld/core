@@ -1,0 +1,92 @@
+<!DOCTYPE preface PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+<preface>
+   <title>Preface</title>
+   
+   <section>
+      <title>About naming and references</title>
+      
+      <section>
+         <title>References</title>
+         
+         <para>
+            This document uses both CDI and OSGi specification documentations as technical references. You may
+            refer to these documents for a better understanding of CDI and OSGi functionality, references and naming
+            conventions. Weld-OSGi comes with other documentations and you may refer to API JavaDoc and user manual for
+            a better understanding of Weld-OSGi.
+         </para>       
+      </section>
+      
+      <section>
+         <title>Bundle types</title>
+         <para>This document discners differents bundle types for OSGi environment using Weld-OSGi: <itemizedlist>
+            <listitem>
+               <para><emphasis>Bundle</emphasis> reffers to any bundle deployable in the OSGi environment as a Java
+                  archive containing OSGi marker headers in its <code>META-INF/Manifest.MF</code> file.</para>
+            </listitem>
+            <listitem>
+               <para><emphasis>Bean bundle</emphasis> reffers to any bundle deployable in the OSGi environment and
+                  managable by Weld-OSGi as a <emphasis>bundle</emphasis> containing CDI marker file
+                  <code>META-INF/bean.xml</code>.</para>
+            </listitem>
+            <listitem>
+               <para><emphasis>Regular bundle</emphasis> reffers to any bundle deployable in the OSGi environment and
+                  not managable by Weld-OSGi as a <emphasis>bundle</emphasis> not containing CDI marker file.</para>
+            </listitem>
+         </itemizedlist></para>         
+      </section>
+   </section>
+   
+   <section>
+      <title>What is this specification for ?</title>
+      
+      <section>
+         <title>Contracts</title>
+         
+         <para>This specification defines: <itemizedlist>
+            <listitem>
+               <para>The architecture, organization and workflow of the Weld-OSGi framework.</para>
+            </listitem>
+            <listitem>
+               <para>The programming model for, and responsabilities of, application developper who uses the
+                  Weld-OSGi framework.</para>
+            </listitem>
+            <listitem>
+               <para>The programming model for, and responsabilities of, vendor who provides the compatibility of
+                  another CDI implementation.</para>
+            </listitem>
+         </itemizedlist></para>
+         <para>TODO table of content presentation</para>
+      </section>
+      
+      <section>
+         <title>What is Weld-OSGi ?</title>
+         
+         <para>Weld-OSGi is an extension to the Weld project as a framework for developping applications in OSGi
+            environment. Weld-OSGi aims at: <itemizedlist>
+               <listitem>
+                  <para>Providing a support for OSGi environments to the Weld project.</para>
+               </listitem>
+               <listitem>
+                  <para>Adressing the OSGi complexity using the CDI programming model.</para>
+               </listitem>
+            </itemizedlist></para>
+         <para>Weld-OSGi is a group of four bundles deployable in any OSGi environment. It allows the usage of bean
+            bundles in these OSGi environments.</para>
+      </section>
+      
+      <section>
+         <title>Third party dependencies and environment</title>
+         
+         <para>Weld-OSGi may run into an OSGi environment, therefore it requires an OSGi implementation framework to
+            run in (such as Apache Felix, Equinox, Knopflerfish ...).</para>
+         <para>Weld-OSGi logs its operations using the SLF4J logging facade and the LogBack logging
+            implementation.</para>
+         <para>Weld-OSGi is a part of the Weld project and may use any of the Weld project dependencies.</para>
+      </section>
+   </section>
+   
+<!--
+   vim:et:ts=3:sw=3:tw=120
+-->
+</preface>
