@@ -1,4 +1,4 @@
-<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+<!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
 <part id="part-2">
    
@@ -392,9 +392,7 @@ public class MyServiceQualifiedImpl implements MyService {
                <title>Annotated type processing justification</title>
                <mediaobject>
                   <imageobject>
-                     <imagedata
-                        fileref="../../../../../../../../../../T%C3%A9l%C3%A9chargements/CDI-OSGipublishconsumecycle.png"
-                        depth="800"/>
+                     <imagedata fileref="../images/AnnotatedTypeProcessingJustification.png" depth="800"/>
                   </imageobject>
                   <caption>This figure show the need for a annotated type processing in order to remove the ambiguous
                      dependency between regular CDI and Weld-OSGi injection points.</caption>

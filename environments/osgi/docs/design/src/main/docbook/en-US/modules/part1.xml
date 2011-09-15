@@ -1,4 +1,4 @@
-<!DOCTYPE partintro PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+<!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
 <part id="part-1">
    
@@ -6,7 +6,7 @@
    
    <chapter>
       <title>Framework organisation</title>
-      <para xmlns:xi="http://www.w3.org/2001/XInclude">Weld-OSGi is composed of five bundles: <itemizedlist>
+      <para>Weld-OSGi is composed of five bundles: <itemizedlist>
             <listitem>
                <para>The <emphasis>API bundle</emphasis> that describes the programming model and the OSGi extension
                   mechanism.</para>
@@ -34,7 +34,7 @@
          <title>The five bundles of Weld-OSGi</title>
          <mediaobject>
             <imageobject>
-               <imagedata align="center" format="PNG" depth="800"/>
+               <imagedata align="center" format="PNG" depth="800" fileref="../images/5Bundles.png"/>
             </imageobject>
             <caption>This figure shows the five bundles of Weld-OSGi and the links between them.</caption>
          </mediaobject>
@@ -188,7 +188,8 @@ END</programlisting>
          <title>Weld-OSGi framework start and stop protocol</title>
          <mediaobject>
             <imageobject>
-               <imagedata format="PNG" align="center" width="800" depth="600"/>
+               <imagedata format="PNG" align="center" width="800" depth="600" fileref="../images/StartStopProtocol.png"
+               />
             </imageobject>
             <caption>This figure shows the steps of the Weld-OSGi starting and stopping protocol. Between step 8 and
                step 11 the framework is in stable state and manages bean bundles.</caption>
@@ -205,7 +206,7 @@ END</programlisting>
          <title>The bean bundle lifecycle</title>
          <mediaobject>
             <imageobject>
-               <imagedata align="center" format="PNG" depth="800"/>
+               <imagedata align="center" format="PNG" depth="800" fileref="../images/BeanBundleLifeCycle.png"/>
             </imageobject>
             <caption>This figure shows the two new states a bean bundle can be in. These states are triggered by two new
                events and address the CDI container dependency resolution (i.e. services annotated @Required).</caption>
