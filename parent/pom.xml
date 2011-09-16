@@ -100,6 +100,7 @@
       <jboss.as7.tck-runner>1.0.0.CR1</jboss.as7.tck-runner>
       <arquillian.version>1.0.0.CR4</arquillian.version>
       <arquillian.jboss.version>1.0.0.CR4</arquillian.jboss.version>
+      <arquillian.jboss6.version>1.0.0.CR2</arquillian.jboss6.version>
       <arquillian.weld.version>1.0.0.CR2</arquillian.weld.version>
       <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
       <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
@@ -220,13 +221,13 @@
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-jbossas-managed-6</artifactId>
-            <version>${arquillian.jboss.version}</version>
+            <version>${arquillian.jboss6.version}</version>
          </dependency>
 
          <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-jbossas-remote-6</artifactId>
-            <version>${arquillian.jboss.version}</version>
+            <version>${arquillian.jboss6.version}</version>
          </dependency>
 
          <dependency>
