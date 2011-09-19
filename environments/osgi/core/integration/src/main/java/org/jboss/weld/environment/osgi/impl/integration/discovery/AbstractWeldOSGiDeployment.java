@@ -102,10 +102,14 @@ public abstract class AbstractWeldOSGiDeployment implements Deployment
       public Enumeration<URL> getResources(String s) throws IOException
       {
          Set<URL> urls = new HashSet<URL>();
-         List<URL> enumBundle = Collections.list(bundle.getResources(s));
-         List<URL> enumInfra = Collections.list(infra.getResources(s));
-         urls.addAll(enumBundle);
-         urls.addAll(enumInfra);
+         Enumeration enumBundle = bundle.getResources(s);
+         Enumeration enumInfra = infra.getResources(s);
+         if (enumBundle != null) {
+            urls.addAll(Collections.list(enumBundle));
+         }
+         if (enumInfra != null) {
+            urls.addAll(Collections.list(enumInfra));
+         }
          return Collections.enumeration(urls);
       }
    }
