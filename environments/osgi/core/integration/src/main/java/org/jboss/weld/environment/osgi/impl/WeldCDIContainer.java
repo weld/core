@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl;
 
+import java.lang.annotation.Annotation;
 import org.jboss.weld.environment.osgi.impl.integration.Weld;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
@@ -27,9 +28,11 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.enterprise.util.AnnotationLiteral;
+import org.jboss.weld.environment.osgi.api.annotation.Sent;
+import org.jboss.weld.environment.osgi.api.annotation.Specification;
 import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
-import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 
 /**
@@ -91,9 +94,9 @@ public class WeldCDIContainer implements CDIContainer
       Long set = CDIOSGiExtension.currentBundle.get();
       CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
       container.getEvent().select(InterBundleEvent.class,
-                                  new ExtensionActivator.SpecificationAnnotation(
+                                  new SpecificationAnnotation(
                                           event.type()),
-                                  new ExtensionActivator.SentAnnotation()).fire(
+                                  new SentAnnotation()).fire(
                                           event);
       if (set != null)
       {
@@ -184,6 +187,41 @@ public class WeldCDIContainer implements CDIContainer
                               registrations.hashCode() :
                               0);
       return result;
+   }
+
+   public static class SpecificationAnnotation
+   extends AnnotationLiteral<Specification> implements Specification
+   {
+      private final Class value;
+
+      public SpecificationAnnotation(Class value)
+      {
+         this.value = value;
+      }
+
+      @Override
+      public Class value()
+      {
+         return value;
+      }
+
+      @Override
+      public Class<? extends Annotation> annotationType()
+      {
+         return Specification.class;
+      }
+
+   }
+
+   public static class SentAnnotation
+   extends AnnotationLiteral<Sent> implements Sent
+   {
+      @Override
+      public Class<? extends Annotation> annotationType()
+      {
+         return Sent.class;
+      }
+
    }
 
 }

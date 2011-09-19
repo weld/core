@@ -1,3 +1,7 @@
+Bundle-Activator org.jboss.weld.environment.osgi.impl.WeldActivator
+
+Export-Package org.jboss.weld.environment.osgi.impl.embedded; version=${pom.version}
+
 Embed-Dependency *; scope=compile; inline=true; artifactId=!weld-osgi-core-spi|weld-osgi-core-extension|jboss-interceptor-api|javax.inject|jsr250-api|cdi-api|el-api
 
 Import-Package org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=1.6.1; resolution:=optional, \
@@ -34,17 +38,4 @@ Import-Package org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=1.6.1; resol
                javassist.tools.rmi; \
                javassist.tools.web; version=3.14.0
 
-Private-Package !javax.interceptor.*, \
-                org.slf4j.*; -split-package:=merge-first, \
-                ch.qos.cal10n.*
-
 DynamicImport-Package *
-Bundle-Activator org.jboss.weld.environment.osgi.impl.WeldActivator
-
-Export-Package org.jboss.weld.environment.osgi.impl.embedded; \
-               org.jboss.weld.environment.osgi.impl.integration; \
-               org.jboss.weld.environment.osgi.impl.integration.discovery; \
-               org.jboss.weld.environment.osgi.impl.integration.discovery.bundle; \
-               org.jboss.weld.environment.osgi.impl; version=${pom.version}, \
-               org.jboss.weld.environment.se; \
-               org.jboss.weld.environment.se.beans

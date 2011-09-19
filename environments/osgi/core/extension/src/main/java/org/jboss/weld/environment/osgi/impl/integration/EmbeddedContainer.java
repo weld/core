@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.osgi.impl.integration;
 
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

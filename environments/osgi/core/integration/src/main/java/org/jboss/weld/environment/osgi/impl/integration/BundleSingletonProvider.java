@@ -24,7 +24,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 
 /**
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)

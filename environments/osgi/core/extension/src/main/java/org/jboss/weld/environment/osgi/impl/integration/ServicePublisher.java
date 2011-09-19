@@ -21,7 +21,7 @@ import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;

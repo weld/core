@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;

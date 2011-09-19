@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.osgi.impl.extension;
+package org.jboss.weld.environment.osgi.impl.extension.service;
 
 import org.jboss.weld.environment.osgi.impl.extension.beans.*;
 import org.jboss.weld.environment.osgi.impl.integration.InstanceHolder;
@@ -34,6 +34,11 @@ import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.api.annotation.Required;
+import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiAnnotatedType;
+import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
+import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceProducerBean;
 
 /**
  * Weld OSGi extension.

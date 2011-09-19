@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;

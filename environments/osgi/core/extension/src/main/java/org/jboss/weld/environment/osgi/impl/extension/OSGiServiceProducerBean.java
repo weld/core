@@ -56,7 +56,7 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service>
 
    private Type type;
 
-   protected OSGiServiceProducerBean(InjectionPoint injectionPoint)
+   public OSGiServiceProducerBean(InjectionPoint injectionPoint)
    {
       logger.debug("Creation of a new OSGiServiceProducerBean for injection point: {}", injectionPoint);
       this.injectionPoint = injectionPoint;

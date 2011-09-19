@@ -1,7 +1,8 @@
-Embed-Dependency *; scope=compile; inline=true; artifactId=!org.osgi.core|org.osgi.compendium|weld-osgi-core-api|weld-osgi-core-spi
+Bundle-Activator org.jboss.weld.environment.osgi.impl.Activator
 
-Export-Package org.jboss.weld.environment.osgi.impl.extension; \
-               org.jboss.weld.environment.osgi.impl.extension.beans;version=${pom.version}
+Export-Package org.jboss.weld.environment.osgi.impl.extension.service;version=${pom.version}
+
+Embed-Dependency *; scope=compile; inline=true; artifactId=!org.osgi.core|org.osgi.compendium|weld-osgi-core-api|weld-osgi-core-spi
 
 Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.osgi.api.annotation; \
@@ -37,4 +38,4 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                javassist.tools.web; version=3.14.0
 
 DynamicImport-Package *
-Bundle-Activator org.jboss.weld.environment.osgi.impl.Activator
+
