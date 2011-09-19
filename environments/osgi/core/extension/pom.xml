@@ -46,6 +46,17 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- TODO: remove and replace with classfilewriter -->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -61,17 +72,12 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
-        <!-- TODO: remove and replace with classfilewriter -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>

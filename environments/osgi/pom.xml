@@ -13,6 +13,26 @@
         <version>2.1-SNAPSHOT</version>
     </parent>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
+
     <modules>
         <module>core</module>
         <module>examples</module>
@@ -20,13 +40,13 @@
 
     <profiles>
         <profile>
-            <id>weld-osgi-doc</id>
+            <id>weld-osgi-docs</id>
             <modules>
                 <module>docs</module>
             </modules>
         </profile>
         <profile>
-            <id>weld-osgi-itests</id>
+            <id>weld-osgi-tests</id>
             <modules>
                 <module>core</module>
                 <module>tests</module>
@@ -91,5 +111,4 @@
 
         </dependencies>
     </dependencyManagement>
-
 </project>
