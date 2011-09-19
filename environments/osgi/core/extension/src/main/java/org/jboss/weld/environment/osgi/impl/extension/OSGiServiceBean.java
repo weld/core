@@ -64,7 +64,7 @@ public class OSGiServiceBean implements Bean
 
    private long timeout;
 
-   protected OSGiServiceBean(InjectionPoint injectionPoint)
+   public OSGiServiceBean(InjectionPoint injectionPoint)
    {
       logger.debug("Creation of a new OSGiServiceBean for injection point: {}",
                    injectionPoint);

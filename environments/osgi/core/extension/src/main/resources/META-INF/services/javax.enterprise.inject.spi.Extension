@@ -1,1 +1,1 @@
-org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension
+org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension

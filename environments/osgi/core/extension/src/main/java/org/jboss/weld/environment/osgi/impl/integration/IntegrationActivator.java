@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.osgi.impl.integration;
 
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
