@@ -48,7 +48,7 @@ public class BundleDeployment extends AbstractWeldOSGiDeployment
                            Bootstrap bootstrap,
                            BundleBeanDeploymentArchiveFactory factory)
    {
-      super(bootstrap);
+      super(bootstrap, bundle);
       this.beanDeploymentArchive = factory.scan(bundle, bootstrap);
       if (beanDeploymentArchive != null)
       {
