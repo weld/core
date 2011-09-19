@@ -47,9 +47,9 @@
       <google.guava.version>r06</google.guava.version>
       <javassist.version>3.14.0-GA</javassist.version>
       <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
-      <slf4j.version>1.5.10</slf4j.version>
+      <slf4j.version>1.6.1</slf4j.version>
       <cal10n.version>0.7.2</cal10n.version>
-	  <logback.version>0.9.9</logback.version>
+	  <logback.version>0.9.29</logback.version>
 	  <osgi.version>4.2.0</osgi.version>
       <junit.version>4.8.1</junit.version>
    </properties>
@@ -164,7 +164,7 @@
 	         <artifactId>cal10n-api</artifactId>
 	         <version>${cal10n.version}</version>
 	      </dependency>
-	
+
 		<dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -176,13 +176,13 @@
             <artifactId>org.osgi.core</artifactId>
             <version>${osgi.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
             <version>${osgi.version}</version>
         </dependency>
-         
+
       </dependencies>
    </dependencyManagement>
 
