@@ -24,18 +24,8 @@
    </licenses>
    <url>http://www.seamframework.org/Weld</url>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
-
    <dependencies>
+
       <dependency>
          <groupId>org.osgi</groupId>
          <artifactId>org.osgi.core</artifactId>
@@ -60,8 +50,9 @@
          <groupId>javax.enterprise</groupId>
          <artifactId>cdi-api</artifactId>
       </dependency>
+
    </dependencies>
-   
+
    <build>
       <plugins>
          <plugin>
