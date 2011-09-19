@@ -23,8 +23,13 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.osgi.impl.integration.OSGiProxyService;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.osgi.framework.Bundle;
 
 import javax.enterprise.inject.spi.Extension;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Implements the basic requirements of a {@link Deployment}. Provides a service
@@ -33,7 +38,8 @@ import javax.enterprise.inject.spi.Extension;
  * Suitable for extension by those who need to build custom {@link Deployment}
  * implementations.
  *
- * @author Pete Muir
+ * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
+ * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public abstract class AbstractWeldOSGiDeployment implements Deployment
 {
@@ -41,12 +47,15 @@ public abstract class AbstractWeldOSGiDeployment implements Deployment
 
    private final Iterable<Metadata<Extension>> extensions;
 
-   public AbstractWeldOSGiDeployment(Bootstrap bootstrap)
+   private final Bundle bundle;
+
+   public AbstractWeldOSGiDeployment(Bootstrap bootstrap, Bundle bundle)
    {
       this.serviceRegistry = new SimpleServiceRegistry();
       this.serviceRegistry.add(ProxyServices.class, new OSGiProxyService());
+      this.bundle = bundle;
       // OK, Here we can install our own Extensions instances
-      this.extensions = bootstrap.loadExtensions(getClass().getClassLoader());
+       this.extensions = bootstrap.loadExtensions(new BridgeClassLoader(bundle, getClass().getClassLoader()));
    }
 
    @Override
@@ -59,6 +68,46 @@ public abstract class AbstractWeldOSGiDeployment implements Deployment
    public Iterable<Metadata<Extension>> getExtensions()
    {
       return extensions;
+   }
+
+   private static class BridgeClassLoader extends ClassLoader
+   {
+      private final Bundle bundle;
+
+      private final ClassLoader infra;
+
+      public BridgeClassLoader(Bundle bundle, ClassLoader infraClassLoader)
+      {
+         this.bundle = bundle;
+         this.infra = infraClassLoader;
+      }
+
+      @Override
+      public Class<?> loadClass(String name) throws ClassNotFoundException
+      {
+         Class<?> loadedClass = null;
+         try
+         {
+            loadedClass = bundle.loadClass(name);
+         }
+         catch(ClassNotFoundException cnfe)
+         {
+            // todo : filter on utils class only
+            loadedClass = infra.loadClass(name);
+         }
+         return loadedClass;
+      }
+
+      @Override
+      public Enumeration<URL> getResources(String s) throws IOException
+      {
+         Set<URL> urls = new HashSet<URL>();
+         List<URL> enumBundle = Collections.list(bundle.getResources(s));
+         List<URL> enumInfra = Collections.list(infra.getResources(s));
+         urls.addAll(enumBundle);
+         urls.addAll(enumInfra);
+         return Collections.enumeration(urls);
+      }
    }
 
 }
