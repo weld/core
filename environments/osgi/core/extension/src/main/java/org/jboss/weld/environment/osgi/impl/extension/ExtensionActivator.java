@@ -233,14 +233,15 @@ public class ExtensionActivator implements BundleActivator,
       {
          try
          {
+            // here singleton issue
             broadcaster.select(eventClass,
-                               filteredServicesQualifiers(event,
-                                                          new SpecificationAnnotation(clazz),
-                                                          instance)).fire(event);
+               filteredServicesQualifiers(event,
+                  new SpecificationAnnotation(clazz),
+                  instance)).fire(event);
          }
          catch(Throwable t)
          {
-            t.printStackTrace();
+            //t.printStackTrace();
          }
       }
    }

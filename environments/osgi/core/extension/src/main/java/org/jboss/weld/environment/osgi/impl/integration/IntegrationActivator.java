@@ -95,13 +95,13 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
 
     public void stopCDIOSGi() throws Exception {
         logger.info("CDI-OSGi stop bundle management");
-        started.set(false);
         for (Bundle bundle : context.getBundles()) {
             logger.trace("Scanning {}", bundle.getSymbolicName());
             if (managed.get(bundle.getBundleId()) != null) {
                 stopManagement(bundle);
             }
         }
+        started.set(false);
     }
 
     @Override
@@ -206,52 +206,30 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         boolean set = CDIOSGiExtension.currentBundle.get() != null;
         CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
         CDIContainer holder = managed.get(bundle.getBundleId());
-        if (holder != null) {
-            BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
-            //if (bundleHolder.getState().equals(BundleState.VALID)) {
-                logger.trace("Firing the BundleState.INVALID event");
-                //bundleHolder.setState(BundleState.INVALID);
-                holder.getBeanManager().fireEvent(new Invalid());
-            //}
-            if(started.get()) {
-                factory().removeContainer(bundle);
-            }
-            logger.trace("The container {} has been unregistered",holder);
-            logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
-            holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
-
-            Collection<ServiceRegistration> regs = holder.getRegistrations();
-            logger.trace("Unregistering the container registrations");
-            /**for (ServiceRegistration reg : regs) {
+        if (started.get() && managed.containsKey(bundle.getBundleId())) {
+            if (holder != null) {
+                BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
                 try {
-                    reg.unregister();
-                } catch (IllegalStateException e) {// Ignore
-                    //logger.warn("Unable to unregister a service" + e.getCause());
-                }
-            }
-            try {
-                // unregistration for managed services. It should be done by the OSGi framework
-                logger.trace("Unregistering the container managed services");
-                RegistrationsHolderImpl regsHolder = holder.getInstance().select(RegistrationsHolderImpl.class).get();
-                for (ServiceRegistration r : regsHolder.getRegistrations()) {
-                    try {
-                        r.unregister();
-                    } catch (Exception e) {
-                        // the service is already unregistered if shutdown is called when bundle is stopped
-                        // but with a manual boostrap, you can't be sure
-                        //System.out.println("Service already unregistered.");
+                    logger.trace("Firing the BundleState.INVALID event");
+                    holder.getBeanManager().fireEvent(new Invalid());
+                    logger.trace("The container {} has been unregistered",holder);
+                    logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
+                    // here singleton issue ?
+                    holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
+                } catch (Throwable t) {}
+                logger.trace("Shutting down the container {}", holder);
+                //holder.shutdown();
+                managed.remove(bundle.getBundleId());
+                if(started.get()) {
+                    if (factoryRef != null) {
+                        factory().removeContainer(bundle);
                     }
                 }
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }   **/
-
-            logger.trace("Shutting down the container {}", holder);
-            holder.shutdown();
-            managed.remove(bundle.getBundleId());
-            logger.debug("Bundle {} is unmanaged", bundle.getSymbolicName());
-        } else {
-            logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
+                holder.shutdown();
+                logger.debug("Bundle {} is unmanaged", bundle.getSymbolicName());
+            } else {
+                logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
+            }
         }
         if (!set) {
             CDIOSGiExtension.currentBundle.remove();
