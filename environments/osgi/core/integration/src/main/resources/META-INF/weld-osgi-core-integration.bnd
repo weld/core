@@ -1,6 +1,6 @@
 Bundle-Activator org.jboss.weld.environment.osgi.impl.WeldActivator
 
-Export-Package org.jboss.weld.environment.osgi.impl.embedded; version=${pom.version}
+Export-Package org.jboss.weld.environment.osgi.impl.embedded, org.jboss.weld.environment.se; version=${pom.version}
 
 Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.osgi.api.annotation; \
