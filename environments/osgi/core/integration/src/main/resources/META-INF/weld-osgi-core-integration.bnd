@@ -2,11 +2,7 @@ Bundle-Activator org.jboss.weld.environment.osgi.impl.WeldActivator
 
 Export-Package org.jboss.weld.environment.osgi.impl.embedded; version=${pom.version}
 
-Embed-Dependency *; scope=compile; inline=true; artifactId=!weld-osgi-core-spi|weld-osgi-core-extension|jboss-interceptor-api|javax.inject|jsr250-api|cdi-api|el-api
-
-Import-Package org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=1.6.1; resolution:=optional, \
-               ch.qos.cal10n; version=0.7.2; resolution:=optional, \
-               org.jboss.weld.environment.osgi.api; \
+Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.osgi.api.annotation; \
                org.jboss.weld.environment.osgi.api.events; \
                org.jboss.weld.environment.osgi.spi;version=${pom.version}, \
@@ -20,6 +16,7 @@ Import-Package org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=1.6.1; resol
                javax.enterprise.inject.spi; \
                javax.enterprise.util; version=1.0.0, \
                javax.interceptor; version=1.1.0, \
+               org.osgi.framework, \
                javassist; \
                javassist.bytecode; \
                javassist.bytecode.analysis; \
@@ -36,6 +33,162 @@ Import-Package org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=1.6.1; resol
                javassist.tools; \
                javassist.tools.reflect; \
                javassist.tools.rmi; \
-               javassist.tools.web; version=3.14.0
+               javassist.tools.web; version=3.14.0, \
+               org.slf4j; \
+               org.slf4j.spi; \
+               org.slf4j.helpers; \
+               org.slf4j.cal10n; \
+               org.slf4j.profiler; \
+               org.slf4j.agent; \
+               org.slf4j.instrumentation; \
+               org.slf4j.ext; version=1.6.1, \
+               ch.qos.logback.classic; \
+               ch.qos.logback.classic.filter; \
+               ch.qos.logback.classic.html; \
+               ch.qos.logback.classic.sift; \
+               ch.qos.logback.classic.spi; \
+               ch.qos.logback.classic.util; \
+               ch.qos.logback.classic.boolex; \
+               ch.qos.logback.classic.jul; \
+               ch.qos.logback.classic.helpers; \
+               ch.qos.logback.classic.net; \
+               ch.qos.logback.classic.jmx; \
+               ch.qos.logback.classic.joran; \
+               ch.qos.logback.classic.joran.action; \
+               ch.qos.logback.classic.log4j; \
+               ch.qos.logback.classic.db; \
+               ch.qos.logback.classic.db.names; \
+               ch.qos.logback.classic.selector; \
+               ch.qos.logback.classic.selector.servlet; \
+               ch.qos.logback.classic.encoder; \
+               ch.qos.logback.classic.turbo; \
+               ch.qos.logback.classic.pattern; \
+               ch.qos.logback.classic.gaffer; \
+               ch.qos.logback.core; \
+               ch.qos.logback.core.filter; \
+               ch.qos.logback.core.read; \
+               ch.qos.logback.core.html; \
+               ch.qos.logback.core.sift; \
+               ch.qos.logback.core.spi; \
+               ch.qos.logback.core.util; \
+               ch.qos.logback.core.boolex; \
+               ch.qos.logback.core.helpers; \
+               ch.qos.logback.core.net; \
+               ch.qos.logback.core.joran; \
+               ch.qos.logback.core.joran.event; \
+               ch.qos.logback.core.joran.spi; \
+               ch.qos.logback.core.joran.util; \
+               ch.qos.logback.core.joran.conditional; \
+               ch.qos.logback.core.joran.action; \
+               ch.qos.logback.core.rolling; \
+               ch.qos.logback.core.rolling.helper; \
+               ch.qos.logback.core.db; \
+               ch.qos.logback.core.db.dialect; \
+               ch.qos.logback.core.encoder; \
+               ch.qos.logback.core.status; \
+               ch.qos.logback.core.layout; \
+               ch.qos.logback.core.pattern; \
+               ch.qos.logback.core.pattern.parser; \
+               ch.qos.logback.core.pattern.util; \
+               ch.qos.logback.core.recovery; \
+               org.slf4j.impl; version=0.9.29, \
+               com.google.common.primitives; \
+               com.google.common.collect; \
+               com.google.common.util.concurrent; \
+               com.google.common.io; \
+               com.google.common.net; \
+               com.google.common.annotations; \
+               com.google.common.base; \
+               com.google.common.base.internal, \
+               ch.qos.cal10n; \
+               ch.qos.cal10n.verifier; \
+               ch.qos.cal10n.util; version=0.7.2, \
+               org.jboss.interceptor.reader; \
+               org.jboss.interceptor.reader.cache; \
+               org.jboss.interceptor.spi.instance; \
+               org.jboss.interceptor.spi.context; \
+               org.jboss.interceptor.spi.model; \
+               org.jboss.interceptor.spi.metadata; \
+               org.jboss.interceptor.util; \
+               org.jboss.interceptor.util.proxy; \
+               org.jboss.interceptor.proxy; \
+               org.jboss.interceptor.proxy.javassist; \
+               org.jboss.interceptor.builder; version=2.0.0, \
+               org.jboss.weld.manager.api; \
+               org.jboss.weld.ejb.spi; \
+               org.jboss.weld.ejb.spi.helpers; \
+               org.jboss.weld.ejb.api; \
+               org.jboss.weld.context; \
+               org.jboss.weld.context.ejb; \
+               org.jboss.weld.context.unbound; \
+               org.jboss.weld.context.bound; \
+               org.jboss.weld.context.api; \
+               org.jboss.weld.context.http; \
+               org.jboss.weld.validation.spi; \
+               org.jboss.weld.transaction.spi; \
+               org.jboss.weld.servlet.api; \
+               org.jboss.weld.servlet.api.helpers; \
+               org.jboss.weld.resources.spi; \
+               org.jboss.weld.resources.spi.helpers; \
+               org.jboss.weld.bootstrap.spi; \
+               org.jboss.weld.bootstrap.spi.helpers; \
+               org.jboss.weld.bootstrap.api; \
+               org.jboss.weld.bootstrap.api.helpers; \
+               org.jboss.weld.serialization.spi; \
+               org.jboss.weld.serialization.spi.helpers; \
+               org.jboss.weld.security.spi; \
+               org.jboss.weld.injection.spi; \
+               org.jboss.weld.injection.spi.helpers; \
+               org.jboss.weld; \
+               org.jboss.weld.manager; \
+               org.jboss.weld.jsf; \
+               org.jboss.weld.ejb; \
+               org.jboss.weld.event; \
+               org.jboss.weld.introspector; \
+               org.jboss.weld.introspector.jlr; \
+               org.jboss.weld.context.beanstore; \
+               org.jboss.weld.context.beanstore.ejb; \
+               org.jboss.weld.context.beanstore.http; \
+               org.jboss.weld.context.cache; \
+               org.jboss.weld.context.conversation; \
+               org.jboss.weld.util; \
+               org.jboss.weld.util.dom; \
+               org.jboss.weld.util.reflection; \
+               org.jboss.weld.util.reflection.instantiation; \
+               org.jboss.weld.util.el; \
+               org.jboss.weld.util.bytecode; \
+               org.jboss.weld.util.collections; \
+               org.jboss.weld.exceptions; \
+               org.jboss.weld.metadata; \
+               org.jboss.weld.metadata.cache; \
+               org.jboss.weld.el; \
+               org.jboss.weld.xml; \
+               org.jboss.weld.servlet; \
+               org.jboss.weld.ws; \
+               org.jboss.weld.bean; \
+               org.jboss.weld.bean.builtin; \
+               org.jboss.weld.bean.builtin.ee; \
+               org.jboss.weld.bean.proxy; \
+               org.jboss.weld.bean.proxy.util; \
+               org.jboss.weld.bean.interceptor; \
+               org.jboss.weld.resources; \
+               org.jboss.weld.literal; \
+               org.jboss.weld.bootstrap; \
+               org.jboss.weld.bootstrap.events; \
+               org.jboss.weld.logging; \
+               org.jboss.weld.logging.messages; \
+               org.jboss.weld.serialization; \
+               org.jboss.weld.persistence; \
+               org.jboss.weld.resolution; \
+               org.jboss.weld.injection; \
+               org.jboss.weld.environment.se; \
+               org.jboss.weld.environment.se.events; \
+               org.jboss.weld.environment.se.bindings; \
+               org.jboss.weld.environment.se.threading; \
+               org.jboss.weld.environment.se.beans; \
+               org.jboss.weld.environment.se.discovery; \
+               org.jboss.weld.environment.se.discovery.url; \
+               org.jboss.weld.environment.se.contexts; \
+               org.jboss.weld.messages; version=1.1.3
 
 DynamicImport-Package *
