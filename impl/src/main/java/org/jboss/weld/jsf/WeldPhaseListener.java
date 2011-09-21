@@ -106,12 +106,12 @@ public class WeldPhaseListener implements PhaseListener
       ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
       String cid = getConversationId(facesContext, conversationContext);
       log.debug(RESUMING_CONVERSATION, cid);
+      conversationContext.activate(cid);
       if (cid != null && conversationContext.getConversation(cid) == null)
       {
          // Make sure that the conversation already exists
          throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
       }
-      conversationContext.activate(cid);
    }
 
    /**
