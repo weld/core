@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
+import org.junit.Ignore;
 import org.jboss.weld.osgi.tests.bundle1.api.PropertyService;
 import java.io.Serializable;
 import org.jboss.weld.osgi.tests.bundle1.api.ContractInterface;
@@ -69,11 +70,11 @@ public class ServicePublishingTest {
                 bundle3=b;
             }
         }
-        
+
         Assert.assertNotNull("The bundle1 was not retrieved",bundle1);
         Assert.assertNotNull("The bundle2 was not retrieved",bundle2);
         Assert.assertNotNull("The bundle3 was not retrieved",bundle3);
-        
+
         ServiceReference[] autoPublishedServiceReferences = context.getServiceReferences(AutoPublishedService.class.getName(),null);
         AutoPublishedService autoPublishedService1 = null;
         AutoPublishedService autoPublishedService2 = null;

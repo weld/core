@@ -45,6 +45,7 @@
       <module>bundles/scanner</module>
       <module>bundles/scanner-inner</module>
       <module>bundles/cdi-spi</module>
+      <module>bundles/life-cycle</module>
    </modules>
 
    <build>

@@ -1,0 +1,3 @@
+Bundle-Activator org.jboss.weld.osgi.tests.lifecycle.OSGiActivator
+
+Export-Package org.jboss.weld.osgi.tests.lifecycle
