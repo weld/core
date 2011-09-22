@@ -108,6 +108,8 @@ public class WeldPhaseListener implements PhaseListener
       log.debug(RESUMING_CONVERSATION, cid);
       if (cid != null && conversationContext.getConversation(cid) == null)
       {
+         //CDI 6.7.4 we must activate a new transient conversation before we throw the exception
+         conversationContext.activate(null);
          // Make sure that the conversation already exists
          throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
       }
