@@ -20,7 +20,10 @@ package org.jboss.weld.bean.proxy;
 import javassist.NotFoundException;
 import javassist.bytecode.*;
 import javassist.util.proxy.MethodHandler;
+import org.jboss.weld.Container;
+import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.*;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -28,6 +31,8 @@ import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.Bean;
+import java.io.IOException;
+import java.io.ObjectStreamException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -37,9 +42,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Proxy factory that generates client proxies, it uses optimizations that 
+ * Proxy factory that generates client proxies, it uses optimizations that
  * are not valid for other proxy types.
- * 
+ *
  * @author Stuart Douglas
  * @author Marius Bogoevici
  */
@@ -52,7 +57,10 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
 
    private static final String CACHE_FIELD = "BEAN_INSTANCE_CACHE";
 
-   static {
+   private final String beanId;
+
+   static
+   {
       Set<Class<? extends Annotation>> scopes = new HashSet<Class<? extends Annotation>>();
       scopes.add(RequestScoped.class);
       scopes.add(ConversationScoped.class);
@@ -64,18 +72,20 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
    public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean)
    {
       super(proxiedBeanType, typeClosure, bean);
+      beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
    }
 
    public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean)
    {
       super(proxiedBeanType, typeClosure, proxyName, bean);
+      beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
    }
 
    @Override
    protected void addFields(ClassFile proxyClassType, Bytecode initialValueBytecode)
    {
       super.addFields(proxyClassType, initialValueBytecode);
-      if(CACHABLE_SCOPES.contains(getBean().getScope()))
+      if (CACHABLE_SCOPES.contains(getBean().getScope()))
       {
          try
          {
@@ -87,47 +97,47 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
             initialValueBytecode.add(Opcode.DUP);
             initialValueBytecode.addInvokespecial(ThreadLocal.class.getName(), "<init>", "()V");
             initialValueBytecode.addPutfield(proxyClassType.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
-         }
-         catch (DuplicateMemberException e)
+         } catch (DuplicateMemberException e)
          {
             throw new RuntimeException(e);
          }
       }
    }
 
-   /**
-    * creates a bytecode fragment that returns $1.readObject()
-    *
-    */
-   protected Bytecode createDeserializeProxyBody(ClassFile file)
+   protected void addSerializationSupport(ClassFile proxyClassType)
    {
-      Bytecode b = new Bytecode(file.getConstPool(), 3, 2);
-      b.addAload(0);
-      b.addInvokevirtual("java.io.ObjectInputStream", "readObject", "()Ljava/lang/Object;");
-      // initialize the transient threadlocals
+      try
+      {
+         Class<?>[] exceptions = new Class[]{ObjectStreamException.class};
+         Bytecode writeReplaceBody = createWriteReplaceBody(proxyClassType);
+         MethodInformation writeReplaceInfo = new StaticMethodInformation("writeReplace", new Class[]{}, Object.class, proxyClassType.getName());
+         proxyClassType.addMethod(MethodUtils.makeMethod(writeReplaceInfo, exceptions, writeReplaceBody, proxyClassType.getConstPool()));
+      } catch (DuplicateMemberException e)
+      {
+         throw new RuntimeException(e);
+      }
+   }
+
+   /**
+    * creates serialization code that returns a SerializableClientProxy
+    */
+   private Bytecode createWriteReplaceBody(ClassFile proxyClassType)
+   {
+      Bytecode b = new Bytecode(proxyClassType.getConstPool());
+      b.addNew(SerializableClientProxy.class.getName());
       b.add(Opcode.DUP);
-      b.addCheckcast(file.getName());
-      b.addNew("java/lang/ThreadLocal");
-      b.add(Opcode.DUP);
-      b.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
-      b.addPutfield(file.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
-      b.add(Opcode.DUP);
-      b.addCheckcast(file.getName());
-      b.addNew("java/lang/ThreadLocal");
-      b.add(Opcode.DUP);
-      b.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
-      b.addPutfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
-      
-      b.addOpcode(Opcode.ARETURN);
+      b.addLdc(beanId);
+      b.addInvokespecial(SerializableClientProxy.class.getName(), "<init>", "(Ljava/lang/String;)V");
+      b.add(Opcode.ARETURN);
+      b.setMaxLocals(1);
       return b;
    }
 
 
    /**
-    * Calls methodHandler.invoke with a null method parameter in order to 
-    * get the underlying instance. The invocation is then forwarded to 
+    * Calls methodHandler.invoke with a null method parameter in order to
+    * get the underlying instance. The invocation is then forwarded to
     * this instance with generated bytecode.
-    * 
     */
    protected Bytecode createForwardingMethodBody(ClassFile file, MethodInformation methodInfo) throws NotFoundException
    {
@@ -159,11 +169,10 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
 
       final Class<? extends Annotation> scope = getBean().getScope();
 
-      if(CACHABLE_SCOPES.contains(scope))
+      if (CACHABLE_SCOPES.contains(scope))
       {
          loadCachableBeanInstance(file, methodInfo, b);
-      }
-      else
+      } else
       {
          loadBeanInstance(file, methodInfo, b);
       }
@@ -177,8 +186,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       if (method.getDeclaringClass().isInterface())
       {
          b.addInvokeinterface(methodInfo.getDeclaringClass(), methodInfo.getName(), methodDescriptor, method.getParameterTypes().length + 1);
-      }
-      else
+      } else
       {
          b.addInvokevirtual(methodInfo.getDeclaringClass(), methodInfo.getName(), methodDescriptor);
       }
@@ -202,8 +210,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
       if (method.getReturnType().isPrimitive())
       {
          BytecodeUtils.addReturnInstruction(b, methodInfo.getReturnType());
-      }
-      else
+      } else
       {
          // otherwise we have to check that the proxy is not returning 'this;
          // now we need to check if the proxy has return 'this' and if so return
@@ -236,7 +243,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
 
    /**
     * If the bean is part of a well known scope then this code caches instances in a thread local for the life of the
-    * request, as a performance enhancement. 
+    * request, as a performance enhancement.
     */
    private void loadCachableBeanInstance(ClassFile file, MethodInformation methodInfo, Bytecode b)
    {
@@ -298,7 +305,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
    /**
     * Client proxies use the following hashCode:
     * <code>MyProxyName.class.hashCode()</code>
-    * 
     */
    @Override
    protected MethodInfo generateHashCodeMethod(ClassFile proxyClassType)
@@ -321,11 +327,10 @@ public class ClientProxyFactory<T> extends ProxyFactory<T>
 
    /**
     * Client proxies are equal to other client proxies for the same bean.
-    * <p>
+    * <p/>
     * The corresponding java code: <code>
     * return other instanceof MyProxyClassType.class
     * </code>
-    * 
     */
    @Override
    protected MethodInfo generateEqualsMethod(ClassFile proxyClassType)

@@ -73,8 +73,6 @@ public class ProxyFactory<T>
    private final String baseProxyName;
    private final Bean<?> bean;
 
-   protected static final String FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME = "firstSerializationPhaseComplete";
-
    public static final String CONSTRUCTED_FLAG_NAME = "constructed";
 
    protected static final BytecodeMethodResolver DEFAULT_METHOD_RESOLVER = new DefaultBytecodeMethodResolver();
@@ -239,22 +237,6 @@ public class ProxyFactory<T>
          if (InstantiatorFactory.useInstantiators())
          {
             proxy = SecureReflections.newUnsafeInstance(proxyClass);
-            //we need to inialize the ThreadLocal via reflection
-            // TODO: there is probably a better way to to this
-            try
-            {
-               Field sfield = proxyClass.getDeclaredField(FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME);
-               sfield.setAccessible(true);
-               
-               @SuppressWarnings("rawtypes")
-               ThreadLocal threadLocal = new ThreadLocal();
-               
-               sfield.set(proxy, threadLocal);
-            }
-            catch(Exception e)
-            {
-               throw new DefinitionException(FAILED_TO_SET_THREAD_LOCAL_ON_PROXY, e, this);
-            }
          }
          else
          {
@@ -478,20 +460,10 @@ public class ProxyFactory<T>
          // The field representing the underlying instance or special method
          // handling
          proxyClassType.addField(new FieldInfo(proxyClassType.getConstPool(), "methodHandler", "Ljavassist/util/proxy/MethodHandler;"));
-         // Special field used during serialization of a proxy
-         FieldInfo sfield = new FieldInfo(proxyClassType.getConstPool(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
-         sfield.setAccessFlags(AccessFlag.TRANSIENT | AccessFlag.PRIVATE);
-         proxyClassType.addField(sfield);
          // field used to indicate that super() has been called
          FieldInfo constfield = new FieldInfo(proxyClassType.getConstPool(), CONSTRUCTED_FLAG_NAME, "Z");
          constfield.setAccessFlags(AccessFlag.PRIVATE);
          proxyClassType.addField(constfield);
-         // we need to initialize this to a new ThreadLocal
-         initialValueBytecode.addAload(0);
-         initialValueBytecode.addNew("java/lang/ThreadLocal");
-         initialValueBytecode.add(Opcode.DUP);
-         initialValueBytecode.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
-         initialValueBytecode.addPutfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
       }
       catch (Exception e)
       {
@@ -512,118 +484,13 @@ public class ProxyFactory<T>
    }
 
    /**
-    * Adds special serialization code by providing a writeReplace() method on
-    * the proxy. This method when first called will substitute the proxy object
-    * with an instance of {@link org.jboss.weld.bean.proxy.util.SerializableProxy}.
-    * The next call will receive the proxy object itself permitting the
-    * substitute object to serialize the proxy.
+    * Adds special serialization code. By default this is a nop
     *
     * @param proxyClassType the Javassist class for the proxy class
     */
    protected void addSerializationSupport(ClassFile proxyClassType)
    {
-      try
-      {
-         // Create a two phase writeReplace where the first call uses a
-         // replacement object and the subsequent call get the proxy object.
-         Class<?>[] exceptions = new Class[] { ObjectStreamException.class };
-         Bytecode writeReplaceBody = createWriteReplaceBody(proxyClassType);
-         MethodInformation writeReplaceInfo = new StaticMethodInformation("writeReplace", new Class[] {}, Object.class, proxyClassType.getName());
-         proxyClassType.addMethod(MethodUtils.makeMethod( writeReplaceInfo, exceptions, writeReplaceBody, proxyClassType.getConstPool()));
-
-         // Also add a static method that can be used to deserialize a proxy
-         // object.
-         // This causes the OO input stream to use the class loader from this
-         // class.
-         exceptions = new Class[] { ClassNotFoundException.class, IOException.class };
-         Bytecode deserializeProxyBody = createDeserializeProxyBody(proxyClassType);
-         MethodInformation deserializeProxy = new StaticMethodInformation("deserializeProxy", new Class[] { ObjectInputStream.class }, Object.class, proxyClassType.getName(), Modifier.STATIC | Modifier.PUBLIC);
-         proxyClassType.addMethod(MethodUtils.makeMethod(deserializeProxy, exceptions, deserializeProxyBody, proxyClassType.getConstPool()));
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(e);
-      }
-
-   }
-
-   /**
-    * creates a bytecode fragment that returns $1.readObject()
-    * 
-    */
-   protected Bytecode createDeserializeProxyBody(ClassFile file)
-   {
-      Bytecode b = new Bytecode(file.getConstPool(), 3, 2);
-      b.addAload(0);
-      b.addInvokevirtual("java.io.ObjectInputStream", "readObject", "()Ljava/lang/Object;");
-      // initialize the transient threadlocal
-      b.add(Opcode.DUP);
-      b.addCheckcast(file.getName());
-      b.addNew("java/lang/ThreadLocal");
-      b.add(Opcode.DUP);
-      b.addInvokespecial("java.lang.ThreadLocal", "<init>", "()V");
-      b.addPutfield(file.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
-      b.addOpcode(Opcode.ARETURN);
-      return b;
-   }
-
-   /**
-    * creates serialization code. In java this code looks like:
-    * 
-    * <pre>
-    *  Boolean value = firstSerializationPhaseComplete.get();
-    *  if (firstSerializationPhaseComplete!=null) {
-    *   firstSerializationPhaseComplete.remove();\n");
-    *   return $0;
-    *  } else {
-    *    firstSerializationPhaseComplete.set(Boolean.TRUE);
-    *    return methodHandler.invoke($0,$proxyClassTypeName.class.getMethod("writeReplace", null), null, $args);
-    *  }
-    * }
-    * </pre>
-    * 
-    * the use TRUE,null rather than TRUE,FALSE to avoid the need to subclass
-    * ThreadLocal, which would be problematic
-    */
-   private Bytecode createWriteReplaceBody(ClassFile proxyClassType)
-   {
-      Bytecode b = new Bytecode(proxyClassType.getConstPool());
-      b.add(Opcode.ALOAD_0);
-      b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
-      b.addInvokevirtual("java.lang.ThreadLocal", "get", "()Ljava/lang/Object;");
-      b.add(Opcode.IFNULL);
-      JumpMarker runSecondPhase = JumpUtils.addJumpInstruction(b);
-      // this bytecode is run if firstSerializationPhaseComplete=true
-      // set firstSerializationPhaseComplete=false
-      b.add(Opcode.ALOAD_0);
-      b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
-      b.addInvokevirtual("java.lang.ThreadLocal", "remove", "()V");
-      // return this
-      b.add(Opcode.ALOAD_0);
-      b.add(Opcode.ARETURN);
-      runSecondPhase.mark();
-
-      // now create the rest of the bytecode
-      // set firstSerializationPhaseComplete=true
-      b.add(Opcode.ALOAD_0);
-      b.addGetfield(proxyClassType.getName(), FIRST_SERIALIZATION_PHASE_COMPLETE_FIELD_NAME, "Ljava/lang/ThreadLocal;");
-      b.addGetstatic("java.lang.Boolean", "TRUE", "Ljava/lang/Boolean;");
-      b.addInvokevirtual("java.lang.ThreadLocal", "set", "(Ljava/lang/Object;)V");
-
-      b.add(Opcode.ALOAD_0);
-      b.addGetfield(proxyClassType.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
-      b.add(Opcode.ALOAD_0);
-      DEFAULT_METHOD_RESOLVER.getDeclaredMethod(proxyClassType, b, proxyClassType.getName(), "writeReplace", new String[0]);
-      b.add(Opcode.ACONST_NULL);
-
-      b.addIconst(0);
-      b.addAnewarray("java.lang.Object");
-      // now we have all our arguments on the stack
-      // lets invoke the method
-      b.addInvokeinterface(MethodHandler.class.getName(), "invoke", "(Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", 5);
-      b.add(Opcode.ARETURN);
-      b.setMaxLocals(1);
-      return b;
+      //noop
    }
 
    protected void addMethodsFromClass(ClassFile proxyClassType)

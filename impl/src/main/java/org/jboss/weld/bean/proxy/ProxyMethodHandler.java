@@ -17,24 +17,22 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_INSTANCE_NOT_SET_ON_PROXY;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
 import javassist.util.proxy.MethodHandler;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.PassivationCapable;
-
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.PassivationCapable;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_INSTANCE_NOT_SET_ON_PROXY;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN;
 
 /**
  * A general purpose MethodHandler for all proxies which routes calls to the
@@ -112,10 +110,6 @@ public class ProxyMethodHandler implements MethodHandler, Serializable
          {
             return null;
          }
-      }
-      else if (thisMethod.getName().equals("writeReplace"))
-      {
-         return new org.jboss.weld.bean.proxy.util.SerializableProxy(self, getBean());
       }
       else if (thisMethod.getName().equals("_initMH"))
       {
