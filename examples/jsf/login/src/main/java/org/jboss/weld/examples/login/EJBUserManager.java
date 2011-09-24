@@ -1,8 +1,5 @@
 package org.jboss.weld.examples.login;
 
-import java.util.List;
-import java.util.logging.Logger;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
@@ -10,43 +7,43 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.logging.Logger;
 
-@Named("userManager") @RequestScoped @Alternative @Stateful
-public class EJBUserManager implements UserManager
-{
-   
-   @Inject
-   private transient Logger logger;
+@Named("userManager")
+@RequestScoped
+@Alternative
+@Stateful
+public class EJBUserManager implements UserManager {
 
-   @Inject
-   private EntityManager userDatabase;
+    @Inject
+    private transient Logger logger;
 
-   private User newUser = new User();
+    @Inject
+    private EntityManager userDatabase;
 
-   @SuppressWarnings("unchecked")
-   @Produces
-   @Named
-   @RequestScoped
-   public List<User> getUsers() throws Exception
-   {
-      return userDatabase.createQuery("select u from User u").getResultList();
-   }
+    private User newUser = new User();
 
-   public String addUser() throws Exception
-   {
-      userDatabase.persist(newUser);
-      logger.info("Added " + newUser);
-      return "/users.xhtml?faces-redirect=true";
-   }
+    @SuppressWarnings("unchecked")
+    @Produces
+    @Named
+    @RequestScoped
+    public List<User> getUsers() throws Exception {
+        return userDatabase.createQuery("select u from User u").getResultList();
+    }
 
-   public User getNewUser()
-   {
-      return newUser;
-   }
+    public String addUser() throws Exception {
+        userDatabase.persist(newUser);
+        logger.info("Added " + newUser);
+        return "/users.xhtml?faces-redirect=true";
+    }
 
-   public void setNewUser(User newUser)
-   {
-      this.newUser = newUser;
-   }
+    public User getNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(User newUser) {
+        this.newUser = newUser;
+    }
 
 }

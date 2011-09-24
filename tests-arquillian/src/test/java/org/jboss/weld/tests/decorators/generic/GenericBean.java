@@ -20,20 +20,17 @@ package org.jboss.weld.tests.decorators.generic;
 /**
  * @author Marius Bogoevici
  */
-public class GenericBean<T> implements Decorated<T>, NotDecorated<T>
-{
-   static boolean decoratedInvoked;
-   static boolean notDecoratedInvoked;
+public class GenericBean<T> implements Decorated<T>, NotDecorated<T> {
+    static boolean decoratedInvoked;
+    static boolean notDecoratedInvoked;
 
-   public T notDecoratedEcho(T parameter)
-   {
-      notDecoratedInvoked = true;
-      return parameter;
-   }
+    public T notDecoratedEcho(T parameter) {
+        notDecoratedInvoked = true;
+        return parameter;
+    }
 
-   public T decoratedEcho(T parameter)
-   {
-      decoratedInvoked = true;
-      return parameter;
-   }
+    public T decoratedEcho(T parameter) {
+        decoratedInvoked = true;
+        return parameter;
+    }
 }

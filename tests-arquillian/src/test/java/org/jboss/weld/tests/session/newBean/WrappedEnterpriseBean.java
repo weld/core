@@ -22,9 +22,8 @@ import javax.enterprise.context.SessionScoped;
 
 @SessionScoped
 @Stateful
-class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal
-{
-   @Remove
-   public void bye() {
-   }
+class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal {
+    @Remove
+    public void bye() {
+    }
 }

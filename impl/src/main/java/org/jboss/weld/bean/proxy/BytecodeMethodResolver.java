@@ -17,19 +17,17 @@
 
 package org.jboss.weld.bean.proxy;
 
-import java.lang.reflect.Method;
-
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
+
+import java.lang.reflect.Method;
 
 /**
  * An object that generates bytecode to resolve a {@link Method} at runtime. The
  * resolved method should be left on the top of the stack
- * 
+ *
  * @author Stuart Douglas
- * 
  */
-public interface BytecodeMethodResolver
-{
-   abstract void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes);
+public interface BytecodeMethodResolver {
+    abstract void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes);
 }

@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.ejb;
 
-import javax.enterprise.inject.spi.Extension;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,34 +27,33 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.inject.spi.Extension;
+
 /**
  * Tests that it is possible to override ejb annotations through the SPI
- * @author Stuart Douglas <stuart@baileyroberts.com.au>
  *
+ * @author Stuart Douglas <stuart@baileyroberts.com.au>
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class AnnotatedTypeSessionBeanTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(AnnotatedTypeSessionBeanTest.class.getPackage())
-                  .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
-                  .addAsServiceProvider(Extension.class, AnnotatedTypeEjbExtension.class);
-   }
+public class AnnotatedTypeSessionBeanTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(AnnotatedTypeSessionBeanTest.class.getPackage())
+                .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
+                .addAsServiceProvider(Extension.class, AnnotatedTypeEjbExtension.class);
+    }
 
-   @Test
-   public void testOverridingEjbAnnotations(@ConveyorShaft Shaft conveyerShaft)
-   {
-      Assert.assertNotNull(conveyerShaft);
-   }
+    @Test
+    public void testOverridingEjbAnnotations(@ConveyorShaft Shaft conveyerShaft) {
+        Assert.assertNotNull(conveyerShaft);
+    }
 
-   @Test
-   public void testAddingBultipleBeansPerEjbClass(@BigLathe LatheLocal bigLathe, @SmallLathe LatheLocal smallLathe)
-   {
-      Assert.assertNotNull(bigLathe);
-      Assert.assertNotNull(smallLathe);
-   }
+    @Test
+    public void testAddingBultipleBeansPerEjbClass(@BigLathe LatheLocal bigLathe, @SmallLathe LatheLocal smallLathe) {
+        Assert.assertNotNull(bigLathe);
+        Assert.assertNotNull(smallLathe);
+    }
 }

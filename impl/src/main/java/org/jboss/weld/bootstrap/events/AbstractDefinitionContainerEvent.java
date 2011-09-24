@@ -16,44 +16,37 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 /**
  * @author pmuir
- *
  */
-public abstract class AbstractDefinitionContainerEvent extends AbstractContainerEvent
-{
+public abstract class AbstractDefinitionContainerEvent extends AbstractContainerEvent {
 
-   protected AbstractDefinitionContainerEvent(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments)
-   {
-      super(beanManager, rawType, actualTypeArguments);
-   }
+    protected AbstractDefinitionContainerEvent(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments) {
+        super(beanManager, rawType, actualTypeArguments);
+    }
 
-   @Override
-   protected void fire()
-   {
-      super.fire();
-      if (!getErrors().isEmpty())
-      {
-         throw new DefinitionException(getErrors());
-      }
-   }
-   
-   @Override
-   protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
-   {
-      super.fire(beanDeployments);
-      if (!getErrors().isEmpty())
-      {
-         throw new DefinitionException(getErrors());
-      }
-   }
-   
+    @Override
+    protected void fire() {
+        super.fire();
+        if (!getErrors().isEmpty()) {
+            throw new DefinitionException(getErrors());
+        }
+    }
+
+    @Override
+    protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+        super.fire(beanDeployments);
+        if (!getErrors().isEmpty()) {
+            throw new DefinitionException(getErrors());
+        }
+    }
+
 }

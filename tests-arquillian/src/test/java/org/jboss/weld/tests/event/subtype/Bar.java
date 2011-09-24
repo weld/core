@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.event.subtype;
 
-public interface Bar
-{
+public interface Bar {
 
 }

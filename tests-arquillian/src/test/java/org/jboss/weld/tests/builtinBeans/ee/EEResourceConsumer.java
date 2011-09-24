@@ -16,36 +16,41 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee;
 
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManager;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManagerFactory;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkRemoteEjb;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkUserTransaction;
-
-import java.io.Serializable;
+import org.junit.Assert;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
+import java.io.Serializable;
 
-import org.junit.Assert;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManager;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManagerFactory;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkRemoteEjb;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkUserTransaction;
 
 @SessionScoped
-public class EEResourceConsumer implements Serializable
-{
-   
-   @Inject @Produced UserTransaction userTransaction;
-   @Inject @Produced EntityManager entityManager;
-   @Inject @Produced EntityManagerFactory entityManagerFactory;
-   @Inject @Produced HorseRemote horse;
-   
-   public void check()
-   {
-      Assert.assertTrue(checkUserTransaction(userTransaction));
-      Assert.assertTrue(checkEntityManager(entityManager));
-      Assert.assertTrue(checkEntityManagerFactory(entityManagerFactory));
-      Assert.assertTrue(checkRemoteEjb(horse));
-   }
+public class EEResourceConsumer implements Serializable {
+
+    @Inject
+    @Produced
+    UserTransaction userTransaction;
+    @Inject
+    @Produced
+    EntityManager entityManager;
+    @Inject
+    @Produced
+    EntityManagerFactory entityManagerFactory;
+    @Inject
+    @Produced
+    HorseRemote horse;
+
+    public void check() {
+        Assert.assertTrue(checkUserTransaction(userTransaction));
+        Assert.assertTrue(checkEntityManager(entityManager));
+        Assert.assertTrue(checkEntityManagerFactory(entityManagerFactory));
+        Assert.assertTrue(checkRemoteEjb(horse));
+    }
 
 }

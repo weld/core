@@ -13,60 +13,52 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
 
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class NotAnnotated
-{
-   private static Foo fromConstructor;
-   
-   private static Foo fromInitialize;
-   
-   private Foo fromField;
-   
-   public NotAnnotated(Foo foo)
-   {
-      fromConstructor = foo;
-   }
-   
-   public void initialize(Foo foo)
-   {
-      fromInitialize = foo;
-   }
-   
-   /**
-    * @return the beanFromConstructor
-    */
-   public static Foo getFromConstructor()
-   {
-      return fromConstructor;
-   }
-   
-   /**
-    * @return the beanFromInitialize
-    */
-   public static Foo getFromInitializer()
-   {
-      return fromInitialize;
-   }
-   
-   /**
-    * @return the fromField
-    */
-   public Foo getFromField()
-   {
-      return fromField;
-   }
-   
-   public static void reset()
-   {
-      fromConstructor = null;
-      fromInitialize = null;
-   }
+public class NotAnnotated {
+    private static Foo fromConstructor;
+
+    private static Foo fromInitialize;
+
+    private Foo fromField;
+
+    public NotAnnotated(Foo foo) {
+        fromConstructor = foo;
+    }
+
+    public void initialize(Foo foo) {
+        fromInitialize = foo;
+    }
+
+    /**
+     * @return the beanFromConstructor
+     */
+    public static Foo getFromConstructor() {
+        return fromConstructor;
+    }
+
+    /**
+     * @return the beanFromInitialize
+     */
+    public static Foo getFromInitializer() {
+        return fromInitialize;
+    }
+
+    /**
+     * @return the fromField
+     */
+    public Foo getFromField() {
+        return fromField;
+    }
+
+    public static void reset() {
+        fromConstructor = null;
+        fromInitialize = null;
+    }
 }

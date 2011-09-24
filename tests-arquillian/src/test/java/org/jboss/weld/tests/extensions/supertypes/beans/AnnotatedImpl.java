@@ -37,60 +37,51 @@
 
 package org.jboss.weld.tests.extensions.supertypes.beans;
 
+import javax.enterprise.inject.spi.Annotated;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
-import javax.enterprise.inject.spi.Annotated;
 
 /**
  * Implements the CDI Annotated interface.
- * 
+ *
  * @author robc
  */
-public class AnnotatedImpl implements Annotated
-{
+public class AnnotatedImpl implements Annotated {
 
-   private Type baseType;
-   private Set<Type> typeClosure;
-   private Set<Annotation> annotations;
+    private Type baseType;
+    private Set<Type> typeClosure;
+    private Set<Annotation> annotations;
 
-   public AnnotatedImpl(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations)
-   {
-      this.baseType = baseType;
-      this.typeClosure = Collections.unmodifiableSet(typeClosure);
-      this.annotations = Collections.unmodifiableSet(annotations);
-   }
+    public AnnotatedImpl(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations) {
+        this.baseType = baseType;
+        this.typeClosure = Collections.unmodifiableSet(typeClosure);
+        this.annotations = Collections.unmodifiableSet(annotations);
+    }
 
-   public <T extends Annotation> T getAnnotation(java.lang.Class<T> annotationType)
-   {
-      for (Annotation a : annotations)
-      {
-         if (annotationType.isInstance(a))
-         {
-            return annotationType.cast(a);
-         }
-      }
-      return null;
-   }
+    public <T extends Annotation> T getAnnotation(java.lang.Class<T> annotationType) {
+        for (Annotation a : annotations) {
+            if (annotationType.isInstance(a)) {
+                return annotationType.cast(a);
+            }
+        }
+        return null;
+    }
 
-   public Set<Annotation> getAnnotations()
-   {
-      return annotations;
-   }
+    public Set<Annotation> getAnnotations() {
+        return annotations;
+    }
 
-   public Type getBaseType()
-   {
-      return baseType;
-   }
+    public Type getBaseType() {
+        return baseType;
+    }
 
-   public Set<Type> getTypeClosure()
-   {
-      return typeClosure;
-   }
+    public Set<Type> getTypeClosure() {
+        return typeClosure;
+    }
 
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      return getAnnotation(annotationType) != null;
-   }
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return getAnnotation(annotationType) != null;
+    }
 }

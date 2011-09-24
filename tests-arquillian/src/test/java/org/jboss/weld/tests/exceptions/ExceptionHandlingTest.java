@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.exceptions;
 
-import javax.enterprise.inject.CreationException;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,51 +26,44 @@ import org.jboss.weld.test.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class ExceptionHandlingTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ExceptionHandlingTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class ExceptionHandlingTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ExceptionHandlingTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test(expected = FooException.class)
-   public void testCreationExceptionWrapsRealExceptionForSimpleBean() throws Exception
-   {
-      try
-      {
-         Utils.getReference(beanManager, Lorry_Broken.class);
-      }
-      catch (Exception e)
-      {
-         if (e instanceof CreationException)
-         {
-            throw (Exception) e.getCause();
-         }
-      }
-   }
+    @Test(expected = FooException.class)
+    public void testCreationExceptionWrapsRealExceptionForSimpleBean() throws Exception {
+        try {
+            Utils.getReference(beanManager, Lorry_Broken.class);
+        } catch (Exception e) {
+            if (e instanceof CreationException) {
+                throw (Exception) e.getCause();
+            }
+        }
+    }
 
 
-   @Test(expected = FooException.class)
-   public void testCreationExceptionWrapsRealExceptionForProducerBean() throws Exception
-   {
-      try
-      {
-         Utils.getReference(beanManager, Ship.class, new AnnotationLiteral<Large>() {});
-      }
-      catch (Exception e)
-      {
-         if (e instanceof CreationException)
-         {
-            throw (Exception) e.getCause();
-         }
-      }
-   }
+    @Test(expected = FooException.class)
+    public void testCreationExceptionWrapsRealExceptionForProducerBean() throws Exception {
+        try {
+            Utils.getReference(beanManager, Ship.class, new AnnotationLiteral<Large>() {
+            });
+        } catch (Exception e) {
+            if (e instanceof CreationException) {
+                throw (Exception) e.getCause();
+            }
+        }
+    }
 
 }

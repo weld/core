@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.servlet;
 
-import java.io.IOException;
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.http.HttpConversationContext;
+import org.jboss.weld.jsf.FacesUrlTransformer;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.spi.Context;
@@ -31,70 +34,55 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.jsf.FacesUrlTransformer;
+import java.io.IOException;
 
 /**
  * <p>
  * A Filter for handling conversation propagation over redirects.
  * </p>
- * 
+ * <p/>
  * <p>
  * This fiter intercepts the call to
  * {@link HttpServletResponse#sendRedirect(String)} and appends the conversation
  * id request parameter to the URL if the conversation is long-running, but only
  * if the request parameter is not already present.
  * </p>
- * 
+ *
  * @author Nicklas Karlsson
  */
-public class ConversationPropagationFilter implements Filter
-{
-   
-   public void init(FilterConfig config) throws ServletException
-   {
-   }
+public class ConversationPropagationFilter implements Filter {
 
-   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
-   {
-      if (request instanceof HttpServletRequest && response instanceof HttpServletResponse)
-      {
-         response = wrapResponse((HttpServletResponse) response, ((HttpServletRequest) request).getContextPath());
-      }
-      chain.doFilter(request, response);
-   }
+    public void init(FilterConfig config) throws ServletException {
+    }
 
-   public void destroy()
-   {
-   }
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
+            response = wrapResponse((HttpServletResponse) response, ((HttpServletRequest) request).getContextPath());
+        }
+        chain.doFilter(request, response);
+    }
 
-   private ServletResponse wrapResponse(HttpServletResponse response, final String requestPath)
-   {
-      return new HttpServletResponseWrapper(response)
-      {
-         @Override
-         public void sendRedirect(String path) throws IOException
-         {
-            ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
-            if (conversationContext.isActive())
-            {
-               Conversation conversation = conversationContext.getCurrentConversation();
-               if (!conversation.isTransient())
-               {
-                  path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).encode();
-               }
+    public void destroy() {
+    }
+
+    private ServletResponse wrapResponse(HttpServletResponse response, final String requestPath) {
+        return new HttpServletResponseWrapper(response) {
+            @Override
+            public void sendRedirect(String path) throws IOException {
+                ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+                if (conversationContext.isActive()) {
+                    Conversation conversation = conversationContext.getCurrentConversation();
+                    if (!conversation.isTransient()) {
+                        path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).encode();
+                    }
+                }
+                super.sendRedirect(path);
             }
-            super.sendRedirect(path);
-         }
-      };
-   }
-   
-   
-   private static Instance<Context> instance()
-   {
-      return Container.instance().deploymentManager().instance().select(Context.class);
-   }
+        };
+    }
+
+
+    private static Instance<Context> instance() {
+        return Container.instance().deploymentManager().instance().select(Context.class);
+    }
 }

@@ -24,20 +24,18 @@ import java.lang.reflect.Method;
  * are invoked.  Different types of bean instances can also
  * be used to provide varying methods of obtaining the actual
  * instance from the container.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public interface BeanInstance
-{
-   /**
-    * Returns the current instance for a proxy.
-    * 
-    * @return the current bean instance
-    */
-   public Object getInstance();
-   
-   public Class<?> getInstanceType();
-   
-   public Object invoke(Object instance, Method method, Object... arguments) throws Throwable;
+public interface BeanInstance {
+    /**
+     * Returns the current instance for a proxy.
+     *
+     * @return the current bean instance
+     */
+    public Object getInstance();
+
+    public Class<?> getInstanceType();
+
+    public Object invoke(Object instance, Method method, Object... arguments) throws Throwable;
 }

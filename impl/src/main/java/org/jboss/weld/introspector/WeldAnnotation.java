@@ -21,25 +21,23 @@ import java.util.Set;
 
 /**
  * Represents a meta annotation
- * 
- * @author Pete Muir
  *
+ * @author Pete Muir
  */
-public interface WeldAnnotation<T extends Annotation> extends WeldClass<T>
-{ 
-   /**
-    * Gets all members
-    * 
-    * @return A set of abstracted members
-    */
-   public Set<WeldMethod<?, ?>> getMembers();
+public interface WeldAnnotation<T extends Annotation> extends WeldClass<T> {
+    /**
+     * Gets all members
+     *
+     * @return A set of abstracted members
+     */
+    public Set<WeldMethod<?, ?>> getMembers();
 
-   /**
-    * Gets all the members annotated with annotationType
-    * 
-    * @param annotationType The annotation type to match
-    * @return A set of abstracted members with the annotation type
-    */
-   public Set<WeldMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType);
+    /**
+     * Gets all the members annotated with annotationType
+     *
+     * @param annotationType The annotation type to match
+     * @return A set of abstracted members with the annotation type
+     */
+    public Set<WeldMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType);
 
 }

@@ -16,141 +16,119 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InterceptionType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InterceptionType;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+public class InterceptorResolvableBuilder extends ResolvableBuilder {
 
-public class InterceptorResolvableBuilder extends ResolvableBuilder
-{
-   
-   public InterceptorResolvableBuilder()
-   {
-      super();
-   }
+    public InterceptorResolvableBuilder() {
+        super();
+    }
 
-   public InterceptorResolvableBuilder(Type type)
-   {
-      super(type);
-   }
+    public InterceptorResolvableBuilder(Type type) {
+        super(type);
+    }
 
-   private InterceptionType interceptionType;
-   
-   @Override
-   protected void checkQualifier(Annotation qualifier)
-   {
-      if (!Container.instance().services().get(MetaAnnotationStore.class).getInterceptorBindingModel(qualifier.annotationType()).isValid())
-      {
-         throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
-      }
-      if (qualifiers.contains(qualifier))
-      {
-         throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, qualifiers);
-      }
-   }
-   
-   public InterceptorResolvableBuilder setInterceptionType(InterceptionType interceptionType)
-   {
-      this.interceptionType = interceptionType;
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder addQualifier(Annotation qualifier)
-   {
-      super.addQualifier(qualifier);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder addQualifiers(Annotation[] qualifiers)
-   {
-      super.addQualifiers(qualifiers);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder addQualifiers(Set<Annotation> qualifiers)
-   {
-      super.addQualifiers(qualifiers);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder addType(Type type)
-   {
-      super.addType(type);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder addTypes(Set<Type> types)
-   {
-      super.addTypes(types);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvableBuilder setDeclaringBean(Bean<?> declaringBean)
-   {
-      super.setDeclaringBean(declaringBean);
-      return this;
-   }
-   
-   @Override
-   public InterceptorResolvable create()
-   {
-      if (qualifiers.size() == 0)
-      {
-         throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
-      }
-      return new InterceptorResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, interceptionType);
-   }
-   
+    private InterceptionType interceptionType;
 
-   private static class InterceptorResolvableImpl extends ResolvableImpl implements InterceptorResolvable
-   {
-      private final InterceptionType interceptionType;
+    @Override
+    protected void checkQualifier(Annotation qualifier) {
+        if (!Container.instance().services().get(MetaAnnotationStore.class).getInterceptorBindingModel(qualifier.annotationType()).isValid()) {
+            throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
+        }
+        if (qualifiers.contains(qualifier)) {
+            throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, qualifiers);
+        }
+    }
 
-      private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType)
-      {
-         super(rawType, typeClosure, qualifiers, mappedQualifiers, declaringBean);
-         this.interceptionType = interceptionType;
-      }
+    public InterceptorResolvableBuilder setInterceptionType(InterceptionType interceptionType) {
+        this.interceptionType = interceptionType;
+        return this;
+    }
 
-      public InterceptionType getInterceptionType()
-      {
-         return interceptionType;
-      }
+    @Override
+    public InterceptorResolvableBuilder addQualifier(Annotation qualifier) {
+        super.addQualifier(qualifier);
+        return this;
+    }
 
-      public int hashCode()
-      {
-         return 31 * super.hashCode()
-               + this.getInterceptionType().hashCode();
-      }
+    @Override
+    public InterceptorResolvableBuilder addQualifiers(Annotation[] qualifiers) {
+        super.addQualifiers(qualifiers);
+        return this;
+    }
 
-      public boolean equals(Object o)
-      {
-         if (o instanceof Resolvable)
-         {
-            Resolvable r = (Resolvable) o;
-            return super.equals(r)
-               && r instanceof InterceptorResolvable
-               && this.getInterceptionType().equals(((InterceptorResolvable)r).getInterceptionType());
-         }
-         return false;
-      }
-   }
+    @Override
+    public InterceptorResolvableBuilder addQualifiers(Set<Annotation> qualifiers) {
+        super.addQualifiers(qualifiers);
+        return this;
+    }
+
+    @Override
+    public InterceptorResolvableBuilder addType(Type type) {
+        super.addType(type);
+        return this;
+    }
+
+    @Override
+    public InterceptorResolvableBuilder addTypes(Set<Type> types) {
+        super.addTypes(types);
+        return this;
+    }
+
+    @Override
+    public InterceptorResolvableBuilder setDeclaringBean(Bean<?> declaringBean) {
+        super.setDeclaringBean(declaringBean);
+        return this;
+    }
+
+    @Override
+    public InterceptorResolvable create() {
+        if (qualifiers.size() == 0) {
+            throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
+        }
+        return new InterceptorResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, interceptionType);
+    }
+
+
+    private static class InterceptorResolvableImpl extends ResolvableImpl implements InterceptorResolvable {
+        private final InterceptionType interceptionType;
+
+        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType) {
+            super(rawType, typeClosure, qualifiers, mappedQualifiers, declaringBean);
+            this.interceptionType = interceptionType;
+        }
+
+        public InterceptionType getInterceptionType() {
+            return interceptionType;
+        }
+
+        public int hashCode() {
+            return 31 * super.hashCode()
+                    + this.getInterceptionType().hashCode();
+        }
+
+        public boolean equals(Object o) {
+            if (o instanceof Resolvable) {
+                Resolvable r = (Resolvable) o;
+                return super.equals(r)
+                        && r instanceof InterceptorResolvable
+                        && this.getInterceptionType().equals(((InterceptorResolvable) r).getInterceptionType());
+            }
+            return false;
+        }
+    }
 
 }

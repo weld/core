@@ -17,43 +17,38 @@
 package org.jboss.weld.exceptions;
 
 
-
 /**
- * Thrown if a simple bean is dependent scoped and injected into a stateful 
- * session bean, into a non-transient field, bean constructor parameter or 
+ * Thrown if a simple bean is dependent scoped and injected into a stateful
+ * session bean, into a non-transient field, bean constructor parameter or
  * initializer method parameter of a bean which declares a passivating scope, or
  * into a parameter of a producer method which declares a passivating scope
- * 
+ *
  * @author Pete Muir
  */
-public class UnserializableDependencyException extends DeploymentException
-{
+public class UnserializableDependencyException extends DeploymentException {
 
-   private static final long serialVersionUID = -6287506607413810688L;
+    private static final long serialVersionUID = -6287506607413810688L;
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> UnserializableDependencyException(E key, Object... args)
-   {
-      super(key, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> UnserializableDependencyException(E key, Object... args) {
+        super(key, args);
+    }
 
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public UnserializableDependencyException(Throwable throwable)
-   {
-      super(throwable);
-   }
+    /**
+     * Creates a new exception with the given cause.
+     *
+     * @param throwable The cause of the exception
+     */
+    public UnserializableDependencyException(Throwable throwable) {
+        super(throwable);
+    }
 
-   
 
 }

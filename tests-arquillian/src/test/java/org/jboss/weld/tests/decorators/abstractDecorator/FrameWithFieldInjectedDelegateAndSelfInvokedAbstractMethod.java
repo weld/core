@@ -25,19 +25,18 @@ import javax.inject.Inject;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @Decorator
-public abstract class FrameWithFieldInjectedDelegateAndSelfInvokedAbstractMethod implements Window
-{
+public abstract class FrameWithFieldInjectedDelegateAndSelfInvokedAbstractMethod implements Window {
 
-   static boolean moved;
+    static boolean moved;
 
-   @Inject @Delegate
-   Window window;
+    @Inject
+    @Delegate
+    Window window;
 
-   public abstract void draw();
+    public abstract void draw();
 
-   public void move()
-   {
-      moved = true;
-      draw();
-   }
+    public void move() {
+        moved = true;
+        draw();
+    }
 }

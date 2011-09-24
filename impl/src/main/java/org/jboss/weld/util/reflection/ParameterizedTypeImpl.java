@@ -16,87 +16,72 @@
  */
 package org.jboss.weld.util.reflection;
 
+import org.jboss.weld.util.collections.Arrays2;
+
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import org.jboss.weld.util.collections.Arrays2;
+public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
 
-public class ParameterizedTypeImpl implements ParameterizedType, Serializable
-{
-   
-   private static final long serialVersionUID = -3005183010706452884L;
-   
-   private final Type[] actualTypeArguments;
-   private final Type rawType;
-   private final Type ownerType;
+    private static final long serialVersionUID = -3005183010706452884L;
 
-   public ParameterizedTypeImpl(Type rawType, Type[] actualTypeArguments, Type ownerType)
-   {
-      this.actualTypeArguments = actualTypeArguments;
-      this.rawType = rawType;
-      this.ownerType = ownerType;
-   }
+    private final Type[] actualTypeArguments;
+    private final Type rawType;
+    private final Type ownerType;
 
-   public Type[] getActualTypeArguments()
-   {
-      return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
-   }
+    public ParameterizedTypeImpl(Type rawType, Type[] actualTypeArguments, Type ownerType) {
+        this.actualTypeArguments = actualTypeArguments;
+        this.rawType = rawType;
+        this.ownerType = ownerType;
+    }
 
-   public Type getOwnerType()
-   {
-      return ownerType;
-   }
+    public Type[] getActualTypeArguments() {
+        return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
+    }
 
-   public Type getRawType()
-   {
-      return rawType;
-   }
+    public Type getOwnerType() {
+        return ownerType;
+    }
 
-   @Override
-   public int hashCode()
-   {
-      return Arrays.hashCode(actualTypeArguments) ^ (ownerType == null ? 0 : ownerType.hashCode()) ^ (rawType == null ? 0 : rawType.hashCode());
-   }
+    public Type getRawType() {
+        return rawType;
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-      {
-         return true;
-      }
-      else if (obj instanceof ParameterizedType)
-      {
-         ParameterizedType that = (ParameterizedType) obj;
-         Type thatOwnerType = that.getOwnerType();
-         Type thatRawType = that.getRawType();
-         return (ownerType == null ? thatOwnerType == null : ownerType.equals(thatOwnerType)) && (rawType == null ? thatRawType == null : rawType.equals(thatRawType)) && Arrays.equals(actualTypeArguments, that.getActualTypeArguments());
-      }
-      else
-      {
-         return false;
-      }
-      
-   }
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(actualTypeArguments) ^ (ownerType == null ? 0 : ownerType.hashCode()) ^ (rawType == null ? 0 : rawType.hashCode());
+    }
 
-   @Override
-   public String toString()
-   {
-      StringBuilder sb = new StringBuilder();
-      sb.append(rawType);
-      if (actualTypeArguments.length > 0)
-      {
-         sb.append("<");
-         for (Type actualType : actualTypeArguments)
-         {
-            sb.append(actualType);
-            sb.append(",");
-         }
-         sb.delete(sb.length() - 1, sb.length());
-         sb.append(">");
-      }
-      return sb.toString();
-   }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj instanceof ParameterizedType) {
+            ParameterizedType that = (ParameterizedType) obj;
+            Type thatOwnerType = that.getOwnerType();
+            Type thatRawType = that.getRawType();
+            return (ownerType == null ? thatOwnerType == null : ownerType.equals(thatOwnerType)) && (rawType == null ? thatRawType == null : rawType.equals(thatRawType)) && Arrays.equals(actualTypeArguments, that.getActualTypeArguments());
+        } else {
+            return false;
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(rawType);
+        if (actualTypeArguments.length > 0) {
+            sb.append("<");
+            for (Type actualType : actualTypeArguments) {
+                sb.append(actualType);
+                sb.append(",");
+            }
+            sb.delete(sb.length() - 1, sb.length());
+            sb.append(">");
+        }
+        return sb.toString();
+    }
 }

@@ -24,13 +24,12 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Pass
-public class Defender
-{
-   @AroundInvoke
-   public Object defend(InvocationContext invocationContext) throws Exception
-   {
-      return invocationContext.proceed();
-   }
-   
+@Interceptor
+@Pass
+public class Defender {
+    @AroundInvoke
+    public Object defend(InvocationContext invocationContext) throws Exception {
+        return invocationContext.proceed();
+    }
+
 }

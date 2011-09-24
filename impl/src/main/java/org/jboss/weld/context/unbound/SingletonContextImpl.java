@@ -16,19 +16,16 @@
  */
 package org.jboss.weld.context.unbound;
 
-import java.lang.annotation.Annotation;
-
-import javax.inject.Singleton;
-
 import org.jboss.weld.context.AbstractSharedContext;
 import org.jboss.weld.context.SingletonContext;
 
-public class SingletonContextImpl extends AbstractSharedContext implements SingletonContext
-{
-   
-   public Class<? extends Annotation> getScope()
-   {
-      return Singleton.class;
-   }
+import javax.inject.Singleton;
+import java.lang.annotation.Annotation;
+
+public class SingletonContextImpl extends AbstractSharedContext implements SingletonContext {
+
+    public Class<? extends Annotation> getScope() {
+        return Singleton.class;
+    }
 
 }

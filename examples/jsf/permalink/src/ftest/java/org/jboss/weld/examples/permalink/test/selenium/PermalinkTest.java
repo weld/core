@@ -21,8 +21,6 @@
  */
 package org.jboss.weld.examples.permalink.test.selenium;
 
-import static org.testng.Assert.assertTrue;
-
 import org.jboss.test.selenium.AbstractTestCase;
 import org.jboss.test.selenium.guard.request.RequestTypeGuardFactory;
 import org.jboss.test.selenium.locator.IdLocator;
@@ -32,55 +30,52 @@ import org.testng.annotations.Test;
 
 import static org.jboss.test.selenium.locator.LocatorFactory.id;
 import static org.jboss.test.selenium.locator.LocatorFactory.xp;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Tests permalink example in Weld. The first test just adds comment on the first
  * topic and returns back. Second test tests permanent link from jsf2.
- * 
+ *
  * @author mgencur
  * @author plenyi
  */
-public class PermalinkTest extends AbstractTestCase
-{
-   protected String MAIN_PAGE = "/home.jsf";
-   protected String PAGE_TITLE = "Direct links to the news you crave";
-   protected XpathLocator VIEW_ENTRY_LINK = xp("//a[contains(text(),'View Entry')][1]");
-   protected String TOPIC_TITLE = "Mojarra == RI";
-   protected XpathLocator PERMALINK_LINK = xp("//a[@title='A bookmarkable link for this entry.'][1]");
-   protected IdLocator AUTHOR_INPUT = id("author");
-   protected IdLocator COMMENT_INPUT = id("body");
-   protected IdLocator SUBMIT_BUTTON = id("post");
-   protected XpathLocator BACK_BUTTON = xp("//input[@type='button'][@value='Back to main page']");
-   protected String COMMENT_TEXT = "This is my first comment on Mojarra project";
-   protected String AUTHOR_NAME = "Martin";
-   protected String TEXT_ON_HOME_PAGE = "Annotation nation";
-   
-   @BeforeMethod
-   public void openStartUrl()
-   {
-      selenium.open(contextPath);
-      waitModel.until(elementPresent.locator(VIEW_ENTRY_LINK));
-   }
+public class PermalinkTest extends AbstractTestCase {
+    protected String MAIN_PAGE = "/home.jsf";
+    protected String PAGE_TITLE = "Direct links to the news you crave";
+    protected XpathLocator VIEW_ENTRY_LINK = xp("//a[contains(text(),'View Entry')][1]");
+    protected String TOPIC_TITLE = "Mojarra == RI";
+    protected XpathLocator PERMALINK_LINK = xp("//a[@title='A bookmarkable link for this entry.'][1]");
+    protected IdLocator AUTHOR_INPUT = id("author");
+    protected IdLocator COMMENT_INPUT = id("body");
+    protected IdLocator SUBMIT_BUTTON = id("post");
+    protected XpathLocator BACK_BUTTON = xp("//input[@type='button'][@value='Back to main page']");
+    protected String COMMENT_TEXT = "This is my first comment on Mojarra project";
+    protected String AUTHOR_NAME = "Martin";
+    protected String TEXT_ON_HOME_PAGE = "Annotation nation";
 
-   @Test
-   public void addCommentOnTopicTest()
-   {
-      RequestTypeGuardFactory.waitHttp(selenium).click(VIEW_ENTRY_LINK);
-      assertTrue(selenium.isTextPresent(TOPIC_TITLE), "Topic title expected on the page");
-      selenium.type(AUTHOR_INPUT, AUTHOR_NAME);
-      selenium.type(COMMENT_INPUT, COMMENT_TEXT);
-      RequestTypeGuardFactory.waitHttp(selenium).click(SUBMIT_BUTTON);
-      assertTrue(selenium.isTextPresent(AUTHOR_NAME), "A name of comment's author expected");
-      assertTrue(selenium.isTextPresent(COMMENT_TEXT), "A text of entered comment expected");
-      RequestTypeGuardFactory.waitHttp(selenium).click(BACK_BUTTON);
-      assertTrue(selenium.isTextPresent(TEXT_ON_HOME_PAGE), "Home page expected");	
-   }   
+    @BeforeMethod
+    public void openStartUrl() {
+        selenium.open(contextPath);
+        waitModel.until(elementPresent.locator(VIEW_ENTRY_LINK));
+    }
 
-   @Test(dependsOnMethods="addCommentOnTopicTest")
-   public void permanentLinkTest()
-   {
-      RequestTypeGuardFactory.waitHttp(selenium).click(PERMALINK_LINK);
-	   assertTrue(selenium.isTextPresent(AUTHOR_NAME), "A name of comment's author expected");
-	   assertTrue(selenium.isTextPresent(COMMENT_TEXT), "A text of entered comment expected");	  
-   }
+    @Test
+    public void addCommentOnTopicTest() {
+        RequestTypeGuardFactory.waitHttp(selenium).click(VIEW_ENTRY_LINK);
+        assertTrue(selenium.isTextPresent(TOPIC_TITLE), "Topic title expected on the page");
+        selenium.type(AUTHOR_INPUT, AUTHOR_NAME);
+        selenium.type(COMMENT_INPUT, COMMENT_TEXT);
+        RequestTypeGuardFactory.waitHttp(selenium).click(SUBMIT_BUTTON);
+        assertTrue(selenium.isTextPresent(AUTHOR_NAME), "A name of comment's author expected");
+        assertTrue(selenium.isTextPresent(COMMENT_TEXT), "A text of entered comment expected");
+        RequestTypeGuardFactory.waitHttp(selenium).click(BACK_BUTTON);
+        assertTrue(selenium.isTextPresent(TEXT_ON_HOME_PAGE), "Home page expected");
+    }
+
+    @Test(dependsOnMethods = "addCommentOnTopicTest")
+    public void permanentLinkTest() {
+        RequestTypeGuardFactory.waitHttp(selenium).click(PERMALINK_LINK);
+        assertTrue(selenium.isTextPresent(AUTHOR_NAME), "A name of comment's author expected");
+        assertTrue(selenium.isTextPresent(COMMENT_TEXT), "A text of entered comment expected");
+    }
 }

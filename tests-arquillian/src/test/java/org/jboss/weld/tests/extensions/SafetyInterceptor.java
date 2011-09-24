@@ -21,14 +21,13 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-@SafetyInspected @Interceptor
-public class SafetyInterceptor
-{
+@SafetyInspected
+@Interceptor
+public class SafetyInterceptor {
 
-   @AroundInvoke
-   public Object interceptService(InvocationContext invocationContext) throws Exception
-   {
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object interceptService(InvocationContext invocationContext) throws Exception {
+        return invocationContext.proceed();
+    }
 
 }

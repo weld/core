@@ -30,11 +30,9 @@ import org.testng.annotations.Test;
 @ExpectedDeploymentException(DefinitionException.class)
 @BeansXml("beans.xml")
 @Packaging(PackagingType.EAR)
-public class FinalMethodClassLevelInterceptorTest extends AbstractWeldTest
-{
-   @Test(groups="incontainer-broken")
-    public void testFinalMethodWithClassLevelInterceptor() throws Exception
-   {
-      assert false;
-   }
+public class FinalMethodClassLevelInterceptorTest extends AbstractWeldTest {
+    @Test(groups = "incontainer-broken")
+    public void testFinalMethodWithClassLevelInterceptor() throws Exception {
+        assert false;
+    }
 }

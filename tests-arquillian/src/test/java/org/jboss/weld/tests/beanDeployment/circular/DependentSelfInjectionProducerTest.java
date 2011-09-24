@@ -11,20 +11,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class DependentSelfInjectionProducerTest
-{
-   @Deployment
-   @ShouldThrowException(DeploymentException.class)
-   public static JavaArchive createDeployment()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addClasses(DependentLooping.class, DependentLoopingProducer.class);
-   }
+public class DependentSelfInjectionProducerTest {
+    @Deployment
+    @ShouldThrowException(DeploymentException.class)
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClasses(DependentLooping.class, DependentLoopingProducer.class);
+    }
 
-   @Test
-   public void test()
-   {
+    @Test
+    public void test() {
 
-   }
+    }
 
 }

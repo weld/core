@@ -20,51 +20,46 @@ import org.jboss.weld.context.beanstore.BeanStore;
 
 /**
  * Base class for contexts using a thread local to store a bound bean context
- * 
+ *
  * @author Pete Muir
  */
-public abstract class AbstractUnboundContext extends AbstractManagedContext
-{
+public abstract class AbstractUnboundContext extends AbstractManagedContext {
 
-   private final ThreadLocal<BeanStore> beanStore;
-   
-   public AbstractUnboundContext(boolean multithreaded)
-   {
-      super(multithreaded);
-      this.beanStore = new ThreadLocal<BeanStore>();
-   }
+    private final ThreadLocal<BeanStore> beanStore;
 
-   /**
-    * Gets the bean store
-    * 
-    * @returns The bean store
-    */
-   protected BeanStore getBeanStore()
-   {
-      return beanStore.get();
-   }
+    public AbstractUnboundContext(boolean multithreaded) {
+        super(multithreaded);
+        this.beanStore = new ThreadLocal<BeanStore>();
+    }
 
-   /**
-    * Sets the bean store
-    * 
-    * @param beanStore The bean store
-    */
-   protected void setBeanStore(BeanStore beanStore)
-   {
-      this.beanStore.set(beanStore);
-   }
-   
-   @Override
-   protected void destroy()
-   {
-      super.destroy();
-      this.beanStore.remove();
-   }
-   @Override
-   public void cleanup()
-   {
-      super.cleanup();
-      beanStore.remove();
-   }
+    /**
+     * Gets the bean store
+     *
+     * @returns The bean store
+     */
+    protected BeanStore getBeanStore() {
+        return beanStore.get();
+    }
+
+    /**
+     * Sets the bean store
+     *
+     * @param beanStore The bean store
+     */
+    protected void setBeanStore(BeanStore beanStore) {
+        this.beanStore.set(beanStore);
+    }
+
+    @Override
+    protected void destroy() {
+        super.destroy();
+        this.beanStore.remove();
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        beanStore.remove();
+    }
 
 }

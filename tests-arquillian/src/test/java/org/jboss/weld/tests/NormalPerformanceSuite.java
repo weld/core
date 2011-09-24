@@ -33,7 +33,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Categories.class)
 @IncludeCategory(Performance.class)
 @ExcludeCategory({Broken.class, Integration.class})
-@SuiteClasses(AllTests.class) 
-public class NormalPerformanceSuite
-{
+@SuiteClasses(AllTests.class)
+public class NormalPerformanceSuite {
 }

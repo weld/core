@@ -19,30 +19,25 @@ package org.jboss.weld.introspector;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 
 
-public abstract class ForwardingWeldParameter<T, X> extends ForwardingWeldAnnotated<T, Object> implements WeldParameter<T, X>
-{
+public abstract class ForwardingWeldParameter<T, X> extends ForwardingWeldAnnotated<T, Object> implements WeldParameter<T, X> {
 
-   @Override
-   protected abstract WeldParameter<T, X> delegate();
+    @Override
+    protected abstract WeldParameter<T, X> delegate();
 
-   public AnnotatedCallable<X> getDeclaringCallable()
-   {
-      return delegate().getDeclaringCallable();
-   }
+    public AnnotatedCallable<X> getDeclaringCallable() {
+        return delegate().getDeclaringCallable();
+    }
 
-   public int getPosition()
-   {
-      return delegate().getPosition();
-   }
-   
-   public WeldCallable<?, X, ?> getDeclaringWeldCallable()
-   {
-      return delegate().getDeclaringWeldCallable();
-   }
-   
-   public WeldClass<X> getDeclaringType()
-   {
-      return delegate().getDeclaringType();
-   }
-   
+    public int getPosition() {
+        return delegate().getPosition();
+    }
+
+    public WeldCallable<?, X, ?> getDeclaringWeldCallable() {
+        return delegate().getDeclaringWeldCallable();
+    }
+
+    public WeldClass<X> getDeclaringType() {
+        return delegate().getDeclaringType();
+    }
+
 }

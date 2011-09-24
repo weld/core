@@ -22,11 +22,9 @@ package org.jboss.weld.event;
  * to keep track of whether an observer wants to see all events regardless of
  * the outcome of the transaction or only those transactions which succeed or
  * fail.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public enum Status
-{
-   ALL, SUCCESS, FAILURE
+public enum Status {
+    ALL, SUCCESS, FAILURE
 }

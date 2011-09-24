@@ -26,12 +26,13 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @Decorator
-public class ComplexDecorator implements SomeBean
-{
-   @Inject @Delegate @Any ComplexBean delegate;
+public class ComplexDecorator implements SomeBean {
+    @Inject
+    @Delegate
+    @Any
+    ComplexBean delegate;
 
-   public String hello(String name)
-   {
-       return "complex-" +delegate.hello(name) +"-complex";
-   }
+    public String hello(String name) {
+        return "complex-" + delegate.hello(name) + "-complex";
+    }
 }

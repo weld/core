@@ -18,37 +18,32 @@ package org.jboss.weld.exceptions;
 
 
 /**
- * 
  * @author Pete Muir
  */
-public class InconsistentSpecializationException extends DeploymentException
-{
+public class InconsistentSpecializationException extends DeploymentException {
 
-   private static final long serialVersionUID = 4359656880524913555L;
+    private static final long serialVersionUID = 4359656880524913555L;
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> InconsistentSpecializationException(E key, Object... args)
-   {
-      super(key, args);
-   }
-   
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public InconsistentSpecializationException(Throwable throwable)
-   {
-      super(throwable);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> InconsistentSpecializationException(E key, Object... args) {
+        super(key, args);
+    }
 
-   
+    /**
+     * Creates a new exception with the given cause.
+     *
+     * @param throwable The cause of the exception
+     */
+    public InconsistentSpecializationException(Throwable throwable) {
+        super(throwable);
+    }
+
 
 }

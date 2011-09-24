@@ -17,9 +17,6 @@
 
 package org.jboss.weld.tests.producer.field.named;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -36,98 +33,89 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * <p>Check what happens when session.invalidate() is called.</p>
  *
  * @author Pete Muir
- *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class NamedProducerTest
-{
-   @Deployment(testable = false)
-   public static WebArchive createDeployment()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(User.class, NewUserAction.class, Employee.class, SaveAction.class)
-               .addAsWebInfResource(NamedProducerTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebInfResource(NamedProducerTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsWebResource(NamedProducerTest.class.getPackage(), "view.xhtml", "view.xhtml")
-               .addAsWebResource(NamedProducerTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+public class NamedProducerTest {
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(User.class, NewUserAction.class, Employee.class, SaveAction.class)
+                .addAsWebInfResource(NamedProducerTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(NamedProducerTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsWebResource(NamedProducerTest.class.getPackage(), "view.xhtml", "view.xhtml")
+                .addAsWebResource(NamedProducerTest.class.getPackage(), "home.xhtml", "home.xhtml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   /*
+    /*
     * description = "forum post"
     */
-   @Test
-   public void testNamedProducerWorks() throws Exception
-   {
-      WebClient client = new WebClient();
-      client.setThrowExceptionOnFailingStatusCode(false);
+    @Test
+    public void testNamedProducerWorks() throws Exception {
+        WebClient client = new WebClient();
+        client.setThrowExceptionOnFailingStatusCode(false);
 
-      HtmlPage page = client.getPage(getPath("/view.jsf"));
-      // Check the page rendered ok
-      Assert.assertNotNull(getFirstMatchingElement(page, HtmlSubmitInput.class, "saveButton"));
-   }
+        HtmlPage page = client.getPage(getPath("/view.jsf"));
+        // Check the page rendered ok
+        Assert.assertNotNull(getFirstMatchingElement(page, HtmlSubmitInput.class, "saveButton"));
+    }
 
-   /*
+    /*
     * description = "WELD-404"
     */
-   @Test
-   public void testNamedProducerFieldLoosesValues() throws Exception
-   {
-      WebClient client = new WebClient();
+    @Test
+    public void testNamedProducerFieldLoosesValues() throws Exception {
+        WebClient client = new WebClient();
 
-      HtmlPage page = client.getPage(getPath("/home.jsf"));
-      // Check the page rendered ok
-      HtmlSubmitInput saveButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "saveButton");
-      HtmlTextInput employeeFieldName = getFirstMatchingElement(page, HtmlTextInput.class, "employeeFieldName");
-      HtmlTextInput employeeMethodName = getFirstMatchingElement(page, HtmlTextInput.class, "employeeMethodName");
+        HtmlPage page = client.getPage(getPath("/home.jsf"));
+        // Check the page rendered ok
+        HtmlSubmitInput saveButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "saveButton");
+        HtmlTextInput employeeFieldName = getFirstMatchingElement(page, HtmlTextInput.class, "employeeFieldName");
+        HtmlTextInput employeeMethodName = getFirstMatchingElement(page, HtmlTextInput.class, "employeeMethodName");
 
-      Assert.assertNotNull(employeeFieldName);
-      Assert.assertNotNull(employeeMethodName);
-      Assert.assertNotNull(saveButton);
+        Assert.assertNotNull(employeeFieldName);
+        Assert.assertNotNull(employeeMethodName);
+        Assert.assertNotNull(saveButton);
 
-      employeeFieldName.setValueAttribute("Pete");
-      employeeMethodName.setValueAttribute("Gavin");
-      saveButton.click();
-   }
+        employeeFieldName.setValueAttribute("Pete");
+        employeeMethodName.setValueAttribute("Gavin");
+        saveButton.click();
+    }
 
-   protected String getPath(String page)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + page;
-   }
+    protected String getPath(String page) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/" + page;
+    }
 
-   protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
-   {
-     Set<T> result = new HashSet<T>();
+    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
+        Set<T> result = new HashSet<T>();
 
-     for (HtmlElement element : rootElement.getAllHtmlChildElements())
-     {
-        result.addAll(getElements(element, elementClass));
-     }
+        for (HtmlElement element : rootElement.getAllHtmlChildElements()) {
+            result.addAll(getElements(element, elementClass));
+        }
 
-     if (elementClass.isInstance(rootElement))
-     {
-        result.add(elementClass.cast(rootElement));
-     }
-     return result;
+        if (elementClass.isInstance(rootElement)) {
+            result.add(elementClass.cast(rootElement));
+        }
+        return result;
 
-   }
+    }
 
-   protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id)
-   {
-     Set<T> inputs = getElements(page.getBody(), elementClass);
-     for (T input : inputs)
-     {
-         if (input.getId().contains(id))
-         {
-            return input;
-         }
-     }
-     return null;
-   }
+    protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id) {
+        Set<T> inputs = getElements(page.getBody(), elementClass);
+        for (T input : inputs) {
+            if (input.getId().contains(id)) {
+                return input;
+            }
+        }
+        return null;
+    }
 }

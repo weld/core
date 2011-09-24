@@ -16,22 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -59,277 +43,241 @@ import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
 
-public class BeanDeployerEnvironment
-{
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-   private final Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap;
-   private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
-   private final Set<RIBean<?>> beans;
-   private final Set<ObserverMethodImpl<?, ?>> observers;
-   private final List<DisposalMethod<?, ?>> allDisposalBeans;
-   private final Set<DisposalMethod<?, ?>> resolvedDisposalBeans;
-   private final Set<DecoratorImpl<?>> decorators;
-   private final Set<InterceptorImpl<?>> interceptors;
-   private final EjbDescriptors ejbDescriptors;
-   private final TypeSafeDisposerResolver disposalMethodResolver;
-   private final ClassTransformer classTransformer;
-   private final Set<WeldClass<?>> newManagedBeanClasses;
-   private final Set<InternalEjbDescriptor<?>> newSessionBeanDescriptors;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-   public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager)
-   {
-      this.classBeanMap = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
-      this.producerMethodBeanMap = new HashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>();
-      this.allDisposalBeans = new ArrayList<DisposalMethod<?, ?>>();
-      this.resolvedDisposalBeans = new HashSet<DisposalMethod<?, ?>>();
-      this.beans = new HashSet<RIBean<?>>();
-      this.decorators = new HashSet<DecoratorImpl<?>>();
-      this.interceptors = new HashSet<InterceptorImpl<?>>();
-      this.observers = new HashSet<ObserverMethodImpl<?, ?>>();
-      this.ejbDescriptors = ejbDescriptors;
-      this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
-      this.classTransformer = manager.getServices().get(ClassTransformer.class);
-      this.newManagedBeanClasses = new HashSet<WeldClass<?>>();
-      this.newSessionBeanDescriptors = new HashSet<InternalEjbDescriptor<?>>();
-   }
+public class BeanDeployerEnvironment {
 
-   public Set<WeldClass<?>> getNewManagedBeanClasses()
-   {
-      return newManagedBeanClasses;
-   }
+    private final Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap;
+    private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
+    private final Set<RIBean<?>> beans;
+    private final Set<ObserverMethodImpl<?, ?>> observers;
+    private final List<DisposalMethod<?, ?>> allDisposalBeans;
+    private final Set<DisposalMethod<?, ?>> resolvedDisposalBeans;
+    private final Set<DecoratorImpl<?>> decorators;
+    private final Set<InterceptorImpl<?>> interceptors;
+    private final EjbDescriptors ejbDescriptors;
+    private final TypeSafeDisposerResolver disposalMethodResolver;
+    private final ClassTransformer classTransformer;
+    private final Set<WeldClass<?>> newManagedBeanClasses;
+    private final Set<InternalEjbDescriptor<?>> newSessionBeanDescriptors;
 
-   public Set<InternalEjbDescriptor<?>> getNewSessionBeanDescriptors()
-   {
-      return newSessionBeanDescriptors;
-   }
+    public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
+        this.classBeanMap = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
+        this.producerMethodBeanMap = new HashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>();
+        this.allDisposalBeans = new ArrayList<DisposalMethod<?, ?>>();
+        this.resolvedDisposalBeans = new HashSet<DisposalMethod<?, ?>>();
+        this.beans = new HashSet<RIBean<?>>();
+        this.decorators = new HashSet<DecoratorImpl<?>>();
+        this.interceptors = new HashSet<InterceptorImpl<?>>();
+        this.observers = new HashSet<ObserverMethodImpl<?, ?>>();
+        this.ejbDescriptors = ejbDescriptors;
+        this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
+        this.classTransformer = manager.getServices().get(ClassTransformer.class);
+        this.newManagedBeanClasses = new HashSet<WeldClass<?>>();
+        this.newSessionBeanDescriptors = new HashSet<InternalEjbDescriptor<?>>();
+    }
 
-   public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method)
-   {
-      WeldMethodKey<X, T> key = new WeldMethodKey<X, T>(method);
-      if (!producerMethodBeanMap.containsKey(key))
-      {
-         return null;
-      }
-      else
-      {
-         ProducerMethod<?, ?> bean = producerMethodBeanMap.get(key);
-         bean.initialize(this);
-         return cast(bean);
-      }
-   }
+    public Set<WeldClass<?>> getNewManagedBeanClasses() {
+        return newManagedBeanClasses;
+    }
 
-   public AbstractClassBean<?> getClassBean(WeldClass<?> clazz)
-   {
-      if (!classBeanMap.containsKey(clazz))
-      {
-         return null;
-      }
-      else
-      {
-         AbstractClassBean<?> bean = classBeanMap.get(clazz);
-         bean.initialize(this);
-         return bean;
-      }
-   }
+    public Set<InternalEjbDescriptor<?>> getNewSessionBeanDescriptors() {
+        return newSessionBeanDescriptors;
+    }
 
-   public void addProducerMethod(ProducerMethod<?, ?> bean)
-   {
-      producerMethodBeanMap.put(WeldMethodKey.of(bean.getWeldAnnotated()), bean);
-      addAbstractBean(bean);
-   }
+    public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method) {
+        WeldMethodKey<X, T> key = new WeldMethodKey<X, T>(method);
+        if (!producerMethodBeanMap.containsKey(key)) {
+            return null;
+        } else {
+            ProducerMethod<?, ?> bean = producerMethodBeanMap.get(key);
+            bean.initialize(this);
+            return cast(bean);
+        }
+    }
 
-   public void addProducerField(ProducerField<?, ?> bean)
-   {
-      addAbstractBean(bean);
-   }
+    public AbstractClassBean<?> getClassBean(WeldClass<?> clazz) {
+        if (!classBeanMap.containsKey(clazz)) {
+            return null;
+        } else {
+            AbstractClassBean<?> bean = classBeanMap.get(clazz);
+            bean.initialize(this);
+            return bean;
+        }
+    }
 
-   public void addExtension(ExtensionBean bean)
-   {
-      beans.add(bean);
-   }
+    public void addProducerMethod(ProducerMethod<?, ?> bean) {
+        producerMethodBeanMap.put(WeldMethodKey.of(bean.getWeldAnnotated()), bean);
+        addAbstractBean(bean);
+    }
 
-   public void addBuiltInBean(AbstractBuiltInBean<?> bean)
-   {
-      beans.add(bean);
-   }
+    public void addProducerField(ProducerField<?, ?> bean) {
+        addAbstractBean(bean);
+    }
 
-   protected void addAbstractClassBean(AbstractClassBean<?> bean)
-   {
-      if (!(bean instanceof NewBean))
-      {
-         classBeanMap.put(bean.getWeldAnnotated(), bean);
-      }
-      addAbstractBean(bean);
-   }
+    public void addExtension(ExtensionBean bean) {
+        beans.add(bean);
+    }
 
-   public void addManagedBean(ManagedBean<?> bean)
-   {
-      addAbstractClassBean(bean);
-   }
+    public void addBuiltInBean(AbstractBuiltInBean<?> bean) {
+        beans.add(bean);
+    }
 
-   public void addSessionBean(SessionBean<?> bean)
-   {
-      newSessionBeanDescriptors.add(bean.getEjbDescriptor());
-      addAbstractClassBean(bean);
-   }
+    protected void addAbstractClassBean(AbstractClassBean<?> bean) {
+        if (!(bean instanceof NewBean)) {
+            classBeanMap.put(bean.getWeldAnnotated(), bean);
+        }
+        addAbstractBean(bean);
+    }
 
-   public void addNewManagedBean(NewManagedBean<?> bean)
-   {
-      beans.add(bean);
-   }
+    public void addManagedBean(ManagedBean<?> bean) {
+        addAbstractClassBean(bean);
+    }
 
-   public void addNewSessionBean(NewSessionBean<?> bean)
-   {
-      beans.add(bean);
-   }
+    public void addSessionBean(SessionBean<?> bean) {
+        newSessionBeanDescriptors.add(bean.getEjbDescriptor());
+        addAbstractClassBean(bean);
+    }
 
-   protected void addAbstractBean(AbstractBean<?, ?> bean)
-   {
-      addNewBeansFromInjectionPoints(bean);
-      beans.add(bean);
-   }
+    public void addNewManagedBean(NewManagedBean<?> bean) {
+        beans.add(bean);
+    }
 
-   public void addDecorator(DecoratorImpl<?> bean)
-   {
-      decorators.add(bean);
-   }
+    public void addNewSessionBean(NewSessionBean<?> bean) {
+        beans.add(bean);
+    }
 
-   public void addInterceptor(InterceptorImpl<?> bean)
-   {
-      interceptors.add(bean);
-   }
+    protected void addAbstractBean(AbstractBean<?, ?> bean) {
+        addNewBeansFromInjectionPoints(bean);
+        beans.add(bean);
+    }
 
-   public void addDisposesMethod(DisposalMethod<?, ?> bean)
-   {
-      allDisposalBeans.add(bean);
-      addNewBeansFromInjectionPoints(bean);
-   }
+    public void addDecorator(DecoratorImpl<?> bean) {
+        decorators.add(bean);
+    }
 
-   public void addObserverMethod(ObserverMethodImpl<?, ?> observer)
-   {
-      this.observers.add(observer);
-      addNewBeansFromInjectionPoints(observer.getNewInjectionPoints());
-   }
+    public void addInterceptor(InterceptorImpl<?> bean) {
+        interceptors.add(bean);
+    }
 
-   private void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean)
-   {
-      addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
-   }
+    public void addDisposesMethod(DisposalMethod<?, ?> bean) {
+        allDisposalBeans.add(bean);
+        addNewBeansFromInjectionPoints(bean);
+    }
 
-   private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints)
-   {
-      for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints)
-      {
-         // FIXME: better check
-         if (injectionPoint.getJavaClass() == Instance.class || injectionPoint.getJavaClass() == Event.class)
-         {
-            continue;
-         }
-         New _new = injectionPoint.getAnnotation(New.class);
-         if (_new.value().equals(New.class))
-         {
-            addNewBeanFromInjecitonPoint(injectionPoint.getJavaClass(), injectionPoint.getBaseType());
-         }
-         else
-         {
-            addNewBeanFromInjecitonPoint(_new.value(), _new.value());
-         }
+    public void addObserverMethod(ObserverMethodImpl<?, ?> observer) {
+        this.observers.add(observer);
+        addNewBeansFromInjectionPoints(observer.getNewInjectionPoints());
+    }
 
-      }
-   }
+    private void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean) {
+        addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
+    }
 
-   private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType)
-   {
-      if (getEjbDescriptors().contains(rawType))
-      {
-         newSessionBeanDescriptors.add(getEjbDescriptors().getUnique(rawType));
-      }
-      else
-      {
-         newManagedBeanClasses.add(classTransformer.loadClass(rawType, baseType));
-      }
-   }
+    private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints) {
+        for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints) {
+            // FIXME: better check
+            if (injectionPoint.getJavaClass() == Instance.class || injectionPoint.getJavaClass() == Event.class) {
+                continue;
+            }
+            New _new = injectionPoint.getAnnotation(New.class);
+            if (_new.value().equals(New.class)) {
+                addNewBeanFromInjecitonPoint(injectionPoint.getJavaClass(), injectionPoint.getBaseType());
+            } else {
+                addNewBeanFromInjecitonPoint(_new.value(), _new.value());
+            }
 
-   public Set<? extends RIBean<?>> getBeans()
-   {
-      return Collections.unmodifiableSet(beans);
-   }
+        }
+    }
 
-   public Set<DecoratorImpl<?>> getDecorators()
-   {
-      return Collections.unmodifiableSet(decorators);
-   }
+    private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType) {
+        if (getEjbDescriptors().contains(rawType)) {
+            newSessionBeanDescriptors.add(getEjbDescriptors().getUnique(rawType));
+        } else {
+            newManagedBeanClasses.add(classTransformer.loadClass(rawType, baseType));
+        }
+    }
 
-   public Set<InterceptorImpl<?>> getInterceptors()
-   {
-      return Collections.unmodifiableSet(interceptors);
-   }
+    public Set<? extends RIBean<?>> getBeans() {
+        return Collections.unmodifiableSet(beans);
+    }
 
-   public Set<ObserverMethodImpl<?, ?>> getObservers()
-   {
-      return Collections.unmodifiableSet(observers);
-   }
+    public Set<DecoratorImpl<?>> getDecorators() {
+        return Collections.unmodifiableSet(decorators);
+    }
 
-   public Set<DisposalMethod<?, ?>> getUnresolvedDisposalBeans()
-   {
-      Set<DisposalMethod<?, ?>> beans = new HashSet<DisposalMethod<?, ?>>(allDisposalBeans);
-      beans.removeAll(resolvedDisposalBeans);
-      return Collections.unmodifiableSet(beans);
-   }
+    public Set<InterceptorImpl<?>> getInterceptors() {
+        return Collections.unmodifiableSet(interceptors);
+    }
 
-   public EjbDescriptors getEjbDescriptors()
-   {
-      return ejbDescriptors;
-   }
+    public Set<ObserverMethodImpl<?, ?>> getObservers() {
+        return Collections.unmodifiableSet(observers);
+    }
 
-   /**
-    * Resolve the disposal method for the given producer method. Any resolved
-    * beans will be marked as such for the purpose of validating that all
-    * disposal methods are used. For internal use.
-    * 
-    * @param apiType The API type to match
-    * @param qualifiers The binding types to match
-    * @return The set of matching disposal methods
-    */
-   public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean)
-   {
-      // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-      Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));
-      resolvedDisposalBeans.addAll(beans);
-      return Collections.unmodifiableSet(beans);
-   }
+    public Set<DisposalMethod<?, ?>> getUnresolvedDisposalBeans() {
+        Set<DisposalMethod<?, ?>> beans = new HashSet<DisposalMethod<?, ?>>(allDisposalBeans);
+        beans.removeAll(resolvedDisposalBeans);
+        return Collections.unmodifiableSet(beans);
+    }
 
-   private static class WeldMethodKey<T, X>
-   {
-      
-      static <T, X> WeldMethodKey<T, X> of(WeldMethod<T, X> method)
-      {
-         return new WeldMethodKey<T, X>(method);
-      }
-      
-      final WeldMethod<T, X> method;
+    public EjbDescriptors getEjbDescriptors() {
+        return ejbDescriptors;
+    }
 
-      WeldMethodKey(WeldMethod<T, X> meth)
-      {
-         this.method = meth;
-      }
+    /**
+     * Resolve the disposal method for the given producer method. Any resolved
+     * beans will be marked as such for the purpose of validating that all
+     * disposal methods are used. For internal use.
+     *
+     * @param apiType    The API type to match
+     * @param qualifiers The binding types to match
+     * @return The set of matching disposal methods
+     */
+    public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean) {
+        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
+        Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));
+        resolvedDisposalBeans.addAll(beans);
+        return Collections.unmodifiableSet(beans);
+    }
 
-      @Override
-      public boolean equals(Object other)
-      {
-         if (other instanceof WeldMethodKey<?, ?>)
-         {
-            WeldMethodKey<?, ?> o = (WeldMethodKey<?, ?>) other;
-            return AnnotatedTypes.compareAnnotatedCallable(method, o.method);
-         }
-         return false;
-      }
+    private static class WeldMethodKey<T, X> {
 
-      @Override
-      public int hashCode()
-      {
-         return method.getJavaMember().hashCode();
-      }
-   }
+        static <T, X> WeldMethodKey<T, X> of(WeldMethod<T, X> method) {
+            return new WeldMethodKey<T, X>(method);
+        }
+
+        final WeldMethod<T, X> method;
+
+        WeldMethodKey(WeldMethod<T, X> meth) {
+            this.method = meth;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other instanceof WeldMethodKey<?, ?>) {
+                WeldMethodKey<?, ?> o = (WeldMethodKey<?, ?>) other;
+                return AnnotatedTypes.compareAnnotatedCallable(method, o.method);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return method.getJavaMember().hashCode();
+        }
+    }
 
 }

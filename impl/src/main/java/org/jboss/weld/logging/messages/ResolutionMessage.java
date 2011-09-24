@@ -17,27 +17,25 @@
 
 package org.jboss.weld.logging.messages;
 
-import org.jboss.weld.logging.MessageId;
-
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
+import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.resolution")
 @LocaleData({
-   @Locale("en")
+        @Locale("en")
 })
 /**
  * Log messages for resolution classes.
- * 
+ *
  * Message IDs: 001200 - 001299
- * 
+ *
  * @author David Allen
  *
  */
-public enum ResolutionMessage
-{
-   @MessageId("001200") INVALID_MEMBER_TYPE,
-   @MessageId("001201") CANNOT_EXTRACT_RAW_TYPE,
-   @MessageId("001202") CANNOT_EXTRACT_TYPE_INFORMATION;
+public enum ResolutionMessage {
+    @MessageId("001200")INVALID_MEMBER_TYPE,
+    @MessageId("001201")CANNOT_EXTRACT_RAW_TYPE,
+    @MessageId("001202")CANNOT_EXTRACT_TYPE_INFORMATION;
 }

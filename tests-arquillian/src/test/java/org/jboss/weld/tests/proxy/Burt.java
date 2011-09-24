@@ -21,20 +21,17 @@ import javax.inject.Named;
 
 @Named
 @RequestScoped
-public class Burt
-{
-   int val = 0;
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return false;
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      //not a very useful hashCode
-      return val++;
-   }
+public class Burt {
+    int val = 0;
+
+    @Override
+    public boolean equals(Object obj) {
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        //not a very useful hashCode
+        return val++;
+    }
 }

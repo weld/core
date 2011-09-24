@@ -16,37 +16,31 @@
  */
 package org.jboss.weld.manager;
 
-import javax.enterprise.context.spi.CreationalContext;
-
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.util.Beans;
 
+import javax.enterprise.context.spi.CreationalContext;
+
 /**
- * 
  * @author Nicklas Karlsson
- *
- * Injection target implementation for message driven beans, does not inject resources.
+ *         <p/>
+ *         Injection target implementation for message driven beans, does not inject resources.
  */
-public class MessageDrivenInjectionTarget<T> extends SimpleInjectionTarget<T>
-{
+public class MessageDrivenInjectionTarget<T> extends SimpleInjectionTarget<T> {
 
-   public MessageDrivenInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager)
-   {
-      super(type, beanManager);
-   }
-   
-   @Override
-   public void inject(final T instance, final CreationalContext<T> ctx)
-   {
-      new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance)
-      {
-         public void proceed()
-         {
-            Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
-         }
-      }.run();
+    public MessageDrivenInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager) {
+        super(type, beanManager);
+    }
 
-   }   
+    @Override
+    public void inject(final T instance, final CreationalContext<T> ctx) {
+        new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance) {
+            public void proceed() {
+                Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
+            }
+        }.run();
+
+    }
 
 }

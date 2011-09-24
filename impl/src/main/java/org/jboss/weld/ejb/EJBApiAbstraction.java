@@ -16,33 +16,32 @@
  */
 package org.jboss.weld.ejb;
 
-import java.lang.annotation.Annotation;
-
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Utility class for EJB classes etc. EJB metadata should NOT be inspected here
- * 
+ *
  * @author Pete Muir
  */
-public class EJBApiAbstraction extends ApiAbstraction implements Service
-{
-   
-   public EJBApiAbstraction(ResourceLoader resourceLoader)
-   {
-      super(resourceLoader);
-      EJB_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.EJB");
-      RESOURCE_ANNOTATION_CLASS = annotationTypeForName("javax.annotation.Resource");
-      TIMEOUT_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.Timeout");
-   }
+public class EJBApiAbstraction extends ApiAbstraction implements Service {
 
-   public final Class<? extends Annotation> EJB_ANNOTATION_CLASS;
-   public final Class<? extends Annotation> RESOURCE_ANNOTATION_CLASS;
-   public final Class<? extends Annotation> TIMEOUT_ANNOTATION_CLASS;
+    public EJBApiAbstraction(ResourceLoader resourceLoader) {
+        super(resourceLoader);
+        EJB_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.EJB");
+        RESOURCE_ANNOTATION_CLASS = annotationTypeForName("javax.annotation.Resource");
+        TIMEOUT_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.Timeout");
+    }
 
-   
-   public void cleanup() {}
-   
+    public final Class<? extends Annotation> EJB_ANNOTATION_CLASS;
+    public final Class<? extends Annotation> RESOURCE_ANNOTATION_CLASS;
+    public final Class<? extends Annotation> TIMEOUT_ANNOTATION_CLASS;
+
+
+    public void cleanup() {
+    }
+
 }

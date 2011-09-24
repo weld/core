@@ -17,16 +17,18 @@
 
 package org.jboss.weld.environment.se.test.interceptors;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.ElementType.METHOD;
+import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
-import javax.interceptor.InterceptorBinding;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Test annotation used to apply both the RecordingInterceptor and the AggregatingInterceptor to types and methods.
+ *
  * @author Peter Royle
  */
 @Inherited
@@ -35,4 +37,5 @@ import javax.interceptor.InterceptorBinding;
 @Retention(RUNTIME)
 @Recorded
 @Aggregated
-public @interface Tracked { }
+public @interface Tracked {
+}

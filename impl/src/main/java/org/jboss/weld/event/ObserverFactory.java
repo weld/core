@@ -16,55 +16,48 @@
  */
 package org.jboss.weld.event;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
-
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+
 /**
  * Bound factory class that produces implicit observers for observer methods.
- * 
+ *
  * @author David Allen
- * 
  */
-public class ObserverFactory
-{
-   /**
-    * Creates an observer
-    * 
-    * @param method The observer method abstraction
-    * @param declaringBean The declaring bean
-    * @param manager The Bean manager
-    * @return An observer implementation built from the method abstraction
-    */
-   public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager)
-   {
-      ObserverMethodImpl<T, X> result = null;
-      TransactionPhase transactionPhase = getTransactionalPhase(method);
-      if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS))
-      {
-         result = new TransactionalObserverMethodImpl<T, X>(method, declaringBean, transactionPhase, manager);
-      }
-      else
-      {
-         result = new ObserverMethodImpl<T, X>(method, declaringBean, manager);
-      }
-      return result;
-   }
-   
-   /**
-    * Tests an observer method to see if it is transactional.
-    * 
-    * @param observer The observer method
-    * @return true if the observer method is annotated as transactional
-    */
-   public static TransactionPhase getTransactionalPhase(WeldMethod<?, ?> observer)
-   {
-      WeldParameter<?, ?> parameter = observer.getWeldParameters(Observes.class).iterator().next();
-      return parameter.getAnnotation(Observes.class).during();
-   }
+public class ObserverFactory {
+    /**
+     * Creates an observer
+     *
+     * @param method        The observer method abstraction
+     * @param declaringBean The declaring bean
+     * @param manager       The Bean manager
+     * @return An observer implementation built from the method abstraction
+     */
+    public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager) {
+        ObserverMethodImpl<T, X> result = null;
+        TransactionPhase transactionPhase = getTransactionalPhase(method);
+        if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS)) {
+            result = new TransactionalObserverMethodImpl<T, X>(method, declaringBean, transactionPhase, manager);
+        } else {
+            result = new ObserverMethodImpl<T, X>(method, declaringBean, manager);
+        }
+        return result;
+    }
+
+    /**
+     * Tests an observer method to see if it is transactional.
+     *
+     * @param observer The observer method
+     * @return true if the observer method is annotated as transactional
+     */
+    public static TransactionPhase getTransactionalPhase(WeldMethod<?, ?> observer) {
+        WeldParameter<?, ?> parameter = observer.getWeldParameters(Observes.class).iterator().next();
+        return parameter.getAnnotation(Observes.class).during();
+    }
 }

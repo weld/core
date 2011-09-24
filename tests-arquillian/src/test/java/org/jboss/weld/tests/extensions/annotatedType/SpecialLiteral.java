@@ -18,11 +18,11 @@ package org.jboss.weld.tests.extensions.annotatedType;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-public class SpecialLiteral extends AnnotationLiteral<Special> implements Special
-{
-   
-   public static final Special INSTANCE = new SpecialLiteral();
-   
-   private SpecialLiteral() {}
-   
+public class SpecialLiteral extends AnnotationLiteral<Special> implements Special {
+
+    public static final Special INSTANCE = new SpecialLiteral();
+
+    private SpecialLiteral() {
+    }
+
 }

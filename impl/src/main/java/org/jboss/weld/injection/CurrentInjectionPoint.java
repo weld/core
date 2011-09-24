@@ -16,87 +16,70 @@
  */
 package org.jboss.weld.injection;
 
+import org.jboss.weld.bootstrap.api.Service;
+
+import javax.enterprise.inject.spi.InjectionPoint;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+public class CurrentInjectionPoint implements Service {
 
-import org.jboss.weld.bootstrap.api.Service;
+    private final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
 
-public class CurrentInjectionPoint implements Service
-{
-   
-   private final ThreadLocal<Stack<InjectionPoint>> currentInjectionPoint;
-   
-   public CurrentInjectionPoint()
-   {
-      this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>();
-   }
-      
-   /**
-    * Replaces (or adds) the current injection point. If a current injection 
-    * point exists, it will be replaced. If no current injection point exists, 
-    * one will be added.
-    * 
-    * @param injectionPoint the injection point to use
-    * @return the injection point added, or null if previous existed did not exist
-    */
-   public void push(InjectionPoint injectionPoint)
-   {
-      Stack<InjectionPoint> stack = currentInjectionPoint.get();
-      if (stack == null)
-      {
-         stack = new Stack<InjectionPoint>();
-         currentInjectionPoint.set(stack);
-      }
-      stack.push(injectionPoint);
-   }
-   
-   public InjectionPoint pop()
-   {
-      Stack<InjectionPoint> stack = currentInjectionPoint.get();
-      if (stack == null)
-      {
-         throw new EmptyStackException();
-      }
-      try
-      {
-         return stack.pop();
-      }
-      finally
-      {
-         if (stack.isEmpty())
-         {
-            currentInjectionPoint.remove();
-         }
-      }
-   }
-   
-   /**
-    * The injection point being operated on for this thread
-    * 
-    * @return the current injection point
-    */
-   public InjectionPoint peek()
-   {
-      Stack<InjectionPoint> stack = currentInjectionPoint.get();
-      if (stack == null)
-      {
-         return null;
-      }
-      if (!stack.empty())
-      {
-         return stack.peek();
-      }
-      else
-      {
-         return null;
-      }
-   }
+    public CurrentInjectionPoint() {
+        this.currentInjectionPoint = new ThreadLocal<Stack<InjectionPoint>>();
+    }
 
-   public void cleanup()
-   {
+    /**
+     * Replaces (or adds) the current injection point. If a current injection
+     * point exists, it will be replaced. If no current injection point exists,
+     * one will be added.
+     *
+     * @param injectionPoint the injection point to use
+     * @return the injection point added, or null if previous existed did not exist
+     */
+    public void push(InjectionPoint injectionPoint) {
+        Stack<InjectionPoint> stack = currentInjectionPoint.get();
+        if (stack == null) {
+            stack = new Stack<InjectionPoint>();
+            currentInjectionPoint.set(stack);
+        }
+        stack.push(injectionPoint);
+    }
 
-   }
+    public InjectionPoint pop() {
+        Stack<InjectionPoint> stack = currentInjectionPoint.get();
+        if (stack == null) {
+            throw new EmptyStackException();
+        }
+        try {
+            return stack.pop();
+        } finally {
+            if (stack.isEmpty()) {
+                currentInjectionPoint.remove();
+            }
+        }
+    }
+
+    /**
+     * The injection point being operated on for this thread
+     *
+     * @return the current injection point
+     */
+    public InjectionPoint peek() {
+        Stack<InjectionPoint> stack = currentInjectionPoint.get();
+        if (stack == null) {
+            return null;
+        }
+        if (!stack.empty()) {
+            return stack.peek();
+        } else {
+            return null;
+        }
+    }
+
+    public void cleanup() {
+
+    }
 
 }

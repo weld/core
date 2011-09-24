@@ -18,24 +18,20 @@ package org.jboss.weld.tests.producer.method;
 
 /**
  * @author pmuir
- *
  */
-public class Foo
-{
-   
-   private final String blah;
-   
-   public Foo(String blah)
-   {
-      this.blah = blah;
-   }
+public class Foo {
 
-   /**
-    * @return the blah
-    */
-   public String getBlah()
-   {
-      return blah;
-   }
+    private final String blah;
+
+    public Foo(String blah) {
+        this.blah = blah;
+    }
+
+    /**
+     * @return the blah
+     */
+    public String getBlah() {
+        return blah;
+    }
 
 }

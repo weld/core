@@ -31,31 +31,24 @@ import org.jboss.weld.environment.ContainerContext;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Tomcat6Container extends AbstractContainer
-{
-   public static Container INSTANCE = new Tomcat6Container();
+public class Tomcat6Container extends AbstractContainer {
+    public static Container INSTANCE = new Tomcat6Container();
 
-   protected String classToCheck()
-   {
-      return "org.apache.catalina.core.ApplicationContextFacade";
-   }
+    protected String classToCheck() {
+        return "org.apache.catalina.core.ApplicationContextFacade";
+    }
 
-   public void initialize(ContainerContext context)
-   {
-      try
-      {
-         WeldForwardingAnnotationProcessor.replaceAnnotationProcessor(context.getEvent(), context.getManager());
-         log.info("Tomcat 6 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
-      }
-      catch (Exception e)
-      {
-         log.error("Unable to replace Tomcat AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
-      }
-   }
+    public void initialize(ContainerContext context) {
+        try {
+            WeldForwardingAnnotationProcessor.replaceAnnotationProcessor(context.getEvent(), context.getManager());
+            log.info("Tomcat 6 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
+        } catch (Exception e) {
+            log.error("Unable to replace Tomcat AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
+        }
+    }
 
-   @Override
-   public void destroy(ContainerContext context)
-   {
-      WeldForwardingAnnotationProcessor.restoreAnnotationProcessor(context.getEvent());
-   }
+    @Override
+    public void destroy(ContainerContext context) {
+        WeldForwardingAnnotationProcessor.restoreAnnotationProcessor(context.getEvent());
+    }
 }

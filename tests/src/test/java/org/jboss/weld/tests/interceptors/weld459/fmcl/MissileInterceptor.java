@@ -16,21 +16,20 @@
  */
 package org.jboss.weld.tests.interceptors.weld459.fmcl;
 
-import java.io.Serializable;
-
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
-@Interceptor @FooBinding
-public class MissileInterceptor implements Serializable
-{
-   public static boolean intercepted = false;
-   
-   
-   @AroundInvoke public Object alwaysReturnThis(InvocationContext ctx) throws Exception
-   {
-      intercepted = true;
-      return ctx.proceed();
-   }
+@Interceptor
+@FooBinding
+public class MissileInterceptor implements Serializable {
+    public static boolean intercepted = false;
+
+
+    @AroundInvoke
+    public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
+        intercepted = true;
+        return ctx.proceed();
+    }
 }

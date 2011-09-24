@@ -25,26 +25,22 @@ import javax.inject.Inject;
 
 @Stateful
 @RequestScoped
-public class Kassel implements KleinStadt, SchoeneStadt
-{
-   @Inject
-   private GrossStadt grossStadt;
-   
-   @PostConstruct
-   public void begruendet()
-   {
-      grossStadt.kleinStadtCreated();
-   }
+public class Kassel implements KleinStadt, SchoeneStadt {
+    @Inject
+    private GrossStadt grossStadt;
 
-   @Remove
-   public void zustandVergessen()
-   {
-   }
+    @PostConstruct
+    public void begruendet() {
+        grossStadt.kleinStadtCreated();
+    }
 
-   @PreDestroy
-   public void zustandVerloren()
-   {
-      grossStadt.kleinStadtDestroyed();
-   }
+    @Remove
+    public void zustandVergessen() {
+    }
+
+    @PreDestroy
+    public void zustandVerloren() {
+        grossStadt.kleinStadtDestroyed();
+    }
 
 }

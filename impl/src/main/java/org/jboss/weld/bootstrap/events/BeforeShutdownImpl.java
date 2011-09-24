@@ -16,58 +16,47 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
-
-import java.util.Map;
-
-import javax.enterprise.inject.spi.BeforeShutdown;
-
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.Logger;
 
+import javax.enterprise.inject.spi.BeforeShutdown;
+import java.util.Map;
+
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+
 /**
  * @author pmuir
- *
  */
-public class BeforeShutdownImpl extends AbstractContainerEvent implements BeforeShutdown
-{
-   
-   private static final Logger log = loggerFactory().getLogger(BOOTSTRAP);
-   
-   public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
-   {
-      if (beanDeployments == null)
-      {
-         // Shutdown may have been called with an early-failure, before beanDeployments is built
-         new BeforeShutdownImpl(beanManager).fire();
-      }
-      else
-      {
-         new BeforeShutdownImpl(beanManager).fire(beanDeployments);
-      }
-   }
-   
-   public BeforeShutdownImpl(BeanManagerImpl beanManager)
-   {
-      super(beanManager, BeforeShutdown.class, EMPTY_TYPES);
-   }
-   
-   @Override
-   protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
-   {
-      super.fire(beanDeployments);
-      if (!getErrors().isEmpty())
-      {
-         log.error("Exception(s) thrown during observer of BeforeShutdown");
-         for (Throwable t: getErrors())
-         {
-            log.error("", t);
-         }
-      }
-   }
+public class BeforeShutdownImpl extends AbstractContainerEvent implements BeforeShutdown {
+
+    private static final Logger log = loggerFactory().getLogger(BOOTSTRAP);
+
+    public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+        if (beanDeployments == null) {
+            // Shutdown may have been called with an early-failure, before beanDeployments is built
+            new BeforeShutdownImpl(beanManager).fire();
+        } else {
+            new BeforeShutdownImpl(beanManager).fire(beanDeployments);
+        }
+    }
+
+    public BeforeShutdownImpl(BeanManagerImpl beanManager) {
+        super(beanManager, BeforeShutdown.class, EMPTY_TYPES);
+    }
+
+    @Override
+    protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+        super.fire(beanDeployments);
+        if (!getErrors().isEmpty()) {
+            log.error("Exception(s) thrown during observer of BeforeShutdown");
+            for (Throwable t : getErrors()) {
+                log.error("", t);
+            }
+        }
+    }
 
 }

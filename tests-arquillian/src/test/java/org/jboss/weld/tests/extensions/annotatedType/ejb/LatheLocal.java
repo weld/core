@@ -19,9 +19,8 @@ package org.jboss.weld.tests.extensions.annotatedType.ejb;
 import javax.ejb.Local;
 
 @Local
-public interface LatheLocal
-{
+public interface LatheLocal {
 
-   public Shaft doWork();
+    public Shaft doWork();
 
 }

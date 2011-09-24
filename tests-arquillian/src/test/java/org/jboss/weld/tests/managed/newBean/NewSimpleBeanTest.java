@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.tests.managed.newBean;
 
-import java.util.Set;
-
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -36,75 +30,73 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import java.util.Set;
+
 @RunWith(Arquillian.class)
-public class NewSimpleBeanTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(NewSimpleBeanTest.class.getPackage());
-   }
+public class NewSimpleBeanTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(NewSimpleBeanTest.class.getPackage());
+    }
 
-   private ManagedBean<WrappedSimpleBean> wrappedSimpleBean;
-   private NewManagedBean<WrappedSimpleBean> newSimpleBean;
+    private ManagedBean<WrappedSimpleBean> wrappedSimpleBean;
+    private NewManagedBean<WrappedSimpleBean> newSimpleBean;
 
-   private static final New NEW_LITERAL = new NewLiteral();
+    private static final New NEW_LITERAL = new NewLiteral();
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   public void initNewBean() {
+    public void initNewBean() {
 
-      Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class).size());
-      Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class).iterator().next() instanceof ManagedBean);
-      wrappedSimpleBean = (ManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class).iterator().next();
+        Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class).size());
+        Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class).iterator().next() instanceof ManagedBean);
+        wrappedSimpleBean = (ManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class).iterator().next();
 
-      Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).size());
-      Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewManagedBean);
-      newSimpleBean = (NewManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
-   }
+        Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).size());
+        Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewManagedBean);
+        newSimpleBean = (NewManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
+    }
 
-   // groups = { "new" }
-   @Test
-   public void testNewBeanHasImplementationClassOfInjectionPointType()
-   {
-      initNewBean();
-      Assert.assertEquals(WrappedSimpleBean.class, newSimpleBean.getType());
-   }
+    // groups = { "new" }
+    @Test
+    public void testNewBeanHasImplementationClassOfInjectionPointType() {
+        initNewBean();
+        Assert.assertEquals(WrappedSimpleBean.class, newSimpleBean.getType());
+    }
 
-   // groups = { "new" }
-   @Test
-   public void testNewBeanIsSimpleWebBeanIfParameterTypeIsSimpleWebBean()
-   {
-      initNewBean();
-      Assert.assertEquals(wrappedSimpleBean.getType(), newSimpleBean.getType());
-   }
+    // groups = { "new" }
+    @Test
+    public void testNewBeanIsSimpleWebBeanIfParameterTypeIsSimpleWebBean() {
+        initNewBean();
+        Assert.assertEquals(wrappedSimpleBean.getType(), newSimpleBean.getType());
+    }
 
-   // groups = { "new" }
-   @Test
-   public void testNewBeanHasSameConstructorAsWrappedBean()
-   {
-      initNewBean();
-      Assert.assertTrue(AnnotatedTypes.compareAnnotatedCallable(wrappedSimpleBean.getConstructor(), newSimpleBean.getConstructor()));
-   }
+    // groups = { "new" }
+    @Test
+    public void testNewBeanHasSameConstructorAsWrappedBean() {
+        initNewBean();
+        Assert.assertTrue(AnnotatedTypes.compareAnnotatedCallable(wrappedSimpleBean.getConstructor(), newSimpleBean.getConstructor()));
+    }
 
-   // groups = { "new" }
-   @Test
-   public void testNewBeanHasSameInitializerMethodsAsWrappedBean()
-   {
-      initNewBean();
-      Assert.assertEquals(wrappedSimpleBean.getInitializerMethods(), newSimpleBean.getInitializerMethods());
-   }
+    // groups = { "new" }
+    @Test
+    public void testNewBeanHasSameInitializerMethodsAsWrappedBean() {
+        initNewBean();
+        Assert.assertEquals(wrappedSimpleBean.getInitializerMethods(), newSimpleBean.getInitializerMethods());
+    }
 
-   // groups = { "new" }
-   @Test
-   public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
-   {
-      initNewBean();
-      Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getWeldInjectionPoints();
-      Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newSimpleBean.getWeldInjectionPoints();
-      Assert.assertEquals(wrappedBeanInjectionPoints, newBeanInjectionPoints);
-   }
+    // groups = { "new" }
+    @Test
+    public void testNewBeanHasSameInjectedFieldsAsWrappedBean() {
+        initNewBean();
+        Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getWeldInjectionPoints();
+        Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newSimpleBean.getWeldInjectionPoints();
+        Assert.assertEquals(wrappedBeanInjectionPoints, newBeanInjectionPoints);
+    }
 
 }

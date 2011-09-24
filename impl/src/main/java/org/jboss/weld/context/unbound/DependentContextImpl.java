@@ -22,76 +22,64 @@
  */
 package org.jboss.weld.context.unbound;
 
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import java.lang.annotation.Annotation;
+
 /**
  * The dependent context
- * 
+ *
  * @author Nicklas Karlsson
  */
-public class DependentContextImpl implements DependentContext 
-{
-   
-   private final ContextualStore contextualStore;
+public class DependentContextImpl implements DependentContext {
 
-   public DependentContextImpl(ContextualStore contextualStore)
-   {
-      this.contextualStore = contextualStore;
-   }
+    private final ContextualStore contextualStore;
 
-   /**
-    * Overridden method always creating a new instance
-    * 
-    * @param contextual The bean to create
-    * @param create Should a new one be created
-    */
-   public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
-   {
-      if (!isActive())
-      {
-         throw new ContextNotActiveException();
-      }
-      if (creationalContext != null)
-      {
-         T instance = contextual.create(creationalContext);
-         if (creationalContext instanceof WeldCreationalContext<?>)
-         {
-            WeldCreationalContext<T> creationalContextImpl = (WeldCreationalContext<T>) creationalContext;
-            ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
-            creationalContextImpl.addDependentInstance(beanInstance);
-         }
-         return instance;
-      }
-      else
-      {
-         return null;
-      }
-   }
+    public DependentContextImpl(ContextualStore contextualStore) {
+        this.contextualStore = contextualStore;
+    }
 
-   public <T> T get(Contextual<T> contextual)
-   {
-      return get(contextual, null);
-   }
-   
-   public boolean isActive()
-   {
-      return true;
-   }
-   
-   public Class<? extends Annotation> getScope()
-   {
-      return Dependent.class;
-   }
+    /**
+     * Overridden method always creating a new instance
+     *
+     * @param contextual The bean to create
+     * @param create     Should a new one be created
+     */
+    public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+        if (!isActive()) {
+            throw new ContextNotActiveException();
+        }
+        if (creationalContext != null) {
+            T instance = contextual.create(creationalContext);
+            if (creationalContext instanceof WeldCreationalContext<?>) {
+                WeldCreationalContext<T> creationalContextImpl = (WeldCreationalContext<T>) creationalContext;
+                ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
+                creationalContextImpl.addDependentInstance(beanInstance);
+            }
+            return instance;
+        } else {
+            return null;
+        }
+    }
+
+    public <T> T get(Contextual<T> contextual) {
+        return get(contextual, null);
+    }
+
+    public boolean isActive() {
+        return true;
+    }
+
+    public Class<? extends Annotation> getScope() {
+        return Dependent.class;
+    }
 
 }

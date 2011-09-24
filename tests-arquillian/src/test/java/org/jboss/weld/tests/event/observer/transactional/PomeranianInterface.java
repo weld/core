@@ -16,47 +16,45 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
+import javax.ejb.Local;
 import java.math.BigInteger;
 
-import javax.ejb.Local;
-
 @Local
-public interface PomeranianInterface
-{
-   /**
-    * Observes a String event only after the transaction is completed.
-    * 
-    * @param someEvent
-    */
-   public void observeStringEvent(String someEvent);
+public interface PomeranianInterface {
+    /**
+     * Observes a String event only after the transaction is completed.
+     *
+     * @param someEvent
+     */
+    public void observeStringEvent(String someEvent);
 
-   /**
-    * Observes an Integer event if the transaction is successfully completed.
-    * 
-    * @param event
-    */
-   public void observeIntegerEvent(Integer event);
+    /**
+     * Observes an Integer event if the transaction is successfully completed.
+     *
+     * @param event
+     */
+    public void observeIntegerEvent(Integer event);
 
-   /**
-    * Observes a Float event only if the transaction failed.
-    * 
-    * @param event
-    */
-   public void observeFloatEvent(Float event);
+    /**
+     * Observes a Float event only if the transaction failed.
+     *
+     * @param event
+     */
+    public void observeFloatEvent(Float event);
 
-   public void observeBigIntegerEvent(BigInteger event);
-   
-   public void observeExceptionEvent(RuntimeException event);
-   
-   public void observeCharEvent(Character event);
+    public void observeBigIntegerEvent(BigInteger event);
 
-   public boolean isCorrectContext();
+    public void observeExceptionEvent(RuntimeException event);
 
-   public void setCorrectContext(boolean correctContext);
+    public void observeCharEvent(Character event);
 
-   public boolean isCorrectTransactionState();
+    public boolean isCorrectContext();
 
-   public void setCorrectTransactionState(boolean correctTransactionState);
-   
-   public void removeSessionBean();
+    public void setCorrectContext(boolean correctContext);
+
+    public boolean isCorrectTransactionState();
+
+    public void setCorrectTransactionState(boolean correctTransactionState);
+
+    public void removeSessionBean();
 }

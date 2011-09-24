@@ -20,7 +20,6 @@ import javax.ejb.Stateless;
 
 
 @Stateless
-public class DogBean implements Dog
-{
+public class DogBean implements Dog {
 
 }

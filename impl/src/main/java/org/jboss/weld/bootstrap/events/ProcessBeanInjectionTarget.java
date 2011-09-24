@@ -16,32 +16,28 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X>
-{
-   
-   private final AbstractClassBean<X> classBean;
 
-   public ProcessBeanInjectionTarget(BeanManagerImpl beanManager, AbstractClassBean<X> bean)
-   {
-      super(beanManager, bean.getWeldAnnotated());
-      this.classBean = bean;
-   }
+public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X> {
 
-   public InjectionTarget<X> getInjectionTarget()
-   {
-      return classBean.getInjectionTarget();
-   }
+    private final AbstractClassBean<X> classBean;
 
-   public void setInjectionTarget(InjectionTarget<X> injectionTarget)
-   {
-      classBean.setInjectionTarget(injectionTarget);
-   }
+    public ProcessBeanInjectionTarget(BeanManagerImpl beanManager, AbstractClassBean<X> bean) {
+        super(beanManager, bean.getWeldAnnotated());
+        this.classBean = bean;
+    }
+
+    public InjectionTarget<X> getInjectionTarget() {
+        return classBean.getInjectionTarget();
+    }
+
+    public void setInjectionTarget(InjectionTarget<X> injectionTarget) {
+        classBean.setInjectionTarget(injectionTarget);
+    }
 
 }

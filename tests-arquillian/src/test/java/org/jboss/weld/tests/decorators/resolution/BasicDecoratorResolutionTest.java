@@ -30,27 +30,23 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class BasicDecoratorResolutionTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-               .decorate(SimpleDecorator.class, ComplexDecorator.class)
-               .addPackage(BasicDecoratorResolutionTest.class.getPackage());
-   }
+public class BasicDecoratorResolutionTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(SimpleDecorator.class, ComplexDecorator.class)
+                .addPackage(BasicDecoratorResolutionTest.class.getPackage());
+    }
 
-   @Test
-   public void testBasicDecoratorInvocation(@Simple SimpleBean simpleBean)
-   {
-      String result = simpleBean.hello("world");
-      Assert.assertEquals("simple-Hello, world-simple", result);
-   }
+    @Test
+    public void testBasicDecoratorInvocation(@Simple SimpleBean simpleBean) {
+        String result = simpleBean.hello("world");
+        Assert.assertEquals("simple-Hello, world-simple", result);
+    }
 
-   @Test
-   public void testComplexDecoratorInvocation(@Complex ComplexBean complexBean)
-   {
-      String result = complexBean.hello("world");
-      Assert.assertEquals("simple-complex-Sophisticated Hello, world-complex-simple", result);
-   }
+    @Test
+    public void testComplexDecoratorInvocation(@Complex ComplexBean complexBean) {
+        String result = complexBean.hello("world");
+        Assert.assertEquals("simple-complex-Sophisticated Hello, world-complex-simple", result);
+    }
 }

@@ -20,7 +20,6 @@ package org.jboss.weld.tests.decorators.custom;
 /**
  * @author Marius Bogoevici
  */
-public interface Window
-{
-   void draw();
+public interface Window {
+    void draw();
 }

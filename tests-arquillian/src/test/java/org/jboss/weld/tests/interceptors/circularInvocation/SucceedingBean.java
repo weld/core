@@ -24,12 +24,12 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @ApplicationScoped
-public class SucceedingBean
-{
-   @Inject @Succeeding SomeBean someBean;
+public class SucceedingBean {
+    @Inject
+    @Succeeding
+    SomeBean someBean;
 
-   public void handle()
-   {
-      someBean.methodB();
-   }
+    public void handle() {
+        someBean.methodB();
+    }
 }

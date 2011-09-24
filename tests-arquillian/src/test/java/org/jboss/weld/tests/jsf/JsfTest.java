@@ -10,24 +10,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class JsfTest
-{
+public class JsfTest {
 
-   @Deployment
-   public static WebArchive deployment()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-         .addPackage(JsfTest.class.getPackage())
-         .addAsWebInfResource(JsfTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-         .addAsWebInfResource(JsfTest.class.getPackage(), "web.xml", "web.xml")
-         .addAsWebInfResource(new ByteArrayAsset(new byte[0]), "beans.xml");
-   }
+    @Deployment
+    public static WebArchive deployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addPackage(JsfTest.class.getPackage())
+                .addAsWebInfResource(JsfTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsWebInfResource(JsfTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(new ByteArrayAsset(new byte[0]), "beans.xml");
+    }
 
-   @Test
-   // WELD-492
-   public void testExtendsUiComponent(Garply garply)
-   {
-      Assert.assertNotNull(garply);
-   }
+    @Test
+    // WELD-492
+    public void testExtendsUiComponent(Garply garply) {
+        Assert.assertNotNull(garply);
+    }
 
 }

@@ -16,124 +16,111 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
-
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ArraySet;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
+import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
+
 /**
  * Meta model for the merged stereotype for a bean
- * 
+ *
  * @author Pete Muir
  */
-public class MergedStereotypes<T, E>
-{
-   // The possible scope types
-   private final ArraySet<Annotation> possibleScopeTypes;
-   // Is the bean name defaulted?
-   private boolean beanNameDefaulted;
-   // Are any of the sterotypes alternatives
-   private boolean alternative;
-   
-   private ArraySet<Class<? extends Annotation>> stereotypes;
-   
-   private final BeanManagerImpl manager;
-   
-   /**
-    * Constructor
-    * 
-    * @param stereotypeAnnotations The stereotypes to merge
-    */
-   public MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager)
-   {
-      this.possibleScopeTypes = new ArraySet<Annotation>();
-      this.stereotypes = new ArraySet<Class<? extends Annotation>>();
-      this.manager = manager;
-      merge(stereotypeAnnotations);
-      this.possibleScopeTypes.trimToSize();
-      this.stereotypes.trimToSize();
-   }
+public class MergedStereotypes<T, E> {
+    // The possible scope types
+    private final ArraySet<Annotation> possibleScopeTypes;
+    // Is the bean name defaulted?
+    private boolean beanNameDefaulted;
+    // Are any of the sterotypes alternatives
+    private boolean alternative;
 
-   /**
-    * Perform the merge
-    * 
-    * @param stereotypeAnnotations The stereotype annotations
-    */
-   protected void merge(Set<Annotation> stereotypeAnnotations)
-   {
-      for (Annotation stereotypeAnnotation : stereotypeAnnotations)
-      {
-         // Retrieve and merge all metadata from stereotypes
-         StereotypeModel<?> stereotype = manager.getServices().get(MetaAnnotationStore.class).getStereotype(stereotypeAnnotation.annotationType());
-         if (stereotype == null)
-         {
-            throw new IllegalStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
-         }
-         if (stereotype.isAlternative())
-         {
-            alternative = true;
-         }
-         if (stereotype.getDefaultScopeType() != null)
-         {
-            possibleScopeTypes.add(stereotype.getDefaultScopeType());
-         }
-         if (stereotype.isBeanNameDefaulted())
-         {
-            beanNameDefaulted = true;
-         }
-         this.stereotypes.add(stereotypeAnnotation.annotationType());
-         // Merge in inherited stereotypes
-         merge(stereotype.getInheritedSterotypes());
-      }
-   }
+    private ArraySet<Class<? extends Annotation>> stereotypes;
 
-   public boolean isAlternative()
-   {
-      return alternative;
-   }
+    private final BeanManagerImpl manager;
 
-   /**
-    * Returns the possible scope types
-    * 
-    * @return The scope types
-    */
-   public Set<Annotation> getPossibleScopes()
-   {
-      return possibleScopeTypes;
-   }
+    /**
+     * Constructor
+     *
+     * @param stereotypeAnnotations The stereotypes to merge
+     */
+    public MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager) {
+        this.possibleScopeTypes = new ArraySet<Annotation>();
+        this.stereotypes = new ArraySet<Class<? extends Annotation>>();
+        this.manager = manager;
+        merge(stereotypeAnnotations);
+        this.possibleScopeTypes.trimToSize();
+        this.stereotypes.trimToSize();
+    }
 
-   /**
-    * Indicates if the name i defaulted
-    * 
-    * @return True if defaulted, false if not
-    */
-   public boolean isBeanNameDefaulted()
-   {
-      return beanNameDefaulted;
-   }
-   
-   /**
-    * @return the stereotypes
-    */
-   public Set<Class<? extends Annotation>> getStereotypes()
-   {
-      return stereotypes;
-   }
+    /**
+     * Perform the merge
+     *
+     * @param stereotypeAnnotations The stereotype annotations
+     */
+    protected void merge(Set<Annotation> stereotypeAnnotations) {
+        for (Annotation stereotypeAnnotation : stereotypeAnnotations) {
+            // Retrieve and merge all metadata from stereotypes
+            StereotypeModel<?> stereotype = manager.getServices().get(MetaAnnotationStore.class).getStereotype(stereotypeAnnotation.annotationType());
+            if (stereotype == null) {
+                throw new IllegalStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
+            }
+            if (stereotype.isAlternative()) {
+                alternative = true;
+            }
+            if (stereotype.getDefaultScopeType() != null) {
+                possibleScopeTypes.add(stereotype.getDefaultScopeType());
+            }
+            if (stereotype.isBeanNameDefaulted()) {
+                beanNameDefaulted = true;
+            }
+            this.stereotypes.add(stereotypeAnnotation.annotationType());
+            // Merge in inherited stereotypes
+            merge(stereotype.getInheritedSterotypes());
+        }
+    }
 
-   /**
-    * Gets a string representation of the merged stereotypes
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String toString()
-   {
-     return "Merged stereotype model; Any of the sterotypes is an alternative: " + 
-        alternative + "; possible scopes " + possibleScopeTypes; 
-   }
-   
+    public boolean isAlternative() {
+        return alternative;
+    }
+
+    /**
+     * Returns the possible scope types
+     *
+     * @return The scope types
+     */
+    public Set<Annotation> getPossibleScopes() {
+        return possibleScopeTypes;
+    }
+
+    /**
+     * Indicates if the name i defaulted
+     *
+     * @return True if defaulted, false if not
+     */
+    public boolean isBeanNameDefaulted() {
+        return beanNameDefaulted;
+    }
+
+    /**
+     * @return the stereotypes
+     */
+    public Set<Class<? extends Annotation>> getStereotypes() {
+        return stereotypes;
+    }
+
+    /**
+     * Gets a string representation of the merged stereotypes
+     *
+     * @return The string representation
+     */
+    @Override
+    public String toString() {
+        return "Merged stereotype model; Any of the sterotypes is an alternative: " +
+                alternative + "; possible scopes " + possibleScopeTypes;
+    }
+
 }

@@ -1,30 +1,25 @@
 package org.jboss.weld.tests.producer.method;
 
-public class Food
-{
+public class Food {
 
-   private final String type;
-   
-   private boolean made;
+    private final String type;
 
-   public Food(String type)
-   {
-      this.type = type;
-   }
-   
-   public String getType()
-   {
-      return type;
-   }
-   
-   public void make()
-   {
-      this.made = true;
-   }
-   
-   public boolean isMade()
-   {
-      return made;
-   }
-   
+    private boolean made;
+
+    public Food(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void make() {
+        this.made = true;
+    }
+
+    public boolean isMade() {
+        return made;
+    }
+
 }

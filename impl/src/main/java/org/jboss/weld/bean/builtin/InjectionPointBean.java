@@ -16,67 +16,58 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import java.lang.reflect.Type;
-import java.util.Set;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
+import java.lang.reflect.Type;
+import java.util.Set;
+
 /**
  * Bean for InjectionPoint metadata
- * 
+ *
  * @author David Allen
- * 
  */
-public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint>
-{
-   
-   private static final Set<Type> TYPES = Arrays2.<Type>asSet( InjectionPoint.class, Object.class );
+public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
 
-   /**
-    * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
-    * the field, constructor or method for the annotated item
-    * 
-    * @param <T> must be InjectionPoint
-    * @param <S>
-    * @param field The annotated member field/parameter for the injection
-    * @param manager The RI manager implementation
-    */
-   public InjectionPointBean(BeanManagerImpl manager)
-   {
-      super(InjectionPoint.class.getSimpleName(), manager);
-   }
+    private static final Set<Type> TYPES = Arrays2.<Type>asSet(InjectionPoint.class, Object.class);
 
-   public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext)
-   {
-      return Container.instance().services().get(CurrentInjectionPoint.class).peek();
-   }
-   
-   public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) 
-   {
-      
-   }
+    /**
+     * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
+     * the field, constructor or method for the annotated item
+     *
+     * @param <T>     must be InjectionPoint
+     * @param <S>
+     * @param field   The annotated member field/parameter for the injection
+     * @param manager The RI manager implementation
+     */
+    public InjectionPointBean(BeanManagerImpl manager) {
+        super(InjectionPoint.class.getSimpleName(), manager);
+    }
 
-   @Override
-   public Class<InjectionPoint> getType()
-   {
-      return InjectionPoint.class;
-   }
+    public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext) {
+        return Container.instance().services().get(CurrentInjectionPoint.class).peek();
+    }
 
-   public Set<Type> getTypes()
-   {
-      return TYPES;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "Implicit Bean [javax.enterprise.inject.spi.InjectionPoint] with qualifiers [@Default]";
-   }
-   
+    public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {
+
+    }
+
+    @Override
+    public Class<InjectionPoint> getType() {
+        return InjectionPoint.class;
+    }
+
+    public Set<Type> getTypes() {
+        return TYPES;
+    }
+
+    @Override
+    public String toString() {
+        return "Implicit Bean [javax.enterprise.inject.spi.InjectionPoint] with qualifiers [@Default]";
+    }
+
 }

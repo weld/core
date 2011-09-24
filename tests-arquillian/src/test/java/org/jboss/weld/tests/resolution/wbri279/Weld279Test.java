@@ -27,24 +27,20 @@ import org.junit.runner.RunWith;
 
 /**
  * @author pmuir
- *
  */
 @RunWith(Arquillian.class)
-public class Weld279Test
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(Weld279Test.class.getPackage());
-   }
+public class Weld279Test {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(Weld279Test.class.getPackage());
+    }
 
-   /*
+    /*
     * description = "WELD-279"
     */
-   @Test
-   public void testLookupOfGenericTypeSubclass(SomeBean bean)
-   {
-      Assert.assertEquals(IntegerFactory.VALUE.toString(), bean.getObjectAsString());
-   }
+    @Test
+    public void testLookupOfGenericTypeSubclass(SomeBean bean) {
+        Assert.assertEquals(IntegerFactory.VALUE.toString(), bean.getObjectAsString());
+    }
 }

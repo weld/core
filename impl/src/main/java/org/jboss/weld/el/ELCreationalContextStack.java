@@ -16,33 +16,26 @@
  */
 package org.jboss.weld.el;
 
+import javax.el.ELContext;
 import java.util.Stack;
 
-import javax.el.ELContext;
+class ELCreationalContextStack extends Stack<CreationalContextCallable> {
 
-class ELCreationalContextStack extends Stack<CreationalContextCallable>
-{
-   
-   private static final long serialVersionUID = -57142365866995726L;
-   
-   public static ELCreationalContextStack addToContext(ELContext context)
-   {
-      ELCreationalContextStack store = new ELCreationalContextStack();
-      context.putContext(ELCreationalContextStack.class, store);
-      return store;
-   }
-   
-   public static ELCreationalContextStack getCreationalContextStore(ELContext context)
-   {
-      Object o = context.getContext(ELCreationalContextStack.class);
-      if (o != null)
-      {
-         return (ELCreationalContextStack) o;
-      }
-      else
-      {
-         return addToContext(context);
-      }
-   }
-   
+    private static final long serialVersionUID = -57142365866995726L;
+
+    public static ELCreationalContextStack addToContext(ELContext context) {
+        ELCreationalContextStack store = new ELCreationalContextStack();
+        context.putContext(ELCreationalContextStack.class, store);
+        return store;
+    }
+
+    public static ELCreationalContextStack getCreationalContextStore(ELContext context) {
+        Object o = context.getContext(ELCreationalContextStack.class);
+        if (o != null) {
+            return (ELCreationalContextStack) o;
+        } else {
+            return addToContext(context);
+        }
+    }
+
 }

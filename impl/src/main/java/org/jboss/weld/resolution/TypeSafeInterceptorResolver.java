@@ -17,50 +17,43 @@
 
 package org.jboss.weld.resolution;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.enterprise.inject.spi.Interceptor;
-
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+
+import javax.enterprise.inject.spi.Interceptor;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>>
-{
+public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>> {
 
-   private final BeanManagerImpl manager;
+    private final BeanManagerImpl manager;
 
-   public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors)
-   {
-      super(interceptors);
-      this.manager = manager;
-   }
+    public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors) {
+        super(interceptors);
+        this.manager = manager;
+    }
 
-   @Override
-   protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean)
-   {
-      return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabled().getInterceptor(bean.getBeanClass()) != null;
-   }
+    @Override
+    protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean) {
+        return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabled().getInterceptor(bean.getBeanClass()) != null;
+    }
 
-   @Override
-   protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors)
-   {
-      Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(getManager().getEnabled().getInterceptorComparator());
-      sortedBeans.addAll(matchedInterceptors);
-      return sortedBeans;
-   }
+    @Override
+    protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors) {
+        Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(getManager().getEnabled().getInterceptorComparator());
+        sortedBeans.addAll(matchedInterceptors);
+        return sortedBeans;
+    }
 
-   @Override
-   protected Set<Interceptor<?>> filterResult(Set<Interceptor<?>> matched)
-   {
-      return matched;
-   }
+    @Override
+    protected Set<Interceptor<?>> filterResult(Set<Interceptor<?>> matched) {
+        return matched;
+    }
 
-   public BeanManagerImpl getManager()
-   {
-      return manager;
-   }
+    public BeanManagerImpl getManager() {
+        return manager;
+    }
 }

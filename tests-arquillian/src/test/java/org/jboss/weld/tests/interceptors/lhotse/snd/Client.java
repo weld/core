@@ -27,7 +27,6 @@ import org.jboss.weld.tests.interceptors.lhotse.fst.Timestamped;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Client extends Timestamped
-{
-   String name;
+public class Client extends Timestamped {
+    String name;
 }

@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.unit.selector;
 
-public class Bar1
-{
+public class Bar1 {
 
 }

@@ -16,22 +16,20 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-
 @SessionScoped
-public class Government implements Serializable
-{
+public class Government implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   @Important Car governmentCar;
-   
-   public void destabilize()
-   {
-      
-   }
-   
-   
+    @Important
+    Car governmentCar;
+
+    public void destabilize() {
+
+    }
+
+
 }

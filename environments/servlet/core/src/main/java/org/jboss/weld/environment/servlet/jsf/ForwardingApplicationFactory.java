@@ -21,41 +21,34 @@ import javax.faces.application.ApplicationFactory;
 
 /**
  * @author pmuir
- *
  */
-public abstract class ForwardingApplicationFactory extends ApplicationFactory
-{
+public abstract class ForwardingApplicationFactory extends ApplicationFactory {
 
-   protected abstract ApplicationFactory delegate();
-   
-   @Override
-   public Application getApplication()
-   {
-      return delegate().getApplication();
-   }
+    protected abstract ApplicationFactory delegate();
 
-   @Override
-   public void setApplication(Application application)
-   {
-      delegate().setApplication(application);
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return delegate().equals(obj);
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
+    @Override
+    public Application getApplication() {
+        return delegate().getApplication();
+    }
+
+    @Override
+    public void setApplication(Application application) {
+        delegate().setApplication(application);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
 
 }

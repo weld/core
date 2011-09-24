@@ -16,28 +16,24 @@
  */
 package org.jboss.weld.el;
 
-import javax.el.ELContext;
-
 import org.jboss.weld.manager.BeanManagerImpl;
+
+import javax.el.ELContext;
 
 /**
  * @author pmuir
- *
  */
-public class WeldELResolver extends AbstractWeldELResolver
-{
-   
-   private final BeanManagerImpl beanManager;
+public class WeldELResolver extends AbstractWeldELResolver {
 
-   public WeldELResolver(BeanManagerImpl beanManager)
-   {
-      this.beanManager = beanManager;
-   }
+    private final BeanManagerImpl beanManager;
 
-   @Override
-   protected BeanManagerImpl getManager(ELContext context)
-   {
-      return beanManager;
-   }
+    public WeldELResolver(BeanManagerImpl beanManager) {
+        this.beanManager = beanManager;
+    }
+
+    @Override
+    protected BeanManagerImpl getManager(ELContext context) {
+        return beanManager;
+    }
 
 }

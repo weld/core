@@ -35,26 +35,23 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class DAOTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .intercept(TxInterceptor.class)
-                  .addPackage(DAOTest.class.getPackage());
-   }
+public class DAOTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .intercept(TxInterceptor.class)
+                .addPackage(DAOTest.class.getPackage());
+    }
 
-   @Test
-   public void testInterceptors(Filter filter) throws Exception
-   {
-      TxInterceptor.ignoreDup = false;
+    @Test
+    public void testInterceptors(Filter filter) throws Exception {
+        TxInterceptor.ignoreDup = false;
 
-      Client c = filter.verify();
-      Assert.assertNotNull(c);
-      c = filter.check();
-      Assert.assertNotNull(c);
-      Assert.assertEquals("TxInterceptor_TEMP", c.name);
-      filter.save(c);
-   }
+        Client c = filter.verify();
+        Assert.assertNotNull(c);
+        c = filter.check();
+        Assert.assertNotNull(c);
+        Assert.assertEquals("TxInterceptor_TEMP", c.name);
+        filter.save(c);
+    }
 }

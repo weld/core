@@ -16,9 +16,7 @@
  */
 package org.jboss.weld.introspector;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
+import org.jboss.weld.util.collections.Arrays2;
 
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.inject.Stereotype;
@@ -26,130 +24,129 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 import javax.interceptor.InterceptorBinding;
-
-import org.jboss.weld.util.collections.Arrays2;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 /**
  * AnnotatedItem provides a uniform access to the annotations on an annotated
  * item defined either in Java or XML
- * 
+ *
  * @author Pete Muir
- * 
  */
 
-public interface WeldAnnotated<T, S> extends Annotated
-{
+public interface WeldAnnotated<T, S> extends Annotated {
 
-   /**
-    *  The set of meta-annotations to map
-    */
-   public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = Arrays2.asSet(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class);
-   
-   /**
-    * The set of declared meta-annotations to map
-    */
-   public static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METAANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
+    /**
+     * The set of meta-annotations to map
+     */
+    public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = Arrays2.asSet(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class);
 
-   /**
-    * Gets all annotations which are annotated with the given meta annotation
-    * type
-    * 
-    * @param The meta annotation to match
-    * @return A set of matching meta-annotations. Returns an empty set if there
-    *         are no matches.
-    */
-   public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
+    /**
+     * The set of declared meta-annotations to map
+     */
+    public static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METAANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
 
-   /**
-    * Gets the binding types for this element
-    * 
-    * @returns A set of binding types present on the type. Returns an empty set
-    *          if there are no matches.
-    * @deprecated This reflection type should not know about JSR-299 binding
-    *             types
-    */
-   @Deprecated
-   public Set<Annotation> getQualifiers();
+    /**
+     * Gets all annotations which are annotated with the given meta annotation
+     * type
+     *
+     * @param The meta annotation to match
+     * @return A set of matching meta-annotations. Returns an empty set if there
+     *         are no matches.
+     */
+    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
 
-   /**
-    * Gets the binding types for this element
-    * 
-    * @returns An array of binding types present on the type. Returns an empty
-    *          array if there are no matches.
-    * @deprecated This reflection type should not know about JSR-299 binding
-    *             types
-    */
-   @Deprecated
-   public Annotation[] getBindingsAsArray();
+    /**
+     * Gets the binding types for this element
+     *
+     * @returns A set of binding types present on the type. Returns an empty set
+     * if there are no matches.
+     * @deprecated This reflection type should not know about JSR-299 binding
+     *             types
+     */
+    @Deprecated
+    public Set<Annotation> getQualifiers();
 
-   /**
-    * Get the type hierarchy of any interfaces implemented by this class.
-    * 
-    * The returned types should have any type parameters resolved to their
-    * actual types.
-    * 
-    * There is no guarantee this methods executes in O(1) time
-    * 
-    * @return the type hierarchy
-    */
-   public Set<Type> getInterfaceClosure();
+    /**
+     * Gets the binding types for this element
+     *
+     * @returns An array of binding types present on the type. Returns an empty
+     * array if there are no matches.
+     * @deprecated This reflection type should not know about JSR-299 binding
+     *             types
+     */
+    @Deprecated
+    public Annotation[] getBindingsAsArray();
 
-   /**
-    * Gets the type of the element
-    * 
-    * @return The type of the element
-    */
-   public Class<T> getJavaClass();
+    /**
+     * Get the type hierarchy of any interfaces implemented by this class.
+     * <p/>
+     * The returned types should have any type parameters resolved to their
+     * actual types.
+     * <p/>
+     * There is no guarantee this methods executes in O(1) time
+     *
+     * @return the type hierarchy
+     */
+    public Set<Type> getInterfaceClosure();
 
-   /**
-    * Gets the actual type arguments for any parameterized types that this
-    * AnnotatedItem represents.
-    * 
-    * @return An array of type arguments
-    */
-   public Type[] getActualTypeArguments();
+    /**
+     * Gets the type of the element
+     *
+     * @return The type of the element
+     */
+    public Class<T> getJavaClass();
 
-   /**
-    * Indicates if this AnnotatedItem represents a static element
-    * 
-    * @return True if static, false otherwise
-    */
-   public boolean isStatic();
-   
-   public boolean isGeneric();
+    /**
+     * Gets the actual type arguments for any parameterized types that this
+     * AnnotatedItem represents.
+     *
+     * @return An array of type arguments
+     */
+    public Type[] getActualTypeArguments();
 
-   /**
-    * Indicates if this AnnotatedItem represents a final element
-    * 
-    * @return True if final, false otherwise
-    */
-   public boolean isFinal();
+    /**
+     * Indicates if this AnnotatedItem represents a static element
+     *
+     * @return True if static, false otherwise
+     */
+    public boolean isStatic();
 
-   /**
-    * Indicates if this annotated item is public
-    * 
-    * @return if public, returns true
-    */
-   public boolean isPublic();
+    public boolean isGeneric();
 
-   public boolean isPrivate();
-   
-   public boolean isPackagePrivate();
-   
-   public Package getPackage();
+    /**
+     * Indicates if this AnnotatedItem represents a final element
+     *
+     * @return True if final, false otherwise
+     */
+    public boolean isFinal();
 
-   /**
-    * Gets the name of this AnnotatedItem
-    * 
-    * If it is not possible to determine the name of the underling element, a
-    * IllegalArgumentException is thrown
-    * 
-    * @return The name
-    */
-   public String getName();
+    /**
+     * Indicates if this annotated item is public
+     *
+     * @return if public, returns true
+     */
+    public boolean isPublic();
 
-   public boolean isParameterizedType();
-   
-   public boolean isPrimitive();
+    public boolean isPrivate();
+
+    public boolean isPackagePrivate();
+
+    public Package getPackage();
+
+    /**
+     * Gets the name of this AnnotatedItem
+     * <p/>
+     * If it is not possible to determine the name of the underling element, a
+     * IllegalArgumentException is thrown
+     *
+     * @return The name
+     */
+    public String getName();
+
+    public boolean isParameterizedType();
+
+    public boolean isPrimitive();
 
 }

@@ -22,15 +22,13 @@ import javax.enterprise.inject.Produces;
 import java.io.Serializable;
 
 @SessionScoped
-public class Foo implements Serializable
-{
+public class Foo implements Serializable {
 
-   @Produces
-   @RequestScoped
-   @HttpParam("")
-   public String produceHttpParam()
-   {
-      return "pete";
-   }
+    @Produces
+    @RequestScoped
+    @HttpParam("")
+    public String produceHttpParam() {
+        return "pete";
+    }
 
 }

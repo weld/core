@@ -24,16 +24,15 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Counted
-public class CdiInterceptor2
-{
-   static int count;
+@Interceptor
+@Counted
+public class CdiInterceptor2 {
+    static int count;
 
-   @AroundInvoke
-   public Object doCounted(InvocationContext invocationContext) throws Exception
-   {
-      count = Counter.next();
-      return invocationContext.proceed();
+    @AroundInvoke
+    public Object doCounted(InvocationContext invocationContext) throws Exception {
+        count = Counter.next();
+        return invocationContext.proceed();
 
-   }
+    }
 }

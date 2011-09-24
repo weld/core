@@ -20,6 +20,5 @@ package org.jboss.weld.tests.interceptors.applicationException;
 /**
  * @author Marius Bogoevici
  */
-public class FooException extends Exception
-{
+public class FooException extends Exception {
 }

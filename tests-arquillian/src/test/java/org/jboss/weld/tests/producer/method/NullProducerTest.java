@@ -26,23 +26,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class NullProducerTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(NullProducerTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class NullProducerTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(NullProducerTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   /*
+    /*
     * description = "WBRI-276"
     */
-   @Test
-   public void testProducerMethodReturnsNull(Government government)
-   {
-      government.destabilize();
-   }
+    @Test
+    public void testProducerMethodReturnsNull(Government government) {
+        government.destabilize();
+    }
 
 }

@@ -16,47 +16,40 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
 
-public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T>
-{
-   
-   private static final LocLogger log = loggerFactory().getLogger(BEAN);
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
 
-   protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager)
-   {
-      super(idSuffix, manager);
-   }
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
 
-   public T create(CreationalContext<T> creationalContext)
-   {
-      InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
-      if (injectionPoint != null)
-      {
-         return newInstance(injectionPoint, creationalContext);
-      }
-      else
-      {
-         log.warn(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
-         return null;
-      }
-   }
-   
-   public void destroy(T instance, CreationalContext<T> creationalContext)
-   {
-      creationalContext.release();
-   }
-   
-   protected abstract T newInstance(InjectionPoint injectionPoint, CreationalContext<T> creationalContext);
-   
+public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T> {
+
+    private static final LocLogger log = loggerFactory().getLogger(BEAN);
+
+    protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager) {
+        super(idSuffix, manager);
+    }
+
+    public T create(CreationalContext<T> creationalContext) {
+        InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
+        if (injectionPoint != null) {
+            return newInstance(injectionPoint, creationalContext);
+        } else {
+            log.warn(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
+            return null;
+        }
+    }
+
+    public void destroy(T instance, CreationalContext<T> creationalContext) {
+        creationalContext.release();
+    }
+
+    protected abstract T newInstance(InjectionPoint injectionPoint, CreationalContext<T> creationalContext);
+
 }

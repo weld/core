@@ -17,22 +17,18 @@
 package org.jboss.weld.tests.decorators.abstractDecorator.broken;
 
 /**
- *
  * @author Marius Bogoevici
  */
-public class Window
-{
-   static boolean drawn;
+public class Window {
+    static boolean drawn;
 
-   static boolean moved;
+    static boolean moved;
 
-   public void draw()
-   {
-      drawn = true;
-   }
+    public void draw() {
+        drawn = true;
+    }
 
-   public void move()
-   {
-      moved = true;
-   }
+    public void move() {
+        moved = true;
+    }
 }

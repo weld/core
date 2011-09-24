@@ -21,11 +21,9 @@ package org.jboss.weld.tests.decorators.resolution;
  * @author Marius Bogoevici
  */
 @Complex
-public class ComplexBean implements SomeBean
-{
-   public String hello(String name)
-   {
-      return "Sophisticated Hello, " + name;
-   }
+public class ComplexBean implements SomeBean {
+    public String hello(String name) {
+        return "Sophisticated Hello, " + name;
+    }
 
 }

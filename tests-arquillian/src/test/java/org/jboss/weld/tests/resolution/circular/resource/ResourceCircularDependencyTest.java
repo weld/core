@@ -29,20 +29,17 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class ResourceCircularDependencyTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ResourceCircularDependencyTest.class.getPackage())
-         .addAsManifestResource(
-               ResourceCircularDependencyTest.class.getPackage(), "persistence.xml", "persistence.xml");
-   }
+public class ResourceCircularDependencyTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ResourceCircularDependencyTest.class.getPackage())
+                .addAsManifestResource(
+                        ResourceCircularDependencyTest.class.getPackage(), "persistence.xml", "persistence.xml");
+    }
 
-   @Test
-   public void testResourceProducerField(Baz baz) throws Exception
-   {
-      Assert.assertFalse(baz.getFooDb().contains(new Bar()));
-   }
+    @Test
+    public void testResourceProducerField(Baz baz) throws Exception {
+        Assert.assertFalse(baz.getFooDb().contains(new Bar()));
+    }
 }

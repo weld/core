@@ -5,19 +5,16 @@ import javax.inject.Named;
 
 @ApplicationScoped
 @Named
-public class Hurricane
-{
-   
-   private boolean preDestroyCalledOnCloud;
-   
-   public boolean isPreDestroyCalledOnCloud()
-   {
-      return preDestroyCalledOnCloud;
-   }
-   
-   public void setPreDestroyCalledOnCloud(boolean preDestroyCalledOnCloud)
-   {
-      this.preDestroyCalledOnCloud = preDestroyCalledOnCloud;
-   }
+public class Hurricane {
+
+    private boolean preDestroyCalledOnCloud;
+
+    public boolean isPreDestroyCalledOnCloud() {
+        return preDestroyCalledOnCloud;
+    }
+
+    public void setPreDestroyCalledOnCloud(boolean preDestroyCalledOnCloud) {
+        this.preDestroyCalledOnCloud = preDestroyCalledOnCloud;
+    }
 
 }

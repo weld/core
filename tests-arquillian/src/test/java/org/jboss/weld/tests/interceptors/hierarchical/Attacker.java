@@ -20,22 +20,18 @@ package org.jboss.weld.tests.interceptors.hierarchical;
  * @author Marius Bogoevici
  */
 
-public class Attacker extends Player
-{
+public class Attacker extends Player {
 
-   public void playBall()
-   {
-      // do nothing
-   }
+    public void playBall() {
+        // do nothing
+    }
 
-   protected void pass()
-   {
-      
-   }
+    protected void pass() {
 
-   @Play
-   public Attacker cloneMe()
-   {
-      return this;
-   }
+    }
+
+    @Play
+    public Attacker cloneMe() {
+        return this;
+    }
 }

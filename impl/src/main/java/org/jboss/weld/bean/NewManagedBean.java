@@ -16,119 +16,104 @@
  */
 package org.jboss.weld.bean;
 
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import javax.enterprise.context.Dependent;
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Represents a @New simple bean
- * 
- * @author Nicklas Karlsson 
+ *
+ * @author Nicklas Karlsson
  */
-public class NewManagedBean<T> extends ManagedBean<T> implements NewBean
-{
+public class NewManagedBean<T> extends ManagedBean<T> implements NewBean {
 
-   /**
-    * Creates an instance of a NewSimpleBean from an annotated class
-    * 
-    * @param clazz The annotated class
-    * @param beanManager The Bean manager
-    * @return a new NewSimpleBean instance
-    */
-   public static <T> NewManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services)
-   {
-      if (clazz.isDiscovered())
-      {
-         return new NewManagedBean<T>(clazz, createSimpleId(NewManagedBean.class.getSimpleName(), clazz), beanManager, services);
-      }
-      else
-      {
-         return new NewManagedBean<T>(clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager, services);
-      }
-   }
-   
-   private Set<Annotation> bindings;
+    /**
+     * Creates an instance of a NewSimpleBean from an annotated class
+     *
+     * @param clazz       The annotated class
+     * @param beanManager The Bean manager
+     * @return a new NewSimpleBean instance
+     */
+    public static <T> NewManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
+        if (clazz.isDiscovered()) {
+            return new NewManagedBean<T>(clazz, createSimpleId(NewManagedBean.class.getSimpleName(), clazz), beanManager, services);
+        } else {
+            return new NewManagedBean<T>(clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager, services);
+        }
+    }
 
-   /**
-    * Protected constructor
-    * 
-    * @param type An annotated class
-    * @param beanManager The Bean manager
-    */
-   protected NewManagedBean(final WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services)
-   {
-      super(type, idSuffix, beanManager, services);
-      this.bindings = new HashSet<Annotation>();
-      this.bindings.add(new NewLiteral()
-      {
+    private Set<Annotation> bindings;
 
-         private static final long serialVersionUID = -6678013994309291500L;
+    /**
+     * Protected constructor
+     *
+     * @param type        An annotated class
+     * @param beanManager The Bean manager
+     */
+    protected NewManagedBean(final WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(type, idSuffix, beanManager, services);
+        this.bindings = new HashSet<Annotation>();
+        this.bindings.add(new NewLiteral() {
 
-         @Override
-         public Class<?> value()
-         {
-            return type.getJavaClass();
-         }
-         
-      });
-   }
+            private static final long serialVersionUID = -6678013994309291500L;
 
-   /**
-    * Gets the scope type
-    * 
-    * @return @Dependent
-    */
-   @Override
-   public Class<? extends Annotation> getScope()
-   {
-      return Dependent.class;
-   }
+            @Override
+            public Class<?> value() {
+                return type.getJavaClass();
+            }
 
-   @Override
-   public boolean isAlternative()
-   {
-      return false;
-   }
+        });
+    }
 
-   /**
-    * Gets the name of the bean
-    * 
-    * @return null
-    */
-   @Override
-   public String getName()
-   {
-      return null;
-   }
+    /**
+     * Gets the scope type
+     *
+     * @return @Dependent
+     */
+    @Override
+    public Class<? extends Annotation> getScope() {
+        return Dependent.class;
+    }
 
-   /**
-    * Gets the bindings
-    * 
-    * @returns @New
-    */
-   @Override
-   public Set<Annotation> getQualifiers()
-   {
-      return bindings;
-   }
+    @Override
+    public boolean isAlternative() {
+        return false;
+    }
 
-   @Override
-   public boolean isSpecializing()
-   {
-      return false;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "@New " + super.toString();
-   }
-   
+    /**
+     * Gets the name of the bean
+     *
+     * @return null
+     */
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    /**
+     * Gets the bindings
+     *
+     * @returns @New
+     */
+    @Override
+    public Set<Annotation> getQualifiers() {
+        return bindings;
+    }
+
+    @Override
+    public boolean isSpecializing() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "@New " + super.toString();
+    }
+
 }

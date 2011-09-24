@@ -16,29 +16,27 @@
  */
 package org.jboss.weld.context;
 
+import org.jboss.weld.context.api.ContextualInstance;
+
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.context.api.ContextualInstance;
-
 /**
- * @author pmuir
- *
  * @param <T>
+ * @author pmuir
  */
-public interface WeldCreationalContext<T> extends CreationalContext<T>
-{
+public interface WeldCreationalContext<T> extends CreationalContext<T> {
 
-   public abstract void push(T incompleteInstance);
+    public abstract void push(T incompleteInstance);
 
-   public abstract <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual);
+    public abstract <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual);
 
-   public abstract <S> S getIncompleteInstance(Contextual<S> bean);
+    public abstract <S> S getIncompleteInstance(Contextual<S> bean);
 
-   public abstract boolean containsIncompleteInstance(Contextual<?> bean);
+    public abstract boolean containsIncompleteInstance(Contextual<?> bean);
 
-   public abstract void addDependentInstance(ContextualInstance<?> contextualInstance);
+    public abstract void addDependentInstance(ContextualInstance<?> contextualInstance);
 
-   public abstract void release();
+    public abstract void release();
 
 }

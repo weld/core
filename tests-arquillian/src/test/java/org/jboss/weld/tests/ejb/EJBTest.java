@@ -29,19 +29,16 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EJBTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(EJBTest.class.getPackage());
-   }
+public class EJBTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EJBTest.class.getPackage());
+    }
 
-   @Test
-   public void testNoInterface(Cow cow)
-   {
-      cow.ping();
-      Assert.assertTrue(cow.isPinged());
-   }
+    @Test
+    public void testNoInterface(Cow cow) {
+        cow.ping();
+        Assert.assertTrue(cow.isPinged());
+    }
 }

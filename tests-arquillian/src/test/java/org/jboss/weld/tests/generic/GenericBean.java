@@ -20,12 +20,10 @@ package org.jboss.weld.tests.generic;
 /**
  * @author Marius Bogoevici
  */
-public class GenericBean<T> implements GenericInterface<T>
-{
+public class GenericBean<T> implements GenericInterface<T> {
 
-   public T echo(T parameter)
-   {
-      return parameter;
-   }
+    public T echo(T parameter) {
+        return parameter;
+    }
 
 }

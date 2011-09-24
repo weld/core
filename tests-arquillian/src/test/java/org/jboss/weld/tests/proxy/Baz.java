@@ -16,30 +16,25 @@
  */
 package org.jboss.weld.tests.proxy;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @RequestScoped
-class Baz implements Serializable
-{
-   private int count = 0;
+class Baz implements Serializable {
+    private int count = 0;
 
-   public Baz()
-   {
-      init();
-   }
+    public Baz() {
+        init();
+    }
 
-   public void init()
-   {
-      count++;
-   }
-   
-   public int getCount()
-   {
-      return count;
-   }
+    public void init() {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
 
 }

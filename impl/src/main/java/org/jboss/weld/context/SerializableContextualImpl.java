@@ -27,104 +27,84 @@ import java.io.Serializable;
 /**
  * A serializable version of contextual that knows how to restore the
  * original bean if necessary
- * 
+ *
  * @author pmuir
- * 
  */
-public class SerializableContextualImpl<C extends Contextual<I>, I> extends ForwardingContextual<I> implements SerializableContextual<C, I>
-{
+public class SerializableContextualImpl<C extends Contextual<I>, I> extends ForwardingContextual<I> implements SerializableContextual<C, I> {
 
-   @Override
-   protected Contextual<I> delegate()
-   {
-      return get();
-   }
+    @Override
+    protected Contextual<I> delegate() {
+        return get();
+    }
 
-   private static final long serialVersionUID = 9161034819867283482L;
+    private static final long serialVersionUID = 9161034819867283482L;
 
-   // A directly serializable contextual
-   private C serialiazable;
-   @SuppressWarnings(value="SE_TRANSIENT_FIELD_NOT_RESTORED", justification="A cache which is lazily loaded")
-   // A cached, transient version of the contextual
-   private transient C cached;
-   
-   // the id of a non-serializable, passivation capable contextual
-   private String id;
-   
-   private transient ContextualStore cachedContextualStore;
-   
-   @java.lang.SuppressWarnings("unused")
-   private SerializableContextualImpl() {}
-   
-   public SerializableContextualImpl(C contextual, ContextualStore contextualStore)
-   {
-      this.cachedContextualStore = contextualStore;
-      if (contextual instanceof Serializable)
-      {
-         // the contextual is serializable, so we can just use it
-         this.serialiazable = contextual;
-      }
-      else
-      {
-         // otherwise, generate an id (may not be portable between container instances)
-         this.id = getContextualStore().putIfAbsent(contextual);
-      }
-      // cache the contextual
-      this.cached = contextual;
-   }
-   
-   private ContextualStore getContextualStore()
-   {
-      if (cachedContextualStore == null)
-      {
-         this.cachedContextualStore = Container.instance().services().get(ContextualStore.class);
-      }
-      return this.cachedContextualStore;
-   }
-   
-   public C get()
-   {
-      if (cached == null)
-      {
-         loadContextual();
-      }
-      return cached;
-   }
-   
-   private void loadContextual()
-   {
-      if (serialiazable != null)
-      {
-         this.cached = serialiazable;
-      }
-      else if (id != null)
-      {
-         this.cached = getContextualStore().<C, I>getContextual(id);
-      }
-      if (this.cached == null)
-      {
-         throw new IllegalStateException("Error restoring serialized contextual with id " + id);
-      }
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      // if the arriving object is also a SerializableContextual, then unwrap it
-      if (obj instanceof SerializableContextualImpl<?, ?>)
-      {
-         return delegate().equals(((SerializableContextualImpl<?, ?>) obj).get());
-      }
-      else
-      {
-         return delegate().equals(obj);
-      }
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
+    // A directly serializable contextual
+    private C serialiazable;
+    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "A cache which is lazily loaded")
+    // A cached, transient version of the contextual
+    private transient C cached;
+
+    // the id of a non-serializable, passivation capable contextual
+    private String id;
+
+    private transient ContextualStore cachedContextualStore;
+
+    @java.lang.SuppressWarnings("unused")
+    private SerializableContextualImpl() {
+    }
+
+    public SerializableContextualImpl(C contextual, ContextualStore contextualStore) {
+        this.cachedContextualStore = contextualStore;
+        if (contextual instanceof Serializable) {
+            // the contextual is serializable, so we can just use it
+            this.serialiazable = contextual;
+        } else {
+            // otherwise, generate an id (may not be portable between container instances)
+            this.id = getContextualStore().putIfAbsent(contextual);
+        }
+        // cache the contextual
+        this.cached = contextual;
+    }
+
+    private ContextualStore getContextualStore() {
+        if (cachedContextualStore == null) {
+            this.cachedContextualStore = Container.instance().services().get(ContextualStore.class);
+        }
+        return this.cachedContextualStore;
+    }
+
+    public C get() {
+        if (cached == null) {
+            loadContextual();
+        }
+        return cached;
+    }
+
+    private void loadContextual() {
+        if (serialiazable != null) {
+            this.cached = serialiazable;
+        } else if (id != null) {
+            this.cached = getContextualStore().<C, I>getContextual(id);
+        }
+        if (this.cached == null) {
+            throw new IllegalStateException("Error restoring serialized contextual with id " + id);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // if the arriving object is also a SerializableContextual, then unwrap it
+        if (obj instanceof SerializableContextualImpl<?, ?>) {
+            return delegate().equals(((SerializableContextualImpl<?, ?>) obj).get());
+        } else {
+            return delegate().equals(obj);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
 }

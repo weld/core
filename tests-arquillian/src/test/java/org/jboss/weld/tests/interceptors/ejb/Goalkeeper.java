@@ -17,20 +17,19 @@
 
 package org.jboss.weld.tests.interceptors.ejb;
 
-import javax.interceptor.Interceptor;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Shot @Interceptor
-public class Goalkeeper
-{
+@Shot
+@Interceptor
+public class Goalkeeper {
 
-   @AroundInvoke
-   public Object catchBall(InvocationContext invocationContext) throws Exception
-   {
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object catchBall(InvocationContext invocationContext) throws Exception {
+        return invocationContext.proceed();
+    }
 }

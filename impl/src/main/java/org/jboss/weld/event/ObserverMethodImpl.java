@@ -63,289 +63,230 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTI
  * annotations applied to the event parameter to narrow the event notifications
  * delivered.
  * </p>
- * 
+ *
  * @author David Allen
- * 
  */
-public class ObserverMethodImpl<T, X> implements ObserverMethod<T>
-{
-   
-   public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
-   
-   public static final String ID_SEPARATOR = "-";
-   
-   private final Set<Annotation> bindings;
-   private final Type eventType;
-   protected BeanManagerImpl beanManager;
-   private final Reception reception;
-   protected final RIBean<X> declaringBean;
-   protected final MethodInjectionPoint<T, ? super X> observerMethod;
-   protected TransactionPhase transactionPhase;
-   private final String id;
+public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
-   private final Set<WeldInjectionPoint<?, ?>> injectionPoints;
-   private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
+    public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
 
-   /**
-    * Creates an Observer which describes and encapsulates an observer method
-    * (8.5).
-    * 
-    * @param observer The observer
-    * @param declaringBean The observer bean
-    * @param manager The Bean manager
-    */
-   protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager)
-   {
-      this.beanManager = manager;
-      this.declaringBean = declaringBean;
-      this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
-      this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
-      this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
-      this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
-      Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
-      this.reception = observesAnnotation.notifyObserver();
-      transactionPhase = TransactionPhase.IN_PROGRESS;
+    public static final String ID_SEPARATOR = "-";
 
-      this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-      this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-      for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod))
-      {
-         if (injectionPoint.isAnnotationPresent(Observes.class) == false)
-         {
-            if (injectionPoint.isAnnotationPresent(New.class))
-            {
-               this.newInjectionPoints.add(injectionPoint);
+    private final Set<Annotation> bindings;
+    private final Type eventType;
+    protected BeanManagerImpl beanManager;
+    private final Reception reception;
+    protected final RIBean<X> declaringBean;
+    protected final MethodInjectionPoint<T, ? super X> observerMethod;
+    protected TransactionPhase transactionPhase;
+    private final String id;
+
+    private final Set<WeldInjectionPoint<?, ?>> injectionPoints;
+    private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
+
+    /**
+     * Creates an Observer which describes and encapsulates an observer method
+     * (8.5).
+     *
+     * @param observer      The observer
+     * @param declaringBean The observer bean
+     * @param manager       The Bean manager
+     */
+    protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
+        this.beanManager = manager;
+        this.declaringBean = declaringBean;
+        this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
+        this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
+        this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
+        this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
+        Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
+        this.reception = observesAnnotation.notifyObserver();
+        transactionPhase = TransactionPhase.IN_PROGRESS;
+
+        this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+        this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+        for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod)) {
+            if (injectionPoint.isAnnotationPresent(Observes.class) == false) {
+                if (injectionPoint.isAnnotationPresent(New.class)) {
+                    this.newInjectionPoints.add(injectionPoint);
+                }
+                injectionPoints.add(injectionPoint);
             }
-            injectionPoints.add(injectionPoint);
-         }
-      }
-   }
+        }
+    }
 
-   public Set<WeldInjectionPoint<?, ?>> getInjectionPoints()
-   {
-      return Collections.unmodifiableSet(injectionPoints);
-   }
+    public Set<WeldInjectionPoint<?, ?>> getInjectionPoints() {
+        return Collections.unmodifiableSet(injectionPoints);
+    }
 
-   public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints()
-   {
-      return Collections.unmodifiableSet(newInjectionPoints);
-   }
+    public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints() {
+        return Collections.unmodifiableSet(newInjectionPoints);
+    }
 
-   /**
-    * Performs validation of the observer method for compliance with the
-    * specifications.
-    */
-   private void checkObserverMethod()
-   {
-      // Make sure exactly one and only one parameter is annotated with Observes
-      List<?> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
-      if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class))
-      {
-         throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
-      }
-      if (eventObjects.size() > 1)
-      {
-         throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
-      }
-      // Check for parameters annotated with @Disposes
-      List<?> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
-      if (disposeParams.size() > 0)
-      {
-         throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
-      }
-      // Check annotations on the method to make sure this is not a producer
-      // method, initializer method, or destructor method.
-      if (this.observerMethod.isAnnotationPresent(Produces.class))
-      {
-         throw new DefinitionException(INVALID_PRODUCER, this);
-      }
-      if (this.observerMethod.isAnnotationPresent(Inject.class))
-      {
-         throw new DefinitionException(INVALID_INITIALIZER, this);
-      }
-      for (WeldParameter<?, ?> parameter : getMethod().getWeldParameters())
-      {
-         if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals(""))
-         {
-            throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
-         }
-      }
+    /**
+     * Performs validation of the observer method for compliance with the
+     * specifications.
+     */
+    private void checkObserverMethod() {
+        // Make sure exactly one and only one parameter is annotated with Observes
+        List<?> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+        if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
+            throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
+        }
+        if (eventObjects.size() > 1) {
+            throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
+        }
+        // Check for parameters annotated with @Disposes
+        List<?> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+        if (disposeParams.size() > 0) {
+            throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
+        }
+        // Check annotations on the method to make sure this is not a producer
+        // method, initializer method, or destructor method.
+        if (this.observerMethod.isAnnotationPresent(Produces.class)) {
+            throw new DefinitionException(INVALID_PRODUCER, this);
+        }
+        if (this.observerMethod.isAnnotationPresent(Inject.class)) {
+            throw new DefinitionException(INVALID_INITIALIZER, this);
+        }
+        for (WeldParameter<?, ?> parameter : getMethod().getWeldParameters()) {
+            if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals("")) {
+                throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
+            }
+        }
 
-   }
+    }
 
-   public Class<X> getBeanClass()
-   {
-      return declaringBean.getType();
-   }
-   
-   public RIBean<X> getDeclaringBean()
-   {
-      return declaringBean;
-   }
+    public Class<X> getBeanClass() {
+        return declaringBean.getType();
+    }
 
-   public Annotation[] getBindingsAsArray()
-   {
-      return bindings.toArray(new Annotation[0]);
-   }
+    public RIBean<X> getDeclaringBean() {
+        return declaringBean;
+    }
 
-   public Reception getReception()
-   {
-      return reception;
-   }
+    public Annotation[] getBindingsAsArray() {
+        return bindings.toArray(new Annotation[0]);
+    }
 
-   public Set<Annotation> getObservedQualifiers()
-   {
-      return bindings;
-   }
+    public Reception getReception() {
+        return reception;
+    }
 
-   public Type getObservedType()
-   {
-      return eventType;
-   }
+    public Set<Annotation> getObservedQualifiers() {
+        return bindings;
+    }
 
-   public TransactionPhase getTransactionPhase()
-   {
-      return transactionPhase;
-   }
+    public Type getObservedType() {
+        return eventType;
+    }
 
-   /**
-    * @return the observerMethod
-    */
-   public MethodInjectionPoint<T, ? super X> getMethod()
-   {
-      return observerMethod;
-   }
+    public TransactionPhase getTransactionPhase() {
+        return transactionPhase;
+    }
 
-   /**
-    * Completes initialization of the observer and allows derived types to
-    * override behavior.
-    */
-   public void initialize()
-   {
-      checkObserverMethod();
-   }
+    /**
+     * @return the observerMethod
+     */
+    public MethodInjectionPoint<T, ? super X> getMethod() {
+        return observerMethod;
+    }
 
-   public void notify(final T event)
-   {
-      if (ignore(event))
-      {
-         return;
-      }
-      sendEvent(event);
-   }
+    /**
+     * Completes initialization of the observer and allows derived types to
+     * override behavior.
+     */
+    public void initialize() {
+        checkObserverMethod();
+    }
 
-   /**
-    * Invokes the observer method immediately passing the event.
-    * 
-    * @param event The event to notify observer with
-    */
-   protected void sendEvent(final T event)
-   {
-      if (observerMethod.isStatic())
-      {
-         sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
-      }
-      else if (reception.equals(Reception.IF_EXISTS))
-      {
-         Object receiver = getReceiverIfExists();
-         // The observer is conditional, and there is no existing bean
-         if (receiver == null)
-         {
+    public void notify(final T event) {
+        if (ignore(event)) {
             return;
-         }
-         else
-         {
-            sendEvent(event, receiver, null);
-         }
-      }
-      else
-      {
-         CreationalContext<?> creationalContext = beanManager.createCreationalContext(declaringBean);
-         Object receiver = beanManager.getReference(declaringBean, creationalContext, false);
-         sendEvent(event, receiver, creationalContext);
-      }
+        }
+        sendEvent(event);
+    }
 
-   }
+    /**
+     * Invokes the observer method immediately passing the event.
+     *
+     * @param event The event to notify observer with
+     */
+    protected void sendEvent(final T event) {
+        if (observerMethod.isStatic()) {
+            sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
+        } else if (reception.equals(Reception.IF_EXISTS)) {
+            Object receiver = getReceiverIfExists();
+            // The observer is conditional, and there is no existing bean
+            if (receiver == null) {
+                return;
+            } else {
+                sendEvent(event, receiver, null);
+            }
+        } else {
+            CreationalContext<?> creationalContext = beanManager.createCreationalContext(declaringBean);
+            Object receiver = beanManager.getReference(declaringBean, creationalContext, false);
+            sendEvent(event, receiver, creationalContext);
+        }
 
-   private void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext)
-   {
-      try
-      {
-         if (receiver == null)
-         {
-            observerMethod.invokeWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
-         }
-         else
-         {
-            // As we are working with the contextual instance, we may not have the
-            // actual object, but a container proxy (e.g. EJB)
-            observerMethod.invokeOnInstanceWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
-         }
-      }
-      finally
-      {
-         if (creationalContext != null && Dependent.class.equals(declaringBean.getScope()))
-         {
-            creationalContext.release();
-         }
-      }
-   }
-   
-   private Object getReceiverIfExists()
-   {
-      try
-      {
-         return beanManager.getReference(declaringBean, null, false);
-      }
-      catch (ContextNotActiveException e)
-      {
-         return null;
-      }
-   }
-   
-   protected boolean ignore(T event)
-   {
-      Class<?> eventType = event.getClass();
-      // This is a container lifeycle event, ensure we are firing to an extension
-      if (AbstractContainerEvent.class.isAssignableFrom(eventType) && !Extension.class.isAssignableFrom(getBeanClass()))
-      {
-         return true;
-      }
-      else
-      {
-         return false;
-      }
-   }
-   
-   @Override
-   public String toString()
-   {
-      return observerMethod.toString();
-   }
-   
-   public String getId()
-   {
-      return id;
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj instanceof ObserverMethodImpl<?, ?>)
-      {
-         ObserverMethodImpl<?, ?> that = (ObserverMethodImpl<?, ?>) obj;
-         return this.getId().equals(that.getId());
-      }
-      else
-      {
-         return false;
-      }
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return getId().hashCode();
-   }
+    }
+
+    private void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
+        try {
+            if (receiver == null) {
+                observerMethod.invokeWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
+            } else {
+                // As we are working with the contextual instance, we may not have the
+                // actual object, but a container proxy (e.g. EJB)
+                observerMethod.invokeOnInstanceWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
+            }
+        } finally {
+            if (creationalContext != null && Dependent.class.equals(declaringBean.getScope())) {
+                creationalContext.release();
+            }
+        }
+    }
+
+    private Object getReceiverIfExists() {
+        try {
+            return beanManager.getReference(declaringBean, null, false);
+        } catch (ContextNotActiveException e) {
+            return null;
+        }
+    }
+
+    protected boolean ignore(T event) {
+        Class<?> eventType = event.getClass();
+        // This is a container lifeycle event, ensure we are firing to an extension
+        if (AbstractContainerEvent.class.isAssignableFrom(eventType) && !Extension.class.isAssignableFrom(getBeanClass())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return observerMethod.toString();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ObserverMethodImpl<?, ?>) {
+            ObserverMethodImpl<?, ?> that = (ObserverMethodImpl<?, ?>) obj;
+            return this.getId().equals(that.getId());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 
 }

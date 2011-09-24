@@ -23,5 +23,7 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class Bar {
-	@Inject @New private Instance<Foo> foo;
+    @Inject
+    @New
+    private Instance<Foo> foo;
 }

@@ -26,21 +26,20 @@ import java.util.List;
 /**
  * @author Ales Justin
  */
-public interface Repository
-{
-   List<BlogEntry> searchEntries(String searchString, int offset, int count);
+public interface Repository {
+    List<BlogEntry> searchEntries(String searchString, int offset, int count);
 
-   List<BlogEntry> searchEntries(String searchString, String category, int offset, int count);
+    List<BlogEntry> searchEntries(String searchString, String category, int offset, int count);
 
-   List<BlogEntry> getLatestEntries(String category, int offset, int count);
+    List<BlogEntry> getLatestEntries(String category, int offset, int count);
 
-   List<BlogEntry> getLatestEntries(int offset, int count);
+    List<BlogEntry> getLatestEntries(int offset, int count);
 
-   BlogEntry getEntry(Long entryId);
+    BlogEntry getEntry(Long entryId);
 
-   List<String> getCategories();
+    List<String> getCategories();
 
-   void addComment(Comment comment, Long entryId);
+    void addComment(Comment comment, Long entryId);
 
-   void addComment(Comment comment, BlogEntry entry);
+    void addComment(Comment comment, BlogEntry entry);
 }

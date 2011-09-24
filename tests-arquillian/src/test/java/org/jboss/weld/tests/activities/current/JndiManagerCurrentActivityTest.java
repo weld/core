@@ -16,16 +16,6 @@
  */
 package org.jboss.weld.tests.activities.current;
 
-import static org.jboss.weld.test.Utils.getReference;
-import static org.junit.Assert.assertEquals;
-
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -40,67 +30,65 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+
+import static org.jboss.weld.test.Utils.getReference;
+import static org.junit.Assert.assertEquals;
+
 /**
- *
  * Spec version: 20090519
- *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class JndiManagerCurrentActivityTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(JndiManagerCurrentActivityTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class JndiManagerCurrentActivityTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(JndiManagerCurrentActivityTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   private static class DummyContext implements Context
-   {
+    private static class DummyContext implements Context {
 
-      private boolean active = true;
+        private boolean active = true;
 
-      public <T> T get(Contextual<T> contextual)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual) {
+            return null;
+        }
 
-      public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+            return null;
+        }
 
-      public Class<? extends Annotation> getScope()
-      {
-         return Dummy.class;
-      }
+        public Class<? extends Annotation> getScope() {
+            return Dummy.class;
+        }
 
-      public boolean isActive()
-      {
-         return active;
-      }
+        public boolean isActive() {
+            return active;
+        }
 
-      public void setActive(boolean active)
-      {
-         this.active = active;
-      }
+        public void setActive(boolean active) {
+            this.active = active;
+        }
 
-   }
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   @Category(Broken.class) // JBAS-8436
-   public void testJndiManagerIsCurrentActivity()
-   {
-      Context dummyContext = new DummyContext();
-      beanManager.addContext(dummyContext);
-      assertEquals(1, beanManager.getBeans(Cow.class).size());
-      WeldManager childActivity = beanManager.createActivity();
-      childActivity.setCurrent(dummyContext.getScope());
-      assertEquals(childActivity, getReference(beanManager, Donkey.class).getManager());
-   }
+    @Test
+    @Category(Broken.class) // JBAS-8436
+    public void testJndiManagerIsCurrentActivity() {
+        Context dummyContext = new DummyContext();
+        beanManager.addContext(dummyContext);
+        assertEquals(1, beanManager.getBeans(Cow.class).size());
+        WeldManager childActivity = beanManager.createActivity();
+        childActivity.setCurrent(dummyContext.getScope());
+        assertEquals(childActivity, getReference(beanManager, Donkey.class).getManager());
+    }
 }

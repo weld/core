@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.contexts;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,40 +24,33 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-public class ApplicationScopedTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ApplicationScopedTest.class.getPackage());
-   }
+import java.util.concurrent.CountDownLatch;
 
-   @Test
-   public void testConcurrentInitilized(final ApplicationScopedObject applicationScopedObject) throws InterruptedException
-   {
-      final CountDownLatch latch = new CountDownLatch(10);
-      for (int i = 0; i < 10; i++)
-      {
-         new Thread(new Runnable()
-         {
-            public void run()
-            {
-               try
-               {
-                  applicationScopedObject.increment();
-               }
-               finally
-               {
-                  latch.countDown();
-               }
-            }
-         }).start();
-      }
-      latch.await();
-      int value = applicationScopedObject.getValue();
-      assert value == 10;
-   }
+@RunWith(Arquillian.class)
+public class ApplicationScopedTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ApplicationScopedTest.class.getPackage());
+    }
+
+    @Test
+    public void testConcurrentInitilized(final ApplicationScopedObject applicationScopedObject) throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(10);
+        for (int i = 0; i < 10; i++) {
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        applicationScopedObject.increment();
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            }).start();
+        }
+        latch.await();
+        int value = applicationScopedObject.getValue();
+        assert value == 10;
+    }
 
 }

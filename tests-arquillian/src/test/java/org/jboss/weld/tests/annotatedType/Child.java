@@ -17,6 +17,5 @@
 package org.jboss.weld.tests.annotatedType;
 
 
-public class Child extends Parent
-   {
-   }
+public class Child extends Parent {
+}

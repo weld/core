@@ -41,117 +41,101 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RunWith(Arquillian.class)
-public class ManagerTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addPackage(ManagerTest.class.getPackage())
-               .addClass(Utils.class)
-               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+public class ManagerTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addPackage(ManagerTest.class.getPackage())
+                .addClass(Utils.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
 
-   private static interface Dummy {}
+    private static interface Dummy {
+    }
 
-   private static class DummyBean implements Bean<Dummy>
-   {
-      private static final Set<Type> TYPES = new HashSet<Type>();
+    private static class DummyBean implements Bean<Dummy> {
+        private static final Set<Type> TYPES = new HashSet<Type>();
 
-      static
-      {
-         TYPES.add(Dummy.class);
-         TYPES.add(Object.class);
-      }
+        static {
+            TYPES.add(Dummy.class);
+            TYPES.add(Object.class);
+        }
 
-      public Set<Annotation> getQualifiers()
-      {
-         return DEFAULT_QUALIFIERS;
-      }
+        public Set<Annotation> getQualifiers() {
+            return DEFAULT_QUALIFIERS;
+        }
 
-      public Set<InjectionPoint> getInjectionPoints()
-      {
-         return Collections.emptySet();
-      }
+        public Set<InjectionPoint> getInjectionPoints() {
+            return Collections.emptySet();
+        }
 
-      public String getName()
-      {
-         return null;
-      }
+        public String getName() {
+            return null;
+        }
 
-      public Class<? extends Annotation> getScope()
-      {
-         return Dependent.class;
-      }
+        public Class<? extends Annotation> getScope() {
+            return Dependent.class;
+        }
 
-      public Set<Type> getTypes()
-      {
-         return TYPES;
-      }
+        public Set<Type> getTypes() {
+            return TYPES;
+        }
 
-      public boolean isNullable()
-      {
-         return true;
-      }
+        public boolean isNullable() {
+            return true;
+        }
 
-      public Dummy create(CreationalContext<Dummy> creationalContext)
-      {
-         return null;
-      }
+        public Dummy create(CreationalContext<Dummy> creationalContext) {
+            return null;
+        }
 
-      public void destroy(Dummy instance, CreationalContext<Dummy> creationalContext)
-      {
+        public void destroy(Dummy instance, CreationalContext<Dummy> creationalContext) {
 
-      }
+        }
 
-      public Class<?> getBeanClass()
-      {
-         return Dummy.class;
-      }
+        public Class<?> getBeanClass() {
+            return Dummy.class;
+        }
 
-      public boolean isAlternative()
-      {
-         return false;
-      }
+        public boolean isAlternative() {
+            return false;
+        }
 
-      public Set<Class<? extends Annotation>> getStereotypes()
-      {
-         return Collections.emptySet();
-      }
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            return Collections.emptySet();
+        }
 
-   }
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testRootManagerSerializability() throws Exception
-   {
-      String rootManagerId = beanManager.getId();
-      BeanManagerImpl deserializedRootManager = (BeanManagerImpl) Utils.deserialize(Utils.serialize(beanManager));
-      Assert.assertEquals(rootManagerId, deserializedRootManager.getId());
-      Assert.assertEquals(1, beanManager.getBeans(Foo.class).size());
-      Assert.assertEquals(1, deserializedRootManager.getBeans(Foo.class).size());
-      Assert.assertEquals(
-            deserializedRootManager.getBeans(Foo.class).iterator().next(),
-            beanManager.getBeans(Foo.class).iterator().next());
-   }
+    @Test
+    public void testRootManagerSerializability() throws Exception {
+        String rootManagerId = beanManager.getId();
+        BeanManagerImpl deserializedRootManager = (BeanManagerImpl) Utils.deserialize(Utils.serialize(beanManager));
+        Assert.assertEquals(rootManagerId, deserializedRootManager.getId());
+        Assert.assertEquals(1, beanManager.getBeans(Foo.class).size());
+        Assert.assertEquals(1, deserializedRootManager.getBeans(Foo.class).size());
+        Assert.assertEquals(
+                deserializedRootManager.getBeans(Foo.class).iterator().next(),
+                beanManager.getBeans(Foo.class).iterator().next());
+    }
 
-   @Test
-   public void testChildManagerSerializability() throws Exception
-   {
-      BeanManagerImpl childManager = beanManager.createActivity();
-      Bean<?> dummyBean = new DummyBean();
-      childManager.addBean(dummyBean);
-      String childManagerId = childManager.getId();
-      BeanManagerImpl deserializedChildManager = (BeanManagerImpl) Utils.deserialize(Utils.serialize(childManager));
-      Assert.assertEquals(childManagerId, deserializedChildManager.getId());
-      Assert.assertEquals(1, childManager.getBeans(Dummy.class).size());
-      Assert.assertEquals(1, deserializedChildManager.getBeans(Dummy.class).size());
-      Assert.assertEquals(
-            deserializedChildManager.getBeans(Dummy.class).iterator().next(),
-            childManager.getBeans(Dummy.class).iterator().next());
-   }
+    @Test
+    public void testChildManagerSerializability() throws Exception {
+        BeanManagerImpl childManager = beanManager.createActivity();
+        Bean<?> dummyBean = new DummyBean();
+        childManager.addBean(dummyBean);
+        String childManagerId = childManager.getId();
+        BeanManagerImpl deserializedChildManager = (BeanManagerImpl) Utils.deserialize(Utils.serialize(childManager));
+        Assert.assertEquals(childManagerId, deserializedChildManager.getId());
+        Assert.assertEquals(1, childManager.getBeans(Dummy.class).size());
+        Assert.assertEquals(1, deserializedChildManager.getBeans(Dummy.class).size());
+        Assert.assertEquals(
+                deserializedChildManager.getBeans(Dummy.class).iterator().next(),
+                childManager.getBeans(Dummy.class).iterator().next());
+    }
 }

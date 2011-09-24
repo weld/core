@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.extensions;
 
-import java.util.Set;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeforeShutdown;
@@ -25,91 +23,77 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import java.util.Set;
 
-public class WoodlandExtension implements Extension
-{
-   
-   private static boolean injectCalled;
-   private static boolean postConstructCalled;
-   private static boolean preDestroyCalled;
-   private static boolean produceCalled;
-   
-   public void cleanup(@Observes BeforeShutdown shutdown)
-   {
-      reset();
-      Woodland.reset();
-   }
+public class WoodlandExtension implements Extension {
 
-   public void enhanceWoodland(final @Observes ProcessInjectionTarget<Woodland> processWoodland)
-   {
-      final InjectionTarget<Woodland> it = processWoodland.getInjectionTarget();
-      processWoodland.setInjectionTarget(new InjectionTarget<Woodland>()
-      {
+    private static boolean injectCalled;
+    private static boolean postConstructCalled;
+    private static boolean preDestroyCalled;
+    private static boolean produceCalled;
 
-         public void inject(Woodland instance, CreationalContext<Woodland> ctx)
-         {
-            injectCalled = true;
-            it.inject(instance, ctx);
-         }
+    public void cleanup(@Observes BeforeShutdown shutdown) {
+        reset();
+        Woodland.reset();
+    }
 
-         public void postConstruct(Woodland instance)
-         {
-            postConstructCalled = true;
-            it.postConstruct(instance);
-         }
+    public void enhanceWoodland(final @Observes ProcessInjectionTarget<Woodland> processWoodland) {
+        final InjectionTarget<Woodland> it = processWoodland.getInjectionTarget();
+        processWoodland.setInjectionTarget(new InjectionTarget<Woodland>() {
 
-         public void preDestroy(Woodland instance)
-         {
-            preDestroyCalled = true;
-            it.preDestroy(instance);
-         }
+            public void inject(Woodland instance, CreationalContext<Woodland> ctx) {
+                injectCalled = true;
+                it.inject(instance, ctx);
+            }
 
-         public void dispose(Woodland instance)
-         {
-            // No-op for class bean
-            
-         }
+            public void postConstruct(Woodland instance) {
+                postConstructCalled = true;
+                it.postConstruct(instance);
+            }
 
-         public Set<InjectionPoint> getInjectionPoints()
-         {
-            return it.getInjectionPoints();
-         }
+            public void preDestroy(Woodland instance) {
+                preDestroyCalled = true;
+                it.preDestroy(instance);
+            }
 
-         public Woodland produce(CreationalContext<Woodland> ctx)
-         {
-            produceCalled = true;
-            return it.produce(ctx);
-         }
-          
-      });
-   }
-   
-   public static void reset()
-   {
-      injectCalled = false;
-      postConstructCalled = false;
-      preDestroyCalled = false;
-      preDestroyCalled = false;
-   }
-   
-   public static boolean isInjectCalled()
-   {
-      return injectCalled;
-   }
-   
-   public static boolean isPostConstructCalled()
-   {
-      return postConstructCalled;
-   }
-   
-   public static boolean isPreDestroyCalled()
-   {
-      return preDestroyCalled;
-   }
-   
-   public static boolean isProduceCalled()
-   {
-      return produceCalled;
-   }
-   
+            public void dispose(Woodland instance) {
+                // No-op for class bean
+
+            }
+
+            public Set<InjectionPoint> getInjectionPoints() {
+                return it.getInjectionPoints();
+            }
+
+            public Woodland produce(CreationalContext<Woodland> ctx) {
+                produceCalled = true;
+                return it.produce(ctx);
+            }
+
+        });
+    }
+
+    public static void reset() {
+        injectCalled = false;
+        postConstructCalled = false;
+        preDestroyCalled = false;
+        preDestroyCalled = false;
+    }
+
+    public static boolean isInjectCalled() {
+        return injectCalled;
+    }
+
+    public static boolean isPostConstructCalled() {
+        return postConstructCalled;
+    }
+
+    public static boolean isPreDestroyCalled() {
+        return preDestroyCalled;
+    }
+
+    public static boolean isProduceCalled() {
+        return produceCalled;
+    }
+
 }

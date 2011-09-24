@@ -16,8 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.ejb;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
@@ -25,39 +24,39 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.util.AnnotationLiteral;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
-import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
+public class AnnotatedTypeEjbExtension implements Extension {
+    /**
+     * Adds two ejb beans
+     */
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery) {
+        TestAnnotatedTypeBuilder<Lathe> builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
+        builder.addToClass(new AnnotationLiteral<SmallLathe>() {
+        });
+        beforeBeanDiscovery.addAnnotatedType(builder.create());
+        builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
+        builder.addToClass(new AnnotationLiteral<BigLathe>() {
+        });
+        beforeBeanDiscovery.addAnnotatedType(builder.create());
+    }
 
-public class AnnotatedTypeEjbExtension implements Extension
-{
-   /**
-    * Adds two ejb beans
-    */
-   public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery)
-   {
-      TestAnnotatedTypeBuilder<Lathe> builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
-      builder.addToClass(new AnnotationLiteral<SmallLathe>() { });
-      beforeBeanDiscovery.addAnnotatedType(builder.create());
-      builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
-      builder.addToClass(new AnnotationLiteral<BigLathe>() { });
-      beforeBeanDiscovery.addAnnotatedType(builder.create());
-   }
-   /**
-    * Adds annotations to an EJB
-    */
-   public void overrideLatheAnnotations(@Observes ProcessAnnotatedType<Lathe> event) throws SecurityException, NoSuchMethodException
-   {
-      if (!event.getAnnotatedType().isAnnotationPresent(SmallLathe.class) && !event.getAnnotatedType().isAnnotationPresent(BigLathe.class))
-      {
-         TestAnnotatedTypeBuilder<Lathe> builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
-         for(Annotation a : event.getAnnotatedType().getAnnotations())
-         {
-            builder.addToClass(a);
-         }
-         Method method = Lathe.class.getMethod("doWork");
-         builder.addToMethod(method, new AnnotationLiteral<ConveyorShaft>() {});
-         builder.addToMethod(method, new AnnotationLiteral<Produces>() {});
-         event.setAnnotatedType(builder.create());
-      }
-   }
+    /**
+     * Adds annotations to an EJB
+     */
+    public void overrideLatheAnnotations(@Observes ProcessAnnotatedType<Lathe> event) throws SecurityException, NoSuchMethodException {
+        if (!event.getAnnotatedType().isAnnotationPresent(SmallLathe.class) && !event.getAnnotatedType().isAnnotationPresent(BigLathe.class)) {
+            TestAnnotatedTypeBuilder<Lathe> builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
+            for (Annotation a : event.getAnnotatedType().getAnnotations()) {
+                builder.addToClass(a);
+            }
+            Method method = Lathe.class.getMethod("doWork");
+            builder.addToMethod(method, new AnnotationLiteral<ConveyorShaft>() {
+            });
+            builder.addToMethod(method, new AnnotationLiteral<Produces>() {
+            });
+            event.setAnnotatedType(builder.create());
+        }
+    }
 }

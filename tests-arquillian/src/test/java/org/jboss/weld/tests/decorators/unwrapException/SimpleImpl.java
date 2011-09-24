@@ -19,18 +19,15 @@ package org.jboss.weld.tests.decorators.unwrapException;
 /**
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
-public class SimpleImpl implements Simple
-{
-   private boolean invoked = false;
+public class SimpleImpl implements Simple {
+    private boolean invoked = false;
 
-   public boolean invoked()
-   {
-      return invoked;
-   }
+    public boolean invoked() {
+        return invoked;
+    }
 
-   public String speak()
-   {
-      this.invoked = true;
-      return "Bark";
-   }
+    public String speak() {
+        this.invoked = true;
+        return "Bark";
+    }
 }

@@ -13,55 +13,39 @@ import java.util.Collection;
  *
  * @author Marius Bogoevici
  */
-public class ClassLoaderResourceLoader implements ResourceLoader
-{
-   private ClassLoader classLoader;
+public class ClassLoaderResourceLoader implements ResourceLoader {
+    private ClassLoader classLoader;
 
-   public ClassLoaderResourceLoader(ClassLoader classLoader)
-   {
-      this.classLoader = classLoader;
-   }
+    public ClassLoaderResourceLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
-   public Class<?> classForName(String name)
-   {
-      try
-      {
-         return classLoader.loadClass(name);
-      }
-      catch (ClassNotFoundException e)
-      {
-         throw new ResourceLoadingException("Error loading class " + name, e);
-      }
-      catch (NoClassDefFoundError e)
-      {
-         throw new ResourceLoadingException("Error loading class " + name, e);
-      }
-      catch (TypeNotPresentException e)
-      {
-         throw new ResourceLoadingException("Error loading class " + name, e);
-      }
-   }
+    public Class<?> classForName(String name) {
+        try {
+            return classLoader.loadClass(name);
+        } catch (ClassNotFoundException e) {
+            throw new ResourceLoadingException("Error loading class " + name, e);
+        } catch (NoClassDefFoundError e) {
+            throw new ResourceLoadingException("Error loading class " + name, e);
+        } catch (TypeNotPresentException e) {
+            throw new ResourceLoadingException("Error loading class " + name, e);
+        }
+    }
 
-   public URL getResource(String name)
-   {
-      return classLoader.getResource(name);
+    public URL getResource(String name) {
+        return classLoader.getResource(name);
 
-   }
+    }
 
-   public Collection<URL> getResources(String name)
-   {
-      try
-      {
-         return new EnumerationList<URL>(classLoader.getResources(name));
-      }
-      catch (IOException e)
-      {
-         throw new ResourceLoadingException("Error loading resource " + name, e);
-      }
-   }
+    public Collection<URL> getResources(String name) {
+        try {
+            return new EnumerationList<URL>(classLoader.getResources(name));
+        } catch (IOException e) {
+            throw new ResourceLoadingException("Error loading resource " + name, e);
+        }
+    }
 
-   public void cleanup()
-   {
-      this.classLoader = null;
-   }
+    public void cleanup() {
+        this.classLoader = null;
+    }
 }

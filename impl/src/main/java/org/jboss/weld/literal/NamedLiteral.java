@@ -21,25 +21,22 @@ import javax.inject.Named;
 
 /**
  * Annotation literal for {@link Named}
- * 
+ *
  * @author Pete Muir
  */
 @SuppressWarnings("all")
-public class NamedLiteral extends AnnotationLiteral<Named> implements Named
-{
+public class NamedLiteral extends AnnotationLiteral<Named> implements Named {
 
-   private static final long serialVersionUID = 5089199348756765779L;
-   
-   private final String value;
+    private static final long serialVersionUID = 5089199348756765779L;
 
-   public String value()
-   {
-      return value;
-   }
+    private final String value;
 
-   public NamedLiteral(String value)
-   {
-      this.value = value;
-   }
+    public String value() {
+        return value;
+    }
+
+    public NamedLiteral(String value) {
+        this.value = value;
+    }
 
 }

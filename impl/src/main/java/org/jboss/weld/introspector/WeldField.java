@@ -16,38 +16,34 @@
  */
 package org.jboss.weld.introspector;
 
-import java.lang.reflect.Field;
-
 import javax.enterprise.inject.spi.AnnotatedField;
+import java.lang.reflect.Field;
 
 /**
  * AnnotatedField provides a uniform access to the annotations on an annotated
- * field 
- * 
- * @author Pete Muir
+ * field
  *
+ * @author Pete Muir
  */
-public interface WeldField<T, X> extends WeldMember<T, X, Field>, AnnotatedField<X>
-{
+public interface WeldField<T, X> extends WeldMember<T, X, Field>, AnnotatedField<X> {
 
-   /**
-    * Injects an instance
-    * 
-    * 
-    * @param declaringInstance The instance to inject into
-    * @param value The value to inject
-    */
-   public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException;
+    /**
+     * Injects an instance
+     *
+     * @param declaringInstance The instance to inject into
+     * @param value             The value to inject
+     */
+    public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException;
 
-   public T get(Object instance);
+    public T get(Object instance);
 
-   /**
-    * Gets the property name of the field
-    * 
-    * @return The name
-    */
-   public String getPropertyName();
+    /**
+     * Gets the property name of the field
+     *
+     * @return The name
+     */
+    public String getPropertyName();
 
-   public boolean isTransient();
+    public boolean isTransient();
 
 }

@@ -18,38 +18,30 @@ package org.jboss.weld.util;
 
 /**
  * Represents a lazily computed value.
- * 
+ *
  * @author Stuart Douglas
- * 
  */
-public abstract class LazyValueHolder<T>
-{
-   private volatile T value;
+public abstract class LazyValueHolder<T> {
+    private volatile T value;
 
-   public T get()
-   {
-      T valueCopy = value;
-      if (valueCopy != null)
-      {
-         return valueCopy;
-      }
-      synchronized (this)
-      {
-         if (value == null)
-         {
-            value = computeValue();
-         }
-         return value;
-      }
-   }
+    public T get() {
+        T valueCopy = value;
+        if (valueCopy != null) {
+            return valueCopy;
+        }
+        synchronized (this) {
+            if (value == null) {
+                value = computeValue();
+            }
+            return value;
+        }
+    }
 
-   public void clear()
-   {
-      synchronized (this)
-      {
-         value = null;
-      }
-   }
+    public void clear() {
+        synchronized (this) {
+            value = null;
+        }
+    }
 
-   protected abstract T computeValue();
+    protected abstract T computeValue();
 }

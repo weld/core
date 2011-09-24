@@ -17,44 +17,38 @@
 
 package org.jboss.weld.context;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.weld.exceptions.WeldExceptionKeyMessage;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * A localized message version of the
  * {@link javax.enterprise.context.NonexistentConversationException}.
- * 
+ *
  * @author David Allen
  */
-@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
-public class NonexistentConversationException extends javax.enterprise.context.NonexistentConversationException
-{
+@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+public class NonexistentConversationException extends javax.enterprise.context.NonexistentConversationException {
 
-   private static final long    serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
+    private WeldExceptionMessage message;
 
-   public NonexistentConversationException(Throwable throwable)
-   {
-      super(throwable.getLocalizedMessage(), throwable);
-   }
+    public NonexistentConversationException(Throwable throwable) {
+        super(throwable.getLocalizedMessage(), throwable);
+    }
 
-   public <E extends Enum<?>> NonexistentConversationException(E key, Object... args)
-   {
-      message = new WeldExceptionKeyMessage(key, args);
-   }
+    public <E extends Enum<?>> NonexistentConversationException(E key, Object... args) {
+        message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
 
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+    @Override
+    public String getMessage() {
+        return message.getAsString();
+    }
 }

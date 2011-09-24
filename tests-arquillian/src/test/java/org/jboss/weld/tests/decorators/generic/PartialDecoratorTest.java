@@ -31,25 +31,22 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class PartialDecoratorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(PartialDecorator.class, StringPartialDecorator.class)
-         .addPackage(PartialDecoratorTest.class.getPackage());
-   }
+public class PartialDecoratorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(PartialDecorator.class, StringPartialDecorator.class)
+                .addPackage(PartialDecoratorTest.class.getPackage());
+    }
 
-   @Test
-   public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean)
-   {
-      testBean.invoke();
+    @Test
+    public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean) {
+        testBean.invoke();
 
-      Assert.assertTrue(PartialDecorator.decoratedInvoked);
-      Assert.assertFalse(PartialDecorator.notDecoratedInvoked);
-      Assert.assertTrue(StringPartialDecorator.invoked);
-      Assert.assertTrue(GenericBean.decoratedInvoked);
-      Assert.assertTrue(GenericBean.notDecoratedInvoked);
-   }
+        Assert.assertTrue(PartialDecorator.decoratedInvoked);
+        Assert.assertFalse(PartialDecorator.notDecoratedInvoked);
+        Assert.assertTrue(StringPartialDecorator.invoked);
+        Assert.assertTrue(GenericBean.decoratedInvoked);
+        Assert.assertTrue(GenericBean.notDecoratedInvoked);
+    }
 }

@@ -20,17 +20,14 @@ package org.jboss.weld.tests.interceptors.generic;
 /**
  * @author Marius Bogoevici
  */
-public class IntegerProcessor extends AbstractMessageProcessor<Integer>
-{
-   @Override
-   void process(Integer input)
-   {
-      super.process(input);    //To change body of overridden methods use File | Settings | File Templates.
-   }
+public class IntegerProcessor extends AbstractMessageProcessor<Integer> {
+    @Override
+    void process(Integer input) {
+        super.process(input);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
-   @Override
-   Integer generate()
-   {
-      return 1;
-   }
+    @Override
+    Integer generate() {
+        return 1;
+    }
 }

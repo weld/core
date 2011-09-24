@@ -19,10 +19,9 @@ package org.jboss.weld.environment.se.test.beans;
 /**
  * A custom event fired and observed by one of the tests, to test
  * application-specific events.
- * 
+ *
  * @author Peter Royle
  */
-public class CustomEvent
-{
+public class CustomEvent {
 
 }

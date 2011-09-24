@@ -17,48 +17,47 @@
 
 package org.jboss.weld.context.beanstore;
 
+import org.jboss.weld.context.api.ContextualInstance;
+
 import java.util.Iterator;
 import java.util.Map;
-
-import org.jboss.weld.context.api.ContextualInstance;
 
 /**
  * A {@link Map} like store of contextual instances, used to back the Weld built
  * in contexts.
- * 
+ *
  * @author Nicklas Karlsson
  */
-public interface BeanStore extends Iterable<String>
-{
-   /**
-    * Gets an instance of a contextual from the store
-    * 
-    * @param id The id of the contextual to return
-    * @return The instance or null if not found
-    */
-   public <T> ContextualInstance<T> get(String id);
-   
-   /**
-    * Check if the store contains an instance
-    * 
-    * @param id the id of the instance to check for
-    * @return true if the instance is present, otherwise false
-    */
-   public boolean contains(String id);
+public interface BeanStore extends Iterable<String> {
+    /**
+     * Gets an instance of a contextual from the store
+     *
+     * @param id The id of the contextual to return
+     * @return The instance or null if not found
+     */
+    public <T> ContextualInstance<T> get(String id);
 
-   /**
-    * Clears the store of contextual instances
-    */
-   public void clear();
-   
-   public Iterator<String> iterator();
+    /**
+     * Check if the store contains an instance
+     *
+     * @param id the id of the instance to check for
+     * @return true if the instance is present, otherwise false
+     */
+    public boolean contains(String id);
 
-   /**
-    * Adds a bean instance to the storage
-    * 
-    * @param contextualInstance the contextual instance
-    * @return the id for the instance
-    */
-   public <T> void put(String id, ContextualInstance<T> contextualInstance);
+    /**
+     * Clears the store of contextual instances
+     */
+    public void clear();
+
+    public Iterator<String> iterator();
+
+    /**
+     * Adds a bean instance to the storage
+     *
+     * @param contextualInstance the contextual instance
+     * @return the id for the instance
+     */
+    public <T> void put(String id, ContextualInstance<T> contextualInstance);
 
 }

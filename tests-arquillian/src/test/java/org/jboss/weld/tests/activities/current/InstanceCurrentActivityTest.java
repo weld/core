@@ -16,22 +16,6 @@
  */
 package org.jboss.weld.tests.activities.current;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -43,157 +27,146 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- *
  * Spec version: 20090519
- *
  */
 @RunWith(Arquillian.class)
-public class InstanceCurrentActivityTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(InstanceCurrentActivityTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class InstanceCurrentActivityTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(InstanceCurrentActivityTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   public static class TameLiteral extends AnnotationLiteral<Tame> implements Tame {}
+    public static class TameLiteral extends AnnotationLiteral<Tame> implements Tame {
+    }
 
-   private static class DummyContext implements Context
-   {
+    private static class DummyContext implements Context {
 
-      private boolean active = true;
+        private boolean active = true;
 
-      public <T> T get(Contextual<T> contextual)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual) {
+            return null;
+        }
 
-      public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+            return null;
+        }
 
-      public Class<? extends Annotation> getScope()
-      {
-         return Dummy.class;
-      }
+        public Class<? extends Annotation> getScope() {
+            return Dummy.class;
+        }
 
-      public boolean isActive()
-      {
-         return active;
-      }
+        public boolean isActive() {
+            return active;
+        }
 
-      public void setActive(boolean active)
-      {
-         this.active = active;
-      }
+        public void setActive(boolean active) {
+            this.active = active;
+        }
 
-   }
+    }
 
-   private static class NonNormalContext extends DummyContext
-   {
+    private static class NonNormalContext extends DummyContext {
 
-      @Override
-      public Class<? extends Annotation> getScope()
-      {
-         return NonNormalScope.class;
-      }
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return NonNormalScope.class;
+        }
 
-   }
+    }
 
-   private static class Daisy implements Bean<Cow>
-   {
+    private static class Daisy implements Bean<Cow> {
 
-      private static final Set<Type> TYPES = new HashSet<Type>();
+        private static final Set<Type> TYPES = new HashSet<Type>();
 
-      private final static Set<Annotation> BINDING_TYPES = new HashSet<Annotation>();
+        private final static Set<Annotation> BINDING_TYPES = new HashSet<Annotation>();
 
 
-      static
-      {
-         TYPES.add(Cow.class);
-         TYPES.add(Object.class);
-         BINDING_TYPES.add(new TameLiteral());
-      }
+        static {
+            TYPES.add(Cow.class);
+            TYPES.add(Object.class);
+            BINDING_TYPES.add(new TameLiteral());
+        }
 
-      public Daisy(BeanManager beanManager)
-      {
-      }
+        public Daisy(BeanManager beanManager) {
+        }
 
-      public Set<Annotation> getQualifiers()
-      {
-         return BINDING_TYPES;
-      }
+        public Set<Annotation> getQualifiers() {
+            return BINDING_TYPES;
+        }
 
-      public Set<InjectionPoint> getInjectionPoints()
-      {
-         return Collections.emptySet();
-      }
+        public Set<InjectionPoint> getInjectionPoints() {
+            return Collections.emptySet();
+        }
 
-      public String getName()
-      {
-         return "daisy";
-      }
+        public String getName() {
+            return "daisy";
+        }
 
-      public Class<? extends Annotation> getScope()
-      {
-         return Dependent.class;
-      }
+        public Class<? extends Annotation> getScope() {
+            return Dependent.class;
+        }
 
-      public Set<Type> getTypes()
-      {
-         return TYPES;
-      }
+        public Set<Type> getTypes() {
+            return TYPES;
+        }
 
-      public boolean isNullable()
-      {
-         return true;
-      }
+        public boolean isNullable() {
+            return true;
+        }
 
-      public Cow create(CreationalContext<Cow> creationalContext)
-      {
-         return new Cow();
-      }
+        public Cow create(CreationalContext<Cow> creationalContext) {
+            return new Cow();
+        }
 
-      public void destroy(Cow instance, CreationalContext<Cow> creationalContext)
-      {
-         // TODO Auto-generated method stub
+        public void destroy(Cow instance, CreationalContext<Cow> creationalContext) {
+            // TODO Auto-generated method stub
 
-      }
+        }
 
-      public Class<?> getBeanClass()
-      {
-         return Cow.class;
-      }
+        public Class<?> getBeanClass() {
+            return Cow.class;
+        }
 
-      public boolean isAlternative()
-      {
-         return false;
-      }
+        public boolean isAlternative() {
+            return false;
+        }
 
-      public Set<Class<? extends Annotation>> getStereotypes()
-      {
-         return Collections.emptySet();
-      }
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            return Collections.emptySet();
+        }
 
-   }
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testInstanceProcessedByCurrentActivity()
-   {
-      Context dummyContext = new DummyContext();
-      beanManager.addContext(dummyContext);
-      Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
-      BeanManagerImpl childActivity = beanManager.createActivity();
-      childActivity.addBean(new Daisy(childActivity));
-      childActivity.setCurrent(dummyContext.getScope());
-      Assert.assertNotNull(Utils.getReference(beanManager, Field.class).get());
-   }
+    @Test
+    public void testInstanceProcessedByCurrentActivity() {
+        Context dummyContext = new DummyContext();
+        beanManager.addContext(dummyContext);
+        Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
+        BeanManagerImpl childActivity = beanManager.createActivity();
+        childActivity.addBean(new Daisy(childActivity));
+        childActivity.setCurrent(dummyContext.getScope());
+        Assert.assertNotNull(Utils.getReference(beanManager, Field.class).get());
+    }
 
 }

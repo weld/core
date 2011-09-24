@@ -32,26 +32,23 @@ import javax.enterprise.inject.spi.Extension;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class SessionBeanExtensionTest
-{
-   @Deployment
-   public static Archive<?> deploy() 
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(SessionBeanExtensionTest.class.getPackage())
-                  .addAsServiceProvider(Extension.class,
+public class SessionBeanExtensionTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(SessionBeanExtensionTest.class.getPackage())
+                .addAsServiceProvider(Extension.class,
                         VetoExtension.class);
-   }
-   
-   /*
+    }
+
+    /*
     * description = "WELD-925"
     */
-   @Test
-   public void testPossibleToVetoSessionBean(BeanManager beanManager)
-   {
-      Assert.assertEquals(1, beanManager.getBeans(MotorBikeBean.class).size());
-      Assert.assertEquals(0, beanManager.getBeans(BusBean.class).size());
-      
-   }
+    @Test
+    public void testPossibleToVetoSessionBean(BeanManager beanManager) {
+        Assert.assertEquals(1, beanManager.getBeans(MotorBikeBean.class).size());
+        Assert.assertEquals(0, beanManager.getBeans(BusBean.class).size());
+
+    }
 
 }

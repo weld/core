@@ -19,11 +19,11 @@ package org.jboss.weld.tests.extensions.annotatedType;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-public class InjectLiteral extends AnnotationLiteral<Inject> implements Inject
-{
-   
-   public static final Inject INSTANCE = new InjectLiteral();
-   
-   private InjectLiteral() {}
-   
+public class InjectLiteral extends AnnotationLiteral<Inject> implements Inject {
+
+    public static final Inject INSTANCE = new InjectLiteral();
+
+    private InjectLiteral() {
+    }
+
 }

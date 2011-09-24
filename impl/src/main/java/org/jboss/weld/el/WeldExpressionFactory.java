@@ -16,50 +16,43 @@
  */
 package org.jboss.weld.el;
 
-import static org.jboss.weld.logging.messages.ElMessage.NULL_EXPRESSION_FACTORY;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.util.el.ForwardingExpressionFactory;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.util.el.ForwardingExpressionFactory;
+import static org.jboss.weld.logging.messages.ElMessage.NULL_EXPRESSION_FACTORY;
 
 /**
  * @author pmuir
- *
  */
-public class WeldExpressionFactory extends ForwardingExpressionFactory
-{
+public class WeldExpressionFactory extends ForwardingExpressionFactory {
 
-   private final ExpressionFactory delegate;
-   
-   public WeldExpressionFactory(ExpressionFactory expressionFactory)
-   {
-      if (expressionFactory == null)
-      {
-         throw new IllegalArgumentException(NULL_EXPRESSION_FACTORY);
-      }
-      this.delegate = expressionFactory;
-   }
-   
-   @Override
-   protected ExpressionFactory delegate()
-   {
-      return delegate;
-   }
-   
-   @Override
-   public ValueExpression createValueExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedType)
-   {
-      return new WeldValueExpression(super.createValueExpression(context, expression, expectedType));
-   }
-   
-   @Override
-   public MethodExpression createMethodExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedReturnType, @SuppressWarnings("rawtypes") Class[] expectedParamTypes)
-   {
-      return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
-   }
+    private final ExpressionFactory delegate;
+
+    public WeldExpressionFactory(ExpressionFactory expressionFactory) {
+        if (expressionFactory == null) {
+            throw new IllegalArgumentException(NULL_EXPRESSION_FACTORY);
+        }
+        this.delegate = expressionFactory;
+    }
+
+    @Override
+    protected ExpressionFactory delegate() {
+        return delegate;
+    }
+
+    @Override
+    public ValueExpression createValueExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedType) {
+        return new WeldValueExpression(super.createValueExpression(context, expression, expectedType));
+    }
+
+    @Override
+    public MethodExpression createMethodExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedReturnType, @SuppressWarnings("rawtypes") Class[] expectedParamTypes) {
+        return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
+    }
 
 }

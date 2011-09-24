@@ -21,57 +21,48 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+
+import javax.ejb.Stateless;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.ejb.Stateless;
-
-import org.jboss.weld.examples.pastecode.model.CodeFragment;
-
 /**
  * Compute the hash for a {@link CodeFragment}
- * 
+ *
  * @author Martin Gencur
  * @author Pete Muir
- *
  */
 @Stateless
-public class HashComputer
-{
+public class HashComputer {
 
-   public String getHashValue(CodeFragment code) throws NoSuchAlgorithmException
-   {
-      String hashValue;
-      MessageDigest md = MessageDigest.getInstance("SHA-1");
-      String combinedValue = code.getText() + code.getDatetime();
-      md.update(combinedValue.getBytes());
-      hashValue = asHex(md.digest());
-      return hashValue;
-   }
+    public String getHashValue(CodeFragment code) throws NoSuchAlgorithmException {
+        String hashValue;
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
+        String combinedValue = code.getText() + code.getDatetime();
+        md.update(combinedValue.getBytes());
+        hashValue = asHex(md.digest());
+        return hashValue;
+    }
 
-   private String asHex(byte buf[])
-   {
-      StringBuilder strBuf = new StringBuilder(buf.length * 2);
+    private String asHex(byte buf[]) {
+        StringBuilder strBuf = new StringBuilder(buf.length * 2);
 
-      // make sure it contains a letter!
-      strBuf.append("h");
-      
-      for (int i = 0; i < buf.length; i++)
-      {
-         if ((buf[i] & 0xff) < 0x10)
-         {
-            strBuf.append("0");
-         }
-         strBuf.append(Long.toString(buf[i] & 0xff, 16));
-      }
-      if (strBuf.length() <= 6)
-      {
-         while (strBuf.length() <= 6)
-         {
-            strBuf.append("0");
-         }
-      }
-      return strBuf.toString().substring(0, 6);
-   }
+        // make sure it contains a letter!
+        strBuf.append("h");
+
+        for (int i = 0; i < buf.length; i++) {
+            if ((buf[i] & 0xff) < 0x10) {
+                strBuf.append("0");
+            }
+            strBuf.append(Long.toString(buf[i] & 0xff, 16));
+        }
+        if (strBuf.length() <= 6) {
+            while (strBuf.length() <= 6) {
+                strBuf.append("0");
+            }
+        }
+        return strBuf.toString().substring(0, 6);
+    }
 
 }

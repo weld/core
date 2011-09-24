@@ -22,39 +22,35 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * An {@link javax.enterprise.inject.IllegalProductException} with support for
  * localized messages in Weld.
- * 
+ *
  * @author David Allen
  */
-@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
-public class IllegalProductException extends javax.enterprise.inject.IllegalProductException
-{
+@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+public class IllegalProductException extends javax.enterprise.inject.IllegalProductException {
 
-   private static final long    serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
+    private WeldExceptionMessage message;
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> IllegalProductException(E key, Object... args)
-   {
-      message = new WeldExceptionKeyMessage(key, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> IllegalProductException(E key, Object... args) {
+        message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
 
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+    @Override
+    public String getMessage() {
+        return message.getAsString();
+    }
 }

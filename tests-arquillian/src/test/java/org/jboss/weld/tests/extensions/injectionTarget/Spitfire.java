@@ -19,25 +19,21 @@ package org.jboss.weld.tests.extensions.injectionTarget;
 import javax.enterprise.context.RequestScoped;
 
 @RequestScoped
-class Spitfire implements Aircraft
-{
-   @Secured
-   public boolean interceptedMethod()
-   {
-      return false;
-   }
+class Spitfire implements Aircraft {
+    @Secured
+    public boolean interceptedMethod() {
+        return false;
+    }
 
-   public boolean isFlying()
-   {
-      return false;
-   }
-   
-   /*
+    public boolean isFlying() {
+        return false;
+    }
+
+    /*
     * Cannot use equals() since behavior of all Object class methods
     * except for toString() is not defined on the client proxy
     */
-   public boolean isTheSameInstance(Object object)
-   {
-      return this == object;
-   }
+    public boolean isTheSameInstance(Object object) {
+        return this == object;
+    }
 }

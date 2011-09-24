@@ -20,10 +20,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class TestBean
-{
-   @Inject
-   @Parameterized
-   Parameterized1<Parameterized2<Double>> parameterized;
-   
+public class TestBean {
+    @Inject
+    @Parameterized
+    Parameterized1<Parameterized2<Double>> parameterized;
+
 }

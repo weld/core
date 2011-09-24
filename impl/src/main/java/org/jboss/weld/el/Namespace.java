@@ -21,112 +21,91 @@ import java.util.Map;
 
 /**
  * A namespace for bean names
- * 
- * @author Gavin King
  *
+ * @author Gavin King
  */
-public class Namespace
-{
-   private final String qualifiedName;
-   private final String name;
-   private final Map<String, Namespace> children;
-   
-   /**
-    * Create a new namespace hierarchy
-    *
-    * @param namespace
-    */
-   public Namespace(Iterable<String> namespaces)
-   {
-      this(null, null);
-      for (String namespace : namespaces)
-      {
-         String[] hierarchy = namespace.split("\\.");
-         Namespace n = this;
-         for (String s : hierarchy)
-         {
-            n = n.putIfAbsent(s);
-         }
-      }
-   }
-   
-   protected Namespace(String name, String qualifiedName) 
-   {
-      this.name = name;
-      this.qualifiedName = qualifiedName;
-      this.children  = new HashMap<String, Namespace>();
-   }
-   
-   private Namespace putIfAbsent(String key)
-   {
-      Namespace result = children.get(key);
-      if (result==null)
-      {
-         result = new Namespace( key, qualifyName(key) );
-         children.put(key, result);
-      }
-      return result;
-   }
-   
-   public Namespace get(String key)
-   {
-      return children.get(key);
-   }
-   
-   public boolean contains(String key)
-   {
-      return children.containsKey(key);
-   }
+public class Namespace {
+    private final String qualifiedName;
+    private final String name;
+    private final Map<String, Namespace> children;
 
-   public String getQualifiedName()
-   {
-      return qualifiedName;
-   }
-   
-   protected Map<String, Namespace> getChildren()
-   {
-      return children;
-   }
-   
-   protected String getName()
-   {
-      return name;
-   }
-   
-   public String qualifyName(String suffix)
-   {
-      return qualifiedName == null ? suffix : qualifiedName + "." + suffix;
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return name==null ? 0 : name.hashCode();
-   }
-   
-   @Override
-   public boolean equals(Object other)
-   {
-      if (other instanceof Namespace)
-      {
-         Namespace that = (Namespace) other;
-         return this.getQualifiedName().equals(that.getQualifiedName());
-      }
-      else
-      {
-         return false;
-      }
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "Namespace(" + ( name==null ? "Root" : name ) + ')';
-   }
-   
-   public void clear()
-   {
-      
-   }
+    /**
+     * Create a new namespace hierarchy
+     *
+     * @param namespace
+     */
+    public Namespace(Iterable<String> namespaces) {
+        this(null, null);
+        for (String namespace : namespaces) {
+            String[] hierarchy = namespace.split("\\.");
+            Namespace n = this;
+            for (String s : hierarchy) {
+                n = n.putIfAbsent(s);
+            }
+        }
+    }
+
+    protected Namespace(String name, String qualifiedName) {
+        this.name = name;
+        this.qualifiedName = qualifiedName;
+        this.children = new HashMap<String, Namespace>();
+    }
+
+    private Namespace putIfAbsent(String key) {
+        Namespace result = children.get(key);
+        if (result == null) {
+            result = new Namespace(key, qualifyName(key));
+            children.put(key, result);
+        }
+        return result;
+    }
+
+    public Namespace get(String key) {
+        return children.get(key);
+    }
+
+    public boolean contains(String key) {
+        return children.containsKey(key);
+    }
+
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    protected Map<String, Namespace> getChildren() {
+        return children;
+    }
+
+    protected String getName() {
+        return name;
+    }
+
+    public String qualifyName(String suffix) {
+        return qualifiedName == null ? suffix : qualifiedName + "." + suffix;
+    }
+
+    @Override
+    public int hashCode() {
+        return name == null ? 0 : name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Namespace) {
+            Namespace that = (Namespace) other;
+            return this.getQualifiedName().equals(that.getQualifiedName());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Namespace(" + (name == null ? "Root" : name) + ')';
+    }
+
+    public void clear() {
+
+    }
 
 }

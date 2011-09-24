@@ -26,33 +26,28 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class CircularDependencyTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(CircularDependencyTest.class.getPackage());
-   }
+public class CircularDependencyTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(CircularDependencyTest.class.getPackage());
+    }
 
-   @Test
-   public void testCircularInjectionOnTwoSimpleDependentBeans(Foo foo) throws Exception
-   {
-      foo.getName();
-      Assert.assertTrue(Foo.success);
-      Assert.assertTrue(Bar.success);
-   }
+    @Test
+    public void testCircularInjectionOnTwoSimpleDependentBeans(Foo foo) throws Exception {
+        foo.getName();
+        Assert.assertTrue(Foo.success);
+        Assert.assertTrue(Bar.success);
+    }
 
-   @Test
-   public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean(DependentSelfConsumingDependentProducer producer) throws Exception
-   {
-      producer.ping();
-   }
+    @Test
+    public void testDependentProducerMethodDeclaredOnDependentBeanWhichInjectsProducedBean(DependentSelfConsumingDependentProducer producer) throws Exception {
+        producer.ping();
+    }
 
-   @Test
-   public void testDependentSelfConsumingProducer(Violation violation) throws Exception
-   {
-      violation.ping();
-   }
+    @Test
+    public void testDependentSelfConsumingProducer(Violation violation) throws Exception {
+        violation.ping();
+    }
 
 }

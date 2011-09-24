@@ -22,63 +22,57 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * Provides message localization service for the
  * {@link javax.enterprise.inject.InjectionException}.
- * 
+ *
  * @author David Allen
  */
-@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
-public class InjectionException extends javax.enterprise.inject.InjectionException
-{
-   private static final long    serialVersionUID = 2L;
+@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+public class InjectionException extends javax.enterprise.inject.InjectionException {
+    private static final long serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
+    private WeldExceptionMessage message;
 
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public InjectionException(Throwable throwable)
-   {
-      super(throwable);
-      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
-   }
+    /**
+     * Creates a new exception with the given cause.
+     *
+     * @param throwable The cause of the exception
+     */
+    public InjectionException(Throwable throwable) {
+        super(throwable);
+        message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
+    }
 
-   /**
-    * Creates a new exception with an arbitrary message and the cause of the
-    * exception. It is not recommended to use this constructor since the message
-    * cannot be localized.
-    * 
-    * @param message The error message
-    * @param throwable The cause of the exception or wrapped throwable
-    */
-   public InjectionException(String message, Throwable throwable)
-   {
-      super(throwable);
-      this.message = new WeldExceptionStringMessage(message);
-   }
+    /**
+     * Creates a new exception with an arbitrary message and the cause of the
+     * exception. It is not recommended to use this constructor since the message
+     * cannot be localized.
+     *
+     * @param message   The error message
+     * @param throwable The cause of the exception or wrapped throwable
+     */
+    public InjectionException(String message, Throwable throwable) {
+        super(throwable);
+        this.message = new WeldExceptionStringMessage(message);
+    }
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> InjectionException(E key, Object... args)
-   {
-      message = new WeldExceptionKeyMessage(key, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> InjectionException(E key, Object... args) {
+        message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
 
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+    @Override
+    public String getMessage() {
+        return message.getAsString();
+    }
 }

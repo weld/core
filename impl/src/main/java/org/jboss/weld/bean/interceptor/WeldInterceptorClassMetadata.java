@@ -17,72 +17,61 @@
 
 package org.jboss.weld.bean.interceptor;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-
-
 import org.jboss.interceptor.reader.DefaultMethodMetadata;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * @author Marius Bogoevici
  */
-public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serializable
-{
-   private static final long serialVersionUID = -5087425231467781559L;
+public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serializable {
+    private static final long serialVersionUID = -5087425231467781559L;
 
-   private Class<T> clazz;
+    private Class<T> clazz;
 
-   private WeldInterceptorClassMetadata<?> superclass;
+    private WeldInterceptorClassMetadata<?> superclass;
 
-   private Collection<MethodMetadata> methodMetadatas;
+    private Collection<MethodMetadata> methodMetadatas;
 
-   private WeldInterceptorClassMetadata(WeldClass<T> weldClass)
-   {
-      this.clazz = weldClass.getJavaClass();
-      methodMetadatas = new ArrayList<MethodMetadata>();
-      for (WeldMethod<?,?> method: weldClass.getDeclaredWeldMethods())
-      {
-         MethodMetadata methodMetadata = DefaultMethodMetadata.of(method, WeldAnnotatedMethodReader.getInstance());
-         if (methodMetadata.getSupportedInterceptionTypes() != null && methodMetadata.getSupportedInterceptionTypes().size()!=0)
-         {
-            methodMetadatas.add(methodMetadata);
-         }
-      }
-      if (weldClass.getWeldSuperclass() != null)
-      {
-         this.superclass = WeldInterceptorClassMetadata.of(weldClass.getWeldSuperclass());
-      }
-   }
+    private WeldInterceptorClassMetadata(WeldClass<T> weldClass) {
+        this.clazz = weldClass.getJavaClass();
+        methodMetadatas = new ArrayList<MethodMetadata>();
+        for (WeldMethod<?, ?> method : weldClass.getDeclaredWeldMethods()) {
+            MethodMetadata methodMetadata = DefaultMethodMetadata.of(method, WeldAnnotatedMethodReader.getInstance());
+            if (methodMetadata.getSupportedInterceptionTypes() != null && methodMetadata.getSupportedInterceptionTypes().size() != 0) {
+                methodMetadatas.add(methodMetadata);
+            }
+        }
+        if (weldClass.getWeldSuperclass() != null) {
+            this.superclass = WeldInterceptorClassMetadata.of(weldClass.getWeldSuperclass());
+        }
+    }
 
-   public static <T> WeldInterceptorClassMetadata<T> of(WeldClass<T> weldClass)
-   {
-      return new WeldInterceptorClassMetadata<T>(weldClass);
-   }
+    public static <T> WeldInterceptorClassMetadata<T> of(WeldClass<T> weldClass) {
+        return new WeldInterceptorClassMetadata<T>(weldClass);
+    }
 
-   public String getClassName()
-   {
-      return clazz.getName();
-   }
+    public String getClassName() {
+        return clazz.getName();
+    }
 
-   public Iterable<MethodMetadata> getDeclaredMethods()
-   {
-      return methodMetadatas;
-   }
+    public Iterable<MethodMetadata> getDeclaredMethods() {
+        return methodMetadatas;
+    }
 
-   public Class<T> getJavaClass()
-   {
-      return clazz;
-   }
+    public Class<T> getJavaClass() {
+        return clazz;
+    }
 
-   public ClassMetadata<?> getSuperclass()
-   {
-      return superclass;
-   }
+    public ClassMetadata<?> getSuperclass() {
+        return superclass;
+    }
 
 }
  

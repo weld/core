@@ -16,65 +16,60 @@
  */
 package org.jboss.weld.environment.se;
 
+import org.jboss.weld.environment.se.beans.InstanceManager;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.weld.environment.se.beans.InstanceManager;
-
 /**
  * Provides convenient access to beans and events, particularly helpful when
  * bootstrapping an application in Java SE.
- * <p>
+ * <p/>
  * An instance of this class can be obtained using the Weld class by calling:
  * <code>
  * WeldContainer weld = new Weld().initialize();
  * </code>
- * @see Weld
  *
  * @author Peter Royle
+ * @see Weld
  */
-public class WeldContainer
-{
+public class WeldContainer {
 
-   private final InstanceManager instanceManager;
-   private final BeanManager beanManager;
+    private final InstanceManager instanceManager;
+    private final BeanManager beanManager;
 
-   @Inject
-   protected WeldContainer(InstanceManager instanceManager, BeanManager beanManager)
-   {
-      this.instanceManager = instanceManager;
-      this.beanManager = beanManager;
-   }
+    @Inject
+    protected WeldContainer(InstanceManager instanceManager, BeanManager beanManager) {
+        this.instanceManager = instanceManager;
+        this.beanManager = beanManager;
+    }
 
-   /**
-    * Provides access to all beans within the application. For example:
-    * <code>
-    * Foo foo = weld.instance().select(Foo.class).get();
-    * </code>
-    */
-   public Instance<Object> instance()
-   {
-      return instanceManager.getInstances();
-   }
+    /**
+     * Provides access to all beans within the application. For example:
+     * <code>
+     * Foo foo = weld.instance().select(Foo.class).get();
+     * </code>
+     */
+    public Instance<Object> instance() {
+        return instanceManager.getInstances();
+    }
 
-   /**
-    * Provides access to all events within the application. For example:
-    * <code>
-    * weld.event().select(Bar.class).fire(new Bar());
-    * </code>
-    */
-   public Event<Object> event()
-   {
-      return instanceManager.getEvents();
-   }
+    /**
+     * Provides access to all events within the application. For example:
+     * <code>
+     * weld.event().select(Bar.class).fire(new Bar());
+     * </code>
+     */
+    public Event<Object> event() {
+        return instanceManager.getEvents();
+    }
 
-   /**
-    * Provides direct access to the BeanManager.
-    */
-   public BeanManager getBeanManager()
-   {
-      return beanManager;
-   }
+    /**
+     * Provides direct access to the BeanManager.
+     */
+    public BeanManager getBeanManager() {
+        return beanManager;
+    }
 }

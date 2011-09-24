@@ -23,16 +23,13 @@ import javax.enterprise.context.ApplicationScoped;
  * @author Marius Bogoevici
  */
 @ApplicationScoped
-public class ScopedClass
-{
-   private final void privateMethod()
-   {
+public class ScopedClass {
+    private final void privateMethod() {
 
-   }
-                                           
-   public void publicMethod()
-   {
+    }
 
-   }
-   
+    public void publicMethod() {
+
+    }
+
 }

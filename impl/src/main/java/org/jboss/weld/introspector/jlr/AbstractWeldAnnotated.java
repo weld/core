@@ -16,21 +16,6 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.ANNOTATION_MAP_NULL;
-import static org.jboss.weld.logging.messages.ReflectionMessage.DECLARED_ANNOTATION_MAP_NULL;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Qualifier;
-
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.DefaultLiteral;
@@ -43,251 +28,221 @@ import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
+import javax.inject.Qualifier;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.jboss.weld.logging.messages.ReflectionMessage.ANNOTATION_MAP_NULL;
+import static org.jboss.weld.logging.messages.ReflectionMessage.DECLARED_ANNOTATION_MAP_NULL;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
+
 /**
  * Represents functionality common for all annotated items, mainly different
  * mappings of the annotations and meta-annotations
- * 
+ * <p/>
  * AbstractAnnotatedItem is an immutable class and therefore threadsafe
- * 
- * @author Pete Muir
- * @author Nicklas Karlsson
- * 
+ *
  * @param <T>
  * @param <S>
- * 
+ * @author Pete Muir
+ * @author Nicklas Karlsson
  * @see org.jboss.weld.introspector.WeldAnnotated
  */
-public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S>
-{
+public abstract class AbstractWeldAnnotated<T, S> implements WeldAnnotated<T, S> {
 
-   // The set of default binding types
-   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
+    // The set of default binding types
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
 
-   /**
-    * Builds the annotation map (annotation type -> annotation)
-    * 
-    * @param annotations The array of annotations to map
-    * @return The annotation map
-    */
-   protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(Annotation[] annotations)
-   {
-      Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
-      for (Annotation annotation : annotations)
-      {
-         annotationMap.put(annotation.annotationType(), annotation);
-      }
-      return annotationMap;
-   }
-   
-   /**
-    * Builds the annotation map (annotation type -> annotation)
-    * 
-    * @param annotations The array of annotations to map
-    * @return The annotation map
-    */
-   protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(Iterable<Annotation> annotations)
-   {
-      Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
-      for (Annotation annotation : annotations)
-      {
-         annotationMap.put(annotation.annotationType(), annotation);
-      }
-      return annotationMap;
-   }
-   
-   
-   protected static void addMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations, boolean declared)
-   {
-      for (Annotation metaAnnotation : metaAnnotations)
-      {
-         addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType(), declared);
-      }
-   }
-   
-   protected static void addMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared)
-   {
-      for (Annotation metaAnnotation : metaAnnotations)
-      {
-         addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType(), declared);
-      }
-   }
-   
-   private static void addMetaAnnotation(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared)
-   {
-      // Only map meta-annotations we are interested in
-      if (declared ? MAPPED_DECLARED_METAANNOTATIONS.contains(metaAnnotationType) : MAPPED_METAANNOTATIONS.contains(metaAnnotationType))
-      {
-         metaAnnotationMap.putSingleElement(metaAnnotationType, annotation);
-      }
-   }
-   
-   // The annotation map (annotation type -> annotation) of the item
-   private final Map<Class<? extends Annotation>, Annotation> annotationMap;
-   // The meta-annotation map (annotation type -> set of annotations containing
-   // meta-annotation) of the item
-   private final ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
-   
-   private final Class<T> rawType;
-   private final Type[] actualTypeArguments; 
-   private final Type type;
-   private final LazyValueHolder<Set<Type>> typeClosure;
+    /**
+     * Builds the annotation map (annotation type -> annotation)
+     *
+     * @param annotations The array of annotations to map
+     * @return The annotation map
+     */
+    protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(Annotation[] annotations) {
+        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+        for (Annotation annotation : annotations) {
+            annotationMap.put(annotation.annotationType(), annotation);
+        }
+        return annotationMap;
+    }
 
-   /**
-    * Constructor
-    * 
-    * Also builds the meta-annotation map. Throws a NullPointerException if
-    * trying to register a null map
-    * 
-    * @param annotationMap A map of annotation to register
-    * 
-    */
-   public AbstractWeldAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Class<T> rawType, Type type, final LazyValueHolder<Set<Type>> typeClosure)
-   {
-      if (annotationMap == null)
-      {
-         throw new WeldException(ANNOTATION_MAP_NULL);
-      }
-      this.annotationMap = SharedObjectFacade.wrap(annotationMap);
-      ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
-      for (Annotation annotation : annotationMap.values())
-      {
-         addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
-         addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
-      }
-      metaAnnotationMap.trimToSize();
-      this.metaAnnotationMap = SharedObjectFacade.wrap(metaAnnotationMap);
-      
-      if (declaredAnnotationMap == null)
-      {
-         throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
-      }
-      this.rawType = rawType;
-      this.type = type;
-      if (type instanceof ParameterizedType)
-      {
-         this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-      }
-      else
-      {
-         this.actualTypeArguments = new Type[0];
-      }
-      this.typeClosure = typeClosure;
-   }
+    /**
+     * Builds the annotation map (annotation type -> annotation)
+     *
+     * @param annotations The array of annotations to map
+     * @return The annotation map
+     */
+    protected static Map<Class<? extends Annotation>, Annotation> buildAnnotationMap(Iterable<Annotation> annotations) {
+        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+        for (Annotation annotation : annotations) {
+            annotationMap.put(annotation.annotationType(), annotation);
+        }
+        return annotationMap;
+    }
 
-   protected AbstractWeldAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, TypeStore typeStore)
-   {
-      if (annotationMap == null)
-      {
-         throw new WeldException(ANNOTATION_MAP_NULL);
-      }
-      this.annotationMap = annotationMap;
-      this.metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
-      for (Annotation annotation : annotationMap.values())
-      {
-         addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
-         addMetaAnnotations(metaAnnotationMap, annotation, typeStore.get(annotation.annotationType()), false);
-         this.annotationMap.put(annotation.annotationType(), annotation);
-      }
-      metaAnnotationMap.trimToSize();
 
-      if (declaredAnnotationMap == null)
-      {
-         throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
-      }
-      this.rawType = null;
-      this.type = null;
-      this.actualTypeArguments = new Type[0];
-      this.typeClosure = null;
-   }
+    protected static void addMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations, boolean declared) {
+        for (Annotation metaAnnotation : metaAnnotations) {
+            addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType(), declared);
+        }
+    }
 
-   public Class<T> getJavaClass()
-   {
-      return rawType;
-   }
+    protected static void addMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared) {
+        for (Annotation metaAnnotation : metaAnnotations) {
+            addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType(), declared);
+        }
+    }
 
-   public Type[] getActualTypeArguments()
-   {
-      return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
-   }
+    private static void addMetaAnnotation(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared) {
+        // Only map meta-annotations we are interested in
+        if (declared ? MAPPED_DECLARED_METAANNOTATIONS.contains(metaAnnotationType) : MAPPED_METAANNOTATIONS.contains(metaAnnotationType)) {
+            metaAnnotationMap.putSingleElement(metaAnnotationType, annotation);
+        }
+    }
 
-   public Set<Type> getInterfaceClosure()
-   {
-      Set<Type> interfaces = new HashSet<Type>();
-      for (Type t: getTypeClosure())
-      {
-         if (Reflections.getRawType(t).isInterface())
-         {
-            interfaces.add(t);
-         }
-      }
-      return Collections.unmodifiableSet(interfaces);
-   }
+    // The annotation map (annotation type -> annotation) of the item
+    private final Map<Class<? extends Annotation>, Annotation> annotationMap;
+    // The meta-annotation map (annotation type -> set of annotations containing
+    // meta-annotation) of the item
+    private final ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
 
-   public abstract S getDelegate();
+    private final Class<T> rawType;
+    private final Type[] actualTypeArguments;
+    private final Type type;
+    private final LazyValueHolder<Set<Type>> typeClosure;
 
-   public boolean isParameterizedType()
-   {
-      return rawType.getTypeParameters().length > 0;
-   }
-   
-   public boolean isPrimitive()
-   {
-      return getJavaClass().isPrimitive();
-   }
+    /**
+     * Constructor
+     * <p/>
+     * Also builds the meta-annotation map. Throws a NullPointerException if
+     * trying to register a null map
+     *
+     * @param annotationMap A map of annotation to register
+     */
+    public AbstractWeldAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Class<T> rawType, Type type, final LazyValueHolder<Set<Type>> typeClosure) {
+        if (annotationMap == null) {
+            throw new WeldException(ANNOTATION_MAP_NULL);
+        }
+        this.annotationMap = SharedObjectFacade.wrap(annotationMap);
+        ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
+        for (Annotation annotation : annotationMap.values()) {
+            addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
+            addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
+        }
+        metaAnnotationMap.trimToSize();
+        this.metaAnnotationMap = SharedObjectFacade.wrap(metaAnnotationMap);
 
-   public Type getBaseType()
-   {
-      return type;
-   }
+        if (declaredAnnotationMap == null) {
+            throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
+        }
+        this.rawType = rawType;
+        this.type = type;
+        if (type instanceof ParameterizedType) {
+            this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+        } else {
+            this.actualTypeArguments = new Type[0];
+        }
+        this.typeClosure = typeClosure;
+    }
 
-   public Set<Type> getTypeClosure()
-   {
-      return typeClosure.get();
-   }
-   
-   public Set<Annotation> getAnnotations()
-   {
-      return Collections.unmodifiableSet(new ArraySet<Annotation>(annotationMap.values()));
-   }
+    protected AbstractWeldAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, TypeStore typeStore) {
+        if (annotationMap == null) {
+            throw new WeldException(ANNOTATION_MAP_NULL);
+        }
+        this.annotationMap = annotationMap;
+        this.metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
+        for (Annotation annotation : annotationMap.values()) {
+            addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
+            addMetaAnnotations(metaAnnotationMap, annotation, typeStore.get(annotation.annotationType()), false);
+            this.annotationMap.put(annotation.annotationType(), annotation);
+        }
+        metaAnnotationMap.trimToSize();
 
-   public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-   {
-      return Collections.unmodifiableSet(new ArraySet<Annotation>(metaAnnotationMap.get(metaAnnotationType)));
-   }
+        if (declaredAnnotationMap == null) {
+            throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
+        }
+        this.rawType = null;
+        this.type = null;
+        this.actualTypeArguments = new Type[0];
+        this.typeClosure = null;
+    }
 
-   @Deprecated
-   public Set<Annotation> getQualifiers()
-   {
-      if (getMetaAnnotations(Qualifier.class).size() > 0)
-      {
-         return Collections.unmodifiableSet(getMetaAnnotations(Qualifier.class));
-      }
-      else
-      {
-         return Collections.unmodifiableSet(DEFAULT_QUALIFIERS);
-      }
-   }
+    public Class<T> getJavaClass() {
+        return rawType;
+    }
 
-   @Deprecated
-   public Annotation[] getBindingsAsArray()
-   {
-      return getQualifiers().toArray(EMPTY_ANNOTATIONS);
-   }
+    public Type[] getActualTypeArguments() {
+        return Arrays2.copyOf(actualTypeArguments, actualTypeArguments.length);
+    }
 
-   
-   public <A extends Annotation> A getAnnotation(Class<A> annotationType)
-   {
-      return annotationType.cast(annotationMap.get(annotationType));
-   }
+    public Set<Type> getInterfaceClosure() {
+        Set<Type> interfaces = new HashSet<Type>();
+        for (Type t : getTypeClosure()) {
+            if (Reflections.getRawType(t).isInterface()) {
+                interfaces.add(t);
+            }
+        }
+        return Collections.unmodifiableSet(interfaces);
+    }
 
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      return annotationMap.containsKey(annotationType);
-   }
-   
-   Map<Class<? extends Annotation>, Annotation> getAnnotationMap()
-   {
-      return annotationMap;
-   }
+    public abstract S getDelegate();
+
+    public boolean isParameterizedType() {
+        return rawType.getTypeParameters().length > 0;
+    }
+
+    public boolean isPrimitive() {
+        return getJavaClass().isPrimitive();
+    }
+
+    public Type getBaseType() {
+        return type;
+    }
+
+    public Set<Type> getTypeClosure() {
+        return typeClosure.get();
+    }
+
+    public Set<Annotation> getAnnotations() {
+        return Collections.unmodifiableSet(new ArraySet<Annotation>(annotationMap.values()));
+    }
+
+    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
+        return Collections.unmodifiableSet(new ArraySet<Annotation>(metaAnnotationMap.get(metaAnnotationType)));
+    }
+
+    @Deprecated
+    public Set<Annotation> getQualifiers() {
+        if (getMetaAnnotations(Qualifier.class).size() > 0) {
+            return Collections.unmodifiableSet(getMetaAnnotations(Qualifier.class));
+        } else {
+            return Collections.unmodifiableSet(DEFAULT_QUALIFIERS);
+        }
+    }
+
+    @Deprecated
+    public Annotation[] getBindingsAsArray() {
+        return getQualifiers().toArray(EMPTY_ANNOTATIONS);
+    }
+
+
+    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+        return annotationType.cast(annotationMap.get(annotationType));
+    }
+
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return annotationMap.containsKey(annotationType);
+    }
+
+    Map<Class<? extends Annotation>, Annotation> getAnnotationMap() {
+        return annotationMap;
+    }
 
 }

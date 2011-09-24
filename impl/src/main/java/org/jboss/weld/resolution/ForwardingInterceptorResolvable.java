@@ -18,14 +18,12 @@ package org.jboss.weld.resolution;
 
 import javax.enterprise.inject.spi.InterceptionType;
 
-public abstract class ForwardingInterceptorResolvable extends ForwardingResolvable implements InterceptorResolvable
-{
+public abstract class ForwardingInterceptorResolvable extends ForwardingResolvable implements InterceptorResolvable {
 
-   protected abstract InterceptorResolvable delegate();
+    protected abstract InterceptorResolvable delegate();
 
-   public InterceptionType getInterceptionType()
-   {
-      return delegate().getInterceptionType();
-   }
+    public InterceptionType getInterceptionType() {
+        return delegate().getInterceptionType();
+    }
 
 }

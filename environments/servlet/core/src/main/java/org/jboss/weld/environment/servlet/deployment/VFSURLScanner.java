@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.deployment;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Set;
-
 import org.jboss.virtual.VFS;
 import org.jboss.virtual.VirtualFile;
 import org.jboss.virtual.VirtualFileVisitor;
@@ -28,89 +23,79 @@ import org.jboss.virtual.VisitorAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Set;
+
 /**
  * This class provides JBoss VFS orientated scanning
- * 
+ *
  * @author Ales Justin
  */
-public class VFSURLScanner extends URLScanner
-{
-   private static final Logger log = LoggerFactory.getLogger(VFSURLScanner.class);
+public class VFSURLScanner extends URLScanner {
+    private static final Logger log = LoggerFactory.getLogger(VFSURLScanner.class);
 
-   public VFSURLScanner(ClassLoader classLoader)
-   {
-      super(classLoader);
-   }
+    public VFSURLScanner(ClassLoader classLoader) {
+        super(classLoader);
+    }
 
-   @Override
-   protected void handleArchiveByFile(File file, final Set<String> classes, final Set<URL> urls) throws IOException
-   {
-      try
-      {
-         log.trace("archive: " + file);
+    @Override
+    protected void handleArchiveByFile(File file, final Set<String> classes, final Set<URL> urls) throws IOException {
+        try {
+            log.trace("archive: " + file);
 
-         final VirtualFile archive = VFS.getRoot(file.toURI());
-         archive.visit(new VirtualFileVisitor()
-         {
-            public VisitorAttributes getAttributes()
-            {
-               return VisitorAttributes.RECURSE_LEAVES_ONLY;
+            final VirtualFile archive = VFS.getRoot(file.toURI());
+            archive.visit(new VirtualFileVisitor() {
+                public VisitorAttributes getAttributes() {
+                    return VisitorAttributes.RECURSE_LEAVES_ONLY;
+                }
+
+                public void visit(VirtualFile vf) {
+                    try {
+                        String name = getRelativePath(archive, vf);
+                        URL url = vf.toURL();
+                        handle(name, url, classes, urls);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException("Error handling file " + file, e);
+        }
+    }
+
+    /**
+     * Get the relative path between two virtual files
+     *
+     * @param parent the parent
+     * @param child  the child
+     * @return the relative path
+     */
+    static String getRelativePath(VirtualFile parent, VirtualFile child) {
+        if (child == null)
+            throw new IllegalArgumentException("Null child");
+
+        String childPath = child.getPathName();
+        if (parent != null) {
+            String parentPath = parent.getPathName();
+
+            if (parentPath.length() == childPath.length())
+                return "";
+
+            // Not sure about this? It is obviously not a direct child if it is shorter?
+            if (parentPath.length() < childPath.length()) {
+                if (parentPath.endsWith("/") == false)
+                    parentPath = parentPath + "/";
+                if (childPath.startsWith(parentPath))
+                    return childPath.substring(parentPath.length());
             }
+        }
 
-            public void visit(VirtualFile vf)
-            {
-               try
-               {
-                  String name = getRelativePath(archive, vf);
-                  URL url = vf.toURL();
-                  handle(name, url, classes, urls);
-               }
-               catch (Exception e)
-               {
-                  throw new RuntimeException(e);
-               }
-            }
-         });
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException("Error handling file " + file, e);
-      }
-   }
+        if (childPath.endsWith("/"))
+            childPath = childPath.substring(0, childPath.length() - 1);
 
-   /**
-    * Get the relative path between two virtual files
-    *
-    * @param parent the parent
-    * @param child the child
-    * @return the relative path
-    */
-   static String getRelativePath(VirtualFile parent, VirtualFile child)
-   {
-      if (child == null)
-         throw new IllegalArgumentException("Null child");
-
-      String childPath = child.getPathName();
-      if (parent != null)
-      {
-         String parentPath = parent.getPathName();
-
-         if (parentPath.length() == childPath.length())
-            return "";
-
-         // Not sure about this? It is obviously not a direct child if it is shorter?
-         if (parentPath.length() < childPath.length())
-         {
-            if (parentPath.endsWith("/") == false)
-               parentPath = parentPath + "/";
-            if (childPath.startsWith(parentPath))
-                return childPath.substring(parentPath.length());
-         }
-      }
-
-      if (childPath.endsWith("/"))
-         childPath = childPath.substring(0, childPath.length()-1);
-
-      return childPath;
-   }
+        return childPath;
+    }
 }

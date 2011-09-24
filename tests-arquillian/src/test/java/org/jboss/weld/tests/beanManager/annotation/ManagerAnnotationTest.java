@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.beanManager.annotation;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.persistence.PersistenceContext;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,71 +25,67 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.persistence.PersistenceContext;
+
 @RunWith(Arquillian.class)
-public class ManagerAnnotationTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class);
-   }
+public class ManagerAnnotationTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class);
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   /*
+    /*
     * description="WELD-299"
     */
-   @Test
-   public void testIsQualifier() throws Exception
-   {
-      Assert.assertFalse(beanManager.isQualifier(PersistenceContext.class));
-   }
+    @Test
+    public void testIsQualifier() throws Exception {
+        Assert.assertFalse(beanManager.isQualifier(PersistenceContext.class));
+    }
 
-   /*
+    /*
     * description="WELD-299"
     */
-   @Test
-   public void testIsInterceptorBinding() throws Exception
-   {
-      Assert.assertFalse(beanManager.isInterceptorBinding(PersistenceContext.class));
-   }
+    @Test
+    public void testIsInterceptorBinding() throws Exception {
+        Assert.assertFalse(beanManager.isInterceptorBinding(PersistenceContext.class));
+    }
 
-   /*
+    /*
     * description="WELD-299"
     */
-   @Test
-   public void testIsNormalScope() throws Exception
-   {
-      Assert.assertFalse(beanManager.isNormalScope(PersistenceContext.class));
-   }
+    @Test
+    public void testIsNormalScope() throws Exception {
+        Assert.assertFalse(beanManager.isNormalScope(PersistenceContext.class));
+    }
 
-   /*
+    /*
     * description="WELD-299"
     */
-   @Test
-   public void testIsPassivatingScope() throws Exception
-   {
-      Assert.assertFalse(beanManager.isPassivatingScope(PersistenceContext.class));
-   }
+    @Test
+    public void testIsPassivatingScope() throws Exception {
+        Assert.assertFalse(beanManager.isPassivatingScope(PersistenceContext.class));
+    }
 
-   /*
+    /*
     * description="WELD-299"
     */
-   @Test
-   public void testIsScope() throws Exception
-   {
-      Assert.assertFalse(beanManager.isScope(PersistenceContext.class));
-   }
+    @Test
+    public void testIsScope() throws Exception {
+        Assert.assertFalse(beanManager.isScope(PersistenceContext.class));
+    }
 
-   /*
+    /*
     * description="WELD-299"
     */
-   @Test
-   public void testIsStereotype() throws Exception
-   {
-      Assert.assertFalse(beanManager.isStereotype(PersistenceContext.class));
-   }
+    @Test
+    public void testIsStereotype() throws Exception {
+        Assert.assertFalse(beanManager.isStereotype(PersistenceContext.class));
+    }
 
 
 }

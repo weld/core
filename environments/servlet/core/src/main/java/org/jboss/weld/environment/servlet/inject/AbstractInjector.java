@@ -37,39 +37,33 @@ import java.util.WeakHashMap;
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
  * @author Ales Justin
  */
-public abstract class AbstractInjector
-{
-   private final WeldManager manager;
-   private final Map<Class<?>, InjectionTarget<?>> cache = new WeakHashMap<Class<?>, InjectionTarget<?>>();
+public abstract class AbstractInjector {
+    private final WeldManager manager;
+    private final Map<Class<?>, InjectionTarget<?>> cache = new WeakHashMap<Class<?>, InjectionTarget<?>>();
 
-   protected AbstractInjector(WeldManager manager)
-   {
-      if (manager == null)
-         throw new IllegalArgumentException("Null manager");
-      this.manager = manager;
-   }
+    protected AbstractInjector(WeldManager manager) {
+        if (manager == null)
+            throw new IllegalArgumentException("Null manager");
+        this.manager = manager;
+    }
 
-   protected void inject(Object instance)
-   {
-      // not data-race safe, however doesn't matter, as the injection target created for class A is interchangable for another injection target created for class A
-      // TODO Make this a concurrent cache when we switch to google collections
-      Class<?> clazz = instance.getClass();
-      if (!cache.containsKey(clazz))
-      {
-         cache.put(clazz, manager.createInjectionTarget(manager.createAnnotatedType(clazz)));
-      }
-      CreationalContext<Object> cc = manager.createCreationalContext(null);
-      InjectionTarget<Object> it = (InjectionTarget<Object>) cache.get(clazz);
-      it.inject(instance, cc);
-   }
+    protected void inject(Object instance) {
+        // not data-race safe, however doesn't matter, as the injection target created for class A is interchangable for another injection target created for class A
+        // TODO Make this a concurrent cache when we switch to google collections
+        Class<?> clazz = instance.getClass();
+        if (!cache.containsKey(clazz)) {
+            cache.put(clazz, manager.createInjectionTarget(manager.createAnnotatedType(clazz)));
+        }
+        CreationalContext<Object> cc = manager.createCreationalContext(null);
+        InjectionTarget<Object> it = (InjectionTarget<Object>) cache.get(clazz);
+        it.inject(instance, cc);
+    }
 
-   public void destroy(Object instance)
-   {
-      if (instance != null)
-      {
-         AnnotatedType type = manager.createAnnotatedType(instance.getClass());
-         InjectionTarget it = manager.createInjectionTarget(type);
-         it.dispose(instance);
-      }
-   }
+    public void destroy(Object instance) {
+        if (instance != null) {
+            AnnotatedType type = manager.createAnnotatedType(instance.getClass());
+            InjectionTarget it = manager.createInjectionTarget(type);
+            it.dispose(instance);
+        }
+    }
 }

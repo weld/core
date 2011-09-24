@@ -17,8 +17,6 @@
 
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
-import static org.jboss.weld.tests.decorators.abstractDecorator.AbstractDecoratorTestHelper.resetAll;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,35 +26,34 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.jboss.weld.tests.decorators.abstractDecorator.AbstractDecoratorTestHelper.resetAll;
+
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @RunWith(Arquillian.class)
-public class SimpleAbstractDecoratorWithAbstractMethodTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(
-               FrameWithFieldInjectedDelegateAndAbstractMethod.class,
-               FrameWithFieldInjectedDelegate.class)
-         .addPackage(SimpleAbstractDecoratorWithAbstractMethodTest.class.getPackage());
-   }
+public class SimpleAbstractDecoratorWithAbstractMethodTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(
+                        FrameWithFieldInjectedDelegateAndAbstractMethod.class,
+                        FrameWithFieldInjectedDelegate.class)
+                .addPackage(SimpleAbstractDecoratorWithAbstractMethodTest.class.getPackage());
+    }
 
-   @Test
-   public void testAbstractDecoratorApplied(WindowImpl window)
-   {
-      resetAll();
-      window.draw();
-      Assert.assertTrue(WindowImpl.drawn);
-      Assert.assertTrue(FrameWithFieldInjectedDelegate.drawn);
-      Assert.assertFalse(FrameWithFieldInjectedDelegateAndAbstractMethod.moved);
+    @Test
+    public void testAbstractDecoratorApplied(WindowImpl window) {
+        resetAll();
+        window.draw();
+        Assert.assertTrue(WindowImpl.drawn);
+        Assert.assertTrue(FrameWithFieldInjectedDelegate.drawn);
+        Assert.assertFalse(FrameWithFieldInjectedDelegateAndAbstractMethod.moved);
 
-      resetAll();
-      window.move();
-      Assert.assertTrue(WindowImpl.moved);
-      Assert.assertFalse(FrameWithFieldInjectedDelegate.drawn);
-      Assert.assertTrue(FrameWithFieldInjectedDelegateAndAbstractMethod.moved);
-   }
+        resetAll();
+        window.move();
+        Assert.assertTrue(WindowImpl.moved);
+        Assert.assertFalse(FrameWithFieldInjectedDelegate.drawn);
+        Assert.assertTrue(FrameWithFieldInjectedDelegateAndAbstractMethod.moved);
+    }
 }

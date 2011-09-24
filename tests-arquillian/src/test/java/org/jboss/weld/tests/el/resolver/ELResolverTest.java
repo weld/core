@@ -16,12 +16,7 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
-import static org.junit.Assert.assertNotSame;
-
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.inject.Inject;
-
+import com.sun.el.ExpressionFactoryImpl;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -33,7 +28,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.sun.el.ExpressionFactoryImpl;
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
+import javax.inject.Inject;
+
+import static org.junit.Assert.assertNotSame;
 
 /**
  * Test the WeldELResolver and that it collaborates with the standard EL resolver chain.
@@ -42,81 +41,75 @@ import com.sun.el.ExpressionFactoryImpl;
  * @author Dan Allen
  */
 @RunWith(Arquillian.class)
-public class ELResolverTest
-{
-   @Deployment
-   public static JavaArchive createDeployment()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-               .addPackage(ELResolverTest.class.getPackage())
-               .addClass(EL.class)
-               .addPackages(true, ExpressionFactoryImpl.class.getPackage());
-   }
+public class ELResolverTest {
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ELResolverTest.class.getPackage())
+                .addClass(EL.class)
+                .addPackages(true, ExpressionFactoryImpl.class.getPackage());
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /**
-    * Test that the WeldELResolver only works to resolve the base of an EL
-    * expression, in this case a named bean. Once the base is resolved, the
-    * remainder of the expression should be delegated to the standard chain of
-    * property resolvers. If the WeldELResolver oversteps its bounds by
-    * trying to resolve the property against the Weld namespace, the test
-    * will fail.
-    */
-   @Test
-   public void testResolveBeanPropertyOfNamedBean()
-   {
-      ELContext elContext = EL.createELContext(beanManager);
-      ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
+    /**
+     * Test that the WeldELResolver only works to resolve the base of an EL
+     * expression, in this case a named bean. Once the base is resolved, the
+     * remainder of the expression should be delegated to the standard chain of
+     * property resolvers. If the WeldELResolver oversteps its bounds by
+     * trying to resolve the property against the Weld namespace, the test
+     * will fail.
+     */
+    @Test
+    public void testResolveBeanPropertyOfNamedBean() {
+        ELContext elContext = EL.createELContext(beanManager);
+        ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
 
-      Object value = exprFactory.createValueExpression(elContext, "#{beer.style}", String.class).getValue(elContext);
+        Object value = exprFactory.createValueExpression(elContext, "#{beer.style}", String.class).getValue(elContext);
 
-      Assert.assertEquals("Belgium Strong Dark Ale", value);
-   }
+        Assert.assertEquals("Belgium Strong Dark Ale", value);
+    }
 
-   @Test // WELD-874
-   public void testResolveNormalScopedBean()
-   {
-      ELContext elContext = EL.createELContext(beanManager);
-      ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
+    @Test // WELD-874
+    public void testResolveNormalScopedBean() {
+        ELContext elContext = EL.createELContext(beanManager);
+        ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
 
-      Lager value1 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
-      value1.drink();
-      assertNotSame(Lager.class, value1.getClass());
+        Lager value1 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
+        value1.drink();
+        assertNotSame(Lager.class, value1.getClass());
 
-      Lager value2 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
-      value2.drink();
-      assertNotSame(Lager.class, value2.getClass());
+        Lager value2 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
+        value2.drink();
+        assertNotSame(Lager.class, value2.getClass());
 
-      Lager value3 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
-      value3.drink();
-      assertNotSame(Lager.class, value3.getClass());
-   }
+        Lager value3 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
+        value3.drink();
+        assertNotSame(Lager.class, value3.getClass());
+    }
 
-   /**
-    * Test that the WeldELResolver only works to resolve the base of an EL
-    * expression, in this case from a producer method. Once the base is
-    * resolved, the remainder of the expression should be delegated to the
-    * standard chain of property resolvers. If the WeldELResolver oversteps
-    * its bounds by trying to resolve the property against the Weld
-    * namespace, the test will fail.
-    */
-   @Test
-   public void testResolveBeanPropertyOfProducerBean()
-   {
-      ELContext elContext = EL.createELContext(beanManager);
-      ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
+    /**
+     * Test that the WeldELResolver only works to resolve the base of an EL
+     * expression, in this case from a producer method. Once the base is
+     * resolved, the remainder of the expression should be delegated to the
+     * standard chain of property resolvers. If the WeldELResolver oversteps
+     * its bounds by trying to resolve the property against the Weld
+     * namespace, the test will fail.
+     */
+    @Test
+    public void testResolveBeanPropertyOfProducerBean() {
+        ELContext elContext = EL.createELContext(beanManager);
+        ExpressionFactory exprFactory = EL.EXPRESSION_FACTORY;
 
-      Object value = exprFactory.createValueExpression(elContext, "#{beerOnTap.style}", String.class).getValue(elContext);
-      Assert.assertEquals("IPA", value);
-   }
+        Object value = exprFactory.createValueExpression(elContext, "#{beerOnTap.style}", String.class).getValue(elContext);
+        Assert.assertEquals("IPA", value);
+    }
 
-   @Test(expected=OrderException.class)
-   // WELD-782
-   public void testErrorMessageGood(BeanManagerImpl beanManager)
-   {
-      ELContext ctx = EL.createELContext(beanManager);
-      EL.EXPRESSION_FACTORY.createValueExpression(ctx, "#{orderBean.orderId}", Object.class).getValue(ctx);
-   }
+    @Test(expected = OrderException.class)
+    // WELD-782
+    public void testErrorMessageGood(BeanManagerImpl beanManager) {
+        ELContext ctx = EL.createELContext(beanManager);
+        EL.EXPRESSION_FACTORY.createValueExpression(ctx, "#{orderBean.orderId}", Object.class).getValue(ctx);
+    }
 }

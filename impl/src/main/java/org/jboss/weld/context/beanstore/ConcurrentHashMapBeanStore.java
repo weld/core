@@ -23,39 +23,36 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A BeanStore that uses a HashMap as backing storage
- * 
+ *
  * @author Nicklas Karlsson
  */
-public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore implements Serializable
-{
-   
-   private static final long serialVersionUID = 4770689245633688471L;
-   
-   // The backing map
-   protected Map<String, Object> delegate;
-   /**
-    * Constructor
-    */
-   public ConcurrentHashMapBeanStore()
-   {
-      delegate = new ConcurrentHashMap<String, Object>();
-   }
+public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore implements Serializable {
 
-   /**
-    * Gets the delegate for the store
-    * 
-    * @return The delegate
-    */
-   @Override
-   public Map<String, Object> delegate()
-   {
-      return delegate;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "contextuals " + delegate;
-   }
+    private static final long serialVersionUID = 4770689245633688471L;
+
+    // The backing map
+    protected Map<String, Object> delegate;
+
+    /**
+     * Constructor
+     */
+    public ConcurrentHashMapBeanStore() {
+        delegate = new ConcurrentHashMap<String, Object>();
+    }
+
+    /**
+     * Gets the delegate for the store
+     *
+     * @return The delegate
+     */
+    @Override
+    public Map<String, Object> delegate() {
+        return delegate;
+    }
+
+    @Override
+    public String toString() {
+        return "contextuals " + delegate;
+    }
 
 }

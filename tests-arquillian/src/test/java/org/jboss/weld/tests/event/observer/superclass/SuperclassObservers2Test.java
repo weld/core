@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.tests.event.observer.superclass;
 
-import static org.junit.Assert.assertNull;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,30 +24,32 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import static org.junit.Assert.assertNull;
+
 @RunWith(Arquillian.class)
-public class SuperclassObservers2Test
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassObservers2Test.class.getPackage());
-   }
+public class SuperclassObservers2Test {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassObservers2Test.class.getPackage());
+    }
 
-   @Inject
-   Event<TestEvent> event;
+    @Inject
+    Event<TestEvent> event;
 
-   @Inject
-   @Disabled
-   private DisabledTestObserver disabled;
+    @Inject
+    @Disabled
+    private DisabledTestObserver disabled;
 
-   @Test
-   public void testObserverMethodOnOverridesWithoutAnnotNotInvoked()
-   {
-      disabled.reset();
+    @Test
+    public void testObserverMethodOnOverridesWithoutAnnotNotInvoked() {
+        disabled.reset();
 
-      assertNull(disabled.getTestEvent());
-      event.fire(new TestEvent());
-      assertNull(disabled.getTestEvent());
-   }
+        assertNull(disabled.getTestEvent());
+        event.fire(new TestEvent());
+        assertNull(disabled.getTestEvent());
+    }
 
 }

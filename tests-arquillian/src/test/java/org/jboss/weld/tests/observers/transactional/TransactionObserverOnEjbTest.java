@@ -29,57 +29,55 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * WELD-936 Tests that transaction observer notifications on EJB's work correctly when no request scope is active
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class TransactionObserverOnEjbTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-            .addPackage(TransactionObserverOnEjbTest.class.getPackage());
-   }
+public class TransactionObserverOnEjbTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(TransactionObserverOnEjbTest.class.getPackage());
+    }
 
-   @Inject
-   private UserTransaction userTransaction;
+    @Inject
+    private UserTransaction userTransaction;
 
-   @Inject
-   private Ostrich ostrich;
+    @Inject
+    private Ostrich ostrich;
 
 
-   @Test
-   public void testTransactionalObserver() throws  ExecutionException, TimeoutException, InterruptedException
-   {
-      final UserTransaction userTransaction = this.userTransaction;
-      final Ostrich ostrich = this.ostrich;
+    @Test
+    public void testTransactionalObserver() throws ExecutionException, TimeoutException, InterruptedException {
+        final UserTransaction userTransaction = this.userTransaction;
+        final Ostrich ostrich = this.ostrich;
 
-      //We have to run this is a different thread
-      //to make sure that the request scope is not active to test the issue properly
-      ExecutorService executor = Executors.newSingleThreadExecutor();
-      Future<?> future = executor.submit(new Runnable()
-      {
-         public void run()
-         {
-            try
-            {
-               userTransaction.begin();
-               Assert.assertFalse(ostrich.isHeadInSand());
-               ostrich.foxNearby();
-               Assert.assertTrue(ostrich.isHeadInSand());
-               userTransaction.commit();
-               Assert.assertFalse(ostrich.isHeadInSand());
-            } catch (Exception e)
-            {
-               throw new RuntimeException(e);
+        //We have to run this is a different thread
+        //to make sure that the request scope is not active to test the issue properly
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<?> future = executor.submit(new Runnable() {
+            public void run() {
+                try {
+                    userTransaction.begin();
+                    Assert.assertFalse(ostrich.isHeadInSand());
+                    ostrich.foxNearby();
+                    Assert.assertTrue(ostrich.isHeadInSand());
+                    userTransaction.commit();
+                    Assert.assertFalse(ostrich.isHeadInSand());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-         }
-      });
-      future.get(3, TimeUnit.SECONDS);
+        });
+        future.get(3, TimeUnit.SECONDS);
 
-   }
+    }
 }

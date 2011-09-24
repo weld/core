@@ -24,20 +24,17 @@ import javax.inject.Inject;
 
 @Stateful
 @Dependent
-public class LandgraffenSchloss implements Schloss
-{
-   @Inject
-   private GrossStadt biggerCity;
+public class LandgraffenSchloss implements Schloss {
+    @Inject
+    private GrossStadt biggerCity;
 
-   @PreDestroy
-   public void destructionCallback()
-   {
-      biggerCity.schlossDestroyed();
-   }
+    @PreDestroy
+    public void destructionCallback() {
+        biggerCity.schlossDestroyed();
+    }
 
-   @Remove
-   public void remove()
-   {
-   }
+    @Remove
+    public void remove() {
+    }
 
 }

@@ -24,16 +24,13 @@ import java.io.Serializable;
  */
 
 @PassivationActivation
-public class Ball implements Serializable
-{
-   @Shot
-   public void shoot()
-   {
-   }
+public class Ball implements Serializable {
+    @Shot
+    public void shoot() {
+    }
 
-   @Pass
-   public void pass()
-   {
-   }
-   
+    @Pass
+    public void pass() {
+    }
+
 }

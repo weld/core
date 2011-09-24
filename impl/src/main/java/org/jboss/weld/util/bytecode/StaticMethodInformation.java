@@ -20,86 +20,73 @@ import javassist.bytecode.AccessFlag;
 
 import java.lang.reflect.Method;
 
-public class StaticMethodInformation implements MethodInformation
-{
-   private final String name;
-   private final String descriptor;
-   private final String[] parameterTypes;
-   private final String returnType;
-   private final String declaringClass;
-   private final int modifiers;
+public class StaticMethodInformation implements MethodInformation {
+    private final String name;
+    private final String descriptor;
+    private final String[] parameterTypes;
+    private final String returnType;
+    private final String declaringClass;
+    private final int modifiers;
 
-   public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass)
-   {
-      this(name,parameterTypes,returnType,declaringClass,AccessFlag.PUBLIC);
-   }
+    public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass) {
+        this(name, parameterTypes, returnType, declaringClass, AccessFlag.PUBLIC);
+    }
 
-   public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass, int modifiers)
-   {
-      this.name = name;
-      this.parameterTypes = DescriptorUtils.getParameterTypes(parameterTypes);
-      this.returnType = DescriptorUtils.classToStringRepresentation(returnType);
-      this.declaringClass = declaringClass;
-      StringBuilder builder = new StringBuilder("(");
-      for (String p : this.parameterTypes)
-      {
-         builder.append(p);
-      }
-      builder.append(')');
-      builder.append(this.returnType);
-      descriptor = builder.toString();
-      this.modifiers = modifiers;
-   }
+    public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass, int modifiers) {
+        this.name = name;
+        this.parameterTypes = DescriptorUtils.getParameterTypes(parameterTypes);
+        this.returnType = DescriptorUtils.classToStringRepresentation(returnType);
+        this.declaringClass = declaringClass;
+        StringBuilder builder = new StringBuilder("(");
+        for (String p : this.parameterTypes) {
+            builder.append(p);
+        }
+        builder.append(')');
+        builder.append(this.returnType);
+        descriptor = builder.toString();
+        this.modifiers = modifiers;
+    }
 
-   public StaticMethodInformation(String name, String[] parameterTypes, String returnType, String declaringClass)
-   {
-      this.name = name;
-      this.parameterTypes = parameterTypes;
-      this.returnType = returnType;
-      this.declaringClass = declaringClass;
-      StringBuilder builder = new StringBuilder("(");
-      for (String p : this.parameterTypes)
-      {
-         builder.append(p);
-      }
-      builder.append(')');
-      builder.append(returnType);
-      descriptor = builder.toString();
-      this.modifiers = AccessFlag.PUBLIC;
-   }
+    public StaticMethodInformation(String name, String[] parameterTypes, String returnType, String declaringClass) {
+        this.name = name;
+        this.parameterTypes = parameterTypes;
+        this.returnType = returnType;
+        this.declaringClass = declaringClass;
+        StringBuilder builder = new StringBuilder("(");
+        for (String p : this.parameterTypes) {
+            builder.append(p);
+        }
+        builder.append(')');
+        builder.append(returnType);
+        descriptor = builder.toString();
+        this.modifiers = AccessFlag.PUBLIC;
+    }
 
-   public String getDeclaringClass()
-   {
-      return declaringClass;
-   }
+    public String getDeclaringClass() {
+        return declaringClass;
+    }
 
-   public Method getMethod()
-   {
-      return null;
-   }
+    public Method getMethod() {
+        return null;
+    }
 
-   public String getDescriptor()
-   {
-      return descriptor;
-   }
+    public String getDescriptor() {
+        return descriptor;
+    }
 
-   public String[] getParameterTypes()
-   {
-      return parameterTypes;
-   }
+    public String[] getParameterTypes() {
+        return parameterTypes;
+    }
 
-   public String getReturnType()
-   {
-      return returnType;
-   }
+    public String getReturnType() {
+        return returnType;
+    }
 
-   public String getName()
-   {
-      return name;
-   }
+    public String getName() {
+        return name;
+    }
 
-   public int getModifiers()
-   {
-      return modifiers;
-   }
+    public int getModifiers() {
+        return modifiers;
+    }
 }

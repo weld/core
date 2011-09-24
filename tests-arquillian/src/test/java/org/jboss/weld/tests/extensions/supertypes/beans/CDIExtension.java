@@ -37,35 +37,31 @@
 
 package org.jboss.weld.tests.extensions.supertypes.beans;
 
-import java.util.Collections;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import java.util.Collections;
 
 /**
- * 
  * @author robc
  * @author Pete Muir
  */
-public class CDIExtension implements Extension
-{
+public class CDIExtension implements Extension {
 
-   void processAnnotatedType(@Observes ProcessAnnotatedType<BeanOne> event)
-   {
-      AnnotatedType<BeanOne> type = event.getAnnotatedType();
+    void processAnnotatedType(@Observes ProcessAnnotatedType<BeanOne> event) {
+        AnnotatedType<BeanOne> type = event.getAnnotatedType();
 
-      AnnotatedTypeImpl<BeanOne> newType = new AnnotatedTypeImpl<BeanOne>(type);
+        AnnotatedTypeImpl<BeanOne> newType = new AnnotatedTypeImpl<BeanOne>(type);
 
-      newType.setConstructors(type.getConstructors());
-      
-      // Clear all fields and methods
-      newType.setFields(Collections.<AnnotatedField<? super BeanOne>>emptySet());
-      newType.setMethods(Collections.<AnnotatedMethod<? super BeanOne>>emptySet());
-      event.setAnnotatedType(newType);
-   }
+        newType.setConstructors(type.getConstructors());
+
+        // Clear all fields and methods
+        newType.setFields(Collections.<AnnotatedField<? super BeanOne>>emptySet());
+        newType.setMethods(Collections.<AnnotatedMethod<? super BeanOne>>emptySet());
+        event.setAnnotatedType(newType);
+    }
 
 }

@@ -33,11 +33,6 @@ package org.jboss.weld.tests.contexts.conversation.exceptionInPhaseListener;
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -54,111 +49,104 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class ClientConversationContextTest
-{
+public class ClientConversationContextTest {
 
-   public static final String CID_REQUEST_PARAMETER_NAME = "cid";
+    public static final String CID_REQUEST_PARAMETER_NAME = "cid";
 
-   public static final String CID_HEADER_NAME = "org.jboss.jsr299.tck.cid";
+    public static final String CID_HEADER_NAME = "org.jboss.jsr299.tck.cid";
 
-   public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
+    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
 
-   @Deployment(testable = false)
-   public static WebArchive createDeployment()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(ConversationTestPhaseListener.class, Cloud.class)
-               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
-               .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
-               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(ConversationTestPhaseListener.class, Cloud.class)
+                .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "cloud.jsf", "cloud.jspx")
+                .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   @Test
-   public void testExceptionPhaseListener() throws Exception
-   {
-      WebClient client = new WebClient();
-      client.setThrowExceptionOnFailingStatusCode(false);
+    @Test
+    public void testExceptionPhaseListener() throws Exception {
+        WebClient client = new WebClient();
+        client.setThrowExceptionOnFailingStatusCode(false);
 
-      // First, try a transient conversation
+        // First, try a transient conversation
 
 
-      // Access a page that throws an exception
-      client.getPage(getPath("/thunderstorm.jsf"));
+        // Access a page that throws an exception
+        client.getPage(getPath("/thunderstorm.jsf"));
 
-      // Then access another page that doesn't and check the contexts are ok
-      HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
-      String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
-      assertEquals(Cloud.NAME, cloudName);
+        // Then access another page that doesn't and check the contexts are ok
+        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        String cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
+        assertEquals(Cloud.NAME, cloudName);
 
-      // Now start a conversation
-      HtmlPage thunderstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "beginConversation").click();
-      String cid = getCid(thunderstorm);
+        // Now start a conversation
+        HtmlPage thunderstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "beginConversation").click();
+        String cid = getCid(thunderstorm);
 
-      //  and access the page that throws an exception again
-      getFirstMatchingElement(cloud, HtmlSubmitInput.class, "thunderstorm").click();
+        //  and access the page that throws an exception again
+        getFirstMatchingElement(cloud, HtmlSubmitInput.class, "thunderstorm").click();
 
-      cloud = client.getPage(getPath("/cloud.jsf", cid));
+        cloud = client.getPage(getPath("/cloud.jsf", cid));
 
-      // And navigate to another page, checking the conversation exists by verifying that state is maintained
-      cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
-      assertEquals("gavin", cloudName);
-   }
+        // And navigate to another page, checking the conversation exists by verifying that state is maintained
+        cloudName = getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent();
+        assertEquals("gavin", cloudName);
+    }
 
-   protected String getPath(String viewId, String cid)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
-   }
+    protected String getPath(String viewId, String cid) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
+    }
 
-   protected String getPath(String viewId)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + viewId;
-   }
+    protected String getPath(String viewId) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/" + viewId;
+    }
 
-   protected String getCid(Page page)
-   {
-      String url = page.getWebResponse().getRequestUrl().toString();
-      return url.substring(url.indexOf("cid=") + 4);
-   }
+    protected String getCid(Page page) {
+        String url = page.getWebResponse().getRequestUrl().toString();
+        return url.substring(url.indexOf("cid=") + 4);
+    }
 
-   protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
-   {
-     Set<T> result = new HashSet<T>();
+    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
+        Set<T> result = new HashSet<T>();
 
-     for (HtmlElement element : rootElement.getAllHtmlChildElements())
-     {
-        result.addAll(getElements(element, elementClass));
-     }
+        for (HtmlElement element : rootElement.getAllHtmlChildElements()) {
+            result.addAll(getElements(element, elementClass));
+        }
 
-     if (elementClass.isInstance(rootElement))
-     {
-        result.add(elementClass.cast(rootElement));
-     }
-     return result;
+        if (elementClass.isInstance(rootElement)) {
+            result.add(elementClass.cast(rootElement));
+        }
+        return result;
 
-   }
+    }
 
-   protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id)
-   {
+    protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id) {
 
-     Set<T> inputs = getElements(page.getBody(), elementClass);
-     for (T input : inputs)
-     {
-         if (input.getId().contains(id))
-         {
-            return input;
-         }
-     }
-     return null;
-   }
+        Set<T> inputs = getElements(page.getBody(), elementClass);
+        for (T input : inputs) {
+            if (input.getId().contains(id)) {
+                return input;
+            }
+        }
+        return null;
+    }
 
 }

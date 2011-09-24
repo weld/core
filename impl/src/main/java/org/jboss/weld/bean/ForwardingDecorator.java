@@ -16,31 +16,26 @@
  */
 package org.jboss.weld.bean;
 
+import javax.enterprise.inject.spi.Decorator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Decorator;
+public abstract class ForwardingDecorator<T> extends ForwardingBean<T> implements Decorator<T> {
 
-public abstract class ForwardingDecorator<T> extends ForwardingBean<T> implements Decorator<T>
-{
+    @Override
+    protected abstract Decorator<T> delegate();
 
-   @Override
-   protected abstract Decorator<T> delegate();
+    public Set<Type> getDecoratedTypes() {
+        return delegate().getDecoratedTypes();
+    }
 
-   public Set<Type> getDecoratedTypes()
-   {
-      return delegate().getDecoratedTypes();
-   }
+    public Set<Annotation> getDelegateQualifiers() {
+        return delegate().getDelegateQualifiers();
+    }
 
-   public Set<Annotation> getDelegateQualifiers()
-   {
-      return delegate().getDelegateQualifiers();
-   }
-
-   public Type getDelegateType()
-   {
-      return delegate().getDelegateType();
-   }
+    public Type getDelegateType() {
+        return delegate().getDelegateType();
+    }
 
 }

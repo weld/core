@@ -16,27 +16,24 @@
  */
 package org.jboss.weld.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-
 /**
  * Represents a Class Constructor
- * 
+ *
  * @author Pete Muir
- * 
  */
-public interface WeldConstructor<T> extends WeldCallable<T, T, Constructor<T>>, AnnotatedConstructor<T>
-{
+public interface WeldConstructor<T> extends WeldCallable<T, T, Constructor<T>>, AnnotatedConstructor<T> {
 
-   /**
-    * Creates a new instance of the class, using this constructor
-    * 
-    * @return The created instance
-    */
-   public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
+    /**
+     * Creates a new instance of the class, using this constructor
+     *
+     * @return The created instance
+     */
+    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException;
 
-   public ConstructorSignature getSignature();
+    public ConstructorSignature getSignature();
 
 }

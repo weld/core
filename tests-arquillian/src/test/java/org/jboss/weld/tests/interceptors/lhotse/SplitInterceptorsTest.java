@@ -44,31 +44,28 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Category(Broken.class)
-public class SplitInterceptorsTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      WebArchive web = ShrinkWrap.create(WebArchive.class).addPackage(SplitInterceptorsTest.class.getPackage());
+public class SplitInterceptorsTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        WebArchive web = ShrinkWrap.create(WebArchive.class).addPackage(SplitInterceptorsTest.class.getPackage());
 
-      BeanArchive fst = ShrinkWrap.create(BeanArchive.class).intercept(TxInterceptor.class);
-      fst.addPackage(TDAO.class.getPackage());
-      web.addAsLibrary(fst);
+        BeanArchive fst = ShrinkWrap.create(BeanArchive.class).intercept(TxInterceptor.class);
+        fst.addPackage(TDAO.class.getPackage());
+        web.addAsLibrary(fst);
 
-      BeanArchive snd = ShrinkWrap.create(BeanArchive.class).intercept(TxInterceptor.class);
-      snd.addPackage(CDAO.class.getPackage());
-      web.addAsLibrary(snd);
+        BeanArchive snd = ShrinkWrap.create(BeanArchive.class).intercept(TxInterceptor.class);
+        snd.addPackage(CDAO.class.getPackage());
+        web.addAsLibrary(snd);
 
-      return web;
-   }
+        return web;
+    }
 
-   @Test
-   public void testInterceptors(CDAO cdao) throws Exception
-   {
-      TxInterceptor.used = false;
+    @Test
+    public void testInterceptors(CDAO cdao) throws Exception {
+        TxInterceptor.used = false;
 
-      Client c = new Client();
-      Assert.assertTrue(cdao.save(c));
-      Assert.assertTrue(TxInterceptor.used);
-   }
+        Client c = new Client();
+        Assert.assertTrue(cdao.save(c));
+        Assert.assertTrue(TxInterceptor.used);
+    }
 }

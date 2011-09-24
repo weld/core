@@ -23,18 +23,15 @@ package org.jboss.weld.tests.inheritance.weld824;
 
 import javax.inject.Inject;
 
-public class Bar extends Foo
-{
-   private boolean subclassInitialized = false;
-   
-   @Inject
-   public void initSubclass()
-   {
-      subclassInitialized = true;
-   }
+public class Bar extends Foo {
+    private boolean subclassInitialized = false;
 
-   public boolean isSubclassInitialized()
-   {
-      return subclassInitialized;
-   }
+    @Inject
+    public void initSubclass() {
+        subclassInitialized = true;
+    }
+
+    public boolean isSubclassInitialized() {
+        return subclassInitialized;
+    }
 }

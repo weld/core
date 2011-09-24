@@ -16,72 +16,57 @@
  */
 package org.jboss.weld.ejb;
 
-import java.io.Serializable;
-
-import javax.interceptor.InvocationContext;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 
+import javax.interceptor.InvocationContext;
+import java.io.Serializable;
+
 /**
  * Interceptor for ensuring the request context is active during requests to EJBs.
- * 
- * Normally, a servlet will start the request context, however in non-servlet 
+ * <p/>
+ * Normally, a servlet will start the request context, however in non-servlet
  * requests (e.g. MDB, async, timeout) the contexts may need starting.
- * 
+ * <p/>
  * The Application context is active for duration of the deployment
- * 
+ *
  * @author Pete Muir
  */
-public class SessionBeanInterceptor implements Serializable
-{
-   private static final long serialVersionUID = 7327757031821596782L;
+public class SessionBeanInterceptor implements Serializable {
+    private static final long serialVersionUID = 7327757031821596782L;
 
-   public Object aroundInvoke(InvocationContext invocation) throws Exception
-   {
-      
-      if (isRequestContextActive())
-      {
-         return invocation.proceed();
-      }
-      else
-      {
-         EjbRequestContext requestContext = Container.instance().deploymentManager().instance().select(EjbRequestContext.class).get();
-         try
-         {
-            requestContext.associate(invocation);
-            requestContext.activate();
-            try
-            {
-               return invocation.proceed();
+    public Object aroundInvoke(InvocationContext invocation) throws Exception {
+
+        if (isRequestContextActive()) {
+            return invocation.proceed();
+        } else {
+            EjbRequestContext requestContext = Container.instance().deploymentManager().instance().select(EjbRequestContext.class).get();
+            try {
+                requestContext.associate(invocation);
+                requestContext.activate();
+                try {
+                    return invocation.proceed();
+                } finally {
+                    requestContext.invalidate();
+                    requestContext.deactivate();
+
+                }
+            } finally {
+                requestContext.dissociate(invocation);
             }
-            finally
-            {
-               requestContext.invalidate();
-               requestContext.deactivate();
-               
+        }
+    }
+
+    private boolean isRequestContextActive() {
+        for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class)) {
+            if (requestContext.isActive()) {
+                return true;
             }
-         }
-         finally
-         {
-            requestContext.dissociate(invocation);
-         }
-      }
-   }
-   
-   private boolean isRequestContextActive()
-   {
-      for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class))
-      {
-         if (requestContext.isActive())
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-   
+        }
+        return false;
+    }
+
 }
 
    

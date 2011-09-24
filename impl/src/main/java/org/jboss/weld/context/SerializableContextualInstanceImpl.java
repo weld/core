@@ -16,55 +16,48 @@
  */
 package org.jboss.weld.context;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 
-public class SerializableContextualInstanceImpl<C extends Contextual<I>, I> implements SerializableContextualInstance<C,I>
-{
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
 
-   private static final long serialVersionUID = -6366271037267396256L;
+public class SerializableContextualInstanceImpl<C extends Contextual<I>, I> implements SerializableContextualInstance<C, I> {
 
-   private final SerializableContextual<C, I> contextual;
-   private final I instance;
-   private final CreationalContext<I> creationalContext;
+    private static final long serialVersionUID = -6366271037267396256L;
 
-   public SerializableContextualInstanceImpl(C contextual, I instance, CreationalContext<I> creationalContext, ContextualStore contextualStore)
-   {
-      this.contextual = new SerializableContextualImpl<C, I>(contextual, contextualStore);
-      this.instance = instance;
-      this.creationalContext = creationalContext;
-   }
+    private final SerializableContextual<C, I> contextual;
+    private final I instance;
+    private final CreationalContext<I> creationalContext;
 
-   public SerializableContextualInstanceImpl(SerializableContextual<C, I> contextual, I instance, CreationalContext<I> creationalContext)
-   {
-      this.contextual = contextual;
-      this.instance = instance;
-      this.creationalContext = creationalContext;
-   }
+    public SerializableContextualInstanceImpl(C contextual, I instance, CreationalContext<I> creationalContext, ContextualStore contextualStore) {
+        this.contextual = new SerializableContextualImpl<C, I>(contextual, contextualStore);
+        this.instance = instance;
+        this.creationalContext = creationalContext;
+    }
 
-   public SerializableContextual<C, I> getContextual()
-   {
-      return contextual;
-   }
+    public SerializableContextualInstanceImpl(SerializableContextual<C, I> contextual, I instance, CreationalContext<I> creationalContext) {
+        this.contextual = contextual;
+        this.instance = instance;
+        this.creationalContext = creationalContext;
+    }
 
-   public I getInstance()
-   {
-      return instance;
-   }
+    public SerializableContextual<C, I> getContextual() {
+        return contextual;
+    }
 
-   public CreationalContext<I> getCreationalContext()
-   {
-      return creationalContext;
-   }
+    public I getInstance() {
+        return instance;
+    }
 
-   @Override
-   public String toString()
-   {
-      return "Bean: " + contextual + "; Instance: " + instance + "; CreationalContext: " + creationalContext;
-   }
+    public CreationalContext<I> getCreationalContext() {
+        return creationalContext;
+    }
+
+    @Override
+    public String toString() {
+        return "Bean: " + contextual + "; Instance: " + instance + "; CreationalContext: " + creationalContext;
+    }
 
 }

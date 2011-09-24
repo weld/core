@@ -21,20 +21,19 @@ import javax.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link New}
- * 
+ *
  * @author Pete Muir
  */
 @SuppressWarnings("all")
-public class NewLiteral extends AnnotationLiteral<New> implements New 
-{
+public class NewLiteral extends AnnotationLiteral<New> implements New {
 
-   private static final long serialVersionUID = 5740797331347409678L;
+    private static final long serialVersionUID = 5740797331347409678L;
 
-   public Class<?> value()
-   {
-      return New.class;
-   }
-   
-   public NewLiteral() {}
+    public Class<?> value() {
+        return New.class;
+    }
+
+    public NewLiteral() {
+    }
 
 }

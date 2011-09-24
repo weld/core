@@ -21,15 +21,14 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 /**
  * AnnotatedParameter provides a uniform access to a method parameter defined
  * either in Java or XML
- * 
- * @author Pete Muir
+ *
  * @param <T>
+ * @author Pete Muir
  */
-public interface WeldParameter<T, X> extends WeldAnnotated<T, Object>, AnnotatedParameter<X>
-{
-   
-   public WeldCallable<?, X, ?> getDeclaringWeldCallable();
-   
-   public WeldClass<X> getDeclaringType();
+public interface WeldParameter<T, X> extends WeldAnnotated<T, Object>, AnnotatedParameter<X> {
+
+    public WeldCallable<?, X, ?> getDeclaringWeldCallable();
+
+    public WeldClass<X> getDeclaringType();
 
 }

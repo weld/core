@@ -20,59 +20,54 @@ import java.util.List;
 
 /**
  * Thrown if an deployment exception occurs.
- * 
+ *
  * @author Pete Muir
  */
-public class DeploymentException extends WeldException
-{
-   private static final long serialVersionUID = 8014646336322875707L;
+public class DeploymentException extends WeldException {
+    private static final long serialVersionUID = 8014646336322875707L;
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> DeploymentException(E key, Object... args)
-   {
-      super(key, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> DeploymentException(E key, Object... args) {
+        super(key, args);
+    }
 
-   /**
-    * Creates a new exception with the given localized message key, the cause
-    * for this exception and optional arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param throwable The cause for this exception
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> DeploymentException(E key, Throwable throwable, Object... args)
-   {
-      super(key, throwable, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key, the cause
+     * for this exception and optional arguments for the message.
+     *
+     * @param <E>       The enumeration type for the message keys
+     * @param key       The localized message to use
+     * @param throwable The cause for this exception
+     * @param args      Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> DeploymentException(E key, Throwable throwable, Object... args) {
+        super(key, throwable, args);
+    }
 
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public DeploymentException(Throwable throwable)
-   {
-      super(throwable);
-   }
-   
-   /**
-    * Creates a new exception based on a list of throwables.  The throwables are not
-    * used as the cause, but the message from each throwable is included as the message
-    * for this exception.
-    * 
-    * @param errors A list of throwables to use in the message
-    */
-   public DeploymentException(List<Throwable> errors)
-   {
-      super(errors);
-   }
+    /**
+     * Creates a new exception with the given cause.
+     *
+     * @param throwable The cause of the exception
+     */
+    public DeploymentException(Throwable throwable) {
+        super(throwable);
+    }
+
+    /**
+     * Creates a new exception based on a list of throwables.  The throwables are not
+     * used as the cause, but the message from each throwable is included as the message
+     * for this exception.
+     *
+     * @param errors A list of throwables to use in the message
+     */
+    public DeploymentException(List<Throwable> errors) {
+        super(errors);
+    }
 }

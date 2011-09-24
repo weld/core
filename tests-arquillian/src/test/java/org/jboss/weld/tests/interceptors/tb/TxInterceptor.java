@@ -22,39 +22,34 @@
 
 package org.jboss.weld.tests.interceptors.tb;
 
-import java.io.Serializable;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Tx
 @Interceptor
-public class TxInterceptor implements Serializable
-{
-   static boolean ignoreDup = false;
-   static ThreadLocal<Client> clients = new ThreadLocal<Client>();
+public class TxInterceptor implements Serializable {
+    static boolean ignoreDup = false;
+    static ThreadLocal<Client> clients = new ThreadLocal<Client>();
 
-   @AroundInvoke
-   public Object aroundInvoke(final InvocationContext invocation) throws Exception
-   {
-      System.err.println("invocation = " + invocation);
+    @AroundInvoke
+    public Object aroundInvoke(final InvocationContext invocation) throws Exception {
+        System.err.println("invocation = " + invocation);
 
-      if (ignoreDup == false && clients.get() != null)
-         throw new IllegalArgumentException("Didn't expect duplicate call!");
+        if (ignoreDup == false && clients.get() != null)
+            throw new IllegalArgumentException("Didn't expect duplicate call!");
 
-      Client client = new Client();
-      client.name = "TxInterceptor_TEMP";
-      clients.set(client);
-      try
-      {
-         return invocation.proceed();
-      }
-      finally
-      {
-         clients.remove();
-      }
-   }
+        Client client = new Client();
+        client.name = "TxInterceptor_TEMP";
+        clients.set(client);
+        try {
+            return invocation.proceed();
+        } finally {
+            clients.remove();
+        }
+    }
 }

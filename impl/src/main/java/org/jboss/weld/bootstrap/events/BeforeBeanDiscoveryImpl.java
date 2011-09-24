@@ -16,14 +16,6 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Map;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -40,69 +32,61 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 
-public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery
-{
-   
-   public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts)
-   {
-      new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire(beanDeployments);
-   }
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Map;
 
-   protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts)
-   {
-      super(beanManager, BeforeBeanDiscovery.class, beanDeployments, deployment, contexts);
-   }
+public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery {
 
-   public void addQualifier(Class<? extends Annotation> bindingType)
-   {
-      getTypeStore().add(bindingType, QualifierLiteral.INSTANCE);
-      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
-      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
-   }
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+        new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire(beanDeployments);
+    }
 
-   public void addInterceptorBinding(Class<? extends Annotation> bindingType, Annotation... bindingTypeDef)
-   {
-      getTypeStore().add(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
-      for(Annotation a : bindingTypeDef)
-      {
-         getTypeStore().add(bindingType, a);
-      }
-      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
-      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
-   }
+    protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+        super(beanManager, BeforeBeanDiscovery.class, beanDeployments, deployment, contexts);
+    }
 
-   public void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating)
-   {
-      if (normal)
-      {
-         getTypeStore().add(scopeType, new NormalScopeLiteral(passivating));
-      }
-      else if (passivating)
-      {
-         throw new DefinitionException(BootstrapMessage.PASSIVATING_NON_NORMAL_SCOPE_ILLEGAL, scopeType);
-      }
-      else
-      {
-         getTypeStore().add(scopeType, ScopeLiteral.INSTANCE);
-      }
-      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(scopeType);
-      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(scopeType);
-   }
+    public void addQualifier(Class<? extends Annotation> bindingType) {
+        getTypeStore().add(bindingType, QualifierLiteral.INSTANCE);
+        getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
+        getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
+    }
 
-   public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef)
-   {
-      getTypeStore().add(stereotype, StereotypeLiteral.INSTANCE);
-      for(Annotation a : stereotypeDef)
-      {
-         getTypeStore().add(stereotype, a);
-      }
-      getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(stereotype);
-      getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(stereotype);
-   }
+    public void addInterceptorBinding(Class<? extends Annotation> bindingType, Annotation... bindingTypeDef) {
+        getTypeStore().add(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
+        for (Annotation a : bindingTypeDef) {
+            getTypeStore().add(bindingType, a);
+        }
+        getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
+        getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
+    }
 
-   public void addAnnotatedType(AnnotatedType<?> type)
-   {
-      getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(ExternalAnnotatedType.of(type));
-   }
+    public void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating) {
+        if (normal) {
+            getTypeStore().add(scopeType, new NormalScopeLiteral(passivating));
+        } else if (passivating) {
+            throw new DefinitionException(BootstrapMessage.PASSIVATING_NON_NORMAL_SCOPE_ILLEGAL, scopeType);
+        } else {
+            getTypeStore().add(scopeType, ScopeLiteral.INSTANCE);
+        }
+        getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(scopeType);
+        getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(scopeType);
+    }
+
+    public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef) {
+        getTypeStore().add(stereotype, StereotypeLiteral.INSTANCE);
+        for (Annotation a : stereotypeDef) {
+            getTypeStore().add(stereotype, a);
+        }
+        getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(stereotype);
+        getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(stereotype);
+    }
+
+    public void addAnnotatedType(AnnotatedType<?> type) {
+        getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(ExternalAnnotatedType.of(type));
+    }
 
 }

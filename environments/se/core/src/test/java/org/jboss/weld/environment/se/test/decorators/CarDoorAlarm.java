@@ -23,19 +23,19 @@ import javax.inject.Inject;
 /**
  * Decorates a door so that an alarm is activated if the door is attempted
  * to be opened while it is locked.
+ *
  * @author Peter Royle
  */
 @Decorator
-public abstract class CarDoorAlarm implements Door
-{
+public abstract class CarDoorAlarm implements Door {
 
-    @Inject @Delegate CarDoor door;
+    @Inject
+    @Delegate
+    CarDoor door;
     public static boolean alarmActivated = false;
 
-    public boolean open()
-    {
-        if (door.isLocked())
-        {
+    public boolean open() {
+        if (door.isLocked()) {
             alarmActivated = true;
             System.out.println("AWOOGA"); // (there's an emergency going on)
         }

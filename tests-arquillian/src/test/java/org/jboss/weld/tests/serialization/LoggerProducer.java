@@ -16,17 +16,14 @@
  */
 package org.jboss.weld.tests.serialization;
 
+import javax.enterprise.inject.Produces;
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.Produces;
+public class LoggerProducer {
 
-public class LoggerProducer
-{
+    @Produces
+    public Logger produceLogger() {
+        return Logger.getLogger("foo");
+    }
 
-   @Produces
-   public Logger produceLogger()
-   {
-      return Logger.getLogger("foo");
-   }
-   
 }

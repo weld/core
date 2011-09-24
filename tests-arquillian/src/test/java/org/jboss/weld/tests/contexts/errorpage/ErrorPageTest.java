@@ -17,9 +17,6 @@
 
 package org.jboss.weld.tests.contexts.errorpage;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -38,88 +35,80 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * <p>This test was mostly developed to test the scenario related to WELD-29.  Essentially
  * a JSF action throws an exception, and the error page is then rendered during which
  * all relevant scopes for CDI are tested.</p>
  *
  * @author David Allen
- *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class ErrorPageTest
-{
-   @Deployment(testable = false)
-   public static WebArchive createDeployment()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(Storm.class, Rain.class)
-               .addAsWebInfResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebInfResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsWebResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
-               .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
-               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+public class ErrorPageTest {
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(Storm.class, Rain.class)
+                .addAsWebInfResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsWebResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
+                .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   /*
+    /*
     * description = "WELD-29"
     */
-   @Category(Broken.class)
-   @Test
-   public void testActionMethodExceptionDoesNotDestroyContext() throws Exception
-   {
-      WebClient client = new WebClient();
-      client.setThrowExceptionOnFailingStatusCode(false);
+    @Category(Broken.class)
+    @Test
+    public void testActionMethodExceptionDoesNotDestroyContext() throws Exception {
+        WebClient client = new WebClient();
+        client.setThrowExceptionOnFailingStatusCode(false);
 
-      HtmlPage page = client.getPage(getPath("/storm.jsf"));
-      HtmlSubmitInput disasterButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "disasterButton");
-      HtmlTextInput strength = getFirstMatchingElement(page, HtmlTextInput.class, "stormStrength");
-      strength.setValueAttribute("10");
-      page = disasterButton.click();
-      Assert.assertEquals("Application Error", page.getTitleText());
+        HtmlPage page = client.getPage(getPath("/storm.jsf"));
+        HtmlSubmitInput disasterButton = getFirstMatchingElement(page, HtmlSubmitInput.class, "disasterButton");
+        HtmlTextInput strength = getFirstMatchingElement(page, HtmlTextInput.class, "stormStrength");
+        strength.setValueAttribute("10");
+        page = disasterButton.click();
+        Assert.assertEquals("Application Error", page.getTitleText());
 
-      HtmlDivision conversationValue = getFirstMatchingElement(page, HtmlDivision.class, "conversation");
-      Assert.assertEquals("10", conversationValue.asText());
+        HtmlDivision conversationValue = getFirstMatchingElement(page, HtmlDivision.class, "conversation");
+        Assert.assertEquals("10", conversationValue.asText());
 
-      HtmlDivision requestValue = getFirstMatchingElement(page, HtmlDivision.class, "request");
-      Assert.assertEquals("medium", requestValue.asText());
-   }
+        HtmlDivision requestValue = getFirstMatchingElement(page, HtmlDivision.class, "request");
+        Assert.assertEquals("medium", requestValue.asText());
+    }
 
-   protected String getPath(String page)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + page;
-   }
+    protected String getPath(String page) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/" + page;
+    }
 
-   protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass)
-   {
-     Set<T> result = new HashSet<T>();
+    protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
+        Set<T> result = new HashSet<T>();
 
-     for (HtmlElement element : rootElement.getAllHtmlChildElements())
-     {
-        result.addAll(getElements(element, elementClass));
-     }
+        for (HtmlElement element : rootElement.getAllHtmlChildElements()) {
+            result.addAll(getElements(element, elementClass));
+        }
 
-     if (elementClass.isInstance(rootElement))
-     {
-        result.add(elementClass.cast(rootElement));
-     }
-     return result;
+        if (elementClass.isInstance(rootElement)) {
+            result.add(elementClass.cast(rootElement));
+        }
+        return result;
 
-   }
+    }
 
-   protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id)
-   {
+    protected <T extends HtmlElement> T getFirstMatchingElement(HtmlPage page, Class<T> elementClass, String id) {
 
-     Set<T> inputs = getElements(page.getBody(), elementClass);
-     for (T input : inputs)
-     {
-         if (input.getId().contains(id))
-         {
-            return input;
-         }
-     }
-     return null;
-   }
+        Set<T> inputs = getElements(page.getBody(), elementClass);
+        for (T input : inputs) {
+            if (input.getId().contains(id)) {
+                return input;
+            }
+        }
+        return null;
+    }
 }

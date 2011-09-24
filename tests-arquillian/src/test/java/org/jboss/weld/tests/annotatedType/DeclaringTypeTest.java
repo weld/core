@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.tests.annotatedType;
 
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,55 +25,49 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 /**
  * @author kkahn
- *
  */
 @RunWith(Arquillian.class)
-public class DeclaringTypeTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(DeclaringTypeTest.class.getPackage());
-   }
+public class DeclaringTypeTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(DeclaringTypeTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   @Test
-   public void testInheritance()
-   {
-      AnnotatedType<Child> type = beanManager.createAnnotatedType(Child.class);
-      Assert.assertEquals(1, type.getConstructors().size());
-      Assert.assertEquals(1, type.getFields().size());
-      for (AnnotatedField<? super Child> field : type.getFields())
-      {
-         if (field.getJavaMember().getName().equals("parent"))
-         {
-            Assert.assertEquals(Parent.class, field.getJavaMember().getDeclaringClass()); // OK - Returns Parent
-            Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass()); // FAIL - Returns Child
-         }
-         else
-         {
-            Assert.fail("Unknown field " + field.getJavaMember());
-         }
-      }
+    @Test
+    public void testInheritance() {
+        AnnotatedType<Child> type = beanManager.createAnnotatedType(Child.class);
+        Assert.assertEquals(1, type.getConstructors().size());
+        Assert.assertEquals(1, type.getFields().size());
+        for (AnnotatedField<? super Child> field : type.getFields()) {
+            if (field.getJavaMember().getName().equals("parent")) {
+                Assert.assertEquals(Parent.class, field.getJavaMember().getDeclaringClass()); // OK - Returns Parent
+                Assert.assertEquals(Parent.class, field.getDeclaringType().getJavaClass()); // FAIL - Returns Child
+            } else {
+                Assert.fail("Unknown field " + field.getJavaMember());
+            }
+        }
 
-      Assert.assertEquals(1, type.getMethods().size());
-      for (AnnotatedMethod<? super Child> method : type.getMethods())
-      {
-         if (method.getJavaMember().getName().equals("parentMethod"))
-         {
-            Assert.assertEquals(Parent.class, method.getJavaMember().getDeclaringClass()); // OK - Returns Parent
-            Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass()); // FAIL - Returns Child
-         }
-         else
-         {
-            Assert.fail("Unknown method " + method.getJavaMember());
-         }
-      }
-   }
+        Assert.assertEquals(1, type.getMethods().size());
+        for (AnnotatedMethod<? super Child> method : type.getMethods()) {
+            if (method.getJavaMember().getName().equals("parentMethod")) {
+                Assert.assertEquals(Parent.class, method.getJavaMember().getDeclaringClass()); // OK - Returns Parent
+                Assert.assertEquals(Parent.class, method.getDeclaringType().getJavaClass()); // FAIL - Returns Child
+            } else {
+                Assert.fail("Unknown method " + method.getJavaMember());
+            }
+        }
+    }
 
 }

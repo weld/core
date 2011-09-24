@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-public class GutenbergMuseum
-{
+public class GutenbergMuseum {
 
 }

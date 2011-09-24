@@ -23,9 +23,8 @@ import javax.ejb.Local;
  * @author Marius Bogoevici
  */
 @Local
-public interface Simple2
-{
-   void doSomething();
+public interface Simple2 {
+    void doSomething();
 
-   Helper getHelper();
+    Helper getHelper();
 }

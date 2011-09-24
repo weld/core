@@ -52,33 +52,29 @@ import org.junit.runner.RunWith;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class JspTest
-{
-   @Deployment(testable = false)
-   public static WebArchive createDeployment()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addAsWebInfResource(JspTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebInfResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsWebResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
-               .addAsWebResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
-               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+public class JspTest {
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addAsWebInfResource(JspTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(JspTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsWebResource(JspTest.class.getPackage(), "index.jsp", "index.jsp")
+                .addAsWebResource(JspTest.class.getPackage(), "home.jspx", "home.jspx")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   @Test
-   public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception
-   {
-      WebClient client = new WebClient();
-      client.setThrowExceptionOnFailingStatusCode(false);
-      Page page = client.getPage(getPath("/index.jsp"));
+    @Test
+    public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception {
+        WebClient client = new WebClient();
+        client.setThrowExceptionOnFailingStatusCode(false);
+        Page page = client.getPage(getPath("/index.jsp"));
 
-      Assert.assertEquals(200, page.getWebResponse().getStatusCode());
-      Assert.assertTrue(page.getWebResponse().getRequestUrl().toString().contains("home.jsf"));
-   }
+        Assert.assertEquals(200, page.getWebResponse().getStatusCode());
+        Assert.assertTrue(page.getWebResponse().getRequestUrl().toString().contains("home.jsf"));
+    }
 
-   protected String getPath(String page)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + page;
-   }
+    protected String getPath(String page) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/" + page;
+    }
 }

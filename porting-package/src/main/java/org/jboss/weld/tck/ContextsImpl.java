@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tck;
 
-import javax.enterprise.context.spi.Context;
-
 import org.jboss.jsr299.tck.spi.Contexts;
 import org.jboss.testharness.AbstractTest;
 import org.jboss.weld.Container;
@@ -28,71 +26,51 @@ import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 
-public class ContextsImpl implements Contexts<Context>
-{
+import javax.enterprise.context.spi.Context;
 
-   public RequestContext getRequestContext()
-   {
-      if (AbstractTest.isInContainer())
-      {
-         return Container.instance().deploymentManager().instance().select(HttpRequestContext.class).get();
-      }
-      else
-      {
-         return Container.instance().deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
-      }
-   }
+public class ContextsImpl implements Contexts<Context> {
 
-   public void setActive(Context context)
-   {
-      if (context instanceof ManagedContext)
-      {
-         ((ManagedContext) context).activate();
-      }
-      else if (context instanceof ApplicationContext)
-      {
-         // No-op, always active
-      }
-      else
-      {
-         throw new UnsupportedOperationException();
-      }
-   }
+    public RequestContext getRequestContext() {
+        if (AbstractTest.isInContainer()) {
+            return Container.instance().deploymentManager().instance().select(HttpRequestContext.class).get();
+        } else {
+            return Container.instance().deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
+        }
+    }
 
-   public void setInactive(Context context)
-   {
-      if (context instanceof ManagedContext)
-      {
-         ((ManagedContext) context).deactivate();
-      }
-      else
-      {
-         throw new UnsupportedOperationException();
-      }
-   }
+    public void setActive(Context context) {
+        if (context instanceof ManagedContext) {
+            ((ManagedContext) context).activate();
+        } else if (context instanceof ApplicationContext) {
+            // No-op, always active
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
 
-   public DependentContext getDependentContext()
-   {
-      return Container.instance().deploymentManager().instance().select(DependentContext.class).get();
-   }
-   
-   public void destroyContext(Context context)
-   {
-      if (context instanceof ManagedContext)
-      {
-         ManagedContext managedContext = (ManagedContext) context;
-         managedContext.invalidate();
-         managedContext.deactivate();
-         managedContext.activate();
-      }
-      else if (context instanceof ApplicationContext)
-      {
-         ((ApplicationContext) context).invalidate();
-      }
-      else
-      {
-         throw new UnsupportedOperationException();
-      }
-   }
-   
+    public void setInactive(Context context) {
+        if (context instanceof ManagedContext) {
+            ((ManagedContext) context).deactivate();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public DependentContext getDependentContext() {
+        return Container.instance().deploymentManager().instance().select(DependentContext.class).get();
+    }
+
+    public void destroyContext(Context context) {
+        if (context instanceof ManagedContext) {
+            ManagedContext managedContext = (ManagedContext) context;
+            managedContext.invalidate();
+            managedContext.deactivate();
+            managedContext.activate();
+        } else if (context instanceof ApplicationContext) {
+            ((ApplicationContext) context).invalidate();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
 }

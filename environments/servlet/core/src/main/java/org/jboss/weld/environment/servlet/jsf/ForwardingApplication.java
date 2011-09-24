@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import javax.el.ELContextListener;
 import javax.el.ELException;
 import javax.el.ELResolver;
@@ -48,410 +42,348 @@ import javax.faces.event.ActionListener;
 import javax.faces.event.SystemEvent;
 import javax.faces.event.SystemEventListener;
 import javax.faces.validator.Validator;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * @author pmuir
- *
  */
-public abstract class ForwardingApplication extends Application
-{
-   
-   protected abstract Application delegate();
-   
-   public void addBehavior(String behaviorId, String behaviorClass)
-   {
-      delegate().addBehavior(behaviorId, behaviorClass);
-   }
+public abstract class ForwardingApplication extends Application {
 
-   public void addComponent(String componentType, String componentClass)
-   {
-      delegate().addComponent(componentType, componentClass);
-   }
+    protected abstract Application delegate();
 
-   public void addConverter(String converterId, String converterClass)
-   {
-      delegate().addConverter(converterId, converterClass);
-   }
+    public void addBehavior(String behaviorId, String behaviorClass) {
+        delegate().addBehavior(behaviorId, behaviorClass);
+    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public void addConverter(Class targetClass, String converterClass)
-   {
-      delegate().addConverter(targetClass, converterClass);
-   }
-   
-   @Override
-   public void addDefaultValidatorId(String validatorId)
-   {
-      delegate().addDefaultValidatorId(validatorId);
-   }
-   
-   @Override
-   public void addELContextListener(ELContextListener listener)
-   {
-      delegate().addELContextListener(listener);
-   }
-   
-   @Override
-   public void addELResolver(ELResolver resolver)
-   {
-      delegate().addELResolver(resolver);
-   }
+    public void addComponent(String componentType, String componentClass) {
+        delegate().addComponent(componentType, componentClass);
+    }
 
-   @Override
-   public void addValidator(String validatorId, String validatorClass)
-   {
-      delegate().addValidator(validatorId, validatorClass);
-   }
-   
-   @Override
-   public Behavior createBehavior(String behaviorId) throws FacesException
-   {
-      return delegate().createBehavior(behaviorId);
-   }
-   
-   @Override
-   public UIComponent createComponent(FacesContext context, Resource componentResource)
-   {
-      return delegate().createComponent(context, componentResource);
-   }
-   
-   @Override
-   public UIComponent createComponent(FacesContext context, String componentType, String rendererType)
-   {
-      return delegate().createComponent(context, componentType, rendererType);
-   }
+    public void addConverter(String converterId, String converterClass) {
+        delegate().addConverter(converterId, converterClass);
+    }
 
-   @Override
-   public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException
-   {
-      return delegate().createComponent(componentExpression, context, componentType);
-   }
-   
-   @Override
-   public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType)
-   {
-      return delegate().createComponent(componentExpression, context, componentType, rendererType);
-   }
-   
-   @Override
-   public UIComponent createComponent(String componentType) throws FacesException
-   {
-      return delegate().createComponent(componentType);
-   }
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addConverter(Class targetClass, String converterClass) {
+        delegate().addConverter(targetClass, converterClass);
+    }
 
-   @Override
-   @Deprecated
-   public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException
-   {
-      return delegate().createComponent(componentBinding, context, componentType);
-   }
+    @Override
+    public void addDefaultValidatorId(String validatorId) {
+        delegate().addDefaultValidatorId(validatorId);
+    }
 
-   @Override
-   public Converter createConverter(String converterId)
-   {
-      return delegate().createConverter(converterId);
-   }
+    @Override
+    public void addELContextListener(ELContextListener listener) {
+        delegate().addELContextListener(listener);
+    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public Converter createConverter(Class targetClass)
-   {
-      return delegate().createConverter(targetClass);
-   }
+    @Override
+    public void addELResolver(ELResolver resolver) {
+        delegate().addELResolver(resolver);
+    }
 
-   @SuppressWarnings("unchecked")
-   @Deprecated
-   @Override
-   public MethodBinding createMethodBinding(String ref, Class[] params) throws ReferenceSyntaxException
-   {
-      return delegate().createMethodBinding(ref, params);
-   }
+    @Override
+    public void addValidator(String validatorId, String validatorClass) {
+        delegate().addValidator(validatorId, validatorClass);
+    }
 
-   @Override
-   public Validator createValidator(String validatorId) throws FacesException
-   {
-      return delegate().createValidator(validatorId);
-   }
+    @Override
+    public Behavior createBehavior(String behaviorId) throws FacesException {
+        return delegate().createBehavior(behaviorId);
+    }
 
-   @Override
-   @Deprecated
-   public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException
-   {
-      return delegate().createValueBinding(ref);
-   }
-   
-   @Override
-   public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException
-   {
-      return delegate().evaluateExpressionGet(context, expression, expectedType);
-   }
+    @Override
+    public UIComponent createComponent(FacesContext context, Resource componentResource) {
+        return delegate().createComponent(context, componentResource);
+    }
 
-   @Override
-   public ActionListener getActionListener()
-   {
-      return delegate().getActionListener();
-   }
-   
-   @Override
-   public Iterator<String> getBehaviorIds()
-   {
-      return delegate().getBehaviorIds();
-   }
-   
-   
+    @Override
+    public UIComponent createComponent(FacesContext context, String componentType, String rendererType) {
+        return delegate().createComponent(context, componentType, rendererType);
+    }
 
-   @Override
-   public Iterator<String> getComponentTypes()
-   {
-      return delegate().getComponentTypes();
-   }
+    @Override
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType) throws FacesException {
+        return delegate().createComponent(componentExpression, context, componentType);
+    }
 
-   @Override
-   public Iterator<String> getConverterIds()
-   {
-      return delegate().getConverterIds();
-   }
+    @Override
+    public UIComponent createComponent(ValueExpression componentExpression, FacesContext context, String componentType, String rendererType) {
+        return delegate().createComponent(componentExpression, context, componentType, rendererType);
+    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public Iterator<Class<?>> getConverterTypes()
-   {
-      return delegate().getConverterTypes();
-   }
+    @Override
+    public UIComponent createComponent(String componentType) throws FacesException {
+        return delegate().createComponent(componentType);
+    }
 
-   @Override
-   public Locale getDefaultLocale()
-   {
-      return delegate().getDefaultLocale();
-   }
-   
-   @Override
-   public String getDefaultRenderKitId()
-   {
-      return delegate().getDefaultRenderKitId();
-   }
-   
-   @Override
-   public Map<String, String> getDefaultValidatorInfo()
-   {
-      return delegate().getDefaultValidatorInfo();
-   }
-   
-   @Override
-   public ELContextListener[] getELContextListeners()
-   {
-      return delegate().getELContextListeners();
-   }
-   
-   @Override
-   public ELResolver getELResolver()
-   {
-      return delegate().getELResolver();
-   }
-   
-   @Override
-   public ExpressionFactory getExpressionFactory()
-   {
-      return delegate().getExpressionFactory();
-   }
+    @Override
+    @Deprecated
+    public UIComponent createComponent(ValueBinding componentBinding, FacesContext context, String componentType) throws FacesException {
+        return delegate().createComponent(componentBinding, context, componentType);
+    }
 
-   @Override
-   public String getMessageBundle()
-   {
-      return delegate().getMessageBundle();
-   }
+    @Override
+    public Converter createConverter(String converterId) {
+        return delegate().createConverter(converterId);
+    }
 
-   @Override
-   public NavigationHandler getNavigationHandler()
-   {
-      return delegate().getNavigationHandler();
-   }
+    @SuppressWarnings("unchecked")
+    @Override
+    public Converter createConverter(Class targetClass) {
+        return delegate().createConverter(targetClass);
+    }
 
-   @Override
-   @Deprecated
-   public PropertyResolver getPropertyResolver()
-   {
-      return delegate().getPropertyResolver();
-   }
-   
-   @Override
-   public ProjectStage getProjectStage()
-   {
-      return delegate().getProjectStage();
-   }
-   
-   @Override
-   public ResourceBundle getResourceBundle(FacesContext ctx, String name)
-   {
-      return delegate().getResourceBundle(ctx, name);
-   }
-   
-   @Override
-   public ResourceHandler getResourceHandler()
-   {
-      return delegate().getResourceHandler();
-   }
+    @SuppressWarnings("unchecked")
+    @Deprecated
+    @Override
+    public MethodBinding createMethodBinding(String ref, Class[] params) throws ReferenceSyntaxException {
+        return delegate().createMethodBinding(ref, params);
+    }
 
-   @Override
-   public StateManager getStateManager()
-   {
-      return delegate().getStateManager();
-   }
+    @Override
+    public Validator createValidator(String validatorId) throws FacesException {
+        return delegate().createValidator(validatorId);
+    }
 
-   @Override
-   public Iterator<Locale> getSupportedLocales()
-   {
-      return delegate().getSupportedLocales();
-   }
+    @Override
+    @Deprecated
+    public ValueBinding createValueBinding(String ref) throws ReferenceSyntaxException {
+        return delegate().createValueBinding(ref);
+    }
 
-   @Override
-   public Iterator<String> getValidatorIds()
-   {
-      return delegate().getValidatorIds();
-   }
+    @Override
+    public <T> T evaluateExpressionGet(FacesContext context, String expression, Class<? extends T> expectedType) throws ELException {
+        return delegate().evaluateExpressionGet(context, expression, expectedType);
+    }
 
-   @Override
-   @Deprecated
-   public VariableResolver getVariableResolver()
-   {
-      return delegate().getVariableResolver();
-   }
+    @Override
+    public ActionListener getActionListener() {
+        return delegate().getActionListener();
+    }
 
-   @Override
-   public ViewHandler getViewHandler()
-   {
-      return delegate().getViewHandler();
-   }
-   
-   @Override
-   public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source)
-   {
-      delegate().publishEvent(context, systemEventClass, sourceBaseType, source);
-   }
-   
-   @Override
-   public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source)
-   {
-      delegate().publishEvent(context, systemEventClass, source);
-   }
-   
-   @Override
-   public void removeELContextListener(ELContextListener listener)
-   {
-      delegate().removeELContextListener(listener);
-   }
-
-   @Override
-   public void setActionListener(ActionListener listener)
-   {
-      delegate().setActionListener(listener);
-   }
-
-   @Override
-   public void setDefaultLocale(Locale locale)
-   {
-      delegate().setDefaultLocale(locale);
-   }
-
-   @Override
-   public void setDefaultRenderKitId(String renderKitId)
-   {
-      delegate().setDefaultRenderKitId(renderKitId);
-   }
-
-   @Override
-   public void setMessageBundle(String bundle)
-   {
-      delegate().setMessageBundle(bundle);
-   }
-
-   @Override
-   public void setNavigationHandler(NavigationHandler handler)
-   {
-      delegate().setNavigationHandler(handler);
-   }
+    @Override
+    public Iterator<String> getBehaviorIds() {
+        return delegate().getBehaviorIds();
+    }
 
 
-   @Override
-   @Deprecated
-   public void setPropertyResolver(PropertyResolver resolver)
-   {
-      delegate().setPropertyResolver(resolver);
-   }
-   
-   @Override
-   public void setResourceHandler(ResourceHandler resourceHandler)
-   {
-      delegate().setResourceHandler(resourceHandler);
-   }
+    @Override
+    public Iterator<String> getComponentTypes() {
+        return delegate().getComponentTypes();
+    }
 
-   @Override
-   public void setStateManager(StateManager manager)
-   {
-      delegate().setStateManager(manager);
-   }
+    @Override
+    public Iterator<String> getConverterIds() {
+        return delegate().getConverterIds();
+    }
 
-   @Override
-   public void setSupportedLocales(Collection<Locale> locales)
-   {
-      delegate().setSupportedLocales(locales);
+    @SuppressWarnings("unchecked")
+    @Override
+    public Iterator<Class<?>> getConverterTypes() {
+        return delegate().getConverterTypes();
+    }
 
-   }
+    @Override
+    public Locale getDefaultLocale() {
+        return delegate().getDefaultLocale();
+    }
 
-   @Override
-   @Deprecated
-   public void setVariableResolver(VariableResolver resolver)
-   {
-      delegate().setVariableResolver(resolver);
-   }
+    @Override
+    public String getDefaultRenderKitId() {
+        return delegate().getDefaultRenderKitId();
+    }
 
-   @Override
-   public void setViewHandler(ViewHandler handler)
-   {
-      delegate().setViewHandler(handler);
-   }
-   
-   @Override
-   public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener)
-   {
-      delegate().subscribeToEvent(systemEventClass, sourceClass, listener);
-   }
-   
-   @Override
-   public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
-   {
-      delegate().subscribeToEvent(systemEventClass, listener);
-   }
-   
-   @Override
-   public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener)
-   {
-      delegate().unsubscribeFromEvent(systemEventClass, sourceClass, listener);
-   }
-   
-   @Override
-   public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener)
-   {
-      delegate().unsubscribeFromEvent(systemEventClass, listener);
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return delegate().equals(obj);
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
+    @Override
+    public Map<String, String> getDefaultValidatorInfo() {
+        return delegate().getDefaultValidatorInfo();
+    }
+
+    @Override
+    public ELContextListener[] getELContextListeners() {
+        return delegate().getELContextListeners();
+    }
+
+    @Override
+    public ELResolver getELResolver() {
+        return delegate().getELResolver();
+    }
+
+    @Override
+    public ExpressionFactory getExpressionFactory() {
+        return delegate().getExpressionFactory();
+    }
+
+    @Override
+    public String getMessageBundle() {
+        return delegate().getMessageBundle();
+    }
+
+    @Override
+    public NavigationHandler getNavigationHandler() {
+        return delegate().getNavigationHandler();
+    }
+
+    @Override
+    @Deprecated
+    public PropertyResolver getPropertyResolver() {
+        return delegate().getPropertyResolver();
+    }
+
+    @Override
+    public ProjectStage getProjectStage() {
+        return delegate().getProjectStage();
+    }
+
+    @Override
+    public ResourceBundle getResourceBundle(FacesContext ctx, String name) {
+        return delegate().getResourceBundle(ctx, name);
+    }
+
+    @Override
+    public ResourceHandler getResourceHandler() {
+        return delegate().getResourceHandler();
+    }
+
+    @Override
+    public StateManager getStateManager() {
+        return delegate().getStateManager();
+    }
+
+    @Override
+    public Iterator<Locale> getSupportedLocales() {
+        return delegate().getSupportedLocales();
+    }
+
+    @Override
+    public Iterator<String> getValidatorIds() {
+        return delegate().getValidatorIds();
+    }
+
+    @Override
+    @Deprecated
+    public VariableResolver getVariableResolver() {
+        return delegate().getVariableResolver();
+    }
+
+    @Override
+    public ViewHandler getViewHandler() {
+        return delegate().getViewHandler();
+    }
+
+    @Override
+    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Class<?> sourceBaseType, Object source) {
+        delegate().publishEvent(context, systemEventClass, sourceBaseType, source);
+    }
+
+    @Override
+    public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source) {
+        delegate().publishEvent(context, systemEventClass, source);
+    }
+
+    @Override
+    public void removeELContextListener(ELContextListener listener) {
+        delegate().removeELContextListener(listener);
+    }
+
+    @Override
+    public void setActionListener(ActionListener listener) {
+        delegate().setActionListener(listener);
+    }
+
+    @Override
+    public void setDefaultLocale(Locale locale) {
+        delegate().setDefaultLocale(locale);
+    }
+
+    @Override
+    public void setDefaultRenderKitId(String renderKitId) {
+        delegate().setDefaultRenderKitId(renderKitId);
+    }
+
+    @Override
+    public void setMessageBundle(String bundle) {
+        delegate().setMessageBundle(bundle);
+    }
+
+    @Override
+    public void setNavigationHandler(NavigationHandler handler) {
+        delegate().setNavigationHandler(handler);
+    }
+
+
+    @Override
+    @Deprecated
+    public void setPropertyResolver(PropertyResolver resolver) {
+        delegate().setPropertyResolver(resolver);
+    }
+
+    @Override
+    public void setResourceHandler(ResourceHandler resourceHandler) {
+        delegate().setResourceHandler(resourceHandler);
+    }
+
+    @Override
+    public void setStateManager(StateManager manager) {
+        delegate().setStateManager(manager);
+    }
+
+    @Override
+    public void setSupportedLocales(Collection<Locale> locales) {
+        delegate().setSupportedLocales(locales);
+
+    }
+
+    @Override
+    @Deprecated
+    public void setVariableResolver(VariableResolver resolver) {
+        delegate().setVariableResolver(resolver);
+    }
+
+    @Override
+    public void setViewHandler(ViewHandler handler) {
+        delegate().setViewHandler(handler);
+    }
+
+    @Override
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
+        delegate().subscribeToEvent(systemEventClass, sourceClass, listener);
+    }
+
+    @Override
+    public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
+        delegate().subscribeToEvent(systemEventClass, listener);
+    }
+
+    @Override
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass, SystemEventListener listener) {
+        delegate().unsubscribeFromEvent(systemEventClass, sourceClass, listener);
+    }
+
+    @Override
+    public void unsubscribeFromEvent(Class<? extends SystemEvent> systemEventClass, SystemEventListener listener) {
+        delegate().unsubscribeFromEvent(systemEventClass, listener);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
 
 }

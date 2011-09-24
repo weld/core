@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.weld459.fmml;
 
-public class FinalMethodMethodLevelMissile
-{
-   @FooBinding
-   public final void fire() {}
+public class FinalMethodMethodLevelMissile {
+    @FooBinding
+    public final void fire() {
+    }
 }

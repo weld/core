@@ -18,15 +18,14 @@ package org.jboss.weld.tests.resolution.wbri279;
 
 import javax.inject.Inject;
 
-public class SomeBean
-{
+public class SomeBean {
 
-   @Inject @IntFactory
-   IntegerFactory integerFactory;
+    @Inject
+    @IntFactory
+    IntegerFactory integerFactory;
 
-   public String getObjectAsString()
-   {
-      return integerFactory.createObject().toString();
-   }
+    public String getObjectAsString() {
+        return integerFactory.createObject().toString();
+    }
 
 }

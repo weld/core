@@ -22,55 +22,46 @@ import javax.el.MethodInfo;
 
 /**
  * @author pmuir
- *
  */
-public abstract class ForwardingMethodExpression extends MethodExpression
-{
-   
-   private static final long serialVersionUID = -2614033937482335044L;
+public abstract class ForwardingMethodExpression extends MethodExpression {
 
-   protected abstract MethodExpression delegate();
+    private static final long serialVersionUID = -2614033937482335044L;
 
-   @Override
-   public MethodInfo getMethodInfo(ELContext context)
-   {
-      return delegate().getMethodInfo(context);
-   }
+    protected abstract MethodExpression delegate();
 
-   @Override
-   public Object invoke(ELContext context, Object[] params)
-   {
-      return delegate().invoke(context, params);
-   }
+    @Override
+    public MethodInfo getMethodInfo(ELContext context) {
+        return delegate().getMethodInfo(context);
+    }
 
-   @Override
-   public String getExpressionString()
-   {
-      return delegate().getExpressionString();
-   }
+    @Override
+    public Object invoke(ELContext context, Object[] params) {
+        return delegate().invoke(context, params);
+    }
 
-   @Override
-   public boolean isLiteralText()
-   {
-      return delegate().isLiteralText();
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return this == obj || delegate().equals(obj);
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
+    @Override
+    public String getExpressionString() {
+        return delegate().getExpressionString();
+    }
+
+    @Override
+    public boolean isLiteralText() {
+        return delegate().isLiteralText();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
 
 }

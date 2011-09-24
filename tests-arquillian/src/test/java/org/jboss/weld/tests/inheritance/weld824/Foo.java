@@ -23,18 +23,15 @@ package org.jboss.weld.tests.inheritance.weld824;
 
 import javax.inject.Inject;
 
-public class Foo
-{
-   private boolean superclassInitialized = false;
-   
-   @Inject
-   public void initSuperclass()
-   {
-      superclassInitialized = true;
-   }
+public class Foo {
+    private boolean superclassInitialized = false;
 
-   public boolean isSuperclassInitialized()
-   {
-      return superclassInitialized;
-   }
+    @Inject
+    public void initSuperclass() {
+        superclassInitialized = true;
+    }
+
+    public boolean isSuperclassInitialized() {
+        return superclassInitialized;
+    }
 }

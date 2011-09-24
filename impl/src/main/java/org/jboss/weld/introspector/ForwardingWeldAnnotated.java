@@ -22,98 +22,80 @@ import java.util.Set;
 
 /**
  * Provides an abstraction for delegating access to an annotated item
- * 
- * @author Pete Muir
- * 
+ *
  * @param <T>
  * @param <S>
+ * @author Pete Muir
  */
-public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated implements WeldAnnotated<T, S>
-{
+public abstract class ForwardingWeldAnnotated<T, S> extends ForwardingAnnotated implements WeldAnnotated<T, S> {
 
-   public Type[] getActualTypeArguments()
-   {
-      return delegate().getActualTypeArguments();
-   }
+    public Type[] getActualTypeArguments() {
+        return delegate().getActualTypeArguments();
+    }
 
-   public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getMetaAnnotations(metaAnnotationType);
-   }
+    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
+        return delegate().getMetaAnnotations(metaAnnotationType);
+    }
 
-   @Deprecated
-   public Set<Annotation> getQualifiers()
-   {
-      return delegate().getQualifiers();
-   }
+    @Deprecated
+    public Set<Annotation> getQualifiers() {
+        return delegate().getQualifiers();
+    }
 
-   @Deprecated
-   public Annotation[] getBindingsAsArray()
-   {
-      return delegate().getBindingsAsArray();
-   }
+    @Deprecated
+    public Annotation[] getBindingsAsArray() {
+        return delegate().getBindingsAsArray();
+    }
 
-   public String getName()
-   {
-      return delegate().getName();
-   }
+    public String getName() {
+        return delegate().getName();
+    }
 
-   public Class<T> getJavaClass()
-   {
-      return delegate().getJavaClass();
-   }
+    public Class<T> getJavaClass() {
+        return delegate().getJavaClass();
+    }
 
-   public boolean isFinal()
-   {
-      return delegate().isFinal();
-   }
+    public boolean isFinal() {
+        return delegate().isFinal();
+    }
 
-   public boolean isStatic()
-   {
-      return delegate().isStatic();
-   }
-   
-   public boolean isGeneric()
-   {
-      return delegate().isGeneric();
-   }
+    public boolean isStatic() {
+        return delegate().isStatic();
+    }
 
-   public boolean isPublic()
-   {
-      return delegate().isPublic();
-   }
-   
-   public boolean isPrivate()
-   {
-      return delegate().isPrivate();
-   }
-   
-   public boolean isPackagePrivate()
-   {
-      return delegate().isPackagePrivate();
-   }
-   
-   public Package getPackage()
-   {
-      return delegate().getPackage();
-   }
+    public boolean isGeneric() {
+        return delegate().isGeneric();
+    }
 
-   @Override
-   protected abstract WeldAnnotated<T, S> delegate();
+    public boolean isPublic() {
+        return delegate().isPublic();
+    }
 
-   public Set<Type> getInterfaceClosure()
-   {
-      return delegate().getInterfaceClosure();
-   }
+    public boolean isPrivate() {
+        return delegate().isPrivate();
+    }
 
-   public boolean isParameterizedType()
-   {
-      return delegate().isParameterizedType();
-   }
-   
-   public boolean isPrimitive()
-   {
-      return delegate().isPrimitive();
-   }
+    public boolean isPackagePrivate() {
+        return delegate().isPackagePrivate();
+    }
+
+    public Package getPackage() {
+        return delegate().getPackage();
+    }
+
+    @Override
+    protected abstract WeldAnnotated<T, S> delegate();
+
+    public Set<Type> getInterfaceClosure() {
+        return delegate().getInterfaceClosure();
+    }
+
+    public boolean isParameterizedType() {
+        return delegate().isParameterizedType();
+    }
+
+    public boolean isPrimitive() {
+        return delegate().isPrimitive();
+    }
 
 }

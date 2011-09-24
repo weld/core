@@ -20,7 +20,6 @@ package org.jboss.weld.tests.decorators.decoratedTypes;
 /**
  * @author Marius Bogoevici
  */
-public interface Decorated
-{
-   void decoratedMethod();
+public interface Decorated {
+    void decoratedMethod();
 }

@@ -17,56 +17,47 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.reflection.SecureReflections;
+import org.slf4j.cal10n.LocLogger;
 
+import javax.enterprise.inject.spi.Bean;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-
-import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.reflection.SecureReflections;
-import org.slf4j.cal10n.LocLogger;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
 /**
  * @author David Allen
  */
-public abstract class AbstractBeanInstance implements BeanInstance
-{
-   // The log provider
-   protected static final LocLogger log = loggerFactory().getLogger(BEAN);
+public abstract class AbstractBeanInstance implements BeanInstance {
+    // The log provider
+    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-   public Object invoke(Object instance, Method method, Object... arguments) throws Throwable
-   {
-      Object result = null;
-      try
-      {
-         SecureReflections.ensureAccessible(method);
-         result = method.invoke(instance, arguments);
-      }
-      catch (InvocationTargetException e)
-      {
-         throw e.getCause();
-      }
-      return result;
-   }
+    public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
+        Object result = null;
+        try {
+            SecureReflections.ensureAccessible(method);
+            result = method.invoke(instance, arguments);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+        return result;
+    }
 
-   protected Class<?> computeInstanceType(Bean<?> bean)
-   {
-      return computeInstanceType(bean.getTypes());
-   }
-   
-   protected Class<?> computeInstanceType(Set<Type> types)
-   {
-      TypeInfo typeInfo = TypeInfo.of(types);
-      Class<?> superClass = typeInfo.getSuperClass();
-      if (superClass.equals(Object.class))
-      {
-         superClass = typeInfo.getSuperInterface();
-      }
-      return superClass;
-   }
+    protected Class<?> computeInstanceType(Bean<?> bean) {
+        return computeInstanceType(bean.getTypes());
+    }
+
+    protected Class<?> computeInstanceType(Set<Type> types) {
+        TypeInfo typeInfo = TypeInfo.of(types);
+        Class<?> superClass = typeInfo.getSuperClass();
+        if (superClass.equals(Object.class)) {
+            superClass = typeInfo.getSuperInterface();
+        }
+        return superClass;
+    }
 }

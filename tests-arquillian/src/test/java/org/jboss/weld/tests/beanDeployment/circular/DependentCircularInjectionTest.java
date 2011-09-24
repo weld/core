@@ -11,20 +11,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class DependentCircularInjectionTest
-{
-   @Deployment
-   @ShouldThrowException(DeploymentException.class)
-   public static JavaArchive createDeployment()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addClasses(Fish.class, Water.class);
-   }
-   
-   @Test
-   public void test()
-   {
+public class DependentCircularInjectionTest {
+    @Deployment
+    @ShouldThrowException(DeploymentException.class)
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClasses(Fish.class, Water.class);
+    }
 
-   }
+    @Test
+    public void test() {
+
+    }
 
 }

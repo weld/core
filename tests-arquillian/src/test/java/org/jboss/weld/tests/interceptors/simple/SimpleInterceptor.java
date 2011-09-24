@@ -26,31 +26,28 @@ import javax.interceptor.InvocationContext;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Interceptor @PrimaryInterceptionBinding
-public class SimpleInterceptor
-{
-   public static boolean postConstructCalled = false;
-   public static boolean aroundInvokeCalled = false;
-   public static boolean preDestroyCalled = false;
+@Interceptor
+@PrimaryInterceptionBinding
+public class SimpleInterceptor {
+    public static boolean postConstructCalled = false;
+    public static boolean aroundInvokeCalled = false;
+    public static boolean preDestroyCalled = false;
 
-   @PostConstruct
-   public void doPostConstruct(InvocationContext context) throws Exception
-   {
-      postConstructCalled = true;
-      context.proceed();
-   }
+    @PostConstruct
+    public void doPostConstruct(InvocationContext context) throws Exception {
+        postConstructCalled = true;
+        context.proceed();
+    }
 
-   @AroundInvoke
-   public Object doAround(InvocationContext context) throws Exception
-   {
-      aroundInvokeCalled = true;
-      return context.proceed();
-   }
+    @AroundInvoke
+    public Object doAround(InvocationContext context) throws Exception {
+        aroundInvokeCalled = true;
+        return context.proceed();
+    }
 
-   @PreDestroy
-   public void doPreDestroy(InvocationContext context) throws Exception
-   {
-      preDestroyCalled = true;
-      context.proceed();
-   }
+    @PreDestroy
+    public void doPreDestroy(InvocationContext context) throws Exception {
+        preDestroyCalled = true;
+        context.proceed();
+    }
 }

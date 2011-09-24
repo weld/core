@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.supertypes.beans;
 
-import static org.junit.Assert.assertNull;
-
-import javax.enterprise.inject.spi.Extension;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,24 +25,25 @@ import org.jboss.weld.test.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-public class SuperTypeTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(SuperTypeTest.class.getPackage())
-         .addClass(Utils.class)
-         .addAsServiceProvider(Extension.class, CDIExtension.class);
-   }
+import javax.enterprise.inject.spi.Extension;
 
-   @Test
-   // WELD-705
-   public void testTypesModifiedProperly(BeanOne beanOne, @Foo BeanTwo beanTwo)
-   {
-      assertNull(beanOne.getBeanManager());
-      assertNull(beanTwo.getBeanManager());
-   }
+import static org.junit.Assert.assertNull;
+
+@RunWith(Arquillian.class)
+public class SuperTypeTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(SuperTypeTest.class.getPackage())
+                .addClass(Utils.class)
+                .addAsServiceProvider(Extension.class, CDIExtension.class);
+    }
+
+    @Test
+    // WELD-705
+    public void testTypesModifiedProperly(BeanOne beanOne, @Foo BeanTwo beanTwo) {
+        assertNull(beanOne.getBeanManager());
+        assertNull(beanTwo.getBeanManager());
+    }
 
 }

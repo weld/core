@@ -23,15 +23,14 @@ import javax.interceptor.InvocationContext;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Interceptor @TimeBound
-public class Referee
-{
-   public static boolean ballCollected = false;
+@Interceptor
+@TimeBound
+public class Referee {
+    public static boolean ballCollected = false;
 
-   @AroundTimeout
-   public Object collectBall(InvocationContext context) throws Exception
-   {
-      ballCollected = true;
-      return context.proceed();
-   }
+    @AroundTimeout
+    public Object collectBall(InvocationContext context) throws Exception {
+        ballCollected = true;
+        return context.proceed();
+    }
 }

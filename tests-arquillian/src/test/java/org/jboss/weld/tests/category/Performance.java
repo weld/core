@@ -18,12 +18,11 @@ package org.jboss.weld.tests.category;
 
 
 /**
- * Marker Interface for JUnit Category marking Performance tests 
+ * Marker Interface for JUnit Category marking Performance tests
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public interface Performance extends Slow
-{
+public interface Performance extends Slow {
 
 }

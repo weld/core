@@ -9,27 +9,22 @@ import java.lang.reflect.Method;
 /**
  * @author Marius Bogoevici
  */
-public class WeldAnnotatedMethodReader implements AnnotatedMethodReader<WeldMethod<?,?>>
-{
+public class WeldAnnotatedMethodReader implements AnnotatedMethodReader<WeldMethod<?, ?>> {
 
-   private static WeldAnnotatedMethodReader INSTANCE = new WeldAnnotatedMethodReader();
+    private static WeldAnnotatedMethodReader INSTANCE = new WeldAnnotatedMethodReader();
 
-   private WeldAnnotatedMethodReader()
-   { 
-   }
+    private WeldAnnotatedMethodReader() {
+    }
 
-   public static AnnotatedMethodReader<WeldMethod<?,?>> getInstance()
-   {
-      return INSTANCE;
-   }
+    public static AnnotatedMethodReader<WeldMethod<?, ?>> getInstance() {
+        return INSTANCE;
+    }
 
-   public Annotation getAnnotation(Class<? extends Annotation> annotationClass, WeldMethod<?,?> methodReference)
-   {
-      return methodReference.getAnnotation(annotationClass);
-   }
+    public Annotation getAnnotation(Class<? extends Annotation> annotationClass, WeldMethod<?, ?> methodReference) {
+        return methodReference.getAnnotation(annotationClass);
+    }
 
-   public Method getJavaMethod(WeldMethod<?,?> methodReference)
-   {
-      return methodReference.getJavaMember();
-   }
+    public Method getJavaMethod(WeldMethod<?, ?> methodReference) {
+        return methodReference.getJavaMember();
+    }
 }

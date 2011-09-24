@@ -16,51 +16,40 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
 
 /**
  * @author pmuir
- *
  */
-public class Observers
-{
-   
-   public static void checkEventObjectType(Type eventType)
-   {
-      Type[] types;
-      Type resolvedType = new HierarchyDiscovery(eventType).getResolvedType();
-      if (resolvedType instanceof Class<?>)
-      {
-         types = new Type[0];
-      }
-      else if (resolvedType instanceof ParameterizedType)
-      {
-         types = ((ParameterizedType) resolvedType).getActualTypeArguments();
-      }
-      else
-      {
-         throw new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
-      }
-      for (Type type : types)
-      {
-         if (type instanceof TypeVariable<?>)
-         {
-            throw new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
-         }
-      }
-   }
-   
-   public static void checkEventObjectType(Object event)
-   {
-      checkEventObjectType(event.getClass());
-      
-   }
+public class Observers {
+
+    public static void checkEventObjectType(Type eventType) {
+        Type[] types;
+        Type resolvedType = new HierarchyDiscovery(eventType).getResolvedType();
+        if (resolvedType instanceof Class<?>) {
+            types = new Type[0];
+        } else if (resolvedType instanceof ParameterizedType) {
+            types = ((ParameterizedType) resolvedType).getActualTypeArguments();
+        } else {
+            throw new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
+        }
+        for (Type type : types) {
+            if (type instanceof TypeVariable<?>) {
+                throw new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
+            }
+        }
+    }
+
+    public static void checkEventObjectType(Object event) {
+        checkEventObjectType(event.getClass());
+
+    }
 }

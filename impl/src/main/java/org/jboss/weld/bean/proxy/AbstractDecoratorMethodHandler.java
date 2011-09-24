@@ -17,10 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.reflect.Method;
-
 import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -29,56 +25,50 @@ import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.InjectionPoint;
+import java.lang.reflect.Method;
+
 /**
  * {@link MethodHandler} for Abstract decorators.
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class AbstractDecoratorMethodHandler implements MethodHandler
-{
+public class AbstractDecoratorMethodHandler implements MethodHandler {
 
-   private WeldClass<?> delegateClass;
+    private WeldClass<?> delegateClass;
 
-   private InjectionPoint injectionPoint;
+    private InjectionPoint injectionPoint;
 
-   private Object delegate;
+    private Object delegate;
 
-   public AbstractDecoratorMethodHandler(WeldClass<?> delegateClass, InjectionPoint injectionPoint, Object injectedDelegate)
-   {
-      this.delegateClass = delegateClass;
-      this.injectionPoint = injectionPoint;
-      this.delegate = injectedDelegate;
-   }
+    public AbstractDecoratorMethodHandler(WeldClass<?> delegateClass, InjectionPoint injectionPoint, Object injectedDelegate) {
+        this.delegateClass = delegateClass;
+        this.injectionPoint = injectionPoint;
+        this.delegate = injectedDelegate;
+    }
 
-   public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable
-   {
-      // intercept injection of delegate if not set already
-      // assumes that injection happens on a single thread
-      // TODO: replace this way of initializing field-injected delegates (move out) - MBG
-      if (delegate == null)
-      {
-         if (injectionPoint instanceof FieldInjectionPoint)
-         {
-            this.delegate = Reflections.<FieldInjectionPoint<?, ?>>cast(injectionPoint).get(self);
-         }
-         else
-         if (injectionPoint.getMember() instanceof Method && injectionPoint instanceof ParameterInjectionPoint<?, ?>)
-         {
-            if (thisMethod.equals(injectionPoint.getMember()))
-            {
-               int position = ((ParameterInjectionPoint<?, ?>) injectionPoint).getPosition();
-               delegate = args[position];
+    public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+        // intercept injection of delegate if not set already
+        // assumes that injection happens on a single thread
+        // TODO: replace this way of initializing field-injected delegates (move out) - MBG
+        if (delegate == null) {
+            if (injectionPoint instanceof FieldInjectionPoint) {
+                this.delegate = Reflections.<FieldInjectionPoint<?, ?>>cast(injectionPoint).get(self);
+            } else if (injectionPoint.getMember() instanceof Method && injectionPoint instanceof ParameterInjectionPoint<?, ?>) {
+                if (thisMethod.equals(injectionPoint.getMember())) {
+                    int position = ((ParameterInjectionPoint<?, ?>) injectionPoint).getPosition();
+                    delegate = args[position];
+                }
             }
-         }
-      }
-      // if method is abstract, invoke the corresponding method on the delegate
-      if (Reflections.isAbstract(thisMethod))
-      {
-         Method method = ((AnnotatedMethod<?>) delegateClass.getWeldMethod(new MethodSignatureImpl(thisMethod))).getJavaMember();
-         return SecureReflections.invoke(delegate, method, args);
-      }
+        }
+        // if method is abstract, invoke the corresponding method on the delegate
+        if (Reflections.isAbstract(thisMethod)) {
+            Method method = ((AnnotatedMethod<?>) delegateClass.getWeldMethod(new MethodSignatureImpl(thisMethod))).getJavaMember();
+            return SecureReflections.invoke(delegate, method, args);
+        }
 
-      return proceed.invoke(self, args);
+        return proceed.invoke(self, args);
 
-   }
+    }
 }

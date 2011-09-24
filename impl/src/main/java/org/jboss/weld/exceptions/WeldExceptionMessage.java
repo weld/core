@@ -21,18 +21,16 @@ package org.jboss.weld.exceptions;
  * Interface for all exception messages in Weld.  This replaces the simple
  * String used by default in JVM exceptions and allows more complex forms
  * of messages.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public interface WeldExceptionMessage
-{
+public interface WeldExceptionMessage {
 
-   /**
-    * Generates the localized message for the exception.
-    * 
-    * @return exception message as a string
-    */
-   public String getAsString();
+    /**
+     * Generates the localized message for the exception.
+     *
+     * @return exception message as a string
+     */
+    public String getAsString();
 
 }

@@ -18,25 +18,21 @@ package org.jboss.weld.introspector;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
-public class ExternalAnnotatedType<X> extends ForwardingAnnotatedType<X>
-{
-   
-   public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType)
-   {
-      return new ExternalAnnotatedType<X>(annotatedType);
-   }
-   
-   private final AnnotatedType<X> delegate;
+public class ExternalAnnotatedType<X> extends ForwardingAnnotatedType<X> {
 
-   protected ExternalAnnotatedType(AnnotatedType<X> delegate)
-   {
-      this.delegate = delegate;
-   }
-   
-   @Override
-   protected AnnotatedType<X> delegate()
-   {
-      return delegate;
-   }
+    public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType) {
+        return new ExternalAnnotatedType<X>(annotatedType);
+    }
+
+    private final AnnotatedType<X> delegate;
+
+    protected ExternalAnnotatedType(AnnotatedType<X> delegate) {
+        this.delegate = delegate;
+    }
+
+    @Override
+    protected AnnotatedType<X> delegate() {
+        return delegate;
+    }
 
 }

@@ -20,7 +20,6 @@ package org.jboss.weld.tests.interceptors.simple;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public interface SimpleBean
-{
-   String doSomething();
+public interface SimpleBean {
+    String doSomething();
 }

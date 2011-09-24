@@ -17,96 +17,80 @@
 
 package org.jboss.weld.bean.proxy;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
 import javassist.util.proxy.MethodHandler;
 
 import javax.enterprise.inject.spi.Bean;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * A simple {@link BeanInstance} which always maintains a specific bean instance
  * that is being proxied.
- * 
+ *
  * @author David Allen
  */
-public class TargetBeanInstance extends AbstractBeanInstance implements Serializable
-{
-   private static final long serialVersionUID = 1099995238604086450L;
-   private final Object      instance;
-   private final Class<?>    instanceType;
-   private MethodHandler     interceptorsHandler;
+public class TargetBeanInstance extends AbstractBeanInstance implements Serializable {
+    private static final long serialVersionUID = 1099995238604086450L;
+    private final Object instance;
+    private final Class<?> instanceType;
+    private MethodHandler interceptorsHandler;
 
-   public TargetBeanInstance(Bean<?> bean, Object instance)
-   {
-      this.instance = instance;
-      this.instanceType = computeInstanceType(bean);
-   }
+    public TargetBeanInstance(Bean<?> bean, Object instance) {
+        this.instance = instance;
+        this.instanceType = computeInstanceType(bean);
+    }
 
-   public TargetBeanInstance(Object instance)
-   {
-      this.instance = instance;
-      this.instanceType = (Class<?>) instance.getClass();
-   }
+    public TargetBeanInstance(Object instance) {
+        this.instance = instance;
+        this.instanceType = (Class<?>) instance.getClass();
+    }
 
-   /**
-    * Copy constructor
-    * 
-    * @param otherBeanInstance other bean instance to copy
-    */
-   public TargetBeanInstance(TargetBeanInstance otherBeanInstance)
-   {
-      this.instance = otherBeanInstance.instance;
-      this.instanceType = otherBeanInstance.instanceType;
-      this.interceptorsHandler = otherBeanInstance.interceptorsHandler;
-   }
+    /**
+     * Copy constructor
+     *
+     * @param otherBeanInstance other bean instance to copy
+     */
+    public TargetBeanInstance(TargetBeanInstance otherBeanInstance) {
+        this.instance = otherBeanInstance.instance;
+        this.instanceType = otherBeanInstance.instanceType;
+        this.interceptorsHandler = otherBeanInstance.interceptorsHandler;
+    }
 
-   public Object getInstance()
-   {
-      return instance;
-   }
+    public Object getInstance() {
+        return instance;
+    }
 
-   public Class<?> getInstanceType()
-   {
-      return instanceType;
-   }
+    public Class<?> getInstanceType() {
+        return instanceType;
+    }
 
-   /**
-    * @return the interceptorsHandler
-    */
-   public MethodHandler getInterceptorsHandler()
-   {
-      return interceptorsHandler;
-   }
+    /**
+     * @return the interceptorsHandler
+     */
+    public MethodHandler getInterceptorsHandler() {
+        return interceptorsHandler;
+    }
 
-   /**
-    * @param interceptorsHandler the interceptorsHandler to set
-    */
-   public void setInterceptorsHandler(MethodHandler interceptorsHandler)
-   {
-      this.interceptorsHandler = interceptorsHandler;
-   }
+    /**
+     * @param interceptorsHandler the interceptorsHandler to set
+     */
+    public void setInterceptorsHandler(MethodHandler interceptorsHandler) {
+        this.interceptorsHandler = interceptorsHandler;
+    }
 
-   @Override
-   public Object invoke(Object instance, Method method, Object... arguments) throws Throwable
-   {
-      if (interceptorsHandler != null)
-      {
-         log.trace("Invoking interceptor chain for method " + method.toGenericString() + " on " + instance);
-         if (method.getDeclaringClass().isInterface())
-         {
-            return interceptorsHandler.invoke(instance, method, null, arguments);
-         }
-         else
-         {
-            return interceptorsHandler.invoke(instance, method, method, arguments);
-         }
-      }
-      else
-      {
-         log.trace("Invoking method " + method.toGenericString() + " directly on " + instance);
-         return super.invoke(instance, method, arguments);
-      }
-   }
+    @Override
+    public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
+        if (interceptorsHandler != null) {
+            log.trace("Invoking interceptor chain for method " + method.toGenericString() + " on " + instance);
+            if (method.getDeclaringClass().isInterface()) {
+                return interceptorsHandler.invoke(instance, method, null, arguments);
+            } else {
+                return interceptorsHandler.invoke(instance, method, method, arguments);
+            }
+        } else {
+            log.trace("Invoking method " + method.toGenericString() + " directly on " + instance);
+            return super.invoke(instance, method, arguments);
+        }
+    }
 
 }

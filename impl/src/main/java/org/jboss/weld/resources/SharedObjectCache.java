@@ -16,84 +16,68 @@
  */
 package org.jboss.weld.resources;
 
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Allows classes to share Maps/Sets to conserve memory.
- * 
+ *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
- * 
  */
-public class SharedObjectCache implements Service
-{
-   private final Map<Set<?>, Set<?>> sharedSets = new MapMaker().makeComputingMap(new Function<Set<?>, Set<?>>()
-   {
-      public Set<?> apply(Set<?> from)
-      {
-         return Collections.unmodifiableSet(from);
-      }
-   });
+public class SharedObjectCache implements Service {
+    private final Map<Set<?>, Set<?>> sharedSets = new MapMaker().makeComputingMap(new Function<Set<?>, Set<?>>() {
+        public Set<?> apply(Set<?> from) {
+            return Collections.unmodifiableSet(from);
+        }
+    });
 
-   private final Map<Map<?, ?>, Map<?, ?>> sharedMaps = new MapMaker().makeComputingMap(new Function<Map<?, ?>, Map<?, ?>>()
-   {
-      public Map<?, ?> apply(Map<?, ?> from)
-      {
-         return Collections.unmodifiableMap(from);
-      }
-   });
+    private final Map<Map<?, ?>, Map<?, ?>> sharedMaps = new MapMaker().makeComputingMap(new Function<Map<?, ?>, Map<?, ?>>() {
+        public Map<?, ?> apply(Map<?, ?> from) {
+            return Collections.unmodifiableMap(from);
+        }
+    });
 
-   private final Map<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>> sharedMultiMaps = new MapMaker().makeComputingMap(new Function<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>>()
-   {
-      public ArraySetMultimap<?, ?> apply(ArraySetMultimap<?, ?> from)
-      {
-         return from;
-      }
-   });
+    private final Map<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>> sharedMultiMaps = new MapMaker().makeComputingMap(new Function<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>>() {
+        public ArraySetMultimap<?, ?> apply(ArraySetMultimap<?, ?> from) {
+            return from;
+        }
+    });
 
-   private final Map<Type, Set<Type>> typeClosures = new MapMaker().makeComputingMap(new Function<Type, Set<Type>>()
-   {
+    private final Map<Type, Set<Type>> typeClosures = new MapMaker().makeComputingMap(new Function<Type, Set<Type>>() {
 
-      public Set<Type> apply(Type from)
-      {
-         return Collections.unmodifiableSet(new HierarchyDiscovery(from).getTypeClosure());
-      }
-   });
+        public Set<Type> apply(Type from) {
+            return Collections.unmodifiableSet(new HierarchyDiscovery(from).getTypeClosure());
+        }
+    });
 
-   public <T> Set<T> getSharedSet(Set<T> set)
-   {
-      return Reflections.cast(sharedSets.get(set));
-   }
+    public <T> Set<T> getSharedSet(Set<T> set) {
+        return Reflections.cast(sharedSets.get(set));
+    }
 
-   public <K, V> Map<K, V> getSharedMap(Map<K, V> map)
-   {
-      return Reflections.cast(sharedMaps.get(map));
-   }
+    public <K, V> Map<K, V> getSharedMap(Map<K, V> map) {
+        return Reflections.cast(sharedMaps.get(map));
+    }
 
-   public <K, V> ArraySetMultimap<K, V> getSharedMultimap(ArraySetMultimap<K, V> map)
-   {
-      return Reflections.cast(sharedMultiMaps.get(map));
-   }
+    public <K, V> ArraySetMultimap<K, V> getSharedMultimap(ArraySetMultimap<K, V> map) {
+        return Reflections.cast(sharedMultiMaps.get(map));
+    }
 
-   public Set<Type> getTypeClosure(Type type)
-   {
-      return typeClosures.get(type);
-   }
+    public Set<Type> getTypeClosure(Type type) {
+        return typeClosures.get(type);
+    }
 
-   public void cleanup()
-   {
-      sharedSets.clear();
-      sharedMaps.clear();
-      sharedMultiMaps.clear();
-   }
+    public void cleanup() {
+        sharedSets.clear();
+        sharedMaps.clear();
+        sharedMultiMaps.clear();
+    }
 }

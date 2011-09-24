@@ -30,6 +30,7 @@ public class ClasspathScanningException extends RuntimeException {
 
     /**
      * Constructs an instance of <code>ClasspathScanningException</code> with the specified detail message.
+     *
      * @param msg the detail message.
      */
     public ClasspathScanningException(String msg) {

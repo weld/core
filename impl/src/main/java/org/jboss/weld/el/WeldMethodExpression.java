@@ -16,72 +16,58 @@
  */
 package org.jboss.weld.el;
 
-import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextStore;
+import org.jboss.weld.util.el.ForwardingMethodExpression;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
 import javax.el.MethodInfo;
 
-import org.jboss.weld.util.el.ForwardingMethodExpression;
+import static org.jboss.weld.el.ELCreationalContextStack.getCreationalContextStore;
 
 /**
  * @author pmuir
- *
  */
-public class WeldMethodExpression extends ForwardingMethodExpression
-{
-   
-   private static final long serialVersionUID = 7070020110515571744L;
-   
-   private final MethodExpression delegate;
-   
-   public WeldMethodExpression(MethodExpression delegate)
-   {
-      this.delegate = delegate;
-   }
+public class WeldMethodExpression extends ForwardingMethodExpression {
 
-   @Override
-   protected MethodExpression delegate()
-   {
-      return delegate;
-   }
-   
-   @Override
-   public Object invoke(ELContext context, Object[] params)
-   {
-      ELCreationalContextStack store = getCreationalContextStore(context);
-      try
-      {
-         store.push(new CreationalContextCallable());
-         return super.invoke(context, params);
-      }
-      finally
-      {
-         CreationalContextCallable callable = store.pop();
-         if (callable.exists())
-         {
-            callable.get().release();
-         }
-      }
-   }
-   
-   @Override
-   public MethodInfo getMethodInfo(ELContext context)
-   {
-      ELCreationalContextStack store = getCreationalContextStore(context);
-      try
-      {
-         store.push(new CreationalContextCallable());
-         return super.getMethodInfo(context);
-      }
-      finally
-      {
-         CreationalContextCallable callable = store.pop();
-         if (callable.exists())
-         {
-            callable.get().release();
-         }
-      }
-   }
+    private static final long serialVersionUID = 7070020110515571744L;
+
+    private final MethodExpression delegate;
+
+    public WeldMethodExpression(MethodExpression delegate) {
+        this.delegate = delegate;
+    }
+
+    @Override
+    protected MethodExpression delegate() {
+        return delegate;
+    }
+
+    @Override
+    public Object invoke(ELContext context, Object[] params) {
+        ELCreationalContextStack store = getCreationalContextStore(context);
+        try {
+            store.push(new CreationalContextCallable());
+            return super.invoke(context, params);
+        } finally {
+            CreationalContextCallable callable = store.pop();
+            if (callable.exists()) {
+                callable.get().release();
+            }
+        }
+    }
+
+    @Override
+    public MethodInfo getMethodInfo(ELContext context) {
+        ELCreationalContextStack store = getCreationalContextStore(context);
+        try {
+            store.push(new CreationalContextCallable());
+            return super.getMethodInfo(context);
+        } finally {
+            CreationalContextCallable callable = store.pop();
+            if (callable.exists()) {
+                callable.get().release();
+            }
+        }
+    }
 
 }

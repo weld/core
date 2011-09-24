@@ -20,157 +20,127 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, Class<T>> implements WeldClass<T>
-{
+public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, Class<T>> implements WeldClass<T> {
 
-   @Override
-   protected abstract WeldClass<T> delegate();
+    @Override
+    protected abstract WeldClass<T> delegate();
 
-   public Collection<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getWeldConstructors(annotationType);
-   }
+    public Collection<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType) {
+        return delegate().getWeldConstructors(annotationType);
+    }
 
-   public Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getWeldFields(annotationType);
-   }
+    public Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType) {
+        return delegate().getWeldFields(annotationType);
+    }
 
-   public Collection<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getWeldMethods(annotationType);
-   }
+    public Collection<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType) {
+        return delegate().getWeldMethods(annotationType);
+    }
 
-   public WeldConstructor<T> getNoArgsWeldConstructor()
-   {
-      return delegate().getNoArgsWeldConstructor();
-   }
-   
-   public Collection<WeldMethod<?, ? super T>> getWeldMethods()
-   {
-      return delegate().getWeldMethods();
-   }
+    public WeldConstructor<T> getNoArgsWeldConstructor() {
+        return delegate().getNoArgsWeldConstructor();
+    }
 
-   public Collection<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getDeclaredWeldFields(annotationType);
-   }
+    public Collection<WeldMethod<?, ? super T>> getWeldMethods() {
+        return delegate().getWeldMethods();
+    }
 
-   public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getDeclaredWeldMethods(annotationType);
-   }
+    public Collection<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType) {
+        return delegate().getDeclaredWeldFields(annotationType);
+    }
 
-   public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getDeclaredWeldMethodsWithAnnotatedParameters(annotationType);
-   }
+    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType) {
+        return delegate().getDeclaredWeldMethods(annotationType);
+    }
 
-   public Collection<WeldField<?, ?>> getWeldFields()
-   {
-      return delegate().getWeldFields();
-   }
+    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
+        return delegate().getDeclaredWeldMethodsWithAnnotatedParameters(annotationType);
+    }
 
-   @Deprecated
-   public WeldMethod<?, ?> getWeldMethod(Method method)
-   {
-      return delegate().getWeldMethod(method);
-   }
-   
-   public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature)
-   {
-      return delegate().getWeldMethod(signature);
-   }
+    public Collection<WeldField<?, ?>> getWeldFields() {
+        return delegate().getWeldFields();
+    }
 
-   public WeldClass<? super T> getWeldSuperclass()
-   {
-      return delegate().getWeldSuperclass();
-   }
+    @Deprecated
+    public WeldMethod<?, ?> getWeldMethod(Method method) {
+        return delegate().getWeldMethod(method);
+    }
 
-   public boolean isLocalClass()
-   {
-      return delegate().isLocalClass();
-   }
-   
-   public boolean isMemberClass()
-   {
-      return delegate().isMemberClass();
-   }
-   
-   public boolean isAnonymousClass()
-   {
-      return delegate().isAnonymousClass();
-   }
+    public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature) {
+        return delegate().getWeldMethod(signature);
+    }
 
-   @Override
-   public boolean isParameterizedType()
-   {
-      return delegate().isParameterizedType();
-   }
-   
-   public boolean isAbstract()
-   {
-      return delegate().isAbstract();
-   }
-   
-   public boolean isEnum()
-   {
-      return delegate().isEnum();
-   }
+    public WeldClass<? super T> getWeldSuperclass() {
+        return delegate().getWeldSuperclass();
+    }
 
-   public boolean isSerializable()
-   {
-      return delegate().isSerializable();
-   }
+    public boolean isLocalClass() {
+        return delegate().isLocalClass();
+    }
 
-   @Deprecated
-   public WeldMethod<?, ?> getDeclaredWeldMethod(Method method)
-   {
-      return delegate().getDeclaredWeldMethod(method);
-   }
-   
-   public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName)
-   {
-      return delegate().getDeclaredWeldField(fieldName);
-   }
-   
-   public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature, WeldClass<M> expectedReturnType) 
-   {
-      return delegate().getDeclaredWeldMethod(signature);
-   }
-   
-   public WeldConstructor<T> getDeclaredWeldConstructor(ConstructorSignature signature)
-   {
-      return delegate().getDeclaredWeldConstructor(signature);
-   }
-   
-   public <U> WeldClass<? extends U> asWeldSubclass(WeldClass<U> clazz)
-   {
-      return delegate().asWeldSubclass(clazz);
-   }
-   
-   public <S> S cast(Object object)
-   {
-      return delegate().<S>cast(object);
-   }
-   
-   public boolean isEquivalent(Class<?> clazz)
-   {
-      return delegate().isEquivalent(clazz);
-   }
-   
-   public String getSimpleName()
-   {
-      return delegate().getSimpleName();
-   }
-   
-   public Collection<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
-   }
-   
-   public boolean isDiscovered()
-   {
-      return delegate().isDiscovered();
-   }
+    public boolean isMemberClass() {
+        return delegate().isMemberClass();
+    }
+
+    public boolean isAnonymousClass() {
+        return delegate().isAnonymousClass();
+    }
+
+    @Override
+    public boolean isParameterizedType() {
+        return delegate().isParameterizedType();
+    }
+
+    public boolean isAbstract() {
+        return delegate().isAbstract();
+    }
+
+    public boolean isEnum() {
+        return delegate().isEnum();
+    }
+
+    public boolean isSerializable() {
+        return delegate().isSerializable();
+    }
+
+    @Deprecated
+    public WeldMethod<?, ?> getDeclaredWeldMethod(Method method) {
+        return delegate().getDeclaredWeldMethod(method);
+    }
+
+    public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName) {
+        return delegate().getDeclaredWeldField(fieldName);
+    }
+
+    public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature, WeldClass<M> expectedReturnType) {
+        return delegate().getDeclaredWeldMethod(signature);
+    }
+
+    public WeldConstructor<T> getDeclaredWeldConstructor(ConstructorSignature signature) {
+        return delegate().getDeclaredWeldConstructor(signature);
+    }
+
+    public <U> WeldClass<? extends U> asWeldSubclass(WeldClass<U> clazz) {
+        return delegate().asWeldSubclass(clazz);
+    }
+
+    public <S> S cast(Object object) {
+        return delegate().<S>cast(object);
+    }
+
+    public boolean isEquivalent(Class<?> clazz) {
+        return delegate().isEquivalent(clazz);
+    }
+
+    public String getSimpleName() {
+        return delegate().getSimpleName();
+    }
+
+    public Collection<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
+        return delegate().getDeclaredMetaAnnotations(metaAnnotationType);
+    }
+
+    public boolean isDiscovered() {
+        return delegate().isDiscovered();
+    }
 }

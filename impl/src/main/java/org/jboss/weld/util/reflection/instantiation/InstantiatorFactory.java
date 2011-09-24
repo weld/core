@@ -16,58 +16,49 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.DefaultResourceLoader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A factory class for obtaining the first available instantiator
- * 
+ *
  * @author Nicklas Karlsson
- * 
  */
 @SuppressWarnings("serial")
-public class InstantiatorFactory implements Service
-{
-   private static Instantiator availableInstantiator;
-   private static boolean enabled;
+public class InstantiatorFactory implements Service {
+    private static Instantiator availableInstantiator;
+    private static boolean enabled;
 
-   private static final List<Instantiator> instantiators = new ArrayList<Instantiator>()
-   {
-      {
-         add(new UnsafeInstantiator());
-         add(new ReflectionFactoryInstantiator());
-      }
-   };
+    private static final List<Instantiator> instantiators = new ArrayList<Instantiator>() {
+        {
+            add(new UnsafeInstantiator());
+            add(new ReflectionFactoryInstantiator());
+        }
+    };
 
-   static
-   {
-      for (Instantiator instantiator : instantiators)
-      {
-         if (instantiator.isAvailable())
-         {
-            availableInstantiator = instantiator;
-            break;
-         }
-      }
-      //TODO convert InstantiatorFactory to a per-BeanManager service
-      enabled = DefaultResourceLoader.INSTANCE.getResource("META-INF/org.jboss.weld.enableUnsafeProxies") != null;
-   }
+    static {
+        for (Instantiator instantiator : instantiators) {
+            if (instantiator.isAvailable()) {
+                availableInstantiator = instantiator;
+                break;
+            }
+        }
+        //TODO convert InstantiatorFactory to a per-BeanManager service
+        enabled = DefaultResourceLoader.INSTANCE.getResource("META-INF/org.jboss.weld.enableUnsafeProxies") != null;
+    }
 
-   public static Instantiator getInstantiator()
-   {
-      return availableInstantiator;
-   }
-   
-   public static boolean useInstantiators() 
-   {
-      return enabled;
-   }
+    public static Instantiator getInstantiator() {
+        return availableInstantiator;
+    }
 
-   public void cleanup()
-   {
-      instantiators.clear();
-   }
+    public static boolean useInstantiators() {
+        return enabled;
+    }
+
+    public void cleanup() {
+        instantiators.clear();
+    }
 }

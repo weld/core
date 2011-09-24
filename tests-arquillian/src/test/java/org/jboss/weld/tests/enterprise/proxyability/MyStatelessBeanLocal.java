@@ -19,8 +19,7 @@ package org.jboss.weld.tests.enterprise.proxyability;
 import javax.ejb.Local;
 
 @Local
-public interface MyStatelessBeanLocal
-{
+public interface MyStatelessBeanLocal {
 
-   String getText();
+    String getText();
 }

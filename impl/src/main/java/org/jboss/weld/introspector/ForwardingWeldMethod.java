@@ -16,72 +16,59 @@
  */
 package org.jboss.weld.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedParameter;
+public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T, X, Method> implements WeldMethod<T, X> {
 
-public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T,X, Method> implements WeldMethod<T, X>
-{
+    @Override
+    protected abstract WeldMethod<T, X> delegate();
 
-   @Override
-   protected abstract WeldMethod<T, X> delegate();
+    public List<WeldParameter<?, X>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType) {
+        return delegate().getWeldParameters(metaAnnotationType);
+    }
 
-   public List<WeldParameter<?, X>> getAnnotatedParameters(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getWeldParameters(metaAnnotationType);
-   }
+    public Class<?>[] getParameterTypesAsArray() {
+        return delegate().getParameterTypesAsArray();
+    }
 
-   public Class<?>[] getParameterTypesAsArray()
-   {
-      return delegate().getParameterTypesAsArray();
-   }
+    public List<? extends WeldParameter<?, X>> getWeldParameters() {
+        return delegate().getWeldParameters();
+    }
 
-   public List<? extends WeldParameter<?, X>> getWeldParameters()
-   {
-      return delegate().getWeldParameters();
-   }
+    public String getPropertyName() {
+        return delegate().getPropertyName();
+    }
 
-   public String getPropertyName()
-   {
-      return delegate().getPropertyName();
-   }
+    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        return delegate().invoke(instance, parameters);
+    }
 
-   public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException
-   {
-      return delegate().invoke(instance, parameters);
-   }
+    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        return delegate().invokeOnInstance(instance, parameters);
+    }
 
-   public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
-   {
-      return delegate().invokeOnInstance(instance, parameters);
-   }
+    public boolean isEquivalent(Method method) {
+        return delegate().isEquivalent(method);
+    }
 
-   public boolean isEquivalent(Method method)
-   {
-      return delegate().isEquivalent(method);
-   }
+    public MethodSignature getSignature() {
+        return delegate().getSignature();
+    }
 
-   public MethodSignature getSignature()
-   {
-      return delegate().getSignature();
-   }
+    public List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> metaAnnotationType) {
+        return delegate().getWeldParameters(metaAnnotationType);
+    }
 
-   public List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> metaAnnotationType)
-   {
-      return delegate().getWeldParameters(metaAnnotationType);
-   }
+    public List<AnnotatedParameter<X>> getParameters() {
+        return delegate().getParameters();
+    }
 
-   public List<AnnotatedParameter<X>> getParameters()
-   {
-      return delegate().getParameters();
-   }
-   
-   public Method getJavaMember()
-   {
-      return delegate().getJavaMember();
-   }
+    public Method getJavaMember() {
+        return delegate().getJavaMember();
+    }
 
 }

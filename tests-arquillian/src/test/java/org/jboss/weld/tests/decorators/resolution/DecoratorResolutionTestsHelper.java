@@ -25,18 +25,15 @@ import java.util.List;
 /**
  * @author Marius Bogoevici
  */
-public class DecoratorResolutionTestsHelper
-{
-   public static boolean decoratorClassesMatch(List<Decorator<?>> decoratorList, Collection<Class<?>> expectedDecoratorClasses)
-   {
-      if (decoratorList.size() != expectedDecoratorClasses.size())
-         return false;
-      Collection<Class<?>> expectedDecoratedClassesCopy = new ArrayList<Class<?>>(expectedDecoratorClasses);
-      for (Decorator<?> decorator: decoratorList)
-      {
-         if (!expectedDecoratedClassesCopy.remove(decorator.getBeanClass()))
+public class DecoratorResolutionTestsHelper {
+    public static boolean decoratorClassesMatch(List<Decorator<?>> decoratorList, Collection<Class<?>> expectedDecoratorClasses) {
+        if (decoratorList.size() != expectedDecoratorClasses.size())
             return false;
-      }
-      return expectedDecoratedClassesCopy.size() == 0;
-   }
+        Collection<Class<?>> expectedDecoratedClassesCopy = new ArrayList<Class<?>>(expectedDecoratorClasses);
+        for (Decorator<?> decorator : decoratorList) {
+            if (!expectedDecoratedClassesCopy.remove(decorator.getBeanClass()))
+                return false;
+        }
+        return expectedDecoratedClassesCopy.size() == 0;
+    }
 }

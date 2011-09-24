@@ -22,54 +22,49 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * A version of {@link javax.enterprise.inject.CreationException} that supports
  * message localization.
- * 
+ *
  * @author David Allen
  */
-@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
-public class CreationException extends javax.enterprise.inject.CreationException
-{
+@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+public class CreationException extends javax.enterprise.inject.CreationException {
 
-   private static final long    serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
+    private WeldExceptionMessage message;
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> CreationException(E key, Object... args)
-   {
-      message = new WeldExceptionKeyMessage(key, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> CreationException(E key, Object... args) {
+        message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   /**
-    * Creates a new exception with the given localized message key, the cause
-    * for this exception and optional arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param throwable The cause for this exception
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> CreationException(E key, Throwable throwable, Object... args)
-   {
-      super(throwable);
-      message = new WeldExceptionKeyMessage(key, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key, the cause
+     * for this exception and optional arguments for the message.
+     *
+     * @param <E>       The enumeration type for the message keys
+     * @param key       The localized message to use
+     * @param throwable The cause for this exception
+     * @param args      Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> CreationException(E key, Throwable throwable, Object... args) {
+        super(throwable);
+        message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
 
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+    @Override
+    public String getMessage() {
+        return message.getAsString();
+    }
 }

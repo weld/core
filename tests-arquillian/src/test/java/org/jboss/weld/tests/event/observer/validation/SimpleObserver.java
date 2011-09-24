@@ -29,10 +29,8 @@ import java.io.File;
  * @author Dan Allen
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class SimpleObserver
-{
+public class SimpleObserver {
     // there is no bean for File
-    public void observe(@Observes String event, SimpleTarget target, File file)
-    {
+    public void observe(@Observes String event, SimpleTarget target, File file) {
     }
 }

@@ -21,75 +21,63 @@ import javax.el.ValueExpression;
 
 /**
  * @author pmuir
- *
  */
-public abstract class ForwardingValueExpression extends ValueExpression
-{
+public abstract class ForwardingValueExpression extends ValueExpression {
 
-   private static final long serialVersionUID = -2318681808639242038L;
-   
-   protected abstract ValueExpression delegate();
+    private static final long serialVersionUID = -2318681808639242038L;
 
-   @SuppressWarnings({ "rawtypes", "unchecked" } )
-   @Override
-   public Class getExpectedType()
-   {
-      return delegate().getExpectedType();
-   }
+    protected abstract ValueExpression delegate();
 
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-   @Override
-   public Class getType(ELContext context)
-   {
-      return delegate().getType(context);
-   }
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Class getExpectedType() {
+        return delegate().getExpectedType();
+    }
 
-   @Override
-   public Object getValue(ELContext context)
-   {
-      return delegate().getValue(context);
-   }
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Class getType(ELContext context) {
+        return delegate().getType(context);
+    }
 
-   @Override
-   public boolean isReadOnly(ELContext context)
-   {
-      return delegate().isReadOnly(context);
-   }
+    @Override
+    public Object getValue(ELContext context) {
+        return delegate().getValue(context);
+    }
 
-   @Override
-   public void setValue(ELContext context, Object value)
-   {
-      delegate().setValue(context, value);
-   }
+    @Override
+    public boolean isReadOnly(ELContext context) {
+        return delegate().isReadOnly(context);
+    }
 
-   @Override
-   public String getExpressionString()
-   {
-      return delegate().getExpressionString();
-   }
+    @Override
+    public void setValue(ELContext context, Object value) {
+        delegate().setValue(context, value);
+    }
 
-   @Override
-   public boolean isLiteralText()
-   {
-      return delegate().isLiteralText();
-   }   
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return this == obj || delegate().equals(obj);
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
+    @Override
+    public String getExpressionString() {
+        return delegate().getExpressionString();
+    }
+
+    @Override
+    public boolean isLiteralText() {
+        return delegate().isLiteralText();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
 
 }

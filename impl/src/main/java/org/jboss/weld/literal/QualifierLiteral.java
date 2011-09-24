@@ -21,17 +21,17 @@ import javax.inject.Qualifier;
 
 /**
  * Annotation literal for {@link Qualifier}?
- * 
+ *
  * @author Pete Muir
  */
 @SuppressWarnings("all")
-public class QualifierLiteral extends AnnotationLiteral<Qualifier> implements Qualifier
-{
-   
-   private static final long serialVersionUID = -1865461877555038671L;
-   
-   public static final Qualifier INSTANCE = new QualifierLiteral();
-   
-   private QualifierLiteral() {}
-   
+public class QualifierLiteral extends AnnotationLiteral<Qualifier> implements Qualifier {
+
+    private static final long serialVersionUID = -1865461877555038671L;
+
+    public static final Qualifier INSTANCE = new QualifierLiteral();
+
+    private QualifierLiteral() {
+    }
+
 }

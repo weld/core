@@ -1,5 +1,8 @@
 package org.jboss.weld.injection;
 
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -7,52 +10,41 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
+public class EmptyInjectionPoint implements InjectionPoint, Serializable {
 
-public class EmptyInjectionPoint implements InjectionPoint, Serializable
-{
-   
-   private static final long serialVersionUID = -2041468540191211977L;
-   
-   public static final InjectionPoint INSTANCE = new EmptyInjectionPoint();
-   
-   private EmptyInjectionPoint() {}
+    private static final long serialVersionUID = -2041468540191211977L;
 
-   public Type getType()
-   {
-      return Object.class;
-   }
+    public static final InjectionPoint INSTANCE = new EmptyInjectionPoint();
 
-   public Set<Annotation> getQualifiers()
-   {
-      return Collections.emptySet();
-   }
+    private EmptyInjectionPoint() {
+    }
 
-   public Bean<?> getBean()
-   {
-      return null;
-   }
+    public Type getType() {
+        return Object.class;
+    }
 
-   public Member getMember()
-   {
-      return null;
-   }
+    public Set<Annotation> getQualifiers() {
+        return Collections.emptySet();
+    }
 
-   public Annotated getAnnotated()
-   {
-      return null;
-   }
+    public Bean<?> getBean() {
+        return null;
+    }
 
-   public boolean isDelegate()
-   {
-      return false;
-   }
+    public Member getMember() {
+        return null;
+    }
 
-   public boolean isTransient()
-   {
-      return false;
-   }
+    public Annotated getAnnotated() {
+        return null;
+    }
+
+    public boolean isDelegate() {
+        return false;
+    }
+
+    public boolean isTransient() {
+        return false;
+    }
 
 }

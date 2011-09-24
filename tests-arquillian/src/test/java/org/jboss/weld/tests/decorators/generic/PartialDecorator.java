@@ -25,27 +25,26 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @Decorator
-public class PartialDecorator<T> implements Decorated<T>
-{
+public class PartialDecorator<T> implements Decorated<T> {
 
-   @Inject @Delegate GenericBean<T> delegate;
+    @Inject
+    @Delegate
+    GenericBean<T> delegate;
 
-   static boolean decoratedInvoked = false;
+    static boolean decoratedInvoked = false;
 
-   static boolean notDecoratedInvoked = false;
+    static boolean notDecoratedInvoked = false;
 
-   public T decoratedEcho(T parameter)
-   {
-      decoratedInvoked = true;
-      return delegate.decoratedEcho(parameter);
-   }
+    public T decoratedEcho(T parameter) {
+        decoratedInvoked = true;
+        return delegate.decoratedEcho(parameter);
+    }
 
-   /**
-    * Should not be invoked
-    */
-   public T notDecoratedEcho(T parameter)
-   {
-      notDecoratedInvoked = true;
-      return delegate.notDecoratedEcho(parameter);
-   }
+    /**
+     * Should not be invoked
+     */
+    public T notDecoratedEcho(T parameter) {
+        notDecoratedInvoked = true;
+        return delegate.notDecoratedEcho(parameter);
+    }
 }

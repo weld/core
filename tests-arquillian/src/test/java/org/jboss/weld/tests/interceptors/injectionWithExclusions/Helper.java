@@ -20,6 +20,5 @@ package org.jboss.weld.tests.interceptors.injectionWithExclusions;
 /**
  * @author Marius Bogoevici
  */
-public class Helper
-{
+public class Helper {
 }

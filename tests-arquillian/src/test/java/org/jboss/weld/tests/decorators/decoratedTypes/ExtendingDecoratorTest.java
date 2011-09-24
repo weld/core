@@ -29,25 +29,22 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class ExtendingDecoratorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(ExtendingDecorator.class)
-         .addPackage(ExtendingDecoratorTest.class.getPackage());
-   }
+public class ExtendingDecoratorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(ExtendingDecorator.class)
+                .addPackage(ExtendingDecoratorTest.class.getPackage());
+    }
 
-   @Test
-   public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean)
-   {
-      testBean.decoratedMethod();
-      testBean.notDecoratedMethod();
+    @Test
+    public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean) {
+        testBean.decoratedMethod();
+        testBean.notDecoratedMethod();
 
-      Assert.assertTrue(ExtendingDecorator.decoratedInvoked);
-      Assert.assertFalse(ExtendingDecorator.notDecoratedInvoked);
-      Assert.assertTrue(TestBean.decoratedInvoked);
-      Assert.assertTrue(TestBean.notDecoratedInvoked);
-   }
+        Assert.assertTrue(ExtendingDecorator.decoratedInvoked);
+        Assert.assertFalse(ExtendingDecorator.notDecoratedInvoked);
+        Assert.assertTrue(TestBean.decoratedInvoked);
+        Assert.assertTrue(TestBean.notDecoratedInvoked);
+    }
 }

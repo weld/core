@@ -8,42 +8,34 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-public abstract class ForwardingInjectionPoint implements InjectionPoint
-{
-   protected abstract InjectionPoint delegate();
+public abstract class ForwardingInjectionPoint implements InjectionPoint {
+    protected abstract InjectionPoint delegate();
 
-   public Annotated getAnnotated()
-   {
-      return delegate().getAnnotated();
-   }
+    public Annotated getAnnotated() {
+        return delegate().getAnnotated();
+    }
 
-   public Type getType()
-   {
-      return delegate().getType();
-   }
+    public Type getType() {
+        return delegate().getType();
+    }
 
-   public Set<Annotation> getQualifiers()
-   {
-      return delegate().getQualifiers();
-   }
+    public Set<Annotation> getQualifiers() {
+        return delegate().getQualifiers();
+    }
 
-   public Bean<?> getBean()
-   {
-      return delegate().getBean();
-   }
+    public Bean<?> getBean() {
+        return delegate().getBean();
+    }
 
-   public Member getMember()
-   {
-      return delegate().getMember();
-   }
+    public Member getMember() {
+        return delegate().getMember();
+    }
 
-   public boolean isDelegate()
-   {
-      return delegate().isDelegate();
-   }
+    public boolean isDelegate() {
+        return delegate().isDelegate();
+    }
 
-   public boolean isTransient()
-   {
-      return delegate().isTransient();
-   }
+    public boolean isTransient() {
+        return delegate().isTransient();
+    }
 }

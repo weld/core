@@ -16,27 +16,24 @@
  */
 package org.jboss.weld.introspector.jlr;
 
+import org.jboss.weld.introspector.WeldCallable;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.LazyValueHolder;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.introspector.WeldCallable;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.LazyValueHolder;
-
 /**
  * @author pmuir
- *
  */
-public abstract class AbstractWeldCallable<T, X, S extends Member> extends AbstractWeldMember<T, X, S> implements WeldCallable<T, X, S>
-{  
-   
-   protected AbstractWeldCallable(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldClass<X> declaringType)
-   {
-      super(annotationMap, declaredAnnotationMap, classTransformer, member, rawType, type, typeClosure, declaringType);
-   }
+public abstract class AbstractWeldCallable<T, X, S extends Member> extends AbstractWeldMember<T, X, S> implements WeldCallable<T, X, S> {
+
+    protected AbstractWeldCallable(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldClass<X> declaringType) {
+        super(annotationMap, declaredAnnotationMap, classTransformer, member, rawType, type, typeClosure, declaringType);
+    }
 
 }

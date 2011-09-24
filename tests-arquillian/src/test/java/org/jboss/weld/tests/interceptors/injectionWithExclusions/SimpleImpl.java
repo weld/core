@@ -25,21 +25,20 @@ import javax.interceptor.Interceptors;
 /**
  * @author Marius Bogoevici
  */
-@Stateless @ExcludeDefaultInterceptors @Interceptors({EjbInterceptor.class, EjbInterceptor2.class})
-public class SimpleImpl implements Simple
-{
-   @Inject
-   Helper helper;
+@Stateless
+@ExcludeDefaultInterceptors
+@Interceptors({EjbInterceptor.class, EjbInterceptor2.class})
+public class SimpleImpl implements Simple {
+    @Inject
+    Helper helper;
 
 
-   public Helper getHelper()
-   {
-      return helper;
-   }
+    public Helper getHelper() {
+        return helper;
+    }
 
-   @Interceptors({EjbInterceptor3.class, EjbInterceptor4.class})
-   public void doSomething()
-   {
+    @Interceptors({EjbInterceptor3.class, EjbInterceptor4.class})
+    public void doSomething() {
 
-   }
+    }
 }

@@ -20,18 +20,15 @@ package org.jboss.weld.tests.decorators.decoratedTypes;
 /**
  * @author Marius Bogoevici
  */
-public class TestBean implements Decorated, NotDecorated
-{
-   static boolean decoratedInvoked;
-   static boolean notDecoratedInvoked;
+public class TestBean implements Decorated, NotDecorated {
+    static boolean decoratedInvoked;
+    static boolean notDecoratedInvoked;
 
-   public void decoratedMethod()
-   {
-      decoratedInvoked = true;
-   }
+    public void decoratedMethod() {
+        decoratedInvoked = true;
+    }
 
-   public void notDecoratedMethod()
-   {
-      notDecoratedInvoked = true;
-   }
+    public void notDecoratedMethod() {
+        notDecoratedInvoked = true;
+    }
 }

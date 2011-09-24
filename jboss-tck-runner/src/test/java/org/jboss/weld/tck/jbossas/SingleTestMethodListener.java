@@ -31,38 +31,28 @@ import java.util.List;
 /**
  * @author Stuart Douglas
  */
-public class SingleTestMethodListener implements IMethodInterceptor
-{
-   public static final String TEST_CLASS_PROPERTY = "tckTest";
+public class SingleTestMethodListener implements IMethodInterceptor {
+    public static final String TEST_CLASS_PROPERTY = "tckTest";
 
-   public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context)
-   {
-      String test = System.getProperty(TEST_CLASS_PROPERTY);
-      if (test == null || test.isEmpty())
-      {
-         return methods;
-      }
-      List<IMethodInstance> ret = new ArrayList<IMethodInstance>();
-      if (test.contains("."))
-      {
-         for (IMethodInstance method : methods)
-         {
-            if (method.getMethod().getTestClass().getName().equals(test))
-            {
-               ret.add(method);
+    public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
+        String test = System.getProperty(TEST_CLASS_PROPERTY);
+        if (test == null || test.isEmpty()) {
+            return methods;
+        }
+        List<IMethodInstance> ret = new ArrayList<IMethodInstance>();
+        if (test.contains(".")) {
+            for (IMethodInstance method : methods) {
+                if (method.getMethod().getTestClass().getName().equals(test)) {
+                    ret.add(method);
+                }
             }
-         }
-      }
-      else
-      {
-         for (IMethodInstance method : methods)
-         {
-            if (method.getMethod().getTestClass().getName().endsWith("." + test))
-            {
-               ret.add(method);
+        } else {
+            for (IMethodInstance method : methods) {
+                if (method.getMethod().getTestClass().getName().endsWith("." + test)) {
+                    ret.add(method);
+                }
             }
-         }
-      }
-      return ret;
-   }
+        }
+        return ret;
+    }
 }

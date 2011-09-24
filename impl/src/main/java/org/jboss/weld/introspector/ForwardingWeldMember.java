@@ -18,15 +18,13 @@ package org.jboss.weld.introspector;
 
 import java.lang.reflect.Member;
 
-public abstract class ForwardingWeldMember<T, X, S extends Member> extends ForwardingWeldAnnotated<T, S> implements WeldMember<T, X, S>
-{
-   
-   @Override
-   protected abstract WeldMember<T, X, S> delegate();
+public abstract class ForwardingWeldMember<T, X, S extends Member> extends ForwardingWeldAnnotated<T, S> implements WeldMember<T, X, S> {
 
-   public WeldClass<X> getDeclaringType()
-   {
-      return delegate().getDeclaringType();
-   }
-   
+    @Override
+    protected abstract WeldMember<T, X, S> delegate();
+
+    public WeldClass<X> getDeclaringType() {
+        return delegate().getDeclaringType();
+    }
+
 }

@@ -18,19 +18,17 @@ package org.jboss.weld.tests.alternatives;
 
 import javax.enterprise.inject.Produces;
 
-public class Producer
-{
-   
-   @Produces @TestAlternative 
-   public Foo getFoo() 
-   {
-      return new Foo("Test");
-   }
-   
-   @Produces
-   public Foo getManager() 
-   {
-      return new Foo("Normal");
-   }
+public class Producer {
+
+    @Produces
+    @TestAlternative
+    public Foo getFoo() {
+        return new Foo("Test");
+    }
+
+    @Produces
+    public Foo getManager() {
+        return new Foo("Normal");
+    }
 
 }

@@ -38,184 +38,149 @@ import java.util.Set;
  * will not be changed. The savings in memory is significant compared to hash
  * sets which may contain many empty buckets.
  * </p>
- * 
+ *
  * @author David Allen
  */
-public class ArraySet<E> implements Set<E>, Serializable
-{
+public class ArraySet<E> implements Set<E>, Serializable {
 
-   private static final long serialVersionUID = -5296795345424575659L;
-   
-   // Underlying array of set elements
-   private ArrayList<E> elements;
+    private static final long serialVersionUID = -5296795345424575659L;
 
-   public ArraySet(ArrayList<E> initialList)
-   {
-      elements = initialList;
-   }
+    // Underlying array of set elements
+    private ArrayList<E> elements;
 
-   public ArraySet(Collection<E> initialElements)
-   {
-      this(initialElements.size());
-      addAll(initialElements);
-   }
+    public ArraySet(ArrayList<E> initialList) {
+        elements = initialList;
+    }
 
-   public ArraySet(int size)
-   {
-      elements = new ArrayList<E>(size);
-   }
+    public ArraySet(Collection<E> initialElements) {
+        this(initialElements.size());
+        addAll(initialElements);
+    }
 
-   public ArraySet()
-   {
-      this(5);
-   }
+    public ArraySet(int size) {
+        elements = new ArrayList<E>(size);
+    }
 
-   public boolean add(E e)
-   {
-      if (contains(e))
-      {
-         return false;
-      }
-      else
-      {
-         elements.add(e);
-         return true;
-      }
-   }
+    public ArraySet() {
+        this(5);
+    }
 
-   public boolean addAll(Collection<? extends E> otherCollection)
-   {
-      boolean modified = false;
-      boolean realSet = otherCollection instanceof Set<?>;
-      Iterator<? extends E> setIterator = otherCollection.iterator();
-      while (setIterator.hasNext())
-      {
-         E element = setIterator.next();
-         if (realSet || !contains(element))
-         {
-            elements.add(element);
-            modified = true;
-         }
-      }
-      elements.trimToSize();
-      return modified;
-   }
-
-   public List<E> asList()
-   {
-      return Collections.unmodifiableList(elements);
-   }
-
-   public void clear()
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   public boolean contains(Object o)
-   {
-      return elements.contains(o);
-   }
-
-   public boolean containsAll(Collection<?> c)
-   {
-      return elements.containsAll(c);
-   }
-
-   public boolean isEmpty()
-   {
-      return elements.isEmpty();
-   }
-
-   public Iterator<E> iterator()
-   {
-      return elements.iterator();
-   }
-
-   public boolean remove(Object o)
-   {
-      return elements.remove(o);
-   }
-
-   public boolean removeAll(Collection<?> c)
-   {
-      return elements.removeAll(c);
-   }
-
-   public boolean retainAll(Collection<?> c)
-   {
-      return elements.retainAll(c);
-   }
-
-   public int size()
-   {
-      return elements.size();
-   }
-
-   public Object[] toArray()
-   {
-      return elements.toArray();
-   }
-
-   public <T> T[] toArray(T[] a)
-   {
-      return elements.toArray(a);
-   }
-
-   public ArraySet<E> trimToSize()
-   {
-      elements.trimToSize();
-      return this;
-   }
-
-   // Needed to provide set equals semantics
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-      {
-         return true;
-      }
-      if (obj instanceof Set<?>)
-      {
-         int elementQuantity = size();
-         Object[] otherArray = ((Set<?>) obj).toArray();
-         if (elementQuantity != otherArray.length)
-         {
+    public boolean add(E e) {
+        if (contains(e)) {
             return false;
-         }
-         boolean arraysEqual = true;
-         for (int i = 0; i < elementQuantity; i++)
-         {
-            boolean objFound = false;
-            for (int j = 0; j < otherArray.length; j++)
-            {
-               if (elements.get(i).equals(otherArray[j]))
-               {
-                  objFound = true;
-                  break;
-               }
-            }
-            if (!objFound)
-            {
-               arraysEqual = false;
-               break;
-            }
-         }
-         return arraysEqual;
-      }
-      return false;
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return elements.hashCode();
-   }
+        } else {
+            elements.add(e);
+            return true;
+        }
+    }
 
-   @Override
-   public String toString()
-   {
-      return elements.toString();
-   }
+    public boolean addAll(Collection<? extends E> otherCollection) {
+        boolean modified = false;
+        boolean realSet = otherCollection instanceof Set<?>;
+        Iterator<? extends E> setIterator = otherCollection.iterator();
+        while (setIterator.hasNext()) {
+            E element = setIterator.next();
+            if (realSet || !contains(element)) {
+                elements.add(element);
+                modified = true;
+            }
+        }
+        elements.trimToSize();
+        return modified;
+    }
+
+    public List<E> asList() {
+        return Collections.unmodifiableList(elements);
+    }
+
+    public void clear() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean contains(Object o) {
+        return elements.contains(o);
+    }
+
+    public boolean containsAll(Collection<?> c) {
+        return elements.containsAll(c);
+    }
+
+    public boolean isEmpty() {
+        return elements.isEmpty();
+    }
+
+    public Iterator<E> iterator() {
+        return elements.iterator();
+    }
+
+    public boolean remove(Object o) {
+        return elements.remove(o);
+    }
+
+    public boolean removeAll(Collection<?> c) {
+        return elements.removeAll(c);
+    }
+
+    public boolean retainAll(Collection<?> c) {
+        return elements.retainAll(c);
+    }
+
+    public int size() {
+        return elements.size();
+    }
+
+    public Object[] toArray() {
+        return elements.toArray();
+    }
+
+    public <T> T[] toArray(T[] a) {
+        return elements.toArray(a);
+    }
+
+    public ArraySet<E> trimToSize() {
+        elements.trimToSize();
+        return this;
+    }
+
+    // Needed to provide set equals semantics
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Set<?>) {
+            int elementQuantity = size();
+            Object[] otherArray = ((Set<?>) obj).toArray();
+            if (elementQuantity != otherArray.length) {
+                return false;
+            }
+            boolean arraysEqual = true;
+            for (int i = 0; i < elementQuantity; i++) {
+                boolean objFound = false;
+                for (int j = 0; j < otherArray.length; j++) {
+                    if (elements.get(i).equals(otherArray[j])) {
+                        objFound = true;
+                        break;
+                    }
+                }
+                if (!objFound) {
+                    arraysEqual = false;
+                    break;
+                }
+            }
+            return arraysEqual;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return elements.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return elements.toString();
+    }
 
 }

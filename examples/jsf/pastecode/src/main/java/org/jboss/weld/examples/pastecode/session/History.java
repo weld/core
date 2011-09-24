@@ -21,91 +21,80 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.io.Serializable;
-import java.util.List;
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * The view controller for the history screen
- * 
+ *
  * @author Martin Gencur
  * @author Pete Muir
  */
 @SessionScoped
 @Named("history")
-public class History implements Serializable
-{
+public class History implements Serializable {
 
-   private static final long serialVersionUID = 20L;
+    private static final long serialVersionUID = 20L;
 
-   @Inject
-   private CodeFragmentManager codeFragmentManager;
+    @Inject
+    private CodeFragmentManager codeFragmentManager;
 
-   private Paginator paginator;
+    private Paginator paginator;
 
-   private List<CodeFragment> codes;
+    private List<CodeFragment> codes;
 
-   // The Search we are conducting
-   private final CodeFragment codeFragmentPrototype;
+    // The Search we are conducting
+    private final CodeFragment codeFragmentPrototype;
 
-   private int page = 0;
+    private int page = 0;
 
-   public History()
-   {
-      this.codeFragmentPrototype = new CodeFragment();
-   }
+    public History() {
+        this.codeFragmentPrototype = new CodeFragment();
+    }
 
-   public List<CodeFragment> getCodes()
-   {
-      return this.codes;
-   }
+    public List<CodeFragment> getCodes() {
+        return this.codes;
+    }
 
-   public CodeFragment getCodeFragmentPrototype()
-   {
-      return codeFragmentPrototype;
-   }
+    public CodeFragment getCodeFragmentPrototype() {
+        return codeFragmentPrototype;
+    }
 
-   //Start a *new* search!
-   public String newSearch()
-   {
-      this.page = 0;
-      return "history";
-   }
+    //Start a *new* search!
+    public String newSearch() {
+        this.page = 0;
+        return "history";
+    }
 
-   // Do the search, called as a "page action"
-   public String load()
-   {
-      this.paginator = new Paginator();
-      this.codes = null;
-      
-      // Perform a search
-      
-      this.codes = codeFragmentManager.searchCodeFragments(this.codeFragmentPrototype, this.page, this.paginator);
-      return "history";
-   }
+    // Do the search, called as a "page action"
+    public String load() {
+        this.paginator = new Paginator();
+        this.codes = null;
 
-   public int getPage()
-   {
-      return page;
-   }
+        // Perform a search
 
-   public void setPage(int page)
-   {
-      this.page = page;
-   }
+        this.codes = codeFragmentManager.searchCodeFragments(this.codeFragmentPrototype, this.page, this.paginator);
+        return "history";
+    }
 
-   public Paginator getPaginator()
-   {
-      return paginator;
-   }
+    public int getPage() {
+        return page;
+    }
 
-   public void setPaginator(Paginator paginator)
-   {
-      this.paginator = paginator;
-   }
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public Paginator getPaginator() {
+        return paginator;
+    }
+
+    public void setPaginator(Paginator paginator) {
+        this.paginator = paginator;
+    }
 }

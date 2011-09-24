@@ -37,70 +37,60 @@
 
 package org.jboss.weld.tests.extensions.supertypes.beans;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 /**
  * Implements the CDI AnnotatedType interface.
- * 
+ *
  * @author robc
  */
-public class AnnotatedTypeImpl<T> extends AnnotatedImpl implements AnnotatedType<T>
-{
+public class AnnotatedTypeImpl<T> extends AnnotatedImpl implements AnnotatedType<T> {
 
-   private Set<AnnotatedConstructor<T>> constructors;
-   private Set<AnnotatedField<? super T>> fields;
-   private Class<T> javaClass;
-   private Set<AnnotatedMethod<? super T>> methods;
+    private Set<AnnotatedConstructor<T>> constructors;
+    private Set<AnnotatedField<? super T>> fields;
+    private Class<T> javaClass;
+    private Set<AnnotatedMethod<? super T>> methods;
 
-   public AnnotatedTypeImpl(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, Class<T> javaClass)
-   {
-      super(baseType, typeClosure, annotations);
-      this.javaClass = javaClass;
-   }
+    public AnnotatedTypeImpl(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, Class<T> javaClass) {
+        super(baseType, typeClosure, annotations);
+        this.javaClass = javaClass;
+    }
 
-   public AnnotatedTypeImpl(AnnotatedType<T> type)
-   {
-      this(type.getBaseType(), type.getTypeClosure(), type.getAnnotations(), type.getJavaClass());
-   }
+    public AnnotatedTypeImpl(AnnotatedType<T> type) {
+        this(type.getBaseType(), type.getTypeClosure(), type.getAnnotations(), type.getJavaClass());
+    }
 
-   public Set<AnnotatedConstructor<T>> getConstructors()
-   {
-      return constructors;
-   }
+    public Set<AnnotatedConstructor<T>> getConstructors() {
+        return constructors;
+    }
 
-   public void setConstructors(Set<AnnotatedConstructor<T>> constructors)
-   {
-      this.constructors = constructors;
-   }
+    public void setConstructors(Set<AnnotatedConstructor<T>> constructors) {
+        this.constructors = constructors;
+    }
 
-   public Set<AnnotatedField<? super T>> getFields()
-   {
-      return fields;
-   }
+    public Set<AnnotatedField<? super T>> getFields() {
+        return fields;
+    }
 
-   public void setFields(Set<AnnotatedField<? super T>> fields)
-   {
-      this.fields = fields;
-   }
+    public void setFields(Set<AnnotatedField<? super T>> fields) {
+        this.fields = fields;
+    }
 
-   public Class<T> getJavaClass()
-   {
-      return javaClass;
-   }
+    public Class<T> getJavaClass() {
+        return javaClass;
+    }
 
-   public Set<AnnotatedMethod<? super T>> getMethods()
-   {
-      return methods;
-   }
+    public Set<AnnotatedMethod<? super T>> getMethods() {
+        return methods;
+    }
 
-   public void setMethods(Set<AnnotatedMethod<? super T>> methods)
-   {
-      this.methods = methods;
-   }
+    public void setMethods(Set<AnnotatedMethod<? super T>> methods) {
+        this.methods = methods;
+    }
 }

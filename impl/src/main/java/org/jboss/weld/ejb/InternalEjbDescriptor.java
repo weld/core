@@ -16,71 +16,59 @@
  */
 package org.jboss.weld.ejb;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * More powerful version of {@link EjbDescriptor} that exposes Maps for some
  * metadata. The {@link EjbDescriptor} to enhance should be passed to the
  * constructor
- * 
+ *
  * @author Pete Muir
- * 
  */
-public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> implements EjbDescriptor<T>
-{
-   
-   private final Class<?> objectInterface;
-   private final EjbDescriptor<T> delegate;
-   private final Collection<MethodSignature> removeMethodSignatures;
-   
-   public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor)
-   {
-      this.delegate = ejbDescriptor;
-      this.objectInterface = findObjectInterface(ejbDescriptor.getLocalBusinessInterfaces());
-      removeMethodSignatures = new ArrayList<MethodSignature>();
-      if (ejbDescriptor.getRemoveMethods() != null)
-      {
-         for (Method method : ejbDescriptor.getRemoveMethods())
-         {
-            removeMethodSignatures.add(new MethodSignatureImpl(method));
-         }
-      }
-   }
-   
-   @Override
-   public EjbDescriptor<T> delegate()
-   {
-      return delegate;
-   }
-   
-   public Class<?> getObjectInterface()
-   {
-      return objectInterface;
-   }
-   
-   public Collection<MethodSignature> getRemoveMethodSignatures()
-   {
-      return removeMethodSignatures;
-   }
-   
-   private static Class<?> findObjectInterface(Collection<BusinessInterfaceDescriptor<?>> interfaces)
-   {
-      if (interfaces != null && !interfaces.isEmpty())
-      {
-         return interfaces.iterator().next().getInterface();
-      }
-      else
-      {
-         return null;
-      }
-   }
-   
+public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> implements EjbDescriptor<T> {
+
+    private final Class<?> objectInterface;
+    private final EjbDescriptor<T> delegate;
+    private final Collection<MethodSignature> removeMethodSignatures;
+
+    public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor) {
+        this.delegate = ejbDescriptor;
+        this.objectInterface = findObjectInterface(ejbDescriptor.getLocalBusinessInterfaces());
+        removeMethodSignatures = new ArrayList<MethodSignature>();
+        if (ejbDescriptor.getRemoveMethods() != null) {
+            for (Method method : ejbDescriptor.getRemoveMethods()) {
+                removeMethodSignatures.add(new MethodSignatureImpl(method));
+            }
+        }
+    }
+
+    @Override
+    public EjbDescriptor<T> delegate() {
+        return delegate;
+    }
+
+    public Class<?> getObjectInterface() {
+        return objectInterface;
+    }
+
+    public Collection<MethodSignature> getRemoveMethodSignatures() {
+        return removeMethodSignatures;
+    }
+
+    private static Class<?> findObjectInterface(Collection<BusinessInterfaceDescriptor<?>> interfaces) {
+        if (interfaces != null && !interfaces.isEmpty()) {
+            return interfaces.iterator().next().getInterface();
+        } else {
+            return null;
+        }
+    }
+
 }

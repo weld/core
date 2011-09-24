@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.metadata.scanning.acme;
 
-public class Wibble
-{
+public class Wibble {
 
 }

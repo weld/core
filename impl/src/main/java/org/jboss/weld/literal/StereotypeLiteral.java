@@ -21,17 +21,17 @@ import javax.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link Stereotype}?
- * 
+ *
  * @author Pete Muir
  */
 @SuppressWarnings("all")
-public class StereotypeLiteral extends AnnotationLiteral<Stereotype> implements Stereotype
-{
-   
-   private static final long serialVersionUID = -974277187448157814L;
-   
-   public static final Stereotype INSTANCE = new StereotypeLiteral();
-   
-   private StereotypeLiteral() {}
-   
+public class StereotypeLiteral extends AnnotationLiteral<Stereotype> implements Stereotype {
+
+    private static final long serialVersionUID = -974277187448157814L;
+
+    public static final Stereotype INSTANCE = new StereotypeLiteral();
+
+    private StereotypeLiteral() {
+    }
+
 }

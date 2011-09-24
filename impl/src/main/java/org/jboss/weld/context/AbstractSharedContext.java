@@ -27,63 +27,55 @@ import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.context.beanstore.BeanStore;
 import org.jboss.weld.context.beanstore.ConcurrentHashMapBeanStore;
 
-public abstract class AbstractSharedContext extends AbstractContext
-{
+public abstract class AbstractSharedContext extends AbstractContext {
 
-   // The beans
-   private final Singleton<BeanStore> beanStore;
+    // The beans
+    private final Singleton<BeanStore> beanStore;
 
-   /**
-    * Constructor
-    */
-   protected AbstractSharedContext()
-   {
-      super(true);
-      this.beanStore = SingletonProvider.instance().create(BeanStore.class);
-      beanStore.set(new ConcurrentHashMapBeanStore());
-   }
+    /**
+     * Constructor
+     */
+    protected AbstractSharedContext() {
+        super(true);
+        this.beanStore = SingletonProvider.instance().create(BeanStore.class);
+        beanStore.set(new ConcurrentHashMapBeanStore());
+    }
 
-   /**
-    * Gets the bean store
-    * 
-    * @return The bean store
-    */
-   @Override
-   public BeanStore getBeanStore()
-   {
-      return this.beanStore.get();
-   }
+    /**
+     * Gets the bean store
+     *
+     * @return The bean store
+     */
+    @Override
+    public BeanStore getBeanStore() {
+        return this.beanStore.get();
+    }
 
-   public boolean isActive()
-   {
-      return true;
-   }
+    public boolean isActive() {
+        return true;
+    }
 
-   public void invalidate()
-   {
-      destroy();
-   }
-   
-   @Override
-   protected void destroy()
-   {
-      super.destroy();
-      cleanup();
-   }
-   
-   @Override
-   public void cleanup()
-   {
-      super.cleanup();
-      beanStore.clear();
-   }
+    public void invalidate() {
+        destroy();
+    }
 
-   @Override
-   public String toString()
-   {
-      String active = isActive() ? "Active " : "Inactive ";
-      String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
-      return active + "application context " + beanStoreInfo;
-   }
+    @Override
+    protected void destroy() {
+        super.destroy();
+        cleanup();
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        beanStore.clear();
+    }
+
+    @Override
+    public String toString() {
+        String active = isActive() ? "Active " : "Inactive ";
+        String beanStoreInfo = getBeanStore() == null ? "" : getBeanStore().toString();
+        return active + "application context " + beanStoreInfo;
+    }
 
 }

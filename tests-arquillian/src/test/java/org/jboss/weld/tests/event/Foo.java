@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.event;
 
-public class Foo
-{
+public class Foo {
 
 }

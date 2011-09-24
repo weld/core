@@ -30,22 +30,19 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class ResourceTest
-{
-   @Deployment // changed to .war, from .jar
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(WebArchive.class)
-         .addClasses(ResourceTest.class, UTConsumer.class)
-         .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+public class ResourceTest {
+    @Deployment // changed to .war, from .jar
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(WebArchive.class)
+                .addClasses(ResourceTest.class, UTConsumer.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   /*
+    /*
     * description = "WELD-385"
     */
-   @Test
-   public void testUTInjectedByResource(UTConsumer consumer)
-   {
-      Assert.assertNotNull(consumer.getUserTransaction());
-   }
+    @Test
+    public void testUTInjectedByResource(UTConsumer consumer) {
+        Assert.assertNotNull(consumer.getUserTransaction());
+    }
 }

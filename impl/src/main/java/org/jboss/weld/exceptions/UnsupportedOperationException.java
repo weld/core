@@ -22,49 +22,44 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * An {@link java.lang.UnsupportedOperationException} with support for
  * localized messages in Weld.
- * 
+ *
  * @author David Allen
  */
-@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
-public class UnsupportedOperationException extends java.lang.UnsupportedOperationException
-{
+@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+public class UnsupportedOperationException extends java.lang.UnsupportedOperationException {
 
-   private static final long    serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
+    private WeldExceptionMessage message;
 
-   /**
-    * Creates a new exception with no message.  Here the stacktrace serves as the
-    * main information since it has the method which was invoked causing this
-    * exception.
-    */
-   public UnsupportedOperationException()
-   {
-      super();
-   }
+    /**
+     * Creates a new exception with no message.  Here the stacktrace serves as the
+     * main information since it has the method which was invoked causing this
+     * exception.
+     */
+    public UnsupportedOperationException() {
+        super();
+    }
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> UnsupportedOperationException(E key, Object... args)
-   {
-      message = new WeldExceptionKeyMessage(key, args);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> UnsupportedOperationException(E key, Object... args) {
+        message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
 
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+    @Override
+    public String getMessage() {
+        return message.getAsString();
+    }
 }

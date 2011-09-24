@@ -25,22 +25,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class CircularInjectionTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(CircularInjectionTest.class.getPackage());
-   }
+public class CircularInjectionTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(CircularInjectionTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description = "WELD-310"
     */
-   @Test
-   public void testProducerCalledOnBeanUnderConstruction()
-   {
+    @Test
+    public void testProducerCalledOnBeanUnderConstruction() {
 
-   }
+    }
 
 }

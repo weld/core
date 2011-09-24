@@ -29,87 +29,68 @@ import java.util.Set;
 
 /**
  * Exact listener.
- *
+ * <p/>
  * Explicitly list all the bean classes in bean-classes.txt file.
  * This will reduce scanning; e.g. useful for restricted env like GAE
  *
  * @author Ales Justin
  */
-public class ExactListener extends Listener
-{
-   public static final String BEAN_CLASSES = "bean-classes.txt";
+public class ExactListener extends Listener {
+    public static final String BEAN_CLASSES = "bean-classes.txt";
 
-   protected URLScanner createUrlScanner(ClassLoader classLoader, ServletContext context)
-   {
-      return new ExactScanner(classLoader, context);
-   }
+    protected URLScanner createUrlScanner(ClassLoader classLoader, ServletContext context) {
+        return new ExactScanner(classLoader, context);
+    }
 
-   private static class ExactScanner extends URLScanner
-   {
-      private ServletContext context;
+    private static class ExactScanner extends URLScanner {
+        private ServletContext context;
 
-      private ExactScanner(ClassLoader classLoader, ServletContext context)
-      {
-         super(classLoader);
+        private ExactScanner(ClassLoader classLoader, ServletContext context) {
+            super(classLoader);
 
-         if (context == null)
-            throw new IllegalArgumentException("Null context");
+            if (context == null)
+                throw new IllegalArgumentException("Null context");
 
-         this.context = context;
-      }
+            this.context = context;
+        }
 
-      protected URL getExactBeansURL()
-      {
-         try
-         {
-            URL url = context.getResource("/WEB-INF/" + BEAN_CLASSES);
+        protected URL getExactBeansURL() {
+            try {
+                URL url = context.getResource("/WEB-INF/" + BEAN_CLASSES);
+                if (url == null)
+                    url = getClassLoader().getResource(BEAN_CLASSES);
+
+                return url;
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void scanResources(String[] resources, Set<String> classes, Set<URL> urls) {
+            URL url = getExactBeansURL();
             if (url == null)
-               url = getClassLoader().getResource(BEAN_CLASSES);
+                throw new IllegalArgumentException("Missing exact beans resource: " + BEAN_CLASSES);
 
-            return url;
-         }
-         catch (MalformedURLException e)
-         {
-            throw new RuntimeException(e);
-         }
-      }
-
-      @Override
-      public void scanResources(String[] resources, Set<String> classes, Set<URL> urls)
-      {
-         URL url = getExactBeansURL();
-         if (url == null)
-            throw new IllegalArgumentException("Missing exact beans resource: " + BEAN_CLASSES);
-
-         try
-         {
-            InputStream is = url.openStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            try
-            {
-               String line;
-               while((line = reader.readLine()) != null)
-               {
-                  // ignore comments
-                  if (line.startsWith("#") == false)
-                     classes.add(line);
-               }
+            try {
+                InputStream is = url.openStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                try {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        // ignore comments
+                        if (line.startsWith("#") == false)
+                            classes.add(line);
+                    }
+                } finally {
+                    try {
+                        is.close();
+                    } catch (IOException ignore) {
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            finally
-            {
-               try
-               {
-                  is.close();
-               }
-               catch (IOException ignore)
-               {
-               }
-            }
-         }
-         catch (Exception e)
-         {
-            throw new RuntimeException(e);
-         }
-      }
-   }
+        }
+    }
 }

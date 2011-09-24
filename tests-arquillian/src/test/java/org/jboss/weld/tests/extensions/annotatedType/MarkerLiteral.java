@@ -18,11 +18,11 @@ package org.jboss.weld.tests.extensions.annotatedType;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-public class MarkerLiteral extends AnnotationLiteral<Marker> implements Marker
-{
-   
-   public static final Marker INSTANCE = new MarkerLiteral();
-   
-   private MarkerLiteral() {}
-   
+public class MarkerLiteral extends AnnotationLiteral<Marker> implements Marker {
+
+    public static final Marker INSTANCE = new MarkerLiteral();
+
+    private MarkerLiteral() {
+    }
+
 }

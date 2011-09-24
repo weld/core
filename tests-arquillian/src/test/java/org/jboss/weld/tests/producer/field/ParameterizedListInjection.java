@@ -16,45 +16,38 @@
  */
 package org.jboss.weld.tests.producer.field;
 
+import javax.inject.Inject;
 import java.util.List;
 
-import javax.inject.Inject;
+public class ParameterizedListInjection {
 
-public class ParameterizedListInjection
-{
+    private List<String> value;
 
-   private List<String> value;
+    @Inject
+    private List<String> fieldInjection;
 
-   @Inject
-   private List<String> fieldInjection;
+    private List<String> setterInjection;
 
-   private List<String> setterInjection;
+    @Inject
+    public void init(List<String> setterInjection) {
+        this.setterInjection = setterInjection;
+    }
 
-   @Inject
-   public void init(List<String> setterInjection)
-   {
-      this.setterInjection = setterInjection;
-   }
+    @Inject
+    public ParameterizedListInjection(List<String> com) {
+        this.value = com;
+    }
 
-   @Inject
-   public ParameterizedListInjection(List<String> com)
-   {
-      this.value = com;
-   }
+    public java.util.List<String> getValue() {
+        return value;
+    }
 
-   public java.util.List<String> getValue()
-   {
-      return value;
-   }
+    public List<String> getFieldInjection() {
+        return fieldInjection;
+    }
 
-   public List<String> getFieldInjection()
-   {
-      return fieldInjection;
-   }
-
-   public List<String> getSetterInjection()
-   {
-      return setterInjection;
-   }
+    public List<String> getSetterInjection() {
+        return setterInjection;
+    }
 
 }

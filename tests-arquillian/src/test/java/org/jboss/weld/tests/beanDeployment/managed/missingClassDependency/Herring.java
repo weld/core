@@ -4,7 +4,6 @@ import javax.inject.Named;
 
 // The interface Fish doesn't get deployed
 @Named
-public class Herring implements Fish
-{
+public class Herring implements Fish {
 
 }

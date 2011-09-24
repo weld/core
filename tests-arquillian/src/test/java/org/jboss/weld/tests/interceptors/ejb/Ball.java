@@ -23,10 +23,9 @@ import javax.ejb.Local;
  * @author Marius Bogoevici
  */
 @Local
-public interface Ball
-{
+public interface Ball {
 
-   void shoot();
+    void shoot();
 
-   void pass();
+    void pass();
 }

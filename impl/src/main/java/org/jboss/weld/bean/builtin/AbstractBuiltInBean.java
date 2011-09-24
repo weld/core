@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -32,119 +26,102 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.collections.Arrays2;
 
-public abstract class AbstractBuiltInBean<T> extends RIBean<T>
-{
-   
-   private static final String ID_PREFIX = "Built-in";
-   private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet( DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE );
-   private boolean proxyRequired;
-   
-   protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl beanManager)
-   {
-      super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), beanManager);
-   }
-   
-   @Override
-   public void initialize(BeanDeployerEnvironment environment)
-   {
-      if (getScope() != null)
-      {
-         proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
-      }
-      else
-      {
-         proxyRequired = false;
-      }
-   }
+import javax.enterprise.context.Dependent;
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.Set;
 
-   @Override
-   public void cleanupAfterBoot()
-   {
-      // No-op
-   }
+public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
-   @Override
-   public void initializeAfterBeanDiscovery()
-   {
-      // No-op  
-   }
-   
-   public Set<Annotation> getQualifiers()
-   {
-      return DEFAULT_QUALIFIERS;
-   }
-   
-   public Class<? extends Annotation> getScope()
-   {
-      return Dependent.class;
-   }
-   
-   @Override
-   public RIBean<?> getSpecializedBean()
-   {
-      return null;
-   }
-   
-   public String getName()
-   {
-      return null;
-   }
-   
-   public Set<Class<? extends Annotation>> getStereotypes()
-   {
-      return Collections.emptySet();
-   }
+    private static final String ID_PREFIX = "Built-in";
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
+    private boolean proxyRequired;
 
-   @Override
-   public Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints()
-   {
-      return Collections.emptySet();
-   }
-   
-   public boolean isNullable()
-   {
-      return true;
-   }
-   
-   @Override
-   public boolean isPrimitive()
-   {
-      return false;
-   }
-   
-   @Override
-   public boolean isSpecializing()
-   {
-      return false;
-   }
-   
-   public boolean isAlternative()
-   {
-      return false;
-   }
+    protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl beanManager) {
+        super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), beanManager);
+    }
 
-   @Override
-   public boolean isProxyable()
-   {
-      return true;
-   }
-   
-   @Override
-   public boolean isPassivationCapableBean()
-   {
-      return true;
-   }
-   
-   @Override
-   public boolean isPassivationCapableDependency()
-   {
-      return true;
-   }
-   
-   @Override
-   public boolean isProxyRequired()
-   {
-      return proxyRequired;
-   }
+    @Override
+    public void initialize(BeanDeployerEnvironment environment) {
+        if (getScope() != null) {
+            proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+        } else {
+            proxyRequired = false;
+        }
+    }
+
+    @Override
+    public void cleanupAfterBoot() {
+        // No-op
+    }
+
+    @Override
+    public void initializeAfterBeanDiscovery() {
+        // No-op
+    }
+
+    public Set<Annotation> getQualifiers() {
+        return DEFAULT_QUALIFIERS;
+    }
+
+    public Class<? extends Annotation> getScope() {
+        return Dependent.class;
+    }
+
+    @Override
+    public RIBean<?> getSpecializedBean() {
+        return null;
+    }
+
+    public String getName() {
+        return null;
+    }
+
+    public Set<Class<? extends Annotation>> getStereotypes() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints() {
+        return Collections.emptySet();
+    }
+
+    public boolean isNullable() {
+        return true;
+    }
+
+    @Override
+    public boolean isPrimitive() {
+        return false;
+    }
+
+    @Override
+    public boolean isSpecializing() {
+        return false;
+    }
+
+    public boolean isAlternative() {
+        return false;
+    }
+
+    @Override
+    public boolean isProxyable() {
+        return true;
+    }
+
+    @Override
+    public boolean isPassivationCapableBean() {
+        return true;
+    }
+
+    @Override
+    public boolean isPassivationCapableDependency() {
+        return true;
+    }
+
+    @Override
+    public boolean isProxyRequired() {
+        return proxyRequired;
+    }
 
 }

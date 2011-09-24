@@ -16,9 +16,8 @@
  */
 package org.jboss.weld.manager;
 
-public interface Transform<T>
-{
+public interface Transform<T> {
 
-   public Iterable<T> transform(BeanManagerImpl beanManager);
-   
+    public Iterable<T> transform(BeanManagerImpl beanManager);
+
 }

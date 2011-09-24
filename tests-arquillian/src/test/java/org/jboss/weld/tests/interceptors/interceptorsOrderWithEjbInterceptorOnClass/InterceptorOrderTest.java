@@ -32,30 +32,28 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class InterceptorOrderTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .intercept(CdiInterceptor.class)
-         .addPackage(InterceptorOrderTest.class.getPackage());
-   }
+public class InterceptorOrderTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .intercept(CdiInterceptor.class)
+                .addPackage(InterceptorOrderTest.class.getPackage());
+    }
 
-   @Test @Category(Integration.class)
-   public void testOrder(Processor processor)
-   {
-      Counter.count = 0;
-      SimpleProcessor.count = 0;
-      CdiInterceptor.count = 0;
-      EjbInterceptor.count = 0;
+    @Test
+    @Category(Integration.class)
+    public void testOrder(Processor processor) {
+        Counter.count = 0;
+        SimpleProcessor.count = 0;
+        CdiInterceptor.count = 0;
+        EjbInterceptor.count = 0;
 
-      int sum = processor.add(8, 13);
+        int sum = processor.add(8, 13);
 
-      Assert.assertEquals(21, sum);
-      Assert.assertEquals(1, EjbInterceptor.count);
-      Assert.assertEquals(2, CdiInterceptor.count);
-      Assert.assertEquals(3, SimpleProcessor.count);
-   }
+        Assert.assertEquals(21, sum);
+        Assert.assertEquals(1, EjbInterceptor.count);
+        Assert.assertEquals(2, CdiInterceptor.count);
+        Assert.assertEquals(3, SimpleProcessor.count);
+    }
 
 }

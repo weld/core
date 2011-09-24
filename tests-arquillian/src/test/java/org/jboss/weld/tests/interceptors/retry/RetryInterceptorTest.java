@@ -23,7 +23,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.tests.category.Broken;
-import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -33,27 +32,25 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class RetryInterceptorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .intercept(RetryInterceptor.class, SecuredInterceptor.class)
-         .addPackage(RetryInterceptorTest.class.getPackage());
-   }
+public class RetryInterceptorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .intercept(RetryInterceptor.class, SecuredInterceptor.class)
+                .addPackage(RetryInterceptorTest.class.getPackage());
+    }
 
-   @Test  @Category(Broken.class) // TODO -- fix this for AS7.1
-   public void testRetry(Processor processor)
-   {
-      FailingProcessor.intercepts = 0;
-      RetryInterceptor.invocationCount = 0;
-      System.out.println(processor);
-      Assert.assertEquals(3, processor.tryToProcess());
-      Assert.assertEquals(1, TransactionalInterceptor.invocationCount);
-      Assert.assertEquals(3, RetryInterceptor.invocationCount);
-      Assert.assertEquals(3, SecuredInterceptor.invocationCount);
-      Assert.assertEquals(3, FailingProcessor.intercepts);
-   }
+    @Test
+    @Category(Broken.class) // TODO -- fix this for AS7.1
+    public void testRetry(Processor processor) {
+        FailingProcessor.intercepts = 0;
+        RetryInterceptor.invocationCount = 0;
+        System.out.println(processor);
+        Assert.assertEquals(3, processor.tryToProcess());
+        Assert.assertEquals(1, TransactionalInterceptor.invocationCount);
+        Assert.assertEquals(3, RetryInterceptor.invocationCount);
+        Assert.assertEquals(3, SecuredInterceptor.invocationCount);
+        Assert.assertEquals(3, FailingProcessor.intercepts);
+    }
 
 }

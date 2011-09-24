@@ -16,58 +16,48 @@
  */
 package org.jboss.weld.metadata;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
+import org.jboss.weld.bootstrap.api.Service;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.weld.bootstrap.api.Service;
-
-import com.google.common.base.Supplier;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
-
 /**
  * @author pmuir
- *
  */
-public class TypeStore implements Service
-{
-   
-   private final SetMultimap<Class<? extends Annotation>, Annotation> extraAnnotations;
-   
-   public TypeStore()
-   {
-      this.extraAnnotations = Multimaps.synchronizedSetMultimap(Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>()
-      {
+public class TypeStore implements Service {
 
-         public Set<Annotation> get()
-         {
-            return new HashSet<Annotation>();
-         }
-         
-      }));
-   }
-   
-   public Set<Annotation> get(Class<? extends Annotation> annotationType)
-   {
-      return extraAnnotations.get(annotationType);
-   }
-   
-   public void add(Class<? extends Annotation> annotationType, Annotation annotation)
-   {
-      this.extraAnnotations.put(annotationType, annotation);
-   }
-   
-   public void addAll(Class<? extends Annotation> annotationType, Set<Annotation> annotations)
-   {
-      this.extraAnnotations.get(annotationType).addAll(annotations);
-   }
-   
-   public void cleanup() 
-   {
-      this.extraAnnotations.clear();
-   }
+    private final SetMultimap<Class<? extends Annotation>, Annotation> extraAnnotations;
+
+    public TypeStore() {
+        this.extraAnnotations = Multimaps.synchronizedSetMultimap(Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>() {
+
+            public Set<Annotation> get() {
+                return new HashSet<Annotation>();
+            }
+
+        }));
+    }
+
+    public Set<Annotation> get(Class<? extends Annotation> annotationType) {
+        return extraAnnotations.get(annotationType);
+    }
+
+    public void add(Class<? extends Annotation> annotationType, Annotation annotation) {
+        this.extraAnnotations.put(annotationType, annotation);
+    }
+
+    public void addAll(Class<? extends Annotation> annotationType, Set<Annotation> annotations) {
+        this.extraAnnotations.get(annotationType).addAll(annotations);
+    }
+
+    public void cleanup() {
+        this.extraAnnotations.clear();
+    }
 
 }

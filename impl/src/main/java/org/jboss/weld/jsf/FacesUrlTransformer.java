@@ -15,118 +15,94 @@
  * limitations under the License.
  */
 package org.jboss.weld.jsf;
+
 import javax.faces.context.FacesContext;
 
 /**
  * Helper class for preparing JSF URLs which include the conversation id.
- * 
+ * <p/>
  * TODO This class has the potential to be better designed to make it fit more use cases.
- * 
+ *
  * @author Nicklas Karlsson
  * @author Dan Allen
  */
-public class FacesUrlTransformer
-{
-   private static final String HTTP_PROTOCOL_URL_PREFIX = "http://";
-   private static final String HTTPS_PROTOCOL_URL_PREFIX = "https://";
-   private static final String QUERY_STRING_DELIMITER = "?";
-   private static final String PARAMETER_PAIR_DELIMITER = "&";
-   private static final String PARAMETER_ASSIGNMENT_OPERATOR = "=";
-   
-   private String url;
-   private final FacesContext context;
-   
-   public FacesUrlTransformer(String url, FacesContext facesContext)
-   {
-      this.url = url;
-      this.context = facesContext;
-   }
+public class FacesUrlTransformer {
+    private static final String HTTP_PROTOCOL_URL_PREFIX = "http://";
+    private static final String HTTPS_PROTOCOL_URL_PREFIX = "https://";
+    private static final String QUERY_STRING_DELIMITER = "?";
+    private static final String PARAMETER_PAIR_DELIMITER = "&";
+    private static final String PARAMETER_ASSIGNMENT_OPERATOR = "=";
 
-   public FacesUrlTransformer appendConversationIdIfNecessary(String cidParameterName, String cid)
-   {
-      this.url = appendParameterIfNeeded(url, cidParameterName, cid);
-      return this;
-   }
+    private String url;
+    private final FacesContext context;
 
-   private static String appendParameterIfNeeded(String url, String parameterName, String parameterValue)
-   {
-      int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
-      // if there is no query string or there is a query string but the param is
-      // absent, then append it
-      if (queryStringIndex < 0 || url.indexOf(parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0)
-      {
-         StringBuilder builder = new StringBuilder(url);
-         if (queryStringIndex < 0)
-         {
-            builder.append(QUERY_STRING_DELIMITER);
-         }
-         else
-         {
-            builder.append(PARAMETER_PAIR_DELIMITER);
-         }
-         builder.append(parameterName).append(PARAMETER_ASSIGNMENT_OPERATOR);
-         if (parameterValue != null)
-         {
-            builder.append(parameterValue);
-         }
-         return builder.toString();
-      }
-      else
-      {
-         return url;
-      }
-   }
-   
-   public String getUrl()
-   {
-      return url;
-   }
+    public FacesUrlTransformer(String url, FacesContext facesContext) {
+        this.url = url;
+        this.context = facesContext;
+    }
 
-   public FacesUrlTransformer toRedirectViewId()
-   {
-      String requestPath = context.getExternalContext().getRequestContextPath();
-      if (isUrlAbsolute())
-      {
-         url = url.substring(url.indexOf(requestPath) + requestPath.length());
-      }
-      else if (url.startsWith(requestPath))
-      {
-         url = url.substring(requestPath.length());
-      }
-      return this;
-   }
+    public FacesUrlTransformer appendConversationIdIfNecessary(String cidParameterName, String cid) {
+        this.url = appendParameterIfNeeded(url, cidParameterName, cid);
+        return this;
+    }
 
-   public FacesUrlTransformer toActionUrl()
-   {
-      int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
-      if (queryStringIndex < 0)
-      {
-         url = context.getApplication().getViewHandler().getActionURL(context, url);
-      }
-      else
-      {
-         String queryParameters = url.substring(queryStringIndex + 1);
-         String actionUrl = context.getApplication().getViewHandler().getActionURL(context, url);
-         if(actionUrl.indexOf(QUERY_STRING_DELIMITER) < 0)
-         {
-            url = actionUrl + QUERY_STRING_DELIMITER + queryParameters;
-         }
-         else
-         {
-            url = actionUrl + PARAMETER_PAIR_DELIMITER + queryParameters;
-         }
-      }
-      return this;
-   }
+    private static String appendParameterIfNeeded(String url, String parameterName, String parameterValue) {
+        int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
+        // if there is no query string or there is a query string but the param is
+        // absent, then append it
+        if (queryStringIndex < 0 || url.indexOf(parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0) {
+            StringBuilder builder = new StringBuilder(url);
+            if (queryStringIndex < 0) {
+                builder.append(QUERY_STRING_DELIMITER);
+            } else {
+                builder.append(PARAMETER_PAIR_DELIMITER);
+            }
+            builder.append(parameterName).append(PARAMETER_ASSIGNMENT_OPERATOR);
+            if (parameterValue != null) {
+                builder.append(parameterValue);
+            }
+            return builder.toString();
+        } else {
+            return url;
+        }
+    }
 
-   public String encode()
-   {
-      return context.getExternalContext().encodeActionURL(url);
-   }
-   
-   private boolean isUrlAbsolute()
-   {
-      // TODO: any API call to do this?
-      return url.startsWith(HTTP_PROTOCOL_URL_PREFIX) || url.startsWith(HTTPS_PROTOCOL_URL_PREFIX);
-   }
+    public String getUrl() {
+        return url;
+    }
+
+    public FacesUrlTransformer toRedirectViewId() {
+        String requestPath = context.getExternalContext().getRequestContextPath();
+        if (isUrlAbsolute()) {
+            url = url.substring(url.indexOf(requestPath) + requestPath.length());
+        } else if (url.startsWith(requestPath)) {
+            url = url.substring(requestPath.length());
+        }
+        return this;
+    }
+
+    public FacesUrlTransformer toActionUrl() {
+        int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
+        if (queryStringIndex < 0) {
+            url = context.getApplication().getViewHandler().getActionURL(context, url);
+        } else {
+            String queryParameters = url.substring(queryStringIndex + 1);
+            String actionUrl = context.getApplication().getViewHandler().getActionURL(context, url);
+            if (actionUrl.indexOf(QUERY_STRING_DELIMITER) < 0) {
+                url = actionUrl + QUERY_STRING_DELIMITER + queryParameters;
+            } else {
+                url = actionUrl + PARAMETER_PAIR_DELIMITER + queryParameters;
+            }
+        }
+        return this;
+    }
+
+    public String encode() {
+        return context.getExternalContext().encodeActionURL(url);
+    }
+
+    private boolean isUrlAbsolute() {
+        // TODO: any API call to do this?
+        return url.startsWith(HTTP_PROTOCOL_URL_PREFIX) || url.startsWith(HTTPS_PROTOCOL_URL_PREFIX);
+    }
 }

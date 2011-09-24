@@ -20,31 +20,26 @@ package org.jboss.weld.tests.interceptors.weld771;
 /**
  * @author Marius Bogoevici
  */
-public class SimpleBean
-{
-   private int notInterceptedInvocationCount = 0;
+public class SimpleBean {
+    private int notInterceptedInvocationCount = 0;
 
-   private int interceptedInvocationCount = 0;
+    private int interceptedInvocationCount = 0;
 
-   public int getNotInterceptedInvocationCount()
-   {
-      return notInterceptedInvocationCount;
-   }
+    public int getNotInterceptedInvocationCount() {
+        return notInterceptedInvocationCount;
+    }
 
-   public int getInterceptedInvocationCount()
-   {
-      return interceptedInvocationCount;
-   }
+    public int getInterceptedInvocationCount() {
+        return interceptedInvocationCount;
+    }
 
-   private final void notIntercepted()
-   {
-      notInterceptedInvocationCount ++;
-   }
+    private final void notIntercepted() {
+        notInterceptedInvocationCount++;
+    }
 
-   @Transactional
-   public void intercepted()
-   {
-      interceptedInvocationCount ++;
-      notIntercepted();
-   }
+    @Transactional
+    public void intercepted() {
+        interceptedInvocationCount++;
+        notIntercepted();
+    }
 }

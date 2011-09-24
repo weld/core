@@ -20,12 +20,11 @@ import org.jboss.weld.tests.NormalSuite;
 
 /**
  * Marker Interface for JUnit Category marking a Slow running test. <br/>
- * Used to exclude Integration and Performance tests from {@link NormalSuite} 
+ * Used to exclude Integration and Performance tests from {@link NormalSuite}
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public interface Slow
-{
+public interface Slow {
 
 }

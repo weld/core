@@ -17,54 +17,44 @@
 
 package org.jboss.weld.bean.proxy.util;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.serialization.spi.ProxyServices;
+
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * A default implementation of the {@link ProxyServices} which simply use the
  * corresponding information from the proxy type. An exception is made for
  * {@code java.*} and {@code javax.*} packages which are often associated with
  * the system classloader and a more privileged ProtectionDomain.
- * 
+ *
  * @author David Allen
  */
-public class SimpleProxyServices implements ProxyServices
-{
+public class SimpleProxyServices implements ProxyServices {
 
-   public ClassLoader getClassLoader(final Class<?> proxiedBeanType)
-   {
-      return proxiedBeanType.getClassLoader();
-   }
+    public ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
+        return proxiedBeanType.getClassLoader();
+    }
 
-   public void cleanup()
-   {
-      // This implementation requires no cleanup
+    public void cleanup() {
+        // This implementation requires no cleanup
 
-   }
+    }
 
-   @Deprecated
-   public Class<?> loadBeanClass(final String className)
-   {
-      try
-      {
-         return (Class<?>) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>()
-         {
-            public Object run() throws Exception
-            {
-               return Class.forName(className, true, getClassLoader(this.getClass()));
-            }
-         });
-      }
-      catch (PrivilegedActionException pae)
-      {
-         throw new WeldException(BeanMessage.CANNOT_LOAD_CLASS, className, pae.getException());
-      }
-   }
+    @Deprecated
+    public Class<?> loadBeanClass(final String className) {
+        try {
+            return (Class<?>) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                public Object run() throws Exception {
+                    return Class.forName(className, true, getClassLoader(this.getClass()));
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            throw new WeldException(BeanMessage.CANNOT_LOAD_CLASS, className, pae.getException());
+        }
+    }
 
 }

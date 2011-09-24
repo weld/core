@@ -20,7 +20,6 @@ import javax.interceptor.Interceptor;
 
 @Interceptor
 @IntBind
-public class Int
-{
+public class Int {
 
 }

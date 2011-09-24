@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,29 +27,28 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class ManagerProducerTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ManagerProducerTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class ManagerProducerTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ManagerProducerTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /*
+    /*
     * description = "WBRI-183"
     */
-   @Test
-   public void testInjectManagerProducer()
-   {
-      ManagerProducer.setInjectionPointInjected(false);
-      Utils.getReference(beanManager, IntInjection.class);
-      Assert.assertTrue(ManagerProducer.isInjectionPointInjected());
-   }
+    @Test
+    public void testInjectManagerProducer() {
+        ManagerProducer.setInjectionPointInjected(false);
+        Utils.getReference(beanManager, IntInjection.class);
+        Assert.assertTrue(ManagerProducer.isInjectionPointInjected());
+    }
 
 }

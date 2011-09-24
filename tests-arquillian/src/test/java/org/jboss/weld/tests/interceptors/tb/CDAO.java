@@ -25,7 +25,6 @@ package org.jboss.weld.tests.interceptors.tb;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public interface CDAO extends DAO<Client>
-{
-   Client checkClient(Long l);
+public interface CDAO extends DAO<Client> {
+    Client checkClient(Long l);
 }

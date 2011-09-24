@@ -16,14 +16,6 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner.Runnable;
@@ -37,179 +29,156 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
 @SuppressWarnings("unchecked")
-public class BeansXmlTest
-{
+public class BeansXmlTest {
 
-   private static Runner createRunner(String... beansXmls)
-   {
-      List<Class<?>> beanClasses = Arrays.asList(Alt.class, Dec.class, Int.class, Plain.class, IntBind.class);
-      List<URL> beansXmlsList = new ArrayList<URL>();
-      for (String beansXml : beansXmls)
-      {
-         beansXmlsList.add(BeansXmlTest.class.getResource(beansXml));
-      }
-      return new TestContainer.Runner(beansXmlsList, beanClasses);
-   }
+    private static Runner createRunner(String... beansXmls) {
+        List<Class<?>> beanClasses = Arrays.asList(Alt.class, Dec.class, Int.class, Plain.class, IntBind.class);
+        List<URL> beansXmlsList = new ArrayList<URL>();
+        for (String beansXml : beansXmls) {
+            beansXmlsList.add(BeansXmlTest.class.getResource(beansXml));
+        }
+        return new TestContainer.Runner(beansXmlsList, beanClasses);
+    }
 
-   // Multiple XML blocks
+    // Multiple XML blocks
 
-   @Test
-   public void testMultipleAlternativeBlocksFail()
-   {
-      createRunner("multipleAlternativeBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_ALTERNATIVES));
-   }
+    @Test
+    public void testMultipleAlternativeBlocksFail() {
+        createRunner("multipleAlternativeBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_ALTERNATIVES));
+    }
 
-   @Test
-   public void testMultipleDecoratorBlocksFail()
-   {
-      createRunner("multipleDecoratorBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_DECORATORS));
-   }
+    @Test
+    public void testMultipleDecoratorBlocksFail() {
+        createRunner("multipleDecoratorBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_DECORATORS));
+    }
 
-   @Test
-   public void testMultipleInterceptorBlocksFail()
-   {
-      createRunner("multipleInterceptorsBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_INTERCEPTORS));
-   }
+    @Test
+    public void testMultipleInterceptorBlocksFail() {
+        createRunner("multipleInterceptorsBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_INTERCEPTORS));
+    }
 
-   @Test
-   public void testAlternativesEnabled() throws Exception
-   {
-      createRunner("alternative.xml").run(new Runnable()
-      {
+    @Test
+    public void testAlternativesEnabled() throws Exception {
+        createRunner("alternative.xml").run(new Runnable() {
 
-         public void run(WeldManager beanManager)
-         {
-            Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-            assertEquals(1, enabled.getAlternativeClasses().size());
-            assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
-         }
+            public void run(WeldManager beanManager) {
+                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                assertEquals(1, enabled.getAlternativeClasses().size());
+                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+            }
 
-      });
-   }
+        });
+    }
 
-   @Test
-   public void testDecoratorsEnabled() throws Exception
-   {
-      createRunner("decorator.xml").run(new Runnable()
-      {
+    @Test
+    public void testDecoratorsEnabled() throws Exception {
+        createRunner("decorator.xml").run(new Runnable() {
 
-         public void run(WeldManager beanManager)
-         {
-            Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-            assertEquals(1, enabled.getDecorators().size());
-            assertEquals(Dec.class, enabled.getDecorators().iterator().next().getValue());
+            public void run(WeldManager beanManager) {
+                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                assertEquals(1, enabled.getDecorators().size());
+                assertEquals(Dec.class, enabled.getDecorators().iterator().next().getValue());
 
-         }
-      });
-   }
+            }
+        });
+    }
 
-   @Test
-   public void testInterceptorsEnabled() throws Exception
-   {
-      createRunner("interceptor.xml").run(new Runnable()
-      {
+    @Test
+    public void testInterceptorsEnabled() throws Exception {
+        createRunner("interceptor.xml").run(new Runnable() {
 
-         public void run(WeldManager beanManager)
-         {
-            Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-            assertEquals(1, enabled.getInterceptors().size());
-            assertEquals(Int.class, enabled.getInterceptors().iterator().next().getValue());
-         }
-      });
-   }
+            public void run(WeldManager beanManager) {
+                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                assertEquals(1, enabled.getInterceptors().size());
+                assertEquals(Int.class, enabled.getInterceptors().iterator().next().getValue());
+            }
+        });
+    }
 
-   @Test
-   public void testMergeBeansXmls() throws Exception
-   {
-      createRunner("alternative.xml", "decorator.xml", "interceptor.xml").run(new Runnable()
-      {
+    @Test
+    public void testMergeBeansXmls() throws Exception {
+        createRunner("alternative.xml", "decorator.xml", "interceptor.xml").run(new Runnable() {
 
-         public void run(WeldManager beanManager)
-         {
-            Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-            Assert.assertEquals(1, enabled.getAlternativeClasses().size());
-            Assert.assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
-            Assert.assertEquals(1, enabled.getInterceptors().size());
-            Assert.assertEquals(Int.class, enabled.getInterceptors().iterator().next().getValue());
-            Assert.assertEquals(1, enabled.getDecorators().size());
-            Assert.assertEquals(Dec.class, enabled.getDecorators().iterator().next().getValue());
-         }
-      });
-   }
+            public void run(WeldManager beanManager) {
+                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                Assert.assertEquals(1, enabled.getAlternativeClasses().size());
+                Assert.assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+                Assert.assertEquals(1, enabled.getInterceptors().size());
+                Assert.assertEquals(Int.class, enabled.getInterceptors().iterator().next().getValue());
+                Assert.assertEquals(1, enabled.getDecorators().size());
+                Assert.assertEquals(Dec.class, enabled.getDecorators().iterator().next().getValue());
+            }
+        });
+    }
 
-   @Test
-   public void testBeansXmlDoesntExist()
-   {
-      createRunner("nope.xml").runAndExpect(new IllegalStateException(XmlMessage.LOAD_ERROR));
-   }
+    @Test
+    public void testBeansXmlDoesntExist() {
+        createRunner("nope.xml").runAndExpect(new IllegalStateException(XmlMessage.LOAD_ERROR));
+    }
 
-   // WELD-467
-   @Test
-   public void testNamespacedBeansXml() throws Exception
-   {
-      createRunner("namespaced.xml").run(new Runnable()
-      {
+    // WELD-467
+    @Test
+    public void testNamespacedBeansXml() throws Exception {
+        createRunner("namespaced.xml").run(new Runnable() {
 
-         public void run(WeldManager beanManager)
-         {
-            Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-            assertEquals(1, enabled.getAlternativeClasses().size());
-            assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
-         }
-      });
-   }
+            public void run(WeldManager beanManager) {
+                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                assertEquals(1, enabled.getAlternativeClasses().size());
+                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+            }
+        });
+    }
 
-   // WELD-467
-   @Test
-   public void testNotDefaultNamespacedBeansXml() throws Exception
-   {
-      createRunner("nonDefaultNamespaced.xml").run(new Runnable()
-      {
+    // WELD-467
+    @Test
+    public void testNotDefaultNamespacedBeansXml() throws Exception {
+        createRunner("nonDefaultNamespaced.xml").run(new Runnable() {
 
-         public void run(WeldManager beanManager)
-         {
-            Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-            assertEquals(1, enabled.getAlternativeClasses().size());
-            assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
-         }
-      });
-   }
+            public void run(WeldManager beanManager) {
+                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                assertEquals(1, enabled.getAlternativeClasses().size());
+                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+            }
+        });
+    }
 
-   /*
+    /*
     * https://jira.jboss.org/jira/browse/WELD-362
     */
-   @Test
-   public void testNonPrettyPrintedXML() throws Exception
-   {
-      createRunner("nonPrettyPrinted.xml").run(new Runnable()
-      {
+    @Test
+    public void testNonPrettyPrintedXML() throws Exception {
+        createRunner("nonPrettyPrinted.xml").run(new Runnable() {
 
-         public void run(WeldManager beanManager)
-         {
-            Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-            assertEquals(1, enabled.getAlternativeClasses().size());
-            assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
-         }
-      });
-   }
+            public void run(WeldManager beanManager) {
+                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                assertEquals(1, enabled.getAlternativeClasses().size());
+                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+            }
+        });
+    }
 
-   @Test
-   public void testCannotLoadFile() throws MalformedURLException
-   {
-      createRunner("http://foo.bar/beans.xml").runAndExpect(new IllegalStateException(XmlMessage.LOAD_ERROR));
-   }
+    @Test
+    public void testCannotLoadFile() throws MalformedURLException {
+        createRunner("http://foo.bar/beans.xml").runAndExpect(new IllegalStateException(XmlMessage.LOAD_ERROR));
+    }
 
-   @Test
-   public void testParsingError()
-   {
-      createRunner("unparseable.xml").runAndExpect(new IllegalStateException(XmlMessage.PARSING_ERROR));
-   }
+    @Test
+    public void testParsingError() {
+        createRunner("unparseable.xml").runAndExpect(new IllegalStateException(XmlMessage.PARSING_ERROR));
+    }
 
-   @Test
-   public void testCannotLoadClass()
-   {
-      createRunner("unloadable.xml").runAndExpect(new ResourceLoadingException());
-   }
+    @Test
+    public void testCannotLoadClass() {
+        createRunner("unloadable.xml").runAndExpect(new ResourceLoadingException());
+    }
 
 }

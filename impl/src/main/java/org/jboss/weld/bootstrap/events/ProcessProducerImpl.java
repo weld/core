@@ -16,57 +16,49 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.Producer;
-
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
+import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.ProcessProducer;
+import javax.enterprise.inject.spi.Producer;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 
-public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessProducer<T, X>
-{
- 
-   public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean)
-   {
-      if (beanManager.isBeanEnabled(bean))
-      {
-         new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>>cast(bean.getWeldAnnotated()), bean) {}.fire();
-      }
-   }
-   
-   private final AnnotatedMember<T> annotatedMember;
-   private AbstractProducerBean<T, X, ?> bean;
 
-   public ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean)
-   {
-      super(beanManager, ProcessProducer.class, new Type[] { bean.getWeldAnnotated().getDeclaringType().getBaseType(), bean.getWeldAnnotated().getBaseType() });
-      this.bean = bean;
-      this.annotatedMember = annotatedMember;
-   }
+public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessProducer<T, X> {
 
-   public void addDefinitionError(Throwable t)
-   {
-      getErrors().add(t);
-   }
+    public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean) {
+        if (beanManager.isBeanEnabled(bean)) {
+            new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>>cast(bean.getWeldAnnotated()), bean) {
+            }.fire();
+        }
+    }
 
-   public AnnotatedMember<T> getAnnotatedMember()
-   {
-      return annotatedMember;
-   }
+    private final AnnotatedMember<T> annotatedMember;
+    private AbstractProducerBean<T, X, ?> bean;
 
-   public Producer<X> getProducer()
-   {
-      return bean.getProducer();
-   }
+    public ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean) {
+        super(beanManager, ProcessProducer.class, new Type[]{bean.getWeldAnnotated().getDeclaringType().getBaseType(), bean.getWeldAnnotated().getBaseType()});
+        this.bean = bean;
+        this.annotatedMember = annotatedMember;
+    }
 
-   public void setProducer(Producer<X> producer)
-   {
-      this.bean.setProducer(producer);
-   }
+    public void addDefinitionError(Throwable t) {
+        getErrors().add(t);
+    }
+
+    public AnnotatedMember<T> getAnnotatedMember() {
+        return annotatedMember;
+    }
+
+    public Producer<X> getProducer() {
+        return bean.getProducer();
+    }
+
+    public void setProducer(Producer<X> producer) {
+        this.bean.setProducer(producer);
+    }
 
 }

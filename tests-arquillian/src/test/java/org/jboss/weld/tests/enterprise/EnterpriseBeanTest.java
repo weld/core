@@ -17,11 +17,6 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import static org.junit.Assert.assertNotNull;
-
-import javax.ejb.EJBException;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -37,122 +32,109 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.ejb.EJBException;
+import javax.inject.Inject;
+
+import static org.junit.Assert.assertNotNull;
+
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EnterpriseBeanTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(EnterpriseBeanTest.class.getPackage())
-                  .addClass(Utils.class);
-   }
+public class EnterpriseBeanTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EnterpriseBeanTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /*
+    /*
     * description="WBRI-179"
     */
-   @Test
-   public void testSFSBWithOnlyRemoteInterfacesDeploys()
-   {
-      // TODO: Need implementation ?
-   }
+    @Test
+    public void testSFSBWithOnlyRemoteInterfacesDeploys() {
+        // TODO: Need implementation ?
+    }
 
-   /*
+    /*
     * description="WELD-326"
     */
-   @Test
-   public void testInvocationExceptionIsUnwrapped(Fedora fedora)
-   {
-      try
-      {
-         fedora.causeRuntimeException();
-      }
-      catch (Throwable t)
-      {
-         if (t instanceof EJBException && t.getCause() instanceof BowlerHatException)
-         {
-            return;
-         }
-      }
-      Assert.fail("Expected a BowlerHatException to be thrown");
-   }
+    @Test
+    public void testInvocationExceptionIsUnwrapped(Fedora fedora) {
+        try {
+            fedora.causeRuntimeException();
+        } catch (Throwable t) {
+            if (t instanceof EJBException && t.getCause() instanceof BowlerHatException) {
+                return;
+            }
+        }
+        Assert.fail("Expected a BowlerHatException to be thrown");
+    }
 
-   /*
+    /*
     * description="WBRI-275"
     */
-   @Test
-   public void testSLSBBusinessMethodThrowsRuntimeException(Fedora fedora)
-   {
-      try
-      {
-         fedora.causeRuntimeException();
-      }
-      catch (Throwable t)
-      {
-         if (Utils.isExceptionInHierarchy(t, BowlerHatException.class))
-         {
-            return;
-         }
-      }
-      Assert.fail("Expected a BowlerHatException to be in the cause stack");
-   }
+    @Test
+    public void testSLSBBusinessMethodThrowsRuntimeException(Fedora fedora) {
+        try {
+            fedora.causeRuntimeException();
+        } catch (Throwable t) {
+            if (Utils.isExceptionInHierarchy(t, BowlerHatException.class)) {
+                return;
+            }
+        }
+        Assert.fail("Expected a BowlerHatException to be in the cause stack");
+    }
 
-   /*
+    /*
     * description = "WELD-364"
     */
-   @Test
-   @Category(Broken.class)
-   public void testEJBRemoteInterfacesOkForObservers(Scottish scottish)
-   {
-      Feed feed = new Feed();
-      beanManager.fireEvent(feed);
-      Assert.assertEquals(feed, scottish.getFeed());
-   }
+    @Test
+    @Category(Broken.class)
+    public void testEJBRemoteInterfacesOkForObservers(Scottish scottish) {
+        Feed feed = new Feed();
+        beanManager.fireEvent(feed);
+        Assert.assertEquals(feed, scottish.getFeed());
+    }
 
-   /*
+    /*
     * description = "WELD-381"
     */
-   @Test
-   public void testGenericEJBWorks(ResultClient client)
-   {
-      Assert.assertEquals("pete", client.lookupPete().getUsername());
-   }
+    @Test
+    public void testGenericEJBWorks(ResultClient client) {
+        Assert.assertEquals("pete", client.lookupPete().getUsername());
+    }
 
-   /*
+    /*
     * description = "WELD-80"
     */
-   @Test
-   @Category(Broken.class)
-   public void testPassivationOfEjbs(HelloAction action)
-   {
-      action.executeRequest();
-      Assert.assertEquals("hello", action.getHello());
-      Assert.assertEquals("goodbye", action.getGoodBye());
-   }
+    @Test
+    @Category(Broken.class)
+    public void testPassivationOfEjbs(HelloAction action) {
+        action.executeRequest();
+        Assert.assertEquals("hello", action.getHello());
+        Assert.assertEquals("goodbye", action.getGoodBye());
+    }
 
-   /*
+    /*
     * description = "Simple test for no-interface views"
     */
-   @Test
-   @Category(Broken.class)
-   public void testNoInterfaceView(Castle castle)
-   {
-      castle.ping();
-      Assert.assertTrue(castle.isPinged());
-      Assert.assertTrue(Utils.getBean(beanManager, Castle.class) instanceof SessionBean<?>);
-   }
+    @Test
+    @Category(Broken.class)
+    public void testNoInterfaceView(Castle castle) {
+        castle.ping();
+        Assert.assertTrue(castle.isPinged());
+        Assert.assertTrue(Utils.getBean(beanManager, Castle.class) instanceof SessionBean<?>);
+    }
 
-   @Test
-   @Category(Broken.class)
-   // WELD-492
-   // ARQ-258
-   public void testImplementsEnterpriesBean(Grault grault)
-   {
-      assertNotNull(grault);
-   }
+    @Test
+    @Category(Broken.class)
+    // WELD-492
+    // ARQ-258
+    public void testImplementsEnterpriesBean(Grault grault) {
+        assertNotNull(grault);
+    }
 
 }

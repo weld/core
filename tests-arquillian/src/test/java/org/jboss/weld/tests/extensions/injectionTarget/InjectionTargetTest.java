@@ -38,66 +38,61 @@ import javax.inject.Inject;
 //@Category(Integration.class)
 @Category(Broken.class)
 @RunWith(Arquillian.class)
-public class InjectionTargetTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addAsModule(
-               ShrinkWrap.create(BeanArchive.class)
-                  .intercept(SecurityInterceptor.class)
-                  .decorate(AircraftDecorator.class)
-                  .addPackage(InjectionTargetTest.class.getPackage())
-                  .addClass(Utils.class)
-                  .addAsServiceProvider(Extension.class, InjectionTargetExtension.class)
-         );
-   }
+public class InjectionTargetTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                .addAsModule(
+                        ShrinkWrap.create(BeanArchive.class)
+                                .intercept(SecurityInterceptor.class)
+                                .decorate(AircraftDecorator.class)
+                                .addPackage(InjectionTargetTest.class.getPackage())
+                                .addClass(Utils.class)
+                                .addAsServiceProvider(Extension.class, InjectionTargetExtension.class)
+                );
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /*
+    /*
     * description = "WELD-557"
     */
-   @Test
-   public void testActualInstanceAndNotProxyPassedToInject()
-   {
-      InjectionTargetWrapper.clear();
-      Spitfire aircraft = Utils.getReference(beanManager, Spitfire.class);
-      aircraft.isFlying();
-      Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.injectInstance));
-   }
+    @Test
+    public void testActualInstanceAndNotProxyPassedToInject() {
+        InjectionTargetWrapper.clear();
+        Spitfire aircraft = Utils.getReference(beanManager, Spitfire.class);
+        aircraft.isFlying();
+        Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.injectInstance));
+    }
 
-   /*
+    /*
     * description = "WELD-557"
     */
-   @Test
-   public void testActualInstanceAndNotProxyPassedToPostConstruct()
-   {
-      InjectionTargetWrapper.clear();
-      Spitfire aircraft = Utils.getReference(beanManager, Spitfire.class);
-      aircraft.isFlying();
-      Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.postConstructInstance));
-   }
+    @Test
+    public void testActualInstanceAndNotProxyPassedToPostConstruct() {
+        InjectionTargetWrapper.clear();
+        Spitfire aircraft = Utils.getReference(beanManager, Spitfire.class);
+        aircraft.isFlying();
+        Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.postConstructInstance));
+    }
 
-   /*
+    /*
     * description = "WELD-557"
     */
-   //
-   @Test
-   public void testActualInstanceAndNotProxyPassedToPreDestroy()
-   {
-      // prepare instance
-      InjectionTargetWrapper.clear();
-      Bean<Spitfire> bean = Utils.getBean(beanManager, Spitfire.class);
-      CreationalContext<Spitfire> ctx =  beanManager.createCreationalContext(bean);
-      Spitfire aircraft = (Spitfire) beanManager.getReference(bean, Spitfire.class, ctx);
-      // invoke business method
-      aircraft.isFlying();
-      // destroy instance
-      bean.destroy(aircraft, ctx);
+    //
+    @Test
+    public void testActualInstanceAndNotProxyPassedToPreDestroy() {
+        // prepare instance
+        InjectionTargetWrapper.clear();
+        Bean<Spitfire> bean = Utils.getBean(beanManager, Spitfire.class);
+        CreationalContext<Spitfire> ctx = beanManager.createCreationalContext(bean);
+        Spitfire aircraft = (Spitfire) beanManager.getReference(bean, Spitfire.class, ctx);
+        // invoke business method
+        aircraft.isFlying();
+        // destroy instance
+        bean.destroy(aircraft, ctx);
 
-      Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.preDestroyInstance));
-   }
+        Assert.assertTrue(aircraft.isTheSameInstance(InjectionTargetWrapper.preDestroyInstance));
+    }
 }

@@ -22,13 +22,13 @@
 
 package org.jboss.weld.tests.interceptors.tb;
 
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -37,7 +37,6 @@ import javax.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Tx
-{
-   @Nonbinding int value() default 0;
+public @interface Tx {
+    @Nonbinding int value() default 0;
 }

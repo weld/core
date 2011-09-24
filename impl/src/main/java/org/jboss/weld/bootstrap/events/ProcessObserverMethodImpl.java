@@ -17,64 +17,55 @@
 
 package org.jboss.weld.bootstrap.events;
 
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
-
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.ProcessObserverMethod;
-
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.ProcessObserverMethod;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Implementation of the event used to notify observers for each observer
  * method that is added.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessObserverMethod<T, X>
-{
-   
-   public static <T, X> void fire(BeanManagerImpl beanManager, ObserverMethodImpl<T, X> observer)
-   {
-      if (beanManager.isBeanEnabled(observer.getDeclaringBean()))
-      {
-         new ProcessObserverMethodImpl<T, X>(beanManager, Reflections.<AnnotatedMethod<X>>cast(observer.getMethod()), observer) {}.fire();
-      }
-   }
-   
-   private final AnnotatedMethod<X>   beanMethod;
-   private final ObserverMethod<T> observerMethod;
-   
-   public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethodImpl<T, X> observerMethod)
-   {
-      super(beanManager, ProcessObserverMethod.class, new Type[] { observerMethod.getObservedType(), observerMethod.getMethod().getDeclaringType().getBaseType() });
-      this.beanMethod = beanMethod;
-      this.observerMethod = observerMethod;
-   }
+public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessObserverMethod<T, X> {
 
-   public void addDefinitionError(Throwable t)
-   {
-      getErrors().add(t);
-   }
+    public static <T, X> void fire(BeanManagerImpl beanManager, ObserverMethodImpl<T, X> observer) {
+        if (beanManager.isBeanEnabled(observer.getDeclaringBean())) {
+            new ProcessObserverMethodImpl<T, X>(beanManager, Reflections.<AnnotatedMethod<X>>cast(observer.getMethod()), observer) {
+            }.fire();
+        }
+    }
 
-   public AnnotatedMethod<X> getAnnotatedMethod()
-   {
-      return beanMethod;
-   }
+    private final AnnotatedMethod<X> beanMethod;
+    private final ObserverMethod<T> observerMethod;
 
-   public ObserverMethod<T> getObserverMethod()
-   {
-      return observerMethod;
-   }
-   
-   public List<Throwable> getDefinitionErrors()
-   {
-      return Collections.unmodifiableList(getErrors());
-   }
+    public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethodImpl<T, X> observerMethod) {
+        super(beanManager, ProcessObserverMethod.class, new Type[]{observerMethod.getObservedType(), observerMethod.getMethod().getDeclaringType().getBaseType()});
+        this.beanMethod = beanMethod;
+        this.observerMethod = observerMethod;
+    }
+
+    public void addDefinitionError(Throwable t) {
+        getErrors().add(t);
+    }
+
+    public AnnotatedMethod<X> getAnnotatedMethod() {
+        return beanMethod;
+    }
+
+    public ObserverMethod<T> getObserverMethod() {
+        return observerMethod;
+    }
+
+    public List<Throwable> getDefinitionErrors() {
+        return Collections.unmodifiableList(getErrors());
+    }
 
 }

@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.tests.activities.current;
 
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -35,66 +28,61 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+
 /**
- *
  * Spec version: 20090519
- *
  */
 @RunWith(Arquillian.class)
-public class InjectedManagerCurrentActivityTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(InjectedManagerCurrentActivityTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class InjectedManagerCurrentActivityTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(InjectedManagerCurrentActivityTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   private static class DummyContext implements Context
-   {
+    private static class DummyContext implements Context {
 
-      private boolean active = true;
+        private boolean active = true;
 
-      public <T> T get(Contextual<T> contextual)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual) {
+            return null;
+        }
 
-      public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+            return null;
+        }
 
-      public Class<? extends Annotation> getScope()
-      {
-         return Dummy.class;
-      }
+        public Class<? extends Annotation> getScope() {
+            return Dummy.class;
+        }
 
-      public boolean isActive()
-      {
-         return active;
-      }
+        public boolean isActive() {
+            return active;
+        }
 
-      public void setActive(boolean active)
-      {
-         this.active = active;
-      }
+        public void setActive(boolean active) {
+            this.active = active;
+        }
 
-   }
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testInjectedManagerIsCurrentActivity()
-   {
-      Context dummyContext = new DummyContext();
-      beanManager.addContext(dummyContext);
-      Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
-      WeldManager childActivity = beanManager.createActivity();
-      childActivity.setCurrent(dummyContext.getScope());
-      Assert.assertEquals(childActivity, Utils.getReference(beanManager, Horse.class).getManager());
-   }
+    @Test
+    public void testInjectedManagerIsCurrentActivity() {
+        Context dummyContext = new DummyContext();
+        beanManager.addContext(dummyContext);
+        Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
+        WeldManager childActivity = beanManager.createActivity();
+        childActivity.setCurrent(dummyContext.getScope());
+        Assert.assertEquals(childActivity, Utils.getReference(beanManager, Horse.class).getManager());
+    }
 
 }

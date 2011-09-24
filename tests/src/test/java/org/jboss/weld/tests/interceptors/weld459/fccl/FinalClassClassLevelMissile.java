@@ -17,7 +17,7 @@
 package org.jboss.weld.tests.interceptors.weld459.fccl;
 
 @FooBinding
-public final class FinalClassClassLevelMissile
-{
-   public void fire() {}
+public final class FinalClassClassLevelMissile {
+    public void fire() {
+    }
 }

@@ -19,36 +19,31 @@ package org.jboss.weld.tests.unit.security;
 /**
  * A test object which has some private members that we try to access with
  * reflection in {@link ReflectionTest}.
- * 
+ *
  * @author Pete Muir
- * 
  */
-public class TestObject extends SuperTestObject
-{
-   @SuppressWarnings("unused")
-   private String privateField;
-   public String publicField;
+public class TestObject extends SuperTestObject {
+    @SuppressWarnings("unused")
+    private String privateField;
+    public String publicField;
 
-   @SuppressWarnings("unused")
-   private TestObject(String test)
-   {
-   }
+    @SuppressWarnings("unused")
+    private TestObject(String test) {
+    }
 
-   public TestObject()
-   {
-   };
+    public TestObject() {
+    }
 
-   public TestObject(Integer test)
-   {
-   }
+    ;
 
-   @SuppressWarnings("unused")
-   private void privateTest(String test)
-   {
-   }
+    public TestObject(Integer test) {
+    }
 
-   public String publicTest(String test)
-   {
-      return "foo";
-   }
+    @SuppressWarnings("unused")
+    private void privateTest(String test) {
+    }
+
+    public String publicTest(String test) {
+        return "foo";
+    }
 }

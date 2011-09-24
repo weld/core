@@ -20,12 +20,10 @@ package org.jboss.weld.tests.interceptors.interceptorsOrderWithEjbInterceptorOnM
 /**
  * @author Marius Bogoevici
  */
-public class Counter
-{
-   static int count;
+public class Counter {
+    static int count;
 
-   public static int next()
-   {
-      return ++count;
-   }
+    public static int next() {
+        return ++count;
+    }
 }

@@ -25,17 +25,15 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @Decorator
-public class StringPartialDecorator implements Decorated<String>
-{
-   @Inject
-   @Delegate
-   GenericBean<String> delegate;
+public class StringPartialDecorator implements Decorated<String> {
+    @Inject
+    @Delegate
+    GenericBean<String> delegate;
 
-   static boolean invoked = false;
+    static boolean invoked = false;
 
-   public String decoratedEcho(String parameter)
-   {
-      invoked = true;
-      return delegate.decoratedEcho(parameter);
-   }
+    public String decoratedEcho(String parameter) {
+        invoked = true;
+        return delegate.decoratedEcho(parameter);
+    }
 }

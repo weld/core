@@ -26,49 +26,42 @@ import java.util.List;
  * Exception message that produces a list of exceptions and their stack traces
  * for logging.  This is typically used in lifecycle events which accumulate
  * exceptions across observers.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public class WeldExceptionListMessage implements WeldExceptionMessage, Serializable
-{
+public class WeldExceptionListMessage implements WeldExceptionMessage, Serializable {
 
-   private static final long serialVersionUID = 3445187707771082346L;
+    private static final long serialVersionUID = 3445187707771082346L;
 
-   private List<Throwable> causes;
-   private String message;
+    private List<Throwable> causes;
+    private String message;
 
-   public WeldExceptionListMessage(List<Throwable> throwables)
-   {
-      this.causes = throwables;
-   }
+    public WeldExceptionListMessage(List<Throwable> throwables) {
+        this.causes = throwables;
+    }
 
-   public String getAsString()
-   {
-      if (message == null)
-      {
-         generateMessage();
-      }
-      return message;
-   }
+    public String getAsString() {
+        if (message == null) {
+            generateMessage();
+        }
+        return message;
+    }
 
-   private void generateMessage()
-   {
-      StringWriter writer = new StringWriter();
-      PrintWriter messageBuffer = new PrintWriter(writer);
-      messageBuffer.print("Exception List with ");
-      messageBuffer.print(causes.size());
-      messageBuffer.print(" exceptions:\n");
-      int i = 0;
-      for (Throwable throwable : causes)
-      {
-         messageBuffer.print("Exception ");
-         messageBuffer.print(i);
-         messageBuffer.print(" :\n");
-         throwable.printStackTrace(messageBuffer);
-      }
-      messageBuffer.flush();
-      message = writer.toString();
-   }
+    private void generateMessage() {
+        StringWriter writer = new StringWriter();
+        PrintWriter messageBuffer = new PrintWriter(writer);
+        messageBuffer.print("Exception List with ");
+        messageBuffer.print(causes.size());
+        messageBuffer.print(" exceptions:\n");
+        int i = 0;
+        for (Throwable throwable : causes) {
+            messageBuffer.print("Exception ");
+            messageBuffer.print(i);
+            messageBuffer.print(" :\n");
+            throwable.printStackTrace(messageBuffer);
+        }
+        messageBuffer.flush();
+        message = writer.toString();
+    }
 
 }

@@ -16,39 +16,35 @@
  */
 package org.jboss.weld.util.collections;
 
+import com.google.common.collect.ForwardingList;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import com.google.common.collect.ForwardingList;
-
 
 /**
  * An Enumeration -> List adaptor
- *  
+ *
  * @author Pete Muir
  */
-public class EnumerationList<T> extends ForwardingList<T>
-{
-   // The enumeration as a list
-   private final List<T> list = new ArrayList<T>();
-   
-   /**
-    * Constructor
-    * 
-    * @param enumeration The enumeration
-    */
-   public EnumerationList(Enumeration<T> enumeration)
-   {
-      while (enumeration.hasMoreElements())
-      {
-         list.add(enumeration.nextElement());
-      }
-   }
+public class EnumerationList<T> extends ForwardingList<T> {
+    // The enumeration as a list
+    private final List<T> list = new ArrayList<T>();
 
-   @Override
-   protected List<T> delegate()
-   {
-      return list;
-   }
+    /**
+     * Constructor
+     *
+     * @param enumeration The enumeration
+     */
+    public EnumerationList(Enumeration<T> enumeration) {
+        while (enumeration.hasMoreElements()) {
+            list.add(enumeration.nextElement());
+        }
+    }
+
+    @Override
+    protected List<T> delegate() {
+        return list;
+    }
 }

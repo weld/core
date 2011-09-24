@@ -22,9 +22,8 @@ import javax.enterprise.inject.spi.InterceptionType;
 /**
  * @author Marius Bogoevici
  */
-public interface InterceptorResolvable extends Resolvable
-{
+public interface InterceptorResolvable extends Resolvable {
 
-   InterceptionType getInterceptionType();
+    InterceptionType getInterceptionType();
 
 }

@@ -21,36 +21,32 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
-
 /**
  * Exposes {@link Theme} as a list
- * 
- * @author Pete Muir
  *
+ * @author Pete Muir
  */
 @ApplicationScoped
-public class ThemeManager
-{
-     
-   // The supported themes
-   private final List<Theme> themes;
-      
-   public ThemeManager()
-   {
-      this.themes = Arrays.asList(Theme.values());
-   }
-   
-   @Produces @Named
-   public List<Theme> getThemes()
-   {
-      return Collections.unmodifiableList(themes);
-   }
-   
+public class ThemeManager {
+
+    // The supported themes
+    private final List<Theme> themes;
+
+    public ThemeManager() {
+        this.themes = Arrays.asList(Theme.values());
+    }
+
+    @Produces
+    @Named
+    public List<Theme> getThemes() {
+        return Collections.unmodifiableList(themes);
+    }
+
 }

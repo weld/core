@@ -13,45 +13,38 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.decorators;
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class SimpleBeanImpl implements SimpleBean
-{
+public class SimpleBeanImpl implements SimpleBean {
 
-   private boolean invoked  = false;
+    private boolean invoked = false;
 
-   public int echo1(int i)
-   {
-      invoked = true;
-      return i;
-   }
+    public int echo1(int i) {
+        invoked = true;
+        return i;
+    }
 
-   public int echo2(int i)
-   {
-      invoked = true;
-      return i;
-   }
+    public int echo2(int i) {
+        invoked = true;
+        return i;
+    }
 
-   public int echo3(int i)
-   {
-      invoked = true;
-      return i;
-   }
+    public int echo3(int i) {
+        invoked = true;
+        return i;
+    }
 
-   public int echo4(int i)
-   {
-      invoked = true;
-      return i;
-   }
+    public int echo4(int i) {
+        invoked = true;
+        return i;
+    }
 
-   public boolean isInvoked()
-   {
-      return invoked;
-   }
+    public boolean isInvoked() {
+        return invoked;
+    }
 }

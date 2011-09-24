@@ -16,26 +16,25 @@
  */
 package org.jboss.weld.ws;
 
-import java.lang.annotation.Annotation;
-
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
 
-public class WSApiAbstraction extends ApiAbstraction implements Service
-{
+import java.lang.annotation.Annotation;
 
-   public final Class<? extends Annotation> WEB_SERVICE_REF_ANNOTATION_CLASS;
+public class WSApiAbstraction extends ApiAbstraction implements Service {
 
-   /**
-    * @param resourceLoader
-    */
-   public WSApiAbstraction(ResourceLoader resourceLoader)
-   {
-      super(resourceLoader);
-      WEB_SERVICE_REF_ANNOTATION_CLASS = annotationTypeForName("javax.xml.ws.WebServiceRef");
-   }
-   
-   public void cleanup() {}
-   
+    public final Class<? extends Annotation> WEB_SERVICE_REF_ANNOTATION_CLASS;
+
+    /**
+     * @param resourceLoader
+     */
+    public WSApiAbstraction(ResourceLoader resourceLoader) {
+        super(resourceLoader);
+        WEB_SERVICE_REF_ANNOTATION_CLASS = annotationTypeForName("javax.xml.ws.WebServiceRef");
+    }
+
+    public void cleanup() {
+    }
+
 }

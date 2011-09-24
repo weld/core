@@ -17,28 +17,26 @@
 
 package org.jboss.weld.logging.messages;
 
-import org.jboss.weld.logging.MessageId;
-
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
+import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.el")
 @LocaleData({
-   @Locale("en")
+        @Locale("en")
 })
 /**
  * Log messages for EL resolution.
- * 
+ *
  * Message IDs: 001000 - 001099
- * 
+ *
  * @author David Allen
  *
  */
-public enum ElMessage
-{
-   @MessageId("001000") RESOLUTION_ERROR,
-   @MessageId("001001") NULL_EXPRESSION_FACTORY,
-   @MessageId("001002") PROPERTY_LOOKUP,
-   @MessageId("001003") PROPERTY_RESOLVED;
+public enum ElMessage {
+    @MessageId("001000")RESOLUTION_ERROR,
+    @MessageId("001001")NULL_EXPRESSION_FACTORY,
+    @MessageId("001002")PROPERTY_LOOKUP,
+    @MessageId("001003")PROPERTY_RESOLVED;
 }

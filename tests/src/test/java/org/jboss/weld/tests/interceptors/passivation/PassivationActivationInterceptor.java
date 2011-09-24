@@ -17,47 +17,43 @@
 
 package org.jboss.weld.tests.interceptors.passivation;
 
-import java.io.Serializable;
-
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @PassivationActivation
-public class PassivationActivationInterceptor implements Serializable
-{
-   public static boolean prePassivateInvoked;
-   public static boolean postActivateInvoked;
+@Interceptor
+@PassivationActivation
+public class PassivationActivationInterceptor implements Serializable {
+    public static boolean prePassivateInvoked;
+    public static boolean postActivateInvoked;
 
-   public static String initialMessage;
+    public static String initialMessage;
 
-   public PassivationActivationInterceptor()
-   {
-      this.message = initialMessage;
-   }
+    public PassivationActivationInterceptor() {
+        this.message = initialMessage;
+    }
 
-   public static PassivationActivationInterceptor instance;
-   public String message = null;
+    public static PassivationActivationInterceptor instance;
+    public String message = null;
 
-   @PrePassivate
-   public void prePassivate(InvocationContext invocationContext) throws Exception
-   {
-      prePassivateInvoked = true;
-      invocationContext.proceed();
-      instance = this;
-   }
+    @PrePassivate
+    public void prePassivate(InvocationContext invocationContext) throws Exception {
+        prePassivateInvoked = true;
+        invocationContext.proceed();
+        instance = this;
+    }
 
 
-   @PostActivate
-   public void postActivate(InvocationContext invocationContext) throws Exception
-   {
-      postActivateInvoked = true;
-      invocationContext.proceed();
-      instance = this;
-   }
+    @PostActivate
+    public void postActivate(InvocationContext invocationContext) throws Exception {
+        postActivateInvoked = true;
+        invocationContext.proceed();
+        instance = this;
+    }
 
 }

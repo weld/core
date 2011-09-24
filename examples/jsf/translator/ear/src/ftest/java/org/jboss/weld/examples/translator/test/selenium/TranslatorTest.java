@@ -21,8 +21,6 @@
  */
 package org.jboss.weld.examples.translator.test.selenium;
 
-import static org.testng.Assert.assertTrue;
-
 import org.jboss.test.selenium.AbstractTestCase;
 import org.jboss.test.selenium.guard.request.RequestTypeGuardFactory;
 import org.jboss.test.selenium.locator.IdLocator;
@@ -30,38 +28,36 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.jboss.test.selenium.locator.LocatorFactory.id;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Tests translator example in Weld
- * 
+ *
  * @author mgencur
  * @author plenyi
  */
-public class TranslatorTest extends AbstractTestCase
-{
-   protected String MAIN_PAGE = "/home.jsf";
-   protected IdLocator INPUT_AREA = id("TranslatorMain:text");
-   protected IdLocator TRANSLATE_BUTTON = id("TranslatorMain:button");
-   protected String ONE_SENTENCE = "This is only one sentence.";
-   protected String MORE_SENTENCES = "First sentence. Second and last sentence.";
-   protected String ONE_SENTENCE_TRANSLATED = "Lorem ipsum dolor sit amet.";
-   protected String MORE_SENTENCES_TRANSLATED = "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.";
+public class TranslatorTest extends AbstractTestCase {
+    protected String MAIN_PAGE = "/home.jsf";
+    protected IdLocator INPUT_AREA = id("TranslatorMain:text");
+    protected IdLocator TRANSLATE_BUTTON = id("TranslatorMain:button");
+    protected String ONE_SENTENCE = "This is only one sentence.";
+    protected String MORE_SENTENCES = "First sentence. Second and last sentence.";
+    protected String ONE_SENTENCE_TRANSLATED = "Lorem ipsum dolor sit amet.";
+    protected String MORE_SENTENCES_TRANSLATED = "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.";
 
-   @BeforeMethod
-   public void openStartUrl()
-   {
-      selenium.open(contextPath);
-      waitModel.until(elementPresent.locator(INPUT_AREA));
-   }
-   
-   @Test
-   public void translateTest()
-   {
-      selenium.type(INPUT_AREA, ONE_SENTENCE);
-      RequestTypeGuardFactory.waitHttp(selenium).click(TRANSLATE_BUTTON);
-      assertTrue(selenium.isTextPresent(ONE_SENTENCE_TRANSLATED), "One sentence translated into latin expected.");
-      selenium.type(INPUT_AREA, MORE_SENTENCES);
-      RequestTypeGuardFactory.waitHttp(selenium).click(TRANSLATE_BUTTON);
-      assertTrue(selenium.isTextPresent(MORE_SENTENCES_TRANSLATED), "More sentences translated into latin expected.");      
-   }
+    @BeforeMethod
+    public void openStartUrl() {
+        selenium.open(contextPath);
+        waitModel.until(elementPresent.locator(INPUT_AREA));
+    }
+
+    @Test
+    public void translateTest() {
+        selenium.type(INPUT_AREA, ONE_SENTENCE);
+        RequestTypeGuardFactory.waitHttp(selenium).click(TRANSLATE_BUTTON);
+        assertTrue(selenium.isTextPresent(ONE_SENTENCE_TRANSLATED), "One sentence translated into latin expected.");
+        selenium.type(INPUT_AREA, MORE_SENTENCES);
+        RequestTypeGuardFactory.waitHttp(selenium).click(TRANSLATE_BUTTON);
+        assertTrue(selenium.isTextPresent(MORE_SENTENCES_TRANSLATED), "More sentences translated into latin expected.");
+    }
 }

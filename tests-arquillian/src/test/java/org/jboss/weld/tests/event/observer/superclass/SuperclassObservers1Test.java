@@ -16,13 +16,7 @@
  */
 package org.jboss.weld.tests.event.observer.superclass;
 
-import static org.junit.Assert.assertNotNull;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import junit.framework.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,30 +25,32 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(Arquillian.class)
-public class SuperclassObservers1Test
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassObservers1Test.class.getPackage());
-   }
+public class SuperclassObservers1Test {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class).addPackage(SuperclassObservers1Test.class.getPackage());
+    }
 
-   @Inject
-   Event<TestEvent> event;
+    @Inject
+    Event<TestEvent> event;
 
-   @Inject
-   @ReEnabled
-   private ReEnabledTestObserver reenabled;
+    @Inject
+    @ReEnabled
+    private ReEnabledTestObserver reenabled;
 
-   @Test
-   public void testObserverMethodOnOverridesWithAnnotAreInvoked()
-   {
-      reenabled.reset();
+    @Test
+    public void testObserverMethodOnOverridesWithAnnotAreInvoked() {
+        reenabled.reset();
 
-      Assert.assertNull(reenabled.getTestEvent());
-      event.fire(new TestEvent());
-      assertNotNull(reenabled.getTestEvent());
-   }
+        Assert.assertNull(reenabled.getTestEvent());
+        event.fire(new TestEvent());
+        assertNotNull(reenabled.getTestEvent());
+    }
 
 }

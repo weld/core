@@ -16,14 +16,6 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -35,42 +27,44 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 @RunWith(Arquillian.class)
-public class NamedProducerTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(NamedProducerTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class NamedProducerTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(NamedProducerTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testNamedProducer()
-   {
-      Bean<?> iemonBean = beanManager.resolve(beanManager.getBeans("iemon"));
-      String[] iemon = (String[]) beanManager.getReference(iemonBean, Object.class, beanManager.createCreationalContext(iemonBean));
-      Assert.assertEquals(3, iemon.length);
-      Bean<?> itoenBean = beanManager.resolve(beanManager.getBeans("itoen"));
-      String[] itoen = (String[]) beanManager.getReference(itoenBean, Object.class, beanManager.createCreationalContext(itoenBean));
-      Assert.assertEquals(2, itoen.length);
-   }
+    @Test
+    public void testNamedProducer() {
+        Bean<?> iemonBean = beanManager.resolve(beanManager.getBeans("iemon"));
+        String[] iemon = (String[]) beanManager.getReference(iemonBean, Object.class, beanManager.createCreationalContext(iemonBean));
+        Assert.assertEquals(3, iemon.length);
+        Bean<?> itoenBean = beanManager.resolve(beanManager.getBeans("itoen"));
+        String[] itoen = (String[]) beanManager.getReference(itoenBean, Object.class, beanManager.createCreationalContext(itoenBean));
+        Assert.assertEquals(2, itoen.length);
+    }
 
-   @Test
-   public void testDefaultNamedProducerMethod()
-   {
-      Set<Bean<?>> beans = beanManager.getBeans(JmsTemplate.class);
-      Assert.assertEquals(2, beans.size());
-      List<String> beanNames = new ArrayList<String>(Arrays.asList("errorQueueTemplate", "logQueueTemplate"));
-      for (Bean<?> b : beans)
-      {
-         beanNames.remove(b.getName());
-      }
-      Assert.assertTrue(beanNames.isEmpty());
-   }
+    @Test
+    public void testDefaultNamedProducerMethod() {
+        Set<Bean<?>> beans = beanManager.getBeans(JmsTemplate.class);
+        Assert.assertEquals(2, beans.size());
+        List<String> beanNames = new ArrayList<String>(Arrays.asList("errorQueueTemplate", "logQueueTemplate"));
+        for (Bean<?> b : beans) {
+            beanNames.remove(b.getName());
+        }
+        Assert.assertTrue(beanNames.isEmpty());
+    }
 
 }

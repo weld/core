@@ -21,46 +21,42 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.util.List;
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 import javax.ejb.Local;
-
-import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import java.util.List;
 
 /**
  * Retrieval and addition of code fragments
- * 
+ *
  * @author Pete Muir
  * @author Martin Gencur
- * 
  */
 @Local
-public interface CodeFragmentManager
-{
-   /**
-    *  The number of code fragments to return in our recentCodeFragments query
-    */
-   public static final int MAX_RECENT_FRAGMENTS = 7;
-   
-   /**
-    * Add the code fragment, computing a hash for it's id if it is private,
-    * otherwise, using a sequential id
-    * 
-    */
-   public String addCodeFragment(CodeFragment code, boolean privateFragment);
+public interface CodeFragmentManager {
+    /**
+     * The number of code fragments to return in our recentCodeFragments query
+     */
+    public static final int MAX_RECENT_FRAGMENTS = 7;
 
-   /**
-    * Retrieve a code fragment, using it's id
-    */
-   public CodeFragment getCodeFragment(String id);
+    /**
+     * Add the code fragment, computing a hash for it's id if it is private,
+     * otherwise, using a sequential id
+     */
+    public String addCodeFragment(CodeFragment code, boolean privateFragment);
 
-   /**
-    * Get the {@value #MAX_RECENT_FRAGMENTS} most recent fragments
-    */
-   public List<CodeFragment> getRecentCodeFragments();
+    /**
+     * Retrieve a code fragment, using it's id
+     */
+    public CodeFragment getCodeFragment(String id);
 
-   /**
-    * Find code fragments by example. Supports paging.
-    */
-   public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator info);
+    /**
+     * Get the {@value #MAX_RECENT_FRAGMENTS} most recent fragments
+     */
+    public List<CodeFragment> getRecentCodeFragments();
+
+    /**
+     * Find code fragments by example. Supports paging.
+     */
+    public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator info);
 }

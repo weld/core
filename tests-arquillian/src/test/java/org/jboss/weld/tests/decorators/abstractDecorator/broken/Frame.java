@@ -25,17 +25,16 @@ import javax.inject.Inject;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @Decorator
-public abstract class Frame
-{
+public abstract class Frame {
 
-   @Inject @Delegate
-   Window window;
+    @Inject
+    @Delegate
+    Window window;
 
-   public void draw()
-   {
-      window.draw();
-   }
+    public void draw() {
+        window.draw();
+    }
 
-   public abstract void resize();
-   
+    public abstract void resize();
+
 }

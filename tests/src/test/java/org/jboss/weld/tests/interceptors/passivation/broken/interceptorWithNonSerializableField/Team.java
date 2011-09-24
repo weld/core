@@ -19,7 +19,6 @@ package org.jboss.weld.tests.interceptors.passivation.broken.interceptorWithNonS
 /**
  * @author Marius Bogoevici
  */
-public class Team
-{
-   
+public class Team {
+
 }

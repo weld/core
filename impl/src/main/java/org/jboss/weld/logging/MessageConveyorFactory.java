@@ -16,53 +16,45 @@
  */
 package org.jboss.weld.logging;
 
-import java.util.Locale;
-
 import ch.qos.cal10n.IMessageConveyor;
 
-public abstract class MessageConveyorFactory
-{
-   
-   private static MessageConveyorFactory INSTANCE;
-   
-   private static MessageConveyorFactory load()
-   {
-      return new WeldMessageConveyerFactory();
-   }
-   
-   public static MessageConveyorFactory messageConveyerFactory()
-   {
-      if (INSTANCE == null)
-      {
-         INSTANCE = load();
-      }
-      return INSTANCE;
-   }
-   
-   public static void cleanup()
-   {
-      INSTANCE = null;
-   }
-   
-   public static IMessageConveyor defaultMessageConveyer(String subsystem)
-   {
-      return messageConveyerFactory().getDefaultMessageConveyer(subsystem);
-   }
+import java.util.Locale;
 
-   /**
-    * Get the message conveyer for the default locale.
-    * 
-    * By default, Locale.getDefault() will be used as the locale, but a custom
-    * implementation of MessageConveyerFactory may choose to use an alternative
-    * locale.
-    * 
-    */
-   public abstract IMessageConveyor getDefaultMessageConveyer(String subsystem);
+public abstract class MessageConveyorFactory {
 
-   /**
-    * Get the message conveyer for the given locale.
-    * 
-    */
-   public abstract IMessageConveyor getMessageConveyer(Locale locale, String subsystem);
+    private static MessageConveyorFactory INSTANCE;
+
+    private static MessageConveyorFactory load() {
+        return new WeldMessageConveyerFactory();
+    }
+
+    public static MessageConveyorFactory messageConveyerFactory() {
+        if (INSTANCE == null) {
+            INSTANCE = load();
+        }
+        return INSTANCE;
+    }
+
+    public static void cleanup() {
+        INSTANCE = null;
+    }
+
+    public static IMessageConveyor defaultMessageConveyer(String subsystem) {
+        return messageConveyerFactory().getDefaultMessageConveyer(subsystem);
+    }
+
+    /**
+     * Get the message conveyer for the default locale.
+     * <p/>
+     * By default, Locale.getDefault() will be used as the locale, but a custom
+     * implementation of MessageConveyerFactory may choose to use an alternative
+     * locale.
+     */
+    public abstract IMessageConveyor getDefaultMessageConveyer(String subsystem);
+
+    /**
+     * Get the message conveyer for the given locale.
+     */
+    public abstract IMessageConveyor getMessageConveyer(Locale locale, String subsystem);
 
 }

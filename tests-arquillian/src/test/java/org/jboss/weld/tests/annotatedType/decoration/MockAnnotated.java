@@ -13,71 +13,59 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
 
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class MockAnnotated implements Annotated
-{
+public class MockAnnotated implements Annotated {
 
-   private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject 
-   {
-      
-      public static final Inject INSTANCE = new InjectLiteral();
-      
-   }
-   
-   private Annotated delegate;
-   
-   public MockAnnotated(Annotated delegate)
-   {
-      this.delegate = delegate;
-   }
+    private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject {
 
-   Annotated getDelegate()
-   {
-      return delegate;
-   }
-   
-   public Type getBaseType()
-   {
-      return delegate.getBaseType();
-   }
+        public static final Inject INSTANCE = new InjectLiteral();
 
-   public Set<Type> getTypeClosure()
-   {
-      return delegate.getTypeClosure();
-   }
+    }
 
-   public <T extends Annotation> T getAnnotation(Class<T> annotationType)
-   {
-      if (annotationType == Inject.class)
-      {
-         return (T) InjectLiteral.INSTANCE;
-      }
-      return null;
-   }
+    private Annotated delegate;
 
-   public Set<Annotation> getAnnotations()
-   {
-      return Collections.singleton((Annotation) InjectLiteral.INSTANCE);
-   }
+    public MockAnnotated(Annotated delegate) {
+        this.delegate = delegate;
+    }
 
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      return annotationType == Inject.class;
-   }
+    Annotated getDelegate() {
+        return delegate;
+    }
+
+    public Type getBaseType() {
+        return delegate.getBaseType();
+    }
+
+    public Set<Type> getTypeClosure() {
+        return delegate.getTypeClosure();
+    }
+
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+        if (annotationType == Inject.class) {
+            return (T) InjectLiteral.INSTANCE;
+        }
+        return null;
+    }
+
+    public Set<Annotation> getAnnotations() {
+        return Collections.singleton((Annotation) InjectLiteral.INSTANCE);
+    }
+
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return annotationType == Inject.class;
+    }
 }

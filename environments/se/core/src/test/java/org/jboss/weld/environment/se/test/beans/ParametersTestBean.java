@@ -17,42 +17,36 @@
 
 package org.jboss.weld.environment.se.test.beans;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.Serializable;
-import java.util.List;
+import org.jboss.weld.environment.se.bindings.Parameters;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.Serializable;
+import java.util.List;
 
-import org.jboss.weld.environment.se.bindings.Parameters;
+import static org.junit.Assert.assertNotNull;
 
 /**
- * 
  * @author Peter Royle
  */
 @ApplicationScoped
-public class ParametersTestBean implements Serializable
-{
+public class ParametersTestBean implements Serializable {
 
-   List<String> parameters;
+    List<String> parameters;
 
-   public ParametersTestBean()
-   {
-   }
+    public ParametersTestBean() {
+    }
 
-   @Inject
-   public ParametersTestBean(@Parameters List<String> params)
-   {
-      this.parameters = params;
-      // even if no args are given, it should will always at least be an empty
-      // array
-      assertNotNull(params);
-   }
+    @Inject
+    public ParametersTestBean(@Parameters List<String> params) {
+        this.parameters = params;
+        // even if no args are given, it should will always at least be an empty
+        // array
+        assertNotNull(params);
+    }
 
-   public List<String> getParameters()
-   {
-      return parameters;
-   }
+    public List<String> getParameters() {
+        return parameters;
+    }
 
 }

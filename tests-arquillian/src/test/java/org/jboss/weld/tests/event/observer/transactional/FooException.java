@@ -18,9 +18,7 @@ package org.jboss.weld.tests.event.observer.transactional;
 
 /**
  * @author pmuir
- *
  */
-public class FooException extends Exception
-{
+public class FooException extends Exception {
 
 }

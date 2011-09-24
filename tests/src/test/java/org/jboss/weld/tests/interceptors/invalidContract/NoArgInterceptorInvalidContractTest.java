@@ -24,11 +24,11 @@ import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
 /**
- * Test to verify that a DefinitionException is thrown when the defined Interceptor 
- * does not follow the defined contract. 
- * 
- *   "Around-invoke methods have the following signature: 
- *      Object <METHOD>(InvocationContext) throws Exception"
+ * Test to verify that a DefinitionException is thrown when the defined Interceptor
+ * does not follow the defined contract.
+ * <p/>
+ * "Around-invoke methods have the following signature:
+ * Object <METHOD>(InvocationContext) throws Exception"
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
@@ -36,10 +36,8 @@ import org.testng.annotations.Test;
 @ExpectedDeploymentException(DefinitionException.class)
 @Artifact
 @Classes({Intercept.class, Service.class, ServiceImpl.class, NoArgInterceptor.class})
-public class NoArgInterceptorInvalidContractTest extends AbstractWeldTest
-{
-   @Test(groups = "broken", description = "WELD-580")
-   public void shouldHaveThrownDefinitionException() throws Exception
-   {
-   }
+public class NoArgInterceptorInvalidContractTest extends AbstractWeldTest {
+    @Test(groups = "broken", description = "WELD-580")
+    public void shouldHaveThrownDefinitionException() throws Exception {
+    }
 }

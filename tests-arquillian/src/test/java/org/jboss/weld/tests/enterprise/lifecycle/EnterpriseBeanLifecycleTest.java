@@ -36,84 +36,80 @@ import javax.inject.Inject;
 
 /**
  * Sections
- *
+ * <p/>
  * 6.5. Lifecycle of stateful session beans
  * 6.6. Lifecycle of stateless session and singleton beans
  * 6.11. Lifecycle of EJBs
- *
+ * <p/>
  * Mostly overlapping with other tests...
  *
  * @author Nicklas Karlsson
  * @author David Allen
- *
- * Spec version: Public Release Draft 2
- *
+ *         <p/>
+ *         Spec version: Public Release Draft 2
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EnterpriseBeanLifecycleTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .decorate(AlarmedChickenHutch.class)
-                  .addPackage(EnterpriseBeanLifecycleTest.class.getPackage())
-                  .addClass(Utils.class);
-   }
+public class EnterpriseBeanLifecycleTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(AlarmedChickenHutch.class)
+                .addPackage(EnterpriseBeanLifecycleTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /**
-    * When the create() method of a Bean object that represents a stateful
-    * session bean that is called, the container creates and returns a session
-    * bean proxy, as defined in Section 3.3.9, "Session bean proxies".
-    */
-   @Test
-   public void testCreateSFSB(GrossStadt frankfurt)
-   {
-      Bean<KleinStadt> stadtBean = Utils.getBean(beanManager, KleinStadt.class);
-      Assert.assertNotNull("Expected a bean for stateful session bean Kassel", stadtBean);
-      CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
-      KleinStadt stadtInstance = stadtBean.create(creationalContext);
-      Assert.assertNotNull("Expected instance to be created by container", stadtInstance);
-      Assert.assertTrue("PostConstruct should be invoked when bean instance is created", frankfurt.isKleinStadtCreated());
-      frankfurt.resetCreatedFlags();
+    /**
+     * When the create() method of a Bean object that represents a stateful
+     * session bean that is called, the container creates and returns a session
+     * bean proxy, as defined in Section 3.3.9, "Session bean proxies".
+     */
+    @Test
+    public void testCreateSFSB(GrossStadt frankfurt) {
+        Bean<KleinStadt> stadtBean = Utils.getBean(beanManager, KleinStadt.class);
+        Assert.assertNotNull("Expected a bean for stateful session bean Kassel", stadtBean);
+        CreationalContext<KleinStadt> creationalContext = new MockCreationalContext<KleinStadt>();
+        KleinStadt stadtInstance = stadtBean.create(creationalContext);
+        Assert.assertNotNull("Expected instance to be created by container", stadtInstance);
+        Assert.assertTrue("PostConstruct should be invoked when bean instance is created", frankfurt.isKleinStadtCreated());
+        frankfurt.resetCreatedFlags();
 
-      // Create a second one to make sure create always does create a new session bean
-      KleinStadt anotherStadtInstance = stadtBean.create(creationalContext);
-      Assert.assertNotNull("Expected second instance of session bean", anotherStadtInstance);
-      Assert.assertTrue(frankfurt.isKleinStadtCreated());
-      Assert.assertNotSame("create() should not return same bean as before", anotherStadtInstance, stadtInstance);
+        // Create a second one to make sure create always does create a new session bean
+        KleinStadt anotherStadtInstance = stadtBean.create(creationalContext);
+        Assert.assertNotNull("Expected second instance of session bean", anotherStadtInstance);
+        Assert.assertTrue(frankfurt.isKleinStadtCreated());
+        Assert.assertNotSame("create() should not return same bean as before", anotherStadtInstance, stadtInstance);
 
-      // Verify that the instance returned is a proxy by checking for all local interfaces
-      Assert.assertTrue(stadtInstance instanceof KleinStadt);
-      Assert.assertTrue(stadtInstance instanceof SchoeneStadt);
-   }
+        // Verify that the instance returned is a proxy by checking for all local interfaces
+        Assert.assertTrue(stadtInstance instanceof KleinStadt);
+        Assert.assertTrue(stadtInstance instanceof SchoeneStadt);
+    }
 
-   @Test
-   public void testDestroyDoesntTryToRemoveSLSB()
-   {
-      Bean<BeanLocal> bean = Utils.getBean(beanManager, BeanLocal.class);
-      Assert.assertNotNull("Expected a bean for stateless session bean BeanLocal", bean);
-      CreationalContext<BeanLocal> creationalContext = beanManager.createCreationalContext(bean);
-      BeanLocal instance = bean.create(creationalContext);
-      bean.destroy(instance, creationalContext);
-   }
+    @Test
+    public void testDestroyDoesntTryToRemoveSLSB() {
+        Bean<BeanLocal> bean = Utils.getBean(beanManager, BeanLocal.class);
+        Assert.assertNotNull("Expected a bean for stateless session bean BeanLocal", bean);
+        CreationalContext<BeanLocal> creationalContext = beanManager.createCreationalContext(bean);
+        BeanLocal instance = bean.create(creationalContext);
+        bean.destroy(instance, creationalContext);
+    }
 
-   @Inject @MassProduced Instance<ChickenHutch> chickenHutchInstance;
+    @Inject
+    @MassProduced
+    Instance<ChickenHutch> chickenHutchInstance;
 
-   @Test
-   // WELD-556
-   public void testDecoratedSFSBsAreRemoved()
-   {
-      StandardChickenHutch.reset();
-      AlarmedChickenHutch.reset();
-      chickenHutchInstance.get();
-      assert StandardChickenHutch.isPing();
-      assert AlarmedChickenHutch.isPing();
-      assert StandardChickenHutch.isPredestroy();
-   }
+    @Test
+    // WELD-556
+    public void testDecoratedSFSBsAreRemoved() {
+        StandardChickenHutch.reset();
+        AlarmedChickenHutch.reset();
+        chickenHutchInstance.get();
+        assert StandardChickenHutch.isPing();
+        assert AlarmedChickenHutch.isPing();
+        assert StandardChickenHutch.isPredestroy();
+    }
 
 }

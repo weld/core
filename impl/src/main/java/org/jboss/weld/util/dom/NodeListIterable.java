@@ -16,24 +16,21 @@
  */
 package org.jboss.weld.util.dom;
 
-import java.util.Iterator;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class NodeListIterable implements Iterable<Node>
-{
-   
-   private final NodeList nodeList;
-   
-   public NodeListIterable(NodeList nodeList)
-   {
-      this.nodeList = nodeList;
-   }
+import java.util.Iterator;
 
-   public Iterator<Node> iterator()
-   {
-      return new NodeListIterator(nodeList);
-   }
-   
+public class NodeListIterable implements Iterable<Node> {
+
+    private final NodeList nodeList;
+
+    public NodeListIterable(NodeList nodeList) {
+        this.nodeList = nodeList;
+    }
+
+    public Iterator<Node> iterator() {
+        return new NodeListIterator(nodeList);
+    }
+
 }

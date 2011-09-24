@@ -21,13 +21,11 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.testng.annotations.Test;
 
-public class DiscoverFailsBootstrapTest
-{
-   
-   @Test(expectedExceptions = IllegalArgumentException.class)
-   public void testDiscoverFails()
-   {
-      Bootstrap bootstrap = new WeldBootstrap();
-      bootstrap.startContainer(Environments.SE, null);
-   }
+public class DiscoverFailsBootstrapTest {
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testDiscoverFails() {
+        Bootstrap bootstrap = new WeldBootstrap();
+        bootstrap.startContainer(Environments.SE, null);
+    }
 }

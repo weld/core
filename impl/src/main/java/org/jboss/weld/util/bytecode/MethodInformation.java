@@ -20,49 +20,47 @@ import java.lang.reflect.Method;
 
 /**
  * Data that is needed when working with a method in bytecode
- * 
+ *
  * @author Stuart Douglas
- * 
  */
-public interface MethodInformation
-{
+public interface MethodInformation {
 
-   /**
-    * The declaring class name in java dotted form (e.g. java.lang.String)
-    */
-   public String getDeclaringClass();
+    /**
+     * The declaring class name in java dotted form (e.g. java.lang.String)
+     */
+    public String getDeclaringClass();
 
-   /**
-    * This may return null if Method is not available yet
-    * 
-    */
-   public Method getMethod();
+    /**
+     * This may return null if Method is not available yet
+     */
+    public Method getMethod();
 
-   /**
-    * Gets the method descriptor
-    */
-   public String getDescriptor();
+    /**
+     * Gets the method descriptor
+     */
+    public String getDescriptor();
 
-   /**
-    * returns string representations of the parameter types
-    */
-   public String[] getParameterTypes();
+    /**
+     * returns string representations of the parameter types
+     */
+    public String[] getParameterTypes();
 
-   /**
-    * Gets the method return type, in descriptor format (e.g. Ljava/lang/String;
-    * )
-    */
-   public String getReturnType();
+    /**
+     * Gets the method return type, in descriptor format (e.g. Ljava/lang/String;
+     * )
+     */
+    public String getReturnType();
 
-   /**
-    * the method name
-    */
-   public String getName();
+    /**
+     * the method name
+     */
+    public String getName();
 
-   /**
-    * The method modifiers
-    * @return The modifiers
-    */
-   public int getModifiers();
+    /**
+     * The method modifiers
+     *
+     * @return The modifiers
+     */
+    public int getModifiers();
 
 }

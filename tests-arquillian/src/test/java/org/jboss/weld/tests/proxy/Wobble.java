@@ -16,17 +16,14 @@
  */
 package org.jboss.weld.tests.proxy;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @RequestScoped
-public class Wobble implements Serializable
-{
-   public Wobble getThis()
-   {
-      return this;
-   }
+public class Wobble implements Serializable {
+    public Wobble getThis() {
+        return this;
+    }
 }

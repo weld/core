@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.tests.beanDeployment.managed.multiple;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -35,40 +28,41 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RunWith(Arquillian.class)
-public class BootstrapTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(BootstrapTest.class.getPackage());
-   }
+public class BootstrapTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(BootstrapTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testMultipleSimpleBean()
-   {
-      List<Bean<?>> beans = beanManager.getBeans();
-      Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
-      for (Bean<?> bean : beans)
-      {
-         if (bean instanceof RIBean)
-         {
-            classes.put(((RIBean<?>) bean).getType(), bean);
-         }
-      }
-      Assert.assertTrue(classes.containsKey(Tuna.class));
-      Assert.assertTrue(classes.containsKey(Salmon.class));
-      Assert.assertTrue(classes.containsKey(SeaBass.class));
-      Assert.assertTrue(classes.containsKey(Sole.class));
+    @Test
+    public void testMultipleSimpleBean() {
+        List<Bean<?>> beans = beanManager.getBeans();
+        Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
+        for (Bean<?> bean : beans) {
+            if (bean instanceof RIBean) {
+                classes.put(((RIBean<?>) bean).getType(), bean);
+            }
+        }
+        Assert.assertTrue(classes.containsKey(Tuna.class));
+        Assert.assertTrue(classes.containsKey(Salmon.class));
+        Assert.assertTrue(classes.containsKey(SeaBass.class));
+        Assert.assertTrue(classes.containsKey(Sole.class));
 
-      Assert.assertTrue(classes.get(Tuna.class) instanceof ManagedBean);
-      Assert.assertTrue(classes.get(Salmon.class) instanceof ManagedBean);
-      Assert.assertTrue(classes.get(SeaBass.class) instanceof ManagedBean);
-      Assert.assertTrue(classes.get(Sole.class) instanceof ManagedBean);
-   }
+        Assert.assertTrue(classes.get(Tuna.class) instanceof ManagedBean);
+        Assert.assertTrue(classes.get(Salmon.class) instanceof ManagedBean);
+        Assert.assertTrue(classes.get(SeaBass.class) instanceof ManagedBean);
+        Assert.assertTrue(classes.get(Sole.class) instanceof ManagedBean);
+    }
 
 }

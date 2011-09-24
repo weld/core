@@ -32,12 +32,10 @@ import org.testng.annotations.Test;
 @BeansXml("beans.xml")
 @ExpectedDeploymentException(DeploymentException.class)
 @IntegrationTest
-public class InterceptorWithNonSerializableFieldOnPassivatingBean extends AbstractWeldTest
-{
-   @Test(groups="broken")
-   // TODO Needs the exception transformer to run in JBAS
-   public void testNonPassivatingField() throws Exception
-   {
-      assert false;
-   }
+public class InterceptorWithNonSerializableFieldOnPassivatingBean extends AbstractWeldTest {
+    @Test(groups = "broken")
+    // TODO Needs the exception transformer to run in JBAS
+    public void testNonPassivatingField() throws Exception {
+        assert false;
+    }
 }

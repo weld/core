@@ -18,12 +18,10 @@ package org.jboss.weld.tests.beanDeployment.circular;
 
 import javax.inject.Inject;
 
-class Farm
-{
-   
-   @Inject
-   public Farm(Farm farm)
-   {
-   }
-   
+class Farm {
+
+    @Inject
+    public Farm(Farm farm) {
+    }
+
 }

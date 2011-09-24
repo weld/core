@@ -19,11 +19,10 @@ package org.jboss.weld.tests.decorators.genericobserver;
 /**
  * Service
  *
+ * @param <T>
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
- * @param <T>
  */
-public interface Service<T> 
-{
-	void on(T dog);
+public interface Service<T> {
+    void on(T dog);
 }

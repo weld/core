@@ -16,6 +16,21 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
+
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Set;
+
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -26,186 +41,140 @@ import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.Set;
-
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
-
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.Arrays2;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-
 /**
- * 
  * Model of a binding type
- * 
+ *
  * @author Pete Muir
- * 
  */
-public class QualifierModel<T extends Annotation> extends AnnotationModel<T>
-{
-   private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
-   
-   private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Qualifier.class);
-   
-   // The non-binding types
-   private Set<WeldMethod<?, ?>> nonBindingMembers;
-   
+public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
+    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
-   /**
-    * Constructor
-    * 
-    * @param type The type
-    */
-   public QualifierModel(Class<T> type, ClassTransformer transformer)
-   {
-      super(type, transformer);
-   }
+    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Qualifier.class);
 
-   /**
-    * Initializes the non-binding types and validates the members
-    */
-   @Override
-   protected void init()
-   {
-      initNonBindingMembers();
-      super.init();
-   }
-   
-   @Override
-   protected void initValid()
-   {
-      super.initValid();
-      for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
-      {
-         if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingMembers.contains(annotatedMethod))
-         {
-            log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
-            super.valid = false;
-         }
-      }
-   }
+    // The non-binding types
+    private Set<WeldMethod<?, ?>> nonBindingMembers;
 
-   /**
-    * Validates the members
-    */
-   protected void check()
-   {
-      super.check();
-      if (isValid())
-      {
-         
-         if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class))
-         {
-            log.debug(MISSING_TARGET, getAnnotatedAnnotation());
-         }
-         else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE))
-         {
-            log.debug(MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE, getAnnotatedAnnotation());
-         }
-      }
-   }
 
-   /**
-    * Gets the meta-annotation type
-    * 
-    * @return The BindingType class
-    */
-   @Override
-   protected Set<Class<? extends Annotation>> getMetaAnnotationTypes() 
-   {
-      return META_ANNOTATIONS;
-   }
+    /**
+     * Constructor
+     *
+     * @param type The type
+     */
+    public QualifierModel(Class<T> type, ClassTransformer transformer) {
+        super(type, transformer);
+    }
 
-   /**
-    * Indicates if there are non-binding types present
-    * 
-    * @return True if present, false otherwise
-    */
-   public boolean hasNonBindingMembers()
-   {
-      return nonBindingMembers.size() > 0;
-   }
+    /**
+     * Initializes the non-binding types and validates the members
+     */
+    @Override
+    protected void init() {
+        initNonBindingMembers();
+        super.init();
+    }
 
-   /**
-    * Gets the non-binding types
-    * 
-    * @return A set of non-binding types, or an empty set if there are none
-    *         present
-    */
-   public Set<WeldMethod<?, ?>> getNonBindingMembers()
-   {
-      return nonBindingMembers;
-   }
-
-   /**
-    * Initializes the non-binding types
-    */
-   protected void initNonBindingMembers()
-   {
-      nonBindingMembers = getAnnotatedAnnotation().getMembers(Nonbinding.class);
-   }
-
-   /**
-    * Comparator for checking equality
-    * 
-    * @param instance The instance to check against
-    * @param other The other binding type
-    * @return True if equal, false otherwise
-    */
-   public boolean isEqual(Annotation instance, Annotation other)
-   {
-      if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType()))
-      {
-         for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers())
-         {
-            if (!nonBindingMembers.contains(annotatedMethod))
-            {
-               try
-               {
-                  Object thisValue = annotatedMethod.invoke(instance);
-                  Object thatValue = annotatedMethod.invoke(other);
-                  if (!thisValue.equals(thatValue))
-                  {
-                     return false;
-                  }
-               }
-               catch (IllegalArgumentException e)
-               {
-                  throw new WeldException(e);
-               }
-               catch (IllegalAccessException e)
-               {
-                  throw new WeldException(e);
-               }
-               catch (InvocationTargetException e)
-               {
-                  throw new WeldException(e);
-               }
-              
+    @Override
+    protected void initValid() {
+        super.initValid();
+        for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
+            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingMembers.contains(annotatedMethod)) {
+                log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
+                super.valid = false;
             }
-         }
-         return true;
-      }
-      return false;
-   }
+        }
+    }
 
-   /**
-    * Gets a string representation of the qualifier model
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String toString()
-   {
-     return (isValid() ? "Valid" : "Invalid") + " qualifer model for " + getRawType() + " with non-binding members " + getNonBindingMembers();
-   }
+    /**
+     * Validates the members
+     */
+    protected void check() {
+        super.check();
+        if (isValid()) {
+
+            if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class)) {
+                log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+            } else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE)) {
+                log.debug(MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE, getAnnotatedAnnotation());
+            }
+        }
+    }
+
+    /**
+     * Gets the meta-annotation type
+     *
+     * @return The BindingType class
+     */
+    @Override
+    protected Set<Class<? extends Annotation>> getMetaAnnotationTypes() {
+        return META_ANNOTATIONS;
+    }
+
+    /**
+     * Indicates if there are non-binding types present
+     *
+     * @return True if present, false otherwise
+     */
+    public boolean hasNonBindingMembers() {
+        return nonBindingMembers.size() > 0;
+    }
+
+    /**
+     * Gets the non-binding types
+     *
+     * @return A set of non-binding types, or an empty set if there are none
+     *         present
+     */
+    public Set<WeldMethod<?, ?>> getNonBindingMembers() {
+        return nonBindingMembers;
+    }
+
+    /**
+     * Initializes the non-binding types
+     */
+    protected void initNonBindingMembers() {
+        nonBindingMembers = getAnnotatedAnnotation().getMembers(Nonbinding.class);
+    }
+
+    /**
+     * Comparator for checking equality
+     *
+     * @param instance The instance to check against
+     * @param other    The other binding type
+     * @return True if equal, false otherwise
+     */
+    public boolean isEqual(Annotation instance, Annotation other) {
+        if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType())) {
+            for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
+                if (!nonBindingMembers.contains(annotatedMethod)) {
+                    try {
+                        Object thisValue = annotatedMethod.invoke(instance);
+                        Object thatValue = annotatedMethod.invoke(other);
+                        if (!thisValue.equals(thatValue)) {
+                            return false;
+                        }
+                    } catch (IllegalArgumentException e) {
+                        throw new WeldException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new WeldException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new WeldException(e);
+                    }
+
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets a string representation of the qualifier model
+     *
+     * @return The string representation
+     */
+    @Override
+    public String toString() {
+        return (isValid() ? "Valid" : "Invalid") + " qualifer model for " + getRawType() + " with non-binding members " + getNonBindingMembers();
+    }
 
 }

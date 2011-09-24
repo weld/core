@@ -17,49 +17,43 @@
 
 package org.jboss.weld.bean.proxy;
 
+import javassist.util.proxy.MethodHandler;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javassist.util.proxy.MethodHandler;
-
 /**
  * @author David Allen
  */
-public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implements Serializable
-{
-   private static final long   serialVersionUID = 2825052095047112162L;
+public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implements Serializable {
+    private static final long serialVersionUID = 2825052095047112162L;
 
-   private final Class<?>      beanType;
-   private final MethodHandler methodHandler;
+    private final Class<?> beanType;
+    private final MethodHandler methodHandler;
 
-   public EnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler)
-   {
-      this.beanType = baseType;
-      this.methodHandler = methodHandler;
-   }
+    public EnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler) {
+        this.beanType = baseType;
+        this.methodHandler = methodHandler;
+    }
 
-   public EnterpriseTargetBeanInstance(Set<Type> types, MethodHandler methodHandler)
-   {
-      this.beanType = computeInstanceType(types);
-      this.methodHandler = methodHandler;
-   }
+    public EnterpriseTargetBeanInstance(Set<Type> types, MethodHandler methodHandler) {
+        this.beanType = computeInstanceType(types);
+        this.methodHandler = methodHandler;
+    }
 
-   public Object getInstance()
-   {
-      return null;
-   }
+    public Object getInstance() {
+        return null;
+    }
 
-   public Class<?> getInstanceType()
-   {
-      return beanType;
-   }
+    public Class<?> getInstanceType() {
+        return beanType;
+    }
 
-   public Object invoke(Object instance, Method method, Object... arguments) throws Throwable
-   {
-      // Pass the invocation directly to the method handler
-      return methodHandler.invoke(null, method, method, arguments);
-   }
+    public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
+        // Pass the invocation directly to the method handler
+        return methodHandler.invoke(null, method, method, arguments);
+    }
 
 }

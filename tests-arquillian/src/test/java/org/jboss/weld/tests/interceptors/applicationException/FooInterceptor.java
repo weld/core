@@ -24,15 +24,14 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@FooBinding @Interceptor
-public class FooInterceptor
-{
-   public static int invocationCount;
+@FooBinding
+@Interceptor
+public class FooInterceptor {
+    public static int invocationCount;
 
-   @AroundInvoke
-   public Object doAround(InvocationContext context) throws Exception
-   {
-     invocationCount ++;
-     return context.proceed();
-   }
+    @AroundInvoke
+    public Object doAround(InvocationContext context) throws Exception {
+        invocationCount++;
+        return context.proceed();
+    }
 }

@@ -16,63 +16,52 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.SecureReflections;
+import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
 
 
 /**
  * An instantiator for sun.misc.Unsafe
- * 
- * @author Nicklas Karlsson
  *
+ * @author Nicklas Karlsson
  */
-public class UnsafeInstantiator implements Instantiator
-{
-   private static final String REFLECTION_CLASS_NAME = "sun.misc.Unsafe";
+public class UnsafeInstantiator implements Instantiator {
+    private static final String REFLECTION_CLASS_NAME = "sun.misc.Unsafe";
 
-   private Method allocateInstanceMethod = null;
-   private Object unsafeInstance = null;
+    private Method allocateInstanceMethod = null;
+    private Object unsafeInstance = null;
 
-   public UnsafeInstantiator()
-   {
-      try
-      {
-         Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);
-         Field accessor = unsafe.getDeclaredField("theUnsafe");
-         SecureReflections.ensureAccessible(accessor);
-         unsafeInstance = accessor.get(null);
-         allocateInstanceMethod = unsafe.getDeclaredMethod("allocateInstance", Class.class);
-      }
-      catch (Exception e)
-      {
-         // TODO Catch explicit subclasses
-         // OK to fail
-      }
-   }
+    public UnsafeInstantiator() {
+        try {
+            Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);
+            Field accessor = unsafe.getDeclaredField("theUnsafe");
+            SecureReflections.ensureAccessible(accessor);
+            unsafeInstance = accessor.get(null);
+            allocateInstanceMethod = unsafe.getDeclaredMethod("allocateInstance", Class.class);
+        } catch (Exception e) {
+            // TODO Catch explicit subclasses
+            // OK to fail
+        }
+    }
 
-   @SuppressWarnings("unchecked")
-   public <T> T instantiate(Class<T> clazz)
-   {
-      T instance = null;
-      try
-      {
-         instance = (T) allocateInstanceMethod.invoke(unsafeInstance, clazz);
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(UNSAFE_INSTANTIATION_FAILED, e, clazz);
-      }
-      return instance;
-   }
+    @SuppressWarnings("unchecked")
+    public <T> T instantiate(Class<T> clazz) {
+        T instance = null;
+        try {
+            instance = (T) allocateInstanceMethod.invoke(unsafeInstance, clazz);
+        } catch (Exception e) {
+            throw new WeldException(UNSAFE_INSTANTIATION_FAILED, e, clazz);
+        }
+        return instance;
+    }
 
-   public boolean isAvailable()
-   {
-      return allocateInstanceMethod != null && unsafeInstance != null;
-   }
+    public boolean isAvailable() {
+        return allocateInstanceMethod != null && unsafeInstance != null;
+    }
 
 }

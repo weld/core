@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.injectionTarget;
 
-interface Aircraft
-{
-   boolean isFlying();
+interface Aircraft {
+    boolean isFlying();
 }

@@ -21,11 +21,9 @@ package org.jboss.weld.tests.decorators.resolution;
  * @author Marius Bogoevici
  */
 @Simple
-public class SimpleBean implements SomeBean
-{
-   public String hello(String name)
-   {
-      return "Hello, " + name;
-   }
+public class SimpleBean implements SomeBean {
+    public String hello(String name) {
+        return "Hello, " + name;
+    }
 
 }

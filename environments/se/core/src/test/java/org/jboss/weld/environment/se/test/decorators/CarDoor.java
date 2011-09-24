@@ -18,7 +18,6 @@
 package org.jboss.weld.environment.se.test.decorators;
 
 /**
- *
  * @author Peter Royle
  */
 public class CarDoor extends AbstractDoor {
@@ -29,6 +28,7 @@ public class CarDoor extends AbstractDoor {
         isWindowOpen = true;
         return isWindowOpen;
     }
+
     public boolean closeWindow() {
         isWindowOpen = false;
         return isWindowOpen;

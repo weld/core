@@ -1,45 +1,38 @@
 package org.jboss.weld.context.beanstore.ejb;
 
-import java.util.Collection;
-
-import javax.interceptor.InvocationContext;
-
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 
-public class InvocationContextBeanStore extends AttributeBeanStore
-{
-   
-   private final InvocationContext ctx;
+import javax.interceptor.InvocationContext;
+import java.util.Collection;
 
-   public InvocationContextBeanStore(NamingScheme namingScheme, InvocationContext ctx)
-   {
-      super(namingScheme);
-      this.ctx = ctx;
-   }
+public class InvocationContextBeanStore extends AttributeBeanStore {
 
-   @Override
-   protected Object getAttribute(String prefixedId)
-   {
-      return ctx.getContextData().get(prefixedId);
-   }
+    private final InvocationContext ctx;
 
-   @Override
-   protected void removeAttribute(String prefixedId)
-   {
-      ctx.getContextData().remove(prefixedId);
-   }
+    public InvocationContextBeanStore(NamingScheme namingScheme, InvocationContext ctx) {
+        super(namingScheme);
+        this.ctx = ctx;
+    }
 
-   @Override
-   protected Collection<String> getAttributeNames()
-   {
-      return ctx.getContextData().keySet();
-   }
+    @Override
+    protected Object getAttribute(String prefixedId) {
+        return ctx.getContextData().get(prefixedId);
+    }
 
-   @Override
-   protected void setAttribute(String prefixedId, Object instance)
-   {
-      ctx.getContextData().put(prefixedId, instance);
-   }
+    @Override
+    protected void removeAttribute(String prefixedId) {
+        ctx.getContextData().remove(prefixedId);
+    }
+
+    @Override
+    protected Collection<String> getAttributeNames() {
+        return ctx.getContextData().keySet();
+    }
+
+    @Override
+    protected void setAttribute(String prefixedId, Object instance) {
+        ctx.getContextData().put(prefixedId, instance);
+    }
 
 }

@@ -16,61 +16,53 @@
  */
 package org.jboss.weld.injection;
 
-import java.io.Serializable;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
-public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<T, S>
-{
-   
-   static abstract class WeldInjectionPointSerializationProxy<T, S> implements Serializable
-   {
-      
-      private static final long serialVersionUID = -5488095196637387378L;
-      
-      private final String declaringBeanId;
-      private final Class<?> declaringClass;
-      
-      public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint)
-      {
-         this.declaringBeanId = 
-             injectionPoint.getBean() == null ? null : Container.instance().services().get(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
-         this.declaringClass = injectionPoint.getDeclaringType().getJavaClass();
-      }
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import java.io.Serializable;
 
-      protected Bean<T> getDeclaringBean()
-      {
-         return declaringBeanId == null ? null : Container.instance().services().get(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
-      }
-      
-      protected WeldClass<?> getDeclaringWeldClass()
-      {
-         return Container.instance().services().get(ClassTransformer.class).loadClass(declaringClass);
-      }
-      
-      protected String getDeclaringBeanId()
-      {
-         return declaringBeanId;
-      }
+public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<T, S> {
 
-   }
-   
-   public WeldClass<?> getDeclaringType();
-   
-   /**
-    * Injects an instance
-    * 
-    * 
-    * @param declaringInstance The instance to inject into
-    * @param value The value to inject
-    */
-   public void inject(Object declaringInstance, Object value);
-   
+    static abstract class WeldInjectionPointSerializationProxy<T, S> implements Serializable {
+
+        private static final long serialVersionUID = -5488095196637387378L;
+
+        private final String declaringBeanId;
+        private final Class<?> declaringClass;
+
+        public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint) {
+            this.declaringBeanId =
+                    injectionPoint.getBean() == null ? null : Container.instance().services().get(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
+            this.declaringClass = injectionPoint.getDeclaringType().getJavaClass();
+        }
+
+        protected Bean<T> getDeclaringBean() {
+            return declaringBeanId == null ? null : Container.instance().services().get(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
+        }
+
+        protected WeldClass<?> getDeclaringWeldClass() {
+            return Container.instance().services().get(ClassTransformer.class).loadClass(declaringClass);
+        }
+
+        protected String getDeclaringBeanId() {
+            return declaringBeanId;
+        }
+
+    }
+
+    public WeldClass<?> getDeclaringType();
+
+    /**
+     * Injects an instance
+     *
+     * @param declaringInstance The instance to inject into
+     * @param value             The value to inject
+     */
+    public void inject(Object declaringInstance, Object value);
+
 }

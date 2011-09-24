@@ -18,11 +18,9 @@ package org.jboss.weld.bean;
 
 /**
  * Marker interface for @New beans
- * 
- * @author Pete Muir
  *
+ * @author Pete Muir
  */
-public interface NewBean
-{
-   
+public interface NewBean {
+
 }

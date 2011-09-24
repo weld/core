@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.proxy;
 
-public interface Bar
-{
-   public String getMsg(int param1, long param2, double param3, boolean param4, char param5, float param7, short param8);
+public interface Bar {
+    public String getMsg(int param1, long param2, double param3, boolean param4, char param5, float param7, short param8);
 }

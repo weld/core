@@ -20,14 +20,11 @@ package org.jboss.weld.mock.cluster;
 /**
  * Class loader (CL) used during cluster tests so that proxies are not loaded into the
  * CL being used by the test framework.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public class ClusterClassLoader extends ClassLoader
-{
-   public ClusterClassLoader(ClassLoader parentClassLoader)
-   {
-      super(parentClassLoader);
-   }
+public class ClusterClassLoader extends ClassLoader {
+    public ClusterClassLoader(ClassLoader parentClassLoader) {
+        super(parentClassLoader);
+    }
 }

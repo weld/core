@@ -16,23 +16,21 @@
  */
 package org.jboss.weld.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedMember;
 import java.lang.reflect.Member;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
 /**
- * AnnotedMember provides enhanced access to an annotated member 
- * 
- * @author Pete Muir
+ * AnnotedMember provides enhanced access to an annotated member
  *
+ * @author Pete Muir
  */
-public interface WeldMember<T, X, S extends Member> extends WeldAnnotated<T, S>, AnnotatedMember<X>
-{
+public interface WeldMember<T, X, S extends Member> extends WeldAnnotated<T, S>, AnnotatedMember<X> {
 
-   /**
-    * Gets an abstraction of the declaring class
-    * 
-    * @return The declaring class
-    */
-   public WeldClass<X> getDeclaringType();
+    /**
+     * Gets an abstraction of the declaring class
+     *
+     * @return The declaring class
+     */
+    public WeldClass<X> getDeclaringType();
 
 }

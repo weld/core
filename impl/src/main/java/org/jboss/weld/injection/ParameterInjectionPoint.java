@@ -16,28 +16,7 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_READ_OBJECT;
-import static org.jboss.weld.logging.messages.BeanMessage.IP_NOT_CONSTRUCTOR_OR_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.PARAM_NOT_IN_PARAM_LIST;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Set;
-
-import javax.decorator.Delegate;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
@@ -51,208 +30,182 @@ import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import javax.decorator.Delegate;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.Set;
 
-public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>, Serializable
-{
+import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_READ_OBJECT;
+import static org.jboss.weld.logging.messages.BeanMessage.IP_NOT_CONSTRUCTOR_OR_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAM_NOT_IN_PARAM_LIST;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-   public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WeldParameter<T, X> parameter)
-   {
-      return new ParameterInjectionPoint<T, X>(declaringBean, parameter);
-   }
+public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>, Serializable {
 
-   @SuppressWarnings(value="SE_BAD_FIELD", justification="If the bean is not serializable, we won't ever try to serialize the injection point")
-   private final Bean<?> declaringBean;
-   private final WeldParameter<T, X> parameter;
-   private final boolean delegate;
-   private final boolean cacheable;
-   private Bean<?> cachedBean;
+    public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WeldParameter<T, X> parameter) {
+        return new ParameterInjectionPoint<T, X>(declaringBean, parameter);
+    }
 
-   private ParameterInjectionPoint(Bean<?> declaringBean, WeldParameter<T, X> parameter)
-   {
-      this.declaringBean = declaringBean;
-      this.parameter = parameter;
-      this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
-      this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(parameter.getJavaClass()) && !Instance.class.isAssignableFrom(parameter.getJavaClass());
-   }
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "If the bean is not serializable, we won't ever try to serialize the injection point")
+    private final Bean<?> declaringBean;
+    private final WeldParameter<T, X> parameter;
+    private final boolean delegate;
+    private final boolean cacheable;
+    private Bean<?> cachedBean;
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj instanceof ParameterInjectionPoint<?, ?>)
-      {
-         ParameterInjectionPoint<?, ?> ip = (ParameterInjectionPoint<?, ?>) obj;
-         if (parameter.getDeclaringWeldCallable().getJavaMember().equals(ip.parameter.getDeclaringWeldCallable().getJavaMember()) && parameter.getAnnotations().equals(ip.parameter.getAnnotations()) && parameter.getPosition() == ip.parameter.getPosition())
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return parameter.hashCode();
-   }
+    private ParameterInjectionPoint(Bean<?> declaringBean, WeldParameter<T, X> parameter) {
+        this.declaringBean = declaringBean;
+        this.parameter = parameter;
+        this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
+        this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(parameter.getJavaClass()) && !Instance.class.isAssignableFrom(parameter.getJavaClass());
+    }
 
-   @Override
-   protected WeldParameter<T, X> delegate()
-   {
-      return parameter;
-   }
-
-   public Bean<?> getBean()
-   {
-      return declaringBean;
-   }
-
-   @Override
-   public Set<Annotation> getQualifiers()
-   {
-      return delegate().getQualifiers();
-   }
-
-   public Member getJavaMember()
-   {
-      return delegate().getDeclaringCallable().getJavaMember();
-   }
-
-   public void inject(Object declaringInstance, Object value)
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   public T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext)
-   {
-      T objectToInject;
-      if (!cacheable)
-      {
-         objectToInject = Reflections.<T>cast(manager.getInjectableReference(this, creationalContext));
-      }
-      else
-      {
-         if (cachedBean == null)
-         {
-            cachedBean = manager.resolve(manager.getBeans(this));
-         }
-         objectToInject = Reflections.<T>cast(manager.getReference(this, cachedBean, creationalContext));
-      }
-      return objectToInject;
-   }
-
-   public Annotated getAnnotated()
-   {
-      return delegate();
-   }
-
-   public boolean isDelegate()
-   {
-      return delegate;
-   }
-
-   public boolean isTransient()
-   {
-      // TODO Auto-generated method stub
-      return false;
-   }
-
-   public Type getType()
-   {
-      return getBaseType();
-   }
-
-   public Member getMember()
-   {
-      return getJavaMember();
-   }
-   
-   // Serialization
-   
-   private Object writeReplace() throws ObjectStreamException
-   {
-      return new SerializationProxy<T>(this);
-   }
-   
-   private void readObject(ObjectInputStream stream) throws InvalidObjectException
-   {
-      throw new InvalidObjectException(PROXY_REQUIRED);
-   }
-   
-   private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Object>
-   {
-      
-      private static final long serialVersionUID = -3491482804822264969L;
-      
-      private final int parameterPosition;
-      private final MethodSignature methodSignature;
-      private final ConstructorSignature constructorSignature;
-
-      public SerializationProxy(ParameterInjectionPoint<T, ?> injectionPoint)
-      {
-         super(injectionPoint);
-         this.parameterPosition = injectionPoint.getPosition();
-         if (injectionPoint.delegate().getDeclaringWeldCallable() instanceof WeldMethod<?, ?>)
-         {
-            this.methodSignature = ((WeldMethod<?, ?>) injectionPoint.delegate().getDeclaringWeldCallable()).getSignature();
-            this.constructorSignature = null;
-         }
-         else if (injectionPoint.delegate().getDeclaringWeldCallable() instanceof WeldConstructor<?>)
-         {
-            this.methodSignature = null;
-            this.constructorSignature = ((WeldConstructor<?>) injectionPoint.delegate().getDeclaringWeldCallable()).getSignature();
-         }
-         else
-         {
-            throw new IllegalStateException(IP_NOT_CONSTRUCTOR_OR_METHOD, injectionPoint);
-         }
-      }
-      
-      private Object readResolve()
-      {
-         WeldParameter<T, ?> parameter = getWeldParameter();
-         Bean<T> bean = getDeclaringBean();
-         if (parameter == null || (bean == null && getDeclaringBeanId() != null))
-         {
-            throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), methodSignature, parameterPosition);
-         }
-         return ParameterInjectionPoint.of(getDeclaringBean(), getWeldParameter());
-      }
-      
-      protected WeldParameter<T, ?> getWeldParameter()
-      {
-         if (methodSignature != null)
-         {
-            WeldMethod<?, ?> method = getDeclaringWeldClass().getDeclaredWeldMethod(methodSignature);
-            if (method.getParameters().size() > parameterPosition)
-            {
-               return cast(method.getWeldParameters().get(parameterPosition));
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ParameterInjectionPoint<?, ?>) {
+            ParameterInjectionPoint<?, ?> ip = (ParameterInjectionPoint<?, ?>) obj;
+            if (parameter.getDeclaringWeldCallable().getJavaMember().equals(ip.parameter.getDeclaringWeldCallable().getJavaMember()) && parameter.getAnnotations().equals(ip.parameter.getAnnotations()) && parameter.getPosition() == ip.parameter.getPosition()) {
+                return true;
             }
-            else
-            {
-               throw new IllegalStateException(PARAM_NOT_IN_PARAM_LIST, parameterPosition, method.getParameters());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return parameter.hashCode();
+    }
+
+    @Override
+    protected WeldParameter<T, X> delegate() {
+        return parameter;
+    }
+
+    public Bean<?> getBean() {
+        return declaringBean;
+    }
+
+    @Override
+    public Set<Annotation> getQualifiers() {
+        return delegate().getQualifiers();
+    }
+
+    public Member getJavaMember() {
+        return delegate().getDeclaringCallable().getJavaMember();
+    }
+
+    public void inject(Object declaringInstance, Object value) {
+        throw new UnsupportedOperationException();
+    }
+
+    public T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+        T objectToInject;
+        if (!cacheable) {
+            objectToInject = Reflections.<T>cast(manager.getInjectableReference(this, creationalContext));
+        } else {
+            if (cachedBean == null) {
+                cachedBean = manager.resolve(manager.getBeans(this));
             }
-         }
-         else if (constructorSignature != null)
-         {
-            WeldConstructor<?> constructor = getDeclaringWeldClass().getDeclaredWeldConstructor(constructorSignature);
-            if (constructor.getParameters().size() > parameterPosition)
-            {
-               return cast(constructor.getWeldParameters().get(parameterPosition));
+            objectToInject = Reflections.<T>cast(manager.getReference(this, cachedBean, creationalContext));
+        }
+        return objectToInject;
+    }
+
+    public Annotated getAnnotated() {
+        return delegate();
+    }
+
+    public boolean isDelegate() {
+        return delegate;
+    }
+
+    public boolean isTransient() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public Type getType() {
+        return getBaseType();
+    }
+
+    public Member getMember() {
+        return getJavaMember();
+    }
+
+    // Serialization
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new SerializationProxy<T>(this);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
+    }
+
+    private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Object> {
+
+        private static final long serialVersionUID = -3491482804822264969L;
+
+        private final int parameterPosition;
+        private final MethodSignature methodSignature;
+        private final ConstructorSignature constructorSignature;
+
+        public SerializationProxy(ParameterInjectionPoint<T, ?> injectionPoint) {
+            super(injectionPoint);
+            this.parameterPosition = injectionPoint.getPosition();
+            if (injectionPoint.delegate().getDeclaringWeldCallable() instanceof WeldMethod<?, ?>) {
+                this.methodSignature = ((WeldMethod<?, ?>) injectionPoint.delegate().getDeclaringWeldCallable()).getSignature();
+                this.constructorSignature = null;
+            } else if (injectionPoint.delegate().getDeclaringWeldCallable() instanceof WeldConstructor<?>) {
+                this.methodSignature = null;
+                this.constructorSignature = ((WeldConstructor<?>) injectionPoint.delegate().getDeclaringWeldCallable()).getSignature();
+            } else {
+                throw new IllegalStateException(IP_NOT_CONSTRUCTOR_OR_METHOD, injectionPoint);
             }
-            else
-            {
-               throw new IllegalStateException(PARAM_NOT_IN_PARAM_LIST, parameterPosition, constructor.getParameters());
+        }
+
+        private Object readResolve() {
+            WeldParameter<T, ?> parameter = getWeldParameter();
+            Bean<T> bean = getDeclaringBean();
+            if (parameter == null || (bean == null && getDeclaringBeanId() != null)) {
+                throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), methodSignature, parameterPosition);
             }
-         }
-         else
-         {
-            throw new IllegalStateException(CANNOT_READ_OBJECT);
-         }
-         
-      }
-      
-   }
+            return ParameterInjectionPoint.of(getDeclaringBean(), getWeldParameter());
+        }
+
+        protected WeldParameter<T, ?> getWeldParameter() {
+            if (methodSignature != null) {
+                WeldMethod<?, ?> method = getDeclaringWeldClass().getDeclaredWeldMethod(methodSignature);
+                if (method.getParameters().size() > parameterPosition) {
+                    return cast(method.getWeldParameters().get(parameterPosition));
+                } else {
+                    throw new IllegalStateException(PARAM_NOT_IN_PARAM_LIST, parameterPosition, method.getParameters());
+                }
+            } else if (constructorSignature != null) {
+                WeldConstructor<?> constructor = getDeclaringWeldClass().getDeclaredWeldConstructor(constructorSignature);
+                if (constructor.getParameters().size() > parameterPosition) {
+                    return cast(constructor.getWeldParameters().get(parameterPosition));
+                } else {
+                    throw new IllegalStateException(PARAM_NOT_IN_PARAM_LIST, parameterPosition, constructor.getParameters());
+                }
+            } else {
+                throw new IllegalStateException(CANNOT_READ_OBJECT);
+            }
+
+        }
+
+    }
 
 
 }

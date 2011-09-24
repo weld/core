@@ -5,9 +5,9 @@ import javax.inject.Named;
 
 @Named
 @RequestScoped
-public class Lager
-{
+public class Lager {
 
-   public void drink() {}
-   
+    public void drink() {
+    }
+
 }

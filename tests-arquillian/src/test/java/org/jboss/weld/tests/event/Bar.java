@@ -24,67 +24,62 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 @RequestScoped
-public class Bar
-{
+public class Bar {
 
-   @Inject Event<String> event;
-   
-   @Inject @Updated Event<String> updatedEvent;
-   
-   @Inject BeanManager manager;
-   
-   private boolean unqualifiedObserved;
-   private boolean updatedObserved;
+    @Inject
+    Event<String> event;
 
-   public void fireWithNoQualifiers()
-   {
-      event.fire("");
-   }
-   
-   public void fireWithUpdatedQualifierViaSelect()
-   {
-      event.select(new AnnotationLiteral<Updated>() {}).fire("");
-   }
-   
-   public void fireWithNoQualifiersViaManager()
-   {
-      manager.fireEvent("");
-   }
-   
-   public void fireWithUpdatedQualifierViaManager()
-   {
-      manager.fireEvent("", new AnnotationLiteral<Updated>() {});
-   }
-   
-   public void fireWithUpdatedQualifierViaAnnotation()
-   {
-      updatedEvent.fire("");
-   }
-   
-   public void reset()
-   {
-      unqualifiedObserved = false;
-      updatedObserved = false;
-   }
+    @Inject
+    @Updated
+    Event<String> updatedEvent;
 
-   public void onEvent(@Observes String event)
-   {
-      unqualifiedObserved = true;
-   }
+    @Inject
+    BeanManager manager;
 
-   private void onUpdatedEvent(@Observes @Updated String event)
-   {
-      updatedObserved = true;
-   }
-   
-   public boolean isUnqualifiedObserved()
-   {
-      return unqualifiedObserved;
-   }
-   
-   public boolean isUpdatedObserved()
-   {
-      return updatedObserved;
-   }
-   
+    private boolean unqualifiedObserved;
+    private boolean updatedObserved;
+
+    public void fireWithNoQualifiers() {
+        event.fire("");
+    }
+
+    public void fireWithUpdatedQualifierViaSelect() {
+        event.select(new AnnotationLiteral<Updated>() {
+        }).fire("");
+    }
+
+    public void fireWithNoQualifiersViaManager() {
+        manager.fireEvent("");
+    }
+
+    public void fireWithUpdatedQualifierViaManager() {
+        manager.fireEvent("", new AnnotationLiteral<Updated>() {
+        });
+    }
+
+    public void fireWithUpdatedQualifierViaAnnotation() {
+        updatedEvent.fire("");
+    }
+
+    public void reset() {
+        unqualifiedObserved = false;
+        updatedObserved = false;
+    }
+
+    public void onEvent(@Observes String event) {
+        unqualifiedObserved = true;
+    }
+
+    private void onUpdatedEvent(@Observes @Updated String event) {
+        updatedObserved = true;
+    }
+
+    public boolean isUnqualifiedObserved() {
+        return unqualifiedObserved;
+    }
+
+    public boolean isUpdatedObserved() {
+        return updatedObserved;
+    }
+
 }

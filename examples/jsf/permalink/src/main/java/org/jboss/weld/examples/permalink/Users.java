@@ -31,18 +31,15 @@ import java.io.Serializable;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @SessionScoped
-public class Users implements Serializable
-{
-   private static long serialVersionUID = 1L;
-   private String username;
+public class Users implements Serializable {
+    private static long serialVersionUID = 1L;
+    private String username;
 
-   public String getUsername()
-   {
-      return username;
-   }
+    public String getUsername() {
+        return username;
+    }
 
-   public void setUsername(String username)
-   {
-      this.username = username;
-   }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

@@ -29,62 +29,50 @@ import java.util.List;
  *
  * @author Stuart Douglas
  */
-public class RequestScopedBeanCache
-{
+public class RequestScopedBeanCache {
 
-   private static final ThreadLocal<List<RequestScopedItem>> CACHE = new ThreadLocal<List<RequestScopedItem>>();
+    private static final ThreadLocal<List<RequestScopedItem>> CACHE = new ThreadLocal<List<RequestScopedItem>>();
 
-   public static boolean isActive()
-   {
-      return CACHE.get() != null;
-   }
+    public static boolean isActive() {
+        return CACHE.get() != null;
+    }
 
-   public static void addItem(final RequestScopedItem item)
-   {
-      final List<RequestScopedItem> cache = CACHE.get();
-      if (cache == null)
-      {
-         throw new IllegalStateException("Unable to add request scoped cache item when request cache is not active");
-      }
-      cache.add(item);
-   }
+    public static void addItem(final RequestScopedItem item) {
+        final List<RequestScopedItem> cache = CACHE.get();
+        if (cache == null) {
+            throw new IllegalStateException("Unable to add request scoped cache item when request cache is not active");
+        }
+        cache.add(item);
+    }
 
-   public static void addItem(final ThreadLocal item)
-   {
-      final List<RequestScopedItem> cache = CACHE.get();
-      if (cache == null)
-      {
-         throw new IllegalStateException("Unable to add request scoped cache item when request cache is not active");
-      }
-      cache.add(new RequestScopedItem()
-      {
-         public void invalidate()
-         {
-            item.remove();
-         }
-      });
-   }
+    public static void addItem(final ThreadLocal item) {
+        final List<RequestScopedItem> cache = CACHE.get();
+        if (cache == null) {
+            throw new IllegalStateException("Unable to add request scoped cache item when request cache is not active");
+        }
+        cache.add(new RequestScopedItem() {
+            public void invalidate() {
+                item.remove();
+            }
+        });
+    }
 
-   public static void beginRequest()
-   {
-      CACHE.set(new LinkedList<RequestScopedItem>());
-   }
+    public static void beginRequest() {
+        CACHE.set(new LinkedList<RequestScopedItem>());
+    }
 
-   /**
-    * ends the request and clears the cache. This can be called before the request is over,
-    * in which case the cache will be unavailable for the rest of the request.
-    */
-   public static void endRequest()
-   {
-      final List<RequestScopedItem> result = CACHE.get();
-      CACHE.remove();
-      if (result != null)
-      {
-         for (final RequestScopedItem item : result)
-         {
-            item.invalidate();
-         }
-      }
-   }
+    /**
+     * ends the request and clears the cache. This can be called before the request is over,
+     * in which case the cache will be unavailable for the rest of the request.
+     */
+    public static void endRequest() {
+        final List<RequestScopedItem> result = CACHE.get();
+        CACHE.remove();
+        if (result != null) {
+            for (final RequestScopedItem item : result) {
+                item.invalidate();
+            }
+        }
+    }
 
 }

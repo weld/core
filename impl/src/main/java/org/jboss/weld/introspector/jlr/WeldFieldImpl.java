@@ -16,16 +16,6 @@
  */
 package org.jboss.weld.introspector.jlr;
 
-import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.inject.spi.AnnotatedField;
-
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.TypeClosureLazyValueHolder;
 import org.jboss.weld.introspector.WeldClass;
@@ -36,110 +26,102 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
+import javax.enterprise.inject.spi.AnnotatedField;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
+
+import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
+
 /**
  * Represents an annotated field
- * 
+ * <p/>
  * This class is immutable, and therefore threadsafe
- * 
- * @author Pete Muir
- * 
+ *
  * @param <T>
+ * @author Pete Muir
  */
-public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> implements WeldField<T, X>
-{
+public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> implements WeldField<T, X> {
 
-   // The underlying field
-   private final Field field;
+    // The underlying field
+    private final Field field;
 
-   public static <T, X> WeldFieldImpl<T, X> of(Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer)
-   {
-      return new WeldFieldImpl<T, X>(field, Reflections.<Class<T>> cast(field.getType()), field.getGenericType(), new TypeClosureLazyValueHolder(field.getGenericType()), buildAnnotationMap(field.getAnnotations()), buildAnnotationMap(field.getDeclaredAnnotations()), declaringClass, classTransformer);
-   }
+    public static <T, X> WeldFieldImpl<T, X> of(Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        return new WeldFieldImpl<T, X>(field, Reflections.<Class<T>>cast(field.getType()), field.getGenericType(), new TypeClosureLazyValueHolder(field.getGenericType()), buildAnnotationMap(field.getAnnotations()), buildAnnotationMap(field.getDeclaredAnnotations()), declaringClass, classTransformer);
+    }
 
-   public static <X> WeldFieldImpl<?, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer)
-   {
-      return new WeldFieldImpl<Object, X>(annotatedField.getJavaMember(), Reflections.<Class<Object>> cast(annotatedField.getJavaMember().getType()), annotatedField.getBaseType(), new TypeClosureLazyValueHolder(annotatedField.getTypeClosure()), buildAnnotationMap(annotatedField.getAnnotations()), buildAnnotationMap(annotatedField.getAnnotations()), declaringClass, classTransformer);
-   }
+    public static <X> WeldFieldImpl<?, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        return new WeldFieldImpl<Object, X>(annotatedField.getJavaMember(), Reflections.<Class<Object>>cast(annotatedField.getJavaMember().getType()), annotatedField.getBaseType(), new TypeClosureLazyValueHolder(annotatedField.getTypeClosure()), buildAnnotationMap(annotatedField.getAnnotations()), buildAnnotationMap(annotatedField.getAnnotations()), declaringClass, classTransformer);
+    }
 
-   /**
-    * Constructor
-    * 
-    * Initializes the superclass with the built annotation map and detects the
-    * type arguments
-    * 
-    * @param field The actual field
-    * @param declaringClass The abstraction of the declaring class
-    */
-   private WeldFieldImpl(Field field, final Class<T> rawType, final Type type, LazyValueHolder<Set<Type>> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer)
-   {
-      super(annotationMap, declaredAnnotationMap, classTransformer, field, rawType, type, typeClosure, declaringClass);
-      this.field = field;
-   }
+    /**
+     * Constructor
+     * <p/>
+     * Initializes the superclass with the built annotation map and detects the
+     * type arguments
+     *
+     * @param field          The actual field
+     * @param declaringClass The abstraction of the declaring class
+     */
+    private WeldFieldImpl(Field field, final Class<T> rawType, final Type type, LazyValueHolder<Set<Type>> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        super(annotationMap, declaredAnnotationMap, classTransformer, field, rawType, type, typeClosure, declaringClass);
+        this.field = field;
+    }
 
-   /**
-    * Gets the underlying field
-    * 
-    * @return The fields
-    */
-   public Field getAnnotatedField()
-   {
-      return field;
-   }
+    /**
+     * Gets the underlying field
+     *
+     * @return The fields
+     */
+    public Field getAnnotatedField() {
+        return field;
+    }
 
-   @Override
-   public Field getDelegate()
-   {
-      return field;
-   }
+    @Override
+    public Field getDelegate() {
+        return field;
+    }
 
-   public void set(Object instance, Object value) throws IllegalArgumentException, IllegalAccessException
-   {
-      SecureReflections.ensureAccessible(field).set(instance, value);
-   }
+    public void set(Object instance, Object value) throws IllegalArgumentException, IllegalAccessException {
+        SecureReflections.ensureAccessible(field).set(instance, value);
+    }
 
-   public void setOnInstance(Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
-   {
-      SecureReflections.getField(instance.getClass(), getName()).set(instance, value);
-   }
+    public void setOnInstance(Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+        SecureReflections.getField(instance.getClass(), getName()).set(instance, value);
+    }
 
-   public T get(Object instance)
-   {
-      try
-      {
-         return Reflections.<T>cast(SecureReflections.ensureAccessible(getDelegate()).get(instance));
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(ACCESS_ERROR_ON_FIELD, e, getDelegate().getName(), getDelegate().getDeclaringClass());
-      }
-   }
+    public T get(Object instance) {
+        try {
+            return Reflections.<T>cast(SecureReflections.ensureAccessible(getDelegate()).get(instance));
+        } catch (Exception e) {
+            throw new WeldException(ACCESS_ERROR_ON_FIELD, e, getDelegate().getName(), getDelegate().getDeclaringClass());
+        }
+    }
 
-   /**
-    * Gets the property name
-    * 
-    * @return The property name
-    * 
-    * @see org.jboss.weld.introspector.WeldField#getName()
-    */
-   public String getPropertyName()
-   {
-      return getName();
-   }
+    /**
+     * Gets the property name
+     *
+     * @return The property name
+     * @see org.jboss.weld.introspector.WeldField#getName()
+     */
+    public String getPropertyName() {
+        return getName();
+    }
 
-   /**
-    * Gets a string representation of the field
-    * 
-    * @return A string representation
-    */
-   @Override
-   public String toString()
-   {
-      return "[field] " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(getAnnotations())) + Formats.addSpaceIfNeeded(Formats.formatModifiers(getJavaMember().getModifiers())) + getDeclaringType().getName() + "." + getName();
-   }
-   
-   public boolean isGeneric()
-   {
-      return false;
-   }
+    /**
+     * Gets a string representation of the field
+     *
+     * @return A string representation
+     */
+    @Override
+    public String toString() {
+        return "[field] " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(getAnnotations())) + Formats.addSpaceIfNeeded(Formats.formatModifiers(getJavaMember().getModifiers())) + getDeclaringType().getName() + "." + getName();
+    }
+
+    public boolean isGeneric() {
+        return false;
+    }
 
 }

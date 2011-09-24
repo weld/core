@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.qualifiers;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,22 +25,23 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class SpiAddedQualifierTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class).addPackage(SpiAddedQualifierTest.class.getPackage()).addAsServiceProvider(Extension.class, QuickExtension.class);
-   }
+public class SpiAddedQualifierTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class).addPackage(SpiAddedQualifierTest.class.getPackage()).addAsServiceProvider(Extension.class, QuickExtension.class);
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   // WELD-721
-   @Test
-   public void testAddedQualifier()
-   {
-      Assert.assertTrue(beanManager.isQualifier(Quick.class));
-   }
+    // WELD-721
+    @Test
+    public void testAddedQualifier() {
+        Assert.assertTrue(beanManager.isQualifier(Quick.class));
+    }
 }

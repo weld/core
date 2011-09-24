@@ -19,6 +19,5 @@ package org.jboss.weld.tests.proxy.privateconstructor;
 import javax.enterprise.context.RequestScoped;
 
 @RequestScoped
-public class Bar
-{
+public class Bar {
 }

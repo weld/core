@@ -16,46 +16,40 @@
  */
 package org.jboss.weld.introspector;
 
-import java.lang.reflect.Type;
-import java.util.Set;
-
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
+
+import java.lang.reflect.Type;
+import java.util.Set;
 
 /**
  * {@link LazyValueHolder} that calculates a type closue. In many cases this
  * will not be needed, so computing it on demand saves memory and startup time.
- * 
+ *
  * @author Stuart Douglas
- * 
  */
-public class TypeClosureLazyValueHolder extends LazyValueHolder<Set<Type>>
-{
+public class TypeClosureLazyValueHolder extends LazyValueHolder<Set<Type>> {
 
-   private final Type type;
+    private final Type type;
 
-   private final Set<Type> types;
+    private final Set<Type> types;
 
-   public TypeClosureLazyValueHolder(Type type)
-   {
-      this.type = type;
-      this.types = null;
-   }
+    public TypeClosureLazyValueHolder(Type type) {
+        this.type = type;
+        this.types = null;
+    }
 
-   public TypeClosureLazyValueHolder(Set<Type> types)
-   {
-      this.type = null;
-      this.types = types;
-   }
+    public TypeClosureLazyValueHolder(Set<Type> types) {
+        this.type = null;
+        this.types = types;
+    }
 
-   @Override
-   protected Set<Type> computeValue()
-   {
-      if (types != null)
-      {
-         return types;
-      }
-      return SharedObjectFacade.getTypeClosure(type);
-   }
+    @Override
+    protected Set<Type> computeValue() {
+        if (types != null) {
+            return types;
+        }
+        return SharedObjectFacade.getTypeClosure(type);
+    }
 
 }

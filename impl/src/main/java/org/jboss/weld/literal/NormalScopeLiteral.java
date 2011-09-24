@@ -21,25 +21,22 @@ import javax.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link NormalScope}
- * 
+ *
  * @author Pete Muir
  */
 @SuppressWarnings("all")
-public class NormalScopeLiteral extends AnnotationLiteral<NormalScope> implements NormalScope
-{
-   
-   private static final long serialVersionUID = -411873333591249571L;
-   
-   private final boolean passivating;
-   
-   public NormalScopeLiteral(boolean passivating)
-   {
-      this.passivating = passivating;
-   }
+public class NormalScopeLiteral extends AnnotationLiteral<NormalScope> implements NormalScope {
 
-   public boolean passivating()
-   {
-      return passivating;
-   }
-   
+    private static final long serialVersionUID = -411873333591249571L;
+
+    private final boolean passivating;
+
+    public NormalScopeLiteral(boolean passivating) {
+        this.passivating = passivating;
+    }
+
+    public boolean passivating() {
+        return passivating;
+    }
+
 }

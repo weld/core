@@ -22,57 +22,51 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * An {@link java.lang.IllegalArgumentException} with support for
  * localized messages in Weld.
- * 
+ *
  * @author David Allen
  */
-@SuppressWarnings(value="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification="Workaround for exception classes poor i8ln support")
-public class IllegalArgumentException extends java.lang.IllegalArgumentException
-{
+@SuppressWarnings(value = "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", justification = "Workaround for exception classes poor i8ln support")
+public class IllegalArgumentException extends java.lang.IllegalArgumentException {
 
-   private static final long    serialVersionUID = 2L;
+    private static final long serialVersionUID = 2L;
 
-   private WeldExceptionMessage message;
+    private WeldExceptionMessage message;
 
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public IllegalArgumentException(Throwable throwable)
-   {
-      super(throwable);
-      message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
-   }
-   
+    /**
+     * Creates a new exception with the given cause.
+     *
+     * @param throwable The cause of the exception
+     */
+    public IllegalArgumentException(Throwable throwable) {
+        super(throwable);
+        message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
+    }
 
-   public <E extends Enum<?>> IllegalArgumentException(E key, Throwable throwable, Object... args)
-   {
-      super(throwable);
-      this.message = new WeldExceptionKeyMessage(key, args);
-   }
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> IllegalArgumentException(E key, Object... args)
-   {
-      message = new WeldExceptionKeyMessage(key, args);
-   }
+    public <E extends Enum<?>> IllegalArgumentException(E key, Throwable throwable, Object... args) {
+        super(throwable);
+        this.message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   @Override
-   public String getLocalizedMessage()
-   {
-      return getMessage();
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> IllegalArgumentException(E key, Object... args) {
+        message = new WeldExceptionKeyMessage(key, args);
+    }
 
-   @Override
-   public String getMessage()
-   {
-      return message.getAsString();
-   }
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public String getMessage() {
+        return message.getAsString();
+    }
 }

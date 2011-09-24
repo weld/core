@@ -20,7 +20,6 @@ package org.jboss.weld.tests.generic;
 /**
  * @author Marius Bogoevici
  */
-public class Subclass extends BaseClass
-{
-   
+public class Subclass extends BaseClass {
+
 }

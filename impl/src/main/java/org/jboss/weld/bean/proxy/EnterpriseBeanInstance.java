@@ -16,19 +16,17 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import javax.enterprise.context.spi.CreationalContext;
-
 import org.jboss.weld.bean.SessionBean;
+
+import javax.enterprise.context.spi.CreationalContext;
 
 /**
  * Interface implemented by all enterprise bean proxies to query/control the proxy
- * 
- * @author Pete Muir
  *
+ * @author Pete Muir
  */
-public interface EnterpriseBeanInstance
-{
-   
-   public void destroy(Marker marker, SessionBean<?> enterpriseBean, CreationalContext<?> creationalContext);
-   
+public interface EnterpriseBeanInstance {
+
+    public void destroy(Marker marker, SessionBean<?> enterpriseBean, CreationalContext<?> creationalContext);
+
 }

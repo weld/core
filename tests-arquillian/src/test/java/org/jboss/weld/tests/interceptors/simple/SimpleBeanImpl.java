@@ -23,24 +23,21 @@ import javax.annotation.PostConstruct;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 //@PrimaryInterceptionBinding
-public class SimpleBeanImpl implements SimpleBean
-{
+public class SimpleBeanImpl implements SimpleBean {
 
-   public static boolean businessMethodInvoked = false;
+    public static boolean businessMethodInvoked = false;
 
-   public static boolean postConstructCalled = false;
+    public static boolean postConstructCalled = false;
 
-   @SecondaryInterceptionBinding
-   public String doSomething()
-   {
-      businessMethodInvoked = true;
-      return "Hello!";
-   }
+    @SecondaryInterceptionBinding
+    public String doSomething() {
+        businessMethodInvoked = true;
+        return "Hello!";
+    }
 
-   @PostConstruct
-   public void doPostConstruct()
-   {
-      postConstructCalled = true;
-   }
+    @PostConstruct
+    public void doPostConstruct() {
+        postConstructCalled = true;
+    }
 
 }

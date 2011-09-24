@@ -22,16 +22,13 @@ import javax.el.ELContextListener;
 /**
  * Responsible for pushing the CreationalContext stack into the ELContext which
  * is later populated by our expression wrappers
- * 
- * @author pmuir
  *
+ * @author pmuir
  */
-public class WeldELContextListener implements ELContextListener
-{
+public class WeldELContextListener implements ELContextListener {
 
-   public void contextCreated(ELContextEvent contextEvent)
-   {
-      ELCreationalContextStack.addToContext(contextEvent.getELContext());
-   }
+    public void contextCreated(ELContextEvent contextEvent) {
+        ELCreationalContextStack.addToContext(contextEvent.getELContext());
+    }
 
 }

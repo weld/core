@@ -25,13 +25,10 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-public class SimpleExtension implements Extension
-{
-   public void registerBar(@Observes ProcessAnnotatedType<Foo> event)
-   {
-      if (event.getAnnotatedType().getJavaClass().equals(Foo.class))
-      {
-         event.veto();
-      }
-   }
+public class SimpleExtension implements Extension {
+    public void registerBar(@Observes ProcessAnnotatedType<Foo> event) {
+        if (event.getAnnotatedType().getJavaClass().equals(Foo.class)) {
+            event.veto();
+        }
+    }
 }

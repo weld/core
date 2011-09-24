@@ -16,14 +16,12 @@
  */
 package org.jboss.weld.tests.managed.newBean;
 
+import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-
 @SessionScoped
-class WrappedSimpleBean implements Serializable
-{
-   public WrappedSimpleBean() {
-      
-   }
+class WrappedSimpleBean implements Serializable {
+    public WrappedSimpleBean() {
+
+    }
 }

@@ -13,64 +13,55 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
 
+import javax.enterprise.inject.spi.AnnotatedField;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedField;
-
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-class MockAnnotatedField<X> extends MockAnnotatedMember<X> implements AnnotatedField<X>
-{
-   MockAnnotatedField(AnnotatedField<? super X> delegate)
-   {
-      super(delegate);
-   }
+class MockAnnotatedField<X> extends MockAnnotatedMember<X> implements AnnotatedField<X> {
+    MockAnnotatedField(AnnotatedField<? super X> delegate) {
+        super(delegate);
+    }
 
-   @Override
-   AnnotatedField<X> getDelegate()
-   {
-      return (AnnotatedField<X>)super.getDelegate();
-   }
+    @Override
+    AnnotatedField<X> getDelegate() {
+        return (AnnotatedField<X>) super.getDelegate();
+    }
 
-   public Field getJavaMember()
-   {
-      return getDelegate().getJavaMember();
-   }
+    public Field getJavaMember() {
+        return getDelegate().getJavaMember();
+    }
 
-   private boolean isDecoratedField()
-   {
-      return getJavaMember().getName().equals("fromField");
-   }
-   @Override
-   public <T extends Annotation> T getAnnotation(Class<T> annotationType)
-   {
-      if (isDecoratedField())
-         return super.getAnnotation(annotationType);
-      return null;
-   }
+    private boolean isDecoratedField() {
+        return getJavaMember().getName().equals("fromField");
+    }
 
-   @Override
-   public Set<Annotation> getAnnotations()
-   {
-      if (isDecoratedField())
-         return super.getAnnotations();
-      return Collections.emptySet();
-   }
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+        if (isDecoratedField())
+            return super.getAnnotation(annotationType);
+        return null;
+    }
 
-   @Override
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      if (isDecoratedField())
-         return super.isAnnotationPresent(annotationType);
-      return false;
-   }
+    @Override
+    public Set<Annotation> getAnnotations() {
+        if (isDecoratedField())
+            return super.getAnnotations();
+        return Collections.emptySet();
+    }
+
+    @Override
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        if (isDecoratedField())
+            return super.isAnnotationPresent(annotationType);
+        return false;
+    }
 }

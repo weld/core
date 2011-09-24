@@ -16,85 +16,73 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Extension;
-
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Proxies;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Extension;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
+
 /**
  * @author pmuir
- *
  */
-public class ExtensionBean extends AbstractBuiltInBean<Extension>
-{
-   
-   private static final String ID_PREFIX = "Extension";
-   
-   private final WeldClass<Extension> clazz;
-   private final Metadata<Extension> instance;
-   private final boolean passivationCapable;
-   private final boolean proxiable;
-   
-   public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Metadata<Extension> instance)
-   {
-      super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
-      this.clazz = clazz;
-      this.instance = instance;
-      this.passivationCapable = clazz.isSerializable();
-      this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType());
-   }
+public class ExtensionBean extends AbstractBuiltInBean<Extension> {
 
-   @Override
-   public Class<Extension> getType()
-   {
-      return clazz.getJavaClass();
-   }
+    private static final String ID_PREFIX = "Extension";
 
-   public Set<Type> getTypes()
-   {
-      return clazz.getTypeClosure();
-   }
-   
-   @Override
-   public boolean isProxyable()
-   {
-      return proxiable;
-   }
-   
-   @Override
-   public boolean isPassivationCapableBean()
-   {
-      return passivationCapable;
-   }
+    private final WeldClass<Extension> clazz;
+    private final Metadata<Extension> instance;
+    private final boolean passivationCapable;
+    private final boolean proxiable;
 
-   public Extension create(CreationalContext<Extension> creationalContext)
-   {
-      return instance.getValue();
-   }
+    public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Metadata<Extension> instance) {
+        super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
+        this.clazz = clazz;
+        this.instance = instance;
+        this.passivationCapable = clazz.isSerializable();
+        this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType());
+    }
 
-   public void destroy(Extension instance, CreationalContext<Extension> creationalContext)
-   {
-      // No-op
-   }
-   
-   @Override
-   public Class<? extends Annotation> getScope()
-   {
-      return ApplicationScoped.class;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "Extension [" + getType().toString() + "] with qualifiers [@Default]; " + instance.getLocation();
-   }
+    @Override
+    public Class<Extension> getType() {
+        return clazz.getJavaClass();
+    }
+
+    public Set<Type> getTypes() {
+        return clazz.getTypeClosure();
+    }
+
+    @Override
+    public boolean isProxyable() {
+        return proxiable;
+    }
+
+    @Override
+    public boolean isPassivationCapableBean() {
+        return passivationCapable;
+    }
+
+    public Extension create(CreationalContext<Extension> creationalContext) {
+        return instance.getValue();
+    }
+
+    public void destroy(Extension instance, CreationalContext<Extension> creationalContext) {
+        // No-op
+    }
+
+    @Override
+    public Class<? extends Annotation> getScope() {
+        return ApplicationScoped.class;
+    }
+
+    @Override
+    public String toString() {
+        return "Extension [" + getType().toString() + "] with qualifiers [@Default]; " + instance.getLocation();
+    }
 
 }

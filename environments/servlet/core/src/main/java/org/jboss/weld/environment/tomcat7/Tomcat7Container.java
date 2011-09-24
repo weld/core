@@ -31,25 +31,19 @@ import org.jboss.weld.environment.ContainerContext;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Tomcat7Container extends AbstractContainer
-{
-   public static Container INSTANCE = new Tomcat7Container();
+public class Tomcat7Container extends AbstractContainer {
+    public static Container INSTANCE = new Tomcat7Container();
 
-   protected String classToCheck()
-   {
-      return "org.apache.tomcat.InstanceManager";
-   }
+    protected String classToCheck() {
+        return "org.apache.tomcat.InstanceManager";
+    }
 
-   public void initialize(ContainerContext context)
-   {
-      try
-      {
-         WeldForwardingInstanceManager.replacInstanceManager(context.getEvent(), context.getManager());
-         log.info("Tomcat 7 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
-      }
-      catch (Exception e)
-      {
-         log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
-      }
-   }
+    public void initialize(ContainerContext context) {
+        try {
+            WeldForwardingInstanceManager.replacInstanceManager(context.getEvent(), context.getManager());
+            log.info("Tomcat 7 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
+        } catch (Exception e) {
+            log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
+        }
+    }
 }

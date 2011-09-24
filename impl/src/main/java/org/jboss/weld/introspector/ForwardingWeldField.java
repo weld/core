@@ -18,41 +18,34 @@ package org.jboss.weld.introspector;
 
 import java.lang.reflect.Field;
 
-public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, X, Field> implements WeldField<T, X>
-{
+public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, X, Field> implements WeldField<T, X> {
 
-   @Override
-   protected abstract WeldField<T, X> delegate();
+    @Override
+    protected abstract WeldField<T, X> delegate();
 
-   public T get(Object instance)
-   {
-      return delegate().get(instance);
-   }
+    public T get(Object instance) {
+        return delegate().get(instance);
+    }
 
-   @Override
-   public WeldClass<X> getDeclaringType()
-   {
-      return delegate().getDeclaringType();
-   }
+    @Override
+    public WeldClass<X> getDeclaringType() {
+        return delegate().getDeclaringType();
+    }
 
-   public String getPropertyName()
-   {
-      return delegate().getPropertyName();
-   }
+    public String getPropertyName() {
+        return delegate().getPropertyName();
+    }
 
-   public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException
-   {
-      delegate().set(declaringInstance, value);
-   }
+    public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException {
+        delegate().set(declaringInstance, value);
+    }
 
-   public boolean isTransient()
-   {
-      return delegate().isTransient();
-   }
-   
-   public Field getJavaMember() 
-   {
-      return delegate().getJavaMember();
-   }
+    public boolean isTransient() {
+        return delegate().isTransient();
+    }
+
+    public Field getJavaMember() {
+        return delegate().getJavaMember();
+    }
 
 }

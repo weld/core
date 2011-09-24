@@ -10,13 +10,11 @@ import org.testng.annotations.Test;
 @Artifact
 @IntegrationTest
 @Packaging(PackagingType.EAR)
-public class SingletonStartupTest extends AbstractWeldTest
-{
- 
-   @Test(enabled=false) // JBAS-8107
-   public void testSingletonStartup()
-   {
-      assert Foo.isPostConstructCalled();
-   }
+public class SingletonStartupTest extends AbstractWeldTest {
+
+    @Test(enabled = false) // JBAS-8107
+    public void testSingletonStartup() {
+        assert Foo.isPostConstructCalled();
+    }
 
 }

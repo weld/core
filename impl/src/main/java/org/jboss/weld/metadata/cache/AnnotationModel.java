@@ -16,137 +16,123 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_RETENTION;
-
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.Set;
-
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.logging.messages.MetadataMessage;
 import org.jboss.weld.resources.ClassTransformer;
 import org.slf4j.cal10n.LocLogger;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.Set;
+
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_RETENTION;
+
 /**
  * Abstract representation of an annotation model
- * 
+ *
  * @author Pete Muir
  */
-public abstract class AnnotationModel<T extends Annotation>
-{
-   private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
-   
-   // The underlying annotation
-   private WeldAnnotation<T> annotatedAnnotation;
-   // Is the data valid?
-   protected boolean valid;
+public abstract class AnnotationModel<T extends Annotation> {
+    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
-   /**
-    * Constructor
-    * 
-    * @param type The annotation type
-    */
-   public AnnotationModel(Class<T> type, ClassTransformer transformer)
-   {
-      this.annotatedAnnotation = transformer.loadAnnotation(type);
-      init();
-   }
+    // The underlying annotation
+    private WeldAnnotation<T> annotatedAnnotation;
+    // Is the data valid?
+    protected boolean valid;
 
-   /**
-    * Initializes the type and validates it
-    */
-   protected void init()
-   {
-      initType();
-      initValid();
-      check();
-   }
+    /**
+     * Constructor
+     *
+     * @param type The annotation type
+     */
+    public AnnotationModel(Class<T> type, ClassTransformer transformer) {
+        this.annotatedAnnotation = transformer.loadAnnotation(type);
+        init();
+    }
 
-   /**
-    * Initializes the type
-    */
-   protected void initType()
-   {
-      if (!Annotation.class.isAssignableFrom(getRawType()))
-      {
-         throw new DefinitionException(MetadataMessage.META_ANNOTATION_ON_WRONG_TYPE, getMetaAnnotationTypes(), getRawType());
-      }
-   }
+    /**
+     * Initializes the type and validates it
+     */
+    protected void init() {
+        initType();
+        initValid();
+        check();
+    }
 
-   /**
-    * Validates the data for correct annotation
-    */
-   protected void initValid()
-   {
-      this.valid = false;
-      for (Class<? extends Annotation> annotationType : getMetaAnnotationTypes())
-      {
-         if (annotatedAnnotation.isAnnotationPresent(annotationType))
-         {
-            this.valid = true;
-         }
-      }            
-   }
-   
-   protected void check()
-   {
-      if (valid && (!annotatedAnnotation.isAnnotationPresent(Retention.class) || annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME)))
-      {
-         this.valid = false;
-         log.debug(MISSING_RETENTION, annotatedAnnotation);
-      }
-   }
+    /**
+     * Initializes the type
+     */
+    protected void initType() {
+        if (!Annotation.class.isAssignableFrom(getRawType())) {
+            throw new DefinitionException(MetadataMessage.META_ANNOTATION_ON_WRONG_TYPE, getMetaAnnotationTypes(), getRawType());
+        }
+    }
 
-   /**
-    * Gets the type of the annotation
-    * 
-    * @return The type
-    */
-   public Class<T> getRawType()
-   {
-      return annotatedAnnotation.getJavaClass();
-   }
+    /**
+     * Validates the data for correct annotation
+     */
+    protected void initValid() {
+        this.valid = false;
+        for (Class<? extends Annotation> annotationType : getMetaAnnotationTypes()) {
+            if (annotatedAnnotation.isAnnotationPresent(annotationType)) {
+                this.valid = true;
+            }
+        }
+    }
 
-   /**
-    * Gets the meta-annotation that should be present
-    * 
-    * @return
-    */
-   protected abstract Set<Class<? extends Annotation>> getMetaAnnotationTypes();
+    protected void check() {
+        if (valid && (!annotatedAnnotation.isAnnotationPresent(Retention.class) || annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))) {
+            this.valid = false;
+            log.debug(MISSING_RETENTION, annotatedAnnotation);
+        }
+    }
 
-   /**
-    * Indicates if the annotation is valid
-    * 
-    * @return True if valid, false otherwise
-    */
-   public boolean isValid()
-   {
-      return valid;
-   }
+    /**
+     * Gets the type of the annotation
+     *
+     * @return The type
+     */
+    public Class<T> getRawType() {
+        return annotatedAnnotation.getJavaClass();
+    }
 
-   /**
-    * Gets the annotated annotation
-    * 
-    * @return The annotation
-    */
-   protected WeldAnnotation<T> getAnnotatedAnnotation()
-   {
-      return annotatedAnnotation;
-   }
+    /**
+     * Gets the meta-annotation that should be present
+     *
+     * @return
+     */
+    protected abstract Set<Class<? extends Annotation>> getMetaAnnotationTypes();
 
-   /**
-    * Gets a string representation of the annotation model
-    * 
-    * @return The string representation
-    */
-   @Override
-   public String toString()
-   {
-      return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getRawType();
-   }
+    /**
+     * Indicates if the annotation is valid
+     *
+     * @return True if valid, false otherwise
+     */
+    public boolean isValid() {
+        return valid;
+    }
+
+    /**
+     * Gets the annotated annotation
+     *
+     * @return The annotation
+     */
+    protected WeldAnnotation<T> getAnnotatedAnnotation() {
+        return annotatedAnnotation;
+    }
+
+    /**
+     * Gets a string representation of the annotation model
+     *
+     * @return The string representation
+     */
+    @Override
+    public String toString() {
+        return (isValid() ? "Valid" : "Invalid") + " annotation model for " + getRawType();
+    }
 
 }

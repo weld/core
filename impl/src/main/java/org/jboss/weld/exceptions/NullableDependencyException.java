@@ -20,37 +20,33 @@ package org.jboss.weld.exceptions;
 /**
  * Thrown if an injection point of primitive type resolves to a bean which may
  * be null
- * 
+ *
  * @author Pete Muir
  */
-public class NullableDependencyException extends DeploymentException
-{
+public class NullableDependencyException extends DeploymentException {
 
-   private static final long serialVersionUID = 6877485218767005761L;
+    private static final long serialVersionUID = 6877485218767005761L;
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> NullableDependencyException(E key, Object... args)
-   {
-      super(key, args);
-   }
-   
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public NullableDependencyException(Throwable throwable)
-   {
-      super(throwable);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> NullableDependencyException(E key, Object... args) {
+        super(key, args);
+    }
 
-   
+    /**
+     * Creates a new exception with the given cause.
+     *
+     * @param throwable The cause of the exception
+     */
+    public NullableDependencyException(Throwable throwable) {
+        super(throwable);
+    }
+
 
 }

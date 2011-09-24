@@ -19,20 +19,17 @@ package org.jboss.weld.introspector;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-public abstract class ForwardingWeldAnnotation<T extends Annotation> extends ForwardingWeldClass<T> implements WeldAnnotation<T>
-{
-   
-   @Override
-   protected abstract WeldAnnotation<T> delegate();
-   
-   public Set<WeldMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getMembers(annotationType);
-   }
-   
-   public Set<WeldMethod<?, ?>> getMembers()
-   {
-      return delegate().getMembers();
-   }
-   
+public abstract class ForwardingWeldAnnotation<T extends Annotation> extends ForwardingWeldClass<T> implements WeldAnnotation<T> {
+
+    @Override
+    protected abstract WeldAnnotation<T> delegate();
+
+    public Set<WeldMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType) {
+        return delegate().getMembers(annotationType);
+    }
+
+    public Set<WeldMethod<?, ?>> getMembers() {
+        return delegate().getMembers();
+    }
+
 }

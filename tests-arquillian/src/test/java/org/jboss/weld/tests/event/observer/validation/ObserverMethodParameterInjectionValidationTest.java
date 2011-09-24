@@ -37,32 +37,30 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class ObserverMethodParameterInjectionValidationTest
-{
-   @Deployment @ShouldThrowException(DeploymentException.class)
-   public static JavaArchive getDeployment()
-   {
-      return ShrinkWrap.create(JavaArchive.class, "test.jar")
-            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-            .addClasses(SimpleTarget.class, SimpleObserver.class);
-   }
+public class ObserverMethodParameterInjectionValidationTest {
+    @Deployment
+    @ShouldThrowException(DeploymentException.class)
+    public static JavaArchive getDeployment() {
+        return ShrinkWrap.create(JavaArchive.class, "test.jar")
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addClasses(SimpleTarget.class, SimpleObserver.class);
+    }
 
-   @Test
-   public void testDeployment()
-   {
-      // Arquillian ShouldThrowException marks it as allowed, does not stop @Test from execution
-      //Assert.fail();
-   }
+    @Test
+    public void testDeployment() {
+        // Arquillian ShouldThrowException marks it as allowed, does not stop @Test from execution
+        //Assert.fail();
+    }
 
-   /**
-    * This test should not run, but if it does, it shows Weld reporting the ambiguous error in WELD-870:
-    * WELD-001324 Argument bean must not be null
-    *
-    * @param beanManager the bean manager
-   public void testNullInjectionOnObserverMethod(BeanManager beanManager)
-   {
-      beanManager.fireEvent("message");
-   }
-   */
+    /**
+     * This test should not run, but if it does, it shows Weld reporting the ambiguous error in WELD-870:
+     * WELD-001324 Argument bean must not be null
+     *
+     * @param beanManager the bean manager
+    public void testNullInjectionOnObserverMethod(BeanManager beanManager)
+    {
+    beanManager.fireEvent("message");
+    }
+     */
 }
 

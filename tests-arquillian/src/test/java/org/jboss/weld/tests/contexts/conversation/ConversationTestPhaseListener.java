@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.contexts.conversation;
 
+import org.jboss.weld.manager.BeanManagerImpl;
+
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
@@ -26,67 +28,53 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.weld.manager.BeanManagerImpl;
+public class ConversationTestPhaseListener implements PhaseListener {
 
-public class ConversationTestPhaseListener implements PhaseListener
-{
-   
-   public static final String CID_REQUEST_PARAMETER_NAME = "cid";
+    public static final String CID_REQUEST_PARAMETER_NAME = "cid";
 
-   public static final String CID_HEADER_NAME = "org.jboss.jsr299.tck.cid";
+    public static final String CID_HEADER_NAME = "org.jboss.jsr299.tck.cid";
 
-   public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
+    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
 
-   /**
-	 * 
-	 */
-   private static final long serialVersionUID = 1197355854770726526L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1197355854770726526L;
 
-   public static final String ACTIVE_BEFORE_APPLY_REQUEST_VALUES_HEADER_NAME = "org.jboss.jsr299.tck.activeBeforeApplyRequestValues";
+    public static final String ACTIVE_BEFORE_APPLY_REQUEST_VALUES_HEADER_NAME = "org.jboss.jsr299.tck.activeBeforeApplyRequestValues";
 
-   private boolean activeBeforeApplyRequestValues;
+    private boolean activeBeforeApplyRequestValues;
 
-   public void afterPhase(PhaseEvent event)
-   {
-   }
+    public void afterPhase(PhaseEvent event) {
+    }
 
-   public void beforePhase(PhaseEvent event)
-   { 
-      BeanManagerImpl beanManager;
-      try
-      {
-         beanManager = (BeanManagerImpl) new InitialContext().lookup("java:comp/BeanManager");
-      }
-      catch (NamingException e)
-      {
-         throw new RuntimeException("Error looking up java:comp/BeanManager ", e);
-      }
-      if (event.getPhaseId().equals(PhaseId.APPLY_REQUEST_VALUES))
-      {
-         try
-         {
-            beanManager.getContext(ConversationScoped.class);
-            activeBeforeApplyRequestValues = true;
-         }
-         catch (ContextNotActiveException e)
-         {
-            activeBeforeApplyRequestValues = false;
-         }
-      }
-      if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE))
-      {
-         Conversation conversation = beanManager.instance().select(Conversation.class).get();
-         HttpServletResponse response = (HttpServletResponse) event.getFacesContext().getExternalContext().getResponse();
-         response.addHeader(CID_HEADER_NAME, conversation.getId() == null ? " null" : conversation.getId());
-         response.addHeader(LONG_RUNNING_HEADER_NAME, String.valueOf(!conversation.isTransient()));
-         response.addHeader(Cloud.RAINED_HEADER_NAME, new Boolean(beanManager.instance().select(Cloud.class).get().isRained()).toString());
-         response.addHeader(ACTIVE_BEFORE_APPLY_REQUEST_VALUES_HEADER_NAME, new Boolean(activeBeforeApplyRequestValues).toString());
-      }
-   }
+    public void beforePhase(PhaseEvent event) {
+        BeanManagerImpl beanManager;
+        try {
+            beanManager = (BeanManagerImpl) new InitialContext().lookup("java:comp/BeanManager");
+        } catch (NamingException e) {
+            throw new RuntimeException("Error looking up java:comp/BeanManager ", e);
+        }
+        if (event.getPhaseId().equals(PhaseId.APPLY_REQUEST_VALUES)) {
+            try {
+                beanManager.getContext(ConversationScoped.class);
+                activeBeforeApplyRequestValues = true;
+            } catch (ContextNotActiveException e) {
+                activeBeforeApplyRequestValues = false;
+            }
+        }
+        if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE)) {
+            Conversation conversation = beanManager.instance().select(Conversation.class).get();
+            HttpServletResponse response = (HttpServletResponse) event.getFacesContext().getExternalContext().getResponse();
+            response.addHeader(CID_HEADER_NAME, conversation.getId() == null ? " null" : conversation.getId());
+            response.addHeader(LONG_RUNNING_HEADER_NAME, String.valueOf(!conversation.isTransient()));
+            response.addHeader(Cloud.RAINED_HEADER_NAME, new Boolean(beanManager.instance().select(Cloud.class).get().isRained()).toString());
+            response.addHeader(ACTIVE_BEFORE_APPLY_REQUEST_VALUES_HEADER_NAME, new Boolean(activeBeforeApplyRequestValues).toString());
+        }
+    }
 
-   public PhaseId getPhaseId()
-   {
-      return PhaseId.ANY_PHASE;
-   }
+    public PhaseId getPhaseId() {
+        return PhaseId.ANY_PHASE;
+    }
 
 }

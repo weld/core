@@ -20,28 +20,22 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
-public class ConversationTestPhaseListener implements PhaseListener
-{
-   
-   public void afterPhase(PhaseEvent event)
-   {
-      if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.jspx"))
-      {
-         throw new RuntimeException();
-      }
-   }
+public class ConversationTestPhaseListener implements PhaseListener {
 
-   public void beforePhase(PhaseEvent event)
-   { 
-      if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.jspx"))
-      {
-         throw new RuntimeException();
-      }
-   }
+    public void afterPhase(PhaseEvent event) {
+        if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.jspx")) {
+            throw new RuntimeException();
+        }
+    }
 
-   public PhaseId getPhaseId()
-   {
-      return PhaseId.ANY_PHASE;
-   }
+    public void beforePhase(PhaseEvent event) {
+        if (event.getPhaseId().equals(PhaseId.RENDER_RESPONSE) && event.getFacesContext().getViewRoot().getViewId().equals("/thunderstorm.jspx")) {
+            throw new RuntimeException();
+        }
+    }
+
+    public PhaseId getPhaseId() {
+        return PhaseId.ANY_PHASE;
+    }
 
 }

@@ -20,23 +20,21 @@ package org.jboss.weld.bean.proxy;
 /**
  * General interface for all proxies adding functionality that can change
  * the behavior of the proxy during runtime.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public interface Proxy
-{
-   /**
-    * Gets the proxied bean instance.
-    * 
-    * @return the bean instance being proxied
-    */
-   public BeanInstance proxy_getInstance();
-   
-   /**
-    * Sets the proxied instance.
-    * 
-    * @param beanInstance a bean instance to proxy
-    */
-   public void proxy_setInstance(BeanInstance beanInstance);
+public interface Proxy {
+    /**
+     * Gets the proxied bean instance.
+     *
+     * @return the bean instance being proxied
+     */
+    public BeanInstance proxy_getInstance();
+
+    /**
+     * Sets the proxied instance.
+     *
+     * @param beanInstance a bean instance to proxy
+     */
+    public void proxy_setInstance(BeanInstance beanInstance);
 }

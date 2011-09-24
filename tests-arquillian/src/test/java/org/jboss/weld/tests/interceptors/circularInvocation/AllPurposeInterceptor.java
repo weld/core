@@ -17,26 +17,24 @@
 
 package org.jboss.weld.tests.interceptors.circularInvocation;
 
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @AllPurpose
-public class AllPurposeInterceptor
-{
-   public static List<Method> interceptedMethods = new ArrayList<Method>();
+@Interceptor
+@AllPurpose
+public class AllPurposeInterceptor {
+    public static List<Method> interceptedMethods = new ArrayList<Method>();
 
-   @AroundInvoke
-   public Object intercept (InvocationContext invocationContext) throws Exception
-   {
-      interceptedMethods.add(invocationContext.getMethod());
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object intercept(InvocationContext invocationContext) throws Exception {
+        interceptedMethods.add(invocationContext.getMethod());
+        return invocationContext.proceed();
+    }
 }

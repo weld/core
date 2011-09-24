@@ -16,32 +16,27 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
-
-import java.util.Map;
-
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
-
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation
-{
-   
-   public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments)
-   {
-      new AfterDeploymentValidationImpl(beanManager).fire(beanDeployments);
-   }
-   
-   protected AfterDeploymentValidationImpl(BeanManagerImpl beanManager)
-   {
-      super(beanManager, AfterDeploymentValidation.class, EMPTY_TYPES);
-   }
-   
-   public void addDeploymentProblem(Throwable t)
-   {
-      getErrors().add(t);
-   }
-   
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import java.util.Map;
+
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+
+public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation {
+
+    public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+        new AfterDeploymentValidationImpl(beanManager).fire(beanDeployments);
+    }
+
+    protected AfterDeploymentValidationImpl(BeanManagerImpl beanManager) {
+        super(beanManager, AfterDeploymentValidation.class, EMPTY_TYPES);
+    }
+
+    public void addDeploymentProblem(Throwable t) {
+        getErrors().add(t);
+    }
+
 }

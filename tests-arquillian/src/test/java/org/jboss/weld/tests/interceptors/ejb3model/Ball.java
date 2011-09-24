@@ -26,34 +26,29 @@ import javax.interceptor.InvocationContext;
  * @author Marius Bogoevici
  */
 @Interceptors({Goalkeeper.class, Referee.class})
-public class Ball
-{
-   public static boolean played = false;
+public class Ball {
+    public static boolean played = false;
 
-   public static boolean aroundInvoke = false;
-   
-   @ExcludeClassInterceptors
-   @Interceptors(Defender.class)
-   public void shoot()
-   {
-      played = true;
-   }
+    public static boolean aroundInvoke = false;
 
-   @Interceptors(Defender.class)
-   public void pass()
-   {
-      played = true;
-   }
+    @ExcludeClassInterceptors
+    @Interceptors(Defender.class)
+    public void shoot() {
+        played = true;
+    }
 
-   public void lob()
-   {
-      played = true;
-   }
+    @Interceptors(Defender.class)
+    public void pass() {
+        played = true;
+    }
 
-   @AroundInvoke
-   public Object aroundInvoke(InvocationContext invocationContext) throws Exception
-   {
-      aroundInvoke = true;
-      return invocationContext.proceed();
-   }
+    public void lob() {
+        played = true;
+    }
+
+    @AroundInvoke
+    public Object aroundInvoke(InvocationContext invocationContext) throws Exception {
+        aroundInvoke = true;
+        return invocationContext.proceed();
+    }
 }

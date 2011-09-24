@@ -24,15 +24,14 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Transactional
-public class TransactionalInterceptor
-{
-   static int invocationCount = 0;
+@Interceptor
+@Transactional
+public class TransactionalInterceptor {
+    static int invocationCount = 0;
 
-   @AroundInvoke
-   public Object doInTransaction(InvocationContext invocationContext) throws Exception
-   {
-      invocationCount++;
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object doInTransaction(InvocationContext invocationContext) throws Exception {
+        invocationCount++;
+        return invocationContext.proceed();
+    }
 }
