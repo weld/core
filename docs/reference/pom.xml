@@ -1,137 +1,141 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-   <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-   <groupId>org.jboss.weld.reference-guide</groupId>
-   <artifactId>weld-reference-guide</artifactId>
-   <version>1.1.3-SNAPSHOT</version>
-   <packaging>jdocbook</packaging>
-   <name>Weld Reference Guide</name>
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <groupId>org.jboss.weld.reference-guide</groupId>
+    <artifactId>weld-reference-guide</artifactId>
+    <version>1.1.3-SNAPSHOT</version>
+    <packaging>jdocbook</packaging>
+    <name>Weld Reference Guide</name>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <parent>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-core-parent</artifactId>
-      <version>1.1.3-SNAPSHOT</version>
-      <relativePath>../../pom.xml</relativePath>
-   </parent>
-  
-   <properties>
-      <pdf.name>weld-reference.pdf</pdf.name>
-      <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
-      <jdocbookSourceDirectory>src/main/docbook</jdocbookSourceDirectory>
-      <zanata.plugin.version>1.3</zanata.plugin.version>
-      <zanata.srcDir>src/main/docbook</zanata.srcDir>
-      <zanata.dstDir>src/main/docbook</zanata.dstDir>
-   </properties>
+    <parent>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-core-parent</artifactId>
+        <version>1.1.3-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-   <build>
-      <defaultGoal>process-classes</defaultGoal>
-      <plugins>
-         <plugin>
-            <groupId>org.jboss.maven.plugins</groupId>
-            <artifactId>maven-jdocbook-plugin</artifactId>
-            <version>2.3.3</version>
-            <configuration>
-               <sourceDirectory>${jdocbookSourceDirectory}</sourceDirectory>
-               <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.xml</sourceDocumentName>
-            </configuration>
-         </plugin>
-         <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-               <execution>
-                  <phase>process-classes</phase>
-                  <configuration>
-                     <tasks>
-                        <copy file="${basedir}/target/docbook/publish/en-US/pdf/${pdf.name}" todir="${basedir}" />
-                     </tasks>
-                  </configuration>
-                  <goals>
-                     <goal>run</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>attach-zip</id>
-                  <phase>package</phase>
-                  <goals>
-                     <goal>attach-artifact</goal>
-                  </goals>
-                  <configuration>
-                     <artifacts>
-                        <artifact>
-                           <file>${project.build.outputDirectory}/${project.artifactId}-${project.version}.war</file>
-                           <type>war</type>
-                        </artifact>
-                     </artifacts>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-maven-plugin</artifactId>
-            <version>${zanata.plugin.version}</version>
-         </plugin>
-      </plugins>
-   </build>
+    <properties>
+        <pdf.name>weld-reference.pdf</pdf.name>
+        <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
+        <jdocbookSourceDirectory>src/main/docbook</jdocbookSourceDirectory>
+        <zanata.plugin.version>1.3</zanata.plugin.version>
+        <zanata.srcDir>src/main/docbook</zanata.srcDir>
+        <zanata.dstDir>src/main/docbook</zanata.dstDir>
+    </properties>
 
-   <profiles>
-
-      <profile>
-         <id>translations</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.jboss.maven.plugins</groupId>
-                  <artifactId>maven-jdocbook-plugin</artifactId>
-
-                  <executions>
-                     <execution>
-                        <phase>process-resources</phase>
+    <build>
+        <defaultGoal>process-classes</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.jboss.maven.plugins</groupId>
+                <artifactId>maven-jdocbook-plugin</artifactId>
+                <version>2.3.3</version>
+                <configuration>
+                    <sourceDirectory>${jdocbookSourceDirectory}</sourceDirectory>
+                    <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.xml</sourceDocumentName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <tasks>
+                                <copy file="${basedir}/target/docbook/publish/en-US/pdf/${pdf.name}"
+                                      todir="${basedir}"/>
+                            </tasks>
+                        </configuration>
                         <goals>
-                           <goal>translate</goal>
+                            <goal>run</goal>
                         </goals>
-                     </execution>
-                  </executions>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>
+                                        ${project.build.outputDirectory}/${project.artifactId}-${project.version}.war
+                                    </file>
+                                    <type>war</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.zanata</groupId>
+                <artifactId>zanata-maven-plugin</artifactId>
+                <version>${zanata.plugin.version}</version>
+            </plugin>
+        </plugins>
+    </build>
 
-                  <configuration>
-                     <translations>
-                        <translation>it-IT</translation>
-                        <translation>zh-CN</translation>
-                        <translation>zh-TW</translation>
-                        <translation>es-ES</translation>
-                        <translation>ko-KR</translation>
-                        <translation>de-DE</translation>
-                        <translation>pt-BR</translation>
-                     </translations>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
+    <profiles>
 
-   </profiles>
+        <profile>
+            <id>translations</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jboss.maven.plugins</groupId>
+                        <artifactId>maven-jdocbook-plugin</artifactId>
+
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>translate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <translations>
+                                <translation>it-IT</translation>
+                                <translation>zh-CN</translation>
+                                <translation>zh-TW</translation>
+                                <translation>es-ES</translation>
+                                <translation>ko-KR</translation>
+                                <translation>de-DE</translation>
+                                <translation>pt-BR</translation>
+                            </translations>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 
 
-   <!-- SCM and distribution management -->
-   <scm>
-      <connection>scm:git:git://github.com/weld/core.git</connection>
-      <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
-      <url>scm:git:git://github.com/weld/core.git</url>
-   </scm>
-   
+    <!-- SCM and distribution management -->
+    <scm>
+        <connection>scm:git:git://github.com/weld/core.git</connection>
+        <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
+        <url>scm:git:git://github.com/weld/core.git</url>
+    </scm>
+
 </project>
