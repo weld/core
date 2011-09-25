@@ -11,6 +11,10 @@ import javax.servlet.http.HttpSession;
 
 public class HttpConversationContextImpl extends AbstractConversationContext<HttpServletRequest, HttpSession> implements HttpConversationContext {
 
+    public HttpConversationContextImpl(String contextId) {
+        super(contextId);
+    }
+
     @Override
     protected void setSessionAttribute(HttpServletRequest request, String name, Object value, boolean create) {
         if (create || request.getSession(false) != null) {

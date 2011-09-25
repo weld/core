@@ -49,7 +49,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
     }
 
     public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext) {
-        return Container.instance().services().get(CurrentInjectionPoint.class).peek();
+        return Container.instance(getBeanManager().getContextId()).services().get(CurrentInjectionPoint.class).peek();
     }
 
     public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {

@@ -44,6 +44,8 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     private transient Bean<T> bean;
     // The bean index in the manager
     private final String id;
+
+    private final String contextId;
     // The actual type of the resulting bean instance
     private final Class<?> instanceType;
 
@@ -56,15 +58,16 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
      * @param bean The contextual bean
      * @param id   The unique identifier of this bean
      */
-    public ContextBeanInstance(Bean<T> bean, String id) {
+    public ContextBeanInstance(Bean<T> bean, String id, String contextId) {
         this.bean = bean;
         this.id = id;
+        this.contextId = contextId;
         this.instanceType = computeInstanceType(bean);
         log.trace("Created context instance locator for bean " + bean + " identified as " + id);
     }
 
     public T getInstance() {
-        Container container = Container.instance();
+        Container container = Container.instance(contextId);
         if (bean == null) {
             bean = container.services().get(ContextualStore.class).<Bean<T>, T>getContextual(id);
         }

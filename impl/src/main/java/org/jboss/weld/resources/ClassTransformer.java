@@ -51,12 +51,15 @@ public class ClassTransformer implements Service {
 
         private final ClassTransformer classTransformer;
 
-        private TransformTypeToWeldClass(ClassTransformer classTransformer) {
+        private final String contextId;
+
+        private TransformTypeToWeldClass(String contextId, ClassTransformer classTransformer) {
             this.classTransformer = classTransformer;
+            this.contextId = contextId;
         }
 
         public WeldClass<?> apply(TypeHolder<?> from) {
-            return WeldClassImpl.of(from.getRawType(), from.getBaseType(), classTransformer);
+            return WeldClassImpl.of(contextId, from.getRawType(), from.getBaseType(), classTransformer);
         }
 
     }
@@ -65,12 +68,15 @@ public class ClassTransformer implements Service {
 
         private final ClassTransformer classTransformer;
 
-        private TransformClassToWeldAnnotation(ClassTransformer classTransformer) {
+        private final String contextId;
+
+        private TransformClassToWeldAnnotation(String contextId, ClassTransformer classTransformer) {
             this.classTransformer = classTransformer;
+            this.contextId = contextId;
         }
 
         public WeldAnnotation<?> apply(Class<? extends Annotation> from) {
-            return WeldAnnotationImpl.create(from, classTransformer);
+            return WeldAnnotationImpl.create(contextId, from, classTransformer);
         }
 
     }
@@ -79,13 +85,16 @@ public class ClassTransformer implements Service {
 
         private final ClassTransformer classTransformer;
 
-        private TransformAnnotatedTypeToWeldClass(ClassTransformer classTransformer) {
+        private final String contextId;
+
+        private TransformAnnotatedTypeToWeldClass(String contextId, ClassTransformer classTransformer) {
             super();
             this.classTransformer = classTransformer;
+            this.contextId = contextId;
         }
 
         public WeldClass<?> apply(AnnotatedType<?> from) {
-            return WeldClassImpl.of(from, classTransformer);
+            return WeldClassImpl.of(contextId, from, classTransformer);
         }
 
     }
@@ -133,11 +142,11 @@ public class ClassTransformer implements Service {
     private final ConcurrentMap<Class<? extends Annotation>, WeldAnnotation<?>> annotations;
     private final TypeStore typeStore;
 
-    public ClassTransformer(TypeStore typeStore) {
+    public ClassTransformer(String contextId, TypeStore typeStore) {
         MapMaker maker = new MapMaker();
-        this.classes = maker.makeComputingMap(new TransformTypeToWeldClass(this));
-        this.annotatedTypes = maker.makeComputingMap(new TransformAnnotatedTypeToWeldClass(this));
-        this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation(this));
+        this.classes = maker.makeComputingMap(new TransformTypeToWeldClass(contextId, this));
+        this.annotatedTypes = maker.makeComputingMap(new TransformAnnotatedTypeToWeldClass(contextId, this));
+        this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation(contextId, this));
         this.typeStore = typeStore;
     }
 

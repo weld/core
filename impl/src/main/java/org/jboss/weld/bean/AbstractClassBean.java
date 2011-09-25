@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
@@ -108,6 +110,35 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     private static <T> InterceptorMetadata<T>[] emptyInterceptorMetadataArray() {
         return cast(EMPTY_INTERCEPTOR_METADATA_ARRAY);
+    }
+
+    /**
+     * Extracts the complete set of interception bindings from a given set of
+     * annotations.
+     *
+     * @param beanManager
+     * @param annotations
+     * @return
+     */
+    protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl beanManager, Set<Annotation> annotations) {
+        Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
+        for (Annotation annotation : annotations) {
+            if (beanManager.isInterceptorBinding(annotation.annotationType())) {
+                foundInterceptionBindingTypes.add(annotation);
+                foundInterceptionBindingTypes.addAll(beanManager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
+            }
+        }
+        return foundInterceptionBindingTypes;
+    }
+
+    private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
+        List<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
+        for (Interceptor<?> interceptor : interceptors) {
+
+            SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(getBeanManager().getContextId(), interceptor, getServices().get(ContextualStore.class));
+            serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
+        }
+        return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
     }
 
     // Logger
@@ -188,7 +219,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             initEnhancedSubclass();
         }
         if (hasDecorators()) {
-            decoratorProxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
+            decoratorProxyFactory = new ProxyFactory<T>(getBeanManager().getContextId(), getType(), getTypes(), this);
             decoratorProxyFactory.getProxyClass(); //eagerly generate the proxy class
         }
     }
@@ -220,7 +251,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     protected T getOuterDelegate(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
         assert hasDecorators() : "Bean does not have decorators";
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getContextualStore(), decorators);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanManager.getContextId(), beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getContextualStore(), decorators);
         DecorationHelper.push(decorationHelper);
         try {
             final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
@@ -253,7 +284,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the injection points
      */
     protected void initInjectableFields() {
-        injectableFields = Beans.getFieldInjectionPoints(this, annotatedItem);
+        injectableFields = Beans.getFieldInjectionPoints(beanManager.getContextId(), this, annotatedItem);
         addInjectionPoints(Beans.mergeFieldInjectionPoints(injectableFields));
     }
 
@@ -261,8 +292,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the initializer methods
      */
     protected void initInitializerMethods() {
-        initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated());
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, initializerMethods));
+        initializerMethods = Beans.getInitializerMethods(beanManager.getContextId(), this, getWeldAnnotated());
+        addInjectionPoints(Beans.getParameterInjectionPoints(beanManager.getContextId(), this, initializerMethods));
     }
 
     @Override
@@ -446,8 +477,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the constructor
      */
     protected void initConstructor() {
-        this.constructor = Beans.getBeanConstructor(this, getWeldAnnotated());
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor));
+        this.constructor = Beans.getBeanConstructor(beanManager.getContextId(), this, getWeldAnnotated());
+        addInjectionPoints(Beans.getParameterInjectionPoints(beanManager.getContextId(), this, constructor));
     }
 
     /**
@@ -465,8 +496,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     protected void initEnhancedSubclass() {
         final ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
-        enhancedSubclass = transformer.loadClass(createEnhancedSubclass());
-        constructorForEnhancedSubclass = WeldConstructorImpl.of(
+        enhancedSubclass = beanManager.getServices().get(ClassTransformer.class).loadClass(createEnhancedSubclass());
+        constructorForEnhancedSubclass = WeldConstructorImpl.of(getBeanManager().getContextId(),
                 enhancedSubclass.getDeclaredWeldConstructor(getConstructor().getSignature()),
                 enhancedSubclass,
                 transformer);
@@ -477,7 +508,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         for (WeldMethod<?, ?> method : Beans.getInterceptableMethods(this.getWeldAnnotated())) {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
         }
-        return new InterceptedSubclassFactory<T>(getType(), getTypes(), this, enhancedMethodSignatures).getProxyClass();
+        return new InterceptedSubclassFactory<T>(getBeanManager().getContextId(), getType(), Collections.<Type>emptySet(), this, enhancedMethodSignatures).getProxyClass();
     }
 
     private ContextualStore getContextualStore() {
@@ -663,7 +694,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
 
         private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getInterceptorMetadata(Interceptor<?> interceptor) {
-            SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, getContextualStore());
+            SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(getBeanManager().getContextId(), interceptor, getContextualStore());
             if (interceptor instanceof InterceptorImpl) {
                 InterceptorImpl interceptorImpl = (InterceptorImpl) interceptor;
                 WeldInterceptorClassMetadata classMetadata = WeldInterceptorClassMetadata.of(interceptorImpl.getWeldAnnotated());

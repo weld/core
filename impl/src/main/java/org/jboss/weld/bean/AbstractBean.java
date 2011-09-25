@@ -131,7 +131,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         initScope();
         checkDelegateInjectionPoints();
         if (getScope() != null) {
-            proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+            proxyRequired = Container.instance(beanManager.getContextId()).services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
         } else {
             proxyRequired = false;
         }
@@ -420,7 +420,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     public boolean isNormalScoped() {
-        return Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+        return Container.instance(beanManager.getContextId()).services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
     }
 
     public boolean isAlternative() {

@@ -23,6 +23,7 @@
 package org.jboss.weld.servlet;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
@@ -57,64 +58,77 @@ public class WeldListener extends AbstractServletListener {
     private transient HttpSessionContext sessionContextCache;
     private transient HttpRequestContext requestContextCache;
     private transient HttpConversationContext conversationContextCache;
+    private String contextId;
 
-    private HttpSessionContext sessionContext() {
+    private HttpSessionContext sessionContext(String id) {
         if (sessionContextCache == null) {
-            this.sessionContextCache = Container.instance().deploymentManager().instance().select(HttpSessionContext.class).get();
+            this.sessionContextCache = Container.instance(id).deploymentManager().instance().select(HttpSessionContext.class).get();
         }
         return sessionContextCache;
     }
 
-    private HttpRequestContext requestContext() {
+    private HttpRequestContext requestContext(String id) {
         if (requestContextCache == null) {
-            this.requestContextCache = Container.instance().deploymentManager().instance().select(HttpRequestContext.class).get();
+            this.requestContextCache = Container.instance(id).deploymentManager().instance().select(HttpRequestContext.class).get();
         }
         return requestContextCache;
     }
 
-    private HttpConversationContext conversationContext() {
+    private HttpConversationContext conversationContext(String id) {
         if (conversationContextCache == null) {
-            this.conversationContextCache = Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
+            this.conversationContextCache = Container.instance(id).deploymentManager().instance().select(HttpConversationContext.class).get();
         }
         return conversationContextCache;
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
+        if (contextId == null) {
+            contextId = (String) event.getSession().getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+        }
+        if (contextId == null) {
+            contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+        }
         // JBoss AS will still start the deployment even if WB fails
-        if (Container.available()) {
+        if (Container.available(contextId)) {
             // Mark the session context and conversation contexts to destroy
             // instances when appropriate
-            sessionContext().destroy(event.getSession());
+            sessionContext(contextId).destroy(event.getSession());
             RequestScopedBeanCache.endRequest();
         }
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
+        if (contextId == null) {
+            contextId = (String) event.getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+        }
+        if (contextId == null) {
+            contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+        }
         log.trace(REQUEST_DESTROYED, event.getServletRequest());
         // JBoss AS will still start the deployment even if WB fails
-        if (Container.available()) {
+        if (Container.available(contextId)) {
             if (event.getServletRequest() instanceof HttpServletRequest) {
                 HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
 
                 try {
-                    requestContext().invalidate();
-                    requestContext().deactivate();
-                    sessionContext().deactivate();
+                    requestContext(contextId).invalidate();
+                    requestContext(contextId).deactivate();
+                    sessionContext(contextId).deactivate();
                     /*
                     * The conversation context is invalidated and deactivated in the
                     * WeldPhaseListener, however if an exception is thrown by the action
                     * method, we can't detect that in the phase listener. Make sure it
                     * happens!
                     */
-                    if (conversationContext().isActive()) {
-                        conversationContext().deactivate();
+                    if (conversationContext(contextId).isActive()) {
+                        conversationContext(contextId).deactivate();
                     }
                 } finally {
-                    requestContext().dissociate(request);
-                    sessionContext().dissociate(request);
-                    conversationContext().dissociate(request);
+                    requestContext(contextId).dissociate(request);
+                    sessionContext(contextId).dissociate(request);
+                    conversationContext(contextId).dissociate(request);
                 }
             } else {
                 throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
@@ -124,21 +138,27 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
+        if (contextId == null) {
+            contextId = (String) event.getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+        }
+        if (contextId == null) {
+            contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+        }
         log.trace(REQUEST_INITIALIZED, event.getServletRequest());
         // JBoss AS will still start the deployment even if Weld fails to start
-        if (Container.available()) {
+        if (Container.available(contextId)) {
             if (event.getServletRequest() instanceof HttpServletRequest) {
                 HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
 
-                requestContext().associate(request);
-                sessionContext().associate(request);
-                conversationContext().associate(request);
+                requestContext(contextId).associate(request);
+                sessionContext(contextId).associate(request);
+                conversationContext(contextId).associate(request);
                 /*
                 * The conversation context is activated in the WeldPhaseListener
                 */
 
-                requestContext().activate();
-                sessionContext().activate();
+                requestContext(contextId).activate();
+                sessionContext(contextId).activate();
             } else {
                 throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
             }

@@ -17,12 +17,11 @@
 
 package org.jboss.weld.tests.decorators.custom;
 
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
-import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.metadata.TypeStore;
-import org.jboss.weld.resources.ClassTransformer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -32,119 +31,146 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
+
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.introspector.jlr.WeldClassImpl;
+import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.resources.ClassTransformer;
 
 /**
  * @author Marius Bogoevici
  */
-public class CustomDecorator implements Decorator<Object> {
-    private final Set<InjectionPoint> injectionPoints;
-    private BeanManager beanManager;
+public class CustomDecorator implements Decorator<Object>
+{
+   private final Set<InjectionPoint> injectionPoints;
+   private BeanManager beanManager;
 
-    public CustomDecorator(BeanManager beanManager) {
-        this.beanManager = beanManager;
-        injectionPoints = Collections.singleton((InjectionPoint) new CustomInjectionPoint());
-    }
+   public CustomDecorator(BeanManager beanManager)
+   {
+      this.beanManager = beanManager;
+      injectionPoints = Collections.singleton((InjectionPoint)new CustomInjectionPoint());
+   }
 
-    public Type getDelegateType() {
-        return Window.class;
-    }
+   public Type getDelegateType()
+   {
+      return Window.class;
+   }
 
-    public Set<Annotation> getDelegateQualifiers() {
-        return Collections.emptySet();
-    }
+   public Set<Annotation> getDelegateQualifiers()
+   {
+      return Collections.emptySet();
+   }
 
-    public Set<Type> getDecoratedTypes() {
-        return Collections.singleton((Type) Window.class);
-    }
+   public Set<Type> getDecoratedTypes()
+   {
+      return Collections.singleton((Type) Window.class);
+   }
 
-    public Set<Type> getTypes() {
-        return Collections.<Type>singleton(CustomWindowFrame.class);
-    }
+   public Set<Type> getTypes()
+   {
+      return Collections.<Type>singleton(CustomWindowFrame.class);
+   }
 
-    public Set<Annotation> getQualifiers() {
-        return Collections.emptySet();
-    }
+   public Set<Annotation> getQualifiers()
+   {
+      return Collections.emptySet();
+   }
 
-    public Class<? extends Annotation> getScope() {
-        return Dependent.class;
-    }
+   public Class<? extends Annotation> getScope()
+   {
+      return Dependent.class;
+   }
 
-    public String getName() {
-        return null;
-    }
+   public String getName()
+   {
+      return null;
+   }
 
-    public Set<Class<? extends Annotation>> getStereotypes() {
-        return Collections.emptySet();
+   public Set<Class<? extends Annotation>> getStereotypes()
+   {
+      return Collections.emptySet();
 
-    }
+   }
 
-    public Class<?> getBeanClass() {
-        return CustomWindowFrame.class;
-    }
+   public Class<?> getBeanClass()
+   {
+      return CustomWindowFrame.class;
+   }
 
-    public boolean isAlternative() {
-        return false;
-    }
+   public boolean isAlternative()
+   {
+      return false;
+   }
 
-    public boolean isNullable() {
-        return false;
-    }
+   public boolean isNullable()
+   {
+      return false;
+   }
 
-    public Set<InjectionPoint> getInjectionPoints() {
-        return injectionPoints;
-    }
+   public Set<InjectionPoint> getInjectionPoints()
+   {
+      return injectionPoints;
+   }
 
-    public Object create(CreationalContext<Object> creationalContext) {
-        CustomWindowFrame customFrame = new CustomWindowFrame();
-        customFrame.window = (Window) beanManager.getInjectableReference(injectionPoints.iterator().next(), creationalContext);
-        return customFrame;
-    }
+   public Object create(CreationalContext<Object> creationalContext)
+   {
+      CustomWindowFrame customFrame = new CustomWindowFrame();
+      customFrame.window = (Window) beanManager.getInjectableReference(injectionPoints.iterator().next(), creationalContext);
+      return customFrame;
+   }
 
-    public void destroy(Object instance, CreationalContext<Object> creationalContext) {
-        creationalContext.release();
-    }
+   public void destroy(Object instance, CreationalContext<Object> creationalContext)
+   {
+      creationalContext.release();
+   }
 
-    class CustomInjectionPoint implements InjectionPoint {
-        private final WeldClass<?> targetClass;
-        private final WeldField<CustomWindowFrame, ?> windowField;
+   class CustomInjectionPoint implements InjectionPoint
+   {
+      private final WeldClass<?> targetClass;
+      private final WeldField<CustomWindowFrame,?> windowField;
 
-        public CustomInjectionPoint() {
-            ClassTransformer transformer = new ClassTransformer(new TypeStore());
-            targetClass = WeldClassImpl.of(CustomWindowFrame.class, transformer);
-            windowField = targetClass.getDeclaredWeldField("window");
-        }
+      public CustomInjectionPoint()
+      {
+         ClassTransformer transformer = new ClassTransformer("STATIC_INSTANCE", new TypeStore());
+         targetClass = WeldClassImpl.of("STATIC_INSTANCE", CustomWindowFrame.class, transformer);
+         windowField = targetClass.getDeclaredWeldField("window");
+      }
 
-        public Type getType() {
-            return Window.class;
-        }
+      public Type getType()
+      {
+         return Window.class;
+      }
 
-        public Set<Annotation> getQualifiers() {
-            return Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
-        }
+      public Set<Annotation> getQualifiers()
+      {
+         return Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
+      }
 
-        public Bean<?> getBean() {
-            return CustomDecorator.this;
-        }
+      public Bean<?> getBean()
+      {
+         return CustomDecorator.this;
+      }
 
-        public Member getMember() {
-            return ((AnnotatedField<?>) windowField).getJavaMember();
-        }
+      public Member getMember()
+      {
+         return ((AnnotatedField<?>)windowField).getJavaMember();
+      }
 
-        public Annotated getAnnotated() {
-            return windowField;
-        }
+      public Annotated getAnnotated()
+      {
+         return windowField;
+      }
 
-        public boolean isDelegate() {
-            return true;
-        }
+      public boolean isDelegate()
+      {
+         return true;
+      }
 
-        public boolean isTransient() {
-            return false;
-        }
-    }
+      public boolean isTransient()
+      {
+         return false;
+      }
+   }
 }

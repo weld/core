@@ -41,8 +41,8 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
     /**
      * Constructor
      */
-    public HttpRequestContextImpl() {
-        super(false);
+    public HttpRequestContextImpl(String contextId) {
+        super(contextId, false);
         this.namingScheme = new SimpleNamingScheme(HttpRequestContext.class.getName());
     }
 

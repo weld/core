@@ -35,7 +35,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
@@ -64,17 +63,17 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
     private final boolean cacheable;
     private Bean<?> cachedBean;
     private Type type;
+    private final String contextId;
 
-
-    public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field) {
-        return new FieldInjectionPoint<T, X>(declaringBean, injectionTargetClass, field);
+    public static <T, X> FieldInjectionPoint<T, X> of(String contextId, Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field) {
+        return new FieldInjectionPoint<T, X>(contextId, declaringBean, injectionTargetClass, field);
     }
 
-    protected FieldInjectionPoint(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field) {
-        assert (declaringBean != null || injectionTargetClass != null) : "both declaringBean and injectionTargetClass are null";
+    protected FieldInjectionPoint(String contextId, Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field) {
         this.declaringBean = declaringBean;
         this.injectionTargetClass = injectionTargetClass;
         this.field = field;
+        this.contextId = contextId;
         this.delegate = isAnnotationPresent(Inject.class) && isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
         this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(field.getJavaMember().getType()) && !Instance.class.isAssignableFrom(field.getJavaMember().getType());
     }
@@ -179,9 +178,8 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
     }
 
     // Serialization
-
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<T>(this);
+        return new SerializationProxy<T>(contextId, this);
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
@@ -195,10 +193,15 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
         private final String fieldName;
         private final String injectionTargetClassName;
 
-        public SerializationProxy(FieldInjectionPoint<T, ?> injectionPoint) {
-            super(injectionPoint);
+        public SerializationProxy(String contextId, FieldInjectionPoint<T, ?> injectionPoint) {
+            super(contextId, injectionPoint);
             this.fieldName = injectionPoint.getName();
             this.injectionTargetClassName = injectionPoint.getInjectionTargetClass().getName();
+        }
+
+        protected WeldClass<?> getInjectionTargetClass() {
+            Class<?> clazz = getService(ResourceLoader.class).classForName(injectionTargetClassName);
+            return getService(ClassTransformer.class).loadClass(clazz);
         }
 
         private Object readResolve() {
@@ -206,13 +209,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
             if (field == null || (getDeclaringBean() == null && getDeclaringBeanId() != null)) {
                 throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), fieldName);
             }
-
-            return FieldInjectionPoint.of(getDeclaringBean(), getInjectionTargetClass(), getWeldField());
-        }
-
-        protected WeldClass<?> getInjectionTargetClass() {
-            Class<?> clazz = getService(ResourceLoader.class).classForName(injectionTargetClassName);
-            return getService(ClassTransformer.class).loadClass(clazz);
+            return FieldInjectionPoint.of(contextId, getDeclaringBean(), getInjectionTargetClass(), getWeldField());
         }
 
         protected WeldField<T, ?> getWeldField() {

@@ -226,7 +226,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     protected void initProxyClass() {
-        this.proxyClass = new EnterpriseProxyFactory<T>(getWeldAnnotated().getJavaClass(), this).getProxyClass();
+        this.proxyClass = new EnterpriseProxyFactory<T>(getBeanManager().getContextId(), getWeldAnnotated().getJavaClass(), this).getProxyClass();
     }
 
     /**
@@ -290,7 +290,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         try {
             T instance = SecureReflections.newInstance(proxyClass);
             creationalContext.push(instance);
-            ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(creationalContext), this);
+            ProxyFactory.setBeanInstance(getBeanManager().getContextId(), instance, createEnterpriseTargetBeanInstance(creationalContext), this);
             if (hasDecorators()) {
                 instance = applyDecorators(instance, creationalContext, null);
             }

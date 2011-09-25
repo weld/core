@@ -37,7 +37,7 @@ import java.lang.annotation.Annotation;
 public class ThreadContext extends AbstractUnboundContext {
 
     public ThreadContext() {
-        super(false);
+        super("STATIC_INSTANCE", false);
     }
 
     public Class<? extends Annotation> getScope() {

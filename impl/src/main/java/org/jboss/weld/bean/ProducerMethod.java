@@ -75,7 +75,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     protected ProducerMethod(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
-        this.method = MethodInjectionPoint.of(this, method);
+        this.method = MethodInjectionPoint.of(beanManager.getContextId(), this, method);
         initType();
         initTypes();
         initQualifiers();
@@ -150,7 +150,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      */
     protected void initProducerMethodInjectableParameters() {
         for (WeldParameter<?, ?> parameter : method.getWeldParameters()) {
-            addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
+            addInjectionPoint(ParameterInjectionPoint.of(beanManager.getContextId(), this, parameter));
         }
     }
 

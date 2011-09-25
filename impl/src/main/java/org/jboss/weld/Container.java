@@ -20,6 +20,7 @@ import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.logging.LoggerFactory;
@@ -38,6 +39,9 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_MANAG
  * @author pmuir
  */
 public class Container {
+    public static final String CONTEXT_ID_KEY = "WELD_CONTEXT_ID_KEY";
+
+    public static final ThreadLocal<String> currentId = new ThreadLocal<String>();
 
     private static Singleton<Container> instance;
 
@@ -51,11 +55,24 @@ public class Container {
      * @return
      */
     public static Container instance() {
-        return instance.get();
+        return instance.get(RegistrySingletonProvider.STATIC_INSTANCE);
     }
 
     public static boolean available() {
-        return instance.isSet() && instance() != null && instance().getState().isAvailable();
+        String id = RegistrySingletonProvider.STATIC_INSTANCE;
+        return instance.isSet(id) && instance.get(id) != null
+                && instance.get(id).getState().isAvailable();
+    }
+
+    public static Container instance(String contextId) {
+        Container container = instance.get(contextId);
+        return container;
+    }
+
+    public static boolean available(String contextId) {
+        boolean b = instance.isSet(contextId) && instance(contextId) != null
+                && instance(contextId).getState().isAvailable();
+        return b;
     }
 
     /**
@@ -65,9 +82,16 @@ public class Container {
      * @param deploymentServices
      */
     public static void initialize(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
-        Container instance = new Container(deploymentManager, deploymentServices);
-        Container.instance.set(instance);
+        Container instance = new Container(RegistrySingletonProvider.STATIC_INSTANCE, deploymentManager, deploymentServices);
+        Container.instance.set(RegistrySingletonProvider.STATIC_INSTANCE, instance);
     }
+
+    public static void initialize(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
+        Container instance = new Container(contextId, deploymentManager, deploymentServices);
+        Container.instance.set(contextId, instance);
+    }
+
+    private final String contextId;
 
     // The deployment bean manager
     private final BeanManagerImpl deploymentManager;
@@ -82,13 +106,22 @@ public class Container {
 
     private ContainerState state = ContainerState.STOPPED;
 
+    public Container(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
+        this.deploymentManager = deploymentManager;
+        this.managers = new ConcurrentHashMap<String, BeanManagerImpl>();
+        this.managers.put(deploymentManager.getId(), deploymentManager);
+        this.beanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
+        this.deploymentServices = deploymentServices;
+        this.contextId = contextId;
+    }
+
     public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
         this.deploymentManager = deploymentManager;
         this.managers = new ConcurrentHashMap<String, BeanManagerImpl>();
         this.managers.put(deploymentManager.getId(), deploymentManager);
         this.beanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
         this.deploymentServices = deploymentServices;
-
+        this.contextId = RegistrySingletonProvider.STATIC_INSTANCE;
     }
 
     /**
@@ -106,7 +139,7 @@ public class Container {
         deploymentManager.cleanup();
         LoggerFactory.cleanup();
         MessageConveyorFactory.cleanup();
-        instance.clear();
+        instance.clear(contextId);
     }
 
     /**

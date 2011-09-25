@@ -66,12 +66,12 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
     private volatile Map<Class<?>, Method> methods;
 
-    public static <T, X> WeldMethodImpl<T, X> of(Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
-        return new WeldMethodImpl<T, X>(method, Reflections.<Class<T>>cast(method.getReturnType()), method.getGenericReturnType(), new TypeClosureLazyValueHolder(method.getGenericReturnType()), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
+    public static <T, X> WeldMethodImpl<T, X> of(String contextId, Method method, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        return new WeldMethodImpl<T, X>(contextId, method, Reflections.<Class<T>>cast(method.getReturnType()), method.getGenericReturnType(), new TypeClosureLazyValueHolder(contextId, method.getGenericReturnType()), null, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getDeclaredAnnotations()), declaringClass, classTransformer);
     }
 
-    public static <T, X> WeldMethodImpl<T, X> of(AnnotatedMethod<? super X> method, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
-        return new WeldMethodImpl<T, X>(method.getJavaMember(), Reflections.<Class<T>>cast(method.getJavaMember().getReturnType()), method.getBaseType(), new TypeClosureLazyValueHolder(method.getTypeClosure()), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
+    public static <T, X> WeldMethodImpl<T, X> of(String contextId, AnnotatedMethod<? super X> method, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        return new WeldMethodImpl<T, X>(contextId, method.getJavaMember(), Reflections.<Class<T>>cast(method.getJavaMember().getReturnType()), method.getBaseType(), new TypeClosureLazyValueHolder(contextId, method.getTypeClosure()), method, buildAnnotationMap(method.getAnnotations()), buildAnnotationMap(method.getAnnotations()), declaringClass, classTransformer);
     }
 
     /**
@@ -83,8 +83,8 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
      * @param method         The underlying method
      * @param declaringClass The declaring class abstraction
      */
-    private WeldMethodImpl(Method method, final Class<T> rawType, final Type type, LazyValueHolder<Set<Type>> typeClosure, AnnotatedMethod<? super X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
-        super(annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
+    private WeldMethodImpl(String contextId, Method method, final Class<T> rawType, final Type type, LazyValueHolder<Set<Type>> typeClosure, AnnotatedMethod<? super X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        super(contextId, annotationMap, declaredAnnotationMap, classTransformer, method, rawType, type, typeClosure, declaringClass);
         this.method = method;
         this.parameters = new ArrayList<WeldParameter<?, X>>(method.getParameterTypes().length);
         this.methods = Collections.<Class<?>, Method>singletonMap(method.getDeclaringClass(), method);
@@ -94,12 +94,12 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
                 if (method.getParameterAnnotations()[i].length > 0) {
                     Class<? extends Object> clazz = method.getParameterTypes()[i];
                     Type parametertype = method.getGenericParameterTypes()[i];
-                    WeldParameter<?, X> parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
+                    WeldParameter<?, X> parameter = WeldParameterImpl.of(contextId, method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
                     this.parameters.add(parameter);
                 } else {
                     Class<? extends Object> clazz = method.getParameterTypes()[i];
                     Type parameterType = method.getGenericParameterTypes()[i];
-                    WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], Reflections.<Class<Object>>cast(clazz), parameterType, this, i, classTransformer);
+                    WeldParameter<?, X> parameter = WeldParameterImpl.of(contextId, new Annotation[0], Reflections.<Class<Object>>cast(clazz), parameterType, this, i, classTransformer);
                     this.parameters.add(parameter);
                 }
             }
@@ -108,7 +108,7 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
                 throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, annotatedMethod.getParameters().size(), annotatedMethod, annotatedMethod.getParameters(), Arrays.asList(method.getParameterTypes()));
             } else {
                 for (AnnotatedParameter<? super X> annotatedParameter : annotatedMethod.getParameters()) {
-                    WeldParameter<?, X> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), method.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
+                    WeldParameter<?, X> parameter = WeldParameterImpl.of(contextId, annotatedParameter.getAnnotations(), method.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
                     this.parameters.add(parameter);
                 }
             }

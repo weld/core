@@ -94,14 +94,14 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     public T get() {
-        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager())
+        Resolvable resolvable = new ResolvableBuilder(getBeanManager().getContextId(), getType(), getBeanManager())
             .addQualifiers(getQualifiers())
             .setDeclaringBean(getInjectionPoint().getBean())
             .create();
         Bean<?> bean = getBeanManager().getBean(resolvable);
         // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the qualifiers and type
         InjectionPoint ip = new InstanceInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
-        CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+        CurrentInjectionPoint currentInjectionPoint = Container.instance(getBeanManager().getContextId()).services().get(CurrentInjectionPoint.class);
         try {
             currentInjectionPoint.push(ip);
             return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
@@ -157,7 +157,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
-        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(), newQualifiers);
+        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager().getContextId(), getInjectionPoint(), subtype, getQualifiers(), newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
 

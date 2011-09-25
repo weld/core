@@ -48,12 +48,12 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
     // The underlying field
     private final Field field;
 
-    public static <T, X> WeldFieldImpl<T, X> of(Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
-        return new WeldFieldImpl<T, X>(field, Reflections.<Class<T>>cast(field.getType()), field.getGenericType(), new TypeClosureLazyValueHolder(field.getGenericType()), buildAnnotationMap(field.getAnnotations()), buildAnnotationMap(field.getDeclaredAnnotations()), declaringClass, classTransformer);
+    public static <T, X> WeldFieldImpl<T, X> of(String contextId, Field field, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        return new WeldFieldImpl<T, X>(contextId, field, Reflections.<Class<T>>cast(field.getType()), field.getGenericType(), new TypeClosureLazyValueHolder(contextId, field.getGenericType()), buildAnnotationMap(field.getAnnotations()), buildAnnotationMap(field.getDeclaredAnnotations()), declaringClass, classTransformer);
     }
 
-    public static <X> WeldFieldImpl<?, X> of(AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
-        return new WeldFieldImpl<Object, X>(annotatedField.getJavaMember(), Reflections.<Class<Object>>cast(annotatedField.getJavaMember().getType()), annotatedField.getBaseType(), new TypeClosureLazyValueHolder(annotatedField.getTypeClosure()), buildAnnotationMap(annotatedField.getAnnotations()), buildAnnotationMap(annotatedField.getAnnotations()), declaringClass, classTransformer);
+    public static <X> WeldFieldImpl<?, X> of(String contextId, AnnotatedField<? super X> annotatedField, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        return new WeldFieldImpl<Object, X>(contextId, annotatedField.getJavaMember(), Reflections.<Class<Object>>cast(annotatedField.getJavaMember().getType()), annotatedField.getBaseType(), new TypeClosureLazyValueHolder(contextId, annotatedField.getTypeClosure()), buildAnnotationMap(annotatedField.getAnnotations()), buildAnnotationMap(annotatedField.getAnnotations()), declaringClass, classTransformer);
     }
 
     /**
@@ -65,8 +65,8 @@ public class WeldFieldImpl<T, X> extends AbstractWeldMember<T, X, Field> impleme
      * @param field          The actual field
      * @param declaringClass The abstraction of the declaring class
      */
-    private WeldFieldImpl(Field field, final Class<T> rawType, final Type type, LazyValueHolder<Set<Type>> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
-        super(annotationMap, declaredAnnotationMap, classTransformer, field, rawType, type, typeClosure, declaringClass);
+    private WeldFieldImpl(String contextId, Field field, final Class<T> rawType, final Type type, LazyValueHolder<Set<Type>> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, WeldClass<X> declaringClass, ClassTransformer classTransformer) {
+        super(contextId, annotationMap, declaredAnnotationMap, classTransformer, field, rawType, type, typeClosure, declaringClass);
         this.field = field;
     }
 

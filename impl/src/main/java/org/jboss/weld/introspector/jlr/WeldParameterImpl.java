@@ -42,12 +42,12 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
  */
 public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> implements WeldParameter<T, X> {
 
-    public static <T, X> WeldParameter<T, X> of(Annotation[] annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer) {
-        return new WeldParameterImpl<T, X>(annotations, rawType, type, new TypeClosureLazyValueHolder(type), declaringMember, position, classTransformer);
+    public static <T, X> WeldParameter<T, X> of(String contextId, Annotation[] annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer) {
+        return new WeldParameterImpl<T, X>(contextId, annotations, rawType, type, new TypeClosureLazyValueHolder(contextId, type), declaringMember, position, classTransformer);
     }
 
-    public static <T, X> WeldParameter<T, X> of(Set<Annotation> annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer) {
-        return new WeldParameterImpl<T, X>(annotations.toArray(EMPTY_ANNOTATIONS), rawType, type, new TypeClosureLazyValueHolder(type), declaringMember, position, classTransformer);
+    public static <T, X> WeldParameter<T, X> of(String contextId, Set<Annotation> annotations, Class<T> rawType, Type type, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer) {
+        return new WeldParameterImpl<T, X>(contextId, annotations.toArray(EMPTY_ANNOTATIONS), rawType, type, new TypeClosureLazyValueHolder(contextId, type), declaringMember, position, classTransformer);
     }
 
     private final int position;
@@ -59,8 +59,8 @@ public class WeldParameterImpl<T, X> extends AbstractWeldAnnotated<T, Object> im
      * @param annotations The annotations array
      * @param type        The type of the parameter
      */
-    protected WeldParameterImpl(Annotation[] annotations, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer) {
-        super(buildAnnotationMap(annotations), buildAnnotationMap(annotations), classTransformer, rawType, type, typeClosure);
+    protected WeldParameterImpl(String contextId, Annotation[] annotations, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldCallable<?, X, ?> declaringMember, int position, ClassTransformer classTransformer) {
+        super(contextId, buildAnnotationMap(annotations), buildAnnotationMap(annotations), classTransformer, rawType, type, typeClosure);
         this.declaringMember = declaringMember;
         this.position = position;
     }

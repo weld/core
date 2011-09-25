@@ -75,6 +75,8 @@ public class WeldPhaseListener implements PhaseListener {
 
     private static final LocLogger log = loggerFactory().getLogger(JSF);
 
+    private String contextId;
+
     public static final String NO_CID = "nocid";
 
     private static final String CONTEXT_ACTIVATED_IN_REQUEST = WeldPhaseListener.class.getName()
@@ -95,7 +97,7 @@ public class WeldPhaseListener implements PhaseListener {
     }
 
     private void activateConversations(FacesContext facesContext) {
-        HttpConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+        HttpConversationContext conversationContext = instance(contextId).select(HttpConversationContext.class).get();
         String cid = getConversationId(facesContext, conversationContext);
         log.debug(RESUMING_CONVERSATION, cid);
 
@@ -135,7 +137,12 @@ public class WeldPhaseListener implements PhaseListener {
      * Execute after the Render Response phase.
      */
     private void deactivateConversations(FacesContext facesContext, PhaseId phaseId) {
-        ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+        if (contextId == null) {
+            if (facesContext.getAttributes().containsKey(Container.CONTEXT_ID_KEY)) {
+                contextId = (String) facesContext.getAttributes().get(Container.CONTEXT_ID_KEY);
+            }
+        }
+        ConversationContext conversationContext = instance(contextId).select(HttpConversationContext.class).get();
         if (log.isTraceEnabled()) {
             if (conversationContext.getCurrentConversation().isTransient()) {
                 log.trace(CLEANING_UP_TRANSIENT_CONVERSATION, phaseId);
@@ -157,8 +164,8 @@ public class WeldPhaseListener implements PhaseListener {
         return ANY_PHASE;
     }
 
-    private static Instance<Context> instance() {
-        return Container.instance().deploymentManager().instance().select(Context.class);
+    private Instance<Context> instance(String id) {
+        return Container.instance(id).deploymentManager().instance().select(Context.class);
     }
 
     /**
@@ -166,7 +173,7 @@ public class WeldPhaseListener implements PhaseListener {
      *
      * @return The conversation id (or null if not found)
      */
-    public static String getConversationId(FacesContext facesContext, ConversationContext conversationContext) {
+    public String getConversationId(FacesContext facesContext, ConversationContext conversationContext) {
         Map<String, String> map = facesContext.getExternalContext().getRequestParameterMap();
         if (map.containsKey(NO_CID))
             return null; // ignore cid; WELD-919

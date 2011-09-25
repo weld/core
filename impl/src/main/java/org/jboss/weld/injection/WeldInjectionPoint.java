@@ -35,19 +35,21 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
 
         private final String declaringBeanId;
         private final Class<?> declaringClass;
+        protected final String contextId;
 
-        public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint) {
+        public WeldInjectionPointSerializationProxy(String contextId, WeldInjectionPoint<T, S> injectionPoint) {
+            this.contextId = contextId;
             this.declaringBeanId =
-                    injectionPoint.getBean() == null ? null : getService(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
+                    injectionPoint.getBean() == null ? null : Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
             this.declaringClass = injectionPoint.getDeclaringType().getJavaClass();
         }
 
         protected Bean<T> getDeclaringBean() {
-            return declaringBeanId == null ? null : getService(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
+            return declaringBeanId == null ? null : Container.instance(contextId).services().get(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
         }
 
         protected WeldClass<?> getDeclaringWeldClass() {
-            return getService(ClassTransformer.class).loadClass(declaringClass);
+            return Container.instance(contextId).services().get(ClassTransformer.class).loadClass(declaringClass);
         }
 
         protected String getDeclaringBeanId() {

@@ -45,6 +45,8 @@ public class DeferredEventNotification<T> implements Runnable {
     // The event object
     protected final T event;
 
+    private final String contextId;
+
     /**
      * Creates a new deferred event notifier.
      *
@@ -54,12 +56,13 @@ public class DeferredEventNotification<T> implements Runnable {
     public DeferredEventNotification(T event, ObserverMethod<? super T> observer) {
         this.observer = observer;
         this.event = event;
+        this.contextId = observer.beanManager.getContextId();
     }
 
     public void run() {
         try {
             log.debug(ASYNC_FIRE, event, observer);
-            new RunInRequest() {
+            new RunInRequest(contextId) {
 
                 @Override
                 protected void execute() {
@@ -80,6 +83,11 @@ public class DeferredEventNotification<T> implements Runnable {
     }
 
     private abstract static class RunInRequest {
+        private final String contextId;
+
+        public RunInRequest(String contextId) {
+            this.contextId = contextId;
+        }
 
         protected abstract void execute();
 
@@ -88,7 +96,7 @@ public class DeferredEventNotification<T> implements Runnable {
             if (isRequestContextActive()) {
                 execute();
             } else {
-                RequestContext requestContext = Container.instance().deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
+                RequestContext requestContext = Container.instance(contextId).deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
                 try {
                     requestContext.activate();
                     execute();
@@ -100,7 +108,7 @@ public class DeferredEventNotification<T> implements Runnable {
         }
 
         private boolean isRequestContextActive() {
-            for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class)) {
+            for (RequestContext requestContext : Container.instance(contextId).deploymentManager().instance().select(RequestContext.class)) {
                 if (requestContext.isActive()) {
                     return true;
                 }

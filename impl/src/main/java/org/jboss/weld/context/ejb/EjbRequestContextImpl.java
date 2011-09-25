@@ -15,8 +15,8 @@ public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContex
 
     private final NamingScheme namingScheme;
 
-    public EjbRequestContextImpl() {
-        super(false);
+    public EjbRequestContextImpl(String contextId) {
+        super(contextId, false);
         this.namingScheme = new SimpleNamingScheme(EjbRequestContext.class.getName());
     }
 

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.stereotypes;
 
+import javax.enterprise.context.RequestScoped;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,42 +30,45 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.context.RequestScoped;
-
 @RunWith(Arquillian.class)
-public class StereotypesTest {
-    @Deployment
-    public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .addPackage(StereotypesTest.class.getPackage());
-    }
+public class StereotypesTest
+{
+   @Deployment
+   public static Archive<?> deploy()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(StereotypesTest.class.getPackage());
+   }
 
-    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
+   private final ClassTransformer transformer = new ClassTransformer("STATIC_INSTANCE", new TypeStore());
 
-    @Test
-    public void testAnimalStereotype() {
-        StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class, transformer);
-        Assert.assertEquals(RequestScoped.class, animalStereotype.getDefaultScopeType().annotationType());
-        Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
-        Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
-        Assert.assertFalse(animalStereotype.isAlternative());
-    }
+   @Test
+   public void testAnimalStereotype()
+   {
+      StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class, transformer);
+      Assert.assertEquals(RequestScoped.class, animalStereotype.getDefaultScopeType().annotationType());
+      Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
+      Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
+      Assert.assertFalse(animalStereotype.isAlternative());
+   }
 
-    @Test
-    public void testAnimalOrderStereotype() {
-        StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(AnimalOrderStereotype.class, transformer);
-        Assert.assertNull(animalStereotype.getDefaultScopeType());
-        Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
-        Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
-        Assert.assertFalse(animalStereotype.isAlternative());
-    }
+   @Test
+   public void testAnimalOrderStereotype()
+   {
+      StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(AnimalOrderStereotype.class, transformer);
+      Assert.assertNull(animalStereotype.getDefaultScopeType());
+      Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
+      Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
+      Assert.assertFalse(animalStereotype.isAlternative());
+   }
 
-    @Test
-    public void testRequestScopedAnimalStereotype() {
-        StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class, transformer);
-        Assert.assertNull(animalStereotype.getDefaultScopeType());
-        Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
-        Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
-        Assert.assertFalse(animalStereotype.isAlternative());
-    }
+   @Test
+   public void testRequestScopedAnimalStereotype()
+   {
+      StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class, transformer);
+      Assert.assertNull(animalStereotype.getDefaultScopeType());
+      Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
+      Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
+      Assert.assertFalse(animalStereotype.isAlternative());
+   }
 }

@@ -16,7 +16,11 @@
  */
 package org.jboss.weld.tests.interceptors.generic;
 
+import java.util.Collection;
+import java.util.List;
+
 import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,31 +37,31 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import java.util.Collection;
-import java.util.List;
-
 /**
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class SimpleWeldClassTest {
-    @Deployment
-    public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .addPackage(SimpleWeldClassTest.class.getPackage());
-    }
+public class SimpleWeldClassTest
+{
+   @Deployment
+   public static Archive<?> deploy()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(SimpleWeldClassTest.class.getPackage());
+   }
 
-    /*
+   /*
     * description = "WELD-568"
     */
-    @Category(Broken.class)
-    @Test
-    public void testWeldClassForGenericSuperclass() {
-        WeldClass<StringProcessor> weldClass = WeldClassImpl.of(StringProcessor.class, new ClassTransformer(new TypeStore()));
-        Collection<WeldMethod<?, ? super StringProcessor>> methods = weldClass.getWeldMethods();
-        //assert methods.size() == 2;
-        List<WeldMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
-        Assert.assertEquals(4, interceptableMethods.size());
-    }
+   @Category(Broken.class)
+   @Test
+   public void testWeldClassForGenericSuperclass()
+   {
+      WeldClass<StringProcessor> weldClass = WeldClassImpl.of("STATIC_INSTANCE", StringProcessor.class, new ClassTransformer("STATIC_INSTANCE", new TypeStore()));
+      Collection<WeldMethod<?, ? super StringProcessor>> methods = weldClass.getWeldMethods();
+      //assert methods.size() == 2;
+      List<WeldMethod<?,?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
+      Assert.assertEquals(4, interceptableMethods.size());
+   }
 
 }

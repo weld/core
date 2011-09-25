@@ -38,9 +38,11 @@ public class SerializableClientProxy implements Serializable {
     private static final long serialVersionUID = -46820068707447753L;
 
     private final String beanId;
+    private final String containerId;
 
-    public SerializableClientProxy(final String beanId) {
+    public SerializableClientProxy(final String beanId, final String containerId) {
         this.beanId = beanId;
+        this.containerId = containerId;
     }
 
     /**
@@ -50,7 +52,7 @@ public class SerializableClientProxy implements Serializable {
      * @throws java.io.ObjectStreamException
      */
     Object readResolve() throws ObjectStreamException {
-        Bean<?> bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+        Bean<?> bean = Container.instance(containerId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
         return Container.instance().deploymentManager().getClientProxyProvider().getClientProxy(bean);
     }
 

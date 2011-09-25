@@ -99,7 +99,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
-        this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
+        this.observerMethod = MethodInjectionPoint.of(beanManager.getContextId(), declaringBean, observer);
 
         WeldParameter<?, ? super X> eventArgument = observerMethod.getAnnotatedParameters(Observes.class).get(0);
         this.eventType = TypeVariableResolver.resolveVariables(declaringBean.getBeanClass(), eventArgument.getBaseType());
@@ -110,7 +110,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
         this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
         this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-        for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod)) {
+        for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(manager.getContextId(), null, observerMethod)) {
             if (injectionPoint.isAnnotationPresent(Observes.class) == false) {
                 if (injectionPoint.isAnnotationPresent(New.class)) {
                     this.newInjectionPoints.add(injectionPoint);

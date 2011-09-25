@@ -56,12 +56,12 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean, ServiceRegistry services) {
         super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, services);
-        this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
+        this.disposalMethodInjectionPoint = MethodInjectionPoint.of(beanManager.getContextId(), this, disposalMethod);
         initQualifiers();
         initType();
         initTypes();
         initStereotypes();
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, disposalMethodInjectionPoint));
+        addInjectionPoints(Beans.getParameterInjectionPoints(beanManager.getContextId(), this, disposalMethodInjectionPoint));
     }
 
     private void initDisposesParameter() {

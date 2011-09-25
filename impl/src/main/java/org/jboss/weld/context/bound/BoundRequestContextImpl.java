@@ -16,8 +16,8 @@ public class BoundRequestContextImpl extends AbstractBoundContext<Map<String, Ob
 
     private final NamingScheme namingScheme;
 
-    public BoundRequestContextImpl() {
-        super(false);
+    public BoundRequestContextImpl(String contextId) {
+        super(contextId, false);
         this.namingScheme = new SimpleNamingScheme(BoundRequestContext.class.getName());
     }
 

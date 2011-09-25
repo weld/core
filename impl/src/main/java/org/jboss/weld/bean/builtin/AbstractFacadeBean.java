@@ -19,6 +19,7 @@ package org.jboss.weld.bean.builtin;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
@@ -36,7 +37,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T> {
     }
 
     public T create(CreationalContext<T> creationalContext) {
-        InjectionPoint injectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class).peek();
+        InjectionPoint injectionPoint = Container.instance(getBeanManager().getContextId()).services().get(CurrentInjectionPoint.class).peek();
         if (injectionPoint != null) {
             return newInstance(injectionPoint, creationalContext);
         } else {

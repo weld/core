@@ -43,16 +43,25 @@ import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY
 public class ClientProxyProvider {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-    private static final Function<Bean<Object>, Object> CREATE_CLIENT_PROXY = new Function<Bean<Object>, Object>() {
+    private static Function<Bean<Object>, Object> CREATE_CLIENT_PROXY;
+
+    private static final class CreateClientProxy implements Function<Bean<Object>, Object> {
+
+        private final String contextId;
+
+        public CreateClientProxy(String contextId) {
+            this.contextId = contextId;
+        }
 
         public Object apply(Bean<Object> from) {
-            String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(from);
+
+            String id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(from);
             if (id == null) {
                 throw new DefinitionException(BEAN_ID_CREATION_FAILED, from);
             }
-            return createClientProxy(from, id);
+            return createClientProxy(contextId, from, id);
         }
-    };
+    }
 
     /**
      * A container/cache for previously created proxies
@@ -64,7 +73,10 @@ public class ClientProxyProvider {
     /**
      * Constructor
      */
-    public ClientProxyProvider() {
+    public ClientProxyProvider(String contextId) {
+        if (CREATE_CLIENT_PROXY == null) {
+            CREATE_CLIENT_PROXY = new CreateClientProxy(contextId);
+        }
         this.pool = new MapMaker().makeComputingMap(CREATE_CLIENT_PROXY);
     }
 
@@ -81,10 +93,10 @@ public class ClientProxyProvider {
      * @throws InstantiationException When the proxy couldn't be created
      * @throws IllegalAccessException When the proxy couldn't be created
      */
-    private static <T> T createClientProxy(Bean<T> bean, String id) throws RuntimeException {
-        ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
+    private static <T> T createClientProxy(String contextId, Bean<T> bean, String id) throws RuntimeException {
+        ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id, contextId);
         TypeInfo typeInfo = TypeInfo.of(bean.getTypes());
-        T proxy = new ClientProxyFactory<T>(typeInfo.getSuperClass(), bean.getTypes(), bean).create(beanInstance);
+        T proxy = new ClientProxyFactory<T>(contextId, typeInfo.getSuperClass(), bean.getTypes(), bean).create(beanInstance);
         log.trace(CREATED_NEW_CLIENT_PROXY_TYPE, proxy.getClass(), bean, id);
         return proxy;
     }

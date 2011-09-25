@@ -70,7 +70,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         this.classes = new HashSet<WeldClass<?>>();
         this.vetoedClasses = new HashSet<Class<?>>();
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
-        this.classTransformer = Container.instance().services().get(ClassTransformer.class);
+        this.classTransformer = Container.instance(manager.getContextId()).services().get(ClassTransformer.class);
     }
 
     public BeanDeployer addClass(String className) {

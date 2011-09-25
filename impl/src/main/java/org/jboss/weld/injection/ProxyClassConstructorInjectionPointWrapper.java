@@ -50,8 +50,8 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     private boolean decorator;
     private final Bean<?> bean;
 
-    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
-        super(declaringBean, weldConstructor);
+    public ProxyClassConstructorInjectionPointWrapper(String contextId, Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
+        super(contextId, declaringBean, weldConstructor);
         this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
         this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;
         this.bean = declaringBean;
@@ -84,7 +84,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
             if (decoratorDelegate != null) {
                 beanInstance = new TargetBeanInstance(decoratorDelegate);
             }
-            ProxyFactory.setBeanInstance(instance, beanInstance, bean);
+            ProxyFactory.setBeanInstance(manager.getContextId(), instance, beanInstance, bean);
         } else {
             if (instance instanceof ProxyObject) {
                 ((ProxyObject) instance).setHandler(new CombinedInterceptorAndDecoratorStackMethodHandler());

@@ -49,8 +49,8 @@ public abstract class AbstractWeldMember<T, X, S extends Member> extends Abstrac
      *
      * @param annotationMap The annotation map
      */
-    protected AbstractWeldMember(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldClass<X> declaringType) {
-        super(annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
+    protected AbstractWeldMember(String contextId, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer, Member member, Class<T> rawType, Type type, LazyValueHolder<Set<Type>> typeClosure, WeldClass<X> declaringType) {
+        super(contextId, annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
         this.declaringType = declaringType;
     }
 

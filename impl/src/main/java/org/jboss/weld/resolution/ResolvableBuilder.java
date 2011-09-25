@@ -54,22 +54,20 @@ public class ResolvableBuilder {
     protected final Set<QualifierInstance> qualifierInstances;
     protected final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
     protected Bean<?> declaringBean;
+    protected final BeanManagerImpl beanManager;
     private final MetaAnnotationStore store;
 
-    public ResolvableBuilder(final MetaAnnotationStore store) {
-        this.store = store;
+    public ResolvableBuilder(final BeanManagerImpl beanManager) {
+        this.beanManager = beanManager;
+        this.store = beanManager.getServices().get(MetaAnnotationStore.class);
         this.types = new HashSet<Type>();
         this.qualifiers = new HashSet<Annotation>();
         this.mappedQualifiers = new HashMap<Class<? extends Annotation>, Annotation>();
         this.qualifierInstances = new HashSet<QualifierInstance>();
     }
 
-    public ResolvableBuilder(final BeanManagerImpl beanManager) {
-        this(beanManager.getServices().get(MetaAnnotationStore.class));
-    }
-
-    public ResolvableBuilder(Type type, final BeanManagerImpl beanManager) {
-        this(beanManager);
+    public ResolvableBuilder(Type type, final BeanManagerImpl manager) {
+        this(manager);
         if (type != null) {
             this.rawType = Reflections.getRawType(type);
             if (rawType == null) {

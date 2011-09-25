@@ -40,19 +40,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
-public class ResolutionTest {
-    @Deployment
-    public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .addPackage(ResolutionTest.class.getPackage())
-                .addClass(Utils.class);
-    }
+public class ResolutionTest
+{
+   @Deployment
+   public static Archive<?> deploy()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(ResolutionTest.class.getPackage())
+         .addClass(Utils.class);
+   }
 
-    @Inject
-    private BeanManagerImpl beanManager;
+   @Inject
+   private BeanManagerImpl beanManager;
 
-    @Inject
-    Wibble wibble;
+   @Inject Wibble wibble;
 
     @Test
     // WELD-711
@@ -64,16 +65,18 @@ public class ResolutionTest {
         assertFalse(resolver.isCached(new ResolvableBuilder(beanManager).addType(Foo.class).addQualifier(defaultQualifier).create()));
     }
 
-    // WELD-873
-    @Test
-    public void testCallingUserMethod() {
-        assertNull(wibble.get("bleh"));
-    }
+   // WELD-873
+   @Test
+   public void testCallingUserMethod()
+   {
+      assertNull(wibble.get("bleh"));
+   }
 
-    // WELD-873
-    @Test
-    public void testCallingBridgeMethod() {
-        assertNull(((Map) wibble).get("bleh"));
-    }
+   // WELD-873
+   @Test
+   public void testCallingBridgeMethod()
+   {
+      assertNull(((Map)wibble).get("bleh"));
+   }
 
 }

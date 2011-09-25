@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.unit.reflection.method;
 
+import javax.enterprise.util.TypeLiteral;
+
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
@@ -25,23 +27,24 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.enterprise.util.TypeLiteral;
-
-public class WeldMethodTest {
-
-    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
-    private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() {
-        private static final long serialVersionUID = 1672009803068800735L;
-    }.getRawType();
-
-    /*
+public class WeldMethodTest
+{
+	
+   private final ClassTransformer transformer = new ClassTransformer("", new TypeStore());
+   private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() 
+   {
+      private static final long serialVersionUID = 1672009803068800735L;
+   }.getRawType();
+   
+   /*
     * description = "WELD-221"
     */
-    @Test
-    public void testMethodReturnsGenericTypeOfClass() throws Exception {
-        WeldClass<Choice<?, ?>> clazz = WeldClassImpl.of(CHOICE_LITERAL, transformer);
-        WeldMethod<Choice<?, ?>, Choice<?, ?>> method = WeldMethodImpl.of(Choice.class.getMethod("aMethod"), clazz, transformer);
-        Assert.assertEquals(3, method.getTypeClosure().size());
-    }
+   @Test
+   public void testMethodReturnsGenericTypeOfClass() throws Exception
+   {
+      WeldClass<Choice<?, ?>> clazz = WeldClassImpl.of("", CHOICE_LITERAL, transformer);
+      WeldMethod<Choice<?, ?>, Choice<?, ?>> method = WeldMethodImpl.of("", Choice.class.getMethod("aMethod"), clazz, transformer);
+      Assert.assertEquals(3, method.getTypeClosure().size());
+   }
 
 }

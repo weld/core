@@ -58,6 +58,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
     private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
     public SimpleInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager) {
+        String contextId = beanManager.getContextId();
         this.beanManager = beanManager;
         this.type = type;
         this.injectionPoints = new HashSet<InjectionPoint>();
@@ -66,24 +67,24 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
         }
         ConstructorInjectionPoint<T> constructor = null;
         try {
-            constructor = Beans.getBeanConstructor(null, type);
-            this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, constructor));
+            constructor = Beans.getBeanConstructor(contextId, null, type);
+            this.injectionPoints.addAll(Beans.getParameterInjectionPoints(contextId, null, constructor));
         } catch (Exception e) {
             // this means the bean of a type that cannot be produce()d, but that is
             // non-fatal
             // unless someone calls produce()
         }
         this.constructor = constructor;
-        this.injectableFields = Beans.getFieldInjectionPoints(null, type);
+        this.injectableFields = Beans.getFieldInjectionPoints(contextId, null, type);
         this.injectionPoints.addAll(Beans.mergeFieldInjectionPoints(this.injectableFields));
-        this.initializerMethods = Beans.getInitializerMethods(null, type);
-        this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, initializerMethods));
+        this.initializerMethods = Beans.getInitializerMethods(contextId, null, type);
+        this.injectionPoints.addAll(Beans.getParameterInjectionPoints(contextId, null, initializerMethods));
         this.postConstructMethods = Beans.getPostConstructMethods(type);
         this.preDestroyMethods = Beans.getPreDestroyMethods(type);
-        this.ejbInjectionPoints = Beans.getEjbInjectionPoints(null, type, beanManager);
-        this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(null, type, beanManager);
-        this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(null, type, beanManager);
-        this.resourceInjectionPoints = Beans.getResourceInjectionPoints(null, type, beanManager);
+        this.ejbInjectionPoints = Beans.getEjbInjectionPoints(contextId, null, type, beanManager);
+        this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(contextId, null, type, beanManager);
+        this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(contextId, null, type, beanManager);
+        this.resourceInjectionPoints = Beans.getResourceInjectionPoints(contextId, null, type, beanManager);
     }
 
     public T produce(CreationalContext<T> ctx) {
@@ -91,7 +92,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             // this means we couldn't find a constructor on instantiation, which
             // means there isn't one that's spec-compliant
             // try again so the correct DefinitionException is thrown
-            Beans.getBeanConstructor(null, type);
+            Beans.getBeanConstructor(beanManager.getContextId(), null, type);
             // should not be reached
             throw new IllegalStateException(MISSING_BEAN_CONSTRUCTOR_FOUND);
         }

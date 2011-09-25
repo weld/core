@@ -19,8 +19,8 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
 
     private final NamingScheme namingScheme;
 
-    public HttpSessionContextImpl() {
-        super(true);
+    public HttpSessionContextImpl(String contextId) {
+        super(contextId, true);
         this.namingScheme = new SimpleNamingScheme(HttpSessionContext.class.getName());
     }
 
@@ -89,7 +89,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     protected HttpConversationContext getConversationContext() {
-        return Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
+        return Container.instance(getContextId()).deploymentManager().instance().select(HttpConversationContext.class).get();
     }
 
 }

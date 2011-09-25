@@ -39,8 +39,8 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
      *
      * @param proxiedBeanType the actual enterprise bean
      */
-    public EnterpriseProxyFactory(Class<T> proxiedBeanType, Bean<T> bean) {
-        super(proxiedBeanType, bean.getTypes(), bean);
+    public EnterpriseProxyFactory(String contextId, Class<T> proxiedBeanType, Bean<T> bean) {
+        super(contextId, proxiedBeanType, bean.getTypes(), bean);
     }
 
     @Override

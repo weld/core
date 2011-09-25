@@ -31,7 +31,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
@@ -50,15 +49,18 @@ public class DependentContextImpl implements DependentContext {
 
     private final ContextualStore contextualStore;
 
-    public DependentContextImpl(ContextualStore contextualStore) {
+    private final String contextId;
+
+    public DependentContextImpl(String contextId, ContextualStore contextualStore) {
         this.contextualStore = contextualStore;
+        this.contextId = contextId;
     }
 
     /**
      * Overridden method always creating a new instance
      *
      * @param contextual The bean to create
-     * @param create     Should a new one be created
+     * @param creationalContext The creation context
      */
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
         if (!isActive()) {
@@ -103,7 +105,7 @@ public class DependentContextImpl implements DependentContext {
         }
 
         // Only add the dependent instance if none of the conditions above is met
-        ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
+        ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextId, contextual, instance, creationalContext, contextualStore);
         creationalContext.addDependentInstance(beanInstance);
     }
 

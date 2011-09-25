@@ -16,6 +16,28 @@
  */
 package org.jboss.weld.bean;
 
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Producer;
+import javax.inject.Inject;
+import javax.inject.Scope;
+
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 import org.jboss.weld.Container;
@@ -31,28 +53,6 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import javax.inject.Inject;
-import javax.inject.Scope;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -190,7 +190,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         } else {
             this.passivationCapableBean = true;
         }
-        if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
+        if (Container.instance(beanManager.getContextId()).services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
             this.passivationCapableDependency = true;
         } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
             this.passivationCapableDependency = true;
@@ -230,7 +230,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (passivating && !instanceSerializable) {
                 throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
             }
-            InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
+            InjectionPoint injectionPoint = Container.instance(beanManager.getContextId()).services().get(CurrentInjectionPoint.class).peek();
             if (injectionPoint != null && injectionPoint.getBean() != null) {
                 if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
                     if (injectionPoint.getMember() instanceof Field) {

@@ -60,11 +60,13 @@ public class DecorationHelper<T> {
     private BeanManagerImpl beanManager;
     private final ContextualStore contextualStore;
     private final Bean<?> bean;
+    private final String contextId;
 
     List<Decorator<?>> decorators;
 
-    public DecorationHelper(TargetBeanInstance originalInstance, Bean<?> bean, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators) {
-        this.originalInstance = Reflections.cast(originalInstance.getInstance());
+    public DecorationHelper(String contextId, TargetBeanInstance originalInstance, Bean<?> bean, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators) {
+        this.contextId = contextId;
+        this.originalInstance = Reflections.<T>cast(originalInstance.getInstance());
         this.targetBeanInstance = originalInstance;
         this.beanManager = beanManager;
         this.contextualStore = contextualStore;
@@ -108,7 +110,7 @@ public class DecorationHelper<T> {
             Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
             DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
             newTargetBeanInstance.setInterceptorsHandler(methodHandler);
-            ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
+            ProxyFactory.setBeanInstance(contextId, proxy, newTargetBeanInstance, bean);
             return proxy;
         } catch (InstantiationException e) {
             throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
@@ -120,7 +122,7 @@ public class DecorationHelper<T> {
     public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator) {
         Object decoratorInstance = beanManager.getReference(injectionPoint, decorator, creationalContext);
         assert previousDelegate != null : "previousDelegate should have been set when calling beanManager.getReference(), but it wasn't!";
-        SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(decorator, decoratorInstance, null, contextualStore);
+        SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(contextId, decorator, decoratorInstance, null, contextualStore);
         return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);
     }
 

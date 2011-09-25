@@ -32,12 +32,18 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.CANNOT_LOCATE_BEAN_MANAGER;
 
 public class ManagerObjectFactory implements ObjectFactory {
+    private final String contextId;
+
+    public ManagerObjectFactory(String contextId) {
+        this.contextId = contextId;
+    }
+
     // Exception messages
     private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
 
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {
-        if (Container.available()) {
-            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet()) {
+        if (Container.available(contextId)) {
+            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance(contextId).beanDeploymentArchives().entrySet()) {
                 if (entry.getKey().getId().equals("flat")) {
                     return entry.getValue().getCurrent();
                 }
