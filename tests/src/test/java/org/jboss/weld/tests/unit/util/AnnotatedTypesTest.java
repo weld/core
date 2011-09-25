@@ -175,4 +175,8 @@ public class AnnotatedTypesTest
       }
       
    }
+<<<<<<< HEAD
+=======
+   
+>>>>>>> WELD-962 Use the new Singleton API and use contextual ID
 }

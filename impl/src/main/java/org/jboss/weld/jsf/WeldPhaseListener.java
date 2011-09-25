@@ -22,17 +22,8 @@
  */
 package org.jboss.weld.jsf;
 
-import static javax.faces.event.PhaseId.ANY_PHASE;
-import static javax.faces.event.PhaseId.RENDER_RESPONSE;
-import static javax.faces.event.PhaseId.RESTORE_VIEW;
-import static org.jboss.weld.logging.Category.JSF;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_TRANSIENT_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
-import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
-
 import java.util.Map;
+
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
@@ -42,9 +33,20 @@ import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.slf4j.cal10n.LocLogger;
+
+import static javax.faces.event.PhaseId.ANY_PHASE;
+import static javax.faces.event.PhaseId.RENDER_RESPONSE;
+import static javax.faces.event.PhaseId.RESTORE_VIEW;
+import static org.jboss.weld.logging.Category.JSF;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_TRANSIENT_CONVERSATION;
+import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
+import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
+import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
 /**
  * <p>
@@ -97,7 +99,14 @@ public class WeldPhaseListener implements PhaseListener {
     }
 
     private void activateConversations(FacesContext facesContext) {
-        HttpConversationContext conversationContext = instance(contextId).select(HttpConversationContext.class).get();
+        if (contextId == null) {
+            if (facesContext.getAttributes().containsKey(Container.CONTEXT_ID_KEY)) {
+                contextId = (String) facesContext.getAttributes().get(Container.CONTEXT_ID_KEY);
+            } else {
+                contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+            }
+        }
+        ConversationContext conversationContext = instance(contextId).select(HttpConversationContext.class).get();
         String cid = getConversationId(facesContext, conversationContext);
         log.debug(RESUMING_CONVERSATION, cid);
 

@@ -94,7 +94,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     public T get() {
-        Resolvable resolvable = new ResolvableBuilder(getBeanManager().getContextId(), getType(), getBeanManager())
+        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager())
             .addQualifiers(getQualifiers())
             .setDeclaringBean(getInjectionPoint().getBean())
             .create();

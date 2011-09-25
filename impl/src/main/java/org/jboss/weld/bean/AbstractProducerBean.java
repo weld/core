@@ -311,7 +311,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     protected abstract class AbstractProducer implements Producer<T> {
 
-        @Override
         public T produce(CreationalContext<T> ctx) {
             CreationalContext<X> receiverCreationalContext = beanManager.createCreationalContext(getDeclaringBean());
             Object receiver = getReceiver(ctx, receiverCreationalContext);
