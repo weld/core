@@ -19,7 +19,7 @@ public interface BoundBeanStore extends BeanStore {
      * @return true if the bean store was detached, or false if the bean store is
      *         already detached
      */
-    public boolean detach();
+    boolean detach();
 
     /**
      * Attach the context
@@ -27,7 +27,7 @@ public interface BoundBeanStore extends BeanStore {
      * @return true if the bean store was attached, or false if the bean store is
      *         already attached
      */
-    public boolean attach();
+    boolean attach();
 
     /**
      * Return true if the bean store is attached
@@ -35,6 +35,6 @@ public interface BoundBeanStore extends BeanStore {
      * @return true if the bean store is attached or false if the bean store has
      *         been detached
      */
-    public boolean isAttached();
+    boolean isAttached();
 
 }

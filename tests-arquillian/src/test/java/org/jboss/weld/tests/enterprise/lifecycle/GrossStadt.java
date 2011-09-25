@@ -20,21 +20,21 @@ import javax.ejb.Local;
 
 @Local
 public interface GrossStadt {
-    public void kleinStadtCreated();
+    void kleinStadtCreated();
 
-    public void kleinStadtDestroyed();
+    void kleinStadtDestroyed();
 
-    public boolean isKleinStadtCreated();
+    boolean isKleinStadtCreated();
 
-    public boolean isKleinStadtDestroyed();
+    boolean isKleinStadtDestroyed();
 
-    public void resetCreatedFlags();
+    void resetCreatedFlags();
 
-    public void resetDestroyedFlags();
+    void resetDestroyedFlags();
 
-    public void dispose();
+    void dispose();
 
-    public void schlossDestroyed();
+    void schlossDestroyed();
 
-    public boolean isSchlossDestroyed();
+    boolean isSchlossDestroyed();
 }

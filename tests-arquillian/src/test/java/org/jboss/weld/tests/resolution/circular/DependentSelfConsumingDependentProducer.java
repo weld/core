@@ -31,4 +31,4 @@ class DependentSelfConsumingDependentProducer {
     public void ping() {
 
     }
-} 
+}

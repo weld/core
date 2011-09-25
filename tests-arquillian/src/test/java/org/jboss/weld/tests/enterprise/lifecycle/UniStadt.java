@@ -20,5 +20,5 @@ import javax.ejb.Local;
 
 @Local
 public interface UniStadt {
-    public void removeBean();
+    void removeBean();
 }

@@ -20,7 +20,7 @@ import javax.ejb.Local;
 
 @Local
 public interface Schloss {
-    public void destructionCallback();
+    void destructionCallback();
 
-    public void remove();
+    void remove();
 }

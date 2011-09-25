@@ -24,4 +24,4 @@ public class Generator {
         return nextInt;
     }
 
-} 
+}

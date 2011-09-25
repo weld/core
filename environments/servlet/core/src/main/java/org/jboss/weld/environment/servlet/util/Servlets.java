@@ -9,8 +9,7 @@ public class Servlets {
 
     public static File getRealFile(ServletContext servletContext, String path) throws MalformedURLException {
         String realPath = servletContext.getRealPath(path);
-        if (realPath == null) //WebLogic!
-        {
+        if (realPath == null) {//WebLogic!
             URL resourcePath = servletContext.getResource(path);
             if ((resourcePath != null) && (resourcePath.getProtocol().equals("file"))) {
                 realPath = resourcePath.getPath();

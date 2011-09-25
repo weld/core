@@ -4,6 +4,6 @@ import java.util.Map;
 
 public interface AdvancedMap<K, V> extends Map<K, V> {
 
-    public ReallyAdvancedMap<K, V> getReallyAdvancedMap();
+    ReallyAdvancedMap<K, V> getReallyAdvancedMap();
 
 }

@@ -21,6 +21,6 @@ import javax.ejb.Remote;
 @Remote
 public interface HorseRemote {
 
-    public boolean ping();
+    boolean ping();
 
 }

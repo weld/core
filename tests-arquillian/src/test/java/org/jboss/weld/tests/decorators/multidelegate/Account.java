@@ -21,6 +21,6 @@ import java.math.BigDecimal;
 
 public interface Account extends Serializable {
 
-    public String withdraw(BigDecimal amount);
+    String withdraw(BigDecimal amount);
 
 }

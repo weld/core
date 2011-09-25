@@ -44,7 +44,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
     static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
-    public static abstract class Container {
+    public abstract static class Container {
 
         private final String uri;
         private final String localName;

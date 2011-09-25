@@ -29,12 +29,12 @@ public interface Instantiator {
      * @param clazz The class
      * @return The created instance
      */
-    public abstract <T> T instantiate(Class<T> clazz);
+    <T> T instantiate(Class<T> clazz);
 
     /**
      * Used for checking if this particular instantiation method is available in the environment
      *
      * @return True if available, false otherwise
      */
-    public abstract boolean isAvailable();
+    boolean isAvailable();
 }

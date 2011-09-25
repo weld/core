@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -35,7 +35,7 @@ public interface BeanStore extends Iterable<String> {
      * @param id The id of the contextual to return
      * @return The instance or null if not found
      */
-    public <T> ContextualInstance<T> get(String id);
+    <T> ContextualInstance<T> get(String id);
 
     /**
      * Check if the store contains an instance
@@ -43,14 +43,14 @@ public interface BeanStore extends Iterable<String> {
      * @param id the id of the instance to check for
      * @return true if the instance is present, otherwise false
      */
-    public boolean contains(String id);
+    boolean contains(String id);
 
     /**
      * Clears the store of contextual instances
      */
-    public void clear();
+    void clear();
 
-    public Iterator<String> iterator();
+    Iterator<String> iterator();
 
     /**
      * Adds a bean instance to the storage
@@ -58,6 +58,6 @@ public interface BeanStore extends Iterable<String> {
      * @param contextualInstance the contextual instance
      * @return the id for the instance
      */
-    public <T> void put(String id, ContextualInstance<T> contextualInstance);
+    <T> void put(String id, ContextualInstance<T> contextualInstance);
 
 }

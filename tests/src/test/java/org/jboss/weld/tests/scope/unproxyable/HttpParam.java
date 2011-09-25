@@ -33,6 +33,6 @@ import static java.lang.annotation.ElementType.TYPE;
 public @interface HttpParam {
 
     @Nonbinding
-    public String value();
+    String value();
 
 }

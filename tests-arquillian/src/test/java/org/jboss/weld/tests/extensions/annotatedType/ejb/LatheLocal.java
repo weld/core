@@ -21,6 +21,6 @@ import javax.ejb.Local;
 @Local
 public interface LatheLocal {
 
-    public Shaft doWork();
+    Shaft doWork();
 
 }

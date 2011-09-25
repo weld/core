@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -31,7 +31,7 @@ public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedM
     /**
      * Get the parameter types as an array
      */
-    public Class<?>[] getParameterTypesAsArray();
+    Class<?>[] getParameterTypesAsArray();
 
     /**
      * Invokes the method
@@ -40,7 +40,7 @@ public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedM
      * @param parameters The method parameters
      * @return A reference to the instance
      */
-    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
+    T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 
     /**
      * Invokes the method on the class of the passed instance, not the declaring
@@ -50,14 +50,14 @@ public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedM
      * @param manager  The Bean manager
      * @return A reference to the instance
      */
-    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
+    T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
     /**
      * Gets the property name
      *
      * @return The name
      */
-    public String getPropertyName();
+    String getPropertyName();
 
     /**
      * Checks if a this is equivalent to a JLR method
@@ -65,8 +65,8 @@ public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedM
      * @param method The JLR method
      * @return true if equivalent
      */
-    public boolean isEquivalent(Method method);
+    boolean isEquivalent(Method method);
 
-    public MethodSignature getSignature();
+    MethodSignature getSignature();
 
 }

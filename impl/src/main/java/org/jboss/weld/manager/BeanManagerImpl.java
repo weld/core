@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -140,27 +140,27 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private static final long serialVersionUID = 3021562879133838561L;
 
     /*
-    * Application scoped services 
+    * Application scoped services
     * ***************************
     */
-    private transient final ServiceRegistry services;
+    private final transient ServiceRegistry services;
 
     /*
-    * Application scoped data structures 
+    * Application scoped data structures
     * ***********************************
     */
 
     // Contexts are shared across the application
-    private transient final Map<Class<? extends Annotation>, List<Context>> contexts;
+    private final transient Map<Class<? extends Annotation>, List<Context>> contexts;
 
     // Client proxies can be used application wide
-    private transient final ClientProxyProvider clientProxyProvider;
+    private final transient ClientProxyProvider clientProxyProvider;
 
     // TODO review this structure
-    private transient final Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
+    private final transient Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
 
     // TODO This isn't right, specialization should follow accessibility rules, but I think we can enforce these in resolve()
-    private transient final Map<Contextual<?>, Contextual<?>> specializedBeans;
+    private final transient Map<Contextual<?>, Contextual<?>> specializedBeans;
 
     /*
     * Archive scoped data structures
@@ -171,59 +171,59 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     * archive accessibility, and the configuration for this bean deployment
     * archive
     */
-    private transient final Enabled enabled;
-    private transient final Set<CurrentActivity> currentActivities;
+    private final transient Enabled enabled;
+    private final transient Set<CurrentActivity> currentActivities;
 
 
     /*
-    * Activity scoped services 
+    * Activity scoped services
     * *************************
     */
 
     /* These services are scoped to this activity only, but use data
-    * structures that are transitive accessible from other bean deployment 
+    * structures that are transitive accessible from other bean deployment
     * archives
     */
-    private transient final TypeSafeBeanResolver<Bean<?>> beanResolver;
-    private transient final TypeSafeResolver<Resolvable, Decorator<?>> decoratorResolver;
-    private transient final TypeSafeResolver<InterceptorResolvable, Interceptor<?>> interceptorResolver;
-    private transient final TypeSafeResolver<Resolvable, ObserverMethod<?>> observerResolver;
-    private transient final NameBasedResolver nameBasedResolver;
-    private transient final ELResolver weldELResolver;
+    private final transient TypeSafeBeanResolver<Bean<?>> beanResolver;
+    private final transient TypeSafeResolver<Resolvable, Decorator<?>> decoratorResolver;
+    private final transient TypeSafeResolver<InterceptorResolvable, Interceptor<?>> interceptorResolver;
+    private final transient TypeSafeResolver<Resolvable, ObserverMethod<?>> observerResolver;
+    private final transient NameBasedResolver nameBasedResolver;
+    private final transient ELResolver weldELResolver;
     private transient Namespace rootNamespace;
 
     /*
-    * Activity scoped data structures 
+    * Activity scoped data structures
     * ********************************
     */
 
     /* These data structures are scoped to this bean deployment archive activity
-    * only and represent the beans, decorators, interceptors, namespaces and 
+    * only and represent the beans, decorators, interceptors, namespaces and
     * observers deployed in this bean deployment archive activity
     */
-    private transient final List<Bean<?>> beans;
-    private transient final List<Bean<?>> transitiveBeans;
-    private transient final List<Decorator<?>> decorators;
-    private transient final List<Interceptor<?>> interceptors;
-    private transient final List<String> namespaces;
-    private transient final List<ObserverMethod<?>> observers;
+    private final transient List<Bean<?>> beans;
+    private final transient List<Bean<?>> transitiveBeans;
+    private final transient List<Decorator<?>> decorators;
+    private final transient List<Interceptor<?>> interceptors;
+    private final transient List<String> namespaces;
+    private final transient List<ObserverMethod<?>> observers;
 
     /*
     * set that is only used to make sure that no duplicate beans are added
     */
-    private transient final Set<Bean<?>> beanSet = Collections.synchronizedSet(new HashSet<Bean<?>>());
+    private final transient Set<Bean<?>> beanSet = Collections.synchronizedSet(new HashSet<Bean<?>>());
 
     /*
-    * These data structures represent the managers *accessible* from this bean 
+    * These data structures represent the managers *accessible* from this bean
     * deployment archive activity
     */
-    private transient final HashSet<BeanManagerImpl> accessibleManagers;
+    private final transient HashSet<BeanManagerImpl> accessibleManagers;
 
     /*
     * This data structures represents child activities for this activity, it is
     * not transitively accessible
     */
-    private transient final Set<BeanManagerImpl> childActivities;
+    private final transient Set<BeanManagerImpl> childActivities;
 
     private final AtomicInteger childIds;
     private final String id;
@@ -231,8 +231,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Interception model
      */
-    private transient final Map<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>>();
-    private transient final MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader();
+    private final transient Map<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>>();
+    private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader();
 
     /**
      * Create a new, root, manager

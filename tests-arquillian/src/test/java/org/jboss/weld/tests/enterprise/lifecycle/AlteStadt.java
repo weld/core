@@ -20,11 +20,11 @@ import javax.ejb.Local;
 
 @Local
 public interface AlteStadt {
-    public String getPlaceOfInterest();
+    String getPlaceOfInterest();
 
-    public void performPostConstructChecks();
+    void performPostConstructChecks();
 
-    public void initializeBean(GutenbergMuseum pointOfInterest);
+    void initializeBean(GutenbergMuseum pointOfInterest);
 
-    public GutenbergMuseum getAnotherPlaceOfInterest();
+    GutenbergMuseum getAnotherPlaceOfInterest();
 }

@@ -9,4 +9,4 @@ public class SentenceParser {
         return Arrays.asList(text.split("[.?]"));
     }
 
-} 
+}

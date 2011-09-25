@@ -36,9 +36,8 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Dan Allen
  */
-public
 @ApplicationScoped
-class BlogEntryRepository implements Repository {
+public class BlogEntryRepository implements Repository {
     private static AtomicLong uniqueEntryId = new AtomicLong(0);
 
     private static AtomicLong uniqueCommentId = new AtomicLong(0);

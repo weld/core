@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -40,12 +40,12 @@ public interface WeldAnnotated<T, S> extends Annotated {
     /**
      * The set of meta-annotations to map
      */
-    public static final Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = Arrays2.asSet(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class);
+    Set<Class<? extends Annotation>> MAPPED_METAANNOTATIONS = Arrays2.asSet(Qualifier.class, Stereotype.class, Scope.class, NormalScope.class, InterceptorBinding.class);
 
     /**
      * The set of declared meta-annotations to map
      */
-    public static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METAANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
+    Set<Class<? extends Annotation>> MAPPED_DECLARED_METAANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
 
     /**
      * Gets all annotations which are annotated with the given meta annotation
@@ -55,7 +55,7 @@ public interface WeldAnnotated<T, S> extends Annotated {
      * @return A set of matching meta-annotations. Returns an empty set if there
      *         are no matches.
      */
-    public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
+    Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
 
     /**
      * Gets the binding types for this element
@@ -66,7 +66,7 @@ public interface WeldAnnotated<T, S> extends Annotated {
      *             types
      */
     @Deprecated
-    public Set<Annotation> getQualifiers();
+    Set<Annotation> getQualifiers();
 
     /**
      * Gets the binding types for this element
@@ -77,7 +77,7 @@ public interface WeldAnnotated<T, S> extends Annotated {
      *             types
      */
     @Deprecated
-    public Annotation[] getBindingsAsArray();
+    Annotation[] getBindingsAsArray();
 
     /**
      * Get the type hierarchy of any interfaces implemented by this class.
@@ -89,14 +89,14 @@ public interface WeldAnnotated<T, S> extends Annotated {
      *
      * @return the type hierarchy
      */
-    public Set<Type> getInterfaceClosure();
+    Set<Type> getInterfaceClosure();
 
     /**
      * Gets the type of the element
      *
      * @return The type of the element
      */
-    public Class<T> getJavaClass();
+    Class<T> getJavaClass();
 
     /**
      * Gets the actual type arguments for any parameterized types that this
@@ -104,36 +104,36 @@ public interface WeldAnnotated<T, S> extends Annotated {
      *
      * @return An array of type arguments
      */
-    public Type[] getActualTypeArguments();
+    Type[] getActualTypeArguments();
 
     /**
      * Indicates if this AnnotatedItem represents a static element
      *
      * @return True if static, false otherwise
      */
-    public boolean isStatic();
+    boolean isStatic();
 
-    public boolean isGeneric();
+    boolean isGeneric();
 
     /**
      * Indicates if this AnnotatedItem represents a final element
      *
      * @return True if final, false otherwise
      */
-    public boolean isFinal();
+    boolean isFinal();
 
     /**
      * Indicates if this annotated item is public
      *
      * @return if public, returns true
      */
-    public boolean isPublic();
+    boolean isPublic();
 
-    public boolean isPrivate();
+    boolean isPrivate();
 
-    public boolean isPackagePrivate();
+    boolean isPackagePrivate();
 
-    public Package getPackage();
+    Package getPackage();
 
     /**
      * Gets the name of this AnnotatedItem
@@ -143,10 +143,10 @@ public interface WeldAnnotated<T, S> extends Annotated {
      *
      * @return The name
      */
-    public String getName();
+    String getName();
 
-    public boolean isParameterizedType();
+    boolean isParameterizedType();
 
-    public boolean isPrimitive();
+    boolean isPrimitive();
 
 }

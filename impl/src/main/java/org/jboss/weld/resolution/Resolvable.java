@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -35,7 +35,7 @@ public interface Resolvable {
      *
      * @return the bindings
      */
-    public Set<Annotation> getQualifiers();
+    Set<Annotation> getQualifiers();
 
     /**
      * Check if an annotation is present
@@ -43,7 +43,7 @@ public interface Resolvable {
      * @param annotationType the annotation type to look for
      * @return true if it is present
      */
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
+    boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
 
     /**
      * Get the instance of the Annotation
@@ -52,7 +52,7 @@ public interface Resolvable {
      * @param annotationType the type of the annotation
      * @return the annotation instance
      */
-    public <A extends Annotation> A getAnnotation(Class<A> annotationType);
+    <A extends Annotation> A getAnnotation(Class<A> annotationType);
 
     /**
      * Check if this resolvable's type closure includes the clazz passed as an
@@ -61,14 +61,14 @@ public interface Resolvable {
      * @param clazz the class to check for
      * @return true if clazz is present
      */
-    public boolean isAssignableTo(Class<?> clazz);
+    boolean isAssignableTo(Class<?> clazz);
 
     /**
      * The types that this resolvable may be assigned to
      *
      * @return
      */
-    public Set<Type> getTypes();
+    Set<Type> getTypes();
 
     /**
      * Get the underlying java class used to generate this resolvable, or null
@@ -76,13 +76,13 @@ public interface Resolvable {
      *
      * @return the java class
      */
-    public Class<?> getJavaClass();
+    Class<?> getJavaClass();
 
     /**
      * Get the declaring the injection point, or null if there is none
      *
      * @return
      */
-    public Bean<?> getDeclaringBean();
+    Bean<?> getDeclaringBean();
 
 }

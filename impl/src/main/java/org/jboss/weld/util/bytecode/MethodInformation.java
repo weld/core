@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -28,39 +28,39 @@ public interface MethodInformation {
     /**
      * The declaring class name in java dotted form (e.g. java.lang.String)
      */
-    public String getDeclaringClass();
+    String getDeclaringClass();
 
     /**
      * This may return null if Method is not available yet
      */
-    public Method getMethod();
+    Method getMethod();
 
     /**
      * Gets the method descriptor
      */
-    public String getDescriptor();
+    String getDescriptor();
 
     /**
      * returns string representations of the parameter types
      */
-    public String[] getParameterTypes();
+    String[] getParameterTypes();
 
     /**
      * Gets the method return type, in descriptor format (e.g. Ljava/lang/String;
      * )
      */
-    public String getReturnType();
+    String getReturnType();
 
     /**
      * the method name
      */
-    public String getName();
+    String getName();
 
     /**
      * The method modifiers
      *
      * @return The modifiers
      */
-    public int getModifiers();
+    int getModifiers();
 
 }

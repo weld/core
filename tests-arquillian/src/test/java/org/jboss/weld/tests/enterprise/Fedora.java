@@ -21,7 +21,7 @@ import javax.ejb.Local;
 @Local
 public interface Fedora {
 
-    public void causeRuntimeException();
+    void causeRuntimeException();
 
 
 }

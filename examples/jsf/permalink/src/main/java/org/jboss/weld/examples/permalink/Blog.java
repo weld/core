@@ -31,9 +31,8 @@ import java.util.Set;
 /**
  * @author Dan Allen
  */
-public
 @Model
-class Blog {
+public class Blog {
     private static final int PAGE_SIZE = 3;
 
     @Inject

@@ -74,4 +74,4 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
     }
 
 }
- 
+

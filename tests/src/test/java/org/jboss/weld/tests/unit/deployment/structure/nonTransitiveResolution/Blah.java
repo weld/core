@@ -2,8 +2,8 @@ package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
 public interface Blah {
 
-    public void ping(int i);
+    void ping(int i);
 
-    public int getI();
+    int getI();
 
 }

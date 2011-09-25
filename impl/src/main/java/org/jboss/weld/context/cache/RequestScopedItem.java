@@ -30,5 +30,5 @@ public interface RequestScopedItem {
     /**
      * Method that is called when the request ends
      */
-    public void invalidate();
+    void invalidate();
 }

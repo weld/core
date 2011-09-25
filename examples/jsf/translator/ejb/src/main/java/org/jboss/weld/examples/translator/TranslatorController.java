@@ -2,14 +2,14 @@ package org.jboss.weld.examples.translator;
 
 public interface TranslatorController {
 
-    public String getText();
+    String getText();
 
-    public void setText(String text);
+    void setText(String text);
 
-    public void translate();
+    void translate();
 
-    public String getTranslatedText();
+    String getTranslatedText();
 
-    public void remove();
+    void remove();
 
 }

@@ -20,5 +20,5 @@ import javax.ejb.Local;
 
 @Local
 public interface NeueStadt {
-    public void mehrBauen();
+    void mehrBauen();
 }

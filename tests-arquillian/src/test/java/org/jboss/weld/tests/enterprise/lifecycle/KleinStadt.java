@@ -20,10 +20,10 @@ import javax.ejb.Local;
 
 @Local
 public interface KleinStadt {
-    public void begruendet();
+    void begruendet();
 
-    public void zustandVergessen();
+    void zustandVergessen();
 
-    public void zustandVerloren();
+    void zustandVerloren();
 
 }

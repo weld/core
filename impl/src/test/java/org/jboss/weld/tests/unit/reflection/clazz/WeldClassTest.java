@@ -55,7 +55,7 @@ public class WeldClassTest {
     @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
-    *  
+    *
     *  getUnproxyableClassException() catch(NoSuchMethodException)
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */
@@ -71,7 +71,7 @@ public class WeldClassTest {
     @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
-    *  
+    *
     *  getUnproxyableClassException() catch(NoSuchMethodException)
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */

@@ -33,9 +33,9 @@ import java.util.List;
 public class CommandLineArgsValidator {
 
     @Inject
-    private
     @Parameters
-    List<String> validParams;
+    private List<String> validParams;
+
     private List<String> errors = new ArrayList<String>();
 
     public CommandLineArgsValidator() {

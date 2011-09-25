@@ -37,26 +37,26 @@ public interface CodeFragmentManager {
     /**
      * The number of code fragments to return in our recentCodeFragments query
      */
-    public static final int MAX_RECENT_FRAGMENTS = 7;
+    int MAX_RECENT_FRAGMENTS = 7;
 
     /**
      * Add the code fragment, computing a hash for it's id if it is private,
      * otherwise, using a sequential id
      */
-    public String addCodeFragment(CodeFragment code, boolean privateFragment);
+    String addCodeFragment(CodeFragment code, boolean privateFragment);
 
     /**
      * Retrieve a code fragment, using it's id
      */
-    public CodeFragment getCodeFragment(String id);
+    CodeFragment getCodeFragment(String id);
 
     /**
      * Get the {@value #MAX_RECENT_FRAGMENTS} most recent fragments
      */
-    public List<CodeFragment> getRecentCodeFragments();
+    List<CodeFragment> getRecentCodeFragments();
 
     /**
      * Find code fragments by example. Supports paging.
      */
-    public List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator info);
+    List<CodeFragment> searchCodeFragments(CodeFragment code, int page, Paginator info);
 }

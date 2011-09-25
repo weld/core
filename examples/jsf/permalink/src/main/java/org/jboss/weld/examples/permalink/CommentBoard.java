@@ -29,9 +29,8 @@ import javax.inject.Inject;
 /**
  * @author Dan Allen
  */
-public
 @Model
-class CommentBoard {
+public class CommentBoard {
     @Inject
     Repository repository;
 

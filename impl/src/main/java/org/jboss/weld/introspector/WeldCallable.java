@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S>, AnnotatedCallable<X> {
 
-    public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Arrays2.asSet(Disposes.class, Observes.class);
+    Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Arrays2.asSet(Disposes.class, Observes.class);
 
     /**
      * Gets the abstracted parameters of the method
@@ -39,7 +39,7 @@ public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S
      * @return A list of parameters. Returns an empty list if no parameters are
      *         present.
      */
-    public List<? extends WeldParameter<?, X>> getWeldParameters();
+    List<? extends WeldParameter<?, X>> getWeldParameters();
 
     /**
      * Gets the list of annotated parameters for a given annotation
@@ -48,6 +48,6 @@ public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S
      * @return A set of matching parameter abstractions. Returns an empty list if
      *         there are no matches.
      */
-    public List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> annotationType);
+    List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> annotationType);
 
 }

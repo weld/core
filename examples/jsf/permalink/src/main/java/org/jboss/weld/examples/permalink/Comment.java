@@ -29,10 +29,9 @@ import java.util.Date;
 /**
  * @author Dan Allen
  */
-public
 @Named
 @RequestScoped
-class Comment {
+public class Comment {
     private Long id;
 
     private BlogEntry entry;

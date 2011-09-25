@@ -21,6 +21,6 @@ import javax.ejb.Local;
 @Local
 public interface ResultDAO extends AbstractDAO<Result> {
 
-    public Result findByUser(String username);
+    Result findByUser(String username);
 
 }

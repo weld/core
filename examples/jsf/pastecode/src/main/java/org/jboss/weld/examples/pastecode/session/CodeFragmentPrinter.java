@@ -5,6 +5,6 @@ import javax.ejb.Local;
 @Local
 public interface CodeFragmentPrinter {
 
-    public void startTimer();
+    void startTimer();
 
 }

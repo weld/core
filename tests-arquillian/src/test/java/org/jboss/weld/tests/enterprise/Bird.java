@@ -21,6 +21,6 @@ import javax.ejb.Local;
 @Local
 public interface Bird {
 
-    public void observe(Feed feed);
+    void observe(Feed feed);
 
 }

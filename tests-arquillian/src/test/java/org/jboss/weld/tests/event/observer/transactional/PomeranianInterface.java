@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -26,35 +26,35 @@ public interface PomeranianInterface {
      *
      * @param someEvent
      */
-    public void observeStringEvent(String someEvent);
+    void observeStringEvent(String someEvent);
 
     /**
      * Observes an Integer event if the transaction is successfully completed.
      *
      * @param event
      */
-    public void observeIntegerEvent(Integer event);
+    void observeIntegerEvent(Integer event);
 
     /**
      * Observes a Float event only if the transaction failed.
      *
      * @param event
      */
-    public void observeFloatEvent(Float event);
+    void observeFloatEvent(Float event);
 
-    public void observeBigIntegerEvent(BigInteger event);
+    void observeBigIntegerEvent(BigInteger event);
 
-    public void observeExceptionEvent(RuntimeException event);
+    void observeExceptionEvent(RuntimeException event);
 
-    public void observeCharEvent(Character event);
+    void observeCharEvent(Character event);
 
-    public boolean isCorrectContext();
+    boolean isCorrectContext();
 
-    public void setCorrectContext(boolean correctContext);
+    void setCorrectContext(boolean correctContext);
 
-    public boolean isCorrectTransactionState();
+    boolean isCorrectTransactionState();
 
-    public void setCorrectTransactionState(boolean correctTransactionState);
+    void setCorrectTransactionState(boolean correctTransactionState);
 
-    public void removeSessionBean();
+    void removeSessionBean();
 }

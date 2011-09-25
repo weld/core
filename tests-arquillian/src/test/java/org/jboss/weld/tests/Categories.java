@@ -62,12 +62,12 @@ import java.util.List;
 public class Categories extends Suite {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface IncludeCategory {
-        public Class<?>[] value();
+        Class<?>[] value();
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ExcludeCategory {
-        public Class<?>[] value();
+        Class<?>[] value();
     }
 
     public static class CategoryFilter extends Filter {

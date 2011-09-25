@@ -45,7 +45,7 @@ public class HashComputer {
         return hashValue;
     }
 
-    private String asHex(byte buf[]) {
+    private String asHex(byte[] buf) {
         StringBuilder strBuf = new StringBuilder(buf.length * 2);
 
         // make sure it contains a letter!

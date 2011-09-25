@@ -28,4 +28,4 @@ public class Generator implements Serializable {
     int getMaxNumber() {
         return maxNumber;
     }
-} 
+}
