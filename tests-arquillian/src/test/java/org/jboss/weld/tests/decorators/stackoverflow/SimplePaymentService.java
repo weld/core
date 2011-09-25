@@ -17,27 +17,23 @@
 
 package org.jboss.weld.tests.decorators.stackoverflow;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 /**
- * 
  * @author wayne
  */
 @SimpleService
 @ApplicationScoped
-public class SimplePaymentService implements PaymentService
-{
-   @Inject
-   Logger logger;
+public class SimplePaymentService implements PaymentService {
+    @Inject
+    Logger logger;
 
-   public boolean pay(String account, BigDecimal amount)
-   {
-      logger.info("Pay " + amount + " for " + account);
+    public boolean pay(String account, BigDecimal amount) {
+        logger.info("Pay " + amount + " for " + account);
 
-      return true;
-   }
+        return true;
+    }
 }

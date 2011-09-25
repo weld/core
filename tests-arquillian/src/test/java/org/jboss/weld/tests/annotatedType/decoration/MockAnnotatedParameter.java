@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
 
 import javax.enterprise.inject.spi.Annotated;
@@ -21,34 +21,28 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class MockAnnotatedParameter<X> extends MockAnnotated implements AnnotatedParameter<X>
-{
-   private final AnnotatedCallable<X> callable;
-   
-   public MockAnnotatedParameter(Annotated delegate, AnnotatedCallable<X> callable)
-   {
-      super(delegate);
-      this.callable = callable;
-   }
+public class MockAnnotatedParameter<X> extends MockAnnotated implements AnnotatedParameter<X> {
+    private final AnnotatedCallable<X> callable;
 
-   @Override
-   AnnotatedParameter<X> getDelegate()
-   {
-      return (AnnotatedParameter<X>)super.getDelegate();
-   }
+    public MockAnnotatedParameter(Annotated delegate, AnnotatedCallable<X> callable) {
+        super(delegate);
+        this.callable = callable;
+    }
 
-   public AnnotatedCallable<X> getDeclaringCallable()
-   {
-      return callable;
-   }
+    @Override
+    AnnotatedParameter<X> getDelegate() {
+        return (AnnotatedParameter<X>) super.getDelegate();
+    }
 
-   public int getPosition()
-   {
-      return getDelegate().getPosition();
-   }
+    public AnnotatedCallable<X> getDeclaringCallable() {
+        return callable;
+    }
+
+    public int getPosition() {
+        return getDelegate().getPosition();
+    }
 
 }

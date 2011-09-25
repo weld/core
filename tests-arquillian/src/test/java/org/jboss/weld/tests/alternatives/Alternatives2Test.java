@@ -27,18 +27,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class Alternatives2Test
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(Alternatives2Test.class.getPackage());
-   }
+public class Alternatives2Test {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(Alternatives2Test.class.getPackage());
+    }
 
-   @Test
-   public void testAlternativesOnProducers(Consumer consumer)
-   {
-      Assert.assertEquals("Normal", consumer.getFoo().getName());
-   }
+    @Test
+    public void testAlternativesOnProducers(Consumer consumer) {
+        Assert.assertEquals("Normal", consumer.getFoo().getName());
+    }
 }

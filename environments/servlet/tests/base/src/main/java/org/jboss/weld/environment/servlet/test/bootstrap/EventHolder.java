@@ -3,9 +3,8 @@ package org.jboss.weld.environment.servlet.test.bootstrap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventHolder
-{
-   
-   public static List<Object> events = new ArrayList<Object>();
+public class EventHolder {
+
+    public static List<Object> events = new ArrayList<Object>();
 
 }

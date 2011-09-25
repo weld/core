@@ -17,41 +17,36 @@ import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeplo
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DeploymentOrderingTestBase
-{
+public class DeploymentOrderingTestBase {
 
-   public static final Asset EXTENSION = new ByteArrayAsset(ContainerLifecycleObserver.class.getName().getBytes());
+    public static final Asset EXTENSION = new ByteArrayAsset(ContainerLifecycleObserver.class.getName().getBytes());
 
-   public static WebArchive deployment()
-   {
-      WebArchive war = baseDeployment();
-      war.delete(ArchivePaths.create("WEB-INF/beans.xml"));
-      return war.addPackage(DeploymentOrderingTestBase.class.getPackage())
-            .addAsWebInfResource(new BeansXml().alternatives(Bar.class), "beans.xml")
-            .addAsWebInfResource(new BeansXml().alternatives(Garply.class), "classes/META-INF/beans.xml")
-            .addAsWebInfResource(EXTENSION, "classes/META-INF/services/" + Extension.class.getName());
-   }
+    public static WebArchive deployment() {
+        WebArchive war = baseDeployment();
+        war.delete(ArchivePaths.create("WEB-INF/beans.xml"));
+        return war.addPackage(DeploymentOrderingTestBase.class.getPackage())
+                .addAsWebInfResource(new BeansXml().alternatives(Bar.class), "beans.xml")
+                .addAsWebInfResource(new BeansXml().alternatives(Garply.class), "classes/META-INF/beans.xml")
+                .addAsWebInfResource(EXTENSION, "classes/META-INF/services/" + Extension.class.getName());
+    }
 
-   @Test
-   public void testBeansXmlMerged(BeanManager beanManager)
-   {
-      assertEquals(Bar.class, beanManager.resolve(beanManager.getBeans(Foo.class)).getBeanClass());
-      assertEquals(Garply.class, beanManager.resolve(beanManager.getBeans(Baz.class)).getBeanClass());
-   }
+    @Test
+    public void testBeansXmlMerged(BeanManager beanManager) {
+        assertEquals(Bar.class, beanManager.resolve(beanManager.getBeans(Foo.class)).getBeanClass());
+        assertEquals(Garply.class, beanManager.resolve(beanManager.getBeans(Baz.class)).getBeanClass());
+    }
 
-   @Test
-   public void testProcessAnnotatedTypeCalledOnceOnlyPerType(ContainerLifecycleObserver containerLifecycleObserver)
-   {
-      assertEquals(4, containerLifecycleObserver.getProcessedAnnotatedTypes().size());
-      List<Class<?>> classes = new ArrayList<Class<?>>();
-      for (AnnotatedType<?> annotatedType : containerLifecycleObserver.getProcessedAnnotatedTypes())
-      {
-         classes.add(annotatedType.getJavaClass());
-      }
-      assertTrue(classes.contains(Foo.class));
-      assertTrue(classes.contains(Bar.class));
-      assertTrue(classes.contains(Baz.class));
-      assertTrue(classes.contains(Garply.class));
-   }
+    @Test
+    public void testProcessAnnotatedTypeCalledOnceOnlyPerType(ContainerLifecycleObserver containerLifecycleObserver) {
+        assertEquals(4, containerLifecycleObserver.getProcessedAnnotatedTypes().size());
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        for (AnnotatedType<?> annotatedType : containerLifecycleObserver.getProcessedAnnotatedTypes()) {
+            classes.add(annotatedType.getJavaClass());
+        }
+        assertTrue(classes.contains(Foo.class));
+        assertTrue(classes.contains(Bar.class));
+        assertTrue(classes.contains(Baz.class));
+        assertTrue(classes.contains(Garply.class));
+    }
 
 }

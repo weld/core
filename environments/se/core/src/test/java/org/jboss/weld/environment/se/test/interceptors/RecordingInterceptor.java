@@ -17,16 +17,17 @@
 
 package org.jboss.weld.environment.se.test.interceptors;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Peter Royle
  */
-@Recorded @Interceptor
+@Recorded
+@Interceptor
 public class RecordingInterceptor {
 
     public static List<String> methodsRecorded = new ArrayList<String>();

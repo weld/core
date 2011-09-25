@@ -28,29 +28,28 @@ package org.jboss.weld.environment;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public interface Container
-{
-   /**
-    * Touch if this container can be used.
-    * We should throw an exception if it cannot be used.
-    *
-    * @param context the container context
-    * @return true if touch was successful, false or exception otherwise
-    * @throws Exception for any error
-    */
-   boolean touch(ContainerContext context) throws Exception;
+public interface Container {
+    /**
+     * Touch if this container can be used.
+     * We should throw an exception if it cannot be used.
+     *
+     * @param context the container context
+     * @return true if touch was successful, false or exception otherwise
+     * @throws Exception for any error
+     */
+    boolean touch(ContainerContext context) throws Exception;
 
-   /**
-    * Initialize web container.
-    *
-    * @param context the container context
-    */
-   void initialize(ContainerContext context);
+    /**
+     * Initialize web container.
+     *
+     * @param context the container context
+     */
+    void initialize(ContainerContext context);
 
-   /**
-    * Destroy setup.
-    *
-    * @param context the container context
-    */
-   void destroy(ContainerContext context);
+    /**
+     * Destroy setup.
+     *
+     * @param context the container context
+     */
+    void destroy(ContainerContext context);
 }

@@ -20,7 +20,6 @@ package org.jboss.weld.tests.decorators.stackoverflow;
 import java.math.BigDecimal;
 
 /**
- *
  * @author wayne
  */
 public interface PaymentService {

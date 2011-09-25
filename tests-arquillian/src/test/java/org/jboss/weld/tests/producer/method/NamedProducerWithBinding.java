@@ -16,16 +16,19 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import java.util.Date;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
+import java.util.Date;
 
 /**
  * @author Dan Allen
  */
 public class NamedProducerWithBinding {
-   public @Produces @Important @Named Date getDate() {
-      return new Date();
-   }
+    public
+    @Produces
+    @Important
+    @Named
+    Date getDate() {
+        return new Date();
+    }
 }

@@ -20,7 +20,6 @@ package org.jboss.weld.tests.decorators.resolution;
 /**
  * @author Marius Bogoevici
  */
-public interface SomeBean
-{
-   String hello(String name);
+public interface SomeBean {
+    String hello(String name);
 }

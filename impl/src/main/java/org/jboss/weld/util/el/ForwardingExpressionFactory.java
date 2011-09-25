@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -23,54 +23,45 @@ import javax.el.ValueExpression;
 
 /**
  * @author pmuir
- *
  */
-public abstract class ForwardingExpressionFactory extends ExpressionFactory
-{
+public abstract class ForwardingExpressionFactory extends ExpressionFactory {
 
-   protected abstract ExpressionFactory delegate();
-   
-   
-   @Override
-   public Object coerceToType(Object obj, Class<?> targetType)
-   {
-      return delegate().coerceToType(obj, targetType);
-   }
+    protected abstract ExpressionFactory delegate();
 
-   @Override
-   public MethodExpression createMethodExpression(ELContext context, String expression, Class<?> expectedReturnType, Class<?>[] expectedParamTypes)
-   {
-      return delegate().createMethodExpression(context, expression, expectedReturnType, expectedParamTypes);
-   }
 
-   @Override
-   public ValueExpression createValueExpression(Object instance, Class<?> expectedType)
-   {
-      return delegate().createValueExpression(instance, expectedType);
-   }
+    @Override
+    public Object coerceToType(Object obj, Class<?> targetType) {
+        return delegate().coerceToType(obj, targetType);
+    }
 
-   @Override
-   public ValueExpression createValueExpression(ELContext context, String expression, Class<?> expectedType)
-   {
-      return delegate().createValueExpression(context, expression, expectedType);
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return this == obj || delegate().equals(obj);
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
+    @Override
+    public MethodExpression createMethodExpression(ELContext context, String expression, Class<?> expectedReturnType, Class<?>[] expectedParamTypes) {
+        return delegate().createMethodExpression(context, expression, expectedReturnType, expectedParamTypes);
+    }
+
+    @Override
+    public ValueExpression createValueExpression(Object instance, Class<?> expectedType) {
+        return delegate().createValueExpression(instance, expectedType);
+    }
+
+    @Override
+    public ValueExpression createValueExpression(ELContext context, String expression, Class<?> expectedType) {
+        return delegate().createValueExpression(context, expression, expectedType);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj || delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
 
 }

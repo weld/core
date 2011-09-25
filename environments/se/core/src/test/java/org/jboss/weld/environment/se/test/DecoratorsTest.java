@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -29,57 +25,56 @@ import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
 import org.jboss.weld.environment.se.test.decorators.HouseDoor;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
- * 
  * @author Peter Royle
  */
-public class DecoratorsTest
-{
+public class DecoratorsTest {
 
-   /**
-    * Test that decorators work as expected in SE.
-    */
-   @Test
-   public void testDecorators()
-   {
-      WeldContainer weld = new Weld().initialize();
+    /**
+     * Test that decorators work as expected in SE.
+     */
+    @Test
+    public void testDecorators() {
+        WeldContainer weld = new Weld().initialize();
 
-      CarDoor carDoor = weld.instance().select(CarDoor.class).get();
-      assertNotNull(carDoor);
+        CarDoor carDoor = weld.instance().select(CarDoor.class).get();
+        assertNotNull(carDoor);
 
-      // the car door is alarmed
-      CarDoorAlarm.alarmActivated = false;
-      assertFalse(CarDoorAlarm.alarmActivated);
-      testDoor(carDoor);
-      assertTrue(CarDoorAlarm.alarmActivated);
+        // the car door is alarmed
+        CarDoorAlarm.alarmActivated = false;
+        assertFalse(CarDoorAlarm.alarmActivated);
+        testDoor(carDoor);
+        assertTrue(CarDoorAlarm.alarmActivated);
 
-      HouseDoor houseDoor = weld.instance().select(HouseDoor.class).get();
-      assertNotNull(carDoor);
+        HouseDoor houseDoor = weld.instance().select(HouseDoor.class).get();
+        assertNotNull(carDoor);
 
-      // the house door is not alarmed
-      CarDoorAlarm.alarmActivated = false;
-      assertFalse(CarDoorAlarm.alarmActivated);
-      testDoor(houseDoor);
-      assertFalse(CarDoorAlarm.alarmActivated);
+        // the house door is not alarmed
+        CarDoorAlarm.alarmActivated = false;
+        assertFalse(CarDoorAlarm.alarmActivated);
+        testDoor(houseDoor);
+        assertFalse(CarDoorAlarm.alarmActivated);
 
-      shutdownManager(weld);
-   }
+        shutdownManager(weld);
+    }
 
-   private void testDoor(AbstractDoor door)
-   {
-      assertTrue(door.open());
-      assertTrue(door.isOpen());
-      assertFalse(door.close());
-      assertFalse(door.isOpen());
-      assertTrue(door.lock());
-      assertTrue(door.isLocked());
-      assertFalse(door.open());
-      assertFalse(door.isOpen());
-   }
+    private void testDoor(AbstractDoor door) {
+        assertTrue(door.open());
+        assertTrue(door.isOpen());
+        assertFalse(door.close());
+        assertFalse(door.isOpen());
+        assertTrue(door.lock());
+        assertTrue(door.isLocked());
+        assertFalse(door.open());
+        assertFalse(door.isOpen());
+    }
 
-   private void shutdownManager(WeldContainer weld)
-   {
-      ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-      shutdownManager.shutdown();
-   }
+    private void shutdownManager(WeldContainer weld) {
+        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
+        shutdownManager.shutdown();
+    }
 }

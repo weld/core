@@ -20,26 +20,24 @@ package org.jboss.weld.tests.interceptors.injectionWithMethodExclusions;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.ExcludeDefaultInterceptors;
 import javax.interceptor.Interceptors;
 
 /**
  * @author Marius Bogoevici
  */
-@Stateless @Interceptors({EjbInterceptor.class, EjbInterceptor2.class})
-public class Simple2Impl implements Simple2
-{
-   @Inject
-   Helper helper;
+@Stateless
+@Interceptors({EjbInterceptor.class, EjbInterceptor2.class})
+public class Simple2Impl implements Simple2 {
+    @Inject
+    Helper helper;
 
-   public Helper getHelper()
-   {
-      return helper;
-   }
+    public Helper getHelper() {
+        return helper;
+    }
 
-   @ExcludeClassInterceptors @Interceptors({EjbInterceptor3.class, EjbInterceptor4.class})
-   public void doSomething()
-   {
+    @ExcludeClassInterceptors
+    @Interceptors({EjbInterceptor3.class, EjbInterceptor4.class})
+    public void doSomething() {
 
-   }
+    }
 }

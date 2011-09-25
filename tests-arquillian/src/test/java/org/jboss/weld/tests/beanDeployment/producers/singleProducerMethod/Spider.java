@@ -16,12 +16,10 @@
  */
 package org.jboss.weld.tests.beanDeployment.producers.singleProducerMethod;
 
-class Spider implements Animal
-{
+class Spider implements Animal {
 
-   public final void layEggs()
-   {
-      
-   }
-   
+    public final void layEggs() {
+
+    }
+
 }

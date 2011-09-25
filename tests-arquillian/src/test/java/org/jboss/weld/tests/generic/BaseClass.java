@@ -20,6 +20,5 @@ package org.jboss.weld.tests.generic;
 /**
  * @author Marius Bogoevici
  */
-public class BaseClass
-{
+public class BaseClass {
 }

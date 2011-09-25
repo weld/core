@@ -9,24 +9,12 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bootstrap.events;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -35,55 +23,53 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery
-{
-   
-   public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts)
-   {
-      new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire(beanDeployments);
-   }
-   
-   protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts)
-   {
-      super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment, contexts);
-   }
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.ObserverMethod;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-   public void addDefinitionError(Throwable t)
-   {
-      getErrors().add(t);
-   }
-   
-   public List<Throwable> getDefinitionErrors()
-   {
-      return Collections.unmodifiableList(getErrors());
-   }
-   
-   public void addBean(Bean<?> bean)
-   {
-      BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
-      if (bean instanceof Interceptor<?>)
-      {
-         beanManager.addInterceptor((Interceptor<?>) bean);
-      }
-      else if (bean instanceof Decorator<?>)
-      {
-         beanManager.addDecorator(CustomDecoratorWrapper.of((Decorator<?>)bean, beanManager));
-      }
-      else
-      {
-         beanManager.addBean(bean);
-      }
-      ProcessBeanImpl.fire(beanManager, bean);
-   }
+public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery {
 
-   public void addContext(Context context)
-   {
-      getBeanManager().addContext(context);
-   }
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+        new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire(beanDeployments);
+    }
 
-   public void addObserverMethod(ObserverMethod<?> observerMethod)
-   {
-      getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
-   }
+    protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+        super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment, contexts);
+    }
+
+    public void addDefinitionError(Throwable t) {
+        getErrors().add(t);
+    }
+
+    public List<Throwable> getDefinitionErrors() {
+        return Collections.unmodifiableList(getErrors());
+    }
+
+    public void addBean(Bean<?> bean) {
+        BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
+        if (bean instanceof Interceptor<?>) {
+            beanManager.addInterceptor((Interceptor<?>) bean);
+        } else if (bean instanceof Decorator<?>) {
+            beanManager.addDecorator(CustomDecoratorWrapper.of((Decorator<?>) bean, beanManager));
+        } else {
+            beanManager.addBean(bean);
+        }
+        ProcessBeanImpl.fire(beanManager, bean);
+    }
+
+    public void addContext(Context context) {
+        getBeanManager().addContext(context);
+    }
+
+    public void addObserverMethod(ObserverMethod<?> observerMethod) {
+        getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
+    }
 
 }

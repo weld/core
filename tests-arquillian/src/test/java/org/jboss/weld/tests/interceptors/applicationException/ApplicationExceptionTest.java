@@ -38,38 +38,31 @@ import org.junit.runner.RunWith;
 
 @Category(value = {Integration.class, Broken.class})
 @RunWith(Arquillian.class)
-public class ApplicationExceptionTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-             .intercept(FooInterceptor.class)
-            .addPackage(ApplicationExceptionTest.class.getPackage());
-   }
+public class ApplicationExceptionTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .intercept(FooInterceptor.class)
+                .addPackage(ApplicationExceptionTest.class.getPackage());
+    }
 
-   @Test
-   public void testSuccessfulMethod(FooStateless stateless)
-   {
-      FooInterceptor.invocationCount = 0;
-      Assert.assertEquals("hello", stateless.helloWorld());
-      Assert.assertEquals(1, FooInterceptor.invocationCount);
-   }
+    @Test
+    public void testSuccessfulMethod(FooStateless stateless) {
+        FooInterceptor.invocationCount = 0;
+        Assert.assertEquals("hello", stateless.helloWorld());
+        Assert.assertEquals(1, FooInterceptor.invocationCount);
+    }
 
-   @Test
-   public void testFailingMethod(FooStateless stateless)
-   {
-      FooInterceptor.invocationCount = 0;
-      try
-      {
-         stateless.fail();
-         Assert.fail("No exception thrown");
-      }
-      catch (Exception e)
-      {
-        Assert.assertTrue(e instanceof FooException);
-      }
-      Assert.assertEquals(1, FooInterceptor.invocationCount);
-   }
+    @Test
+    public void testFailingMethod(FooStateless stateless) {
+        FooInterceptor.invocationCount = 0;
+        try {
+            stateless.fail();
+            Assert.fail("No exception thrown");
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof FooException);
+        }
+        Assert.assertEquals(1, FooInterceptor.invocationCount);
+    }
 
 }

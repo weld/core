@@ -24,63 +24,53 @@ import java.lang.reflect.Method;
  * Contains all the data that is needed when working with a method in bytecode
  *
  * @author Stuart Douglas
- *
  */
-public class RuntimeMethodInformation implements MethodInformation
-{
-   private final Method method;
-   private final String descriptor;
-   private final String[] parameterTypes;
-   private final String returnType;
-   private final String declaringClass;
-   private final int modifier;
+public class RuntimeMethodInformation implements MethodInformation {
+    private final Method method;
+    private final String descriptor;
+    private final String[] parameterTypes;
+    private final String returnType;
+    private final String declaringClass;
+    private final int modifier;
 
-   public RuntimeMethodInformation(Method method)
-   {
-      this.method = method;
-      this.parameterTypes = DescriptorUtils.getParameterTypes(method);
-      this.returnType = DescriptorUtils.classToStringRepresentation(method.getReturnType());
-      this.descriptor = DescriptorUtils.getMethodDescriptor(parameterTypes, returnType);
-      this.declaringClass = method.getDeclaringClass().getName();
-      if(method.isBridge()) {
-         modifier = AccessFlag.PUBLIC | AccessFlag.BRIDGE | AccessFlag.SYNTHETIC;
-      } else {
-        modifier = AccessFlag.PUBLIC;
-      }
-   }
+    public RuntimeMethodInformation(Method method) {
+        this.method = method;
+        this.parameterTypes = DescriptorUtils.getParameterTypes(method);
+        this.returnType = DescriptorUtils.classToStringRepresentation(method.getReturnType());
+        this.descriptor = DescriptorUtils.getMethodDescriptor(parameterTypes, returnType);
+        this.declaringClass = method.getDeclaringClass().getName();
+        if (method.isBridge()) {
+            modifier = AccessFlag.PUBLIC | AccessFlag.BRIDGE | AccessFlag.SYNTHETIC;
+        } else {
+            modifier = AccessFlag.PUBLIC;
+        }
+    }
 
-   public String getDeclaringClass()
-   {
-      return declaringClass;
-   }
+    public String getDeclaringClass() {
+        return declaringClass;
+    }
 
-   public Method getMethod()
-   {
-      return method;
-   }
+    public Method getMethod() {
+        return method;
+    }
 
-   public String getDescriptor()
-   {
-      return descriptor;
-   }
+    public String getDescriptor() {
+        return descriptor;
+    }
 
-   public String[] getParameterTypes()
-   {
-      return parameterTypes;
-   }
+    public String[] getParameterTypes() {
+        return parameterTypes;
+    }
 
-   public String getReturnType()
-   {
-      return returnType;
-   }
+    public String getReturnType() {
+        return returnType;
+    }
 
-   public String getName()
-   {
-      return method.getName();
-   }
+    public String getName() {
+        return method.getName();
+    }
 
-   public int getModifiers()
-   {
-      return modifier;
-   }
+    public int getModifiers() {
+        return modifier;
+    }
 }

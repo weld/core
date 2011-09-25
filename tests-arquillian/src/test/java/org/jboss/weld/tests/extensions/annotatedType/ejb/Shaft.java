@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.annotatedType.ejb;
 
-public class Shaft
-{
-   
+public class Shaft {
+
 }

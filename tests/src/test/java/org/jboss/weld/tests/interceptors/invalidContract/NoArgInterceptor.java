@@ -25,12 +25,11 @@ import javax.interceptor.Interceptor;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-@Intercept @Interceptor 
-public class NoArgInterceptor 
-{
-	@AroundInvoke
-	public Object intercept() throws Exception
-	{
-	   return null;
-	}
+@Intercept
+@Interceptor
+public class NoArgInterceptor {
+    @AroundInvoke
+    public Object intercept() throws Exception {
+        return null;
+    }
 }

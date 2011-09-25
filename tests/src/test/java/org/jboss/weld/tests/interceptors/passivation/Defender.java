@@ -17,22 +17,19 @@
 
 package org.jboss.weld.tests.interceptors.passivation;
 
-import java.io.Serializable;
-
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @Pass
 @Interceptor
-public class Defender implements Serializable
-{
-   @AroundInvoke
-   public Object defend(InvocationContext context) throws Exception
-   {
-      return context.proceed();
-   }
+public class Defender implements Serializable {
+    @AroundInvoke
+    public Object defend(InvocationContext context) throws Exception {
+        return context.proceed();
+    }
 }

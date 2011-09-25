@@ -16,14 +16,13 @@
  */
 package org.jboss.weld.tests.serialization.noncontextual;
 
-import java.io.Serializable;
-
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.io.Serializable;
 
-public class NonContextual implements Serializable
-{
-   
-   @Inject Event<String> stringEvent;
+public class NonContextual implements Serializable {
+
+    @Inject
+    Event<String> stringEvent;
 
 }

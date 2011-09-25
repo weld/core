@@ -17,11 +17,6 @@
 
 package org.jboss.weld.tests.interceptors.ejb3model;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -30,73 +25,72 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 
 /**
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class Ejb3InterceptionModelTest 
-{
-   @Deployment
-   public static JavaArchive createDeployment()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(Ejb3InterceptionModelTest.class.getPackage());
-   }
+public class Ejb3InterceptionModelTest {
+    @Deployment
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(Ejb3InterceptionModelTest.class.getPackage());
+    }
 
-   //@Before // ARQ-391
-   public void reset()
-   {
-      Ball.played = false;
-      Goalkeeper.caught = false;
-      Defender.defended = false;
-      Ball.aroundInvoke = false;
-   }
-   
-   @Inject
-   private BeanManager beanManager;
+    //@Before // ARQ-391
+    public void reset() {
+        Ball.played = false;
+        Goalkeeper.caught = false;
+        Defender.defended = false;
+        Ball.aroundInvoke = false;
+    }
 
-   @Test
-   public void testSimpleInterceptor()
-   {
-      reset();
-      Bean bean = beanManager.getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
-      Ball ball = (Ball) bean.create(creationalContext);
-      ball.shoot();
-      assert Defender.defended;
-      assert Ball.played;
-      assert !Goalkeeper.caught;
-      assert Ball.aroundInvoke;
-   }
+    @Inject
+    private BeanManager beanManager;
+
+    @Test
+    public void testSimpleInterceptor() {
+        reset();
+        Bean bean = beanManager.getBeans(Ball.class).iterator().next();
+        CreationalContext creationalContext = beanManager.createCreationalContext(bean);
+        Ball ball = (Ball) bean.create(creationalContext);
+        ball.shoot();
+        assert Defender.defended;
+        assert Ball.played;
+        assert !Goalkeeper.caught;
+        assert Ball.aroundInvoke;
+    }
 
 
-   @Test
-   public void testSimpleInterceptor2()
-   {
-      reset();
-      Bean bean = beanManager.getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
-      Ball ball = (Ball) bean.create(creationalContext);
-      ball.pass();
-      assert Defender.defended;
-      assert Ball.played;
-      assert Goalkeeper.caught;
-      assert Ball.aroundInvoke;
-   }
+    @Test
+    public void testSimpleInterceptor2() {
+        reset();
+        Bean bean = beanManager.getBeans(Ball.class).iterator().next();
+        CreationalContext creationalContext = beanManager.createCreationalContext(bean);
+        Ball ball = (Ball) bean.create(creationalContext);
+        ball.pass();
+        assert Defender.defended;
+        assert Ball.played;
+        assert Goalkeeper.caught;
+        assert Ball.aroundInvoke;
+    }
 
-   @Test
-   public void testSimpleInterceptor3()
-   {
-      reset();
-      Bean bean = beanManager.getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = beanManager.createCreationalContext(bean);
-      Ball ball = (Ball) bean.create(creationalContext);
-      ball.lob();
-      assert !Defender.defended;
-      assert Ball.played;
-      assert Goalkeeper.caught;
-      assert Ball.aroundInvoke;
-   }
+    @Test
+    public void testSimpleInterceptor3() {
+        reset();
+        Bean bean = beanManager.getBeans(Ball.class).iterator().next();
+        CreationalContext creationalContext = beanManager.createCreationalContext(bean);
+        Ball ball = (Ball) bean.create(creationalContext);
+        ball.lob();
+        assert !Defender.defended;
+        assert Ball.played;
+        assert Goalkeeper.caught;
+        assert Ball.aroundInvoke;
+    }
 
 }

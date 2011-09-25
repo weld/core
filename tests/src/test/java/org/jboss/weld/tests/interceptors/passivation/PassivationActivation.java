@@ -17,14 +17,13 @@
 
 package org.jboss.weld.tests.interceptors.passivation;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
+import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.interceptor.InterceptorBinding;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Marius Bogoevici
@@ -33,6 +32,5 @@ import javax.interceptor.InterceptorBinding;
 @Retention(RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
-public @interface PassivationActivation
-{
+public @interface PassivationActivation {
 }

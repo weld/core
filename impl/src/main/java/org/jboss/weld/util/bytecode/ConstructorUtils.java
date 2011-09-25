@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -25,84 +25,73 @@ import javassist.bytecode.DuplicateMemberException;
 import javassist.bytecode.ExceptionsAttribute;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
-
 import org.jboss.weld.bean.proxy.ProxyFactory;
 
 /**
  * Utility class for working with constructors in the low level javassist API
- * 
+ *
  * @author Stuart Douglas
- * 
  */
-public class ConstructorUtils
-{
+public class ConstructorUtils {
 
-   private ConstructorUtils()
-   {
-   }
+    private ConstructorUtils() {
+    }
 
-   /**
-    * adds a constructor that calls super()
-    */
-   public static void addDefaultConstructor(ClassFile file, Bytecode initialValueBytecode)
-   {
-      addConstructor("()V", new String[0], file, initialValueBytecode);
-   }
+    /**
+     * adds a constructor that calls super()
+     */
+    public static void addDefaultConstructor(ClassFile file, Bytecode initialValueBytecode) {
+        addConstructor("()V", new String[0], file, initialValueBytecode);
+    }
 
-   /**
-    * Adds a constructor that delegates to a super constructor with the same
-    * descriptor. The bytecode in inialValueBytecode will be executed at the
-    * start of the constructor and can be used to inialize fields to a default
-    * value. As the object is not properly constructed at this point this
-    * bytecode may not reference this (i.e. the variable at location 0)
-    * 
-    * @param descriptor the constructor descriptor
-    * @param exceptions any exceptions that are thrown
-    * @param file the classfile to add the constructor to
-    * @param initialValueBytecode bytecode that can be used to set inial values
-    */
-   public static void addConstructor(String descriptor, String[] exceptions, ClassFile file, Bytecode initialValueBytecode)
-   {
-      try
-      {
-         MethodInfo ctor = new MethodInfo(file.getConstPool(), "<init>", descriptor);
-         ctor.setAccessFlags(AccessFlag.PUBLIC);
+    /**
+     * Adds a constructor that delegates to a super constructor with the same
+     * descriptor. The bytecode in inialValueBytecode will be executed at the
+     * start of the constructor and can be used to inialize fields to a default
+     * value. As the object is not properly constructed at this point this
+     * bytecode may not reference this (i.e. the variable at location 0)
+     *
+     * @param descriptor           the constructor descriptor
+     * @param exceptions           any exceptions that are thrown
+     * @param file                 the classfile to add the constructor to
+     * @param initialValueBytecode bytecode that can be used to set inial values
+     */
+    public static void addConstructor(String descriptor, String[] exceptions, ClassFile file, Bytecode initialValueBytecode) {
+        try {
+            MethodInfo ctor = new MethodInfo(file.getConstPool(), "<init>", descriptor);
+            ctor.setAccessFlags(AccessFlag.PUBLIC);
 
-         ExceptionsAttribute exAt = new ExceptionsAttribute(file.getConstPool());
-         exAt.setExceptions(exceptions);
-         ctor.setExceptionsAttribute(exAt);
-         Bytecode b = new Bytecode(file.getConstPool());
-         @SuppressWarnings("unused")
-         String[] params = DescriptorUtils.descriptorStringToParameterArray(descriptor);
-         // we need to generate a constructor with a single invokespecial call
-         // to the super constructor
-         // to do this we need to push all the arguments on the stack first
-         // local variables is the number of parameters +1 for this
-         // if some of the parameters are wide this may go up.
-         b.add(Opcode.ALOAD_0);
-         int localVariableCount = BytecodeUtils.loadParameters(b, descriptor);
-         // now we have the parameters on the stack
-         b.addInvokespecial(file.getSuperclass(), "<init>", descriptor);
-         // now set constructed to true
-         b.addAload(0);
-         b.addIconst(1);
-         b.addPutfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
-         b.addOpcode(Opcode.RETURN);
-         CodeAttribute ca = b.toCodeAttribute();
-         // set the initial field values
-         ca.iterator().insert(initialValueBytecode.get());
-         ctor.setCodeAttribute(ca);
-         ca.setMaxLocals(localVariableCount);
-         ca.computeMaxStack();
-         file.addMethod(ctor);
-      }
-      catch (BadBytecode e)
-      {
-         throw new RuntimeException(e);
-      }
-      catch (DuplicateMemberException e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+            ExceptionsAttribute exAt = new ExceptionsAttribute(file.getConstPool());
+            exAt.setExceptions(exceptions);
+            ctor.setExceptionsAttribute(exAt);
+            Bytecode b = new Bytecode(file.getConstPool());
+            @SuppressWarnings("unused")
+            String[] params = DescriptorUtils.descriptorStringToParameterArray(descriptor);
+            // we need to generate a constructor with a single invokespecial call
+            // to the super constructor
+            // to do this we need to push all the arguments on the stack first
+            // local variables is the number of parameters +1 for this
+            // if some of the parameters are wide this may go up.
+            b.add(Opcode.ALOAD_0);
+            int localVariableCount = BytecodeUtils.loadParameters(b, descriptor);
+            // now we have the parameters on the stack
+            b.addInvokespecial(file.getSuperclass(), "<init>", descriptor);
+            // now set constructed to true
+            b.addAload(0);
+            b.addIconst(1);
+            b.addPutfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
+            b.addOpcode(Opcode.RETURN);
+            CodeAttribute ca = b.toCodeAttribute();
+            // set the initial field values
+            ca.iterator().insert(initialValueBytecode.get());
+            ctor.setCodeAttribute(ca);
+            ca.setMaxLocals(localVariableCount);
+            ca.computeMaxStack();
+            file.addMethod(ctor);
+        } catch (BadBytecode e) {
+            throw new RuntimeException(e);
+        } catch (DuplicateMemberException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

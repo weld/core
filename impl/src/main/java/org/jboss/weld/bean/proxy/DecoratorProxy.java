@@ -19,11 +19,9 @@ package org.jboss.weld.bean.proxy;
 
 /**
  * Marker interface to identify Decorator proxies
- * 
+ *
  * @author Stuart Douglas
- * 
  */
-public interface DecoratorProxy
-{
+public interface DecoratorProxy {
 
 }

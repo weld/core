@@ -1,800 +1,801 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-   <parent>
-      <groupId>org.jboss.weld.examples</groupId>
-      <artifactId>weld-examples-parent</artifactId>
-      <version>1.1.3-SNAPSHOT</version>
-      <relativePath>../../pom.xml</relativePath>
-   </parent>
+    <parent>
+        <groupId>org.jboss.weld.examples</groupId>
+        <artifactId>weld-examples-parent</artifactId>
+        <version>1.1.3-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-   <groupId>org.jboss.weld.examples.jsf</groupId>
-   <artifactId>weld-jsf-numberguess</artifactId>
-   <packaging>war</packaging>
-   <name>Weld Examples: Numberguess (JSF)</name>
+    <groupId>org.jboss.weld.examples.jsf</groupId>
+    <artifactId>weld-jsf-numberguess</artifactId>
+    <packaging>war</packaging>
+    <name>Weld Examples: Numberguess (JSF)</name>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <!-- Common dependencies only -->
-   <dependencies>
+    <!-- Common dependencies only -->
+    <dependencies>
 
-      <dependency>
-         <groupId>org.testng</groupId>
-         <artifactId>testng</artifactId>
-         <scope>test</scope>
-         <classifier>jdk15</classifier>
-      </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+            <classifier>jdk15</classifier>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-         <scope>provided</scope>
-      </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.annotation</groupId>
-         <artifactId>jsr250-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.faces</groupId>
-         <artifactId>jsf-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+        </dependency>
 
-   </dependencies>
+    </dependencies>
 
-   <profiles>
-      <profile>
-         <id>jboss6</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-         </activation>
-         
-         <dependencies>
+    <profiles>
+        <profile>
+            <id>jboss6</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
 
-            <dependency>
-               <groupId>javax.annotation</groupId>
-               <artifactId>jsr250-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
+            <dependencies>
 
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
 
 
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>runtime</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>javax.el</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>runtime</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
 
-         </dependencies>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-jboss5</directory>
-                           <filtering>true</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      <profile>
-         <id>jboss6-jsf12</id>
-         <dependencies>
-            <dependency>
-               <groupId>javax.annotation</groupId>
-               <artifactId>jsr250-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            <dependency>
-                 <groupId>com.sun.facelets</groupId>
-                 <artifactId>jsf-facelets</artifactId>
-                 <version>${facelets.version}</version>
-            </dependency>
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>runtime</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>javax.el</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
-         </dependencies>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-jboss5-jsf12</directory>
-                           <filtering>true</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-       </profile>
-       <profile>
-         <id>jboss5-servlet</id>
-         
-         <dependencies>
-
-            <dependency>
-               <groupId>javax.annotation</groupId>
-               <artifactId>jsr250-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-            
-            <dependency>
-               <groupId>javax.servlet</groupId>
-               <artifactId>jstl</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-             <dependency>
-                <groupId>com.sun.facelets</groupId>
-                <artifactId>jsf-facelets</artifactId>
-                <version>1.1.15.B1</version>
-             </dependency>
-
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
-               <scope>runtime</scope>
-               <classifier>jboss5</classifier>
-               <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>runtime</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>javax.el</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
-
-         </dependencies>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-jboss5-servlet</directory>
-                           <filtering>true</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      
-      <profile>
-         <id>jboss6cluster</id>
-         <activation>
-            <activeByDefault>false</activeByDefault>
-         </activation>
-         
-         <dependencies>
-
-            <dependency>
-               <groupId>javax.annotation</groupId>
-               <artifactId>jsr250-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>runtime</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>javax.el</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
-
-         </dependencies>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-jboss5-cluster</directory>
-                           <filtering>true</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>   
-      <profile>
-         <id>tomcat</id>
-         <dependencies>
-
-            <dependency>
-               <groupId>javax.annotation</groupId>
-               <artifactId>jsr250-api</artifactId>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-impl</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.servlet</groupId>
-               <artifactId>jstl</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>runtime</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>javax.el</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
-
-         </dependencies>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-tomcat</directory>
-                           <filtering>false</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-
-      <profile>
-         <id>jetty</id>
-         <dependencies>
-
-            <dependency>
-               <groupId>javax.annotation</groupId>
-               <artifactId>jsr250-api</artifactId>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-impl</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.servlet</groupId>
-               <artifactId>jstl</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>runtime</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>javax.el</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
-
-         </dependencies>
-
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-jetty</directory>
-                           <filtering>false</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      <profile>
-         <id>gae</id>
-         <dependencies>
-
-            <!-- Use JSF 1.2, JSF 2 has issues on GAE still -->
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <version>1.2_13</version>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-impl</artifactId>
-               <scope>runtime</scope>
-               <version>1.2_13</version>
-            </dependency>
-
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
-               <scope>runtime</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>com.sun.facelets</groupId>
-               <artifactId>jsf-facelets</artifactId>
-               <version>1.1.15.B1</version>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.el</groupId>
-               <artifactId>el-api</artifactId>
-               <version>1.2</version>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.el</groupId>
-               <artifactId>el-ri</artifactId>
-               <version>1.2</version>
-            </dependency>
-
-         </dependencies>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-gae</directory>
-                           <filtering>false</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-               <plugin>
-                  <groupId>com.pyx4j</groupId>
-                  <artifactId>maven-junction-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                           <goal>link</goal>
-                        </goals>
-                     </execution>
-                  </executions>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-
-      <profile>
-         <id>jetty-ide</id>
-         <dependencies>
-
-            <dependency>
-               <groupId>javax.annotation</groupId>
-               <artifactId>jsr250-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-impl</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.jboss.weld.servlet</groupId>
-               <artifactId>weld-servlet</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>javax.servlet</groupId>
-               <artifactId>jstl</artifactId>
-               <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>provided</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>javax.el</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
-
-            <!--  JETTY DEPENDENCIES FOR IN IDE TESTING  -->
-
-            <dependency>
-               <groupId>org.mortbay.jetty</groupId>
-               <artifactId>jetty</artifactId>
-               <scope>test</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.mortbay.jetty</groupId>
-               <artifactId>jetty-plus</artifactId>
-               <scope>test</scope>
-            </dependency>
-
-            <dependency>
-               <groupId>org.mortbay.jetty</groupId>
-               <artifactId>jsp-2.1-jetty</artifactId>
-               <scope>test</scope>
-            </dependency>
-
-         </dependencies>
-
-         <build>
-
-            <resources>
-               <resource>
-                  <directory>src/jetty/resources</directory>
-               </resource>
-               <resource>
-                  <directory>src/main/webapp</directory>
-               </resource>
-            </resources>
-            <plugins>
-               <!-- Automatically add the src/jetty directory dir as a source dir -->
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>build-helper-maven-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>add-jetty-source</id>
-                        <goals>
-                           <goal>add-source</goal>
-                        </goals>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
                         <configuration>
-                           <sources>
-                              <source>src/jetty/java</source>
-                           </sources>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-jboss5</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </webResources>
                         </configuration>
-                     </execution>
-                  </executions>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-war-plugin</artifactId>
-                  <configuration>
-                     <webResources>
-                        <resource>
-                           <directory>src/main/webapp-jetty</directory>
-                           <filtering>false</filtering>
-                        </resource>
-                     </webResources>
-                  </configuration>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-eclipse-plugin</artifactId>
-                  <configuration>
-                     <useProjectReferences>false</useProjectReferences>
-                     <classpathContainers>
-                        <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-                     </classpathContainers>
-                  </configuration>
-               </plugin>
-            </plugins>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jboss6-jsf12</id>
+            <dependencies>
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.facelets</groupId>
+                    <artifactId>jsf-facelets</artifactId>
+                    <version>${facelets.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>runtime</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-jboss5-jsf12</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jboss5-servlet</id>
 
-         </build>
-      </profile>
+            <dependencies>
 
-      <!-- functional tests -->
-      <profile>
-         <id>ftest-jboss-remote-6</id>
-         <build>
-            <plugins>
-                <plugin>
-                  <groupId>org.codehaus.cargo</groupId>
-                  <artifactId>cargo-maven2-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>selenium-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>failsafe-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-antrun-plugin</artifactId>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      
-      <profile>
-         <id>ftest-jboss-remote-7</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-antrun-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>selenium-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>failsafe-maven-plugin</artifactId>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      
-      <profile>
-         <id>ftest-jboss-cluster-6</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>selenium-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>failsafe-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-antrun-plugin</artifactId>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-   
-      <profile>
-         <id>ftest-tomcat-6</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.codehaus.cargo</groupId>
-                  <artifactId>cargo-maven2-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>selenium-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>failsafe-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-antrun-plugin</artifactId>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      
-      <profile>
-         <id>ftest-jetty-6</id>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.mortbay.jetty</groupId>
-                  <artifactId>maven-jetty-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>selenium-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>failsafe-maven-plugin</artifactId>
-               </plugin>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-antrun-plugin</artifactId>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-   
-   </profiles>
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
 
-   <build>
-      <finalName>weld-numberguess</finalName>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-               <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
-            </configuration>
-         </plugin>
-         <plugin>
-            <artifactId>maven-clean-plugin</artifactId>
-            <configuration>
-               <failOnError>false</failOnError>
-               <filesets>
-                  <fileset>
-                     <!-- clean up files from war:inplace -->
-                     <directory>src/main/webapp</directory>
-                     <includes>
-                        <include>WEB-INF/classes/**</include>
-                        <include>WEB-INF/lib/**</include>
-                        <include>META-INF/context.xml</include>
-                        <include>WEB-INF/web.xml</include>
-                        <include>WEB-INF/jetty-env.xml</include>
-                        <include>WEB-INF/appengine-web.xml</include>
-                        <include>WEB-INF/logging.properties</include>
-                     </includes>
-                     <followSymlinks>false</followSymlinks>
-                  </fileset>
-               </filesets>
-            </configuration>
-         </plugin>
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
 
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>tomcat-maven-plugin</artifactId>
-            <configuration>
-               <path>/${project.build.finalName}</path>
-               <!--
-                  uncomment to use server configuration override; see
-                  readme.txt for details
-               -->
-               <!--<server>tomcat</server>-->
-               <url>http://localhost:${tomcat.http.port}/manager</url>
-               <port>${embedded-tomcat.http.port}</port>
-               <!--
-                  port for embedded Tomcat only (putting this
-                  configuration in the execution for the run goal
-                  doesn't work)
-               -->
-               <!-- if you don't want to use war:inplace, use this path instead -->
-               <!--
-                  <warSourceDirectory>${project.build.directory}/${project.build.finalName}</warSourceDirectory>
-               -->
-            </configuration>
-         </plugin>
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
 
-         <plugin>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>maven-jetty-plugin</artifactId>
-            <configuration>
-               <connectors>
-                  <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                     <port>${jetty.http.port}</port>
-                     <maxIdleTime>3600000</maxIdleTime>
-                  </connector>
-               </connectors>
-               <scanIntervalSeconds>10</scanIntervalSeconds>
-               <webAppConfig>
-                  <contextPath>/${project.build.finalName}</contextPath>
-               </webAppConfig>
-               <!-- if you don't want to use war:inplace, use this path instead -->
-               <!--
-                  <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
-               -->
-            </configuration>
-         </plugin>
+                <dependency>
+                    <groupId>com.sun.facelets</groupId>
+                    <artifactId>jsf-facelets</artifactId>
+                    <version>1.1.15.B1</version>
+                </dependency>
 
-      </plugins>
-   </build>
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet</artifactId>
+                    <scope>runtime</scope>
+                    <classifier>jboss5</classifier>
+                    <version>${project.version}</version>
+                </dependency>
 
-   <properties>
-      <jetty.http.port>9090</jetty.http.port>
-      <jetty.debug.port>9190</jetty.debug.port>
-      <tomcat.http.port>8080</tomcat.http.port>
-      <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
-      <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
-   </properties>
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>runtime</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-jboss5-servlet</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jboss6cluster</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <dependencies>
+
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>runtime</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-jboss5-cluster</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>tomcat</id>
+            <dependencies>
+
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>runtime</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-tomcat</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jetty</id>
+            <dependencies>
+
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>runtime</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-jetty</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>gae</id>
+            <dependencies>
+
+                <!-- Use JSF 1.2, JSF 2 has issues on GAE still -->
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                    <version>1.2_13</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
+                    <scope>runtime</scope>
+                    <version>1.2_13</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.sun.facelets</groupId>
+                    <artifactId>jsf-facelets</artifactId>
+                    <version>1.1.15.B1</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.el</groupId>
+                    <artifactId>el-api</artifactId>
+                    <version>1.2</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.el</groupId>
+                    <artifactId>el-ri</artifactId>
+                    <version>1.2</version>
+                </dependency>
+
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-gae</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.pyx4j</groupId>
+                        <artifactId>maven-junction-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>link</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jetty-ide</id>
+            <dependencies>
+
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.weld.servlet</groupId>
+                    <artifactId>weld-servlet</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>provided</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <!--  JETTY DEPENDENCIES FOR IN IDE TESTING  -->
+
+                <dependency>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jetty</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jetty-plus</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jsp-2.1-jetty</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
+
+            <build>
+
+                <resources>
+                    <resource>
+                        <directory>src/jetty/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/main/webapp</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <!-- Automatically add the src/jetty directory dir as a source dir -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-jetty-source</id>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/jetty/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-jetty</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </webResources>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-eclipse-plugin</artifactId>
+                        <configuration>
+                            <useProjectReferences>false</useProjectReferences>
+                            <classpathContainers>
+                                <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+                            </classpathContainers>
+                        </configuration>
+                    </plugin>
+                </plugins>
+
+            </build>
+        </profile>
+
+        <!-- functional tests -->
+        <profile>
+            <id>ftest-jboss-remote-6</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>failsafe-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>ftest-jboss-remote-7</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>failsafe-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>ftest-jboss-cluster-6</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>failsafe-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>ftest-tomcat-6</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>failsafe-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>ftest-jetty-6</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>maven-jetty-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>failsafe-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+    <build>
+        <finalName>weld-numberguess</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <filesets>
+                        <fileset>
+                            <!-- clean up files from war:inplace -->
+                            <directory>src/main/webapp</directory>
+                            <includes>
+                                <include>WEB-INF/classes/**</include>
+                                <include>WEB-INF/lib/**</include>
+                                <include>META-INF/context.xml</include>
+                                <include>WEB-INF/web.xml</include>
+                                <include>WEB-INF/jetty-env.xml</include>
+                                <include>WEB-INF/appengine-web.xml</include>
+                                <include>WEB-INF/logging.properties</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tomcat-maven-plugin</artifactId>
+                <configuration>
+                    <path>/${project.build.finalName}</path>
+                    <!--
+                       uncomment to use server configuration override; see
+                       readme.txt for details
+                    -->
+                    <!--<server>tomcat</server>-->
+                    <url>http://localhost:${tomcat.http.port}/manager</url>
+                    <port>${embedded-tomcat.http.port}</port>
+                    <!--
+                       port for embedded Tomcat only (putting this
+                       configuration in the execution for the run goal
+                       doesn't work)
+                    -->
+                    <!-- if you don't want to use war:inplace, use this path instead -->
+                    <!--
+                       <warSourceDirectory>${project.build.directory}/${project.build.finalName}</warSourceDirectory>
+                    -->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <configuration>
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>${jetty.http.port}</port>
+                            <maxIdleTime>3600000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webAppConfig>
+                        <contextPath>/${project.build.finalName}</contextPath>
+                    </webAppConfig>
+                    <!-- if you don't want to use war:inplace, use this path instead -->
+                    <!--
+                       <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
+                    -->
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <properties>
+        <jetty.http.port>9090</jetty.http.port>
+        <jetty.debug.port>9190</jetty.debug.port>
+        <tomcat.http.port>8080</tomcat.http.port>
+        <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
+        <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
+    </properties>
 
 </project>
 

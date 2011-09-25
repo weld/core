@@ -1,102 +1,87 @@
 package org.jboss.weld.context.beanstore;
 
-import static com.google.common.collect.Collections2.filter;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
-public abstract class AbstractNamingScheme implements NamingScheme
-{
+import java.util.ArrayList;
+import java.util.Collection;
 
-   class PrefixPredicate implements Predicate<String>
-   {
+import static com.google.common.collect.Collections2.filter;
 
-      public boolean apply(String input)
-      {
-         return AbstractNamingScheme.this.accept(input);
-      }
+public abstract class AbstractNamingScheme implements NamingScheme {
 
-   }
+    class PrefixPredicate implements Predicate<String> {
 
-   class DeprefixerFunction implements Function<String, String>
-   {
+        public boolean apply(String input) {
+            return AbstractNamingScheme.this.accept(input);
+        }
 
-      public String apply(String from)
-      {
-         return AbstractNamingScheme.this.deprefix(from);
-      }
+    }
 
-   }
+    class DeprefixerFunction implements Function<String, String> {
 
-   class PrefixerFunction implements Function<String, String>
-   {
+        public String apply(String from) {
+            return AbstractNamingScheme.this.deprefix(from);
+        }
 
-      public String apply(String from)
-      {
-         return AbstractNamingScheme.this.prefix(from);
-      }
+    }
 
-   }
+    class PrefixerFunction implements Function<String, String> {
 
-   private final String delimiter;
-   private final PrefixPredicate predicate;
-   private final DeprefixerFunction deprefixerFunction;
-   private final PrefixerFunction prefixerFunction;
+        public String apply(String from) {
+            return AbstractNamingScheme.this.prefix(from);
+        }
 
-   /**
-    * Create a new Prefixer.
-    * 
-    * @param prefix The prefix
-    * @param delimiter The delimiter to use between the prefix and the
-    *           identifier.
-    */
-   public AbstractNamingScheme(String delimiter)
-   {
-      this.delimiter = delimiter;
-      this.predicate = new PrefixPredicate();
-      this.deprefixerFunction = new DeprefixerFunction();
-      this.prefixerFunction = new PrefixerFunction();
-   }
+    }
 
-   public boolean accept(String id)
-   {
-      return id.startsWith(getPrefix() + delimiter);
-   }
+    private final String delimiter;
+    private final PrefixPredicate predicate;
+    private final DeprefixerFunction deprefixerFunction;
+    private final PrefixerFunction prefixerFunction;
 
-   public String deprefix(String id)
-   {
-      return id.substring(getPrefix().length() + delimiter.length());
-   }
+    /**
+     * Create a new Prefixer.
+     *
+     * @param prefix    The prefix
+     * @param delimiter The delimiter to use between the prefix and the
+     *                  identifier.
+     */
+    public AbstractNamingScheme(String delimiter) {
+        this.delimiter = delimiter;
+        this.predicate = new PrefixPredicate();
+        this.deprefixerFunction = new DeprefixerFunction();
+        this.prefixerFunction = new PrefixerFunction();
+    }
 
-   public String prefix(String id)
-   {
-      return getPrefix() + delimiter + id;
-   }
+    public boolean accept(String id) {
+        return id.startsWith(getPrefix() + delimiter);
+    }
 
-   public Collection<String> filterIds(Collection<String> ids)
-   {
-      return new ArrayList<String>(filter(ids, predicate));
-   }
+    public String deprefix(String id) {
+        return id.substring(getPrefix().length() + delimiter.length());
+    }
 
-   public Collection<String> deprefix(Collection<String> ids)
-   {
-      return new ArrayList<String>(Collections2.transform(ids, deprefixerFunction));
-   }
+    public String prefix(String id) {
+        return getPrefix() + delimiter + id;
+    }
 
-   public Collection<String> prefix(Collection<String> ids)
-   {
-      return new ArrayList<String>(Collections2.transform(ids, prefixerFunction));
-   }
+    public Collection<String> filterIds(Collection<String> ids) {
+        return new ArrayList<String>(filter(ids, predicate));
+    }
 
-   protected abstract String getPrefix();
-   
-   protected String getDelimiter()
-   {
-      return delimiter;
-   }
+    public Collection<String> deprefix(Collection<String> ids) {
+        return new ArrayList<String>(Collections2.transform(ids, deprefixerFunction));
+    }
+
+    public Collection<String> prefix(Collection<String> ids) {
+        return new ArrayList<String>(Collections2.transform(ids, prefixerFunction));
+    }
+
+    protected abstract String getPrefix();
+
+    protected String getDelimiter() {
+        return delimiter;
+    }
 
 }

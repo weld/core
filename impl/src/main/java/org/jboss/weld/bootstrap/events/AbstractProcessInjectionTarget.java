@@ -9,62 +9,55 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bootstrap.events;
 
-import java.lang.reflect.Type;
-import java.util.List;
+import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import java.lang.reflect.Type;
+import java.util.List;
 
-import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.manager.BeanManagerImpl;
+public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefinitionContainerEvent {
 
-public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefinitionContainerEvent
-{
+    public static <X> void fire(BeanManagerImpl beanManager, AbstractClassBean<X> bean) {
+        if (beanManager.isBeanEnabled(bean)) {
+            new ProcessBeanInjectionTarget<X>(beanManager, bean) {
+            }.fire();
+        }
+    }
 
-   public static <X> void fire(BeanManagerImpl beanManager, AbstractClassBean<X> bean)
-   {
-      if (beanManager.isBeanEnabled(bean))
-      {
-         new ProcessBeanInjectionTarget<X>(beanManager, bean) {}.fire();
-      }
-   }
-   
-   public static <X> InjectionTarget<X> fire(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget)
-   {
-      ProcessSimpleInjectionTarget<X> processSimpleInjectionTarget = new ProcessSimpleInjectionTarget<X>(beanManager, annotatedType, injectionTarget) {};
-      processSimpleInjectionTarget.fire();
-      return processSimpleInjectionTarget.getInjectionTarget();
-   }
+    public static <X> InjectionTarget<X> fire(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+        ProcessSimpleInjectionTarget<X> processSimpleInjectionTarget = new ProcessSimpleInjectionTarget<X>(beanManager, annotatedType, injectionTarget) {
+        };
+        processSimpleInjectionTarget.fire();
+        return processSimpleInjectionTarget.getInjectionTarget();
+    }
 
-   protected final AnnotatedType<T> annotatedType;
+    protected final AnnotatedType<T> annotatedType;
 
-   public AbstractProcessInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType)
-   {
-      super(beanManager, ProcessInjectionTarget.class, new Type[] {annotatedType.getBaseType() });
-      this.annotatedType = annotatedType;
-   }
+    public AbstractProcessInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType) {
+        super(beanManager, ProcessInjectionTarget.class, new Type[]{annotatedType.getBaseType()});
+        this.annotatedType = annotatedType;
+    }
 
-   public void addDefinitionError(Throwable t)
-   {
-      getErrors().add(t);
-   }
+    public void addDefinitionError(Throwable t) {
+        getErrors().add(t);
+    }
 
-   public List<Throwable> getDefinitionErrors()
-   {
-      return super.getErrors();
-   }
+    public List<Throwable> getDefinitionErrors() {
+        return super.getErrors();
+    }
 
-   public AnnotatedType<T> getAnnotatedType()
-   {
-      return annotatedType;
-   }
+    public AnnotatedType<T> getAnnotatedType() {
+        return annotatedType;
+    }
 
 }

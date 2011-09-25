@@ -20,10 +20,8 @@ import javax.ejb.Stateful;
 
 
 @Stateful
-public class Horse implements HorseRemote
-{
-   public boolean ping()
-   {
-      return true;
-   }
+public class Horse implements HorseRemote {
+    public boolean ping() {
+        return true;
+    }
 }

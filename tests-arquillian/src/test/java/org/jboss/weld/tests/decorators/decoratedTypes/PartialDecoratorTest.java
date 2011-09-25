@@ -29,25 +29,22 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class PartialDecoratorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(PartialDecorator.class)
-         .addPackage(PartialDecoratorTest.class.getPackage());
-   }
+public class PartialDecoratorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(PartialDecorator.class)
+                .addPackage(PartialDecoratorTest.class.getPackage());
+    }
 
-   @Test
-   public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean)
-   {
-      testBean.decoratedMethod();
-      testBean.notDecoratedMethod();
+    @Test
+    public void testDecoratorDoesNotDecorateOutsideDecoratedTypes(TestBean testBean) {
+        testBean.decoratedMethod();
+        testBean.notDecoratedMethod();
 
-      Assert.assertTrue(PartialDecorator.decoratedInvoked);
-      Assert.assertFalse(PartialDecorator.notDecoratedInvoked);
-      Assert.assertTrue(TestBean.decoratedInvoked);
-      Assert.assertTrue(TestBean.notDecoratedInvoked);
-   }
+        Assert.assertTrue(PartialDecorator.decoratedInvoked);
+        Assert.assertFalse(PartialDecorator.notDecoratedInvoked);
+        Assert.assertTrue(TestBean.decoratedInvoked);
+        Assert.assertTrue(TestBean.notDecoratedInvoked);
+    }
 }

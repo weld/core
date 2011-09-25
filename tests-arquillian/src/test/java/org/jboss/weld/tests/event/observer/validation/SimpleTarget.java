@@ -25,6 +25,5 @@ package org.jboss.weld.tests.event.observer.validation;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class SimpleTarget
-{
+public class SimpleTarget {
 }

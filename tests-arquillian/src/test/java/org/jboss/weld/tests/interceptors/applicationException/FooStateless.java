@@ -22,16 +22,14 @@ import javax.ejb.Stateless;
 /**
  * @author Marius Bogoevici
  */
-@Stateless @FooBinding
-public class FooStateless
-{
-   public String helloWorld()
-   {
-      return "hello";
-   }
+@Stateless
+@FooBinding
+public class FooStateless {
+    public String helloWorld() {
+        return "hello";
+    }
 
-   public void fail() throws FooException
-   {
-      throw new FooException();
-   }
+    public void fail() throws FooException {
+        throw new FooException();
+    }
 }

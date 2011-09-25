@@ -23,13 +23,13 @@ import javax.inject.Inject;
 /**
  * @author Marius Bogoevici
  */
-public class TestBean
-{
-   @Inject @Dependent GenericBean<String> genericBean;
+public class TestBean {
+    @Inject
+    @Dependent
+    GenericBean<String> genericBean;
 
-   public void invoke()
-   {
-      genericBean.decoratedEcho("hello");
-      genericBean.notDecoratedEcho("hello");
-   }
+    public void invoke() {
+        genericBean.decoratedEcho("hello");
+        genericBean.notDecoratedEcho("hello");
+    }
 }

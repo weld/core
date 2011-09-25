@@ -13,36 +13,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
-
-import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMethod;
+import java.lang.reflect.Method;
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public class MockAnnotatedMethod<X> extends MockAnnotatedCallable<X> implements AnnotatedMethod<X>
-{
-   public MockAnnotatedMethod(Annotated delegate)
-   {
-      // FIXME MDRAnnotatedMethod constructor
-      super(delegate);
-   }
+public class MockAnnotatedMethod<X> extends MockAnnotatedCallable<X> implements AnnotatedMethod<X> {
+    public MockAnnotatedMethod(Annotated delegate) {
+        // FIXME MDRAnnotatedMethod constructor
+        super(delegate);
+    }
 
-   @Override
-   public AnnotatedMethod<X> getDelegate()
-   {
-      return (AnnotatedMethod<X>)super.getDelegate();
+    @Override
+    public AnnotatedMethod<X> getDelegate() {
+        return (AnnotatedMethod<X>) super.getDelegate();
 
-   }
-   
-   public Method getJavaMember()
-   {
-      return getDelegate().getJavaMember();
-   }
+    }
+
+    public Method getJavaMember() {
+        return getDelegate().getJavaMember();
+    }
 }

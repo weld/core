@@ -29,16 +29,14 @@ import org.jboss.weld.tests.category.Integration;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class CategoryArchiveAppender implements AuxiliaryArchiveAppender
-{
+public class CategoryArchiveAppender implements AuxiliaryArchiveAppender {
 
-   /* (non-Javadoc)
+    /* (non-Javadoc)
     * @see org.jboss.arquillian.spi.AuxiliaryArchiveAppender#createAuxiliaryArchive()
     */
-   public Archive<?> createAuxiliaryArchive()
-   {
-      return ShrinkWrap.create(JavaArchive.class, "weld-core-test-categories.jar")
-                        .addPackage(Integration.class.getPackage())
-                        .addPackage(Broken.class.getPackage());
-   }
+    public Archive<?> createAuxiliaryArchive() {
+        return ShrinkWrap.create(JavaArchive.class, "weld-core-test-categories.jar")
+                .addPackage(Integration.class.getPackage())
+                .addPackage(Broken.class.getPackage());
+    }
 }

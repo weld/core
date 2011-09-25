@@ -21,14 +21,12 @@ import javax.ejb.Stateful;
 import javax.inject.Inject;
 
 @Stateful
-public class Marburg implements UniStadt
-{
-   @Inject
-   private Schloss theCastle;
+public class Marburg implements UniStadt {
+    @Inject
+    private Schloss theCastle;
 
-   @Remove
-   public void removeBean()
-   {
-   }
+    @Remove
+    public void removeBean() {
+    }
 
 }

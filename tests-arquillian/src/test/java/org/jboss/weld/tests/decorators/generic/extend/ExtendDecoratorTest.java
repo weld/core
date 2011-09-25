@@ -30,20 +30,17 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class ExtendDecoratorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(ExtendsDecoratedDecorator.class)
-         .addPackage(ExtendDecoratorTest.class.getPackage());
-   }
+public class ExtendDecoratorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(ExtendsDecoratedDecorator.class)
+                .addPackage(ExtendDecoratorTest.class.getPackage());
+    }
 
-   @Test
-   public void testExtendedDecorator(ExtendsDecorated instance)
-   {
-      String result = instance.decoratedEcho("hello");
-      Assert.assertEquals("decorated-hello-decorated", result);
-   }
+    @Test
+    public void testExtendedDecorator(ExtendsDecorated instance) {
+        String result = instance.decoratedEcho("hello");
+        Assert.assertEquals("decorated-hello-decorated", result);
+    }
 }

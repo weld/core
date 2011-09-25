@@ -25,17 +25,16 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @Decorator
-public class InnerWindowFrame implements Window
-{
-   static boolean drawn = false;
+public class InnerWindowFrame implements Window {
+    static boolean drawn = false;
 
-   @Inject @Delegate
-   Window window;
+    @Inject
+    @Delegate
+    Window window;
 
-   public void draw()
-   {
-      window.draw();
-      drawn = true;
-   }
+    public void draw() {
+        window.draw();
+        drawn = true;
+    }
 
 }

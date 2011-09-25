@@ -23,31 +23,30 @@ import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
 /**
- * 
  * @author Marius Bogoevici
  */
-@Decorator @Typed(Decorated.class)
-public class TypedDecorator implements Decorated, NotDecorated
-{
+@Decorator
+@Typed(Decorated.class)
+public class TypedDecorator implements Decorated, NotDecorated {
 
-   @Inject @Delegate TestBean delegate;
+    @Inject
+    @Delegate
+    TestBean delegate;
 
-   static boolean decoratedInvoked;
+    static boolean decoratedInvoked;
 
-   static boolean notDecoratedInvoked;
+    static boolean notDecoratedInvoked;
 
-   public void decoratedMethod()
-   {
-      decoratedInvoked = true;
-      delegate.decoratedMethod();
-   }
+    public void decoratedMethod() {
+        decoratedInvoked = true;
+        delegate.decoratedMethod();
+    }
 
-   /**
-    * Should not be invoked
-    */
-   public void notDecoratedMethod()
-   {
-      notDecoratedInvoked = true;
-      delegate.decoratedMethod();
-   }
+    /**
+     * Should not be invoked
+     */
+    public void notDecoratedMethod() {
+        notDecoratedInvoked = true;
+        delegate.decoratedMethod();
+    }
 }

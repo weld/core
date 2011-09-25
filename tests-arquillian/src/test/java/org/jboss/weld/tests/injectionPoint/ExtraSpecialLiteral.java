@@ -19,8 +19,7 @@ package org.jboss.weld.tests.injectionPoint;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-public class ExtraSpecialLiteral extends AnnotationLiteral<ExtraSpecial> implements ExtraSpecial
-{
+public class ExtraSpecialLiteral extends AnnotationLiteral<ExtraSpecial> implements ExtraSpecial {
     public static final ExtraSpecial INSTANCE = new ExtraSpecialLiteral();
 
     private ExtraSpecialLiteral() {

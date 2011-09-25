@@ -9,40 +9,34 @@ import javax.inject.Named;
 @Stateful
 @RequestScoped
 @Named("translator")
-public class TranslatorControllerBean implements TranslatorController
-{
-   
-   @Inject
-   private TextTranslator translator;
-   
-   private String inputText;
-   
-   private String translatedText;
-   
-   public String getText()
-   {
-      return inputText;
-   }
-   
-   public void setText(String text)
-   {
-      this.inputText = text;
-   }
-   
-   public void translate()
-   {
-      translatedText = translator.translate(inputText);
-   }
-   
-   public String getTranslatedText()
-   {
-      return translatedText;
-   }
-   
-   @Remove
-   public void remove()
-   {
-      
-   }
-   
+public class TranslatorControllerBean implements TranslatorController {
+
+    @Inject
+    private TextTranslator translator;
+
+    private String inputText;
+
+    private String translatedText;
+
+    public String getText() {
+        return inputText;
+    }
+
+    public void setText(String text) {
+        this.inputText = text;
+    }
+
+    public void translate() {
+        translatedText = translator.translate(inputText);
+    }
+
+    public String getTranslatedText() {
+        return translatedText;
+    }
+
+    @Remove
+    public void remove() {
+
+    }
+
 }

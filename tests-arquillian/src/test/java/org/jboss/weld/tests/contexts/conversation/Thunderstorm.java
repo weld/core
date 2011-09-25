@@ -16,39 +16,35 @@
  */
 package org.jboss.weld.tests.contexts.conversation;
 
-import java.io.Serializable;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @ConversationScoped
-public class Thunderstorm implements Serializable
-{
-   
-   @Inject Cloud cloud;
-   
-   public static final String NAME = Thunderstorm.class.getName();
+public class Thunderstorm implements Serializable {
 
-	private static final long serialVersionUID = 5765109971012677278L;
-   
-   @PreDestroy
-   public void destroy()
-   {
-      throw new RuntimeException();
-   }
-   
-   public String getName()
-   {
-      return NAME;
-   }
-   
-   public String cloud()
-   {
-      cloud.setName("bob");
-      return "cloud";
-   }
-   
+    @Inject
+    Cloud cloud;
+
+    public static final String NAME = Thunderstorm.class.getName();
+
+    private static final long serialVersionUID = 5765109971012677278L;
+
+    @PreDestroy
+    public void destroy() {
+        throw new RuntimeException();
+    }
+
+    public String getName() {
+        return NAME;
+    }
+
+    public String cloud() {
+        cloud.setName("bob");
+        return "cloud";
+    }
+
 }

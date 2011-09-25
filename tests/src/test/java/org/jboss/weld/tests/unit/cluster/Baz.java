@@ -16,24 +16,20 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
+import javax.enterprise.context.ConversationScoped;
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
-
 @ConversationScoped
-public class Baz implements Serializable
-{
-   
-   private String name;
-   
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-   
-   public String getName()
-   {
-      return name;
-   }
+public class Baz implements Serializable {
+
+    private String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 }

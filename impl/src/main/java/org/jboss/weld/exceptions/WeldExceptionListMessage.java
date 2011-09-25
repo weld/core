@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -26,49 +26,42 @@ import java.util.List;
  * Exception message that produces a list of exceptions and their stack traces
  * for logging.  This is typically used in lifecycle events which accumulate
  * exceptions across observers.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public class WeldExceptionListMessage implements WeldExceptionMessage, Serializable
-{
+public class WeldExceptionListMessage implements WeldExceptionMessage, Serializable {
 
-   private static final long serialVersionUID = 3445187707771082346L;
+    private static final long serialVersionUID = 3445187707771082346L;
 
-   private List<Throwable> causes;
-   private String message;
+    private List<Throwable> causes;
+    private String message;
 
-   public WeldExceptionListMessage(List<Throwable> throwables)
-   {
-      this.causes = throwables;
-   }
+    public WeldExceptionListMessage(List<Throwable> throwables) {
+        this.causes = throwables;
+    }
 
-   public String getAsString()
-   {
-      if (message == null)
-      {
-         generateMessage();
-      }
-      return message;
-   }
+    public String getAsString() {
+        if (message == null) {
+            generateMessage();
+        }
+        return message;
+    }
 
-   private void generateMessage()
-   {
-      StringWriter writer = new StringWriter();
-      PrintWriter messageBuffer = new PrintWriter(writer);
-      messageBuffer.print("Exception List with ");
-      messageBuffer.print(causes.size());
-      messageBuffer.print(" exceptions:\n");
-      int i = 0;
-      for (Throwable throwable : causes)
-      {
-         messageBuffer.print("Exception ");
-         messageBuffer.print(i);
-         messageBuffer.print(" :\n");
-         throwable.printStackTrace(messageBuffer);
-      }
-      messageBuffer.flush();
-      message = writer.toString();
-   }
+    private void generateMessage() {
+        StringWriter writer = new StringWriter();
+        PrintWriter messageBuffer = new PrintWriter(writer);
+        messageBuffer.print("Exception List with ");
+        messageBuffer.print(causes.size());
+        messageBuffer.print(" exceptions:\n");
+        int i = 0;
+        for (Throwable throwable : causes) {
+            messageBuffer.print("Exception ");
+            messageBuffer.print(i);
+            messageBuffer.print(" :\n");
+            throwable.printStackTrace(messageBuffer);
+        }
+        messageBuffer.flush();
+        message = writer.toString();
+    }
 
 }

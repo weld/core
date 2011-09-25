@@ -6,26 +6,22 @@ import javax.interceptor.InvocationContext;
 
 @Interceptor
 @Basic
-public class BasicInterceptor
-{
+public class BasicInterceptor {
 
-   private static Object target;
-   
-   public static Object getTarget()
-   {
-      return target;
-   }
-   
-   public static void reset()
-   {
-      target = null;
-   }
+    private static Object target;
 
-   @AroundInvoke
-   public Object classInterceptor(InvocationContext ctx) throws Exception
-   {
-      target = ctx.getTarget();
-      return ctx.proceed();
-   }
+    public static Object getTarget() {
+        return target;
+    }
+
+    public static void reset() {
+        target = null;
+    }
+
+    @AroundInvoke
+    public Object classInterceptor(InvocationContext ctx) throws Exception {
+        target = ctx.getTarget();
+        return ctx.proceed();
+    }
 
 }

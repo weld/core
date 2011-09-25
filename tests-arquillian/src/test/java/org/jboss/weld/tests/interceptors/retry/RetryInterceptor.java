@@ -24,28 +24,23 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Retriable 
-public class RetryInterceptor
-{
-   static int invocationCount = 0;
+@Interceptor
+@Retriable
+public class RetryInterceptor {
+    static int invocationCount = 0;
 
-   @AroundInvoke
-   public Object retryOnFailure(InvocationContext invocationContext) throws Exception
-   {
-      int attempts = 0;
-      do
-      {
-         try
-         {
-            invocationCount ++;
-            return invocationContext.proceed();
-         }
-         catch (Exception e)
-         {
+    @AroundInvoke
+    public Object retryOnFailure(InvocationContext invocationContext) throws Exception {
+        int attempts = 0;
+        do {
+            try {
+                invocationCount++;
+                return invocationContext.proceed();
+            } catch (Exception e) {
 
-         }
-         attempts++;
-      } while (attempts < 3);
-      return null;
-   }
+            }
+            attempts++;
+        } while (attempts < 3);
+        return null;
+    }
 }

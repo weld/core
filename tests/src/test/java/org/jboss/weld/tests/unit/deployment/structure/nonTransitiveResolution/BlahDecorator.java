@@ -6,15 +6,15 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 @Decorator
-public abstract class BlahDecorator implements Blah
-{
-   
-   @Inject @Delegate @Any
-   private Blah blah;
-   
-   public void ping(int i)
-   {
-      blah.ping(i + 1);
-   }
+public abstract class BlahDecorator implements Blah {
+
+    @Inject
+    @Delegate
+    @Any
+    private Blah blah;
+
+    public void ping(int i) {
+        blah.ping(i + 1);
+    }
 
 }

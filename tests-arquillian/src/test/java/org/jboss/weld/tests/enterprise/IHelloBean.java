@@ -19,13 +19,12 @@ package org.jboss.weld.tests.enterprise;
 import javax.ejb.Local;
 
 @Local
-public interface IHelloBean
-{
+public interface IHelloBean {
 
-   public abstract String sayHello();
+    abstract String sayHello();
 
-   public abstract String sayGoodbye();
+    abstract String sayGoodbye();
 
-   public abstract void remove();
+    abstract void remove();
 
 }

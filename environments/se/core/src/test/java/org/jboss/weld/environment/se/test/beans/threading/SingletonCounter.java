@@ -20,9 +20,10 @@ import javax.inject.Singleton;
 
 /**
  * An application-scoped (singleton) counter.
+ *
  * @author Peter Royle
  */
 @Singleton
 public class SingletonCounter extends Counter {
-   
+
 }

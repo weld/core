@@ -16,51 +16,39 @@
  */
 package org.jboss.weld.tests.scope;
 
-import static org.jboss.weld.test.Utils.getActiveContext;
-
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.Utils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class ScopeTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ScopeTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class ScopeTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ScopeTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /*
+    /*
     * description = "WELD-322"
     */
-   @Test
-   public void testScopeDeclaredOnSubclassOverridesScopeOnSuperClass()
-   {
-      Assert.assertEquals(Dependent.class, beanManager.resolve(beanManager.getBeans(Bar.class)).getScope());
-   }
+    @Test
+    public void testScopeDeclaredOnSubclassOverridesScopeOnSuperClass() {
+        Assert.assertEquals(Dependent.class, beanManager.resolve(beanManager.getBeans(Bar.class)).getScope());
+    }
 
 }

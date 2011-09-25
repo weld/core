@@ -16,30 +16,26 @@
  */
 package org.jboss.weld.tests.contexts.conversation;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @ConversationScoped
-public class Snowstorm implements Serializable
-{
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 5765109971012677278L;
+public class Snowstorm implements Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5765109971012677278L;
 
-	public static final String NAME = Snowstorm.class.getName() + ".Pete";
-   
-   public String getName()
-   {
-      return NAME;
-   }
-   
-   public String go()
-   {
-      return "go!";
-   }
-   
+    public static final String NAME = Snowstorm.class.getName() + ".Pete";
+
+    public String getName() {
+        return NAME;
+    }
+
+    public String go() {
+        return "go!";
+    }
+
 }

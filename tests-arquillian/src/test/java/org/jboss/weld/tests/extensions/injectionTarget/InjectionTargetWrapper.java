@@ -16,61 +16,51 @@
  */
 package org.jboss.weld.tests.extensions.injectionTarget;
 
-import java.util.Set;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import java.util.Set;
 
-class InjectionTargetWrapper<T> implements InjectionTarget<T>
-{
-   private InjectionTarget<T> delegate;
-   public static Object injectInstance;
-   public static Object postConstructInstance;
-   public static Object preDestroyInstance;
-   
-   public static void clear()
-   {
-      injectInstance = null;
-      postConstructInstance = null;
-      preDestroyInstance = null;
-   }
-   
-   public InjectionTargetWrapper(InjectionTarget<T> delegate)
-   {
-      this.delegate = delegate;
-   }
+class InjectionTargetWrapper<T> implements InjectionTarget<T> {
+    private InjectionTarget<T> delegate;
+    public static Object injectInstance;
+    public static Object postConstructInstance;
+    public static Object preDestroyInstance;
 
-   public void inject(T instance, CreationalContext<T> ctx)
-   {
-      injectInstance = instance;
-      delegate.inject(instance, ctx);
-   }
+    public static void clear() {
+        injectInstance = null;
+        postConstructInstance = null;
+        preDestroyInstance = null;
+    }
 
-   public void postConstruct(T instance)
-   {
-      postConstructInstance = instance;
-      delegate.postConstruct(instance);
-   }
+    public InjectionTargetWrapper(InjectionTarget<T> delegate) {
+        this.delegate = delegate;
+    }
 
-   public void preDestroy(T instance)
-   {
-      preDestroyInstance = instance;
-      delegate.preDestroy(instance);
-   }
+    public void inject(T instance, CreationalContext<T> ctx) {
+        injectInstance = instance;
+        delegate.inject(instance, ctx);
+    }
 
-   public void dispose(T instance)
-   {
-      delegate.dispose(instance);
-   }
+    public void postConstruct(T instance) {
+        postConstructInstance = instance;
+        delegate.postConstruct(instance);
+    }
 
-   public Set<InjectionPoint> getInjectionPoints()
-   {
-      return delegate.getInjectionPoints();
-   }
+    public void preDestroy(T instance) {
+        preDestroyInstance = instance;
+        delegate.preDestroy(instance);
+    }
 
-   public T produce(CreationalContext<T> ctx)
-   {
-      return delegate.produce(ctx);
-   }
+    public void dispose(T instance) {
+        delegate.dispose(instance);
+    }
+
+    public Set<InjectionPoint> getInjectionPoints() {
+        return delegate.getInjectionPoints();
+    }
+
+    public T produce(CreationalContext<T> ctx) {
+        return delegate.produce(ctx);
+    }
 }

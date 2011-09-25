@@ -9,61 +9,51 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bean.builtin.ee;
 
-import static org.jboss.weld.logging.messages.BeanMessage.TRANSACTION_SERVICES_NOT_AVAILABLE;
-
-import javax.transaction.UserTransaction;
-
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
+import javax.transaction.UserTransaction;
+
+import static org.jboss.weld.logging.messages.BeanMessage.TRANSACTION_SERVICES_NOT_AVAILABLE;
+
 /**
  * @author pmuir
- *
  */
-public class UserTransactionBean extends AbstractEEBean<UserTransaction>
-{
-   
-   private static class UserTransactionCallable extends AbstractEECallable<UserTransaction>
-   {
-      
-      private static final long serialVersionUID = -6320641773968440920L;
+public class UserTransactionBean extends AbstractEEBean<UserTransaction> {
 
-      public UserTransactionCallable(BeanManagerImpl beanManager)
-      {
-         super(beanManager);
-      }
+    private static class UserTransactionCallable extends AbstractEECallable<UserTransaction> {
 
-      public UserTransaction call() throws Exception
-      {
-         if (getBeanManager().getServices().contains(TransactionServices.class))
-         {
-            return getBeanManager().getServices().get(TransactionServices.class).getUserTransaction();
-         }
-         else
-         {
-            throw new IllegalStateException(TRANSACTION_SERVICES_NOT_AVAILABLE);
-         }
-      }
-      
-   }
-   
-   public UserTransactionBean(BeanManagerImpl beanManager)
-   {
-      super(UserTransaction.class, new UserTransactionCallable(beanManager), beanManager);
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "Built-in Bean [javax.transaction.UserTransaction] with qualifiers [@Default]";
-   }
+        private static final long serialVersionUID = -6320641773968440920L;
+
+        public UserTransactionCallable(BeanManagerImpl beanManager) {
+            super(beanManager);
+        }
+
+        public UserTransaction call() throws Exception {
+            if (getBeanManager().getServices().contains(TransactionServices.class)) {
+                return getBeanManager().getServices().get(TransactionServices.class).getUserTransaction();
+            } else {
+                throw new IllegalStateException(TRANSACTION_SERVICES_NOT_AVAILABLE);
+            }
+        }
+
+    }
+
+    public UserTransactionBean(BeanManagerImpl beanManager) {
+        super(UserTransaction.class, new UserTransactionCallable(beanManager), beanManager);
+    }
+
+    @Override
+    public String toString() {
+        return "Built-in Bean [javax.transaction.UserTransaction] with qualifiers [@Default]";
+    }
 
 }

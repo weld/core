@@ -18,15 +18,13 @@ package org.jboss.weld.tests.beanDeployment.circular;
 
 import javax.inject.Inject;
 
-class Fish
-{
-   
-   private Water water;
-   
-   @Inject
-   public Fish(Water water)
-   {
-      this.water = water;
-   }
-   
+class Fish {
+
+    private Water water;
+
+    @Inject
+    public Fish(Water water) {
+        this.water = water;
+    }
+
 }

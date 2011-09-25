@@ -1,64 +1,55 @@
 package org.jboss.weld.bean.builtin;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.CreationalContext;
-
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
-public class ContextBean<T extends Context> extends AbstractBuiltInBean<T>
-{
-   
-   
-   public static <T extends Context> ContextBean<T> of(ContextHolder<T> context, BeanManagerImpl beanManager)
-   {
-      return new ContextBean<T>(context, beanManager);
-   }
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.CreationalContext;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
 
-   private final T context;
-   private final Class<T> type;
-   private final Set<Type> types;
-   private final Set<Annotation> qualifiers;
+public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
 
-   public ContextBean(ContextHolder<T> contextHolder, BeanManagerImpl beanManager)
-   {
-      super(contextHolder.getType().getName(), beanManager);
-      this.context = contextHolder.getContext();
-      this.type = contextHolder.getType();
-      this.types = new HierarchyDiscovery(contextHolder.getType()).getTypeClosure();
-      this.qualifiers = contextHolder.getQualifiers();
-   }
 
-   public Set<Type> getTypes()
-   {
-      return types;
-   }
+    public static <T extends Context> ContextBean<T> of(ContextHolder<T> context, BeanManagerImpl beanManager) {
+        return new ContextBean<T>(context, beanManager);
+    }
 
-   public T create(CreationalContext<T> creationalContext)
-   {
-      return context;
-   }
+    private final T context;
+    private final Class<T> type;
+    private final Set<Type> types;
+    private final Set<Annotation> qualifiers;
 
-   public void destroy(T instance, CreationalContext<T> creationalContext)
-   {
-      // No-op, this bean is just exposing stuff
-   }
+    public ContextBean(ContextHolder<T> contextHolder, BeanManagerImpl beanManager) {
+        super(contextHolder.getType().getName(), beanManager);
+        this.context = contextHolder.getContext();
+        this.type = contextHolder.getType();
+        this.types = new HierarchyDiscovery(contextHolder.getType()).getTypeClosure();
+        this.qualifiers = contextHolder.getQualifiers();
+    }
 
-   @Override
-   public Class<T> getType()
-   {
-      return type;
-   }
-   
-   @Override
-   public Set<Annotation> getQualifiers()
-   {
-      return qualifiers;
-   }
+    public Set<Type> getTypes() {
+        return types;
+    }
+
+    public T create(CreationalContext<T> creationalContext) {
+        return context;
+    }
+
+    public void destroy(T instance, CreationalContext<T> creationalContext) {
+        // No-op, this bean is just exposing stuff
+    }
+
+    @Override
+    public Class<T> getType() {
+        return type;
+    }
+
+    @Override
+    public Set<Annotation> getQualifiers() {
+        return qualifiers;
+    }
 
 }

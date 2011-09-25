@@ -31,26 +31,22 @@ import org.junit.runner.RunWith;
  * of a producer method.
  *
  * @author David Allen
- *
  */
 @RunWith(Arquillian.class)
-public class ProducerBeanInvocationTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ProducerBeanInvocationTest.class.getPackage());
-   }
+public class ProducerBeanInvocationTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ProducerBeanInvocationTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description = "WELD-546"
     */
-   @Test
-   public void test(Qux bar, QuxProducer producer, @Baz Qux bazBar)
-   {
-      Assert.assertEquals("qux", bar.getBar());
-      Assert.assertTrue(producer.ping());
-      Assert.assertEquals("baz", bazBar.getBar());
-   }
+    @Test
+    public void test(Qux bar, QuxProducer producer, @Baz Qux bazBar) {
+        Assert.assertEquals("qux", bar.getBar());
+        Assert.assertTrue(producer.ping());
+        Assert.assertEquals("baz", bazBar.getBar());
+    }
 }

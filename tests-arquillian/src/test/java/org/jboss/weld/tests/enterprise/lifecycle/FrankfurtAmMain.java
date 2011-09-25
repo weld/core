@@ -22,57 +22,47 @@ import javax.enterprise.context.RequestScoped;
 
 @Stateful
 @RequestScoped
-public class FrankfurtAmMain implements GrossStadt
-{
+public class FrankfurtAmMain implements GrossStadt {
 
-   private boolean kleinStadtCreated = false;
-   private boolean kleinStadtDestroyed = false;
-   
-   public boolean isKleinStadtCreated()
-   {
-      return kleinStadtCreated;
-   }
+    private boolean kleinStadtCreated = false;
+    private boolean kleinStadtDestroyed = false;
 
-   public boolean isKleinStadtDestroyed()
-   {
-      return kleinStadtDestroyed;
-   }
+    public boolean isKleinStadtCreated() {
+        return kleinStadtCreated;
+    }
 
-   public void kleinStadtCreated()
-   {
-      kleinStadtCreated = true;
-   }
+    public boolean isKleinStadtDestroyed() {
+        return kleinStadtDestroyed;
+    }
 
-   public void kleinStadtDestroyed()
-   {
-      kleinStadtDestroyed = true;
-   }
+    public void kleinStadtCreated() {
+        kleinStadtCreated = true;
+    }
 
-   public void resetCreatedFlags()
-   {
-      kleinStadtCreated = false;
-   }
+    public void kleinStadtDestroyed() {
+        kleinStadtDestroyed = true;
+    }
 
-   public void resetDestroyedFlags()
-   {
-      kleinStadtDestroyed = false;
-   }
+    public void resetCreatedFlags() {
+        kleinStadtCreated = false;
+    }
 
-   @Remove
-   public void dispose()
-   {
-   }
+    public void resetDestroyedFlags() {
+        kleinStadtDestroyed = false;
+    }
 
-   private boolean schlossDestroyed = false;
+    @Remove
+    public void dispose() {
+    }
 
-   public boolean isSchlossDestroyed()
-   {
-      return schlossDestroyed;
-   }
+    private boolean schlossDestroyed = false;
 
-   public void schlossDestroyed()
-   {
-      schlossDestroyed = true;
-   }
+    public boolean isSchlossDestroyed() {
+        return schlossDestroyed;
+    }
+
+    public void schlossDestroyed() {
+        schlossDestroyed = true;
+    }
 
 }

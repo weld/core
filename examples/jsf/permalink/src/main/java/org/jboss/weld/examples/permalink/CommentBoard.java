@@ -29,39 +29,34 @@ import javax.inject.Inject;
 /**
  * @author Dan Allen
  */
-public
 @Model
-class CommentBoard
-{
-   @Inject
-   Repository repository;
+public class CommentBoard {
+    @Inject
+    Repository repository;
 
-   @Inject
-   Comment comment;
+    @Inject
+    Comment comment;
 
-   @Inject
-   Blog blog;
+    @Inject
+    Blog blog;
 
-   public Boolean post()
-   {
-      if (comment == null || blog == null)
-      {
-         return null;
-      }
+    public Boolean post() {
+        if (comment == null || blog == null) {
+            return null;
+        }
 
-      BlogEntry entry = repository.getEntry(blog.getEntryId());
-      if (entry == null)
-      {
-         return null;
-      }
+        BlogEntry entry = repository.getEntry(blog.getEntryId());
+        if (entry == null) {
+            return null;
+        }
 
-      comment.checkAuthor();
+        comment.checkAuthor();
 
-      repository.addComment(comment, entry);
-      FacesContext ctx = FacesContext.getCurrentInstance();
-      ctx.addMessage(null, new FacesMessage("Thanks for leaving a comment!"));
-      // FIXME doesn't seem to be working; must investigate
-      ctx.getExternalContext().getFlash().setKeepMessages(true);
-      return true;
-   }
+        repository.addComment(comment, entry);
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ctx.addMessage(null, new FacesMessage("Thanks for leaving a comment!"));
+        // FIXME doesn't seem to be working; must investigate
+        ctx.getExternalContext().getFlash().setKeepMessages(true);
+        return true;
+    }
 }

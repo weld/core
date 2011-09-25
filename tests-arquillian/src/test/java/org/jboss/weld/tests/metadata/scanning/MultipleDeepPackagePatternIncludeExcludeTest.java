@@ -1,10 +1,5 @@
 package org.jboss.weld.tests.metadata.scanning;
 
-import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
-import static org.jboss.weld.tests.metadata.scanning.Utils.escapePackageName;
-
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,45 +20,47 @@ import org.jboss.weld.tests.metadata.scanning.redhat.Waldo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.BeanManager;
+
+import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
+import static org.jboss.weld.tests.metadata.scanning.Utils.escapePackageName;
+
 @RunWith(Arquillian.class)
-public class MultipleDeepPackagePatternIncludeExcludeTest
-{
+public class MultipleDeepPackagePatternIncludeExcludeTest {
 
-   public static final Asset BEANS_XML = createBeansXml(
-         "<weld:scan>" +
-            "<weld:exclude pattern=\"" + escapePackageName(Baz.class.getPackage()) + "(\\.\\w*)*\"/>" +
-            "<weld:include pattern=\"" + escapePackageName(Foo.class.getPackage()) + "(\\.\\w*)*\"/>" +
-            "<weld:include pattern=\"" + escapePackageName(Grault.class.getPackage()) + "(\\.\\w*)*\"/>" +
-         "</weld:scan>");
+    public static final Asset BEANS_XML = createBeansXml(
+            "<weld:scan>" +
+                    "<weld:exclude pattern=\"" + escapePackageName(Baz.class.getPackage()) + "(\\.\\w*)*\"/>" +
+                    "<weld:include pattern=\"" + escapePackageName(Foo.class.getPackage()) + "(\\.\\w*)*\"/>" +
+                    "<weld:include pattern=\"" + escapePackageName(Grault.class.getPackage()) + "(\\.\\w*)*\"/>" +
+                    "</weld:scan>");
 
-   @Deployment
-   public static Archive<?> deployment()
-   {
-      return ShrinkWrap.create(JavaArchive.class).addClass(Utils.class)
-         .addClasses(Bar.class, Foo.class, Baz.class, Qux.class, Corge.class, Garply.class, Grault.class)
-         .addClasses(Wibble.class, Wobble.class, Wubble.class, Flob.class, Fred.class, Plugh.class, Waldo.class)
-         .addAsManifestResource(BEANS_XML, "beans.xml");
-   }
+    @Deployment
+    public static Archive<?> deployment() {
+        return ShrinkWrap.create(JavaArchive.class).addClass(Utils.class)
+                .addClasses(Bar.class, Foo.class, Baz.class, Qux.class, Corge.class, Garply.class, Grault.class)
+                .addClasses(Wibble.class, Wobble.class, Wubble.class, Flob.class, Fred.class, Plugh.class, Waldo.class)
+                .addAsManifestResource(BEANS_XML, "beans.xml");
+    }
 
-   @Test
-   public void test(BeanManager beanManager)
-   {
+    @Test
+    public void test(BeanManager beanManager) {
 
-      assert beanManager.getBeans(Foo.class).size() == 1;
-      assert beanManager.getBeans(Bar.class).size() == 1;
-      assert beanManager.getBeans(Corge.class).size() == 1;
-      assert beanManager.getBeans(Waldo.class).size() == 1;
-      assert beanManager.getBeans(Plugh.class).size() == 1;
+        assert beanManager.getBeans(Foo.class).size() == 1;
+        assert beanManager.getBeans(Bar.class).size() == 1;
+        assert beanManager.getBeans(Corge.class).size() == 1;
+        assert beanManager.getBeans(Waldo.class).size() == 1;
+        assert beanManager.getBeans(Plugh.class).size() == 1;
 
-      assert beanManager.getBeans(Grault.class).size() == 1;
-      assert beanManager.getBeans(Wibble.class).size() == 1;
-      assert beanManager.getBeans(Wobble.class).size() == 1;
-      assert beanManager.getBeans(Wubble.class).size() == 1;
+        assert beanManager.getBeans(Grault.class).size() == 1;
+        assert beanManager.getBeans(Wibble.class).size() == 1;
+        assert beanManager.getBeans(Wobble.class).size() == 1;
+        assert beanManager.getBeans(Wubble.class).size() == 1;
 
-      assert beanManager.getBeans(Baz.class).size() == 0;
-      assert beanManager.getBeans(Garply.class).size() == 0;
-      assert beanManager.getBeans(Flob.class).size() == 0;
-      assert beanManager.getBeans(Fred.class).size() == 0;
-   }
+        assert beanManager.getBeans(Baz.class).size() == 0;
+        assert beanManager.getBeans(Garply.class).size() == 0;
+        assert beanManager.getBeans(Flob.class).size() == 0;
+        assert beanManager.getBeans(Fred.class).size() == 0;
+    }
 
 }

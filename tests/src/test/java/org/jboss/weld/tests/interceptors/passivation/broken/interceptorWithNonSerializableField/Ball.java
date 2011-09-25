@@ -24,15 +24,12 @@ import java.io.Serializable;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 
-public class Ball implements Serializable
-{
-   public void shoot()
-   {
-   }
+public class Ball implements Serializable {
+    public void shoot() {
+    }
 
-   @Pass
-   public void pass()
-   {
-   }
+    @Pass
+    public void pass() {
+    }
 
 }

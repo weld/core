@@ -21,8 +21,6 @@
  */
 package org.jboss.weld.tests.inheritance.weld824.veto;
 
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -34,44 +32,43 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class SuperclassVetoTest
-{
-   @Inject
-   private Bar bar;
-   
-   /**
-    * Webapp with beans.xml and no classes
-    */
-   @Deployment
-   public static WebArchive createWebArchive()
-   {
-      WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
-      war.addAsLibrary(createJavaArchive());
-      war.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
-      return war;
-   }
+public class SuperclassVetoTest {
+    @Inject
+    private Bar bar;
 
-   /**
-    * Java library with beans.xml
-    * The Foo class is vetoed so that it is not loaded as a CDI Bean.
-    */
-   public static JavaArchive createJavaArchive()
-   {
-      JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
-      jar.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
-      jar.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-      jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/veto/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
-      return jar;
-   }
-   
-   @Test
-   public void testSubclassInitialized()
-   {
-      assertTrue(bar.isSubclassInitialized());
-      assertTrue(bar.isSuperclassInitialized());
-   }
+    /**
+     * Webapp with beans.xml and no classes
+     */
+    @Deployment
+    public static WebArchive createWebArchive() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
+        war.addAsLibrary(createJavaArchive());
+        war.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+        return war;
+    }
+
+    /**
+     * Java library with beans.xml
+     * The Foo class is vetoed so that it is not loaded as a CDI Bean.
+     */
+    public static JavaArchive createJavaArchive() {
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
+        jar.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+        jar.addClasses(SimpleExtension.class, Foo.class, Bar.class);
+        jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/veto/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
+        return jar;
+    }
+
+    @Test
+    public void testSubclassInitialized() {
+        assertTrue(bar.isSubclassInitialized());
+        assertTrue(bar.isSuperclassInitialized());
+    }
 }

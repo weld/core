@@ -26,40 +26,37 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class EventQualifierTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(EventQualifierTest.class.getPackage());
-   }
+public class EventQualifierTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EventQualifierTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description = "WELD-226"
     */
-   @Test
-   public void testDefaultQualifierNotRequired(Bar bar)
-   {
-      bar.fireWithNoQualifiers();
-      Assert.assertTrue(bar.isUnqualifiedObserved());
-      Assert.assertFalse(bar.isUpdatedObserved());
-      bar.reset();
-      bar.fireWithNoQualifiersViaManager();
-      Assert.assertTrue(bar.isUnqualifiedObserved());
-      Assert.assertFalse(bar.isUpdatedObserved());
-      bar.reset();
-      bar.fireWithUpdatedQualifierViaAnnotation();
-      Assert.assertTrue(bar.isUnqualifiedObserved());
-      Assert.assertTrue(bar.isUpdatedObserved());
-      bar.reset();
-      bar.fireWithUpdatedQualifierViaManager();
-      Assert.assertTrue(bar.isUpdatedObserved());
-      Assert.assertTrue(bar.isUnqualifiedObserved());
-      bar.reset();
-      bar.fireWithUpdatedQualifierViaSelect();
-      Assert.assertTrue(bar.isUnqualifiedObserved());
-      Assert.assertTrue(bar.isUpdatedObserved());
-   }
+    @Test
+    public void testDefaultQualifierNotRequired(Bar bar) {
+        bar.fireWithNoQualifiers();
+        Assert.assertTrue(bar.isUnqualifiedObserved());
+        Assert.assertFalse(bar.isUpdatedObserved());
+        bar.reset();
+        bar.fireWithNoQualifiersViaManager();
+        Assert.assertTrue(bar.isUnqualifiedObserved());
+        Assert.assertFalse(bar.isUpdatedObserved());
+        bar.reset();
+        bar.fireWithUpdatedQualifierViaAnnotation();
+        Assert.assertTrue(bar.isUnqualifiedObserved());
+        Assert.assertTrue(bar.isUpdatedObserved());
+        bar.reset();
+        bar.fireWithUpdatedQualifierViaManager();
+        Assert.assertTrue(bar.isUpdatedObserved());
+        Assert.assertTrue(bar.isUnqualifiedObserved());
+        bar.reset();
+        bar.fireWithUpdatedQualifierViaSelect();
+        Assert.assertTrue(bar.isUnqualifiedObserved());
+        Assert.assertTrue(bar.isUpdatedObserved());
+    }
 
 }

@@ -25,12 +25,10 @@ import org.jboss.testharness.api.DeploymentExceptionTransformer;
  *
  * @author Ales Justin
  */
-public class WeldAS7DeploymentExceptionTransformer implements DeploymentExceptionTransformer
-{
-   public DeploymentException transform(DeploymentException exception)
-   {
-      // TODO
-      return exception;
-   }
+public class WeldAS7DeploymentExceptionTransformer implements DeploymentExceptionTransformer {
+    public DeploymentException transform(DeploymentException exception) {
+        // TODO
+        return exception;
+    }
 
 }

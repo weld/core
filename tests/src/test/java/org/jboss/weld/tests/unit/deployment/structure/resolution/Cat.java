@@ -18,9 +18,7 @@ package org.jboss.weld.tests.unit.deployment.structure.resolution;
 
 /**
  * @author pmuir
- *
  */
-public class Cat
-{
+public class Cat {
 
 }

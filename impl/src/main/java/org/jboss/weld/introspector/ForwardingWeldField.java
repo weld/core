@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,41 +18,34 @@ package org.jboss.weld.introspector;
 
 import java.lang.reflect.Field;
 
-public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, X, Field> implements WeldField<T, X>
-{
+public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, X, Field> implements WeldField<T, X> {
 
-   @Override
-   protected abstract WeldField<T, X> delegate();
+    @Override
+    protected abstract WeldField<T, X> delegate();
 
-   public T get(Object instance)
-   {
-      return delegate().get(instance);
-   }
+    public T get(Object instance) {
+        return delegate().get(instance);
+    }
 
-   @Override
-   public WeldClass<X> getDeclaringType()
-   {
-      return delegate().getDeclaringType();
-   }
+    @Override
+    public WeldClass<X> getDeclaringType() {
+        return delegate().getDeclaringType();
+    }
 
-   public String getPropertyName()
-   {
-      return delegate().getPropertyName();
-   }
+    public String getPropertyName() {
+        return delegate().getPropertyName();
+    }
 
-   public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException
-   {
-      delegate().set(declaringInstance, value);
-   }
+    public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException {
+        delegate().set(declaringInstance, value);
+    }
 
-   public boolean isTransient()
-   {
-      return delegate().isTransient();
-   }
-   
-   public Field getJavaMember() 
-   {
-      return delegate().getJavaMember();
-   }
+    public boolean isTransient() {
+        return delegate().isTransient();
+    }
+
+    public Field getJavaMember() {
+        return delegate().getJavaMember();
+    }
 
 }

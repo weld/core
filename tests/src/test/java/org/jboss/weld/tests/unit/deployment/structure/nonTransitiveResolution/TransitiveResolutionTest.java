@@ -16,19 +16,6 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
-import static java.util.Arrays.asList;
-import static org.jboss.weld.test.Utils.getReference;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
-
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.FlatDeployment;
@@ -41,224 +28,217 @@ import org.jboss.weld.test.Utils;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
-public class TransitiveResolutionTest
-{
-   /*
-    * description = "WELD-319"
-    */
-   @Test
-   public void testBeansXmlIsolation()
-   {
-      BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
-      BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", Alt.class);
-      BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
-      war.getBeanDeploymentArchives().add(jar1);
-      war.getBeanDeploymentArchives().add(jar2);
-      
-      Deployment deployment = new FlatDeployment(war);
-      
-      TestContainer container = null;
-      try
-      {
-         container = new TestContainer(deployment).startContainer().ensureRequestActive();
-         BeanManagerImpl warBeanManager = (BeanManagerImpl) container.getBeanManager(war);
-         BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getBeanManager(jar1);         
-         BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getBeanManager(jar2);
-         Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
-         Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
-         Assert.assertTrue(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
-      }
-      finally
-      {
-         if (container != null)
-         {
-            container.stopContainer();
-         }
-      }
-   }
-   
-   /*
-    * description = "WELD-319"
-    */
-   @Test
-   public void testBeansXmlMultipleEnabling()
-   {
-      BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
-      BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), null, null), Alt.class);
-      BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
-      war.getBeanDeploymentArchives().add(jar1);
-      war.getBeanDeploymentArchives().add(jar2);
-      
-      Deployment deployment = new FlatDeployment(war);
-      
-      TestContainer container = null;
-      try
-      {
-         container = new TestContainer(deployment).startContainer().ensureRequestActive();
-         BeanManagerImpl warBeanManager = (BeanManagerImpl) container.getBeanManager(war);
-         BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getBeanManager(jar1);         
-         BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getBeanManager(jar2);
-         Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
-         Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
-         Assert.assertFalse(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
-      }
-      finally
-      {
-         if (container != null)
-         {
-            container.stopContainer();
-         }
-      }
-   }   
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
+import java.util.Arrays;
+import java.util.Collections;
 
-   /*
+import static java.util.Arrays.asList;
+import static org.jboss.weld.test.Utils.getReference;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+public class TransitiveResolutionTest {
+    /*
+    * description = "WELD-319"
+    */
+    @Test
+    public void testBeansXmlIsolation() {
+        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
+        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", Alt.class);
+        BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
+        war.getBeanDeploymentArchives().add(jar1);
+        war.getBeanDeploymentArchives().add(jar2);
+
+        Deployment deployment = new FlatDeployment(war);
+
+        TestContainer container = null;
+        try {
+            container = new TestContainer(deployment).startContainer().ensureRequestActive();
+            BeanManagerImpl warBeanManager = (BeanManagerImpl) container.getBeanManager(war);
+            BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getBeanManager(jar1);
+            BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getBeanManager(jar2);
+            Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
+            Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+            Assert.assertTrue(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+        } finally {
+            if (container != null) {
+                container.stopContainer();
+            }
+        }
+    }
+
+    /*
+    * description = "WELD-319"
+    */
+    @Test
+    public void testBeansXmlMultipleEnabling() {
+        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
+        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), null, null), Alt.class);
+        BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
+        war.getBeanDeploymentArchives().add(jar1);
+        war.getBeanDeploymentArchives().add(jar2);
+
+        Deployment deployment = new FlatDeployment(war);
+
+        TestContainer container = null;
+        try {
+            container = new TestContainer(deployment).startContainer().ensureRequestActive();
+            BeanManagerImpl warBeanManager = (BeanManagerImpl) container.getBeanManager(war);
+            BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getBeanManager(jar1);
+            BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getBeanManager(jar2);
+            Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
+            Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+            Assert.assertFalse(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+        } finally {
+            if (container != null) {
+                container.stopContainer();
+            }
+        }
+    }
+
+    /*
     * description = "WELD-236"
     */
-   @Test
-   public void testTypicalEarStructure()
-   {
+    @Test
+    public void testTypicalEarStructure() {
 
-      // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
-      // jar
-      final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Foo.class);
+        // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
+        // jar
+        final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Foo.class);
 
-      // Create the BDA in which we will deploy Bar. This is equivalent to a war
-      final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", Bar.class);
+        // Create the BDA in which we will deploy Bar. This is equivalent to a war
+        final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", Bar.class);
 
-      // The war can access the ejb jar
-      war.getBeanDeploymentArchives().add(ejbJar);
+        // The war can access the ejb jar
+        war.getBeanDeploymentArchives().add(ejbJar);
 
-      // Create a deployment, any other classes are put into the ejb-jar (not
-      // relevant to test)
-      Deployment deployment = new AbstractDeployment(war, ejbJar)
-      {
+        // Create a deployment, any other classes are put into the ejb-jar (not
+        // relevant to test)
+        Deployment deployment = new AbstractDeployment(war, ejbJar) {
 
-         public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
-         {
-            return ejbJar;
-         }
+            public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
+                return ejbJar;
+            }
 
-      };
+        };
 
-      TestContainer container = new TestContainer(deployment);
-      container.startContainer();
-      container.ensureRequestActive();
+        TestContainer container = new TestContainer(deployment);
+        container.startContainer();
+        container.ensureRequestActive();
 
-      // Get the bean manager for war and ejb jar
-      BeanManager warBeanManager = container.getBeanManager(war);
-      BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
+        // Get the bean manager for war and ejb jar
+        BeanManager warBeanManager = container.getBeanManager(war);
+        BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
 
-      Assert.assertEquals(1, warBeanManager.getBeans(Bar.class).size());
-      Assert.assertEquals(1, warBeanManager.getBeans(Foo.class).size());
-      Assert.assertEquals(1, ejbJarBeanManager.getBeans(Foo.class).size());
-      Assert.assertEquals(0, ejbJarBeanManager.getBeans(Bar.class).size());
-      Bar bar = Utils.getReference(warBeanManager, Bar.class);
-      Assert.assertNotNull(bar.getFoo());
-      Assert.assertNotNull(bar.getBeanManager());
-      Assert.assertEquals(warBeanManager, bar.getBeanManager());
-      Assert.assertEquals(ejbJarBeanManager, bar.getFoo().getBeanManager());
-   }
-   
-   /*
+        Assert.assertEquals(1, warBeanManager.getBeans(Bar.class).size());
+        Assert.assertEquals(1, warBeanManager.getBeans(Foo.class).size());
+        Assert.assertEquals(1, ejbJarBeanManager.getBeans(Foo.class).size());
+        Assert.assertEquals(0, ejbJarBeanManager.getBeans(Bar.class).size());
+        Bar bar = Utils.getReference(warBeanManager, Bar.class);
+        Assert.assertNotNull(bar.getFoo());
+        Assert.assertNotNull(bar.getBeanManager());
+        Assert.assertEquals(warBeanManager, bar.getBeanManager());
+        Assert.assertEquals(ejbJarBeanManager, bar.getFoo().getBeanManager());
+    }
+
+    /*
     * WELD-507
     */
-   @Test
-   public void testInterceptorEnabledInWarButPackagedInEjbJar()
-   {
+    @Test
+    public void testInterceptorEnabledInWarButPackagedInEjbJar() {
 
-      // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
-      // jar
-      final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Basic.class, BasicInterceptor.class, Simple.class);
+        // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
+        // jar
+        final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Basic.class, BasicInterceptor.class, Simple.class);
 
-      // Create the BDA in which we will deploy Bar. This is equivalent to a war
-      BeansXml beansXml = new BeansXmlImpl(null, null, null, asList(BasicInterceptor.class.getName()));
-      final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, Complex.class);
+        // Create the BDA in which we will deploy Bar. This is equivalent to a war
+        BeansXml beansXml = new BeansXmlImpl(null, null, null, asList(BasicInterceptor.class.getName()));
+        final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, Complex.class);
 
-      // The war can access the ejb jar
-      war.getBeanDeploymentArchives().add(ejbJar);
+        // The war can access the ejb jar
+        war.getBeanDeploymentArchives().add(ejbJar);
 
-      // Create a deployment, any other classes are put into the ejb-jar (not
-      // relevant to test)
-      Deployment deployment = new AbstractDeployment(ejbJar, war)
-      {
+        // Create a deployment, any other classes are put into the ejb-jar (not
+        // relevant to test)
+        Deployment deployment = new AbstractDeployment(ejbJar, war) {
 
-         public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
-         {
-            return ejbJar;
-         }
+            public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
+                return ejbJar;
+            }
 
-      };
+        };
 
-      TestContainer container = new TestContainer(deployment);
-      container.startContainer();
-      container.ensureRequestActive();
+        TestContainer container = new TestContainer(deployment);
+        container.startContainer();
+        container.ensureRequestActive();
 
-      // Get the bean manager for war and ejb jar
-      BeanManager warBeanManager = container.getBeanManager(war);
-      BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
+        // Get the bean manager for war and ejb jar
+        BeanManager warBeanManager = container.getBeanManager(war);
+        BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
 
-      
-      BasicInterceptor.reset();
-      Simple simple = getReference(ejbJarBeanManager, Simple.class);
-      simple.ping("14");
-      assertNull(BasicInterceptor.getTarget());
-      
-      BasicInterceptor.reset();
-      Complex complex = getReference(warBeanManager, Complex.class);
-      complex.ping("14");
-      assertNotNull(BasicInterceptor.getTarget());
-      assertTrue(BasicInterceptor.getTarget() instanceof Complex);
-      assertEquals("14", ((Complex) BasicInterceptor.getTarget()).getId());
-   }
-   
-   /*
+
+        BasicInterceptor.reset();
+        Simple simple = getReference(ejbJarBeanManager, Simple.class);
+        simple.ping("14");
+        assertNull(BasicInterceptor.getTarget());
+
+        BasicInterceptor.reset();
+        Complex complex = getReference(warBeanManager, Complex.class);
+        complex.ping("14");
+        assertNotNull(BasicInterceptor.getTarget());
+        assertTrue(BasicInterceptor.getTarget() instanceof Complex);
+        assertEquals("14", ((Complex) BasicInterceptor.getTarget()).getId());
+    }
+
+    /*
     * WELD-507
     */
-   @Test
-   public void testDecoratorEnabledInWarButPackagedInEjbJar()
-   {
+    @Test
+    public void testDecoratorEnabledInWarButPackagedInEjbJar() {
 
-      // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
-      // jar
-      final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Blah.class, BlahDecorator.class, BlahImpl.class);
+        // Create the BDA in which we will deploy Foo. This is equivalent to a ejb
+        // jar
+        final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Blah.class, BlahDecorator.class, BlahImpl.class);
 
-      // Create the BDA in which we will deploy Bar. This is equivalent to a war
-      BeansXml beansXml = new BeansXmlImpl(null, null, asList(BlahDecorator.class.getName()), null);
-      final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, BlahImpl2.class);
+        // Create the BDA in which we will deploy Bar. This is equivalent to a war
+        BeansXml beansXml = new BeansXmlImpl(null, null, asList(BlahDecorator.class.getName()), null);
+        final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, BlahImpl2.class);
 
-      // The war can access the ejb jar
-      war.getBeanDeploymentArchives().add(ejbJar);
+        // The war can access the ejb jar
+        war.getBeanDeploymentArchives().add(ejbJar);
 
-      // Create a deployment, any other classes are put into the ejb-jar (not
-      // relevant to test)
-      Deployment deployment = new AbstractDeployment(war, ejbJar)
-      {
+        // Create a deployment, any other classes are put into the ejb-jar (not
+        // relevant to test)
+        Deployment deployment = new AbstractDeployment(war, ejbJar) {
 
-         public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
-         {
-            return ejbJar;
-         }
+            public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
+                return ejbJar;
+            }
 
-      };
+        };
 
-      TestContainer container = new TestContainer(deployment);
-      container.startContainer();
-      container.ensureRequestActive();
+        TestContainer container = new TestContainer(deployment);
+        container.startContainer();
+        container.ensureRequestActive();
 
-      // Get the bean manager for war and ejb jar
-      BeanManager warBeanManager = container.getBeanManager(war);
-      BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
+        // Get the bean manager for war and ejb jar
+        BeanManager warBeanManager = container.getBeanManager(war);
+        BeanManager ejbJarBeanManager = container.getBeanManager(ejbJar);
 
-      
-      BasicInterceptor.reset();
-      Blah blah = getReference(ejbJarBeanManager, Blah.class);
-      blah.ping(10);
-      assertEquals(10, blah.getI());
-      
-      BasicInterceptor.reset();
-      blah = getReference(warBeanManager, Blah.class, new AnnotationLiteral<Baz>() {});
-      blah.ping(10);
-      assertEquals(11, blah.getI());
-   }
+
+        BasicInterceptor.reset();
+        Blah blah = getReference(ejbJarBeanManager, Blah.class);
+        blah.ping(10);
+        assertEquals(10, blah.getI());
+
+        BasicInterceptor.reset();
+        blah = getReference(warBeanManager, Blah.class, new AnnotationLiteral<Baz>() {
+        });
+        blah.ping(10);
+        assertEquals(11, blah.getI());
+    }
 
 }

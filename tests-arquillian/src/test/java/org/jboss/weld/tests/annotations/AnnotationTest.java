@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.annotations;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,21 +26,20 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertNotNull;
+
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class AnnotationTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(AnnotationTest.class.getPackage());
-   }
+public class AnnotationTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(AnnotationTest.class.getPackage());
+    }
 
-   @Test
-   public void testNoInterface(@Foo Cow cow)
-   {
-      assertNotNull(cow);
-      cow.ping();
-   }
+    @Test
+    public void testNoInterface(@Foo Cow cow) {
+        assertNotNull(cow);
+        cow.ping();
+    }
 }

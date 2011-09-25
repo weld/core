@@ -19,9 +19,8 @@ package org.jboss.weld.tests.managed.newBean;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-public class WrappedSimpleBeanInjectionPoint
-{
-   @Inject
-   @New
-   WrappedSimpleBean bean;
+public class WrappedSimpleBeanInjectionPoint {
+    @Inject
+    @New
+    WrappedSimpleBean bean;
 }

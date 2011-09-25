@@ -16,18 +16,6 @@
  */
 package org.jboss.weld.tests.activities.current;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Reception;
-import javax.enterprise.event.TransactionPhase;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -42,101 +30,94 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Reception;
+import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Set;
+
 /**
- *
  * Spec version: 20090519
- *
  */
 @RunWith(Arquillian.class)
-public class EventCurrentActivityTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(EventCurrentActivityTest.class.getPackage())
-         .addClasses(Utils.class);
-   }
+public class EventCurrentActivityTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EventCurrentActivityTest.class.getPackage())
+                .addClasses(Utils.class);
+    }
 
-   private static class DummyContext implements Context
-   {
+    private static class DummyContext implements Context {
 
-      public <T> T get(Contextual<T> contextual)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual) {
+            return null;
+        }
 
-      public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
-      {
-         return null;
-      }
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+            return null;
+        }
 
-      public Class<? extends Annotation> getScope()
-      {
-         return Dummy.class;
-      }
+        public Class<? extends Annotation> getScope() {
+            return Dummy.class;
+        }
 
-      public boolean isActive()
-      {
-         return true;
-      }
+        public boolean isActive() {
+            return true;
+        }
 
-   }
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   @Category(Broken.class)
-   public void testEventProcessedByCurrentActivity()
-   {
-      DummyContext dummyContext = new DummyContext();
-      beanManager.addContext(dummyContext);
-      BeanManagerImpl childActivity = beanManager.createActivity();
-      TestableObserverMethod<NightTime> observer = new TestableObserverMethod<NightTime>()
-      {
+    @Test
+    @Category(Broken.class)
+    public void testEventProcessedByCurrentActivity() {
+        DummyContext dummyContext = new DummyContext();
+        beanManager.addContext(dummyContext);
+        BeanManagerImpl childActivity = beanManager.createActivity();
+        TestableObserverMethod<NightTime> observer = new TestableObserverMethod<NightTime>() {
 
-         boolean observed = false;
+            boolean observed = false;
 
-         public void notify(NightTime event)
-         {
-            observed = true;
-         }
+            public void notify(NightTime event) {
+                observed = true;
+            }
 
-         public boolean isObserved()
-         {
-            return observed;
-         }
+            public boolean isObserved() {
+                return observed;
+            }
 
-         public Class<?> getBeanClass()
-         {
-            return NightTime.class;
-         }
+            public Class<?> getBeanClass() {
+                return NightTime.class;
+            }
 
-         public Set<Annotation> getObservedQualifiers()
-         {
-            return Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
-         }
+            public Set<Annotation> getObservedQualifiers() {
+                return Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
+            }
 
-         public Type getObservedType()
-         {
-            return NightTime.class;
-         }
+            public Type getObservedType() {
+                return NightTime.class;
+            }
 
-         public Reception getReception()
-         {
-            return Reception.ALWAYS;
-         }
+            public Reception getReception() {
+                return Reception.ALWAYS;
+            }
 
-         public TransactionPhase getTransactionPhase()
-         {
-            return TransactionPhase.IN_PROGRESS;
-         }
+            public TransactionPhase getTransactionPhase() {
+                return TransactionPhase.IN_PROGRESS;
+            }
 
-      };
-      childActivity.addObserver(observer);
-      childActivity.setCurrent(dummyContext.getScope());
-      Utils.getReference(beanManager, Dusk.class).ping();
-      Assert.assertTrue(observer.isObserved());
-   }
+        };
+        childActivity.addObserver(observer);
+        childActivity.setCurrent(dummyContext.getScope());
+        Utils.getReference(beanManager, Dusk.class).ping();
+        Assert.assertTrue(observer.isObserved());
+    }
 }

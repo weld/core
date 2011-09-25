@@ -21,18 +21,16 @@ import javax.decorator.Delegate;
 import javax.inject.Inject;
 
 /**
- *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
 @Decorator
-public class SimpleDecorator implements SimpleBean
-{
-   @Inject @Delegate
-   SimpleBean delegate;
+public class SimpleDecorator implements SimpleBean {
+    @Inject
+    @Delegate
+    SimpleBean delegate;
 
-   public String doSomething()
-   {
-      return "decorated-" + delegate.doSomething() + "-decorated";
-   }
+    public String doSomething() {
+        return "decorated-" + delegate.doSomething() + "-decorated";
+    }
 }

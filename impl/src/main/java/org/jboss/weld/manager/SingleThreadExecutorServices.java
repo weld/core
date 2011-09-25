@@ -9,62 +9,53 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.manager;
 
+import org.jboss.weld.manager.api.ExecutorServices;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.weld.manager.api.ExecutorServices;
-
 /**
  * @author pmuir
- *
  */
-public class SingleThreadExecutorServices implements ExecutorServices
-{
-   
-   private transient final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
-   
+public class SingleThreadExecutorServices implements ExecutorServices {
 
-   /**
-    * Provides access to the executor service used for asynchronous tasks.
-    * 
-    * @return the ExecutorService for this manager
-    */
-   public ExecutorService getTaskExecutor()
-   {
-      return taskExecutor;
-   }
+    private final transient ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
 
-   public void cleanup()
-   {
-      taskExecutor.shutdown();
-      try
-      {
-         // Wait a while for existing tasks to terminate
-         if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS))
-         {
-            taskExecutor.shutdownNow(); // Cancel currently executing tasks
-            // Wait a while for tasks to respond to being cancelled
-            if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS))
-            {
-               // Log the error here
+
+    /**
+     * Provides access to the executor service used for asynchronous tasks.
+     *
+     * @return the ExecutorService for this manager
+     */
+    public ExecutorService getTaskExecutor() {
+        return taskExecutor;
+    }
+
+    public void cleanup() {
+        taskExecutor.shutdown();
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS)) {
+                taskExecutor.shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS)) {
+                    // Log the error here
+                }
             }
-         }
-      }
-      catch (InterruptedException ie)
-      {
-         // (Re-)Cancel if current thread also interrupted
-         taskExecutor.shutdownNow();
-         // Preserve interrupt status
-         Thread.currentThread().interrupt();
-      }
-   }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            taskExecutor.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
+    }
 
 }

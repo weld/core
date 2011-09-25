@@ -26,12 +26,11 @@ import javax.interceptor.InvocationContext;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-@Intercept @Interceptor 
-public class NotThrowingExceptionInterceptor 
-{
-	@AroundInvoke
-	public Object intercept(final InvocationContext context)
-	{
-		return null;
-	}
+@Intercept
+@Interceptor
+public class NotThrowingExceptionInterceptor {
+    @AroundInvoke
+    public Object intercept(final InvocationContext context) {
+        return null;
+    }
 }

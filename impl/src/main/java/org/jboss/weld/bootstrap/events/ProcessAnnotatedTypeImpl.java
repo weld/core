@@ -9,79 +9,69 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_NULL;
-
-import java.lang.reflect.Type;
-
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import java.lang.reflect.Type;
+
+import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_NULL;
+
 /**
  * Container lifecycle event for each Java class or interface discovered by
  * the container.
- * 
+ *
  * @author pmuir
  * @author David Allen
- *
  */
-public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEvent implements ProcessAnnotatedType<X>
-{
-   
-   public static <X> ProcessAnnotatedTypeImpl<X> fire(BeanManagerImpl beanManager, WeldClass<X> clazz)
-   {
-      ProcessAnnotatedTypeImpl<X> payload = new ProcessAnnotatedTypeImpl<X>(beanManager, clazz) {};
-      payload.fire();
-      return payload;
-   }
-   
-   private AnnotatedType<X> annotatedType;
-   private boolean veto;
+public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEvent implements ProcessAnnotatedType<X> {
 
-   public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType)
-   {
-      super(beanManager, ProcessAnnotatedType.class, new Type[] { annotatedType.getBaseType() });
-      this.annotatedType = annotatedType;
-   }
+    public static <X> ProcessAnnotatedTypeImpl<X> fire(BeanManagerImpl beanManager, WeldClass<X> clazz) {
+        ProcessAnnotatedTypeImpl<X> payload = new ProcessAnnotatedTypeImpl<X>(beanManager, clazz) {
+        };
+        payload.fire();
+        return payload;
+    }
 
-   public AnnotatedType<X> getAnnotatedType()
-   {
-      return annotatedType;
-   }
+    private AnnotatedType<X> annotatedType;
+    private boolean veto;
 
-   public void setAnnotatedType(AnnotatedType<X> type)
-   {
-      if (type == null)
-      {
-         throw new IllegalArgumentException(ANNOTATION_TYPE_NULL, this);
-      }
-      this.annotatedType = type;
-   }
+    public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType) {
+        super(beanManager, ProcessAnnotatedType.class, new Type[]{annotatedType.getBaseType()});
+        this.annotatedType = annotatedType;
+    }
 
-   public void veto()
-   {
-      this.veto = true;
-   }
-   
-   public boolean isVeto()
-   {
-      return veto;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return annotatedType.toString();
-   }
+    public AnnotatedType<X> getAnnotatedType() {
+        return annotatedType;
+    }
+
+    public void setAnnotatedType(AnnotatedType<X> type) {
+        if (type == null) {
+            throw new IllegalArgumentException(ANNOTATION_TYPE_NULL, this);
+        }
+        this.annotatedType = type;
+    }
+
+    public void veto() {
+        this.veto = true;
+    }
+
+    public boolean isVeto() {
+        return veto;
+    }
+
+    @Override
+    public String toString() {
+        return annotatedType.toString();
+    }
 
 }

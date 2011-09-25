@@ -21,14 +21,13 @@ import javax.decorator.Delegate;
 import javax.inject.Inject;
 
 @Decorator
-class AircraftDecorator implements Aircraft
-{
-   @Inject @Delegate
-   private Aircraft delegate;
-   
-   public boolean isFlying()
-   {
-      return ! delegate.isFlying();
-   }
+class AircraftDecorator implements Aircraft {
+    @Inject
+    @Delegate
+    private Aircraft delegate;
+
+    public boolean isFlying() {
+        return !delegate.isFlying();
+    }
 
 }

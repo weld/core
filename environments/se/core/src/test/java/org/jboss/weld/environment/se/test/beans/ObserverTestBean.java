@@ -16,78 +16,69 @@
  */
 package org.jboss.weld.environment.se.test.beans;
 
+import org.jboss.weld.environment.se.events.ContainerInitialized;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.environment.se.events.ContainerInitialized;
-
 /**
  * Tests the observing of both built-in and application-specific events.
- * 
+ *
  * @author Peter Royle
  */
-public class ObserverTestBean implements Extension
-{
+public class ObserverTestBean implements Extension {
 
-   private static boolean builtInObserved = false;
-   private static boolean customObserved = false;
-   private static boolean initObserved = false;
+    private static boolean builtInObserved = false;
+    private static boolean customObserved = false;
+    private static boolean initObserved = false;
 
-   // TODO PLM injection isn't supported in extensions
-   // @Inject MainTestBean bean;
+    // TODO PLM injection isn't supported in extensions
+    // @Inject MainTestBean bean;
 
-   public ObserverTestBean()
-   {
-   }
+    public ObserverTestBean() {
+    }
 
-   public void observeBuiltInEvent(@Observes AfterDeploymentValidation after)
-   {
-      builtInObserved = true;
-      // assert this.bean == null;
-   }
+    public void observeBuiltInEvent(@Observes AfterDeploymentValidation after) {
+        builtInObserved = true;
+        // assert this.bean == null;
+    }
 
-   public void observeCustomEvent(@Observes CustomEvent event)
-   {
-      customObserved = true;
-      //assert this.bean != null;
-   }
+    public void observeCustomEvent(@Observes CustomEvent event) {
+        customObserved = true;
+        //assert this.bean != null;
+    }
 
-   public void observeInitEvent(@Observes ContainerInitialized event)
-   {
-      initObserved = true;
-      //assert this.bean != null;
-   }
+    public void observeInitEvent(@Observes ContainerInitialized event) {
+        initObserved = true;
+        //assert this.bean != null;
+    }
 
-   public static void reset()
-   {
-      customObserved = false;
-      builtInObserved = false;
-      initObserved = false;
-   }
+    public static void reset() {
+        customObserved = false;
+        builtInObserved = false;
+        initObserved = false;
+    }
 
-   /**
-    * @return the observed
-    */
-   public static boolean isBuiltInObserved()
-   {
-      return builtInObserved;
-   }
+    /**
+     * @return the observed
+     */
+    public static boolean isBuiltInObserved() {
+        return builtInObserved;
+    }
 
-   /**
-    * @return
-    */
-   public static boolean isCustomObserved()
-   {
-      return customObserved;
-   }
+    /**
+     * @return
+     */
+    public static boolean isCustomObserved() {
+        return customObserved;
+    }
 
-   /**
-    * @return
-    */
-   public static boolean isInitObserved()
-   {
-      return initObserved;
-   }
+    /**
+     * @return
+     */
+    public static boolean isInitObserved() {
+        return initObserved;
+    }
 
 }

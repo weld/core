@@ -9,38 +9,33 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bean;
 
+import javax.enterprise.inject.spi.Decorator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Decorator;
+public abstract class ForwardingDecorator<T> extends ForwardingBean<T> implements Decorator<T> {
 
-public abstract class ForwardingDecorator<T> extends ForwardingBean<T> implements Decorator<T>
-{
+    @Override
+    protected abstract Decorator<T> delegate();
 
-   @Override
-   protected abstract Decorator<T> delegate();
+    public Set<Type> getDecoratedTypes() {
+        return delegate().getDecoratedTypes();
+    }
 
-   public Set<Type> getDecoratedTypes()
-   {
-      return delegate().getDecoratedTypes();
-   }
+    public Set<Annotation> getDelegateQualifiers() {
+        return delegate().getDelegateQualifiers();
+    }
 
-   public Set<Annotation> getDelegateQualifiers()
-   {
-      return delegate().getDelegateQualifiers();
-   }
-
-   public Type getDelegateType()
-   {
-      return delegate().getDelegateType();
-   }
+    public Type getDelegateType() {
+        return delegate().getDelegateType();
+    }
 
 }

@@ -24,6 +24,5 @@ package org.jboss.weld.tests.observers.transactional;
 /**
  * @author Stuart Douglas
  */
-public class Fox
-{
+public class Fox {
 }

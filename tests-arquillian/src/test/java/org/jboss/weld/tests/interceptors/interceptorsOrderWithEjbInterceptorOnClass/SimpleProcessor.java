@@ -23,17 +23,16 @@ import javax.interceptor.Interceptors;
 /**
  * @author Marius Bogoevici
  */
-@Stateless @Interceptors(EjbInterceptor.class)
-public class SimpleProcessor implements Processor
-{
+@Stateless
+@Interceptors(EjbInterceptor.class)
+public class SimpleProcessor implements Processor {
 
-   static  int count;
+    static int count;
 
-   @Secured
-   public int add(int x, int y)
-   {
-      count = Counter.next();
-      return x + y;
-   }
+    @Secured
+    public int add(int x, int y) {
+        count = Counter.next();
+        return x + y;
+    }
 
 }

@@ -30,7 +30,6 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Categories.class)
 @ExcludeCategory({Broken.class, Slow.class})
-@SuiteClasses(AllTests.class) 
-public class NormalSuite
-{
+@SuiteClasses(AllTests.class)
+public class NormalSuite {
 }

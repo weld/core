@@ -21,16 +21,13 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-public class InjectionTargetExtension implements Extension
-{
-   public void foo(@Observes ProcessInjectionTarget<Spitfire> event)
-   {
-      InjectionTarget<Spitfire> it = event.getInjectionTarget();
-      event.setInjectionTarget(decorate(it));
-   }
-   
-   private <T> InjectionTarget<T> decorate(InjectionTarget<T> delegate)
-   {
-      return new InjectionTargetWrapper<T>(delegate);
-   }
+public class InjectionTargetExtension implements Extension {
+    public void foo(@Observes ProcessInjectionTarget<Spitfire> event) {
+        InjectionTarget<Spitfire> it = event.getInjectionTarget();
+        event.setInjectionTarget(decorate(it));
+    }
+
+    private <T> InjectionTarget<T> decorate(InjectionTarget<T> delegate) {
+        return new InjectionTargetWrapper<T>(delegate);
+    }
 }

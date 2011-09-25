@@ -17,29 +17,28 @@
 
 package org.jboss.weld.tests.interceptors;
 
-import java.io.Serializable;
-import java.util.logging.Logger;
-
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Shot @Interceptor
-public class Goalkeeper implements Serializable
-{
-   
-   @Inject Logger log;
-   
-   public static boolean called;
+@Shot
+@Interceptor
+public class Goalkeeper implements Serializable {
 
-   @AroundInvoke
-   public Object catchBall(InvocationContext invocationContext) throws Exception
-   {
-      called = true;
-      return invocationContext.proceed();
-   }
+    @Inject
+    Logger log;
+
+    public static boolean called;
+
+    @AroundInvoke
+    public Object catchBall(InvocationContext invocationContext) throws Exception {
+        called = true;
+        return invocationContext.proceed();
+    }
 }

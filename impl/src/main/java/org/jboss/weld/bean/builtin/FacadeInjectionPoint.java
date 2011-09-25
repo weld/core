@@ -1,50 +1,44 @@
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.util.Beans.mergeInQualifiers;
+import org.jboss.weld.injection.ForwardingInjectionPoint;
+import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.InjectionPoint;
+import static org.jboss.weld.util.Beans.mergeInQualifiers;
 
-import org.jboss.weld.injection.ForwardingInjectionPoint;
-import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
+public class FacadeInjectionPoint extends ForwardingInjectionPoint implements Serializable {
 
-public class FacadeInjectionPoint extends ForwardingInjectionPoint implements Serializable
-{
-   
-   private static final long serialVersionUID = -4102173765226078459L;
-   
-   private final InjectionPoint injectionPoint;
-   private final Type type;
-   private final Set<Annotation> qualifiers;
+    private static final long serialVersionUID = -4102173765226078459L;
 
-   public FacadeInjectionPoint(InjectionPoint injectionPoint, Type subtype, Set<Annotation> existingQualifiers, Annotation[] newQualifiers)
-   {
-      this.injectionPoint = injectionPoint;
-      this.type = new ParameterizedTypeImpl(Instance.class, new Type[] {subtype}, null);
-      this.qualifiers = mergeInQualifiers(existingQualifiers, newQualifiers);
-   }
+    private final InjectionPoint injectionPoint;
+    private final Type type;
+    private final Set<Annotation> qualifiers;
 
-   @Override
-   protected InjectionPoint delegate()
-   {
-      return injectionPoint;
-   }
-   
-   @Override
-   public Type getType()
-   {
-      return type;
-   }
-   
-   @Override
-   public Set<Annotation> getQualifiers()
-   {
-      return qualifiers;
-   }
-   
+    public FacadeInjectionPoint(InjectionPoint injectionPoint, Type subtype, Set<Annotation> existingQualifiers, Annotation[] newQualifiers) {
+        this.injectionPoint = injectionPoint;
+        this.type = new ParameterizedTypeImpl(Instance.class, new Type[]{subtype}, null);
+        this.qualifiers = mergeInQualifiers(existingQualifiers, newQualifiers);
+    }
+
+    @Override
+    protected InjectionPoint delegate() {
+        return injectionPoint;
+    }
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public Set<Annotation> getQualifiers() {
+        return qualifiers;
+    }
+
 }

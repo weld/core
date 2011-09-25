@@ -27,26 +27,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class InterceptorAndDecoratorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(ServiceDecorator.class)
-         .intercept(ServiceInterceptor.class)
-         .addPackage(InterceptorAndDecoratorTest.class.getPackage());
-   }
+public class InterceptorAndDecoratorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(ServiceDecorator.class)
+                .intercept(ServiceInterceptor.class)
+                .addPackage(InterceptorAndDecoratorTest.class.getPackage());
+    }
 
-   @Test // description="WELD-314"
-   public void test(Service service)
-   {
-      ServiceImpl.invocationCount = 0;
-      ServiceDecorator.invocationCount = 0;
-      ServiceInterceptor.invocationCount = 0;
-      service.execute();
-      Assert.assertEquals(1, ServiceImpl.invocationCount);
-      Assert.assertEquals(1, ServiceDecorator.invocationCount);
-      Assert.assertEquals(1, ServiceInterceptor.invocationCount);
-   }
+    @Test // description="WELD-314"
+    public void test(Service service) {
+        ServiceImpl.invocationCount = 0;
+        ServiceDecorator.invocationCount = 0;
+        ServiceInterceptor.invocationCount = 0;
+        service.execute();
+        Assert.assertEquals(1, ServiceImpl.invocationCount);
+        Assert.assertEquals(1, ServiceDecorator.invocationCount);
+        Assert.assertEquals(1, ServiceInterceptor.invocationCount);
+    }
 }

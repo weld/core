@@ -20,9 +20,8 @@ package org.jboss.weld.tests.decorators.abstractDecorator;
 /**
  * @author Marius Bogoevici
  */
-public interface Window
-{
-   void draw();
+public interface Window {
+    void draw();
 
-   void move();
+    void move();
 }

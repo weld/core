@@ -20,15 +20,12 @@ import javax.enterprise.context.RequestScoped;
 
 
 @RequestScoped
-public class Foo
-{
-   private Foo()
-   {
+public class Foo {
+    private Foo() {
 
-   }
+    }
 
-   public String ping()
-   {
-      return "ping";
-   }
+    public String ping() {
+        return "ping";
+    }
 }

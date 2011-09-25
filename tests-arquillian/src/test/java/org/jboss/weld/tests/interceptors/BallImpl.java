@@ -21,10 +21,8 @@ package org.jboss.weld.tests.interceptors;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class BallImpl implements Ball
-{
-   @Shot
-   public void shoot()
-   {
-   }
+public class BallImpl implements Ball {
+    @Shot
+    public void shoot() {
+    }
 }

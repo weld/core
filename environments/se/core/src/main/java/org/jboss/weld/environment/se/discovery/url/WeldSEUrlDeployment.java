@@ -16,42 +16,37 @@
  */
 package org.jboss.weld.environment.se.discovery.url;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
-import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Weld Deployment for Java SE environment.
- * 
+ *
  * @author Peter Royle
  */
-public class WeldSEUrlDeployment extends AbstractWeldSEDeployment
-{ 
+public class WeldSEUrlDeployment extends AbstractWeldSEDeployment {
 
-   private final BeanDeploymentArchive beanDeploymentArchive;
+    private final BeanDeploymentArchive beanDeploymentArchive;
 
-   
-   public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap)
-   {
-      super(bootstrap);
-      this.beanDeploymentArchive = new URLScanner(resourceLoader, bootstrap, RESOURCES).scan();
-      this.beanDeploymentArchive.getServices().add(ResourceLoader.class, resourceLoader);
 
-   }
+    public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
+        super(bootstrap);
+        this.beanDeploymentArchive = new URLScanner(resourceLoader, bootstrap, RESOURCES).scan();
+        this.beanDeploymentArchive.getServices().add(ResourceLoader.class, resourceLoader);
 
-   public List<BeanDeploymentArchive> getBeanDeploymentArchives()
-   {
-      return Collections.singletonList(beanDeploymentArchive);
-   }
+    }
 
-   public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass)
-   {
-      return beanDeploymentArchive;
-   }
-   
+    public List<BeanDeploymentArchive> getBeanDeploymentArchives() {
+        return Collections.singletonList(beanDeploymentArchive);
+    }
+
+    public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
+        return beanDeploymentArchive;
+    }
+
 }

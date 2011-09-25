@@ -32,82 +32,63 @@ import javax.enterprise.context.RequestScoped;
 import javax.servlet.ServletRequest;
 import java.lang.annotation.Annotation;
 
-public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest> implements HttpRequestContext
-{
+public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest> implements HttpRequestContext {
 
-   private static final String IDENTIFIER = HttpRequestContextImpl.class.getName();
+    private static final String IDENTIFIER = HttpRequestContextImpl.class.getName();
 
-   private final NamingScheme namingScheme;
+    private final NamingScheme namingScheme;
 
-   /**
-    * Constructor
-    */
-   public HttpRequestContextImpl()
-   {
-      super(false);
-      this.namingScheme = new SimpleNamingScheme(HttpRequestContext.class.getName());
-   }
+    /**
+     * Constructor
+     */
+    public HttpRequestContextImpl() {
+        super(false);
+        this.namingScheme = new SimpleNamingScheme(HttpRequestContext.class.getName());
+    }
 
-   public boolean associate(ServletRequest request)
-   {
-      if (request.getAttribute(IDENTIFIER) == null)
-      {
-         request.setAttribute(IDENTIFIER, IDENTIFIER);
-         setBeanStore(new RequestBeanStore(request, namingScheme));
-         getBeanStore().attach();
-         return true;
-      }
-      else
-      {
-         return false;
-      }
-   }
-
-   public boolean dissociate(ServletRequest request)
-   {
-      if (request.getAttribute(IDENTIFIER) != null)
-      {
-         try
-         {
-            setBeanStore(null);
-            request.removeAttribute(IDENTIFIER);
+    public boolean associate(ServletRequest request) {
+        if (request.getAttribute(IDENTIFIER) == null) {
+            request.setAttribute(IDENTIFIER, IDENTIFIER);
+            setBeanStore(new RequestBeanStore(request, namingScheme));
+            getBeanStore().attach();
             return true;
-         }
-         finally
-         {
-            cleanup();
-         }
-      }
-      else
-      {
-         return false;
-      }
+        } else {
+            return false;
+        }
+    }
 
-   }
+    public boolean dissociate(ServletRequest request) {
+        if (request.getAttribute(IDENTIFIER) != null) {
+            try {
+                setBeanStore(null);
+                request.removeAttribute(IDENTIFIER);
+                return true;
+            } finally {
+                cleanup();
+            }
+        } else {
+            return false;
+        }
 
-   @Override
-   public void activate()
-   {
-      super.activate();
-      RequestScopedBeanCache.beginRequest();
-   }
+    }
 
-   @Override
-   public void deactivate()
-   {
-      try
-      {
-         RequestScopedBeanCache.endRequest();
-      }
-      finally
-      {
-         super.deactivate();
-      }
-   }
+    @Override
+    public void activate() {
+        super.activate();
+        RequestScopedBeanCache.beginRequest();
+    }
 
-   public Class<? extends Annotation> getScope()
-   {
-      return RequestScoped.class;
-   }
+    @Override
+    public void deactivate() {
+        try {
+            RequestScopedBeanCache.endRequest();
+        } finally {
+            super.deactivate();
+        }
+    }
+
+    public Class<? extends Annotation> getScope() {
+        return RequestScoped.class;
+    }
 
 }

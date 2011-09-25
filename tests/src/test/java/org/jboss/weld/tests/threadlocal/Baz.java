@@ -2,14 +2,13 @@ package org.jboss.weld.tests.threadlocal;
 
 import javax.inject.Inject;
 
-public class Baz
-{
+public class Baz {
 
-   @Inject Bar bar;
-   
-   public Bar getBar()
-   {
-      return bar;
-   }
-   
+    @Inject
+    Bar bar;
+
+    public Bar getBar() {
+        return bar;
+    }
+
 }

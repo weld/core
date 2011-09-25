@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -21,41 +21,34 @@ import javax.faces.application.ApplicationFactory;
 
 /**
  * @author pmuir
- *
  */
-public abstract class ForwardingApplicationFactory extends ApplicationFactory
-{
+public abstract class ForwardingApplicationFactory extends ApplicationFactory {
 
-   protected abstract ApplicationFactory delegate();
-   
-   @Override
-   public Application getApplication()
-   {
-      return delegate().getApplication();
-   }
+    protected abstract ApplicationFactory delegate();
 
-   @Override
-   public void setApplication(Application application)
-   {
-      delegate().setApplication(application);
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return delegate().equals(obj);
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
+    @Override
+    public Application getApplication() {
+        return delegate().getApplication();
+    }
+
+    @Override
+    public void setApplication(Application application) {
+        delegate().setApplication(application);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
 
 }

@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -30,101 +30,81 @@ import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILUR
 
 /**
  * A task that will notify the observer of a specific event at some future time.
- * 
+ *
  * @author David Allen
  */
-public class DeferredEventNotification<T> implements Runnable
-{
-   private static final LocLogger log = loggerFactory().getLogger(EVENT);
-   private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
+public class DeferredEventNotification<T> implements Runnable {
+    private static final LocLogger log = loggerFactory().getLogger(EVENT);
+    private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
 
-   // The observer
-   protected final ObserverMethodImpl<T, ?> observer;
-   // The event object
-   protected final T event;
+    // The observer
+    protected final ObserverMethodImpl<T, ?> observer;
+    // The event object
+    protected final T event;
 
-   /**
-    * Creates a new deferred event notifier.
-    * 
-    * @param observer The observer to be notified
-    * @param event The event being fired
-    */
-   public DeferredEventNotification(T event, ObserverMethodImpl<T, ?> observer)
-   {
-      this.observer = observer;
-      this.event = event;
-   }
+    /**
+     * Creates a new deferred event notifier.
+     *
+     * @param observer The observer to be notified
+     * @param event    The event being fired
+     */
+    public DeferredEventNotification(T event, ObserverMethodImpl<T, ?> observer) {
+        this.observer = observer;
+        this.event = event;
+    }
 
-   public void run()
-   {
-      try
-      {
-         log.debug(ASYNC_FIRE, event, observer);
-         new RunInRequest()
-         {
+    public void run() {
+        try {
+            log.debug(ASYNC_FIRE, event, observer);
+            new RunInRequest() {
 
-            @Override
-            protected void execute()
-            {
-               observer.sendEvent(event);
+                @Override
+                protected void execute() {
+                    observer.sendEvent(event);
+                }
+
+            }.run();
+
+        } catch (Exception e) {
+            log.error(ASYNC_OBSERVER_FAILURE, event);
+            xLog.throwing(Level.DEBUG, e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Deferred event [" + event + "] for [" + observer + "]";
+    }
+
+    private abstract static class RunInRequest {
+
+        protected abstract void execute();
+
+        public void run() {
+
+            if (isRequestContextActive()) {
+                execute();
+            } else {
+                RequestContext requestContext = Container.instance().deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
+                try {
+                    requestContext.activate();
+                    execute();
+                } finally {
+                    requestContext.invalidate();
+                    requestContext.deactivate();
+                }
             }
+        }
 
-         }.run();
-
-      }
-      catch (Exception e)
-      {
-         log.error(ASYNC_OBSERVER_FAILURE, event);
-         xLog.throwing(Level.DEBUG, e);
-      }
-   }
-
-   @Override
-   public String toString()
-   {
-      return "Deferred event [" + event + "] for [" + observer + "]";
-   }
-
-   private abstract static class RunInRequest
-   {
-
-      protected abstract void execute();
-
-      public void run()
-      {
-         
-         if (isRequestContextActive())
-         {
-            execute();
-         }
-         else
-         {
-            RequestContext requestContext = Container.instance().deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get();
-            try
-            {
-               requestContext.activate();
-               execute();
+        private boolean isRequestContextActive() {
+            for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class)) {
+                if (requestContext.isActive()) {
+                    return true;
+                }
             }
-            finally
-            {
-               requestContext.invalidate();
-               requestContext.deactivate();
-            }
-         }
-      }
+            return false;
+        }
 
-      private boolean isRequestContextActive()
-      {
-         for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class))
-         {
-            if (requestContext.isActive())
-            {
-               return true;
-            }
-         }
-         return false;
-      }
-
-   }
+    }
 
 }

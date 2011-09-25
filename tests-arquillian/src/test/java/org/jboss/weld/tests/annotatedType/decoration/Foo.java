@@ -18,9 +18,7 @@ package org.jboss.weld.tests.annotatedType.decoration;
 
 /**
  * @author pmuir
- *
  */
-public class Foo
-{
+public class Foo {
 
 }

@@ -13,23 +13,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.decorators;
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public interface SimpleBean
-{
-   int echo1(int i);
-   
-   int echo2(int i);
-   
-   int echo3(int i);
-   
-   int echo4(int i);
+public interface SimpleBean {
+    int echo1(int i);
 
-   boolean isInvoked();
+    int echo2(int i);
+
+    int echo3(int i);
+
+    int echo4(int i);
+
+    boolean isInvoked();
 }

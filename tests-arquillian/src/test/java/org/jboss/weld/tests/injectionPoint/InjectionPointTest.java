@@ -16,14 +16,6 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.lang.reflect.ParameterizedType;
-
-import javax.enterprise.inject.IllegalProductException;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -34,90 +26,87 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-public class InjectionPointTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(InjectionPointTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+import javax.enterprise.inject.IllegalProductException;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.InjectionPoint;
+import java.lang.reflect.ParameterizedType;
 
-   /*
+import static org.junit.Assert.assertNotNull;
+
+@RunWith(Arquillian.class)
+public class InjectionPointTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(InjectionPointTest.class.getPackage())
+                .addClass(Utils.class);
+    }
+
+    /*
     * description = "WELD-239"
     */
-   @Test
-   public void testCorrectInjectionPointUsed(IntConsumer intConsumer, DoubleConsumer doubleConsumer)
-   {
-      intConsumer.ping();
+    @Test
+    public void testCorrectInjectionPointUsed(IntConsumer intConsumer, DoubleConsumer doubleConsumer) {
+        intConsumer.ping();
 
-      try
-      {
-         doubleConsumer.ping();
-      }
-      catch (IllegalProductException e)
-      {
-         Assert.assertTrue(e.getMessage().contains("Injection Point: field org.jboss.weld.tests.injectionPoint.DoubleGenerator.timer"));
-      }
-   }
+        try {
+            doubleConsumer.ping();
+        } catch (IllegalProductException e) {
+            Assert.assertTrue(e.getMessage().contains("Injection Point: field org.jboss.weld.tests.injectionPoint.DoubleGenerator.timer"));
+        }
+    }
 
-   /*
+    /*
     * description = "WELD-316"
     */
-   @Test
-   public void testFieldInjectionPointSerializability(StringConsumer consumer) throws Throwable
-   {
-      consumer.ping();
-      InjectionPoint ip = StringGenerator.getInjectionPoint();
-      Assert.assertNotNull(ip);
-      Assert.assertEquals("str", ip.getMember().getName());
-      InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
-      Assert.assertEquals("str", ip1.getMember().getName());
-   }
+    @Test
+    public void testFieldInjectionPointSerializability(StringConsumer consumer) throws Throwable {
+        consumer.ping();
+        InjectionPoint ip = StringGenerator.getInjectionPoint();
+        Assert.assertNotNull(ip);
+        Assert.assertEquals("str", ip.getMember().getName());
+        InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
+        Assert.assertEquals("str", ip1.getMember().getName());
+    }
 
-   /*
+    /*
     * description = "WELD-812"
     */
-   @Test
-   public void testSerializabilityOfInstance(Estate estate) throws Throwable
-   {
-      // We have to perform some indirection to make sure we are fully inside Weld Injection Points, not third party ones!
-      Instance<Farm> farm = estate.getFarm();
-      farm.get().ping();
-      Farm farm1 = Utils.deserialize(Utils.serialize(farm.get()));
-      assertNotNull(farm1);
-      farm1.ping();
-      assertNotNull(farm1.getInjectionPoint());
-   }
+    @Test
+    public void testSerializabilityOfInstance(Estate estate) throws Throwable {
+        // We have to perform some indirection to make sure we are fully inside Weld Injection Points, not third party ones!
+        Instance<Farm> farm = estate.getFarm();
+        farm.get().ping();
+        Farm farm1 = Utils.deserialize(Utils.serialize(farm.get()));
+        assertNotNull(farm1);
+        farm1.ping();
+        assertNotNull(farm1.getInjectionPoint());
+    }
 
-   @Test
-   public void testGetDeclaringType(GrassyField field)
-   {
-      Assert.assertEquals("daisy", field.getCow().getName());
-   }
+    @Test
+    public void testGetDeclaringType(GrassyField field) {
+        Assert.assertEquals("daisy", field.getCow().getName());
+    }
 
-   /*
+    /*
     * description = "WELD-438"
     */
-   @Test
-   public void testInjectionPointWhenInstanceGetIsUsed(PigSty pigSty) throws Exception
-   {
-      Pig pig = pigSty.getPig();
-      Assert.assertNotNull(pig);
-      Assert.assertNotNull(pig.getInjectionPoint().getBean());
-      Assert.assertEquals(PigSty.class, pig.getInjectionPoint().getBean().getBeanClass());
-      Assert.assertEquals(PigSty.class.getDeclaredField("pig"), pig.getInjectionPoint().getMember());
-      Assert.assertNotNull(pig.getInjectionPoint().getAnnotated());
-      Assert.assertTrue(pig.getInjectionPoint().getAnnotated().getBaseType() instanceof ParameterizedType);
-      ParameterizedType parameterizedType = ((ParameterizedType) pig.getInjectionPoint().getAnnotated().getBaseType());
-      Assert.assertEquals(Instance.class, parameterizedType.getRawType());
-      Assert.assertEquals(1, parameterizedType.getActualTypeArguments().length);
-      Assert.assertEquals(Pig.class, parameterizedType.getActualTypeArguments()[0]);
-      Assert.assertTrue(pig.getInjectionPoint().getAnnotated().isAnnotationPresent(Special.class));
-      Assert.assertFalse(pig.getInjectionPoint().getAnnotated().isAnnotationPresent(ExtraSpecial.class));
-      Assert.assertTrue(Utils.annotationSetMatches(pig.injectionPoint.getQualifiers(), Special.class, ExtraSpecial.class));
-      Assert.assertEquals(Pig.class, pig.getInjectionPoint().getType());
-   }
+    @Test
+    public void testInjectionPointWhenInstanceGetIsUsed(PigSty pigSty) throws Exception {
+        Pig pig = pigSty.getPig();
+        Assert.assertNotNull(pig);
+        Assert.assertNotNull(pig.getInjectionPoint().getBean());
+        Assert.assertEquals(PigSty.class, pig.getInjectionPoint().getBean().getBeanClass());
+        Assert.assertEquals(PigSty.class.getDeclaredField("pig"), pig.getInjectionPoint().getMember());
+        Assert.assertNotNull(pig.getInjectionPoint().getAnnotated());
+        Assert.assertTrue(pig.getInjectionPoint().getAnnotated().getBaseType() instanceof ParameterizedType);
+        ParameterizedType parameterizedType = ((ParameterizedType) pig.getInjectionPoint().getAnnotated().getBaseType());
+        Assert.assertEquals(Instance.class, parameterizedType.getRawType());
+        Assert.assertEquals(1, parameterizedType.getActualTypeArguments().length);
+        Assert.assertEquals(Pig.class, parameterizedType.getActualTypeArguments()[0]);
+        Assert.assertTrue(pig.getInjectionPoint().getAnnotated().isAnnotationPresent(Special.class));
+        Assert.assertFalse(pig.getInjectionPoint().getAnnotated().isAnnotationPresent(ExtraSpecial.class));
+        Assert.assertTrue(Utils.annotationSetMatches(pig.injectionPoint.getQualifiers(), Special.class, ExtraSpecial.class));
+        Assert.assertEquals(Pig.class, pig.getInjectionPoint().getType());
+    }
 }

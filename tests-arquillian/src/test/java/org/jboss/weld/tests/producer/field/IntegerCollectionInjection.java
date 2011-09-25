@@ -16,45 +16,38 @@
  */
 package org.jboss.weld.tests.producer.field;
 
+import javax.inject.Inject;
 import java.util.Collection;
 
-import javax.inject.Inject;
+public class IntegerCollectionInjection {
 
-public class IntegerCollectionInjection
-{
+    private Collection<Integer> value;
 
-   private Collection<Integer> value;
+    @Inject
+    private Collection<Integer> fieldInjection;
 
-   @Inject
-   private Collection<Integer> fieldInjection;
+    private Collection<Integer> setterInjection;
 
-   private Collection<Integer> setterInjection;
+    @Inject
+    public void init(Collection<Integer> setterInjection) {
+        this.setterInjection = setterInjection;
+    }
 
-   @Inject
-   public void init(Collection<Integer> setterInjection)
-   {
-      this.setterInjection = setterInjection;
-   }
+    @Inject
+    public IntegerCollectionInjection(Collection<Integer> com) {
+        this.value = com;
+    }
 
-   @Inject
-   public IntegerCollectionInjection(Collection<Integer> com)
-   {
-      this.value = com;
-   }
+    public Collection<Integer> getValue() {
+        return value;
+    }
 
-   public Collection<Integer> getValue()
-   {
-      return value;
-   }
+    public Collection<Integer> getFieldInjection() {
+        return fieldInjection;
+    }
 
-   public Collection<Integer> getFieldInjection()
-   {
-      return fieldInjection;
-   }
-
-   public Collection<Integer> getSetterInjection()
-   {
-      return setterInjection;
-   }
+    public Collection<Integer> getSetterInjection() {
+        return setterInjection;
+    }
 
 }

@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,27 +27,27 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class EnterpriseBeanDefinitionTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(EnterpriseBeanDefinitionTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class EnterpriseBeanDefinitionTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EnterpriseBeanDefinitionTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /*
+    /*
     * description="WELD-305"
     */
-   @Test
-   public void testSuperInterfacesAreBeanTypes()
-   {
-      Bean<?> bean = Utils.getBean(beanManager, Dog.class);
-      Assert.assertTrue(Utils.typeSetMatches(bean.getTypes(), Object.class, Dog.class, Animal.class));
-   }
+    @Test
+    public void testSuperInterfacesAreBeanTypes() {
+        Bean<?> bean = Utils.getBean(beanManager, Dog.class);
+        Assert.assertTrue(Utils.typeSetMatches(bean.getTypes(), Object.class, Dog.class, Animal.class));
+    }
 }

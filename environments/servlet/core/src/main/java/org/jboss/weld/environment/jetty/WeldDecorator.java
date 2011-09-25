@@ -22,100 +22,84 @@
 
 package org.jboss.weld.environment.jetty;
 
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
-import java.util.EventListener;
-
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import java.util.EventListener;
 
 /**
  * Jetty Eclipse Weld support.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class WeldDecorator implements ServletContextHandler.Decorator
-{
-   private ServletContext servletContext;
-   private JettyWeldInjector injector;
+public class WeldDecorator implements ServletContextHandler.Decorator {
+    private ServletContext servletContext;
+    private JettyWeldInjector injector;
 
-   protected WeldDecorator(ServletContext servletContext)
-   {
-      this.servletContext = servletContext;
-   }
+    protected WeldDecorator(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 
-   public static void process(ServletContext context)
-   {
-      if (context instanceof ContextHandler.Context)
-      {
-         ContextHandler.Context cc = (ContextHandler.Context) context;
-         ContextHandler handler = cc.getContextHandler();
-         if (handler instanceof ServletContextHandler)
-         {
-            ServletContextHandler sch = (ServletContextHandler) handler;
-            sch.addDecorator(new WeldDecorator(context));
-         }
-      }
-   }
+    public static void process(ServletContext context) {
+        if (context instanceof ContextHandler.Context) {
+            ContextHandler.Context cc = (ContextHandler.Context) context;
+            ContextHandler handler = cc.getContextHandler();
+            if (handler instanceof ServletContextHandler) {
+                ServletContextHandler sch = (ServletContextHandler) handler;
+                sch.addDecorator(new WeldDecorator(context));
+            }
+        }
+    }
 
-   protected JettyWeldInjector getInjector()
-   {
-      if (injector == null)
-      {
-         JettyWeldInjector jwi = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
+    protected JettyWeldInjector getInjector() {
+        if (injector == null) {
+            JettyWeldInjector jwi = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
 
-         if (jwi == null)
-            throw new IllegalArgumentException("No such Jetty injector found in servlet context attributes.");
+            if (jwi == null)
+                throw new IllegalArgumentException("No such Jetty injector found in servlet context attributes.");
 
-         injector = jwi;
-      }
+            injector = jwi;
+        }
 
-      return injector;
-   }
+        return injector;
+    }
 
-   public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException
-   {
-      getInjector().inject(filter);
-      return filter;
-   }
+    public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
+        getInjector().inject(filter);
+        return filter;
+    }
 
-   public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException
-   {
-      getInjector().inject(servlet);
-      return servlet;
-   }
+    public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException {
+        getInjector().inject(servlet);
+        return servlet;
+    }
 
-   public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException
-   {
-      getInjector().inject(listener);
-      return listener;
-   }
+    public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException {
+        getInjector().inject(listener);
+        return listener;
+    }
 
-   public void decorateFilterHolder(FilterHolder filter) throws ServletException
-   {
-   }
+    public void decorateFilterHolder(FilterHolder filter) throws ServletException {
+    }
 
-   public void decorateServletHolder(ServletHolder servlet) throws ServletException
-   {
-   }
+    public void decorateServletHolder(ServletHolder servlet) throws ServletException {
+    }
 
-   public void destroyServletInstance(Servlet s)
-   {
-      getInjector().destroy(s);
-   }
+    public void destroyServletInstance(Servlet s) {
+        getInjector().destroy(s);
+    }
 
-   public void destroyFilterInstance(Filter f)
-   {
-      getInjector().destroy(f);
-   }
+    public void destroyFilterInstance(Filter f) {
+        getInjector().destroy(f);
+    }
 
-   public void destroyListenerInstance(EventListener f)
-   {
-      getInjector().destroy(f);
-   }
+    public void destroyListenerInstance(EventListener f) {
+        getInjector().destroy(f);
+    }
 }

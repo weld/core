@@ -18,9 +18,7 @@ package org.jboss.weld.tests.unit.bootstrap;
 
 /**
  * @author pmuir
- *
  */
-public class Bar
-{
+public class Bar {
 
 }

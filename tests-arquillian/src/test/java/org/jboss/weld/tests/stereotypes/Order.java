@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.stereotypes;
 
 
-class Order
-{
+class Order {
 
 }

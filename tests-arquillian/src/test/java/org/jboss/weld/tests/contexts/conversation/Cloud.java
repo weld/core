@@ -16,104 +16,92 @@
  */
 package org.jboss.weld.tests.contexts.conversation;
 
-import java.io.Serializable;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @ConversationScoped
-public class Cloud implements Serializable
-{
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 5765109971012677278L;
+public class Cloud implements Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5765109971012677278L;
 
-	public static final String NAME = Cloud.class.getName() + ".Pete";
-   
-   public static final String RAINED_HEADER_NAME = Cloud.class.getName() + ".rained";
+    public static final String NAME = Cloud.class.getName() + ".Pete";
 
-   private boolean rained;
-   
-   private String name = NAME;
-   
-   @Inject Conversation conversation;
-   
-   @Inject Hurricane hurricane;
-   
-   @PreDestroy
-   public void destroy()
-   {
-      hurricane.setPreDestroyCalledOnCloud(true);
-   }
-   
-   public String getName()
-   {
-      return name;
-   }
-   
-   public void rain()
-   {
-      rained = true;
-      System.out.println("rain!");
-   }
-   
-   public boolean isRained()
-   {
-      return rained;
-   }
-   
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-   
-   public String thunderstorm()
-   {
-      conversation.begin();
-      return "thunder";
-   }
-   
-   public String hailstorm()
-   {
-      conversation.begin();
-      return "hail";
-   }
-   
-   public String hurricane()
-   {
-      conversation.begin();
-      return "wind";
-   }
-   
-   public String snowstorm()
-   {
-      conversation.begin();
-      return "snow";
-   }
-   
-   public String invalidateSession()
-   {
-      FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-      return "sessionInvalidated";
-   }
-   
-   public String sleet()
-   {
-      FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-      return "sleet";
-   }
+    public static final String RAINED_HEADER_NAME = Cloud.class.getName() + ".rained";
 
-   public String blizzard()
-   {
-      this.name = "henry";
-      conversation.begin();
-      return "blizzard";
-   }
-   
+    private boolean rained;
+
+    private String name = NAME;
+
+    @Inject
+    Conversation conversation;
+
+    @Inject
+    Hurricane hurricane;
+
+    @PreDestroy
+    public void destroy() {
+        hurricane.setPreDestroyCalledOnCloud(true);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void rain() {
+        rained = true;
+        System.out.println("rain!");
+    }
+
+    public boolean isRained() {
+        return rained;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String thunderstorm() {
+        conversation.begin();
+        return "thunder";
+    }
+
+    public String hailstorm() {
+        conversation.begin();
+        return "hail";
+    }
+
+    public String hurricane() {
+        conversation.begin();
+        return "wind";
+    }
+
+    public String snowstorm() {
+        conversation.begin();
+        return "snow";
+    }
+
+    public String invalidateSession() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "sessionInvalidated";
+    }
+
+    public String sleet() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "sleet";
+    }
+
+    public String blizzard() {
+        this.name = "henry";
+        conversation.begin();
+        return "blizzard";
+    }
+
 }

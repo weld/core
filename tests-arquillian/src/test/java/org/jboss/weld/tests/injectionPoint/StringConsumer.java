@@ -18,11 +18,12 @@ package org.jboss.weld.tests.injectionPoint;
 
 import javax.inject.Inject;
 
-public class StringConsumer
-{
+public class StringConsumer {
 
-   @Inject String str;
-   
-   public void ping() {}
-   
+    @Inject
+    String str;
+
+    public void ping() {
+    }
+
 }

@@ -17,8 +17,6 @@
 
 package org.jboss.weld.tests.stress;
 
-import java.io.IOException;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -39,119 +37,108 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+
 /**
  * Stress test of basically the JSF NumberGuess game example.
  *
  * @author David Allen
- *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class JsfStressTest
-{
-   protected final String MAIN_PAGE = "/home.jsf";
-   protected final String GUESS_MESSAGES = "numberGuess:messages";
+public class JsfStressTest {
+    protected final String MAIN_PAGE = "/home.jsf";
+    protected final String GUESS_MESSAGES = "numberGuess:messages";
 
-   protected final String GUESS_FIELD = "numberGuess:inputGuess";
-   protected final String GUESS_SUBMIT = "numberGuess:guessButton";
-   protected final String GUESS_RESET = "numberGuess:restartButton";
-   protected final String GUESS_SMALLEST = "numberGuess:smallest";
-   protected final String GUESS_BIGGEST = "numberGuess:biggest";
+    protected final String GUESS_FIELD = "numberGuess:inputGuess";
+    protected final String GUESS_SUBMIT = "numberGuess:guessButton";
+    protected final String GUESS_RESET = "numberGuess:restartButton";
+    protected final String GUESS_SMALLEST = "numberGuess:smallest";
+    protected final String GUESS_BIGGEST = "numberGuess:biggest";
 
-   protected String WIN_MSG = "Correct!";
-   protected String LOSE_MSG = "No guesses left!";
+    protected String WIN_MSG = "Correct!";
+    protected String LOSE_MSG = "No guesses left!";
 
-   @Rule
-   public ContiPerfRule i = new ContiPerfRule();
+    @Rule
+    public ContiPerfRule i = new ContiPerfRule();
 
-   @Deployment(testable = false)
-   public static WebArchive createDeployment()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(Game.class, Generator.class, MaxNumber.class, Random.class)
-               .addAsWebResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addAsResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
-               .addAsResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
-               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(Game.class, Generator.class, MaxNumber.class, Random.class)
+                .addAsWebResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
+                .addAsResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
+                .addAsResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   // WELD-676
-   @Category(Broken.class)
-   @Test
-   @PerfTest(invocations = 500)
-   public void testJsfApp() throws Exception
-   {
-      WebClient client = new WebClient();
-      client.setThrowExceptionOnFailingStatusCode(false);
-      HtmlPage page = client.getPage(getPath(MAIN_PAGE));
+    // WELD-676
+    @Category(Broken.class)
+    @Test
+    @PerfTest(invocations = 500)
+    public void testJsfApp() throws Exception {
+        WebClient client = new WebClient();
+        client.setThrowExceptionOnFailingStatusCode(false);
+        HtmlPage page = client.getPage(getPath(MAIN_PAGE));
 
-      int min;
-      int max;
-      int guess;
-      int i = 0;
+        int min;
+        int max;
+        int guess;
+        int i = 0;
 
-      while (isOnGuessPage(page))
-      {
-         Assert.assertTrue("Game should not be longer than 10 guesses", i <= 10);
+        while (isOnGuessPage(page)) {
+            Assert.assertTrue("Game should not be longer than 10 guesses", i <= 10);
 
-         min = Integer.parseInt(getSpanValue(page, GUESS_SMALLEST));
-         max = Integer.parseInt(getSpanValue(page, GUESS_BIGGEST));
-         guess = min + ((max - min) / 2);
-         page = enterGuess(page, guess);
-         i++;
-      }
-      reset(page);
-      Assert.assertTrue("Win page expected after playing smart.", isOnWinPage(page));
+            min = Integer.parseInt(getSpanValue(page, GUESS_SMALLEST));
+            max = Integer.parseInt(getSpanValue(page, GUESS_BIGGEST));
+            guess = min + ((max - min) / 2);
+            page = enterGuess(page, guess);
+            i++;
+        }
+        reset(page);
+        Assert.assertTrue("Win page expected after playing smart.", isOnWinPage(page));
 
-      client.closeAllWindows();
-   }
+        client.closeAllWindows();
+    }
 
-   protected void reset(HtmlPage page) throws IOException
-   {
-      ((HtmlSubmitInput)page.getElementById(GUESS_RESET)).click();
-   }
+    protected void reset(HtmlPage page) throws IOException {
+        ((HtmlSubmitInput) page.getElementById(GUESS_RESET)).click();
+    }
 
-   protected HtmlPage enterGuess(HtmlPage page, int guess) throws IOException
-   {
-      ((HtmlInput)page.getElementById(GUESS_FIELD)).setValueAttribute(String.valueOf(guess));
-      HtmlSubmitInput submitButton = (HtmlSubmitInput)page.getElementById(GUESS_SUBMIT);
-      if (submitButton.isDisabled())
-      {
-         throw new RuntimeException("Guess button disabled on page: " + page.asText());
-      }
-      return submitButton.click();
-   }
+    protected HtmlPage enterGuess(HtmlPage page, int guess) throws IOException {
+        ((HtmlInput) page.getElementById(GUESS_FIELD)).setValueAttribute(String.valueOf(guess));
+        HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById(GUESS_SUBMIT);
+        if (submitButton.isDisabled()) {
+            throw new RuntimeException("Guess button disabled on page: " + page.asText());
+        }
+        return submitButton.click();
+    }
 
-   protected boolean isOnGuessPage(HtmlPage page)
-   {
-      return !(isOnWinPage(page) || isOnLosePage(page));
-   }
+    protected boolean isOnGuessPage(HtmlPage page) {
+        return !(isOnWinPage(page) || isOnLosePage(page));
+    }
 
-   protected boolean isOnWinPage(HtmlPage page)
-   {
-      String text = page.getElementById(GUESS_MESSAGES).asText();
-      return WIN_MSG.equals(text);
-   }
+    protected boolean isOnWinPage(HtmlPage page) {
+        String text = page.getElementById(GUESS_MESSAGES).asText();
+        return WIN_MSG.equals(text);
+    }
 
-   protected boolean isOnLosePage(HtmlPage page)
-   {
-      String text = page.getElementById(GUESS_MESSAGES).asText();
-      return LOSE_MSG.equals(text);
-   }
+    protected boolean isOnLosePage(HtmlPage page) {
+        String text = page.getElementById(GUESS_MESSAGES).asText();
+        return LOSE_MSG.equals(text);
+    }
 
-   protected String getSpanValue(HtmlPage page, String fieldId)
-   {
-      HtmlSpan span = (HtmlSpan) page.getElementById(fieldId);
-      return span.asText();
-   }
+    protected String getSpanValue(HtmlPage page, String fieldId) {
+        HtmlSpan span = (HtmlSpan) page.getElementById(fieldId);
+        return span.asText();
+    }
 
-   protected String getPath(String viewId)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/";
-   }
+    protected String getPath(String viewId) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/";
+    }
 
 
 }

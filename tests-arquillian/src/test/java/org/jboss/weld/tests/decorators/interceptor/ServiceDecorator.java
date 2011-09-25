@@ -32,18 +32,16 @@ import javax.inject.Inject;
  * @author wayne
  */
 @Decorator
-class ServiceDecorator implements Service
-{
+class ServiceDecorator implements Service {
 
-   @Inject
-   @Delegate
-   private Service service;
+    @Inject
+    @Delegate
+    private Service service;
 
-   public static int invocationCount = 0;
+    public static int invocationCount = 0;
 
-   public void execute()
-   {
-      invocationCount++;
-      service.execute();
-   }
+    public void execute() {
+        invocationCount++;
+        service.execute();
+    }
 }

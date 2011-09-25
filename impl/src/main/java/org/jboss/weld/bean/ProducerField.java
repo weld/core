@@ -9,24 +9,12 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bean;
-
-import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.lang.reflect.Field;
-import java.util.Set;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import javax.inject.Inject;
 
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -39,184 +27,168 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Producer;
+import javax.inject.Inject;
+import java.lang.reflect.Field;
+import java.util.Set;
+
+import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 /**
  * Represents a producer field
- * 
- * @author Pete Muir
- * 
+ *
  * @param <T>
+ * @author Pete Muir
  */
-public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field>
-{
-   
-   // The underlying field
-   private WeldField<T, ? super X> field;
-   private final boolean proxiable;
-   
-   /**
-    * Creates a producer field
-    * 
-    * @param field The underlying method abstraction
-    * @param declaringBean The declaring bean abstraction
-    * @param beanManager the current manager
-    * @return A producer field
-    */
-   public static <X, T> ProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services)
-   {
-      return new ProducerField<X, T>(field, declaringBean, beanManager, services);
-   }
+public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
+
+    // The underlying field
+    private WeldField<T, ? super X> field;
+    private final boolean proxiable;
+
+    /**
+     * Creates a producer field
+     *
+     * @param field         The underlying method abstraction
+     * @param declaringBean The declaring bean abstraction
+     * @param beanManager   the current manager
+     * @return A producer field
+     */
+    public static <X, T> ProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        return new ProducerField<X, T>(field, declaringBean, beanManager, services);
+    }
 
 
-   /**
-    * Constructor
-    * 
-    * @param method The producer field abstraction
-    * @param declaringBean The declaring bean
-    * @param manager The Bean manager
-    */
-   protected ProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services)
-   {
-      super(createId(field, declaringBean), declaringBean, manager, services);
-      this.field = field;
-      initType();
-      initTypes();
-      initQualifiers();
-      initStereotypes();
-      this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure());
-   }
-   
-   protected static String createId(WeldField<?, ?> field, AbstractClassBean<?> declaringBean)
-   {
-      if (declaringBean.getWeldAnnotated().isDiscovered())
-      {
-         StringBuilder sb = new StringBuilder();
-         sb.append(ProducerField.class.getSimpleName());
-         sb.append(BEAN_ID_SEPARATOR);
-         sb.append(declaringBean.getWeldAnnotated().getName());
-         sb.append(".");
-         sb.append(field.getName());
-         return sb.toString();
-      }
-      else
-      {
-         StringBuilder sb = new StringBuilder();
-         sb.append(ProducerField.class.getSimpleName());
-         sb.append(BEAN_ID_SEPARATOR);
-         sb.append(AnnotatedTypes.createTypeId(declaringBean.getWeldAnnotated()));
-         sb.append(".");
-         sb.append(AnnotatedTypes.createFieldId(field));
-         return sb.toString();
-      }
-   }
+    /**
+     * Constructor
+     *
+     * @param method        The producer field abstraction
+     * @param declaringBean The declaring bean
+     * @param manager       The Bean manager
+     */
+    protected ProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
+        super(createId(field, declaringBean), declaringBean, manager, services);
+        this.field = field;
+        initType();
+        initTypes();
+        initQualifiers();
+        initStereotypes();
+        this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure());
+    }
 
-   @Override
-   public void initialize(BeanDeployerEnvironment environment)
-   {
-      if (!isInitialized())
-      {
-         super.initialize(environment);
-         setProducer(new Producer<T>()
-         {
+    protected static String createId(WeldField<?, ?> field, AbstractClassBean<?> declaringBean) {
+        if (declaringBean.getWeldAnnotated().isDiscovered()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(ProducerField.class.getSimpleName());
+            sb.append(BEAN_ID_SEPARATOR);
+            sb.append(declaringBean.getWeldAnnotated().getName());
+            sb.append(".");
+            sb.append(field.getName());
+            return sb.toString();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append(ProducerField.class.getSimpleName());
+            sb.append(BEAN_ID_SEPARATOR);
+            sb.append(AnnotatedTypes.createTypeId(declaringBean.getWeldAnnotated()));
+            sb.append(".");
+            sb.append(AnnotatedTypes.createFieldId(field));
+            return sb.toString();
+        }
+    }
 
-            public void dispose(T instance)
-            {
-               defaultDispose(instance);
-            }
+    @Override
+    public void initialize(BeanDeployerEnvironment environment) {
+        if (!isInitialized()) {
+            super.initialize(environment);
+            setProducer(new Producer<T>() {
 
-            public Set<InjectionPoint> getInjectionPoints()
-            {
-               return cast(getWeldInjectionPoints());
-            }
+                public void dispose(T instance) {
+                    defaultDispose(instance);
+                }
 
-            public T produce(CreationalContext<T> creationalContext)
-            {
-               // unwrap if we have a proxy
-               Object receiver = getReceiver(creationalContext);
-               if (receiver instanceof TargetInstanceProxy)
-               {
-                  receiver = Reflections.<TargetInstanceProxy<T>>cast(receiver).getTargetInstance();
-               }
-               return field.get(receiver);
-            }
-            
-            @Override
-            public String toString() 
-            {
-              return field.toString();
-            }
-            
-         });
-         checkProducerField();
-      }
-   }
-   
-   
-   protected void checkProducerField()
-   {
-      if (getWeldAnnotated().isAnnotationPresent(Inject.class))
-      {
-         throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, getWeldAnnotated(), getWeldAnnotated().getDeclaringType());
-      }
-      if (getDeclaringBean() instanceof SessionBean<?> && !field.isStatic())
-      {
-         throw new DefinitionException(PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC, getWeldAnnotated(), getWeldAnnotated().getDeclaringType());
-      }
-   }
-   
-   protected void defaultDispose(T instance)
-   {
-      // No disposal by default
-   }
+                public Set<InjectionPoint> getInjectionPoints() {
+                    return cast(getWeldInjectionPoints());
+                }
 
-   public void destroy(T instance, CreationalContext<T> creationalContext)
-   {
-      getProducer().dispose(instance);
-   }
+                public T produce(CreationalContext<T> creationalContext) {
+                    // unwrap if we have a proxy
+                    Object receiver = getReceiver(creationalContext);
+                    if (receiver instanceof TargetInstanceProxy) {
+                        receiver = Reflections.<TargetInstanceProxy<T>>cast(receiver).getTargetInstance();
+                    }
+                    return field.get(receiver);
+                }
 
-   /**
-    * Gets the annotated item representing the field
-    * 
-    * @return The annotated item
-    */
-   @Override
-   public WeldField<T, ? super X> getWeldAnnotated()
-   {
-      return field;
-   }
+                @Override
+                public String toString() {
+                    return field.toString();
+                }
 
-   /**
-    * Returns the default name
-    * 
-    * @return The default name
-    */
-   @Override
-   protected String getDefaultName()
-   {
-      return field.getPropertyName();
-   }
-   
-   @Override
-   public AbstractBean<?, ?> getSpecializedBean()
-   {
-      return null;
-   }
-   
-   @Override
-   public boolean isSpecializing()
-   {
-      return false;
-   }
-   
-   @Override
-   public String toString()
-   {
-      return "Producer Field [" + Formats.formatType(getWeldAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getWeldAnnotated() + "]";
-   }
+            });
+            checkProducerField();
+        }
+    }
 
-   @Override
-   public boolean isProxyable()
-   {
-      return proxiable;
-   }
+
+    protected void checkProducerField() {
+        if (getWeldAnnotated().isAnnotationPresent(Inject.class)) {
+            throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, getWeldAnnotated(), getWeldAnnotated().getDeclaringType());
+        }
+        if (getDeclaringBean() instanceof SessionBean<?> && !field.isStatic()) {
+            throw new DefinitionException(PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC, getWeldAnnotated(), getWeldAnnotated().getDeclaringType());
+        }
+    }
+
+    protected void defaultDispose(T instance) {
+        // No disposal by default
+    }
+
+    public void destroy(T instance, CreationalContext<T> creationalContext) {
+        getProducer().dispose(instance);
+    }
+
+    /**
+     * Gets the annotated item representing the field
+     *
+     * @return The annotated item
+     */
+    @Override
+    public WeldField<T, ? super X> getWeldAnnotated() {
+        return field;
+    }
+
+    /**
+     * Returns the default name
+     *
+     * @return The default name
+     */
+    @Override
+    protected String getDefaultName() {
+        return field.getPropertyName();
+    }
+
+    @Override
+    public AbstractBean<?, ?> getSpecializedBean() {
+        return null;
+    }
+
+    @Override
+    public boolean isSpecializing() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Producer Field [" + Formats.formatType(getWeldAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getWeldAnnotated() + "]";
+    }
+
+    @Override
+    public boolean isProxyable() {
+        return proxiable;
+    }
 
 }

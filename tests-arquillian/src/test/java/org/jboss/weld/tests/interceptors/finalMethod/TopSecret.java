@@ -16,20 +16,18 @@
  */
 package org.jboss.weld.tests.interceptors.finalMethod;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
+import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.interceptor.InterceptorBinding;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @InterceptorBinding
 @Retention(RUNTIME)
-@Target( { ElementType.METHOD, ElementType.TYPE })
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Documented
-public @interface TopSecret
-{
+public @interface TopSecret {
 
 }

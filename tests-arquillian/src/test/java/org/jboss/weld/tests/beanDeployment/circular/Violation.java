@@ -18,12 +18,10 @@ package org.jboss.weld.tests.beanDeployment.circular;
 
 import java.io.Serializable;
 
-class Violation implements Serializable
-{
-   
-   public void ping()
-   {
-      
-   }
-   
+class Violation implements Serializable {
+
+    public void ping() {
+
+    }
+
 }

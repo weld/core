@@ -21,7 +21,8 @@ import javax.decorator.Delegate;
 import javax.inject.Inject;
 
 @Decorator
-public class Dec
-{
-   @Inject @Delegate Plain plain;
+public class Dec {
+    @Inject
+    @Delegate
+    Plain plain;
 }

@@ -16,20 +16,17 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import javax.inject.Inject;
 import java.util.List;
 
-import javax.inject.Inject;
 
+public class StringHolder {
 
-public class StringHolder
-{
+    @Inject
+    private List<String> strings;
 
-   @Inject 
-   private List<String> strings;
-   
-   public List<String> getStrings()
-   {
-      return strings;
-   }
-   
+    public List<String> getStrings() {
+        return strings;
+    }
+
 }

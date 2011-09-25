@@ -17,33 +17,32 @@
 
 package org.jboss.weld.tests.interceptors.circularInvocation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marius Bogoevici
  */
 @Decorator
-public class SomeBeanDecorator implements SomeBean
-{
-   @Inject @Any @Delegate SomeBean delegate;
+public class SomeBeanDecorator implements SomeBean {
+    @Inject
+    @Any
+    @Delegate
+    SomeBean delegate;
 
-   public static List<String> calls = new ArrayList<String>();
+    public static List<String> calls = new ArrayList<String>();
 
-   public void methodA()
-   {
-      calls.add("methodA");
-      delegate.methodA();
-   }
+    public void methodA() {
+        calls.add("methodA");
+        delegate.methodA();
+    }
 
-   public void methodB()
-   {
-      calls.add("methodB");
-      delegate.methodB();
-   }
+    public void methodB() {
+        calls.add("methodB");
+        delegate.methodB();
+    }
 }

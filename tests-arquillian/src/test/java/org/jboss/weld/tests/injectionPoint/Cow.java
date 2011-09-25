@@ -16,19 +16,16 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
-public class Cow
-{
-   
-   private final String name;
+public class Cow {
 
-   public Cow(String name)
-   {
-      this.name = name;
-   }
-   
-   public String getName()
-   {
-      return name;
-   }
-   
+    private final String name;
+
+    public Cow(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

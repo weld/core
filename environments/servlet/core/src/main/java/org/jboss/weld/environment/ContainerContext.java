@@ -33,37 +33,32 @@ import javax.servlet.ServletContextEvent;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class ContainerContext
-{
-   private ServletContextEvent event;
-   private ServletContext context;
-   private WeldManager manager;
+public class ContainerContext {
+    private ServletContextEvent event;
+    private ServletContext context;
+    private WeldManager manager;
 
-   public ContainerContext(ServletContextEvent event, WeldManager manager)
-   {
-      if (event == null)
-         throw new IllegalArgumentException("Null servlet context event");
+    public ContainerContext(ServletContextEvent event, WeldManager manager) {
+        if (event == null)
+            throw new IllegalArgumentException("Null servlet context event");
 
-      this.event = event;
-      this.context = event.getServletContext();
-      if (manager == null)
-         manager = (WeldManager) context.getAttribute(Listener.BEAN_MANAGER_ATTRIBUTE_NAME);
+        this.event = event;
+        this.context = event.getServletContext();
+        if (manager == null)
+            manager = (WeldManager) context.getAttribute(Listener.BEAN_MANAGER_ATTRIBUTE_NAME);
 
-      this.manager = manager;
-   }
+        this.manager = manager;
+    }
 
-   public ServletContextEvent getEvent()
-   {
-      return event;
-   }
+    public ServletContextEvent getEvent() {
+        return event;
+    }
 
-   public ServletContext getContext()
-   {
-      return context;
-   }
+    public ServletContext getContext() {
+        return context;
+    }
 
-   public WeldManager getManager()
-   {
-      return manager;
-   }
+    public WeldManager getManager() {
+        return manager;
+    }
 }

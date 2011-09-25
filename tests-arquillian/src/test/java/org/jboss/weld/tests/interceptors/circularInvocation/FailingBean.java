@@ -24,12 +24,12 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @ApplicationScoped
-public class FailingBean
-{
-   @Inject @Failing SomeBean someBean;
+public class FailingBean {
+    @Inject
+    @Failing
+    SomeBean someBean;
 
-   public void handle()
-   {
-      throw new UnsupportedOperationException();
-   }
+    public void handle() {
+        throw new UnsupportedOperationException();
+    }
 }

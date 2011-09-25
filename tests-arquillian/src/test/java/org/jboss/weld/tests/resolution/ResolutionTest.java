@@ -35,46 +35,45 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 import static org.jboss.weld.test.Utils.getReference;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
-public class ResolutionTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ResolutionTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class ResolutionTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ResolutionTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Inject Wibble wibble;
+    @Inject
+    Wibble wibble;
 
-   @Test
-   // WELD-711
-   public void testResolveWithAnonymousAnnotationLiteral() throws Exception
-   {
-      Annotation defaultQualifier = new AnnotationLiteral<Default>(){};
-      assertNotNull(getReference(beanManager, Foo.class, defaultQualifier));
-      TypeSafeBeanResolver<?> resolver = beanManager.getBeanResolver();
-      assertFalse(resolver.isCached(new ResolvableBuilder().addType(Foo.class).addQualifier(defaultQualifier).create()));
-   }
+    @Test
+    // WELD-711
+    public void testResolveWithAnonymousAnnotationLiteral() throws Exception {
+        Annotation defaultQualifier = new AnnotationLiteral<Default>() {
+        };
+        assertNotNull(getReference(beanManager, Foo.class, defaultQualifier));
+        TypeSafeBeanResolver<?> resolver = beanManager.getBeanResolver();
+        assertFalse(resolver.isCached(new ResolvableBuilder().addType(Foo.class).addQualifier(defaultQualifier).create()));
+    }
 
-   // WELD-873
-   @Test
-   public void testCallingUserMethod()
-   {
-      assertNull(wibble.get("bleh"));
-   }
+    // WELD-873
+    @Test
+    public void testCallingUserMethod() {
+        assertNull(wibble.get("bleh"));
+    }
 
-   // WELD-873
-   @Test
-   public void testCallingBridgeMethod()
-   {
-      assertNull(((Map)wibble).get("bleh"));
-   }
+    // WELD-873
+    @Test
+    public void testCallingBridgeMethod() {
+        assertNull(((Map) wibble).get("bleh"));
+    }
 
 }

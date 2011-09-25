@@ -17,13 +17,13 @@
 
 package org.jboss.weld.tests.interceptors.passivation.broken.nonSerializableInterceptor;
 
+import javax.interceptor.InterceptorBinding;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Documented;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import javax.interceptor.InterceptorBinding;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -32,7 +32,6 @@ import javax.interceptor.InterceptorBinding;
 @Retention(RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Documented
-public @interface Pass
-{
-   
+public @interface Pass {
+
 }

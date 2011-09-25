@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 package org.jboss.weld.tests.annotatedType;
-public class Parent
-{
-   int parent;
 
-   void parentMethod()
-   {
+public class Parent {
+    int parent;
 
-   }
+    void parentMethod() {
+
+    }
 }
 

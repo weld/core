@@ -20,8 +20,7 @@ package org.jboss.weld.tests.interceptors.interceptorsOrderWithEjbInterceptorOnC
 /**
  * @author Marius Bogoevici
  */
-public interface Processor
-{
-   @Secured
-   int add(int x, int y);
+public interface Processor {
+    @Secured
+    int add(int x, int y);
 }

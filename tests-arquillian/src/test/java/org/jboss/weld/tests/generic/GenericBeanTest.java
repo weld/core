@@ -29,27 +29,24 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class GenericBeanTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(GenericBeanTest.class.getPackage());
-   }
+public class GenericBeanTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(GenericBeanTest.class.getPackage());
+    }
 
-   @Test
-   public void testGenericBean(TestBean testBean)
-   {
-      Assert.assertEquals("Hello", testBean.echo("Hello"));
-      Assert.assertEquals(Integer.valueOf(1), testBean.echo(1));
+    @Test
+    public void testGenericBean(TestBean testBean) {
+        Assert.assertEquals("Hello", testBean.echo("Hello"));
+        Assert.assertEquals(Integer.valueOf(1), testBean.echo(1));
 
-      Subclass subclassInstance = new Subclass();
-      Assert.assertSame(subclassInstance, testBean.echo(subclassInstance));
-      Assert.assertSame(subclassInstance, testBean.echo((BaseClass)subclassInstance));
+        Subclass subclassInstance = new Subclass();
+        Assert.assertSame(subclassInstance, testBean.echo(subclassInstance));
+        Assert.assertSame(subclassInstance, testBean.echo((BaseClass) subclassInstance));
 
-      BaseClass baseInstance = new BaseClass();
-      Assert.assertSame(baseInstance, testBean.echo(baseInstance));
-   }
+        BaseClass baseInstance = new BaseClass();
+        Assert.assertSame(baseInstance, testBean.echo(baseInstance));
+    }
 
 }

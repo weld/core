@@ -25,11 +25,10 @@ package org.jboss.weld.tests.interceptors.lhotse.fst;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public interface DAO<T>
-{
-   boolean save(T t);
+public interface DAO<T> {
+    boolean save(T t);
 
-   T find(Long id);
+    T find(Long id);
 
-   <U> U find(Class<U> clazz, Long id);
+    <U> U find(Class<U> clazz, Long id);
 }

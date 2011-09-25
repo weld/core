@@ -23,15 +23,13 @@ import javax.interceptor.InvocationContext;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class Goalkeeper
-{
+public class Goalkeeper {
 
-   public static boolean caught = false;
+    public static boolean caught = false;
 
-   @AroundInvoke
-   public Object catchBall(InvocationContext invocationContext) throws Exception
-   {
-      caught = true;
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object catchBall(InvocationContext invocationContext) throws Exception {
+        caught = true;
+        return invocationContext.proceed();
+    }
 }

@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.tests.specialization;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,26 +25,26 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class SpecializationTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(SpecializationTest.class.getPackage());
-   }
+public class SpecializationTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(SpecializationTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   /**
-    * WELD-321
-    */
-   @Test
-   public void testSpecialization()
-   {
-      Assert.assertEquals(User2.class, beanManager.resolve(beanManager.getBeans(User.class)).getBeanClass());
-   }
+    /**
+     * WELD-321
+     */
+    @Test
+    public void testSpecialization() {
+        Assert.assertEquals(User2.class, beanManager.resolve(beanManager.getBeans(User.class)).getBeanClass());
+    }
 
 }

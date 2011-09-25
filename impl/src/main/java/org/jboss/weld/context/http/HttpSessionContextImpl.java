@@ -1,11 +1,5 @@
 package org.jboss.weld.context.http;
 
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.context.SessionScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.ManagedConversation;
@@ -14,110 +8,88 @@ import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
 
-public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext
-{
+import javax.enterprise.context.SessionScoped;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.lang.annotation.Annotation;
 
-   private static final String IDENTIFIER = HttpSessionContextImpl.class.getName();
+public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
 
-   private final NamingScheme namingScheme;
+    private static final String IDENTIFIER = HttpSessionContextImpl.class.getName();
 
-   public HttpSessionContextImpl()
-   {
-      super(true);
-      this.namingScheme = new SimpleNamingScheme(HttpSessionContext.class.getName());
-   }
+    private final NamingScheme namingScheme;
 
-   public boolean associate(HttpServletRequest request)
-   {
-      if (request.getAttribute(IDENTIFIER) == null)
-      {
-         // Don't reassociate
-         request.setAttribute(IDENTIFIER, IDENTIFIER);
-         setBeanStore(new LazySessionBeanStore(request, namingScheme));
-         return true;
-      }
-      else
-      {
-         return false;
-      }
-   }
+    public HttpSessionContextImpl() {
+        super(true);
+        this.namingScheme = new SimpleNamingScheme(HttpSessionContext.class.getName());
+    }
 
-   public boolean dissociate(HttpServletRequest request)
-   {
-
-      if (request.getAttribute(IDENTIFIER) != null)
-      {
-         try
-         {
-            setBeanStore(null);
-            request.removeAttribute(IDENTIFIER);
+    public boolean associate(HttpServletRequest request) {
+        if (request.getAttribute(IDENTIFIER) == null) {
+            // Don't reassociate
+            request.setAttribute(IDENTIFIER, IDENTIFIER);
+            setBeanStore(new LazySessionBeanStore(request, namingScheme));
             return true;
-         }
-         finally
-         {
-            cleanup();
-         }
-      }
-      else
-      {
-         return false;
-      }
+        } else {
+            return false;
+        }
+    }
 
-   }
+    public boolean dissociate(HttpServletRequest request) {
 
-   public boolean destroy(HttpSession session)
-   {
-      if (getBeanStore() == null)
-      {
-         try
-         {
-            HttpConversationContext conversationContext = getConversationContext();
-            setBeanStore(new EagerSessionBeanStore(namingScheme, session));
-            activate();
-            invalidate();
-            conversationContext.destroy(session);
-            deactivate();
-            setBeanStore(null);
-            return true;
-         }
-         finally
-         {
-            cleanup();
-         }
-      }
-      else
-      {
-         HttpConversationContext conversationContext = getConversationContext();
-         // We are in a request, invalidate it
-         invalidate();
-         if (conversationContext.isActive())
-         {
-            // Make sure *every* conversation is transient so we don't propagate it
-            for (ManagedConversation conversation : conversationContext.getConversations())
-            {
-               if (!conversation.isTransient()) 
-               {
-                  conversation.end();
-               }
+        if (request.getAttribute(IDENTIFIER) != null) {
+            try {
+                setBeanStore(null);
+                request.removeAttribute(IDENTIFIER);
+                return true;
+            } finally {
+                cleanup();
             }
-         }
-         else
-         {
-            // In a request, with no conversations, so destroy now
-            getConversationContext().destroy(session);
-         }
-         return false;
-      }
-   }
+        } else {
+            return false;
+        }
 
-   public Class<? extends Annotation> getScope()
-   {
-      return SessionScoped.class;
-   }
+    }
 
-   protected HttpConversationContext getConversationContext()
-   {
-      return Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
-   }
+    public boolean destroy(HttpSession session) {
+        if (getBeanStore() == null) {
+            try {
+                HttpConversationContext conversationContext = getConversationContext();
+                setBeanStore(new EagerSessionBeanStore(namingScheme, session));
+                activate();
+                invalidate();
+                conversationContext.destroy(session);
+                deactivate();
+                setBeanStore(null);
+                return true;
+            } finally {
+                cleanup();
+            }
+        } else {
+            HttpConversationContext conversationContext = getConversationContext();
+            // We are in a request, invalidate it
+            invalidate();
+            if (conversationContext.isActive()) {
+                // Make sure *every* conversation is transient so we don't propagate it
+                for (ManagedConversation conversation : conversationContext.getConversations()) {
+                    if (!conversation.isTransient()) {
+                        conversation.end();
+                    }
+                }
+            } else {
+                // In a request, with no conversations, so destroy now
+                getConversationContext().destroy(session);
+            }
+            return false;
+        }
+    }
+
+    public Class<? extends Annotation> getScope() {
+        return SessionScoped.class;
+    }
+
+    protected HttpConversationContext getConversationContext() {
+        return Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
+    }
 
 }

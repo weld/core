@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -21,16 +21,13 @@ import javax.enterprise.inject.spi.AnnotatedType;
 /**
  * A wrapper for annotated types that are modified as part of the discovery process
  */
-public class DiscoveredExternalAnnotatedType<X> extends ExternalAnnotatedType<X>
-{
+public class DiscoveredExternalAnnotatedType<X> extends ExternalAnnotatedType<X> {
 
-   public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType)
-   {
-      return new DiscoveredExternalAnnotatedType<X>(annotatedType);
-   }
+    public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType) {
+        return new DiscoveredExternalAnnotatedType<X>(annotatedType);
+    }
 
-   private DiscoveredExternalAnnotatedType(AnnotatedType<X> delegate)
-   {
-      super(delegate);
-   }
+    private DiscoveredExternalAnnotatedType(AnnotatedType<X> delegate) {
+        super(delegate);
+    }
 }

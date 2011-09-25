@@ -16,22 +16,19 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import java.io.Serializable;
 import java.util.Timer;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
+public class TimerManager implements Serializable {
 
-public class TimerManager implements Serializable
-{
+    private static final long serialVersionUID = 5156835887786174326L;
 
-   private static final long serialVersionUID = 5156835887786174326L;
-
-   @Produces
-   @RequestScoped
-   public Timer getTimer()
-   {
-      return new Timer();
-   }
+    @Produces
+    @RequestScoped
+    public Timer getTimer() {
+        return new Timer();
+    }
 
 }

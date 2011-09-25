@@ -21,6 +21,16 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import org.jboss.weld.examples.pastecode.model.Language;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,90 +40,70 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-
-import org.jboss.weld.examples.pastecode.model.CodeFragment;
-import org.jboss.weld.examples.pastecode.model.Language;
-
 /**
  * Populate the database with data.sql. Needed because import.sql doesn't
  * support multi-line inserts
- * 
+ *
  * @author Pete Muir
  * @author Martin Gencur
- * 
  */
 @Startup
 @Singleton
-public class PopulateDatabase
-{
+public class PopulateDatabase {
 
-   private static final String DATA_FILE_NAME = "data.sql";
+    private static final String DATA_FILE_NAME = "data.sql";
 
-   @Inject
-   private Logger log;
+    @Inject
+    private Logger log;
 
-   @PersistenceContext
-   private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-   @Inject
-   private UserTransaction utx;
+    @Inject
+    private UserTransaction utx;
 
-   @PostConstruct
-   public void startup()
-   {
+    @PostConstruct
+    public void startup() {
 
-      try
-      {
-         String fileContent = readFileData(DATA_FILE_NAME);
-         StringTokenizer st = new StringTokenizer(fileContent, "'");
-         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            String fileContent = readFileData(DATA_FILE_NAME);
+            StringTokenizer st = new StringTokenizer(fileContent, "'");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-         while (st.countTokens() > 1)
-         {
-            CodeFragment c = new CodeFragment();
-            st.nextToken();
-            c.setDatetime(formatter.parse(st.nextToken()));
-            st.nextToken();
-            c.setLanguage(Language.valueOf(st.nextToken()));
-            st.nextToken();
-            st.nextToken();
-            st.nextToken();
-            c.setUser(st.nextToken());
-            st.nextToken();
-            c.setText(st.nextToken());
+            while (st.countTokens() > 1) {
+                CodeFragment c = new CodeFragment();
+                st.nextToken();
+                c.setDatetime(formatter.parse(st.nextToken()));
+                st.nextToken();
+                c.setLanguage(Language.valueOf(st.nextToken()));
+                st.nextToken();
+                st.nextToken();
+                st.nextToken();
+                c.setUser(st.nextToken());
+                st.nextToken();
+                c.setText(st.nextToken());
 
-            // Manual TX control, commit each record independently
-            entityManager.persist(c);
-         }
-      }
-      catch (Exception e)
-      {
-         log.log(Level.WARNING, "Unable to read all records from " + DATA_FILE_NAME + " file", e);
-      }
+                // Manual TX control, commit each record independently
+                entityManager.persist(c);
+            }
+        } catch (Exception e) {
+            log.log(Level.WARNING, "Unable to read all records from " + DATA_FILE_NAME + " file", e);
+        }
 
-      log.info("Successfully imported data!");
-   }
+        log.info("Successfully imported data!");
+    }
 
-   private static String readFileData(String fileName) throws IOException
-   {
-      InputStream is = PopulateDatabase.class.getClassLoader().getResourceAsStream(fileName);
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
+    private static String readFileData(String fileName) throws IOException {
+        InputStream is = PopulateDatabase.class.getClassLoader().getResourceAsStream(fileName);
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-      String line;
-      StringBuilder sb = new StringBuilder();
+        String line;
+        StringBuilder sb = new StringBuilder();
 
-      while ((line = br.readLine()) != null)
-      {
-         sb.append(line).append("\n");
-      }
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
 
-      return sb.toString();
-   }
+        return sb.toString();
+    }
 }

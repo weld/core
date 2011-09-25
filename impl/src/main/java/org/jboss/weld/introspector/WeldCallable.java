@@ -9,48 +9,45 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.introspector;
 
+import org.jboss.weld.util.collections.Arrays2;
+
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.AnnotatedCallable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.AnnotatedCallable;
-
-import org.jboss.weld.util.collections.Arrays2;
-
 /**
  * @author pmuir
- *
  */
-public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S>, AnnotatedCallable<X>
-{
-   
-   public static final Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Arrays2.asSet(Disposes.class, Observes.class);
-   
-   /**
-    * Gets the abstracted parameters of the method
-    * 
-    * @return A list of parameters. Returns an empty list if no parameters are
-    *         present.
-    */
-   public List<? extends WeldParameter<?, X>> getWeldParameters();
+public interface WeldCallable<T, X, S extends Member> extends WeldMember<T, X, S>, AnnotatedCallable<X> {
 
-   /**
-    * Gets the list of annotated parameters for a given annotation
-    * 
-    * @param annotationType The annotation to match
-    * @return A set of matching parameter abstractions. Returns an empty list if
-    *         there are no matches.
-    */
-   public List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> annotationType);
+    Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Arrays2.asSet(Disposes.class, Observes.class);
+
+    /**
+     * Gets the abstracted parameters of the method
+     *
+     * @return A list of parameters. Returns an empty list if no parameters are
+     *         present.
+     */
+    List<? extends WeldParameter<?, X>> getWeldParameters();
+
+    /**
+     * Gets the list of annotated parameters for a given annotation
+     *
+     * @param annotationType The annotation to match
+     * @return A set of matching parameter abstractions. Returns an empty list if
+     *         there are no matches.
+     */
+    List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> annotationType);
 
 }

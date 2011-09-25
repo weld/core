@@ -17,34 +17,31 @@
 
 package org.jboss.weld.tests.decorators.stackoverflow;
 
-import java.math.BigDecimal;
-import java.util.logging.Logger;
-
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.logging.Logger;
 
 /**
  * Secure PaymentService implemented by decator
- * 
+ *
  * @author wayne
  */
 @Decorator
-class SecurePaymentService implements PaymentService
-{
-   @Inject
-   private Logger logger;
+class SecurePaymentService implements PaymentService {
+    @Inject
+    private Logger logger;
 
-   @Inject
-   @Delegate
-   @SimpleService
-   private PaymentService paymentService;
+    @Inject
+    @Delegate
+    @SimpleService
+    private PaymentService paymentService;
 
-   public boolean pay(String account, BigDecimal amount)
-   {
-      logger.info("I'm a secure payment service");
+    public boolean pay(String account, BigDecimal amount) {
+        logger.info("I'm a secure payment service");
 
-      return paymentService.pay(account, amount);
-   }
+        return paymentService.pay(account, amount);
+    }
 
 }

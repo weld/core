@@ -16,23 +16,21 @@
  */
 package org.jboss.weld.tests.scope.unproxyable;
 
-import javax.enterprise.inject.UnproxyableResolutionException;
-
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
 
+import javax.enterprise.inject.UnproxyableResolutionException;
+
 @Artifact
 @ExpectedDeploymentException(UnproxyableResolutionException.class)
-public class UnproxyableTest extends AbstractWeldTest
-{
-   
-   @Test(groups = "incontainer-broken")
-   //JBoss AS is producing the wrong exception.
-   public void test()
-   {
-      
-   }
+public class UnproxyableTest extends AbstractWeldTest {
+
+    @Test(groups = "incontainer-broken")
+    //JBoss AS is producing the wrong exception.
+    public void test() {
+
+    }
 
 }

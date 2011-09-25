@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.resolution.wbri293;
 
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,33 +29,31 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+
 /**
- *
  * @author Jozef Hartinger
- *
  */
 @RunWith(Arquillian.class)
-public class ContextualReferenceTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ContextualReferenceTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class ContextualReferenceTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ContextualReferenceTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   @Category(Broken.class)
-   public void testReferencesEqual() {
-      Sheep sheep = Utils.getReference(beanManager, Sheep.class);
-      sheep.setAge(10);
-      Sheep sheep2 = Utils.getReference(beanManager, Sheep.class);
-      Assert.assertEquals(sheep.getAge(), sheep2.getAge());
-      Assert.assertEquals(sheep, sheep2);
-   }
+    @Test
+    @Category(Broken.class)
+    public void testReferencesEqual() {
+        Sheep sheep = Utils.getReference(beanManager, Sheep.class);
+        sheep.setAge(10);
+        Sheep sheep2 = Utils.getReference(beanManager, Sheep.class);
+        Assert.assertEquals(sheep.getAge(), sheep2.getAge());
+        Assert.assertEquals(sheep, sheep2);
+    }
 
 }

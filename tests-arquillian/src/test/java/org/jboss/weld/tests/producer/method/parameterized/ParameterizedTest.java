@@ -26,21 +26,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class ParameterizedTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ParameterizedTest.class.getPackage());
-   }
+public class ParameterizedTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ParameterizedTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description = "WELD-452"
     */
-   @Test
-   public void testEventQualifiersCorrect(TestBean testBean)
-   {
-      Assert.assertNotNull(testBean);
-   }
+    @Test
+    public void testEventQualifiersCorrect(TestBean testBean) {
+        Assert.assertNotNull(testBean);
+    }
 }

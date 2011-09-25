@@ -9,30 +9,28 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedMember;
 import java.lang.reflect.Member;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
 /**
- * AnnotedMember provides enhanced access to an annotated member 
- * 
- * @author Pete Muir
+ * AnnotedMember provides enhanced access to an annotated member
  *
+ * @author Pete Muir
  */
-public interface WeldMember<T, X, S extends Member> extends WeldAnnotated<T, S>, AnnotatedMember<X>
-{
+public interface WeldMember<T, X, S extends Member> extends WeldAnnotated<T, S>, AnnotatedMember<X> {
 
-   /**
-    * Gets an abstraction of the declaring class
-    * 
-    * @return The declaring class
-    */
-   public WeldClass<X> getDeclaringType();
+    /**
+     * Gets an abstraction of the declaring class
+     *
+     * @return The declaring class
+     */
+    WeldClass<X> getDeclaringType();
 
 }

@@ -17,18 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -36,87 +24,84 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+
 /**
  * @author Marius Bogoevici
  */
-public class DecorationHelper<T>
-{
-   private static ThreadLocal<Stack<DecorationHelper<?>>> helperStackHolder = new ThreadLocal<Stack<DecorationHelper<?>>>()
-   {
-      @Override protected Stack<DecorationHelper<?>> initialValue()
-      {
-         return new Stack<DecorationHelper<?>>();
-      }
-   };
+public class DecorationHelper<T> {
+    private static ThreadLocal<Stack<DecorationHelper<?>>> helperStackHolder = new ThreadLocal<Stack<DecorationHelper<?>>>() {
+        @Override
+        protected Stack<DecorationHelper<?>> initialValue() {
+            return new Stack<DecorationHelper<?>>();
+        }
+    };
 
-   private final Class<T> proxyClassForDecorator;
+    private final Class<T> proxyClassForDecorator;
 
-   private final TargetBeanInstance targetBeanInstance;
+    private final TargetBeanInstance targetBeanInstance;
 
-   private T originalInstance;
+    private T originalInstance;
 
-   private T previousDelegate;
+    private T previousDelegate;
 
-   private int counter;
+    private int counter;
 
-   private BeanManagerImpl beanManager;
-   private final ContextualStore contextualStore;
-   private final Bean<?> bean;
+    private BeanManagerImpl beanManager;
+    private final ContextualStore contextualStore;
+    private final Bean<?> bean;
 
-   List<Decorator<?>> decorators;
+    List<Decorator<?>> decorators;
 
-   public DecorationHelper(TargetBeanInstance originalInstance, Bean<?> bean, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators)
-   {
-      this.originalInstance = Reflections.<T>cast(originalInstance.getInstance());
-      this.targetBeanInstance = originalInstance;
-      this.beanManager = beanManager;
-      this.contextualStore = contextualStore;
-      this.decorators = new LinkedList<Decorator<?>>(decorators);
-      this.proxyClassForDecorator = proxyClassForDecorator;
-      this.bean = bean;
-      counter = 0;
-   }
+    public DecorationHelper(TargetBeanInstance originalInstance, Bean<?> bean, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators) {
+        this.originalInstance = Reflections.<T>cast(originalInstance.getInstance());
+        this.targetBeanInstance = originalInstance;
+        this.beanManager = beanManager;
+        this.contextualStore = contextualStore;
+        this.decorators = new LinkedList<Decorator<?>>(decorators);
+        this.proxyClassForDecorator = proxyClassForDecorator;
+        this.bean = bean;
+        counter = 0;
+    }
 
-   public static Stack<DecorationHelper<?>> getHelperStack()
-   {
-      return helperStackHolder.get();
-   }
+    public static Stack<DecorationHelper<?>> getHelperStack() {
+        return helperStackHolder.get();
+    }
 
-   public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator)
-   {
-      Object decoratorInstance = beanManager.getReference(injectionPoint, decorator, creationalContext);
-      SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(decorator, decoratorInstance, null, contextualStore);
-      return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);
-   }
+    public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator) {
+        Object decoratorInstance = beanManager.getReference(injectionPoint, decorator, creationalContext);
+        SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(decorator, decoratorInstance, null, contextualStore);
+        return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);
+    }
 
-   public T getNextDelegate(InjectionPoint injectionPoint, CreationalContext<?> creationalContext)
-   {
-      if (counter == decorators.size())
-      {
-         previousDelegate = originalInstance;
-         return originalInstance;
-      }
-      else
-      {
-         try
-         {
-            T proxy = SecureReflections.newInstance(proxyClassForDecorator);
-            TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
-            newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, Reflections.<Decorator<Object>>cast(decorators.get(counter++))));
-            ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
-            previousDelegate = proxy;
-            return proxy;
-         }
-         catch (InstantiationException e)
-         {
-            throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-         }
-         catch (IllegalAccessException e)
-         {
-            throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
-         }
+    public T getNextDelegate(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
+        if (counter == decorators.size()) {
+            previousDelegate = originalInstance;
+            return originalInstance;
+        } else {
+            try {
+                T proxy = SecureReflections.newInstance(proxyClassForDecorator);
+                TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
+                newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, Reflections.<Decorator<Object>>cast(decorators.get(counter++))));
+                ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
+                previousDelegate = proxy;
+                return proxy;
+            } catch (InstantiationException e) {
+                throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
+            } catch (IllegalAccessException e) {
+                throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
+            }
 
-      }
-   }
+        }
+    }
 
 }

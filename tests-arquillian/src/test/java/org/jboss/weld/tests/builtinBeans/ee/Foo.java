@@ -5,10 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Foo
-{
-   
-   @Id @GeneratedValue
-   private int id;
+public class Foo {
+
+    @Id
+    @GeneratedValue
+    private int id;
 
 }

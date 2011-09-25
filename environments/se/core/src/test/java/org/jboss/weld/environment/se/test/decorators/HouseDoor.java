@@ -18,7 +18,6 @@
 package org.jboss.weld.environment.se.test.decorators;
 
 /**
- *
  * @author Peter Royle
  */
 public class HouseDoor extends AbstractDoor {

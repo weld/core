@@ -22,12 +22,11 @@ import javax.inject.Inject;
 /**
  * @author Marius Bogoevici
  */
-public class InjectedClass
-{
-   @Inject ScopedClass dependency;
+public class InjectedClass {
+    @Inject
+    ScopedClass dependency;
 
-   public ScopedClass getDependency()
-   {
-      return dependency;
-   }
+    public ScopedClass getDependency() {
+        return dependency;
+    }
 }

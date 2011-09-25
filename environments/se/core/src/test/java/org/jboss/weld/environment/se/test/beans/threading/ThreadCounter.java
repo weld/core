@@ -20,9 +20,10 @@ import org.jboss.weld.environment.se.contexts.ThreadScoped;
 
 /**
  * A thread-scoped counter.
+ *
  * @author Peter Royle
  */
 @ThreadScoped
 public class ThreadCounter extends Counter {
-   
+
 }

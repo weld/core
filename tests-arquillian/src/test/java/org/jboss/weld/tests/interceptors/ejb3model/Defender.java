@@ -23,14 +23,12 @@ import javax.interceptor.InvocationContext;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class Defender
-{
-   public static boolean defended = false;
+public class Defender {
+    public static boolean defended = false;
 
-   @AroundInvoke
-   public Object defend(InvocationContext context) throws Exception
-   {
-      defended = true;
-      return context.proceed();
-   }
+    @AroundInvoke
+    public Object defend(InvocationContext context) throws Exception {
+        defended = true;
+        return context.proceed();
+    }
 }

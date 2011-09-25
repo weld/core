@@ -23,15 +23,14 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Play
-public class Defender
-{
-   static int invocationsCount = 0;
+@Interceptor
+@Play
+public class Defender {
+    static int invocationsCount = 0;
 
-   @AroundInvoke
-   public Object tackle(InvocationContext invocationContext) throws Exception
-   {
-      invocationsCount ++;
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object tackle(InvocationContext invocationContext) throws Exception {
+        invocationsCount++;
+        return invocationContext.proceed();
+    }
 }

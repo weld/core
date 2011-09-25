@@ -31,24 +31,21 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public abstract class AbstractContainer implements Container
-{
-   protected final Logger log = LoggerFactory.getLogger(getClass());
+public abstract class AbstractContainer implements Container {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
-   /**
-    * Get class name to check is we can use this container.
-    *
-    * @return the class name to check
-    */
-   protected abstract String classToCheck();
+    /**
+     * Get class name to check is we can use this container.
+     *
+     * @return the class name to check
+     */
+    protected abstract String classToCheck();
 
-   public boolean touch(ContainerContext context) throws Exception
-   {
-      Reflections.classForName(classToCheck());
-      return true;
-   }
+    public boolean touch(ContainerContext context) throws Exception {
+        Reflections.classForName(classToCheck());
+        return true;
+    }
 
-   public void destroy(ContainerContext context)
-   {
-   }
+    public void destroy(ContainerContext context) {
+    }
 }

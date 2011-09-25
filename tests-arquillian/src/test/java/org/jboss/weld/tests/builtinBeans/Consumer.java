@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
-import java.io.Serializable;
+import junit.framework.Assert;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -27,52 +27,52 @@ import javax.inject.Inject;
 import javax.transaction.UserTransaction;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
-import junit.framework.Assert;
+import java.io.Serializable;
 
 @SessionScoped
-public class Consumer implements Serializable
-{
-   
-   @Inject Validator validator;
-   @Inject ValidatorFactory validatorFactory;
-   // Not working incontainer as there is no principal
-   //@Inject Principal principal;
-   @Inject UserTransaction userTransaction;
-   @Inject BeanManager beanManager;
-   @Inject Instance<Cow> cow;
-   @Inject Event<Cow> event;
-   @Inject CowEventObserver observer;
-   
-   @PostConstruct
-   public void postConstruct()
-   {
-      cow.get().setName("Daisy");
-   }
-   
-   public Instance<Cow> getCow()
-   {
-      return cow;
-   }
-   
-   public Event<Cow> getEvent()
-   {
-      return event;
-   }
-   
-   public void check()
-   {
-      Assert.assertTrue(Checker.checkBeanManager(beanManager));
+public class Consumer implements Serializable {
 
-      // Not working incontainer as there is no principal
-      //assert Checker.checkPrincipal(principal);
-      Assert.assertTrue(Checker.checkUserTransaction(userTransaction));
-      Assert.assertTrue(Checker.checkValidator(validator));
-      Assert.assertTrue(Checker.checkValidatorFactory(validatorFactory));
-      Assert.assertTrue(Checker.checkInstance(cow));
-      Assert.assertTrue(Checker.checkEvent(event, observer));
-   }
-   
-   
-   
+    @Inject
+    Validator validator;
+    @Inject
+    ValidatorFactory validatorFactory;
+    // Not working incontainer as there is no principal
+    //@Inject Principal principal;
+    @Inject
+    UserTransaction userTransaction;
+    @Inject
+    BeanManager beanManager;
+    @Inject
+    Instance<Cow> cow;
+    @Inject
+    Event<Cow> event;
+    @Inject
+    CowEventObserver observer;
+
+    @PostConstruct
+    public void postConstruct() {
+        cow.get().setName("Daisy");
+    }
+
+    public Instance<Cow> getCow() {
+        return cow;
+    }
+
+    public Event<Cow> getEvent() {
+        return event;
+    }
+
+    public void check() {
+        Assert.assertTrue(Checker.checkBeanManager(beanManager));
+
+        // Not working incontainer as there is no principal
+        //assert Checker.checkPrincipal(principal);
+        Assert.assertTrue(Checker.checkUserTransaction(userTransaction));
+        Assert.assertTrue(Checker.checkValidator(validator));
+        Assert.assertTrue(Checker.checkValidatorFactory(validatorFactory));
+        Assert.assertTrue(Checker.checkInstance(cow));
+        Assert.assertTrue(Checker.checkEvent(event, observer));
+    }
+
+
 }

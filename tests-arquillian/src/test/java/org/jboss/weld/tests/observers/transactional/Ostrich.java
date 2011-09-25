@@ -22,30 +22,27 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
+
 //do not use app scoped SFSB's in a real application
 @Stateful
 @ApplicationScoped
-public class Ostrich
-{
+public class Ostrich {
 
-   @Inject
-   private Event<Fox> event;
+    @Inject
+    private Event<Fox> event;
 
-   private boolean headInSand = false;
+    private boolean headInSand = false;
 
-   public void foxNearby()
-   {
-      headInSand = true;
-      event.fire(new Fox());
-   }
+    public void foxNearby() {
+        headInSand = true;
+        event.fire(new Fox());
+    }
 
-   public void observer(@Observes(during = TransactionPhase.BEFORE_COMPLETION) Fox fox)
-   {
-      headInSand = false;
-   }
+    public void observer(@Observes(during = TransactionPhase.BEFORE_COMPLETION) Fox fox) {
+        headInSand = false;
+    }
 
-   public boolean isHeadInSand()
-   {
-      return headInSand;
-   }
+    public boolean isHeadInSand() {
+        return headInSand;
+    }
 }

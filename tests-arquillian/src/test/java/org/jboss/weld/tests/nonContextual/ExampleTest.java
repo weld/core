@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.tests.nonContextual;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -32,72 +25,71 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class ExampleTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addClasses(External.class, WebBean.class);
-   }
+public class ExampleTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClasses(External.class, WebBean.class);
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   @Test
-   public void testNonContextual() throws Exception
-   {
-      NonContextual<External> nonContextual = new NonContextual<External>(beanManager, External.class);
+    @Test
+    public void testNonContextual() throws Exception {
+        NonContextual<External> nonContextual = new NonContextual<External>(beanManager, External.class);
 
-      External external = new External();
-      Assert.assertNull(external.bean);
-      nonContextual.postConstruct(external);
-      Assert.assertNotNull(external.bean);
-      nonContextual.preDestroy(external);
-      // preDestroy doesn't cause any dis-injection
-      Assert.assertNotNull(external.bean);
-   }
+        External external = new External();
+        Assert.assertNull(external.bean);
+        nonContextual.postConstruct(external);
+        Assert.assertNotNull(external.bean);
+        nonContextual.preDestroy(external);
+        // preDestroy doesn't cause any dis-injection
+        Assert.assertNotNull(external.bean);
+    }
 
-   @Test
-   public void validateNonContextual() throws Exception
-   {
-      NonContextual<External> nonContextual = new NonContextual<External>(beanManager, External.class);
+    @Test
+    public void validateNonContextual() throws Exception {
+        NonContextual<External> nonContextual = new NonContextual<External>(beanManager, External.class);
 
-      for (InjectionPoint point : nonContextual.it.getInjectionPoints())
-      {
-         try
-         {
-            beanManager.validate(point);
-         }
-         catch(Exception e)
-         {
-            Assert.fail("Should have been valid");
-         }
-      }
-   }
+        for (InjectionPoint point : nonContextual.it.getInjectionPoints()) {
+            try {
+                beanManager.validate(point);
+            } catch (Exception e) {
+                Assert.fail("Should have been valid");
+            }
+        }
+    }
 
 
-   public class NonContextual<T> {
+    public class NonContextual<T> {
 
-      final InjectionTarget<T> it;
-      final BeanManager manager;
+        final InjectionTarget<T> it;
+        final BeanManager manager;
 
-      public NonContextual(BeanManager manager, Class<T> clazz) {
-         this.manager = manager;
-         AnnotatedType<T> type = manager.createAnnotatedType(clazz);
-         this.it = manager.createInjectionTarget(type);
-      }
+        public NonContextual(BeanManager manager, Class<T> clazz) {
+            this.manager = manager;
+            AnnotatedType<T> type = manager.createAnnotatedType(clazz);
+            this.it = manager.createInjectionTarget(type);
+        }
 
-      public CreationalContext<T> postConstruct(T instance) {
-         CreationalContext<T> cc = manager.createCreationalContext(null);
-         it.inject(instance, cc);
-         it.postConstruct(instance);
-         return cc;
-      }
+        public CreationalContext<T> postConstruct(T instance) {
+            CreationalContext<T> cc = manager.createCreationalContext(null);
+            it.inject(instance, cc);
+            it.postConstruct(instance);
+            return cc;
+        }
 
-      public void preDestroy(T instance) {
-         it.preDestroy(instance);
-      }
-   }
+        public void preDestroy(T instance) {
+            it.preDestroy(instance);
+        }
+    }
 }

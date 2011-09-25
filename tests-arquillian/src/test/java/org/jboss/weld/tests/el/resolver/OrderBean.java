@@ -4,17 +4,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
-public class OrderBean
-{
-   
-   @Inject
-   public void init()
-   {
-      throw new OrderException();
-   }
+public class OrderBean {
 
-   public Long getOrderId()
-   {
-      return 1L;
-   }
+    @Inject
+    public void init() {
+        throw new OrderException();
+    }
+
+    public Long getOrderId() {
+        return 1L;
+    }
 }

@@ -16,39 +16,35 @@
  */
 package org.jboss.weld.tests.contexts.conversation;
 
-import java.io.Serializable;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @ConversationScoped
-public class Hailstorm implements Serializable
-{
-   
-   @Inject Cloud cloud;
-   
-   public static final String NAME = Hailstorm.class.getName();
+public class Hailstorm implements Serializable {
 
-	private static final long serialVersionUID = 5765109971012677278L;
-   
-   @PostConstruct
-   public void init()
-   {
-      cloud.setName("gavin");
-      throw new RuntimeException();
-   }
-   
-   public String getName()
-   {
-      return NAME;
-   }
-   
-   public String cloud()
-   {
-      return "cloud";
-   }
-   
+    @Inject
+    Cloud cloud;
+
+    public static final String NAME = Hailstorm.class.getName();
+
+    private static final long serialVersionUID = 5765109971012677278L;
+
+    @PostConstruct
+    public void init() {
+        cloud.setName("gavin");
+        throw new RuntimeException();
+    }
+
+    public String getName() {
+        return NAME;
+    }
+
+    public String cloud() {
+        return "cloud";
+    }
+
 }

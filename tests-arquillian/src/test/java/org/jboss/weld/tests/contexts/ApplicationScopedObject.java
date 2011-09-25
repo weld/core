@@ -16,21 +16,18 @@
  */
 package org.jboss.weld.tests.contexts;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.context.ApplicationScoped;
-
 @ApplicationScoped
-public class ApplicationScopedObject
-{
-   private AtomicInteger counter = new AtomicInteger();
+public class ApplicationScopedObject {
+    private AtomicInteger counter = new AtomicInteger();
 
-   public void increment()
-   {
-      counter.incrementAndGet();
-   }
-   public int getValue()
-   {
-      return counter.get();
-   }
+    public void increment() {
+        counter.incrementAndGet();
+    }
+
+    public int getValue() {
+        return counter.get();
+    }
 }

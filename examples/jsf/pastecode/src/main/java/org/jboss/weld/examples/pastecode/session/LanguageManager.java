@@ -21,25 +21,22 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import org.jboss.weld.examples.pastecode.model.Language;
+
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.jboss.weld.examples.pastecode.model.Language;
-
 /**
  * Produces an array of supported languages
- * 
- * @author Pete Muir
  *
+ * @author Pete Muir
  */
-public class LanguageManager
-{
-   
-   @Produces
-   @Named
-   public Language[] getLanguages()
-   {
-      return Language.values();
-   }
+public class LanguageManager {
+
+    @Produces
+    @Named
+    public Language[] getLanguages() {
+        return Language.values();
+    }
 
 }

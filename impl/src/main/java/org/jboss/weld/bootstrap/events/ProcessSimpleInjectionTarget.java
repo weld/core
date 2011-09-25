@@ -9,39 +9,35 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bootstrap.events;
 
+import org.jboss.weld.manager.BeanManagerImpl;
+
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-import org.jboss.weld.manager.BeanManagerImpl;
 
+public class ProcessSimpleInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X> {
 
-public class ProcessSimpleInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X>
-{
-   
-   private InjectionTarget<X> injectionTarget;
+    private InjectionTarget<X> injectionTarget;
 
-   public ProcessSimpleInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget)
-   {
-      super(beanManager, annotatedType);
-      this.injectionTarget = injectionTarget;
-   }
+    public ProcessSimpleInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+        super(beanManager, annotatedType);
+        this.injectionTarget = injectionTarget;
+    }
 
-   public InjectionTarget<X> getInjectionTarget()
-   {
-      return injectionTarget;
-   }
+    public InjectionTarget<X> getInjectionTarget() {
+        return injectionTarget;
+    }
 
-   public void setInjectionTarget(InjectionTarget<X> injectionTarget)
-   {
-      this.injectionTarget = injectionTarget;
-   }
+    public void setInjectionTarget(InjectionTarget<X> injectionTarget) {
+        this.injectionTarget = injectionTarget;
+    }
 
 }

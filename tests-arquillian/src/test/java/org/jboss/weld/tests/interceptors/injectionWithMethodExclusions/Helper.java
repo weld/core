@@ -18,16 +18,13 @@
 package org.jboss.weld.tests.interceptors.injectionWithMethodExclusions;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 
 /**
  * @author Marius Bogoevici
  */
 @RequestScoped
-public class Helper
-{
-   public void help()
-   {
+public class Helper {
+    public void help() {
 
-   }
+    }
 }

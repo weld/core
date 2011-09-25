@@ -16,29 +16,27 @@
  */
 package org.jboss.weld.tests.contexts.sessionInvalidation;
 
-import java.io.IOException;
-
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Named
-public class Storm
-{
-   
-   @Inject SomeBean    someBean;
-   
-   public static final String PROPERTY_VALUE = "some value";
-   
-   public String invalidateSession()
-   {
-      someBean.setProp(PROPERTY_VALUE);
-      ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
-      return "success";
-   }
-   
-   public void redirect() throws IOException {
-	   FacesContext.getCurrentInstance().getExternalContext().redirect("storm.jsf");
-   }
+public class Storm {
+
+    @Inject
+    SomeBean someBean;
+
+    public static final String PROPERTY_VALUE = "some value";
+
+    public String invalidateSession() {
+        someBean.setProp(PROPERTY_VALUE);
+        ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true)).invalidate();
+        return "success";
+    }
+
+    public void redirect() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("storm.jsf");
+    }
 }

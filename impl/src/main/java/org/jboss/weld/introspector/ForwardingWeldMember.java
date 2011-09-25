@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,15 +18,13 @@ package org.jboss.weld.introspector;
 
 import java.lang.reflect.Member;
 
-public abstract class ForwardingWeldMember<T, X, S extends Member> extends ForwardingWeldAnnotated<T, S> implements WeldMember<T, X, S>
-{
-   
-   @Override
-   protected abstract WeldMember<T, X, S> delegate();
+public abstract class ForwardingWeldMember<T, X, S extends Member> extends ForwardingWeldAnnotated<T, S> implements WeldMember<T, X, S> {
 
-   public WeldClass<X> getDeclaringType()
-   {
-      return delegate().getDeclaringType();
-   }
-   
+    @Override
+    protected abstract WeldMember<T, X, S> delegate();
+
+    public WeldClass<X> getDeclaringType() {
+        return delegate().getDeclaringType();
+    }
+
 }

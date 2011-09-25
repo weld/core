@@ -25,118 +25,100 @@ import javax.inject.Inject;
  * initialization a random number will be selected. Multiple "guesses" as to
  * what that number might be can be made using the 'check' method. The user wins
  * if they can guess the selected number in the alloted amount of tries.
- * 
+ *
  * @author Peter Royle
  */
 @ApplicationScoped
-public class Game
-{
-   public static final int MAX_NUM_GUESSES = 10;
+public class Game {
+    public static final int MAX_NUM_GUESSES = 10;
 
-   private Integer number;
-   private int guess = 0;
-   private int smallest = 0;
+    private Integer number;
+    private int guess = 0;
+    private int smallest = 0;
 
-   @Inject
-   @MaxNumber
-   private int maxNumber;
+    @Inject
+    @MaxNumber
+    private int maxNumber;
 
-   private int biggest;
-   private int remainingGuesses = MAX_NUM_GUESSES;
-   private boolean validNumberRange = true;
+    private int biggest;
+    private int remainingGuesses = MAX_NUM_GUESSES;
+    private boolean validNumberRange = true;
 
-   @Inject
-   Generator rndGenerator;
+    @Inject
+    Generator rndGenerator;
 
-   public Game()
-   {
-   }
+    public Game() {
+    }
 
-   public int getNumber()
-   {
-      return number;
-   }
+    public int getNumber() {
+        return number;
+    }
 
-   public int getGuess()
-   {
-      return guess;
-   }
+    public int getGuess() {
+        return guess;
+    }
 
-   public void setGuess(int guess)
-   {
-      this.guess = guess;
-   }
+    public void setGuess(int guess) {
+        this.guess = guess;
+    }
 
-   public int getSmallest()
-   {
-      return smallest;
-   }
+    public int getSmallest() {
+        return smallest;
+    }
 
-   public int getBiggest()
-   {
-      return biggest;
-   }
+    public int getBiggest() {
+        return biggest;
+    }
 
-   public int getRemainingGuesses()
-   {
-      return remainingGuesses;
-   }
+    public int getRemainingGuesses() {
+        return remainingGuesses;
+    }
 
-   public boolean isValidNumberRange()
-   {
-      return validNumberRange;
-   }
+    public boolean isValidNumberRange() {
+        return validNumberRange;
+    }
 
-   public boolean isGameWon()
-   {
-      return guess == number;
-   }
+    public boolean isGameWon() {
+        return guess == number;
+    }
 
-   public boolean isGameLost()
-   {
-      return guess != number && remainingGuesses <= 0;
-   }
+    public boolean isGameLost() {
+        return guess != number && remainingGuesses <= 0;
+    }
 
-   public boolean check()
-   {
-      boolean result = false;
+    public boolean check() {
+        boolean result = false;
 
-      if (checkNewNumberRangeIsValid())
-      {
-         if (guess > number)
-         {
-            biggest = guess - 1;
-         }
+        if (checkNewNumberRangeIsValid()) {
+            if (guess > number) {
+                biggest = guess - 1;
+            }
 
-         if (guess < number)
-         {
-            smallest = guess + 1;
-         }
+            if (guess < number) {
+                smallest = guess + 1;
+            }
 
-         if (guess == number)
-         {
-            result = true;
-         }
+            if (guess == number) {
+                result = true;
+            }
 
-         remainingGuesses--;
-      }
+            remainingGuesses--;
+        }
 
-      return result;
-   }
+        return result;
+    }
 
-   private boolean checkNewNumberRangeIsValid()
-   {
-      return validNumberRange = ((guess >= smallest) && (guess <= biggest));
-   }
+    private boolean checkNewNumberRangeIsValid() {
+        return validNumberRange = ((guess >= smallest) && (guess <= biggest));
+    }
 
-   @PostConstruct
-   public void reset()
-   {
-      this.smallest = 0;
-      this.guess = 0;
-      this.remainingGuesses = 10;
-      this.biggest = maxNumber;
-      this.number = rndGenerator.next();
-      System.out.println("psst! the number is " + this.number);
-   }
+    @PostConstruct
+    public void reset() {
+        this.smallest = 0;
+        this.guess = 0;
+        this.remainingGuesses = 10;
+        this.biggest = maxNumber;
+        this.number = rndGenerator.next();
+        System.out.println("psst! the number is " + this.number);
+    }
 }

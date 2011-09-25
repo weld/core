@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,46 +18,43 @@ package org.jboss.weld;
 
 /**
  * Application container instance state
- * @author pmuir
  *
+ * @author pmuir
  */
-public enum ContainerState
-{
-   /**
-    * The container has not been started
-    */
-   STOPPED(false),
-   /**
-    * The container is starting
-    */
-   STARTING(false),
-   /**
-    * The container has started and beans have been deployed
-    */
-   INITIALIZED(true),
-   /**
-    * The deployment has been validated
-    */
-   VALIDATED(true),
-   /**
-    * The container has been shutdown
-    */
-   SHUTDOWN(false);
-   
-   private ContainerState(boolean available)
-   {
-      this.available = available;
-   }
-   
-   final boolean available;
-   
-   /**
-    * Whether the container is available for use
-    * 
-    * @return
-    */
-   public boolean isAvailable()
-   {
-      return available;
-   }
+public enum ContainerState {
+    /**
+     * The container has not been started
+     */
+    STOPPED(false),
+    /**
+     * The container is starting
+     */
+    STARTING(false),
+    /**
+     * The container has started and beans have been deployed
+     */
+    INITIALIZED(true),
+    /**
+     * The deployment has been validated
+     */
+    VALIDATED(true),
+    /**
+     * The container has been shutdown
+     */
+    SHUTDOWN(false);
+
+    private ContainerState(boolean available) {
+        this.available = available;
+    }
+
+    final boolean available;
+
+    /**
+     * Whether the container is available for use
+     *
+     * @return
+     */
+    public boolean isAvailable() {
+        return available;
+    }
 }

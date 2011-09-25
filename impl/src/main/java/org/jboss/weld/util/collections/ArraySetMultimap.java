@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -27,60 +27,49 @@ import java.util.Set;
 /**
  * A {@link java.util.Map} that can contain multiple values, where the keys
  * and values are stored in {@link ArraySet} instances.
- * 
- * @author David Allen
  *
+ * @author David Allen
  */
-public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>>
-{
-   private ArraySet<Map.Entry<K, List<V>>> entrySet = new ArraySet<Map.Entry<K, List<V>>>();
+public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>> {
+    private ArraySet<Map.Entry<K, List<V>>> entrySet = new ArraySet<Map.Entry<K, List<V>>>();
 
-   public ArraySetMultimap()
-   {
-      
-   }
-   
-   public ArraySetMultimap(Map<K, List<V>> map)
-   {
-      // Add entries from the given map to this one
-   }
+    public ArraySetMultimap() {
 
-   @Override
-   public List<V> get(Object key)
-   {
-      List<V> result = super.get(key);
-      if (result == null)
-      {
-         result = Collections.emptyList();
-      }
-      return result;
-   }
+    }
 
-   // Workaround bug in Helios
-   public List<V> putSingleElement(K key, V value)
-   {
-      List<V> result = super.get(key);
-      if (result == null)
-      {
-         result = new ArrayList<V>();
-         SimpleEntry<K, List<V>> entry = new SimpleEntry<K, List<V>>(key, result);
-         entrySet.add(entry);
-      }
-      result.add(value);
-      return result;
-   }
+    public ArraySetMultimap(Map<K, List<V>> map) {
+        // Add entries from the given map to this one
+    }
 
-   public void trimToSize()
-   {
-      for (Map.Entry<K, List<V>> entry : this.entrySet())
-      {
-         ((ArrayList<V>)entry.getValue()).trimToSize();
-      }
-   }
+    @Override
+    public List<V> get(Object key) {
+        List<V> result = super.get(key);
+        if (result == null) {
+            result = Collections.emptyList();
+        }
+        return result;
+    }
 
-   @Override
-   public Set<java.util.Map.Entry<K, List<V>>> entrySet()
-   {
-      return entrySet;
-   }
+    // Workaround bug in Helios
+    public List<V> putSingleElement(K key, V value) {
+        List<V> result = super.get(key);
+        if (result == null) {
+            result = new ArrayList<V>();
+            SimpleEntry<K, List<V>> entry = new SimpleEntry<K, List<V>>(key, result);
+            entrySet.add(entry);
+        }
+        result.add(value);
+        return result;
+    }
+
+    public void trimToSize() {
+        for (Map.Entry<K, List<V>> entry : this.entrySet()) {
+            ((ArrayList<V>) entry.getValue()).trimToSize();
+        }
+    }
+
+    @Override
+    public Set<java.util.Map.Entry<K, List<V>>> entrySet() {
+        return entrySet;
+    }
 }

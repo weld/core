@@ -24,19 +24,16 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 
-public class CustomDecoratorDeploymentObserver implements Extension
-{
-   public void addDecorators(@Observes AfterBeanDiscovery event, BeanManager beanManager)
-   {
-      event.addBean(new CustomDecorator(beanManager));
-   }
+public class CustomDecoratorDeploymentObserver implements Extension {
+    public void addDecorators(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+        event.addBean(new CustomDecorator(beanManager));
+    }
 
-   /**
-    * Must veto the custom decorator class, otherwise a bean will be created
-    */
-   public void vetoCustomDecorator(@Observes ProcessAnnotatedType event, BeanManager beanManager)
-   {
-      if (event.getAnnotatedType().getJavaClass().equals(CustomWindowFrame.class))
-         event.veto();
-   }
+    /**
+     * Must veto the custom decorator class, otherwise a bean will be created
+     */
+    public void vetoCustomDecorator(@Observes ProcessAnnotatedType event, BeanManager beanManager) {
+        if (event.getAnnotatedType().getJavaClass().equals(CustomWindowFrame.class))
+            event.veto();
+    }
 }

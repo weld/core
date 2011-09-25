@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,37 +18,32 @@ package org.jboss.weld.exceptions;
 
 
 /**
- * 
  * @author Pete Muir
  */
-public class InconsistentSpecializationException extends DeploymentException
-{
+public class InconsistentSpecializationException extends DeploymentException {
 
-   private static final long serialVersionUID = 4359656880524913555L;
+    private static final long serialVersionUID = 4359656880524913555L;
 
-   /**
-    * Creates a new exception with the given localized message key and optional
-    * arguments for the message.
-    * 
-    * @param <E> The enumeration type for the message keys
-    * @param key The localized message to use
-    * @param args Optional arguments to insert into the message
-    */
-   public <E extends Enum<?>> InconsistentSpecializationException(E key, Object... args)
-   {
-      super(key, args);
-   }
-   
-   /**
-    * Creates a new exception with the given cause.
-    * 
-    * @param throwable The cause of the exception
-    */
-   public InconsistentSpecializationException(Throwable throwable)
-   {
-      super(throwable);
-   }
+    /**
+     * Creates a new exception with the given localized message key and optional
+     * arguments for the message.
+     *
+     * @param <E>  The enumeration type for the message keys
+     * @param key  The localized message to use
+     * @param args Optional arguments to insert into the message
+     */
+    public <E extends Enum<?>> InconsistentSpecializationException(E key, Object... args) {
+        super(key, args);
+    }
 
-   
+    /**
+     * Creates a new exception with the given cause.
+     *
+     * @param throwable The cause of the exception
+     */
+    public InconsistentSpecializationException(Throwable throwable) {
+        super(throwable);
+    }
+
 
 }

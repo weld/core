@@ -29,14 +29,12 @@ import org.jboss.weld.environment.Container;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Jetty7Container extends AbstractJettyPre72Container
-{
-   public static Container INSTANCE = new Jetty7Container();
+public class Jetty7Container extends AbstractJettyPre72Container {
+    public static Container INSTANCE = new Jetty7Container();
 
-   private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
+    private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
 
-   protected String classToCheck()
-   {
-      return JETTY_REQUIRED_CLASS_NAME;
-   }
+    protected String classToCheck() {
+        return JETTY_REQUIRED_CLASS_NAME;
+    }
 }

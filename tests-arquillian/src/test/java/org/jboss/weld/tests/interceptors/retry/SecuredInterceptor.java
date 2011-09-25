@@ -24,16 +24,15 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Secured
-public class SecuredInterceptor
-{
+@Interceptor
+@Secured
+public class SecuredInterceptor {
 
-   static int invocationCount = 0;
+    static int invocationCount = 0;
 
-   @AroundInvoke
-   public Object doSecured(InvocationContext invocationContext) throws Exception
-   {
-      invocationCount++;
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object doSecured(InvocationContext invocationContext) throws Exception {
+        invocationCount++;
+        return invocationContext.proceed();
+    }
 }

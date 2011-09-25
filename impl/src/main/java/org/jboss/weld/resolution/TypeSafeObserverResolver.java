@@ -9,60 +9,52 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.resolution;
 
-import java.util.Set;
-
-import javax.enterprise.inject.spi.ObserverMethod;
-
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
+import javax.enterprise.inject.spi.ObserverMethod;
+import java.util.Set;
+
 /**
  * @author pmuir
- *
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>>
-{
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>> {
 
-   private final BeanManagerImpl manager;
+    private final BeanManagerImpl manager;
 
-   public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<ObserverMethod<?>> observers)
-   {
-      super(observers);
-      this.manager = manager;
-   }
+    public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<ObserverMethod<?>> observers) {
+        super(observers);
+        this.manager = manager;
+    }
 
-   @Override
-   protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer)
-   {
-      return Reflections.matches(observer.getObservedType(), resolvable.getTypes()) && Beans.containsAllQualifiers(observer.getObservedQualifiers(), resolvable.getQualifiers(), manager);
-   }
-   
-   /**
-    * @return the manager
-    */
-   public BeanManagerImpl getManager()
-   {
-      return manager;
-   }
+    @Override
+    protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer) {
+        return Reflections.matches(observer.getObservedType(), resolvable.getTypes()) && Beans.containsAllQualifiers(observer.getObservedQualifiers(), resolvable.getQualifiers(), manager);
+    }
 
-   @Override
-   protected Set<ObserverMethod<?>> filterResult(Set<ObserverMethod<?>> matched)
-   {
-      return matched;
-   }
+    /**
+     * @return the manager
+     */
+    public BeanManagerImpl getManager() {
+        return manager;
+    }
 
-   @Override
-   protected Set<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched)
-   {
-      return matched;
-   }
+    @Override
+    protected Set<ObserverMethod<?>> filterResult(Set<ObserverMethod<?>> matched) {
+        return matched;
+    }
+
+    @Override
+    protected Set<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched) {
+        return matched;
+    }
 
 }

@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.environment.se;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -30,147 +23,141 @@ import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+
 /**
  * <p>
  * The preferred method of booting Weld SE.
  * </p>
- * 
+ * <p/>
  * <p>
  * Typical usage of this API looks like this:
  * </p>
- * 
+ * <p/>
  * <pre>
  * WeldContainer weld = new Weld().initialize();
  * weld.instance().select(Foo.class).get();
  * weld.event().select(Bar.class).fire(new Bar());
  * weld.shutdown();
  * </pre>
- * 
+ *
  * @author Peter Royle
  * @author Pete Muir
  */
-public class Weld
-{
+public class Weld {
 
-   private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
+    private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
 
-   private ShutdownManager shutdownManager;
+    private ShutdownManager shutdownManager;
 
-   /**
-    * Boots Weld and creates and returns a WeldContainer instance, through which
-    * beans and events can be accessed.
-    *
-    * @return weld container
-    */
-   public WeldContainer initialize()
-   {
-      ResourceLoader resourceLoader = new WeldSEResourceLoader();
-      Bootstrap bootstrap;
-      try
-      {
-         bootstrap = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
-      }
-      catch (InstantiationException ex)
-      {
-         throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
-      }
-      catch (IllegalAccessException ex)
-      {
-         throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
-      }
+    /**
+     * Boots Weld and creates and returns a WeldContainer instance, through which
+     * beans and events can be accessed.
+     *
+     * @return weld container
+     */
+    public WeldContainer initialize() {
+        ResourceLoader resourceLoader = new WeldSEResourceLoader();
+        Bootstrap bootstrap;
+        try {
+            bootstrap = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
+        } catch (InstantiationException ex) {
+            throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
+        } catch (IllegalAccessException ex) {
+            throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
+        }
 
-      // check for beans.xml
-      if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null)
-         throw new IllegalStateException("Missing beans.xml file in META-INF!");
+        // check for beans.xml
+        if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null)
+            throw new IllegalStateException("Missing beans.xml file in META-INF!");
 
-      Deployment deployment = createDeployment(resourceLoader, bootstrap);
-      // Set up the container
-      bootstrap.startContainer(Environments.SE, deployment);
+        Deployment deployment = createDeployment(resourceLoader, bootstrap);
+        // Set up the container
+        bootstrap.startContainer(Environments.SE, deployment);
 
-      // Start the container
-      bootstrap.startInitialization();
-      bootstrap.deployBeans();
-      bootstrap.validateBeans();
-      bootstrap.endInitialization();
+        // Start the container
+        bootstrap.startInitialization();
+        bootstrap.deployBeans();
+        bootstrap.validateBeans();
+        bootstrap.endInitialization();
 
-      // Set up the ShutdownManager for later
-      this.shutdownManager = getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(ShutdownManager.class)), ShutdownManager.class);
-      this.shutdownManager.setBootstrap(bootstrap);
+        // Set up the ShutdownManager for later
+        this.shutdownManager = getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(ShutdownManager.class)), ShutdownManager.class);
+        this.shutdownManager.setBootstrap(bootstrap);
 
-      return getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class)), WeldContainer.class);
-   }
+        return getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class)), WeldContainer.class);
+    }
 
-   /**
-    * <p>
-    * Extensions to Weld SE can subclass and override this method to customise
-    * the deployment before weld boots up. For example, to add a custom
-    * ResourceLoader, you would subclass Weld like so:
-    * </p>
-    * 
-    * <pre>
-    * public class MyWeld extends Weld
-    * {
-    *    protected Deployment createDeployment()
-    *    {
-    *       Deployment deployment = super.createDeployment();
-    *       deployment.getServices().add(ResourceLoader.class, new MyResourceLoader());
-    *       return deployment;
-    *    }
-    * }
-    *</pre>
-    * 
-    * <p>
-    * This could then be used as normal:
-    * </p>
-    * 
-    * <pre>
-    * WeldContainer container = new MyWeld().initialize();
-    * </pre>
-    * 
-    */
-   protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap)
-   {
-      return new WeldSEUrlDeployment(resourceLoader, bootstrap);
-   }
+    /**
+     * <p>
+     * Extensions to Weld SE can subclass and override this method to customise
+     * the deployment before weld boots up. For example, to add a custom
+     * ResourceLoader, you would subclass Weld like so:
+     * </p>
+     * <p/>
+     * <pre>
+     * public class MyWeld extends Weld
+     * {
+     *    protected Deployment createDeployment()
+     *    {
+     *       Deployment deployment = super.createDeployment();
+     *       deployment.getServices().add(ResourceLoader.class, new MyResourceLoader());
+     *       return deployment;
+     *    }
+     * }
+     * </pre>
+     * <p/>
+     * <p>
+     * This could then be used as normal:
+     * </p>
+     * <p/>
+     * <pre>
+     * WeldContainer container = new MyWeld().initialize();
+     * </pre>
+     */
+    protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
+        return new WeldSEUrlDeployment(resourceLoader, bootstrap);
+    }
 
-   /**
-    * Utility method allowing managed instances of beans to provide entry points
-    * for non-managed beans (such as {@link WeldContainer}). Should only called
-    * once Weld has finished booting.
-    * 
-    * @param manager the BeanManager to use to access the managed instance
-    * @param type the type of the Bean
-    * @param bindings the bean's qualifiers
-    * @return a managed instance of the bean
-    * @throws IllegalArgumentException if the given type represents a type
-    *            variable
-    * @throws IllegalArgumentException if two instances of the same qualifier
-    *            type are given
-    * @throws IllegalArgumentException if an instance of an annotation that is
-    *            not a qualifier type is given
-    * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws
-    *            AmbiguousResolutionException if the ambiguous dependency
-    *            resolution rules fail
-    * @throws IllegalArgumentException if the given type is not a bean type of
-    *            the given bean
-    * 
-    */
-   protected <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings)
-   {
-      final Bean<?> bean = manager.resolve(manager.getBeans(type));
-      if (bean == null)
-      {
-         throw new UnsatisfiedResolutionException("Unable to resolve a bean for " + type + " with bindings " + Arrays.asList(bindings));
-      }
-      CreationalContext<?> cc = manager.createCreationalContext(bean);
-      return type.cast(manager.getReference(bean, type, cc));
-   }
+    /**
+     * Utility method allowing managed instances of beans to provide entry points
+     * for non-managed beans (such as {@link WeldContainer}). Should only called
+     * once Weld has finished booting.
+     *
+     * @param manager  the BeanManager to use to access the managed instance
+     * @param type     the type of the Bean
+     * @param bindings the bean's qualifiers
+     * @return a managed instance of the bean
+     * @throws IllegalArgumentException       if the given type represents a type
+     *                                        variable
+     * @throws IllegalArgumentException       if two instances of the same qualifier
+     *                                        type are given
+     * @throws IllegalArgumentException       if an instance of an annotation that is
+     *                                        not a qualifier type is given
+     * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws
+     *                                        AmbiguousResolutionException if the ambiguous dependency
+     *                                        resolution rules fail
+     * @throws IllegalArgumentException       if the given type is not a bean type of
+     *                                        the given bean
+     */
+    protected <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings) {
+        final Bean<?> bean = manager.resolve(manager.getBeans(type));
+        if (bean == null) {
+            throw new UnsatisfiedResolutionException("Unable to resolve a bean for " + type + " with bindings " + Arrays.asList(bindings));
+        }
+        CreationalContext<?> cc = manager.createCreationalContext(bean);
+        return type.cast(manager.getReference(bean, type, cc));
+    }
 
-   /**
-    * Shuts down Weld.
-    */
-   public void shutdown()
-   {
-      shutdownManager.shutdown();
-   }
+    /**
+     * Shuts down Weld.
+     */
+    public void shutdown() {
+        shutdownManager.shutdown();
+    }
 }

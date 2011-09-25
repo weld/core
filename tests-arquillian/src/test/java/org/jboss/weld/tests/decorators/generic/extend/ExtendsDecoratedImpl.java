@@ -20,10 +20,8 @@ package org.jboss.weld.tests.decorators.generic.extend;
 /**
  * @author Marius Bogoevici
  */
-public class ExtendsDecoratedImpl implements ExtendsDecorated
-{
-   public String decoratedEcho(String parameter)
-   {
-      return parameter;
-   }
+public class ExtendsDecoratedImpl implements ExtendsDecorated {
+    public String decoratedEcho(String parameter) {
+        return parameter;
+    }
 }

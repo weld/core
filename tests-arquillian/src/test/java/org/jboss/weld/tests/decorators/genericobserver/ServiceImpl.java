@@ -24,12 +24,10 @@ import javax.enterprise.event.Observes;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class ServiceImpl implements Service<Dog> 
-{
-	public static int invocationCount = 0;
+public class ServiceImpl implements Service<Dog> {
+    public static int invocationCount = 0;
 
-	public void on(@Observes Dog dog) 
-	{
-		invocationCount++;
-	}
+    public void on(@Observes Dog dog) {
+        invocationCount++;
+    }
 }

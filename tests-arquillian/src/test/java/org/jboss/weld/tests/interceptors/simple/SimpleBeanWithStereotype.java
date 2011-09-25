@@ -23,23 +23,20 @@ import javax.annotation.PostConstruct;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @SimpleInterceptorStereotype
-public class SimpleBeanWithStereotype
-{
+public class SimpleBeanWithStereotype {
 
-   public static boolean businessMethodInvoked = false;
+    public static boolean businessMethodInvoked = false;
 
-   public static boolean postConstructCalled = false;
+    public static boolean postConstructCalled = false;
 
-   public String doSomething()
-   {
-      businessMethodInvoked = true;
-      return "Hello!";
-   }
+    public String doSomething() {
+        businessMethodInvoked = true;
+        return "Hello!";
+    }
 
-   @PostConstruct
-   public void doPostConstruct()
-   {
-      postConstructCalled = true;
-   }
+    @PostConstruct
+    public void doPostConstruct() {
+        postConstructCalled = true;
+    }
 
 }

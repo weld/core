@@ -16,54 +16,50 @@
  */
 package org.jboss.weld.tests.unit.bootstrap;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
-public class InjectionServicesTest
-{
-   
-   @Test
-   public void testInjectionOfTarget()
-   {
-      TestContainer container = new TestContainer(Foo.class, Bar.class);
-      CheckableInjectionServices ijs = new CheckableInjectionServices();
-      for (BeanDeploymentArchive bda : container.getDeployment().getBeanDeploymentArchives())
-      {
-         bda.getServices().add(InjectionServices.class, ijs);
-      }
-      container.startContainer();
-      container.ensureRequestActive();
-      
-      BeanManager manager = getBeanManager(container);
-      
-      Bean<? extends Object> bean = manager.resolve(manager.getBeans(Foo.class));
-      ijs.reset();
-      Foo foo = (Foo) manager.getReference(bean, Foo.class, manager.createCreationalContext(bean));
-      
-      Assert.assertTrue(ijs.isBefore());
-      Assert.assertTrue(ijs.isAfter());
-      Assert.assertTrue(ijs.isInjectedAfter());
-      Assert.assertTrue(ijs.isInjectionTargetCorrect());
-      
-      Assert.assertNotNull(foo.getBar());
-      Assert.assertEquals("hi!", foo.getMessage());
-      
-      
-      container.stopContainer();
-   }
-   
-   /**
-    * Get the bean manager, assuming a flat deployment structure
-    */
-   public static BeanManager getBeanManager(TestContainer container)
-   {
-      return container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
-   }
-   
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
+public class InjectionServicesTest {
+
+    @Test
+    public void testInjectionOfTarget() {
+        TestContainer container = new TestContainer(Foo.class, Bar.class);
+        CheckableInjectionServices ijs = new CheckableInjectionServices();
+        for (BeanDeploymentArchive bda : container.getDeployment().getBeanDeploymentArchives()) {
+            bda.getServices().add(InjectionServices.class, ijs);
+        }
+        container.startContainer();
+        container.ensureRequestActive();
+
+        BeanManager manager = getBeanManager(container);
+
+        Bean<? extends Object> bean = manager.resolve(manager.getBeans(Foo.class));
+        ijs.reset();
+        Foo foo = (Foo) manager.getReference(bean, Foo.class, manager.createCreationalContext(bean));
+
+        Assert.assertTrue(ijs.isBefore());
+        Assert.assertTrue(ijs.isAfter());
+        Assert.assertTrue(ijs.isInjectedAfter());
+        Assert.assertTrue(ijs.isInjectionTargetCorrect());
+
+        Assert.assertNotNull(foo.getBar());
+        Assert.assertEquals("hi!", foo.getMessage());
+
+
+        container.stopContainer();
+    }
+
+    /**
+     * Get the bean manager, assuming a flat deployment structure
+     */
+    public static BeanManager getBeanManager(TestContainer container) {
+        return container.getBeanManager(container.getDeployment().getBeanDeploymentArchives().iterator().next());
+    }
+
 }

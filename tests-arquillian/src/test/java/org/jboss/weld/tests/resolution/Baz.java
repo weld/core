@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.resolution;
 
-public class Baz
-{
+public class Baz {
 
 }

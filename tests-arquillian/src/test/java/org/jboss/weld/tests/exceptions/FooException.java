@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.exceptions;
 
-public class FooException extends Exception
-{
-   
+public class FooException extends Exception {
+
 }

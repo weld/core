@@ -20,7 +20,6 @@ package org.jboss.weld.tests.decorators.generic;
 /**
  * @author Marius Bogoevici
  */
-public interface NotDecorated<T>
-{
-   T notDecoratedEcho(T parameter);
+public interface NotDecorated<T> {
+    T notDecoratedEcho(T parameter);
 }

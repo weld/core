@@ -13,33 +13,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
 
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import java.lang.reflect.Constructor;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-class MockAnnotatedConstructor<X> extends MockAnnotatedCallable<X> implements AnnotatedConstructor<X>
-{
-   MockAnnotatedConstructor(AnnotatedConstructor<X> delegate)
-   {
-      super(delegate);
-   }
+class MockAnnotatedConstructor<X> extends MockAnnotatedCallable<X> implements AnnotatedConstructor<X> {
+    MockAnnotatedConstructor(AnnotatedConstructor<X> delegate) {
+        super(delegate);
+    }
 
-   @Override
-   AnnotatedConstructor<X> getDelegate()
-   {
-      return (AnnotatedConstructor<X>)super.getDelegate();
-   }
+    @Override
+    AnnotatedConstructor<X> getDelegate() {
+        return (AnnotatedConstructor<X>) super.getDelegate();
+    }
 
-   public Constructor<X> getJavaMember()
-   {
-      return getDelegate().getJavaMember();
-   }
+    public Constructor<X> getJavaMember() {
+        return getDelegate().getJavaMember();
+    }
 }

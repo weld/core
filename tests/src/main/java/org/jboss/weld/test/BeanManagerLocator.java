@@ -16,43 +16,34 @@
  */
 package org.jboss.weld.test;
 
-import java.util.Map.Entry;
-
-import javax.naming.InitialContext;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class BeanManagerLocator
-{
+import javax.naming.InitialContext;
+import java.util.Map.Entry;
 
-   public static BeanManagerLocator INSTANCE = new BeanManagerLocator();
+public class BeanManagerLocator {
 
-   private BeanManagerLocator()
-   {
-      // TODO Auto-generated constructor stub
-   }
+    public static BeanManagerLocator INSTANCE = new BeanManagerLocator();
 
-   public BeanManagerImpl locate()
-   {
-      try
-      {
-         return (BeanManagerImpl) new InitialContext().lookup("java:comp/BeanManager");
-      }
-      catch (Exception e)
-      {
-         // Try the next method
-      }
-      // Locate via the BDA id "test"
-      for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet())
-      {
-         if (entry.getKey().getId().equals("test"))
-         {
-            return entry.getValue();
-         }
-      }
-      throw new IllegalStateException();
-   }
+    private BeanManagerLocator() {
+        // TODO Auto-generated constructor stub
+    }
+
+    public BeanManagerImpl locate() {
+        try {
+            return (BeanManagerImpl) new InitialContext().lookup("java:comp/BeanManager");
+        } catch (Exception e) {
+            // Try the next method
+        }
+        // Locate via the BDA id "test"
+        for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet()) {
+            if (entry.getKey().getId().equals("test")) {
+                return entry.getValue();
+            }
+        }
+        throw new IllegalStateException();
+    }
 
 }

@@ -20,8 +20,8 @@ import java.math.BigDecimal;
 
 public class Account2 implements Account {
 
-   public String withdraw(BigDecimal amount) {
-      return "Account2 withdraw";
-   }
-   
+    public String withdraw(BigDecimal amount) {
+        return "Account2 withdraw";
+    }
+
 }

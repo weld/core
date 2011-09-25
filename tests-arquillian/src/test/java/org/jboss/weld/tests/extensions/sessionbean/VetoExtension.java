@@ -28,11 +28,10 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 /**
  * @author Stuart Douglas
  */
-public class VetoExtension implements Extension
-{
+public class VetoExtension implements Extension {
 
-   public void vetoBus(final @Observes ProcessAnnotatedType<BusBean> event) {
-      event.veto();
-   }
+    public void vetoBus(final @Observes ProcessAnnotatedType<BusBean> event) {
+        event.veto();
+    }
 
 }

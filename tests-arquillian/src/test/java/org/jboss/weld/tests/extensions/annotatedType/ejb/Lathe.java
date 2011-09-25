@@ -19,10 +19,8 @@ package org.jboss.weld.tests.extensions.annotatedType.ejb;
 import javax.ejb.Stateless;
 
 @Stateless
-public class Lathe implements LatheLocal
-{
-   public Shaft doWork()
-   {
-      return new Shaft();
-   }
+public class Lathe implements LatheLocal {
+    public Shaft doWork() {
+        return new Shaft();
+    }
 }

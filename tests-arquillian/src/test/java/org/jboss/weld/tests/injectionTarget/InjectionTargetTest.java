@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.injectionTarget;
 
-import static org.junit.Assert.fail;
-
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,32 +26,30 @@ import org.jboss.weld.test.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-public class InjectionTargetTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(InjectionTargetTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+import javax.enterprise.inject.spi.BeanManager;
 
-   /*
+import static org.junit.Assert.fail;
+
+@RunWith(Arquillian.class)
+public class InjectionTargetTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(InjectionTargetTest.class.getPackage())
+                .addClass(Utils.class);
+    }
+
+    /*
     * description = "WELD-763"
     */
-   @Test
-   public void testCreateInjectionTargetOfInterface(BeanManager beanManager)
-   {
-      try
-      {
-         beanManager.createInjectionTarget(beanManager.createAnnotatedType(Foo.class));
-      }
-      catch (DefinitionException e)
-      {
-         return;
-      }
-      fail();
-   }
+    @Test
+    public void testCreateInjectionTargetOfInterface(BeanManager beanManager) {
+        try {
+            beanManager.createInjectionTarget(beanManager.createAnnotatedType(Foo.class));
+        } catch (DefinitionException e) {
+            return;
+        }
+        fail();
+    }
 
 }

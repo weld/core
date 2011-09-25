@@ -16,7 +16,6 @@
  */
 package com.acme;
 
-public class RoadRunner
-{
-   
+public class RoadRunner {
+
 }

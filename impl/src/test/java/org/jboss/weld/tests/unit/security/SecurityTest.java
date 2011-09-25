@@ -16,30 +16,27 @@
  */
 package org.jboss.weld.tests.unit.security;
 
-import java.lang.reflect.Field;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
+
 /**
  * @author pmuir
- *
  */
-public class SecurityTest
-{
-   
-   @SuppressWarnings("unused")
-   private String foo;
-   
-   @Test
-   public void testSetAccessibleDoesNotPropagate() throws Exception
-   {
-      Field field = SecurityTest.class.getDeclaredField("foo");
-      Assert.assertFalse(field.isAccessible());
-      field.setAccessible(true);
-      Assert.assertTrue(field.isAccessible());
-      Assert.assertFalse(SecurityTest.class.getDeclaredField("foo").isAccessible());
-      Assert.assertFalse(SecurityTest.class.getDeclaredField("foo") == SecurityTest.class.getDeclaredField("foo"));
-   }
+public class SecurityTest {
+
+    @SuppressWarnings("unused")
+    private String foo;
+
+    @Test
+    public void testSetAccessibleDoesNotPropagate() throws Exception {
+        Field field = SecurityTest.class.getDeclaredField("foo");
+        Assert.assertFalse(field.isAccessible());
+        field.setAccessible(true);
+        Assert.assertTrue(field.isAccessible());
+        Assert.assertFalse(SecurityTest.class.getDeclaredField("foo").isAccessible());
+        Assert.assertFalse(SecurityTest.class.getDeclaredField("foo") == SecurityTest.class.getDeclaredField("foo"));
+    }
 
 }

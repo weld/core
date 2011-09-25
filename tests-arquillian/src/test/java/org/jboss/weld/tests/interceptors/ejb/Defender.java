@@ -17,19 +17,18 @@
 
 package org.jboss.weld.tests.interceptors.ejb;
 
-import javax.interceptor.Interceptor;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Pass @Interceptor
-public class Defender
-{
-   @AroundInvoke
-   public Object defend(InvocationContext context) throws Exception
-   {
-      return context.proceed();
-   }
+@Pass
+@Interceptor
+public class Defender {
+    @AroundInvoke
+    public Object defend(InvocationContext context) throws Exception {
+        return context.proceed();
+    }
 }

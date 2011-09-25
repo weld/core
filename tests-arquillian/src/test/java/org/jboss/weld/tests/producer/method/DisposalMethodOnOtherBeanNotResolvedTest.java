@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,32 +27,33 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class DisposalMethodOnOtherBeanNotResolvedTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(DisposalMethodOnOtherBeanNotResolvedTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class DisposalMethodOnOtherBeanNotResolvedTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(DisposalMethodOnOtherBeanNotResolvedTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void test()
-   {
-      FooDisposer.reset();
-      FooProducer.reset();
-      Bean<Foo> bean = Utils.getBean(beanManager, Foo.class);
-      CreationalContext<Foo> ctx = beanManager.createCreationalContext(bean);
-      Foo instance = bean.create(ctx);
-      Assert.assertEquals("foo!", instance.getBlah());
-      bean.destroy(instance, ctx);
-      Assert.assertFalse(FooDisposer.isDisposed());
-      Assert.assertTrue(FooProducer.isDisposed());
-   }
+    @Test
+    public void test() {
+        FooDisposer.reset();
+        FooProducer.reset();
+        Bean<Foo> bean = Utils.getBean(beanManager, Foo.class);
+        CreationalContext<Foo> ctx = beanManager.createCreationalContext(bean);
+        Foo instance = bean.create(ctx);
+        Assert.assertEquals("foo!", instance.getBlah());
+        bean.destroy(instance, ctx);
+        Assert.assertFalse(FooDisposer.isDisposed());
+        Assert.assertTrue(FooProducer.isDisposed());
+    }
 
 }

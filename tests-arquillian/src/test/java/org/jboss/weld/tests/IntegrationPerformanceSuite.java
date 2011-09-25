@@ -31,10 +31,9 @@ import org.junit.runners.Suite.SuiteClasses;
  * @version $Revision: $
  */
 @RunWith(Categories.class)
-@IncludeCategory({Integration.class, Performance.class}) 
+@IncludeCategory({Integration.class, Performance.class})
 @ExcludeCategory(Broken.class)
 @SuiteClasses(AllTests.class)
-public class IntegrationPerformanceSuite
-{
-   
+public class IntegrationPerformanceSuite {
+
 }

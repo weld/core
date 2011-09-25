@@ -21,21 +21,19 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-public class Baz
-{
+public class Baz {
 
-   @Produces
-   @FooDB
-   @PersistenceContext
-   private EntityManager db;
+    @Produces
+    @FooDB
+    @PersistenceContext
+    private EntityManager db;
 
-   @Inject
-   @FooDB
-   private EntityManager fooDb;
+    @Inject
+    @FooDB
+    private EntityManager fooDb;
 
-   public EntityManager getFooDb()
-   {
-      return fooDb;
-   }
+    public EntityManager getFooDb() {
+        return fooDb;
+    }
 
 }

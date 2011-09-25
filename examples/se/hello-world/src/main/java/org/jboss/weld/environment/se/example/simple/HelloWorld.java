@@ -16,39 +16,36 @@
  */
 package org.jboss.weld.environment.se.example.simple;
 
+import org.jboss.weld.environment.se.events.ContainerInitialized;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import org.jboss.weld.environment.se.events.ContainerInitialized;
 import javax.inject.Inject;
 
 /**
  * @author Peter Royle
  */
 @ApplicationScoped
-public class HelloWorld
-{
+public class HelloWorld {
 
     @Inject
     CommandLineArgsValidator argsValidator;
 
-    public HelloWorld()
-    {
+    public HelloWorld() {
     }
 
     /**
      * Prints a hello message using the first name.
+     *
      * @param firstName The first name.
      */
-    public void printHello( @Observes ContainerInitialized init )
-    {
-        if (!argsValidator.hasErrors())
-        {
-            System.out.println( "Hello " + argsValidator.getValidParameters().get( 0 ) );
-        } else
-        {
-           for (String error : argsValidator.getErrors()) {
-              System.out.println( error );
-           }
+    public void printHello(@Observes ContainerInitialized init) {
+        if (!argsValidator.hasErrors()) {
+            System.out.println("Hello " + argsValidator.getValidParameters().get(0));
+        } else {
+            for (String error : argsValidator.getErrors()) {
+                System.out.println(error);
+            }
         }
     }
 

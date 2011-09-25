@@ -29,21 +29,18 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EnterpriseBeanLifecycleTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(EnterpriseBeanLifecycleTest.class.getPackage());
-   }
+public class EnterpriseBeanLifecycleTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EnterpriseBeanLifecycleTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description="WELD-290"
     */
-   @Test
-   public void testSLSBInjectedIntoPassivatingManagedBean(SimpleBean bean)
-   {
-      Assert.assertEquals("This is my message from my stateless bean", bean.getMessage());
-   }
+    @Test
+    public void testSLSBInjectedIntoPassivatingManagedBean(SimpleBean bean) {
+        Assert.assertEquals("This is my message from my stateless bean", bean.getMessage());
+    }
 }

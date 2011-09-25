@@ -21,16 +21,13 @@ import javax.inject.Inject;
 
 
 @RequestScoped
-public class Foo
-{
+public class Foo {
 
-   @Inject
-   public Foo(Bar bar)
-   {
-   }
+    @Inject
+    public Foo(Bar bar) {
+    }
 
-   public String ping()
-   {
-      return "ping";
-   }
+    public String ping() {
+        return "ping";
+    }
 }

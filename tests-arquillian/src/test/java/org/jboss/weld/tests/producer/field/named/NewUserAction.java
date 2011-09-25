@@ -22,15 +22,13 @@ import javax.inject.Named;
 
 @RequestScoped
 @Named
-public class NewUserAction
-{
+public class NewUserAction {
 
-   @Produces
-   @Named("newUser")
-   private User newUser = new User();
+    @Produces
+    @Named("newUser")
+    private User newUser = new User();
 
-   public void persist()
-   {
-      System.out.println("new user's name: " + newUser.getName());
-   }
+    public void persist() {
+        System.out.println("new user's name: " + newUser.getName());
+    }
 }

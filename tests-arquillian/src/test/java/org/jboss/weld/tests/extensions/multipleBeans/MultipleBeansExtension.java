@@ -16,8 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
@@ -28,76 +27,65 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-
-import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Extension that registers addition types via the SPI
- * 
+ *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
- * 
  */
-public class MultipleBeansExtension implements Extension
-{
+public class MultipleBeansExtension implements Extension {
 
-   private boolean addedBlogFormatterSeen = false;
-   
-   public void addNewAnnotatedTypes(@Observes BeforeBeanDiscovery event) throws SecurityException, NoSuchFieldException, NoSuchMethodException
-   {
-      TestAnnotatedTypeBuilder<BlogFormatter> formatter = new TestAnnotatedTypeBuilder<BlogFormatter>(BlogFormatter.class);
-      Field content = BlogFormatter.class.getField("content");
-      formatter.addToField(content, new InjectLiteral());
-      formatter.addToField(content, new AuthorLiteral("Bob"));
-      Method format = BlogFormatter.class.getMethod("format");
-      formatter.addToMethod(format, new ProducesLiteral());
-      formatter.addToMethod(format, new FormattedBlogLiteral("Bob"));
-      event.addAnnotatedType(formatter.create());
+    private boolean addedBlogFormatterSeen = false;
 
-      TestAnnotatedTypeBuilder<BlogConsumer> consumer = new TestAnnotatedTypeBuilder<BlogConsumer>(BlogConsumer.class);
-      consumer.addToClass(new ConsumerLiteral("Bob"));
-      content = BlogConsumer.class.getField("blogContent");
-      consumer.addToField(content, new InjectLiteral());
-      consumer.addToField(content, new FormattedBlogLiteral("Bob"));
-      event.addAnnotatedType(consumer.create());
+    public void addNewAnnotatedTypes(@Observes BeforeBeanDiscovery event) throws SecurityException, NoSuchFieldException, NoSuchMethodException {
+        TestAnnotatedTypeBuilder<BlogFormatter> formatter = new TestAnnotatedTypeBuilder<BlogFormatter>(BlogFormatter.class);
+        Field content = BlogFormatter.class.getField("content");
+        formatter.addToField(content, new InjectLiteral());
+        formatter.addToField(content, new AuthorLiteral("Bob"));
+        Method format = BlogFormatter.class.getMethod("format");
+        formatter.addToMethod(format, new ProducesLiteral());
+        formatter.addToMethod(format, new FormattedBlogLiteral("Bob"));
+        event.addAnnotatedType(formatter.create());
 
-      // two beans that are exactly the same
-      // this is not very useful, however should still work
-      TestAnnotatedTypeBuilder<UselessBean> uselessBuilder = new TestAnnotatedTypeBuilder<UselessBean>(UselessBean.class);
-      event.addAnnotatedType(uselessBuilder.create());
+        TestAnnotatedTypeBuilder<BlogConsumer> consumer = new TestAnnotatedTypeBuilder<BlogConsumer>(BlogConsumer.class);
+        consumer.addToClass(new ConsumerLiteral("Bob"));
+        content = BlogConsumer.class.getField("blogContent");
+        consumer.addToField(content, new InjectLiteral());
+        consumer.addToField(content, new FormattedBlogLiteral("Bob"));
+        event.addAnnotatedType(consumer.create());
 
-   }
-   
-   public void observeProcessBlogFormatter(@Observes ProcessAnnotatedType<BlogFormatter> event)
-   {
-      AnnotatedType<BlogFormatter> type = event.getAnnotatedType();
-      for(AnnotatedField<? super BlogFormatter> f : type.getFields())
-      {
-         if(f.getJavaMember().getName().equals("content"))
-         {
-            if(f.isAnnotationPresent(Author.class))
-            {
-               if(f.getAnnotation(Author.class).name().equals("Bob"))
-               {
-                  addedBlogFormatterSeen = true;
-               }
+        // two beans that are exactly the same
+        // this is not very useful, however should still work
+        TestAnnotatedTypeBuilder<UselessBean> uselessBuilder = new TestAnnotatedTypeBuilder<UselessBean>(UselessBean.class);
+        event.addAnnotatedType(uselessBuilder.create());
+
+    }
+
+    public void observeProcessBlogFormatter(@Observes ProcessAnnotatedType<BlogFormatter> event) {
+        AnnotatedType<BlogFormatter> type = event.getAnnotatedType();
+        for (AnnotatedField<? super BlogFormatter> f : type.getFields()) {
+            if (f.getJavaMember().getName().equals("content")) {
+                if (f.isAnnotationPresent(Author.class)) {
+                    if (f.getAnnotation(Author.class).name().equals("Bob")) {
+                        addedBlogFormatterSeen = true;
+                    }
+                }
             }
-         }
-      }
-   }
-   
+        }
+    }
 
-   public boolean isAddedBlogFormatterSeen()
-   {
-      return addedBlogFormatterSeen;
-   }
 
-   private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject
-   {
+    public boolean isAddedBlogFormatterSeen() {
+        return addedBlogFormatterSeen;
+    }
 
-   }
+    private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject {
 
-   private static class ProducesLiteral extends AnnotationLiteral<Produces> implements Produces
-   {
+    }
 
-   }
+    private static class ProducesLiteral extends AnnotationLiteral<Produces> implements Produces {
+
+    }
 }

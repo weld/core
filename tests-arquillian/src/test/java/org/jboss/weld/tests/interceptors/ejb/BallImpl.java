@@ -24,22 +24,19 @@ import javax.ejb.Timer;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-@Stateless  @TimeBound
-public class BallImpl implements Ball
-{
-   @Shot
-   public void shoot()
-   {
-   }
+@Stateless
+@TimeBound
+public class BallImpl implements Ball {
+    @Shot
+    public void shoot() {
+    }
 
-   @Pass
-   public void pass()
-   {
-   }
+    @Pass
+    public void pass() {
+    }
 
-   @Timeout
-   public void finishGame(Timer timer)
-   {
+    @Timeout
+    public void finishGame(Timer timer) {
 
-   }
+    }
 }

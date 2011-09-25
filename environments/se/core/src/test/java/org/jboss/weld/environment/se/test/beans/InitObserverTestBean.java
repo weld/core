@@ -16,43 +16,40 @@
  */
 package org.jboss.weld.environment.se.test.beans;
 
+import org.jboss.weld.environment.se.events.ContainerInitialized;
+
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.weld.environment.se.events.ContainerInitialized;
-
 /**
  * Tests the observing of both built-in and application-specific events.
- * 
+ *
  * @author Peter Royle
  */
-public class InitObserverTestBean
-{
+public class InitObserverTestBean {
 
-   private static boolean initObserved = false;
+    private static boolean initObserved = false;
 
-   @Inject MainTestBean bean;
+    @Inject
+    MainTestBean bean;
 
-   public InitObserverTestBean()
-   {
-   }
+    public InitObserverTestBean() {
+    }
 
-   public void observeInitEvent(@Observes ContainerInitialized event) {
-       initObserved = true;
-       assert this.bean != null;
-   }
-   
-   public static void reset()
-   {
-      initObserved = false;
-   }
+    public void observeInitEvent(@Observes ContainerInitialized event) {
+        initObserved = true;
+        assert this.bean != null;
+    }
 
-   /**
-    * @return
-    */
-   public static boolean isInitObserved()
-   {
-      return initObserved;
-   }
+    public static void reset() {
+        initObserved = false;
+    }
+
+    /**
+     * @return
+     */
+    public static boolean isInitObserved() {
+        return initObserved;
+    }
 
 }

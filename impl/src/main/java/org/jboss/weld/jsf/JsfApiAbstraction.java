@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -23,40 +23,35 @@ import org.jboss.weld.util.ApiAbstraction;
 /**
  * Utility class for JSF related components, concepts etc. It can also
  * report on the compatibility of the current JSF implementation being used.
- * 
+ *
  * @author Pete Muir
  * @author Dan Allen
  */
-public class JsfApiAbstraction extends ApiAbstraction implements Service
-{
-   
-   // JSF FacesContext
-   public final Class<?> FACES_CONTEXT;
-   
-   public final Class<?> BEHAVIOR_CLASS;
-   
-   public final double MINIMUM_API_VERSION;
-   
-   public JsfApiAbstraction(ResourceLoader resourceLoader)
-   {
-      super(resourceLoader);
-      this.FACES_CONTEXT = classForName("javax.faces.context.FacesContext");
-      this.BEHAVIOR_CLASS = classForName("javax.faces.component.behavior.Behavior");
-      if (this.BEHAVIOR_CLASS.getName().equals("javax.faces.component.behavior.Behavior"))
-      {
-         MINIMUM_API_VERSION = 2.0;
-      }
-      else
-      {
-         MINIMUM_API_VERSION = 1.2;
-      }
-   }
-   
-   public boolean isApiVersionCompatibleWith(double version)
-   {
-      return MINIMUM_API_VERSION >= version;
-   }
-   
-   public void cleanup() {}
+public class JsfApiAbstraction extends ApiAbstraction implements Service {
+
+    // JSF FacesContext
+    public final Class<?> FACES_CONTEXT;
+
+    public final Class<?> BEHAVIOR_CLASS;
+
+    public final double MINIMUM_API_VERSION;
+
+    public JsfApiAbstraction(ResourceLoader resourceLoader) {
+        super(resourceLoader);
+        this.FACES_CONTEXT = classForName("javax.faces.context.FacesContext");
+        this.BEHAVIOR_CLASS = classForName("javax.faces.component.behavior.Behavior");
+        if (this.BEHAVIOR_CLASS.getName().equals("javax.faces.component.behavior.Behavior")) {
+            MINIMUM_API_VERSION = 2.0;
+        } else {
+            MINIMUM_API_VERSION = 1.2;
+        }
+    }
+
+    public boolean isApiVersionCompatibleWith(double version) {
+        return MINIMUM_API_VERSION >= version;
+    }
+
+    public void cleanup() {
+    }
 
 }

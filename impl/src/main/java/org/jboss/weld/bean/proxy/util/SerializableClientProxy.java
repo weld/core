@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -30,31 +30,28 @@ import java.io.Serializable;
  * deserialized. Only client proxies really need this extra step for
  * serialization and deserialization since the other proxy classes are generated
  * during bean archive deployment.
- * 
+ *
  * @author David Allen
  */
-public class SerializableClientProxy implements Serializable
-{
+public class SerializableClientProxy implements Serializable {
 
-   private static final long serialVersionUID = -46820068707447753L;
+    private static final long serialVersionUID = -46820068707447753L;
 
-   private final String beanId;
+    private final String beanId;
 
-   public SerializableClientProxy(final String beanId)
-   {
-      this.beanId = beanId;
-   }
+    public SerializableClientProxy(final String beanId) {
+        this.beanId = beanId;
+    }
 
-   /**
-    * Always returns the original proxy object that was serialized.
-    *
-    * @return the proxy object
-    * @throws java.io.ObjectStreamException
-    */
-   Object readResolve() throws ObjectStreamException
-   {
-      Bean<?> bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object> getContextual(beanId);
-      return  Container.instance().deploymentManager().getClientProxyProvider().getClientProxy(bean);
-   }
+    /**
+     * Always returns the original proxy object that was serialized.
+     *
+     * @return the proxy object
+     * @throws java.io.ObjectStreamException
+     */
+    Object readResolve() throws ObjectStreamException {
+        Bean<?> bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+        return Container.instance().deploymentManager().getClientProxyProvider().getClientProxy(bean);
+    }
 
 }

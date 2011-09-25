@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package org.jboss.weld.tests.extensions;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -22,25 +23,21 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 
 
-public class SimpleExtension implements Extension
-{
+public class SimpleExtension implements Extension {
 
-   private static boolean observedBeforeBeanDiscovery;
-   
-   public void observe(@Observes BeforeBeanDiscovery event)
-   {
-      observedBeforeBeanDiscovery = true;
-   }
-   
-   public static boolean isObservedBeforeBeanDiscovery()
-   {
-      return observedBeforeBeanDiscovery;
-   }
-   
-   public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, BeanManager beanManager)
-   {
-      assert beanManager != null;
-      assert beanManager.getELResolver() != null;
-   }
+    private static boolean observedBeforeBeanDiscovery;
+
+    public void observe(@Observes BeforeBeanDiscovery event) {
+        observedBeforeBeanDiscovery = true;
+    }
+
+    public static boolean isObservedBeforeBeanDiscovery() {
+        return observedBeforeBeanDiscovery;
+    }
+
+    public void observeBeforeShutdown(@Observes BeforeShutdown beforeShutdown, BeanManager beanManager) {
+        assert beanManager != null;
+        assert beanManager.getELResolver() != null;
+    }
 
 }

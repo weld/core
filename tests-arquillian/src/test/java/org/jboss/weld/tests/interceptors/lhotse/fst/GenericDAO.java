@@ -28,38 +28,31 @@ import javax.enterprise.context.ApplicationScoped;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @ApplicationScoped
-public abstract class GenericDAO<T extends Entity> implements DAO<T>
-{
-   public abstract Class<T> entityClass();
+public abstract class GenericDAO<T extends Entity> implements DAO<T> {
+    public abstract Class<T> entityClass();
 
-   @Tx
-   public boolean save(T t)
-   {
-      System.out.println("t = " + t);
-      return true;
-   }
+    @Tx
+    public boolean save(T t) {
+        System.out.println("t = " + t);
+        return true;
+    }
 
-   @Tx(1)
-   public T find(Long id)
-   {
-      return find(entityClass(), id);
-   }
+    @Tx(1)
+    public T find(Long id) {
+        return find(entityClass(), id);
+    }
 
-   @Tx(1)
-   public <U> U find(Class<U> clazz, Long id)
-   {
-      if (clazz == null)
-         throw new IllegalArgumentException("Null clazz");
-      if (id == null)
-         throw new IllegalArgumentException("Null id");
+    @Tx(1)
+    public <U> U find(Class<U> clazz, Long id) {
+        if (clazz == null)
+            throw new IllegalArgumentException("Null clazz");
+        if (id == null)
+            throw new IllegalArgumentException("Null id");
 
-      try
-      {
-         return clazz.newInstance();
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+        try {
+            return clazz.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

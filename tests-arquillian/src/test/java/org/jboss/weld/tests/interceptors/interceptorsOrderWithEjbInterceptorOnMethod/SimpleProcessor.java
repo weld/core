@@ -23,24 +23,24 @@ import javax.interceptor.Interceptors;
 /**
  * @author Marius Bogoevici
  */
-@Stateless @Counted @Interceptors(EjbInterceptor.class)
-public class SimpleProcessor implements Processor
-{
+@Stateless
+@Counted
+@Interceptors(EjbInterceptor.class)
+public class SimpleProcessor implements Processor {
 
-   static  int count;
+    static int count;
 
-   @Secured @Interceptors(EjbInterceptor2.class)
-   public int add(int x, int y)
-   {
-      count = Counter.next();
-      return x + y;
-   }
+    @Secured
+    @Interceptors(EjbInterceptor2.class)
+    public int add(int x, int y) {
+        count = Counter.next();
+        return x + y;
+    }
 
-   @Secured
-   public int substract(int x, int y)
-   {
-      count = Counter.next();
-      return x - y;
-   }
+    @Secured
+    public int substract(int x, int y) {
+        count = Counter.next();
+        return x - y;
+    }
 
 }

@@ -9,60 +9,51 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedParameter;
+public abstract class ForwardingWeldConstructor<T> extends ForwardingWeldMember<T, T, Constructor<T>> implements WeldConstructor<T> {
 
-public abstract class ForwardingWeldConstructor<T> extends ForwardingWeldMember<T, T, Constructor<T>> implements WeldConstructor<T>
-{
+    @Override
+    protected abstract WeldConstructor<T> delegate();
 
-   @Override
-   protected abstract WeldConstructor<T> delegate();
+    public List<WeldParameter<?, T>> getWeldParameters(Class<? extends Annotation> annotationType) {
+        return delegate().getWeldParameters(annotationType);
+    }
 
-   public List<WeldParameter<?, T>> getWeldParameters(Class<? extends Annotation> annotationType)
-   {
-      return delegate().getWeldParameters(annotationType);
-   }
+    @Override
+    public WeldClass<T> getDeclaringType() {
+        return delegate().getDeclaringType();
+    }
 
-   @Override
-   public WeldClass<T> getDeclaringType()
-   {
-      return delegate().getDeclaringType();
-   }
+    public List<? extends WeldParameter<?, T>> getWeldParameters() {
+        return delegate().getWeldParameters();
+    }
 
-   public List<? extends WeldParameter<?, T>> getWeldParameters()
-   {
-      return delegate().getWeldParameters();
-   }
+    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        return delegate().newInstance(parameters);
+    }
 
-   public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException
-   {
-      return delegate().newInstance(parameters);
-   }
-   
-   public ConstructorSignature getSignature()
-   {
-      return delegate().getSignature();
-   }
-   
-   public List<AnnotatedParameter<T>> getParameters()
-   {
-      return delegate().getParameters();
-   }
-   
-   public Constructor<T> getJavaMember()
-   {
-      return delegate().getJavaMember();
-   }
-   
+    public ConstructorSignature getSignature() {
+        return delegate().getSignature();
+    }
+
+    public List<AnnotatedParameter<T>> getParameters() {
+        return delegate().getParameters();
+    }
+
+    public Constructor<T> getJavaMember() {
+        return delegate().getJavaMember();
+    }
+
 }

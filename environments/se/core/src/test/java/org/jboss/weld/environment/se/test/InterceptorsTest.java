@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 package org.jboss.weld.environment.se.test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
@@ -27,41 +24,41 @@ import org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor;
 import org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
- * 
  * @author Peter Royle
  */
-public class InterceptorsTest
-{
+public class InterceptorsTest {
 
-   /**
-    * Test that interceptors work as expected in SE.
-    */
-   @Test
-   public void testInterceptors()
-   {
-      WeldContainer weld = new Weld().initialize();
+    /**
+     * Test that interceptors work as expected in SE.
+     */
+    @Test
+    public void testInterceptors() {
+        WeldContainer weld = new Weld().initialize();
 
-      InterceptorTestBean intTestBean = weld.instance().select(InterceptorTestBean.class).get();
-      assertNotNull(intTestBean);
+        InterceptorTestBean intTestBean = weld.instance().select(InterceptorTestBean.class).get();
+        assertNotNull(intTestBean);
 
-      intTestBean.doSomethingRecorded();
-      System.out.println(RecordingInterceptor.methodsRecorded);
-      System.out.println(AggregatingInterceptor.methodsCalled);
-      assertTrue(RecordingInterceptor.methodsRecorded.contains("doSomethingRecorded"));
+        intTestBean.doSomethingRecorded();
+        System.out.println(RecordingInterceptor.methodsRecorded);
+        System.out.println(AggregatingInterceptor.methodsCalled);
+        assertTrue(RecordingInterceptor.methodsRecorded.contains("doSomethingRecorded"));
 
-      intTestBean.doSomethingRecordedAndAggregated();
-      System.out.println(RecordingInterceptor.methodsRecorded);
-      System.out.println(AggregatingInterceptor.methodsCalled);
+        intTestBean.doSomethingRecordedAndAggregated();
+        System.out.println(RecordingInterceptor.methodsRecorded);
+        System.out.println(AggregatingInterceptor.methodsCalled);
 
-      assertEquals(1, AggregatingInterceptor.methodsCalled);
+        assertEquals(1, AggregatingInterceptor.methodsCalled);
 
-      shutdownManager(weld);
-   }
+        shutdownManager(weld);
+    }
 
-   private void shutdownManager(WeldContainer weld)
-   {
-      ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-      shutdownManager.shutdown();
-   }
+    private void shutdownManager(WeldContainer weld) {
+        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
+        shutdownManager.shutdown();
+    }
 }

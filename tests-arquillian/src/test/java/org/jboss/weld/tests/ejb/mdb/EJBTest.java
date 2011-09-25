@@ -30,44 +30,46 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import javax.jms.*;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSender;
+import javax.jms.QueueSession;
+import javax.jms.Session;
 import javax.naming.InitialContext;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EJBTest
-{
-   public static final String MESSAGE = "Hello!";
+public class EJBTest {
+    public static final String MESSAGE = "Hello!";
 
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addAsModule(
-               ShrinkWrap.create(JavaArchive.class)
-                  .addPackage(EJBTest.class.getPackage())
-                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                  //.addAsManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
-         );
-   }
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                .addAsModule(
+                        ShrinkWrap.create(JavaArchive.class)
+                                .addPackage(EJBTest.class.getPackage())
+                                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                        //.addAsManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
+                );
+    }
 
-   @Category(Broken.class)
-   @Test
-   // TODO Need a way to deploy test-destinations-service.xml to JBoss AS
-   public void testMdbUsable(Control control) throws Exception
-   {
-      InitialContext ctx = new InitialContext();
-      QueueConnectionFactory factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
-      QueueConnection connection = factory.createQueueConnection();
-      QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-      Queue queue = (Queue) ctx.lookup("queue/testQueue");
-      QueueSender sender = session.createSender(queue);
-      sender.send(session.createTextMessage(MESSAGE));
+    @Category(Broken.class)
+    @Test
+    // TODO Need a way to deploy test-destinations-service.xml to JBoss AS
+    public void testMdbUsable(Control control) throws Exception {
+        InitialContext ctx = new InitialContext();
+        QueueConnectionFactory factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
+        QueueConnection connection = factory.createQueueConnection();
+        QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+        Queue queue = (Queue) ctx.lookup("queue/testQueue");
+        QueueSender sender = session.createSender(queue);
+        sender.send(session.createTextMessage(MESSAGE));
 
-      // TODO: rewrite to use CountDownLatch, avoid Thread.sleep in tests
-      Thread.sleep(1000);
-      Assert.assertTrue(control.isMessageDelivered());
-      Assert.assertTrue(control.isContextSet());
-   }
+        // TODO: rewrite to use CountDownLatch, avoid Thread.sleep in tests
+        Thread.sleep(1000);
+        Assert.assertTrue(control.isMessageDelivered());
+        Assert.assertTrue(control.isContextSet());
+    }
 
 }

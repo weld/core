@@ -25,12 +25,12 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @Decorator
-public class ExtendsDecoratedDecorator implements ExtendsDecorated
-{
-   @Inject @Delegate ExtendsDecorated delegate;
+public class ExtendsDecoratedDecorator implements ExtendsDecorated {
+    @Inject
+    @Delegate
+    ExtendsDecorated delegate;
 
-   public String decoratedEcho(String parameter)
-   {
-      return "decorated-" + parameter + "-decorated";
-   }
+    public String decoratedEcho(String parameter) {
+        return "decorated-" + parameter + "-decorated";
+    }
 }

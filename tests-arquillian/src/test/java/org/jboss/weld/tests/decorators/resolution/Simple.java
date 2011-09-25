@@ -18,7 +18,6 @@
 package org.jboss.weld.tests.decorators.resolution;
 
 import javax.inject.Qualifier;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -32,6 +31,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
 @Documented
-public @interface Simple
-{
+public @interface Simple {
 }

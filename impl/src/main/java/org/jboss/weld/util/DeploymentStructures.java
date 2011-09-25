@@ -9,19 +9,12 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.util;
-
-import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE;
-
-import java.util.Collection;
-import java.util.Map;
-
-import javax.enterprise.context.spi.Context;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
@@ -30,31 +23,30 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class DeploymentStructures
-{
-  
-   private DeploymentStructures() {}
-   
-   public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz)
-   {
-      BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
-      if (beanDeploymentArchive == null)
-      {
-         throw new IllegalStateException(UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE, clazz);
-      }
-      else
-      {
-         if (beanDeployments.containsKey(beanDeploymentArchive))
-         {
-            return beanDeployments.get(beanDeploymentArchive);
-         }
-         else
-         {
-            BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
-            beanDeployments.put(beanDeploymentArchive, beanDeployment);
-            return beanDeployment;
-         }
-      }
-   }
+import javax.enterprise.context.spi.Context;
+import java.util.Collection;
+import java.util.Map;
+
+import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE;
+
+public class DeploymentStructures {
+
+    private DeploymentStructures() {
+    }
+
+    public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz) {
+        BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
+        if (beanDeploymentArchive == null) {
+            throw new IllegalStateException(UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE, clazz);
+        } else {
+            if (beanDeployments.containsKey(beanDeploymentArchive)) {
+                return beanDeployments.get(beanDeploymentArchive);
+            } else {
+                BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
+                beanDeployments.put(beanDeploymentArchive, beanDeployment);
+                return beanDeployment;
+            }
+        }
+    }
 
 }

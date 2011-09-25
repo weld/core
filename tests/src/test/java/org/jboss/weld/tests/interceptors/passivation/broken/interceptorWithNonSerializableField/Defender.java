@@ -16,27 +16,25 @@
  */
 package org.jboss.weld.tests.interceptors.passivation.broken.interceptorWithNonSerializableField;
 
-import java.io.Serializable;
-
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
 /**
  * @author Marius Bogoevici
  */
-@Interceptor @Pass
-public class Defender implements Serializable
-{
+@Interceptor
+@Pass
+public class Defender implements Serializable {
 
-   @Inject
-   Team team;
+    @Inject
+    Team team;
 
-   @AroundInvoke
-   public Object defend(InvocationContext invocationContext) throws Exception
-   {
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object defend(InvocationContext invocationContext) throws Exception {
+        return invocationContext.proceed();
+    }
 
 }

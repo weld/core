@@ -17,14 +17,12 @@
 
 package org.jboss.weld.tests.decorators.interceptor;
 
-public class ServiceImpl implements Service
-{
+public class ServiceImpl implements Service {
 
-   public static int invocationCount = 0;
+    public static int invocationCount = 0;
 
-   @Intercepted
-   public void execute()
-   {
-      invocationCount ++;
-   }
+    @Intercepted
+    public void execute() {
+        invocationCount++;
+    }
 }

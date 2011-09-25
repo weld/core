@@ -20,13 +20,11 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 @RequestScoped
-public class BarConsumer
-{
-   @Inject
-   private Bar bar;
+public class BarConsumer {
+    @Inject
+    private Bar bar;
 
-   public Bar getBar()
-   {
-      return bar;
-   }
+    public Bar getBar() {
+        return bar;
+    }
 }

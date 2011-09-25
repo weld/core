@@ -9,85 +9,70 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.resources;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Set;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Convenience methods to access the shared object cache
- * 
+ *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
- * 
  */
-public class SharedObjectFacade
-{
+public class SharedObjectFacade {
 
-   private SharedObjectFacade()
-   {
+    private SharedObjectFacade() {
 
-   }
+    }
 
-   public static <T> Set<T> wrap(Set<T> set)
-   {
-      SharedObjectCache cache = getSharedObjectCache();
-      if (cache != null)
-      {
-         return cache.getSharedSet(set);
-      }
-      return set;
-   }
+    public static <T> Set<T> wrap(Set<T> set) {
+        SharedObjectCache cache = getSharedObjectCache();
+        if (cache != null) {
+            return cache.getSharedSet(set);
+        }
+        return set;
+    }
 
-   public static <K, V> Map<K, V> wrap(Map<K, V> map)
-   {
-      SharedObjectCache cache = getSharedObjectCache();
-      if (cache != null)
-      {
-         return Container.instance().services().get(SharedObjectCache.class).getSharedMap(map);
-      }
-      return map;
-   }
+    public static <K, V> Map<K, V> wrap(Map<K, V> map) {
+        SharedObjectCache cache = getSharedObjectCache();
+        if (cache != null) {
+            return Container.instance().services().get(SharedObjectCache.class).getSharedMap(map);
+        }
+        return map;
+    }
 
-   public static <K, V> ArraySetMultimap<K, V> wrap(ArraySetMultimap<K, V> map)
-   {
-      SharedObjectCache cache = getSharedObjectCache();
-      if (cache != null)
-      {
-         return Container.instance().services().get(SharedObjectCache.class).getSharedMultimap(map);
-      }
-      return map;
-   }
+    public static <K, V> ArraySetMultimap<K, V> wrap(ArraySetMultimap<K, V> map) {
+        SharedObjectCache cache = getSharedObjectCache();
+        if (cache != null) {
+            return Container.instance().services().get(SharedObjectCache.class).getSharedMultimap(map);
+        }
+        return map;
+    }
 
-   public static Set<Type> getTypeClosure(Type type)
-   {
-      SharedObjectCache cache = getSharedObjectCache();
-      if (cache != null)
-      {
-         return Container.instance().services().get(SharedObjectCache.class).getTypeClosure(type);
-      }
-      return new HierarchyDiscovery(type).getTypeClosure();
-   }
+    public static Set<Type> getTypeClosure(Type type) {
+        SharedObjectCache cache = getSharedObjectCache();
+        if (cache != null) {
+            return Container.instance().services().get(SharedObjectCache.class).getTypeClosure(type);
+        }
+        return new HierarchyDiscovery(type).getTypeClosure();
+    }
 
-   // this may return null in a test environment
-   private static SharedObjectCache getSharedObjectCache()
-   {
-      try
-      {
-         return Container.instance().services().get(SharedObjectCache.class);
-      }
-      catch (IllegalStateException e)
-      {
-         return null;
-      }
-   }
+    // this may return null in a test environment
+    private static SharedObjectCache getSharedObjectCache() {
+        try {
+            return Container.instance().services().get(SharedObjectCache.class);
+        } catch (IllegalStateException e) {
+            return null;
+        }
+    }
 }

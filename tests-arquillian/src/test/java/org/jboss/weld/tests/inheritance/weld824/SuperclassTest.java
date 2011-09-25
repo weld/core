@@ -39,39 +39,35 @@ import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class SuperclassTest
-{
-   @Inject
-   private Bar bar;
-   
-   /**
-    * Webapp with beans.xml and no classes
-    */
-   @Deployment
-   public static WebArchive createWebArchive()
-   {
-      WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
-      war.addAsLibrary(createJavaArchive());
-      war.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
-      return war;
-   }
+public class SuperclassTest {
+    @Inject
+    private Bar bar;
 
-   /**
-    * Java library with two classes (Foo, Bar) and no beans.xml - thus the classes are not beans implicitly. 
-    * However, the Bar class is registered through the SimpleExtension.
-    */
-   public static JavaArchive createJavaArchive()
-   {
-      JavaArchive war = ShrinkWrap.create(JavaArchive.class, "test.jar");
-      war.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-      war.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
-      return war;
-   }
-   
-   @Test
-   public void testSubclassInitialized()
-   {
-      assertTrue(bar.isSubclassInitialized());
-      assertTrue(bar.isSuperclassInitialized());
-   }
+    /**
+     * Webapp with beans.xml and no classes
+     */
+    @Deployment
+    public static WebArchive createWebArchive() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
+        war.addAsLibrary(createJavaArchive());
+        war.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+        return war;
+    }
+
+    /**
+     * Java library with two classes (Foo, Bar) and no beans.xml - thus the classes are not beans implicitly.
+     * However, the Bar class is registered through the SimpleExtension.
+     */
+    public static JavaArchive createJavaArchive() {
+        JavaArchive war = ShrinkWrap.create(JavaArchive.class, "test.jar");
+        war.addClasses(SimpleExtension.class, Foo.class, Bar.class);
+        war.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
+        return war;
+    }
+
+    @Test
+    public void testSubclassInitialized() {
+        assertTrue(bar.isSubclassInitialized());
+        assertTrue(bar.isSuperclassInitialized());
+    }
 }

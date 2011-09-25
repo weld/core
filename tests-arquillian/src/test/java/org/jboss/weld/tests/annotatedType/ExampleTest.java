@@ -16,15 +16,6 @@
  */
 package org.jboss.weld.tests.annotatedType;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -34,62 +25,61 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 /**
- *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
 @RunWith(Arquillian.class)
-public class ExampleTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ExampleTest.class.getPackage());
-   }
+public class ExampleTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ExampleTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   @Test
-   public void testAnnotatedCallableGetParameters() throws Exception
-   {
-      AnnotatedType<Bean> type = beanManager.createAnnotatedType(Bean.class);
+    @Test
+    public void testAnnotatedCallableGetParameters() throws Exception {
+        AnnotatedType<Bean> type = beanManager.createAnnotatedType(Bean.class);
 
-      assertNoAnnotations(type);
+        assertNoAnnotations(type);
 
-      Assert.assertEquals(1, type.getConstructors().size());
-      for (AnnotatedConstructor<Bean> ctor : type.getConstructors())
-      {
-         assertNoAnnotations(ctor);
+        Assert.assertEquals(1, type.getConstructors().size());
+        for (AnnotatedConstructor<Bean> ctor : type.getConstructors()) {
+            assertNoAnnotations(ctor);
 
-         for (AnnotatedParameter<Bean> param : ctor.getParameters())
-         {
-            assertNoAnnotations(param);
-         }
-      }
+            for (AnnotatedParameter<Bean> param : ctor.getParameters()) {
+                assertNoAnnotations(param);
+            }
+        }
 
-      Assert.assertEquals(1, type.getMethods().size());
-      for (AnnotatedMethod<? super Bean> method : type.getMethods())
-      {
-         assertNoAnnotations(method);
+        Assert.assertEquals(1, type.getMethods().size());
+        for (AnnotatedMethod<? super Bean> method : type.getMethods()) {
+            assertNoAnnotations(method);
 
-         for (AnnotatedParameter<? super Bean> param : method.getParameters())
-         {
-            assertNoAnnotations(param);
-         }
-      }
+            for (AnnotatedParameter<? super Bean> param : method.getParameters()) {
+                assertNoAnnotations(param);
+            }
+        }
 
-      Assert.assertEquals(1, type.getFields().size());
-      for (AnnotatedField<? super Bean> field : type.getFields())
-      {
-         assertNoAnnotations(field);
-      }
-   }
+        Assert.assertEquals(1, type.getFields().size());
+        for (AnnotatedField<? super Bean> field : type.getFields()) {
+            assertNoAnnotations(field);
+        }
+    }
 
-   private void assertNoAnnotations(Annotated annotated)
-   {
-      Assert.assertEquals(0, annotated.getAnnotations().size());
-   }
+    private void assertNoAnnotations(Annotated annotated) {
+        Assert.assertEquals(0, annotated.getAnnotations().size());
+    }
 }

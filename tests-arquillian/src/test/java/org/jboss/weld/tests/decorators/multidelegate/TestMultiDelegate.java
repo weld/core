@@ -25,20 +25,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class TestMultiDelegate
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(AccountDecorator.class)
-         .addPackage(TestMultiDelegate.class.getPackage());
-   }
+public class TestMultiDelegate {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(AccountDecorator.class)
+                .addPackage(TestMultiDelegate.class.getPackage());
+    }
 
-   /**
-    * description="http://seamframework.org/Community/SerializableDecorators"
-    */
-   @Test
-   public void go() {
-   }
+    /**
+     * description="http://seamframework.org/Community/SerializableDecorators"
+     */
+    @Test
+    public void go() {
+    }
 }

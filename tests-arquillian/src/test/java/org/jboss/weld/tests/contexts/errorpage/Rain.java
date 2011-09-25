@@ -21,10 +21,8 @@ import javax.inject.Named;
 
 @RequestScoped
 @Named
-public class Rain
-{
-   public String getSeverityLevel()
-   {
-      return "medium";
-   }
+public class Rain {
+    public String getSeverityLevel() {
+        return "medium";
+    }
 }

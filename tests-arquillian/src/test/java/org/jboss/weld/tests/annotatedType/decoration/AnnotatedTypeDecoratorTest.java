@@ -16,14 +16,6 @@
  */
 package org.jboss.weld.tests.annotatedType.decoration;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,129 +25,117 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Inject;
+
 /**
- *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
 @RunWith(Arquillian.class)
-public class AnnotatedTypeDecoratorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(AnnotatedTypeDecoratorTest.class.getPackage());
-   }
+public class AnnotatedTypeDecoratorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(AnnotatedTypeDecoratorTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   @Test
-   public void testAnnotationDecorator() throws Exception
-   {
-      NotAnnotated.reset();
-      AnnotatedType<NotAnnotated> type = beanManager.createAnnotatedType(NotAnnotated.class);
-      checkAnnotations(type, new NoAnnotationsChecker());
+    @Test
+    public void testAnnotationDecorator() throws Exception {
+        NotAnnotated.reset();
+        AnnotatedType<NotAnnotated> type = beanManager.createAnnotatedType(NotAnnotated.class);
+        checkAnnotations(type, new NoAnnotationsChecker());
 
-      type = new MockAnnotatedType<NotAnnotated>(type);
-      checkAnnotations(type, new MockAnnotationsChecker());
+        type = new MockAnnotatedType<NotAnnotated>(type);
+        checkAnnotations(type, new MockAnnotationsChecker());
 
-      NonContextual<NotAnnotated> nonContextual = new NonContextual<NotAnnotated>(beanManager, type);
-      NotAnnotated instance = nonContextual.create();
-      Assert.assertNotNull(instance);
-      nonContextual.postConstruct(instance);
+        NonContextual<NotAnnotated> nonContextual = new NonContextual<NotAnnotated>(beanManager, type);
+        NotAnnotated instance = nonContextual.create();
+        Assert.assertNotNull(instance);
+        nonContextual.postConstruct(instance);
 
-      Assert.assertNotNull(instance.getFromField());
-      Assert.assertNotNull(NotAnnotated.getFromConstructor());
-      Assert.assertNotNull(NotAnnotated.getFromInitializer());
-   }
+        Assert.assertNotNull(instance.getFromField());
+        Assert.assertNotNull(NotAnnotated.getFromConstructor());
+        Assert.assertNotNull(NotAnnotated.getFromInitializer());
+    }
 
-   private void checkAnnotations(AnnotatedType<NotAnnotated> type, TypeChecker checker)
-   {
-      checker.assertAnnotations(type);
+    private void checkAnnotations(AnnotatedType<NotAnnotated> type, TypeChecker checker) {
+        checker.assertAnnotations(type);
 
-      Assert.assertEquals(1, type.getConstructors().size());
+        Assert.assertEquals(1, type.getConstructors().size());
 
-      checker.assertAnnotations(type.getConstructors().iterator().next());
-      checker.assertAnnotations(type.getConstructors().iterator().next().getParameters().get(0));
+        checker.assertAnnotations(type.getConstructors().iterator().next());
+        checker.assertAnnotations(type.getConstructors().iterator().next().getParameters().get(0));
 
-      Assert.assertEquals(3, type.getFields().size());
-      for (AnnotatedField<? super NotAnnotated> field : type.getFields())
-      {
-         if (field.getJavaMember().getName().equals("fromField"))
-         {
-            checker.assertAnnotations(field);
-         }
-         else
-         {
-            Assert.assertEquals(0, field.getAnnotations().size());
-         }
-      }
-      Assert.assertEquals(5, type.getMethods().size());
-      checker.assertAnnotations(type.getMethods().iterator().next());
-   }
+        Assert.assertEquals(3, type.getFields().size());
+        for (AnnotatedField<? super NotAnnotated> field : type.getFields()) {
+            if (field.getJavaMember().getName().equals("fromField")) {
+                checker.assertAnnotations(field);
+            } else {
+                Assert.assertEquals(0, field.getAnnotations().size());
+            }
+        }
+        Assert.assertEquals(5, type.getMethods().size());
+        checker.assertAnnotations(type.getMethods().iterator().next());
+    }
 
 
+    interface TypeChecker {
+        void assertAnnotations(Annotated annotated);
+    }
 
+    class NoAnnotationsChecker implements TypeChecker {
 
-   interface TypeChecker
-   {
-      void assertAnnotations(Annotated annotated);
-   }
+        public void assertAnnotations(Annotated annotated) {
+            Assert.assertEquals(0, annotated.getAnnotations().size());
+        }
+    }
 
-   class NoAnnotationsChecker implements TypeChecker
-   {
+    class MockAnnotationsChecker implements TypeChecker {
 
-      public void assertAnnotations(Annotated annotated)
-      {
-         Assert.assertEquals(0, annotated.getAnnotations().size());
-      }
-   }
+        public void assertAnnotations(Annotated annotated) {
+            if (annotated instanceof MockAnnotatedCallable) {
+                Assert.assertEquals(1, annotated.getAnnotations().size());
+                Assert.assertTrue(annotated.isAnnotationPresent(Inject.class));
+            } else if (annotated instanceof MockAnnotatedField<?>) {
+                Assert.assertEquals(1, annotated.getAnnotations().size());
+                Assert.assertTrue(annotated.isAnnotationPresent(Inject.class));
+            }
+        }
+    }
 
-   class MockAnnotationsChecker implements TypeChecker
-   {
+    public class NonContextual<T> {
 
-      public void assertAnnotations(Annotated annotated)
-      {
-         if (annotated instanceof MockAnnotatedCallable)
-         {
-            Assert.assertEquals(1, annotated.getAnnotations().size());
-            Assert.assertTrue(annotated.isAnnotationPresent(Inject.class));
-         }
-         else if (annotated instanceof MockAnnotatedField<?>)
-         {
-            Assert.assertEquals(1, annotated.getAnnotations().size());
-            Assert.assertTrue(annotated.isAnnotationPresent(Inject.class));
-         }
-      }
-   }
+        final InjectionTarget<T> it;
+        final BeanManager manager;
+        CreationalContext<T> cc;
 
-   public class NonContextual<T> {
+        public NonContextual(BeanManager manager, AnnotatedType<T> type) {
+            this.manager = manager;
+            this.it = manager.createInjectionTarget(type);
+            cc = manager.createCreationalContext(null);
+        }
 
-      final InjectionTarget<T> it;
-      final BeanManager manager;
-      CreationalContext<T> cc;
+        public T create() {
+            return it.produce(cc);
+        }
 
-      public NonContextual(BeanManager manager, AnnotatedType<T> type) {
-         this.manager = manager;
-         this.it = manager.createInjectionTarget(type);
-         cc = manager.createCreationalContext(null);
-      }
+        public CreationalContext<T> postConstruct(T instance) {
+            it.inject(instance, cc);
+            it.postConstruct(instance);
+            return cc;
+        }
 
-      public T create()
-      {
-         return it.produce(cc);
-      }
-
-      public CreationalContext<T> postConstruct(T instance) {
-         it.inject(instance, cc);
-         it.postConstruct(instance);
-         return cc;
-      }
-
-      public void preDestroy(T instance) {
-         it.preDestroy(instance);
-      }
-   }
+        public void preDestroy(T instance) {
+            it.preDestroy(instance);
+        }
+    }
 }

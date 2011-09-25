@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.tests.contexts;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,57 +27,57 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class PassivatingContextTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(PassivatingContextTest.class.getPackage());
-   }
+public class PassivatingContextTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(PassivatingContextTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /**
-    * The built-in session and conversation scopes are passivating. No other
-    * built-in scope is passivating.
-    */
-   @Test
-   public void testIsSessionScopePassivating()
-   {
-      Assert.assertTrue(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(SessionScoped.class).isPassivating());
-   }
+    /**
+     * The built-in session and conversation scopes are passivating. No other
+     * built-in scope is passivating.
+     */
+    @Test
+    public void testIsSessionScopePassivating() {
+        Assert.assertTrue(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(SessionScoped.class).isPassivating());
+    }
 
-   /**
-    * The built-in session and conversation scopes are passivating. No other
-    * built-in scope is passivating.
-    */
-   @Test
-   public void testIsConversationScopePassivating()
-   {
-      Assert.assertTrue(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(ConversationScoped.class).isPassivating());
-   }
+    /**
+     * The built-in session and conversation scopes are passivating. No other
+     * built-in scope is passivating.
+     */
+    @Test
+    public void testIsConversationScopePassivating() {
+        Assert.assertTrue(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(ConversationScoped.class).isPassivating());
+    }
 
-   /**
-    * The built-in session and conversation scopes are passivating. No other
-    * built-in scope is passivating.
-    */
-   @Test
-   public void testIsApplicationScopeNonPassivating()
-   {
-      Assert.assertFalse(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(ApplicationScoped.class).isPassivating());
-   }
+    /**
+     * The built-in session and conversation scopes are passivating. No other
+     * built-in scope is passivating.
+     */
+    @Test
+    public void testIsApplicationScopeNonPassivating() {
+        Assert.assertFalse(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(ApplicationScoped.class).isPassivating());
+    }
 
-   /**
-    * The built-in session and conversation scopes are passivating. No other
-    * built-in scope is passivating.
-    */
-   @Test
-   public void testIsRequestScopeNonPassivating()
-   {
-      Assert.assertFalse(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(RequestScoped.class).isPassivating());
-   }
+    /**
+     * The built-in session and conversation scopes are passivating. No other
+     * built-in scope is passivating.
+     */
+    @Test
+    public void testIsRequestScopeNonPassivating() {
+        Assert.assertFalse(beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(RequestScoped.class).isPassivating());
+    }
 
 }

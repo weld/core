@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.unit.selector;
 
-public class Foo
-{
+public class Foo {
 
 }

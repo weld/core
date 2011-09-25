@@ -21,44 +21,38 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
-import java.io.Serializable;
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-
-import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import java.io.Serializable;
 
 /**
  * Prohibit posting more than 2 fragments a minute
- * 
- * @author Pete Muir
  *
+ * @author Pete Muir
  */
 @Decorator
-public abstract class FloodingDecorator implements CodeFragmentManager, Serializable
-{
+public abstract class FloodingDecorator implements CodeFragmentManager, Serializable {
 
-   private static final long serialVersionUID = -4615837206290420112L;
+    private static final long serialVersionUID = -4615837206290420112L;
 
-   @Inject @Delegate 
-   private CodeFragmentManager codeFragmentManager; 
-   
-   @Inject
-   private PostTracker postTracker;
-   
-   public String addCodeFragment(CodeFragment code, boolean privateFragment)
-   {
-      // Check if we are allowed to post
-      if (postTracker.isNewPostAllowed())
-      {
-         postTracker.addPost();
-         return codeFragmentManager.addCodeFragment(code, privateFragment);
-      }
-      else
-      {
-         throw new IllegalStateException("You've posted more than 2 fragments in the last 20s. No flooding allowed!");
-      }
-   }
-   
+    @Inject
+    @Delegate
+    private CodeFragmentManager codeFragmentManager;
+
+    @Inject
+    private PostTracker postTracker;
+
+    public String addCodeFragment(CodeFragment code, boolean privateFragment) {
+        // Check if we are allowed to post
+        if (postTracker.isNewPostAllowed()) {
+            postTracker.addPost();
+            return codeFragmentManager.addCodeFragment(code, privateFragment);
+        } else {
+            throw new IllegalStateException("You've posted more than 2 fragments in the last 20s. No flooding allowed!");
+        }
+    }
+
 }

@@ -19,13 +19,11 @@ package org.jboss.weld.tests.beanDeployment.managed.missingClassDependency;
 import javax.inject.Named;
 
 @Named
-class Tuna
-{
-   
-   public Sardine getName()
-   {
-      // This class doesn't get deployed
-      return new Sardine();
-   }
+class Tuna {
+
+    public Sardine getName() {
+        // This class doesn't get deployed
+        return new Sardine();
+    }
 
 }

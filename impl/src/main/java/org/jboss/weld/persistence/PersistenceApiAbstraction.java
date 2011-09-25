@@ -9,52 +9,48 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.persistence;
 
-import java.lang.annotation.Annotation;
-
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
 
-public class PersistenceApiAbstraction extends ApiAbstraction implements Service
-{
+import java.lang.annotation.Annotation;
 
-   public final Class<? extends Annotation> PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-   public final Class<? extends Annotation> PERSISTENCE_UNIT_ANNOTATION_CLASS;
-   public final Object EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
-   public final Class<?> PERSISTENCE_CONTEXT_TYPE_CLASS;
-   public final Class<? extends Annotation> ENTITY_CLASS;
-   public final Class<? extends Annotation> MAPPED_SUPERCLASS_CLASS;
-   public final Class<? extends Annotation> EMBEDDABLE_CLASS;
+public class PersistenceApiAbstraction extends ApiAbstraction implements Service {
 
-   /**
-    * @param resourceLoader
-    */
-   public PersistenceApiAbstraction(ResourceLoader resourceLoader)
-   {
-      super(resourceLoader);
-      PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceContext");
-      PERSISTENCE_UNIT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceUnit");
-      PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("javax.persistence.PersistenceContextType");
-      if (PERSISTENCE_CONTEXT_TYPE_CLASS.getClass().equals( Dummy.class)) 
-      {
-         EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = enumValue(PERSISTENCE_CONTEXT_TYPE_CLASS, "EXTENDED");
-      } 
-      else
-      {
-         EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
-      }
-      ENTITY_CLASS = annotationTypeForName("javax.persistence.Entity");
-      MAPPED_SUPERCLASS_CLASS = annotationTypeForName("javax.persistence.MappedSuperclass");
-      EMBEDDABLE_CLASS = annotationTypeForName("javax.persistence.Embeddable");
-   }
-   
-   public void cleanup() {}
-   
+    public final Class<? extends Annotation> PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+    public final Class<? extends Annotation> PERSISTENCE_UNIT_ANNOTATION_CLASS;
+    public final Object EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE;
+    public final Class<?> PERSISTENCE_CONTEXT_TYPE_CLASS;
+    public final Class<? extends Annotation> ENTITY_CLASS;
+    public final Class<? extends Annotation> MAPPED_SUPERCLASS_CLASS;
+    public final Class<? extends Annotation> EMBEDDABLE_CLASS;
+
+    /**
+     * @param resourceLoader
+     */
+    public PersistenceApiAbstraction(ResourceLoader resourceLoader) {
+        super(resourceLoader);
+        PERSISTENCE_CONTEXT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceContext");
+        PERSISTENCE_UNIT_ANNOTATION_CLASS = annotationTypeForName("javax.persistence.PersistenceUnit");
+        PERSISTENCE_CONTEXT_TYPE_CLASS = classForName("javax.persistence.PersistenceContextType");
+        if (PERSISTENCE_CONTEXT_TYPE_CLASS.getClass().equals(Dummy.class)) {
+            EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = enumValue(PERSISTENCE_CONTEXT_TYPE_CLASS, "EXTENDED");
+        } else {
+            EXTENDED_PERSISTENCE_CONTEXT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
+        }
+        ENTITY_CLASS = annotationTypeForName("javax.persistence.Entity");
+        MAPPED_SUPERCLASS_CLASS = annotationTypeForName("javax.persistence.MappedSuperclass");
+        EMBEDDABLE_CLASS = annotationTypeForName("javax.persistence.Embeddable");
+    }
+
+    public void cleanup() {
+    }
+
 }

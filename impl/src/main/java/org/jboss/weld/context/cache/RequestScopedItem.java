@@ -26,10 +26,9 @@ package org.jboss.weld.context.cache;
  *
  * @author Stuart Douglas
  */
-public interface RequestScopedItem
-{
-   /**
-    * Method that is called when the request ends
-    */
-   public void invalidate();
+public interface RequestScopedItem {
+    /**
+     * Method that is called when the request ends
+     */
+    void invalidate();
 }

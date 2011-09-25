@@ -38,7 +38,11 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.spi.*;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
@@ -49,312 +53,258 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * Spec version: 20090519
- *
  */
 @RunWith(Arquillian.class)
-public class ActivitiesTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ActivitiesTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class ActivitiesTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ActivitiesTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
 
-   private Bean<?> createDummyBean(BeanManager beanManager, final Type injectionPointType)
-   {
-      final Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
-      final Set<Type> types = new HashSet<Type>();
-      final Set<Annotation> bindings = new HashSet<Annotation>();
-      bindings.add(new AnnotationLiteral<Tame>()
-      {
-      });
-      types.add(Object.class);
-      final Bean<?> bean = new Bean<Object>()
-      {
+    private Bean<?> createDummyBean(BeanManager beanManager, final Type injectionPointType) {
+        final Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
+        final Set<Type> types = new HashSet<Type>();
+        final Set<Annotation> bindings = new HashSet<Annotation>();
+        bindings.add(new AnnotationLiteral<Tame>() {
+        });
+        types.add(Object.class);
+        final Bean<?> bean = new Bean<Object>() {
 
-         public Set<Annotation> getQualifiers()
-         {
-            return bindings;
-         }
+            public Set<Annotation> getQualifiers() {
+                return bindings;
+            }
 
-         public Set<InjectionPoint> getInjectionPoints()
-         {
-            return injectionPoints;
-         }
+            public Set<InjectionPoint> getInjectionPoints() {
+                return injectionPoints;
+            }
 
-         public String getName()
-         {
+            public String getName() {
+                return null;
+            }
+
+            public Class<? extends Annotation> getScope() {
+                return Dependent.class;
+            }
+
+            public Set<Type> getTypes() {
+                return types;
+            }
+
+            public boolean isNullable() {
+                return false;
+            }
+
+            public Object create(CreationalContext<Object> creationalContext) {
+                return null;
+            }
+
+            public void destroy(Object instance, CreationalContext<Object> creationalContext) {
+
+            }
+
+            public Class<?> getBeanClass() {
+                return Object.class;
+            }
+
+            public boolean isAlternative() {
+                return false;
+            }
+
+            public Set<Class<? extends Annotation>> getStereotypes() {
+                return Collections.emptySet();
+            }
+
+        };
+        InjectionPoint injectionPoint = new InjectionPoint() {
+
+            public Bean<?> getBean() {
+                return bean;
+            }
+
+            public Set<Annotation> getQualifiers() {
+                return DEFAULT_QUALIFIERS;
+            }
+
+            public Member getMember() {
+                return null;
+            }
+
+            public Type getType() {
+                return injectionPointType;
+            }
+
+            public Annotated getAnnotated() {
+                return null;
+            }
+
+            public boolean isDelegate() {
+                return false;
+            }
+
+            public boolean isTransient() {
+                return false;
+            }
+
+        };
+        injectionPoints.add(injectionPoint);
+        return bean;
+    }
+
+    private static class DummyContext implements Context {
+
+        public <T> T get(Contextual<T> contextual) {
             return null;
-         }
+        }
 
-         public Class<? extends Annotation> getScope()
-         {
-            return Dependent.class;
-         }
-
-         public Set<Type> getTypes()
-         {
-            return types;
-         }
-
-         public boolean isNullable()
-         {
-            return false;
-         }
-
-         public Object create(CreationalContext<Object> creationalContext)
-         {
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
             return null;
-         }
+        }
 
-         public void destroy(Object instance, CreationalContext<Object> creationalContext)
-         {
+        public Class<? extends Annotation> getScope() {
+            return Dummy.class;
+        }
 
-         }
-
-         public Class<?> getBeanClass()
-         {
-            return Object.class;
-         }
-
-         public boolean isAlternative()
-         {
+        public boolean isActive() {
             return false;
-         }
+        }
 
-         public Set<Class<? extends Annotation>> getStereotypes()
-         {
-            return Collections.emptySet();
-         }
+    }
 
-      };
-      InjectionPoint injectionPoint = new InjectionPoint()
-      {
+    @Inject
+    private BeanManagerImpl beanManager;
 
-         public Bean<?> getBean()
-         {
-            return bean;
-         }
+    @Test
+    public void testBeanBelongingToParentActivityBelongsToChildActivity() {
+        Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
+        Contextual<?> bean = beanManager.getBeans(Cow.class).iterator().next();
+        BeanManager childActivity = beanManager.createActivity();
+        Assert.assertEquals(1, childActivity.getBeans(Cow.class).size());
+        Assert.assertEquals(bean, childActivity.getBeans(Cow.class).iterator().next());
+    }
 
-         public Set<Annotation> getQualifiers()
-         {
-            return DEFAULT_QUALIFIERS;
-         }
+    @Test
+    public void testBeanBelongingToParentActivityCanBeInjectedIntoChildActivityBean() {
+        Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
+        BeanManagerImpl childActivity = beanManager.createActivity();
+        Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
+        childActivity.addBean(dummyBean);
+        Assert.assertNotNull(
+                childActivity.getInjectableReference(
+                        dummyBean.getInjectionPoints().iterator().next(),
+                        childActivity.createCreationalContext(dummyBean)));
+    }
 
-         public Member getMember()
-         {
-            return null;
-         }
+    @Test
+    public void testObserverBelongingToParentActivityBelongsToChildActivity() {
+        Assert.assertEquals(1, beanManager.resolveObserverMethods(new NightTime()).size());
+        ObserverMethod<?> observer = beanManager.resolveObserverMethods(new NightTime()).iterator().next();
+        BeanManager childActivity = beanManager.createActivity();
+        Assert.assertEquals(1, childActivity.resolveObserverMethods(new NightTime()).size());
+        Assert.assertEquals(observer, childActivity.resolveObserverMethods(new NightTime()).iterator().next());
+    }
 
-         public Type getType()
-         {
-            return injectionPointType;
-         }
+    @Test
+    public void testObserverBelongingToParentFiresForChildActivity() {
+        Fox.setObserved(false);
+        BeanManager childActivity = beanManager.createActivity();
+        childActivity.fireEvent(new NightTime());
+        Assert.assertTrue(Fox.isObserved());
+    }
 
-         public Annotated getAnnotated()
-         {
-            return null;
-         }
+    @Test
+    public void testContextObjectBelongingToParentBelongsToChild() {
+        Context context = new DummyContext() {
 
-         public boolean isDelegate()
-         {
-            return false;
-         }
+            @Override
+            public boolean isActive() {
+                return true;
+            }
 
-         public boolean isTransient()
-         {
-            return false;
-         }
+        };
+        beanManager.addContext(context);
+        BeanManager childActivity = beanManager.createActivity();
+        Assert.assertNotNull(childActivity.getContext(Dummy.class));
+    }
 
-      };
-      injectionPoints.add(injectionPoint);
-      return bean;
-   }
+    @Test
+    public void testBeanBelongingToChildActivityCannotBeInjectedIntoParentActivityBean() {
+        Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
+        BeanManagerImpl childActivity = beanManager.createActivity();
+        Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
+        childActivity.addBean(dummyBean);
+        Assert.assertEquals(0, beanManager.getBeans(Object.class, new AnnotationLiteral<Tame>() {
+        }).size());
+    }
 
-   private static class DummyContext implements Context
-   {
+    @Test(expected = UnsatisfiedResolutionException.class)
+    public void testInstanceProcessedByParentActivity() {
+        Context dummyContext = new DummyContext();
+        beanManager.addContext(dummyContext);
+        Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
+        final Bean<Cow> bean = (Bean<Cow>) beanManager.getBeans(Cow.class).iterator().next();
+        BeanManagerImpl childActivity = beanManager.createActivity();
+        final Set<Annotation> bindingTypes = new HashSet<Annotation>();
+        bindingTypes.add(new AnnotationLiteral<Tame>() {
+        });
+        childActivity.addBean(new ForwardingBean<Cow>() {
 
-      public <T> T get(Contextual<T> contextual)
-      {
-         return null;
-      }
+            @Override
+            protected Bean<Cow> delegate() {
+                return bean;
+            }
 
-      public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext)
-      {
-         return null;
-      }
+            @Override
+            public Set<Annotation> getQualifiers() {
+                return bindingTypes;
+            }
 
-      public Class<? extends Annotation> getScope()
-      {
-         return Dummy.class;
-      }
+            @Override
+            public Set<Class<? extends Annotation>> getStereotypes() {
+                return Collections.emptySet();
+            }
 
-      public boolean isActive()
-      {
-         return false;
-      }
+        });
+        Utils.getReference(beanManager, Field.class).get();
+    }
 
-   }
+    @Test
+    public void testObserverBelongingToChildDoesNotFireForParentActivity() {
+        BeanManagerImpl childActivity = beanManager.createActivity();
+        ObserverMethod<NightTime> observer = new ObserverMethod<NightTime>() {
 
-   @Inject
-   private BeanManagerImpl beanManager;
+            public void notify(NightTime event) {
+                assert false;
+            }
 
-   @Test
-   public void testBeanBelongingToParentActivityBelongsToChildActivity()
-   {
-      Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
-      Contextual<?> bean = beanManager.getBeans(Cow.class).iterator().next();
-      BeanManager childActivity = beanManager.createActivity();
-      Assert.assertEquals(1, childActivity.getBeans(Cow.class).size());
-      Assert.assertEquals(bean, childActivity.getBeans(Cow.class).iterator().next());
-   }
+            public Class<?> getBeanClass() {
+                return NightTime.class;
+            }
 
-   @Test
-   public void testBeanBelongingToParentActivityCanBeInjectedIntoChildActivityBean()
-   {
-      Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
-      BeanManagerImpl childActivity = beanManager.createActivity();
-      Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
-      childActivity.addBean(dummyBean);
-      Assert.assertNotNull(
-            childActivity.getInjectableReference(
-                  dummyBean.getInjectionPoints().iterator().next(),
-                  childActivity.createCreationalContext(dummyBean)));
-   }
+            public Set<Annotation> getObservedQualifiers() {
+                return Arrays2.asSet(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
+            }
 
-   @Test
-   public void testObserverBelongingToParentActivityBelongsToChildActivity()
-   {
-      Assert.assertEquals(1, beanManager.resolveObserverMethods(new NightTime()).size());
-      ObserverMethod<?> observer = beanManager.resolveObserverMethods(new NightTime()).iterator().next();
-      BeanManager childActivity = beanManager.createActivity();
-      Assert.assertEquals(1, childActivity.resolveObserverMethods(new NightTime()).size());
-      Assert.assertEquals(observer, childActivity.resolveObserverMethods(new NightTime()).iterator().next());
-   }
+            public Type getObservedType() {
+                return NightTime.class;
+            }
 
-   @Test
-   public void testObserverBelongingToParentFiresForChildActivity()
-   {
-      Fox.setObserved(false);
-      BeanManager childActivity = beanManager.createActivity();
-      childActivity.fireEvent(new NightTime());
-      Assert.assertTrue(Fox.isObserved());
-   }
+            public Reception getReception() {
+                return Reception.ALWAYS;
+            }
 
-   @Test
-   public void testContextObjectBelongingToParentBelongsToChild()
-   {
-      Context context = new DummyContext()
-      {
+            public TransactionPhase getTransactionPhase() {
+                return TransactionPhase.IN_PROGRESS;
+            }
 
-         @Override
-         public boolean isActive()
-         {
-            return true;
-         }
-
-      };
-      beanManager.addContext(context);
-      BeanManager childActivity = beanManager.createActivity();
-      Assert.assertNotNull(childActivity.getContext(Dummy.class));
-   }
-
-   @Test
-   public void testBeanBelongingToChildActivityCannotBeInjectedIntoParentActivityBean()
-   {
-      Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
-      BeanManagerImpl childActivity = beanManager.createActivity();
-      Bean<?> dummyBean = createDummyBean(childActivity, Cow.class);
-      childActivity.addBean(dummyBean);
-      Assert.assertEquals(0, beanManager.getBeans(Object.class, new AnnotationLiteral<Tame>()
-      {
-      }).size());
-   }
-
-   @Test(expected = UnsatisfiedResolutionException.class)
-   public void testInstanceProcessedByParentActivity()
-   {
-      Context dummyContext = new DummyContext();
-      beanManager.addContext(dummyContext);
-      Assert.assertEquals(1, beanManager.getBeans(Cow.class).size());
-      final Bean<Cow> bean = (Bean<Cow>)beanManager.getBeans(Cow.class).iterator().next();
-      BeanManagerImpl childActivity = beanManager.createActivity();
-      final Set<Annotation> bindingTypes = new HashSet<Annotation>();
-      bindingTypes.add(new AnnotationLiteral<Tame>()
-      {
-      });
-      childActivity.addBean(new ForwardingBean<Cow>()
-      {
-
-         @Override
-         protected Bean<Cow> delegate()
-         {
-            return bean;
-         }
-
-         @Override
-         public Set<Annotation> getQualifiers()
-         {
-            return bindingTypes;
-         }
-
-         @Override
-         public Set<Class<? extends Annotation>> getStereotypes()
-         {
-            return Collections.emptySet();
-         }
-
-      });
-      Utils.getReference(beanManager, Field.class).get();
-   }
-
-   @Test
-   public void testObserverBelongingToChildDoesNotFireForParentActivity()
-   {
-      BeanManagerImpl childActivity = beanManager.createActivity();
-      ObserverMethod<NightTime> observer = new ObserverMethod<NightTime>()
-      {
-
-         public void notify(NightTime event)
-         {
-            assert false;
-         }
-
-         public Class<?> getBeanClass()
-         {
-            return NightTime.class;
-         }
-
-         public Set<Annotation> getObservedQualifiers()
-         {
-            return Arrays2.asSet(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
-         }
-
-         public Type getObservedType()
-         {
-            return NightTime.class;
-         }
-
-         public Reception getReception()
-         {
-            return Reception.ALWAYS;
-         }
-
-         public TransactionPhase getTransactionPhase()
-         {
-            return TransactionPhase.IN_PROGRESS;
-         }
-
-      };
-      // TODO Fix this test to use an observer method in a child activity
-      childActivity.addObserver(observer);
-      beanManager.fireEvent(new NightTime());
-   }
+        };
+        // TODO Fix this test to use an observer method in a child activity
+        childActivity.addObserver(observer);
+        beanManager.fireEvent(new NightTime());
+    }
 
 }

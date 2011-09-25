@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.unit.selector;
 
-public class Corge
-{
+public class Corge {
 
 }

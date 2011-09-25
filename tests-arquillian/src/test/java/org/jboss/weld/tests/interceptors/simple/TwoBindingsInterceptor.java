@@ -18,22 +18,20 @@
 package org.jboss.weld.tests.interceptors.simple;
 
 import javax.interceptor.AroundInvoke;
-import javax.interceptor.InvocationContext;
 import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 @SecondaryInterceptionBinding
 @Interceptor
-public class TwoBindingsInterceptor
-{
-   public static boolean aroundInvokeCalled = false;
+public class TwoBindingsInterceptor {
+    public static boolean aroundInvokeCalled = false;
 
-   @AroundInvoke
-   public Object doAround(InvocationContext context) throws Exception
-   {
-      aroundInvokeCalled = true;
-      return context.proceed();
-   }
+    @AroundInvoke
+    public Object doAround(InvocationContext context) throws Exception {
+        aroundInvokeCalled = true;
+        return context.proceed();
+    }
 }

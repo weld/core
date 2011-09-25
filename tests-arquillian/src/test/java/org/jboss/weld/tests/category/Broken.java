@@ -18,12 +18,11 @@ package org.jboss.weld.tests.category;
 
 
 /**
- * Marker Interface for JUnit Category marking Broken tests 
+ * Marker Interface for JUnit Category marking Broken tests
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public interface Broken  
-{
+public interface Broken {
 
 }

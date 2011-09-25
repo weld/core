@@ -20,17 +20,14 @@ package org.jboss.weld.tests.interceptors.generic;
 /**
  * @author Marius Bogoevici
  */
-public class StringProcessor extends AbstractMessageProcessor<String>
-{
-   @Override
-   void process(String input)
-   {
-      super.process(input);
-   }
+public class StringProcessor extends AbstractMessageProcessor<String> {
+    @Override
+    void process(String input) {
+        super.process(input);
+    }
 
-   @Override
-   String generate()
-   {
-      return "1";
-   }
+    @Override
+    String generate() {
+        return "1";
+    }
 }

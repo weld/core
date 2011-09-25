@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import static org.junit.Assert.assertFalse;
-
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -25,27 +23,25 @@ import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.test.events.Foo;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
+
 /**
- * 
  * @author Peter Royle
  */
-public class EventsTest
-{
+public class EventsTest {
 
-   // forum post check
-   @Test
-   public void testEventQualifiersCorrect()
-   {
-      Foo.reset();
-      WeldContainer weld = new Weld().initialize();
-      weld.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
-      assertFalse(Foo.isObservedEventTest());
-      shutdownManager(weld);
-   }
+    // forum post check
+    @Test
+    public void testEventQualifiersCorrect() {
+        Foo.reset();
+        WeldContainer weld = new Weld().initialize();
+        weld.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
+        assertFalse(Foo.isObservedEventTest());
+        shutdownManager(weld);
+    }
 
-   private void shutdownManager(WeldContainer weld)
-   {
-      ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-      shutdownManager.shutdown();
-   }
+    private void shutdownManager(WeldContainer weld) {
+        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
+        shutdownManager.shutdown();
+    }
 }

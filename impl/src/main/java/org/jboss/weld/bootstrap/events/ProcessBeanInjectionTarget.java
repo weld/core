@@ -9,39 +9,35 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
 
-public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X>
-{
-   
-   private final AbstractClassBean<X> classBean;
 
-   public ProcessBeanInjectionTarget(BeanManagerImpl beanManager, AbstractClassBean<X> bean)
-   {
-      super(beanManager, bean.getWeldAnnotated());
-      this.classBean = bean;
-   }
+public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarget<X> implements ProcessInjectionTarget<X> {
 
-   public InjectionTarget<X> getInjectionTarget()
-   {
-      return classBean.getInjectionTarget();
-   }
+    private final AbstractClassBean<X> classBean;
 
-   public void setInjectionTarget(InjectionTarget<X> injectionTarget)
-   {
-      classBean.setInjectionTarget(injectionTarget);
-   }
+    public ProcessBeanInjectionTarget(BeanManagerImpl beanManager, AbstractClassBean<X> bean) {
+        super(beanManager, bean.getWeldAnnotated());
+        this.classBean = bean;
+    }
+
+    public InjectionTarget<X> getInjectionTarget() {
+        return classBean.getInjectionTarget();
+    }
+
+    public void setInjectionTarget(InjectionTarget<X> injectionTarget) {
+        classBean.setInjectionTarget(injectionTarget);
+    }
 
 }

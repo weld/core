@@ -16,45 +16,43 @@
  */
 package org.jboss.weld.environment.se.threading;
 
+import org.jboss.weld.environment.se.WeldSEBeanRegistrant;
+import org.jboss.weld.environment.se.contexts.ThreadContext;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-
-import org.jboss.weld.environment.se.WeldSEBeanRegistrant;
-import org.jboss.weld.environment.se.contexts.ThreadContext;
 
 /**
  * Decorator for all beans which implements Runnable. It intercepts the call
  * to the run() method to set up the ThreadContext for the new thread so that
  * instances of @ThreadScoped beans can be correctly resolved.
+ *
  * @author Peter Royle
  */
 @Decorator
 public class RunnableDecorator implements Runnable {
 
-   @Inject @Delegate Runnable runnable;
+    @Inject
+    @Delegate
+    Runnable runnable;
 
-   /**
-    * Set up the ThreadContet and delegate.
-    */
-   public void run()
-   {
-      // set up context for this thread
-      final ThreadContext threadContext = WeldSEBeanRegistrant.THREAD_CONTEXT;
-      try
-      {
-         threadContext.activate();
-         // run the original thread
-         runnable.run();
-      }
-      finally
-      {
-         threadContext.invalidate();
-         threadContext.deactivate();
-      }
-         
-   }
+    /**
+     * Set up the ThreadContet and delegate.
+     */
+    public void run() {
+        // set up context for this thread
+        final ThreadContext threadContext = WeldSEBeanRegistrant.THREAD_CONTEXT;
+        try {
+            threadContext.activate();
+            // run the original thread
+            runnable.run();
+        } finally {
+            threadContext.invalidate();
+            threadContext.deactivate();
+        }
 
+    }
 
 
 }

@@ -17,10 +17,8 @@
 package org.jboss.weld.tests.decorators.abstractDecorator;
 
 /**
- * 
  * @author Stuart Douglas
  */
-public class WindowPane
-{
+public class WindowPane {
 
 }

@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.tests.unit.jsf;
 
-import javax.faces.component.behavior.Behavior;
-import javax.faces.context.FacesContext;
-
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -27,64 +24,57 @@ import org.jboss.weld.util.ApiAbstraction.Dummy;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
+import javax.faces.component.behavior.Behavior;
+import javax.faces.context.FacesContext;
+
 /**
  * @author Dan Allen
  */
-public class JsfApiAbstractionTest
-{
-   
-   @Test
-   public void testDetectsJsf12Version()
-   {
-      JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoaderHidingJsf20Classes());
-      Assert.assertEquals(1.2, abstraction.MINIMUM_API_VERSION, 0);
-      Assert.assertFalse(abstraction.isApiVersionCompatibleWith(2.0));
-   }
+public class JsfApiAbstractionTest {
 
-   @Test
-   public void testLoadsJsf12Classes()
-   {
-      JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoaderHidingJsf20Classes());
-      Assert.assertEquals(FacesContext.class, abstraction.FACES_CONTEXT);
-      Assert.assertEquals(Dummy.class, abstraction.BEHAVIOR_CLASS);
-   }
+    @Test
+    public void testDetectsJsf12Version() {
+        JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoaderHidingJsf20Classes());
+        Assert.assertEquals(1.2, abstraction.MINIMUM_API_VERSION, 0);
+        Assert.assertFalse(abstraction.isApiVersionCompatibleWith(2.0));
+    }
 
-   @Test
-   public void testDetectsJsf20Version()
-   {
-      JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoader());
-      Assert.assertEquals(2.0, abstraction.MINIMUM_API_VERSION, 0);
-      Assert.assertTrue(abstraction.isApiVersionCompatibleWith(2.0));
-   }
+    @Test
+    public void testLoadsJsf12Classes() {
+        JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoaderHidingJsf20Classes());
+        Assert.assertEquals(FacesContext.class, abstraction.FACES_CONTEXT);
+        Assert.assertEquals(Dummy.class, abstraction.BEHAVIOR_CLASS);
+    }
 
-   @Test
-   public void testLoadsJsf20Classes()
-   {
-      JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoader());
-      Assert.assertEquals(FacesContext.class, abstraction.FACES_CONTEXT);
-      Assert.assertEquals(Behavior.class, abstraction.BEHAVIOR_CLASS);
-   }
+    @Test
+    public void testDetectsJsf20Version() {
+        JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoader());
+        Assert.assertEquals(2.0, abstraction.MINIMUM_API_VERSION, 0);
+        Assert.assertTrue(abstraction.isApiVersionCompatibleWith(2.0));
+    }
 
-   private ResourceLoader getResourceLoader()
-   {
-      return DefaultResourceLoader.INSTANCE;
-   }
+    @Test
+    public void testLoadsJsf20Classes() {
+        JsfApiAbstraction abstraction = new JsfApiAbstraction(getResourceLoader());
+        Assert.assertEquals(FacesContext.class, abstraction.FACES_CONTEXT);
+        Assert.assertEquals(Behavior.class, abstraction.BEHAVIOR_CLASS);
+    }
 
-   private ResourceLoader getResourceLoaderHidingJsf20Classes()
-   {
-      return new DefaultResourceLoader()
-      {
+    private ResourceLoader getResourceLoader() {
+        return DefaultResourceLoader.INSTANCE;
+    }
 
-         @Override
-         public Class<?> classForName(String name)
-         {
-            if ("javax.faces.component.behavior.Behavior".equals(name))
-            {
-               throw new ResourceLoadingException("Hidden class");
+    private ResourceLoader getResourceLoaderHidingJsf20Classes() {
+        return new DefaultResourceLoader() {
+
+            @Override
+            public Class<?> classForName(String name) {
+                if ("javax.faces.component.behavior.Behavior".equals(name)) {
+                    throw new ResourceLoadingException("Hidden class");
+                }
+                return super.classForName(name);
             }
-            return super.classForName(name);
-         }
 
-      };
-   }
+        };
+    }
 }

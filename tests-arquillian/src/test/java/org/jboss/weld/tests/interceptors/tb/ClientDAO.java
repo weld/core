@@ -25,15 +25,12 @@ package org.jboss.weld.tests.interceptors.tb;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class ClientDAO extends TimestampedDAO<Client> implements CDAO
-{
-   Class<Client> entityClass()
-   {
-      return Client.class;
-   }
+public class ClientDAO extends TimestampedDAO<Client> implements CDAO {
+    Class<Client> entityClass() {
+        return Client.class;
+    }
 
-   public Client checkClient(Long l)
-   {
-      return TxInterceptor.clients.get();
-   }
+    public Client checkClient(Long l) {
+        return TxInterceptor.clients.get();
+    }
 }

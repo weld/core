@@ -16,17 +16,16 @@
  */
 package org.jboss.weld.jsf;
 
-import java.util.List;
-import java.util.Map;
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.http.HttpConversationContext;
 
 import javax.enterprise.context.Conversation;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
-
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.http.HttpConversationContext;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -35,7 +34,7 @@ import org.jboss.weld.context.http.HttpConversationContext;
  * produce a URL that need to be enhanced are forwarded to the ViewHandler
  * delegate.
  * </p>
- *
+ * <p/>
  * <p>
  * A request parameter was choosen to propagate the conversation because it's
  * the most technology agnostic approach for passing data between requests and
@@ -48,134 +47,106 @@ import org.jboss.weld.context.http.HttpConversationContext;
  * @author Pete Muir
  * @author Ales Justin
  */
-public class ConversationAwareViewHandler extends ViewHandlerWrapper
-{
+public class ConversationAwareViewHandler extends ViewHandlerWrapper {
 
-   private static enum Source
-   {
+    private static enum Source {
 
-      ACTION,
-      BOOKMARKABLE,
-      REDIRECT,
-      RESOURCE
+        ACTION,
+        BOOKMARKABLE,
+        REDIRECT,
+        RESOURCE
 
-   }
+    }
 
-   private final ViewHandler delegate;
-   private volatile ConversationContext conversationContext;
-   private static final ThreadLocal<Source> source = new ThreadLocal<Source>();
+    private final ViewHandler delegate;
+    private volatile ConversationContext conversationContext;
+    private static final ThreadLocal<Source> source = new ThreadLocal<Source>();
 
 
-   public ConversationAwareViewHandler(ViewHandler delegate)
-   {
-      this.delegate = delegate;
-   }
+    public ConversationAwareViewHandler(ViewHandler delegate) {
+        this.delegate = delegate;
+    }
 
-   /**
-    * Get conversation context.
-    *
-    * @return the conversation context
-    */
-   private ConversationContext getConversationContext()
-   {
-      if (conversationContext == null)
-      {
-         synchronized (this)
-         {
-            if (conversationContext == null)
-            {
-               Container container = Container.instance();
-               conversationContext = container.deploymentManager().instance().select(HttpConversationContext.class).get();
+    /**
+     * Get conversation context.
+     *
+     * @return the conversation context
+     */
+    private ConversationContext getConversationContext() {
+        if (conversationContext == null) {
+            synchronized (this) {
+                if (conversationContext == null) {
+                    Container container = Container.instance();
+                    conversationContext = container.deploymentManager().instance().select(HttpConversationContext.class).get();
+                }
             }
-         }
-      }
-      return conversationContext;
-   }
+        }
+        return conversationContext;
+    }
 
-   /**
-    * Allow the delegate to produce the action URL. If the conversation is
-    * long-running, append the conversation id request parameter to the query
-    * string part of the URL, but only if the request parameter is not already
-    * present.
-    *
-    * This covers form actions Ajax calls, and redirect URLs (which we want) and
-    * link hrefs (which we don't)
-    *
-    * @see {@link ViewHandler#getActionURL(FacesContext, String)}
-    */
-   @Override
-   public String getActionURL(FacesContext facesContext, String viewId)
-   {
-      String actionUrl = super.getActionURL(facesContext, viewId);
-      Conversation conversation = getConversationContext().getCurrentConversation();
-      if (!getSource().equals(Source.BOOKMARKABLE) && !conversation.isTransient())
-      {
-         return new FacesUrlTransformer(actionUrl, facesContext).appendConversationIdIfNecessary(getConversationContext().getParameterName(), conversation.getId()).getUrl();
-      }
-      else
-      {
-         return actionUrl;
-      }
-   }
+    /**
+     * Allow the delegate to produce the action URL. If the conversation is
+     * long-running, append the conversation id request parameter to the query
+     * string part of the URL, but only if the request parameter is not already
+     * present.
+     * <p/>
+     * This covers form actions Ajax calls, and redirect URLs (which we want) and
+     * link hrefs (which we don't)
+     *
+     * @see {@link ViewHandler#getActionURL(FacesContext, String)}
+     */
+    @Override
+    public String getActionURL(FacesContext facesContext, String viewId) {
+        String actionUrl = super.getActionURL(facesContext, viewId);
+        Conversation conversation = getConversationContext().getCurrentConversation();
+        if (!getSource().equals(Source.BOOKMARKABLE) && !conversation.isTransient()) {
+            return new FacesUrlTransformer(actionUrl, facesContext).appendConversationIdIfNecessary(getConversationContext().getParameterName(), conversation.getId()).getUrl();
+        } else {
+            return actionUrl;
+        }
+    }
 
-   private Source getSource()
-   {
-      if (source.get() == null)
-      {
-         return Source.ACTION;
-      }
-      else
-      {
-         return source.get();
-      }
-   }
+    private Source getSource() {
+        if (source.get() == null) {
+            return Source.ACTION;
+        } else {
+            return source.get();
+        }
+    }
 
-   @Override
-   public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams)
-   {
-      try
-      {
-         source.set(Source.BOOKMARKABLE);
-         return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
-      }
-      finally
-      {
-         source.remove();
-      }
-   }
+    @Override
+    public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
+        try {
+            source.set(Source.BOOKMARKABLE);
+            return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+        } finally {
+            source.remove();
+        }
+    }
 
-   @Override
-   public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams)
-   {
-      try
-      {
-         source.set(Source.REDIRECT);
-         return super.getRedirectURL(context, viewId, parameters, includeViewParams);
-      }
-      finally
-      {
-         source.remove();
-      }
-   }
+    @Override
+    public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters, boolean includeViewParams) {
+        try {
+            source.set(Source.REDIRECT);
+            return super.getRedirectURL(context, viewId, parameters, includeViewParams);
+        } finally {
+            source.remove();
+        }
+    }
 
-   @Override
-   public String getResourceURL(FacesContext context, String path)
-   {
-      try
-      {
-         source.set(Source.RESOURCE);
-         return super.getResourceURL(context, path);
-      }
-      finally
-      {
-         source.remove();
-      }
-   }
+    @Override
+    public String getResourceURL(FacesContext context, String path) {
+        try {
+            source.set(Source.RESOURCE);
+            return super.getResourceURL(context, path);
+        } finally {
+            source.remove();
+        }
+    }
 
-   @Override
-   public ViewHandler getWrapped()
-   {
-      return delegate;
-   }
+    @Override
+    public ViewHandler getWrapped() {
+        return delegate;
+    }
 
 }

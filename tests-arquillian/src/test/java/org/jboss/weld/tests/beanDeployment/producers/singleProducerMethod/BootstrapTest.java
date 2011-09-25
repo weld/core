@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.tests.beanDeployment.producers.singleProducerMethod;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -36,37 +29,38 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RunWith(Arquillian.class)
-public class BootstrapTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(BootstrapTest.class.getPackage());
-   }
+public class BootstrapTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(BootstrapTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testProducerMethodBean()
-   {
-      //deployBeans(TarantulaProducer.class);
-      List<Bean<?>> beans = beanManager.getBeans();
-      Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
-      for (Bean<?> bean : beans)
-      {
-         if (bean instanceof RIBean<?>)
-         {
-            classes.put(((RIBean<?>) bean).getType(), bean);
-         }
-      }
-      Assert.assertTrue(classes.containsKey(TarantulaProducer.class));
-      Assert.assertTrue(classes.containsKey(Tarantula.class));
+    @Test
+    public void testProducerMethodBean() {
+        //deployBeans(TarantulaProducer.class);
+        List<Bean<?>> beans = beanManager.getBeans();
+        Map<Class<?>, Bean<?>> classes = new HashMap<Class<?>, Bean<?>>();
+        for (Bean<?> bean : beans) {
+            if (bean instanceof RIBean<?>) {
+                classes.put(((RIBean<?>) bean).getType(), bean);
+            }
+        }
+        Assert.assertTrue(classes.containsKey(TarantulaProducer.class));
+        Assert.assertTrue(classes.containsKey(Tarantula.class));
 
-      Assert.assertTrue(classes.get(TarantulaProducer.class) instanceof ManagedBean<?>);
-      Assert.assertTrue(classes.get(Tarantula.class) instanceof ProducerMethod<?, ?>);
-   }
+        Assert.assertTrue(classes.get(TarantulaProducer.class) instanceof ManagedBean<?>);
+        Assert.assertTrue(classes.get(Tarantula.class) instanceof ProducerMethod<?, ?>);
+    }
 
 }

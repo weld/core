@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,35 +29,36 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class DisposalMethodInjectionPointTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(DisposalMethodInjectionPointTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class DisposalMethodInjectionPointTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(DisposalMethodInjectionPointTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   /*
+    /*
     * description = "WELD-358"
     */
-   @Test
-   @Category(Broken.class)
-   public void test()
-   {
-      BarProducer.reset();
-      Bean<BarConsumer> barConsumerBean = Utils.getBean(beanManager, BarConsumer.class);
-      CreationalContext<BarConsumer> ctx = beanManager.createCreationalContext(barConsumerBean);
-      BarConsumer barConsumer = barConsumerBean.create(ctx);
-      Assert.assertEquals("bar", BarProducer.getProducedInjection().getName());
-      Bar bar = barConsumer.getBar();
-      barConsumerBean.destroy(barConsumer, ctx);
-      Assert.assertEquals(bar, BarProducer.getDisposedBar());
-      Assert.assertEquals("bar", BarProducer.getDisposedInjection().getName());
-   }
+    @Test
+    @Category(Broken.class)
+    public void test() {
+        BarProducer.reset();
+        Bean<BarConsumer> barConsumerBean = Utils.getBean(beanManager, BarConsumer.class);
+        CreationalContext<BarConsumer> ctx = beanManager.createCreationalContext(barConsumerBean);
+        BarConsumer barConsumer = barConsumerBean.create(ctx);
+        Assert.assertEquals("bar", BarProducer.getProducedInjection().getName());
+        Bar bar = barConsumer.getBar();
+        barConsumerBean.destroy(barConsumer, ctx);
+        Assert.assertEquals(bar, BarProducer.getDisposedBar());
+        Assert.assertEquals("bar", BarProducer.getDisposedInjection().getName());
+    }
 }

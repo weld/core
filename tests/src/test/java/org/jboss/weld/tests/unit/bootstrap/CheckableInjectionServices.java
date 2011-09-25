@@ -21,64 +21,54 @@ import org.jboss.weld.injection.spi.InjectionServices;
 
 /**
  * @author pmuir
- *
  */
-public class CheckableInjectionServices implements InjectionServices
-{
+public class CheckableInjectionServices implements InjectionServices {
 
-   private boolean before = false;
-   private boolean after = false;
-   private boolean injectedAfter = false;
-   private boolean injectionTargetCorrect = false;
-   
-   public <T> void aroundInject(InjectionContext<T> injectionContext)
-   {
-      before = true;
-      if (injectionContext.getTarget() instanceof Foo)
-      {
-         ((Foo) injectionContext.getTarget()).message = "hi!";
-         if (injectionContext.getInjectionTarget().getInjectionPoints().size() == 1)
-         {
-            injectionTargetCorrect = injectionContext.getInjectionTarget().getInjectionPoints().iterator().next().getType().equals(Bar.class);
-         }
-      }
-      injectionContext.proceed();
-      after = true;
-      if (injectionContext.getTarget() instanceof Foo)
-      {
-         Foo foo = (Foo) injectionContext.getTarget();
-         injectedAfter = foo.getBar() instanceof Bar && foo.getMessage().equals("hi!");
-      }
-   }
-   
-   public void reset()
-   {
-      before = false;
-      after = false;
-      injectedAfter = false;
-      injectionTargetCorrect = false;
-   }
+    private boolean before = false;
+    private boolean after = false;
+    private boolean injectedAfter = false;
+    private boolean injectionTargetCorrect = false;
 
-   public boolean isBefore()
-   {
-      return before;
-   }
+    public <T> void aroundInject(InjectionContext<T> injectionContext) {
+        before = true;
+        if (injectionContext.getTarget() instanceof Foo) {
+            ((Foo) injectionContext.getTarget()).message = "hi!";
+            if (injectionContext.getInjectionTarget().getInjectionPoints().size() == 1) {
+                injectionTargetCorrect = injectionContext.getInjectionTarget().getInjectionPoints().iterator().next().getType().equals(Bar.class);
+            }
+        }
+        injectionContext.proceed();
+        after = true;
+        if (injectionContext.getTarget() instanceof Foo) {
+            Foo foo = (Foo) injectionContext.getTarget();
+            injectedAfter = foo.getBar() instanceof Bar && foo.getMessage().equals("hi!");
+        }
+    }
 
-   public boolean isAfter()
-   {
-      return after;
-   }
+    public void reset() {
+        before = false;
+        after = false;
+        injectedAfter = false;
+        injectionTargetCorrect = false;
+    }
 
-   public boolean isInjectedAfter()
-   {
-      return injectedAfter;
-   }
-   
-   public boolean isInjectionTargetCorrect()
-   {
-      return injectionTargetCorrect;
-   }
+    public boolean isBefore() {
+        return before;
+    }
 
-   public void cleanup() {}
+    public boolean isAfter() {
+        return after;
+    }
+
+    public boolean isInjectedAfter() {
+        return injectedAfter;
+    }
+
+    public boolean isInjectionTargetCorrect() {
+        return injectionTargetCorrect;
+    }
+
+    public void cleanup() {
+    }
 
 }

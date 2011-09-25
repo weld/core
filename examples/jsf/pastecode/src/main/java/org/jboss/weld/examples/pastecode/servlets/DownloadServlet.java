@@ -21,9 +21,8 @@
  */
 package org.jboss.weld.examples.pastecode.servlets;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+import org.jboss.weld.examples.pastecode.session.CodeFragmentManager;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -32,52 +31,44 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.jboss.weld.examples.pastecode.model.CodeFragment;
-import org.jboss.weld.examples.pastecode.session.CodeFragmentManager;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Servlet that offers the code fragment for download as a file
- * 
- * @author Martin Gencur
  *
+ * @author Martin Gencur
  */
 @WebServlet("/download")
-public class DownloadServlet extends HttpServlet
-{
-   private static final long serialVersionUID = 1L;
-   
-   @Inject
-   private Logger log;
+public class DownloadServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
-   @Inject
-   private CodeFragmentManager codeFragmentManager;
+    @Inject
+    private Logger log;
 
-   @Override
-   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-   {
-      String id = request.getParameter("id");
-      CodeFragment c = codeFragmentManager.getCodeFragment(id);
-      String fileName = c.getUser() + "." + c.getLanguage();
-      String txt = c.getText();
+    @Inject
+    private CodeFragmentManager codeFragmentManager;
 
-      response.setContentType("text/plain");
-      response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-      response.setContentLength(txt.length());
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+        CodeFragment c = codeFragmentManager.getCodeFragment(id);
+        String fileName = c.getUser() + "." + c.getLanguage();
+        String txt = c.getText();
 
-      ServletOutputStream out = response.getOutputStream();
-      try
-      {
-         out.print(txt);
-      }
-      catch (Exception e)
-      {
-         log.log(Level.WARNING, "Error processing file for download", e);
-      }
-      finally
-      {
-         out.close();
-      }
+        response.setContentType("text/plain");
+        response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.setContentLength(txt.length());
 
-   }
+        ServletOutputStream out = response.getOutputStream();
+        try {
+            out.print(txt);
+        } catch (Exception e) {
+            log.log(Level.WARNING, "Error processing file for download", e);
+        } finally {
+            out.close();
+        }
+
+    }
 }

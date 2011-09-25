@@ -33,96 +33,92 @@ import static org.junit.Assert.assertTrue;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EnterpriseExtensionTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(EnterpriseExtensionTest.class.getPackage())
-                  .addAsServiceProvider(Extension.class,
+public class EnterpriseExtensionTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EnterpriseExtensionTest.class.getPackage())
+                .addAsServiceProvider(Extension.class,
                         SimpleExtension.class,
                         ExtensionObserver.class,
                         WoodlandExtension.class,
                         TrainlineExtension.class);
-   }
+    }
 
-   /*
+    /*
     * description = "WELD-243"
     */
-   @Test
-   public void testContainerEventsOnlySentToExtensionBeans(ExtensionObserver extensionObserver, OtherObserver otherObserver)
-   {
-      assertTrue(extensionObserver.isBeforeBeanDiscovery());
-      assertTrue(extensionObserver.isAllBeforeBeanDiscovery());
-      assertFalse(otherObserver.isBeforeBeanDiscovery());
-      assertFalse(otherObserver.isAllBeforeBeanDiscovery());
+    @Test
+    public void testContainerEventsOnlySentToExtensionBeans(ExtensionObserver extensionObserver, OtherObserver otherObserver) {
+        assertTrue(extensionObserver.isBeforeBeanDiscovery());
+        assertTrue(extensionObserver.isAllBeforeBeanDiscovery());
+        assertFalse(otherObserver.isBeforeBeanDiscovery());
+        assertFalse(otherObserver.isAllBeforeBeanDiscovery());
 
-      assertTrue(extensionObserver.isAfterBeanDiscovery());
-      assertTrue(extensionObserver.isAllAfterBeanDiscovery());
-      assertFalse(otherObserver.isAfterBeanDiscovery());
-      assertFalse(otherObserver.isAllAfterBeanDiscovery());
+        assertTrue(extensionObserver.isAfterBeanDiscovery());
+        assertTrue(extensionObserver.isAllAfterBeanDiscovery());
+        assertFalse(otherObserver.isAfterBeanDiscovery());
+        assertFalse(otherObserver.isAllAfterBeanDiscovery());
 
-      assertTrue(extensionObserver.isProcessAnnotatedType());
-      assertTrue(extensionObserver.isAllProcessAnnnotatedType());
-      assertFalse(otherObserver.isProcessAnnotatedType());
-      assertFalse(otherObserver.isAllProcessAnnotatedType());
+        assertTrue(extensionObserver.isProcessAnnotatedType());
+        assertTrue(extensionObserver.isAllProcessAnnnotatedType());
+        assertFalse(otherObserver.isProcessAnnotatedType());
+        assertFalse(otherObserver.isAllProcessAnnotatedType());
 
-      assertTrue(extensionObserver.isProcessBean());
-      assertTrue(extensionObserver.isAllProcessBean());
-      assertFalse(otherObserver.isProcessBean());
-      assertFalse(otherObserver.isAllProcessBean());
+        assertTrue(extensionObserver.isProcessBean());
+        assertTrue(extensionObserver.isAllProcessBean());
+        assertFalse(otherObserver.isProcessBean());
+        assertFalse(otherObserver.isAllProcessBean());
 
-      assertTrue(extensionObserver.isProcessInjectionTarget());
-      assertTrue(extensionObserver.isAllProcessInjectionTarget());
-      assertFalse(otherObserver.isProcessInjectionTarget());
-      assertFalse(otherObserver.isAllProcessInjectionTarget());
+        assertTrue(extensionObserver.isProcessInjectionTarget());
+        assertTrue(extensionObserver.isAllProcessInjectionTarget());
+        assertFalse(otherObserver.isProcessInjectionTarget());
+        assertFalse(otherObserver.isAllProcessInjectionTarget());
 
-      assertTrue(extensionObserver.isProcessManagedBean());
-      assertTrue(extensionObserver.isAllProcessManagedBean());
-      assertFalse(otherObserver.isProcessManagedBean());
-      assertFalse(otherObserver.isAllProcessManagedBean());
+        assertTrue(extensionObserver.isProcessManagedBean());
+        assertTrue(extensionObserver.isAllProcessManagedBean());
+        assertFalse(otherObserver.isProcessManagedBean());
+        assertFalse(otherObserver.isAllProcessManagedBean());
 
-      assertTrue(extensionObserver.isProcessObserverMethod());
-      assertTrue(extensionObserver.isAllProcessObserverMethod());
-      assertFalse(otherObserver.isProcessObserverMethod());
-      assertFalse(otherObserver.isAllProcessObserverMethod());
+        assertTrue(extensionObserver.isProcessObserverMethod());
+        assertTrue(extensionObserver.isAllProcessObserverMethod());
+        assertFalse(otherObserver.isProcessObserverMethod());
+        assertFalse(otherObserver.isAllProcessObserverMethod());
 
-      assertTrue(extensionObserver.isProcessProducer());
-      assertTrue(extensionObserver.isAllProcessProducer());
-      assertFalse(otherObserver.isProcessProducer());
-      assertFalse(otherObserver.isAllProcessProducer());
+        assertTrue(extensionObserver.isProcessProducer());
+        assertTrue(extensionObserver.isAllProcessProducer());
+        assertFalse(otherObserver.isProcessProducer());
+        assertFalse(otherObserver.isAllProcessProducer());
 
-      assertTrue(extensionObserver.isProcessProducerField());
-      assertTrue(extensionObserver.isAllProcessProducerField());
-      assertFalse(otherObserver.isProcessProducerField());
-      assertFalse(otherObserver.isAllProcessProducerField());
+        assertTrue(extensionObserver.isProcessProducerField());
+        assertTrue(extensionObserver.isAllProcessProducerField());
+        assertFalse(otherObserver.isProcessProducerField());
+        assertFalse(otherObserver.isAllProcessProducerField());
 
-      assertTrue(extensionObserver.isProcessProducerMethod());
-      assertTrue(extensionObserver.isAllProcessProducerField());
-      assertFalse(otherObserver.isProcessProducerMethod());
-      assertFalse(otherObserver.isAllProcessProducerMethod());
+        assertTrue(extensionObserver.isProcessProducerMethod());
+        assertTrue(extensionObserver.isAllProcessProducerField());
+        assertFalse(otherObserver.isProcessProducerMethod());
+        assertFalse(otherObserver.isAllProcessProducerMethod());
 
-      assertTrue(extensionObserver.isProcessSessionBean());
-      assertTrue(extensionObserver.isAllProcessSessionBean());
-      assertFalse(otherObserver.isProcessSessionBean());
-      assertFalse(otherObserver.isAllProcessSessionBean());
+        assertTrue(extensionObserver.isProcessSessionBean());
+        assertTrue(extensionObserver.isAllProcessSessionBean());
+        assertFalse(otherObserver.isProcessSessionBean());
+        assertFalse(otherObserver.isAllProcessSessionBean());
 
-      assertTrue(extensionObserver.isAfterDeploymentValidation());
-      assertTrue(extensionObserver.isAllAfterDeploymentValidation());
-      assertFalse(otherObserver.isAfterDeploymentValidation());
-      assertFalse(otherObserver.isAllAfterDeploymentValidation());
-   }
+        assertTrue(extensionObserver.isAfterDeploymentValidation());
+        assertTrue(extensionObserver.isAllAfterDeploymentValidation());
+        assertFalse(otherObserver.isAfterDeploymentValidation());
+        assertFalse(otherObserver.isAllAfterDeploymentValidation());
+    }
 
-   /*
+    /*
     * WELD-503
     */
-   @Test
-   public void testProcessStarOnlyCalledForEnableSessionBeans(TrainlineExtension extension)
-   {
-      assertFalse(extension.isProcessTerminusBean());
-      assertFalse(extension.isProcessTerminusSessionBean());
-      assertFalse(extension.isProcessTerminusInjectionTarget());
-   }
+    @Test
+    public void testProcessStarOnlyCalledForEnableSessionBeans(TrainlineExtension extension) {
+        assertFalse(extension.isProcessTerminusBean());
+        assertFalse(extension.isProcessTerminusSessionBean());
+        assertFalse(extension.isProcessTerminusInjectionTarget());
+    }
 
 }

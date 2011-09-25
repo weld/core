@@ -18,56 +18,47 @@ package org.jboss.weld.tests.unit.deployment.structure.extensions;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-public class ObserverBase
-{
+public class ObserverBase {
 
-   protected boolean afterBeanDiscoveryCalled;
-   protected boolean beforeBeanDiscoveryCalled;
-   protected boolean afterDeploymentValidationCalled;
-   protected boolean processProducerCalled;
-   protected boolean processInjectionTargetCalled;
-   protected boolean processManagedBeanCalled;
-   
-   protected BeanManager beforeBeanDiscoveryBeanManager;
+    protected boolean afterBeanDiscoveryCalled;
+    protected boolean beforeBeanDiscoveryCalled;
+    protected boolean afterDeploymentValidationCalled;
+    protected boolean processProducerCalled;
+    protected boolean processInjectionTargetCalled;
+    protected boolean processManagedBeanCalled;
 
-   public ObserverBase()
-   {
-      super();
-   }
+    protected BeanManager beforeBeanDiscoveryBeanManager;
 
-   public boolean isAfterBeanDiscoveryCalled()
-   {
-      return afterBeanDiscoveryCalled;
-   }
+    public ObserverBase() {
+        super();
+    }
 
-   public boolean isBeforeBeanDiscoveryCalled()
-   {
-      return beforeBeanDiscoveryCalled;
-   }
+    public boolean isAfterBeanDiscoveryCalled() {
+        return afterBeanDiscoveryCalled;
+    }
 
-   public boolean isAfterDeploymentValidationCalled()
-   {
-      return afterDeploymentValidationCalled;
-   }
+    public boolean isBeforeBeanDiscoveryCalled() {
+        return beforeBeanDiscoveryCalled;
+    }
 
-   public boolean isProcessProducerCalled()
-   {
-      return processProducerCalled;
-   }
+    public boolean isAfterDeploymentValidationCalled() {
+        return afterDeploymentValidationCalled;
+    }
 
-   public boolean isProcessInjectionTargetCalled()
-   {
-      return processInjectionTargetCalled;
-   }
+    public boolean isProcessProducerCalled() {
+        return processProducerCalled;
+    }
 
-   public boolean isProcessManagedBeanCalled()
-   {
-      return processManagedBeanCalled;
-   }
-   
-   public BeanManager getBeforeBeanDiscoveryBeanManager()
-   {
-      return beforeBeanDiscoveryBeanManager;
-   }
+    public boolean isProcessInjectionTargetCalled() {
+        return processInjectionTargetCalled;
+    }
+
+    public boolean isProcessManagedBeanCalled() {
+        return processManagedBeanCalled;
+    }
+
+    public BeanManager getBeforeBeanDiscoveryBeanManager() {
+        return beforeBeanDiscoveryBeanManager;
+    }
 
 }

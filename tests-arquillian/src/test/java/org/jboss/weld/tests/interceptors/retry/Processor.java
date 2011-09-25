@@ -21,8 +21,7 @@ package org.jboss.weld.tests.interceptors.retry;
  * @author Marius Bogoevici
  */
 
-public interface Processor
-{
-   @Retriable
-   int tryToProcess();
+public interface Processor {
+    @Retriable
+    int tryToProcess();
 }

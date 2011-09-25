@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.environment.se.test.beans;
 
-import javax.enterprise.context.ApplicationScoped;
 import org.jboss.weld.environment.se.test.interceptors.Aggregated;
 import org.jboss.weld.environment.se.test.interceptors.Recorded;
 
+import javax.enterprise.context.ApplicationScoped;
+
 /**
- *
  * @author Peter Royle
  */
 @Recorded

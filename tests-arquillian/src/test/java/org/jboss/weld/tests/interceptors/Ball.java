@@ -21,9 +21,8 @@ package org.jboss.weld.tests.interceptors;
 /**
  * @author Marius Bogoevici
  */
-public interface Ball
-{
+public interface Ball {
 
-   void shoot();
+    void shoot();
 
 }

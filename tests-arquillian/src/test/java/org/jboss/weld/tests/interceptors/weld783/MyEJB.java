@@ -28,9 +28,7 @@ import javax.ejb.Stateless;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Stateless
-public class MyEJB
-{
-   public void doSomething()
-   {
-   }
+public class MyEJB {
+    public void doSomething() {
+    }
 }

@@ -29,25 +29,22 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class InterceptorsWithHierarchyTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .intercept(Defender.class)
-         .addPackage(InterceptorsWithHierarchyTest.class.getPackage());
-   }
+public class InterceptorsWithHierarchyTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .intercept(Defender.class)
+                .addPackage(InterceptorsWithHierarchyTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description = "WELD-568"
     */
-   @Test
-   public void testInterceptorsWithHierarchy(Attacker player)
-   {
-      Defender.invocationsCount = 0;
-      player.cloneMe();
-      Assert.assertEquals(1, Defender.invocationsCount);
-   }
+    @Test
+    public void testInterceptorsWithHierarchy(Attacker player) {
+        Defender.invocationsCount = 0;
+        player.cloneMe();
+        Assert.assertEquals(1, Defender.invocationsCount);
+    }
 
 }

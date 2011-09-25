@@ -20,7 +20,6 @@ package org.jboss.weld.tests.decorators.generic.extend;
 /**
  * @author Marius Bogoevici
  */
-public interface Decorated<T>
-{
-   T decoratedEcho(T parameter);
+public interface Decorated<T> {
+    T decoratedEcho(T parameter);
 }

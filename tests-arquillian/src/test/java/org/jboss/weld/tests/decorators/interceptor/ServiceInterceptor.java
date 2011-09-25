@@ -21,17 +21,16 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-@Intercepted @Interceptor
-public class ServiceInterceptor
-{
-   
-   public static int invocationCount = 0;
+@Intercepted
+@Interceptor
+public class ServiceInterceptor {
 
-   @AroundInvoke
-   public Object interceptService(InvocationContext invocationContext) throws Exception
-   {
-      invocationCount++;
-      return invocationContext.proceed();
-   }
+    public static int invocationCount = 0;
+
+    @AroundInvoke
+    public Object interceptService(InvocationContext invocationContext) throws Exception {
+        invocationCount++;
+        return invocationContext.proceed();
+    }
 
 }

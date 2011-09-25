@@ -5,13 +5,12 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-public class ResourceProducer
-{
-   
-   @SuppressWarnings("unused")
-   @Produces
-   @ApplicationScoped
-   @PersistenceContext
-   private EntityManager entityManager;
+public class ResourceProducer {
+
+    @SuppressWarnings("unused")
+    @Produces
+    @ApplicationScoped
+    @PersistenceContext
+    private EntityManager entityManager;
 
 }

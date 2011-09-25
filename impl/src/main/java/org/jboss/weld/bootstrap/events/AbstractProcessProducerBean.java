@@ -9,45 +9,39 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bootstrap.events;
 
-import java.lang.reflect.Type;
-
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.ProcessBean;
-
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProducerBean<T, X, ? >> extends AbstractDefinitionContainerEvent implements ProcessBean<X>
-{
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.ProcessBean;
+import java.lang.reflect.Type;
 
-   private final B bean;
-   
-   public AbstractProcessProducerBean(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments, B bean)
-   {
-      super(beanManager, rawType, actualTypeArguments);
-      this.bean = bean;
-   }
+public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProducerBean<T, X, ?>> extends AbstractDefinitionContainerEvent implements ProcessBean<X> {
 
-   public void addDefinitionError(Throwable t)
-   {
-      getErrors().add(t);
-   }
+    private final B bean;
 
-   public Annotated getAnnotated()
-   {
-      return bean.getWeldAnnotated();
-   }
+    public AbstractProcessProducerBean(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments, B bean) {
+        super(beanManager, rawType, actualTypeArguments);
+        this.bean = bean;
+    }
 
-   public B getBean()
-   {
-      return bean;
-   }
+    public void addDefinitionError(Throwable t) {
+        getErrors().add(t);
+    }
+
+    public Annotated getAnnotated() {
+        return bean.getWeldAnnotated();
+    }
+
+    public B getBean() {
+        return bean;
+    }
 
 }

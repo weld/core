@@ -28,16 +28,13 @@ import org.jboss.weld.tests.interceptors.lhotse.fst.Tx;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class ClientDAO extends TimestampedDAO<Client> implements CDAO
-{
-   public Class<Client> entityClass()
-   {
-      return Client.class;
-   }
+public class ClientDAO extends TimestampedDAO<Client> implements CDAO {
+    public Class<Client> entityClass() {
+        return Client.class;
+    }
 
-   @Tx(0)
-   public Client checkClient(Long l)
-   {
-      return null;
-   }
+    @Tx(0)
+    public Client checkClient(Long l) {
+        return null;
+    }
 }

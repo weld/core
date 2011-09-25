@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(AllTestRunner.class)
-public class AllTests
-{
+public class AllTests {
 
 }

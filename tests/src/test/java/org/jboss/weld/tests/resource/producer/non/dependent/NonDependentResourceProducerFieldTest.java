@@ -8,14 +8,12 @@ import org.testng.annotations.Test;
 
 @Artifact
 @ExpectedDeploymentException(DefinitionException.class)
-public class NonDependentResourceProducerFieldTest extends AbstractWeldTest
-{
-   
-   @Test(groups="incontainer-broken")
-   // JBoss AS not reporting the right exception
-   public void test()
-   {
-      assert false;
-   }
+public class NonDependentResourceProducerFieldTest extends AbstractWeldTest {
+
+    @Test(groups = "incontainer-broken")
+    // JBoss AS not reporting the right exception
+    public void test() {
+        assert false;
+    }
 
 }

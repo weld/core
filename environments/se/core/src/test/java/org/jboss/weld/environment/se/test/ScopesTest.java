@@ -17,10 +17,6 @@
 package org.jboss.weld.environment.se.test;
 
 
-import static org.junit.Assert.assertEquals;
-
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -28,33 +24,33 @@ import org.jboss.weld.environment.se.test.scopes.Bar;
 import org.jboss.weld.environment.se.test.scopes.Foo;
 import org.junit.Test;
 
+import javax.enterprise.inject.spi.BeanManager;
+
+import static org.junit.Assert.assertEquals;
+
 /**
- * 
  * @author Peter Royle
  */
-public class ScopesTest
-{
+public class ScopesTest {
 
-   /**
-    * Test that decorators work as expected in SE.
-    */
-   @Test
-   // WELD-322
-   public void testScopes()
-   {
+    /**
+     * Test that decorators work as expected in SE.
+     */
+    @Test
+    // WELD-322
+    public void testScopes() {
 
-      WeldContainer weld = new Weld().initialize();
-      BeanManager manager = weld.getBeanManager();
+        WeldContainer weld = new Weld().initialize();
+        BeanManager manager = weld.getBeanManager();
 
-      assertEquals(1, manager.getBeans(Bar.class).size());
-      assertEquals(2, manager.getBeans(Foo.class).size());
+        assertEquals(1, manager.getBeans(Bar.class).size());
+        assertEquals(2, manager.getBeans(Foo.class).size());
 
-      shutdownManager(weld);
-   }
+        shutdownManager(weld);
+    }
 
-   private void shutdownManager(WeldContainer weld)
-   {
-      ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-      shutdownManager.shutdown();
-   }
+    private void shutdownManager(WeldContainer weld) {
+        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
+        shutdownManager.shutdown();
+    }
 }

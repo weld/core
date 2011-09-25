@@ -20,10 +20,8 @@ import javax.ejb.Stateful;
 
 /**
  * @author pmuir
- *
  */
 @Stateful
-public class Cat implements CatLocal
-{
+public class Cat implements CatLocal {
 
 }

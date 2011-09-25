@@ -17,10 +17,8 @@
 package org.jboss.weld.tests.decorators.decoratedTypes;
 
 /**
- * 
  * @author Marius Bogoevici
  */
-public abstract class ParentDecorator implements Decorated
-{
-   
+public abstract class ParentDecorator implements Decorated {
+
 }

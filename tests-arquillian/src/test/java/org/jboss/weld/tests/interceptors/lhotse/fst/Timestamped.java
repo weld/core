@@ -25,7 +25,6 @@ package org.jboss.weld.tests.interceptors.lhotse.fst;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public abstract class Timestamped extends Entity
-{
-   Long timestamp;
+public abstract class Timestamped extends Entity {
+    Long timestamp;
 }

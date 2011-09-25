@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.decorators;
 
 import javax.decorator.Decorator;
@@ -21,34 +21,30 @@ import javax.decorator.Delegate;
 import javax.inject.Inject;
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
 @Decorator
-public abstract class SimpleDecorator1 implements SimpleBean
-{
-   @Inject @Delegate
-   SimpleBean delegate;
-   
-   public static boolean echo1;
-   public static boolean echo3;
-   
-   public static void reset()
-   {
-      echo1 = false;
-      echo3 = false;
-   }
-   
-   public int echo1(int i)
-   {
-      echo1 = true;
-      return delegate.echo1(i);
-   }
+public abstract class SimpleDecorator1 implements SimpleBean {
+    @Inject
+    @Delegate
+    SimpleBean delegate;
 
-   public int echo3(int i)
-   {
-      echo3 = true;
-      return delegate.echo3(i);
-   }
+    public static boolean echo1;
+    public static boolean echo3;
+
+    public static void reset() {
+        echo1 = false;
+        echo3 = false;
+    }
+
+    public int echo1(int i) {
+        echo1 = true;
+        return delegate.echo1(i);
+    }
+
+    public int echo3(int i) {
+        echo3 = true;
+        return delegate.echo3(i);
+    }
 }

@@ -26,58 +26,52 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
 @RunWith(Arquillian.class)
-public class SimpleDecoratorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(SimpleDecorator1.class, SimpleDecorator2.class)
-         .addPackage(SimpleDecoratorTest.class.getPackage());
-   }
+public class SimpleDecoratorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(SimpleDecorator1.class, SimpleDecorator2.class)
+                .addPackage(SimpleDecoratorTest.class.getPackage());
+    }
 
-   @Test
-   public void testSimpleDecorator(SimpleBean simpleBean)
-   {
-      resetDecorators();
-      Assert.assertEquals(1, simpleBean.echo1(1));
-      assertDecorators(true, false, false);
-      Assert.assertTrue(simpleBean.isInvoked());
+    @Test
+    public void testSimpleDecorator(SimpleBean simpleBean) {
+        resetDecorators();
+        Assert.assertEquals(1, simpleBean.echo1(1));
+        assertDecorators(true, false, false);
+        Assert.assertTrue(simpleBean.isInvoked());
 
-      resetDecorators();
-      Assert.assertEquals(2, simpleBean.echo2(2));
-      assertDecorators(false, true, false);
-      Assert.assertTrue(simpleBean.isInvoked());
+        resetDecorators();
+        Assert.assertEquals(2, simpleBean.echo2(2));
+        assertDecorators(false, true, false);
+        Assert.assertTrue(simpleBean.isInvoked());
 
-      //Only SimpleDecorator1 gets invoked, although I think SimpleDecorator2 should get invoked too
-      resetDecorators();
-      Assert.assertEquals(3, simpleBean.echo3(3));
-      assertDecorators(false, false, true);
+        //Only SimpleDecorator1 gets invoked, although I think SimpleDecorator2 should get invoked too
+        resetDecorators();
+        Assert.assertEquals(3, simpleBean.echo3(3));
+        assertDecorators(false, false, true);
 
-      Assert.assertTrue(simpleBean.isInvoked());
+        Assert.assertTrue(simpleBean.isInvoked());
 
-      resetDecorators();
-      Assert.assertEquals(4, simpleBean.echo4(4));
-      assertDecorators(false, false, false);
+        resetDecorators();
+        Assert.assertEquals(4, simpleBean.echo4(4));
+        assertDecorators(false, false, false);
 
-      Assert.assertTrue(simpleBean.isInvoked());
-   }
+        Assert.assertTrue(simpleBean.isInvoked());
+    }
 
-   private void resetDecorators()
-   {
-      SimpleDecorator1.reset();
-      SimpleDecorator2.reset();
-   }
+    private void resetDecorators() {
+        SimpleDecorator1.reset();
+        SimpleDecorator2.reset();
+    }
 
-   private void assertDecorators(boolean echo1, boolean echo2, boolean echo3)
-   {
-      Assert.assertEquals(echo1, SimpleDecorator1.echo1);
-      Assert.assertEquals(echo2, SimpleDecorator2.echo2);
-      Assert.assertEquals(echo3, SimpleDecorator2.echo3);
-   }
+    private void assertDecorators(boolean echo1, boolean echo2, boolean echo3) {
+        Assert.assertEquals(echo1, SimpleDecorator1.echo1);
+        Assert.assertEquals(echo2, SimpleDecorator2.echo2);
+        Assert.assertEquals(echo3, SimpleDecorator2.echo3);
+    }
 }

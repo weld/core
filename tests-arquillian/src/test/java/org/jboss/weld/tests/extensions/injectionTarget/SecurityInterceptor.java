@@ -22,11 +22,9 @@ import javax.interceptor.InvocationContext;
 
 @Interceptor
 @Secured
-class SecurityInterceptor
-{
-   @AroundInvoke
-   public Object intercept(InvocationContext ctx) throws Exception
-   {
-      return ! (Boolean) ctx.proceed();
-   }
+class SecurityInterceptor {
+    @AroundInvoke
+    public Object intercept(InvocationContext ctx) throws Exception {
+        return !(Boolean) ctx.proceed();
+    }
 }

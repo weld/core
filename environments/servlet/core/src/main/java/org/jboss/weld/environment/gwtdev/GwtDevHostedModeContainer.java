@@ -28,17 +28,15 @@ import org.jboss.weld.environment.jetty.Jetty6Container;
 /**
  *
  */
-public class GwtDevHostedModeContainer extends Jetty6Container
-{
-   public static Container INSTANCE = new GwtDevHostedModeContainer();
+public class GwtDevHostedModeContainer extends Jetty6Container {
+    public static Container INSTANCE = new GwtDevHostedModeContainer();
 
-   // The gwt-dev jar is never in the project classpath (only in the maven/eclipse/intellij plugin classpath)
-   // except when GWT is being run in hosted mode.
-   private static final String GWT_DEV_HOSTED_MODE_REQUIRED_CLASS_NAME = "com.google.gwt.dev.HostedMode";
+    // The gwt-dev jar is never in the project classpath (only in the maven/eclipse/intellij plugin classpath)
+    // except when GWT is being run in hosted mode.
+    private static final String GWT_DEV_HOSTED_MODE_REQUIRED_CLASS_NAME = "com.google.gwt.dev.HostedMode";
 
-   protected String classToCheck()
-   {
-      return GWT_DEV_HOSTED_MODE_REQUIRED_CLASS_NAME;
-   }
+    protected String classToCheck() {
+        return GWT_DEV_HOSTED_MODE_REQUIRED_CLASS_NAME;
+    }
 
 }

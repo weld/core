@@ -33,16 +33,15 @@ import javax.inject.Inject;
  * @version $Revision: $
  */
 @Decorator
-public class ServiceDecorator implements Service<Dog>
-{
-   @Inject @Delegate
-   private Service<Dog> service;
+public class ServiceDecorator implements Service<Dog> {
+    @Inject
+    @Delegate
+    private Service<Dog> service;
 
-   public static int invocationCount = 0;
+    public static int invocationCount = 0;
 
-   public void on(Dog dog)
-   {
-      invocationCount++;
-      service.on(dog);
-   }
+    public void on(Dog dog) {
+        invocationCount++;
+        service.on(dog);
+    }
 }

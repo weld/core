@@ -16,16 +16,11 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -34,36 +29,36 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Inject;
+
 /**
  * @author pmuir
- *
  */
 @RunWith(Arquillian.class)
-public class EjbDescriptorLookupTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(EjbDescriptorLookupTest.class.getPackage());
-   }
+public class EjbDescriptorLookupTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EjbDescriptorLookupTest.class.getPackage());
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testCorrectSubType()
-   {
-      EjbDescriptor<CatLocal> descriptor = beanManager.getEjbDescriptor("Cat");
-      assert descriptor.getClass().equals(InternalEjbDescriptor.class);
-      Bean<CatLocal> bean = beanManager.getBean(descriptor);
-      Assert.assertNotNull(bean);
-      Assert.assertTrue(bean instanceof SessionBean<?>);
-      Assert.assertEquals(Cat.class, bean.getBeanClass());
-      InjectionTarget<CatLocal> it = beanManager.createInjectionTarget(descriptor);
-      Assert.assertNotNull(it);
-      Assert.assertEquals(bean.getInjectionPoints(), it.getInjectionPoints());
-      Assert.assertTrue(it.produce(beanManager.createCreationalContext(bean)) instanceof CatLocal);
-   }
+    @Test
+    public void testCorrectSubType() {
+        EjbDescriptor<CatLocal> descriptor = beanManager.getEjbDescriptor("Cat");
+        assert descriptor.getClass().equals(InternalEjbDescriptor.class);
+        Bean<CatLocal> bean = beanManager.getBean(descriptor);
+        Assert.assertNotNull(bean);
+        Assert.assertTrue(bean instanceof SessionBean<?>);
+        Assert.assertEquals(Cat.class, bean.getBeanClass());
+        InjectionTarget<CatLocal> it = beanManager.createInjectionTarget(descriptor);
+        Assert.assertNotNull(it);
+        Assert.assertEquals(bean.getInjectionPoints(), it.getInjectionPoints());
+        Assert.assertTrue(it.produce(beanManager.createCreationalContext(bean)) instanceof CatLocal);
+    }
 
 }

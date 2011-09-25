@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.tests.serialization.noncontextual;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,29 +24,33 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
 @RunWith(Arquillian.class)
-public class SerializationTest
-{
+public class SerializationTest {
 
-	 @Inject BeanManager beanManager;
+    @Inject
+    BeanManager beanManager;
 
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class).addPackage(SerializationTest.class.getPackage());
-   }
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class).addPackage(SerializationTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description =
     * "http://lists.jboss.org/pipermail/weld-dev/2010-February/002265.html"
     */
-   @Test
-   public void testSerializationOfEventInNonContextual() throws Exception
-   {
+    @Test
+    public void testSerializationOfEventInNonContextual() throws Exception {
 
-		  NonContextual instance = new NonContextual();
-		  beanManager.createInjectionTarget(beanManager.createAnnotatedType(NonContextual.class)).inject(
-				instance, beanManager.createCreationalContext((Contextual<NonContextual>)null));
-		  new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(instance);
-   }
+        NonContextual instance = new NonContextual();
+        beanManager.createInjectionTarget(beanManager.createAnnotatedType(NonContextual.class)).inject(
+                instance, beanManager.createCreationalContext((Contextual<NonContextual>) null));
+        new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(instance);
+    }
 }

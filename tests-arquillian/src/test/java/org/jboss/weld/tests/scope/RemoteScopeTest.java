@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.tests.scope;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URL;
-import javax.servlet.http.HttpServletResponse;
-
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
@@ -40,31 +35,33 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.URL;
+
+import static org.junit.Assert.assertEquals;
+
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-public class RemoteScopeTest
-{
+public class RemoteScopeTest {
 
-   @Deployment(testable = false)
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-         .addClasses(Bar.class, Foo.class, RemoteClient.class, Special.class, Temp.class, TempConsumer.class, TempProducer.class, Useless.class)
-         .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
-         .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+    @Deployment(testable = false)
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(Bar.class, Foo.class, RemoteClient.class, Special.class, Temp.class, TempConsumer.class, TempProducer.class, Useless.class)
+                .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   /*
+    /*
     * description = "WELD-311"
     */
-   @Test
-   public void testScopeOfProducerMethod(@ArquillianResource URL baseURL) throws Exception
-   {
-      WebClient client = new WebClient();
-      Page page = client.getPage(new URL(baseURL, "request1"));
-      assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
-      page = client.getPage(new URL(baseURL, "request2"));
-      assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
-   }
+    @Test
+    public void testScopeOfProducerMethod(@ArquillianResource URL baseURL) throws Exception {
+        WebClient client = new WebClient();
+        Page page = client.getPage(new URL(baseURL, "request1"));
+        assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
+        page = client.getPage(new URL(baseURL, "request2"));
+        assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
+    }
 
 }

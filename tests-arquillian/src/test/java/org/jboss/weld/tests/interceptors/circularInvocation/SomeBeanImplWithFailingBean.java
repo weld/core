@@ -25,26 +25,24 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-@AllPurpose @Singleton @Failing
-public class SomeBeanImplWithFailingBean implements SomeBean
-{
+@AllPurpose
+@Singleton
+@Failing
+public class SomeBeanImplWithFailingBean implements SomeBean {
 
-   @Inject
-   FailingBean anotherBean;
+    @Inject
+    FailingBean anotherBean;
 
-   public void methodA()
-   {
-      this.anotherBean.handle();
-   }
+    public void methodA() {
+        this.anotherBean.handle();
+    }
 
-   public void methodB()
-   {
+    public void methodB() {
 
-   }
+    }
 
-   @AroundInvoke
-   public Object selfIntercept(InvocationContext invocationContext) throws Exception
-   {
-     return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object selfIntercept(InvocationContext invocationContext) throws Exception {
+        return invocationContext.proceed();
+    }
 }

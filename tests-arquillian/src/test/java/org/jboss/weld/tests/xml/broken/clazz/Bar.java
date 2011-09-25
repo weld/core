@@ -16,20 +16,18 @@
  */
 package org.jboss.weld.tests.xml.broken.clazz;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Stereotype;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Stereotype;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Stereotype
-@Target( { TYPE })
+@Target({TYPE})
 @Retention(RUNTIME)
 @Alternative
-@interface Bar
-{
+@interface Bar {
 
 }

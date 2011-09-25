@@ -9,75 +9,60 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_TYPE_NOT_EJB;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
-import java.lang.reflect.Type;
-
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.ProcessSessionBean;
-import javax.enterprise.inject.spi.SessionBeanType;
-
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X>
-{
-   
-   public static <X> void fire(BeanManagerImpl beanManager, SessionBean<Object> bean)
-   {
-      if (beanManager.isBeanEnabled(bean))
-      {
-         new ProcessSessionBeanImpl<X>(beanManager, bean) {}.fire();
-      }
-   }
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.ProcessSessionBean;
+import javax.enterprise.inject.spi.SessionBeanType;
+import java.lang.reflect.Type;
 
-   public ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean)
-   {
-      super(beanManager, ProcessSessionBean.class, new Type[] { bean.getWeldAnnotated().getBaseType() }, bean);
-   }
+import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_TYPE_NOT_EJB;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-   public AnnotatedType<X> getAnnotatedSessionBeanClass()
-   {
-      return cast(getBean().getWeldAnnotated());
-   }
+public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X> {
 
-   public String getEjbName()
-   {
-      return getBean().getEjbDescriptor().getEjbName();
-   }
+    public static <X> void fire(BeanManagerImpl beanManager, SessionBean<Object> bean) {
+        if (beanManager.isBeanEnabled(bean)) {
+            new ProcessSessionBeanImpl<X>(beanManager, bean) {
+            }.fire();
+        }
+    }
 
-   public SessionBeanType getSessionBeanType()
-   {
-      if (getBean().getEjbDescriptor().isStateless())
-      {
-         return SessionBeanType.STATELESS;
-      }
-      else if (getBean().getEjbDescriptor().isStateful())
-      {
-         return SessionBeanType.STATEFUL;
-      }
-      else if (getBean().getEjbDescriptor().isSingleton())
-      {
-         return SessionBeanType.SINGLETON;
-      }
-      else
-      {
-         throw new IllegalStateException(BEAN_TYPE_NOT_EJB, getBean());
-      }
-   }
+    public ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean) {
+        super(beanManager, ProcessSessionBean.class, new Type[]{bean.getWeldAnnotated().getBaseType()}, bean);
+    }
 
-   public AnnotatedType<Object> getAnnotatedBeanClass()
-   {
-      return getBean().getWeldAnnotated();
-   }
+    public AnnotatedType<X> getAnnotatedSessionBeanClass() {
+        return cast(getBean().getWeldAnnotated());
+    }
+
+    public String getEjbName() {
+        return getBean().getEjbDescriptor().getEjbName();
+    }
+
+    public SessionBeanType getSessionBeanType() {
+        if (getBean().getEjbDescriptor().isStateless()) {
+            return SessionBeanType.STATELESS;
+        } else if (getBean().getEjbDescriptor().isStateful()) {
+            return SessionBeanType.STATEFUL;
+        } else if (getBean().getEjbDescriptor().isSingleton()) {
+            return SessionBeanType.SINGLETON;
+        } else {
+            throw new IllegalStateException(BEAN_TYPE_NOT_EJB, getBean());
+        }
+    }
+
+    public AnnotatedType<Object> getAnnotatedBeanClass() {
+        return getBean().getWeldAnnotated();
+    }
 
 }

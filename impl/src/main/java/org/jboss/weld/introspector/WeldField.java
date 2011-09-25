@@ -9,45 +9,41 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.introspector;
 
-import java.lang.reflect.Field;
-
 import javax.enterprise.inject.spi.AnnotatedField;
+import java.lang.reflect.Field;
 
 /**
  * AnnotatedField provides a uniform access to the annotations on an annotated
- * field 
- * 
- * @author Pete Muir
+ * field
  *
+ * @author Pete Muir
  */
-public interface WeldField<T, X> extends WeldMember<T, X, Field>, AnnotatedField<X>
-{
+public interface WeldField<T, X> extends WeldMember<T, X, Field>, AnnotatedField<X> {
 
-   /**
-    * Injects an instance
-    * 
-    * 
-    * @param declaringInstance The instance to inject into
-    * @param value The value to inject
-    */
-   public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException;
+    /**
+     * Injects an instance
+     *
+     * @param declaringInstance The instance to inject into
+     * @param value             The value to inject
+     */
+    void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException;
 
-   public T get(Object instance);
+    T get(Object instance);
 
-   /**
-    * Gets the property name of the field
-    * 
-    * @return The name
-    */
-   public String getPropertyName();
+    /**
+     * Gets the property name of the field
+     *
+     * @return The name
+     */
+    String getPropertyName();
 
-   public boolean isTransient();
+    boolean isTransient();
 
 }

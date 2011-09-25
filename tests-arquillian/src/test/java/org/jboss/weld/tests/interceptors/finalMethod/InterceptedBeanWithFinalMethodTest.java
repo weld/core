@@ -16,10 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.finalMethod;
 
-import javax.inject.Inject;
-
 import junit.framework.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -30,34 +27,32 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+
 @RunWith(Arquillian.class)
-public class InterceptedBeanWithFinalMethodTest
-{
+public class InterceptedBeanWithFinalMethodTest {
 
-   @Inject
-   private TopSecretBriefing briefing;
+    @Inject
+    private TopSecretBriefing briefing;
 
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class).intercept(TopSecretInterceptor.class).addPackage(InterceptedBeanWithFinalMethodTest.class.getPackage());
-   }
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class).intercept(TopSecretInterceptor.class).addPackage(InterceptedBeanWithFinalMethodTest.class.getPackage());
+    }
 
-   // WELD-769
-   @Test
-   public void testInterceptionWorksOnClassWithFinalMethod()
-   {
-      Assert.assertEquals(TopSecretBriefing.MESSAGE + TopSecretInterceptor.MESSAGE, briefing.performBriefing());
-   }
+    // WELD-769
+    @Test
+    public void testInterceptionWorksOnClassWithFinalMethod() {
+        Assert.assertEquals(TopSecretBriefing.MESSAGE + TopSecretInterceptor.MESSAGE, briefing.performBriefing());
+    }
 
-   /*
+    /*
     * description = "WELD-771"
     */
-   @Category(Broken.class)
-   @Test
-   public void testFinalMethodInvocationOnInterceptedBean()
-   {
-      briefing.performBriefing();
-      Assert.assertTrue(briefing.isBriefingPerformed());
-   }
+    @Category(Broken.class)
+    @Test
+    public void testFinalMethodInvocationOnInterceptedBean() {
+        briefing.performBriefing();
+        Assert.assertTrue(briefing.isBriefingPerformed());
+    }
 }

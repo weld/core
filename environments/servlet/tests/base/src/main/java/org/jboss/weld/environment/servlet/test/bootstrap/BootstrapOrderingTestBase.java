@@ -17,25 +17,22 @@ import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDef
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class BootstrapOrderingTestBase
-{
+public class BootstrapOrderingTestBase {
 
-   public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<listener><listener-class>" + MyServletContextListener.class.getName() + "</listener-class></listener>").getBytes());
-   public static final Asset EXTENSION = new ByteArrayAsset(MyExtension.class.getName().getBytes());
+    public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<listener><listener-class>" + MyServletContextListener.class.getName() + "</listener-class></listener>").getBytes());
+    public static final Asset EXTENSION = new ByteArrayAsset(MyExtension.class.getName().getBytes());
 
-   public static WebArchive deployment()
-   {
-      return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTestBase.class.getPackage()).addAsWebInfResource(EXTENSION, "classes/META-INF/services/" + Extension.class.getName());
-   }
+    public static WebArchive deployment() {
+        return baseDeployment(WEB_XML).addPackage(BootstrapOrderingTestBase.class.getPackage()).addAsWebInfResource(EXTENSION, "classes/META-INF/services/" + Extension.class.getName());
+    }
 
-   @Test
-   public void testContextInitializedCalledBeforeBeanValidation()
-   {
-      assertEquals(4, events.size());
-      assertTrue(events.get(0) instanceof BeforeBeanDiscovery);
-      assertTrue(events.get(1) instanceof AfterBeanDiscovery);
-      assertTrue(events.get(2) instanceof AfterDeploymentValidation);
-      assertTrue(events.get(3) instanceof ServletContextEvent);
-   }
+    @Test
+    public void testContextInitializedCalledBeforeBeanValidation() {
+        assertEquals(4, events.size());
+        assertTrue(events.get(0) instanceof BeforeBeanDiscovery);
+        assertTrue(events.get(1) instanceof AfterBeanDiscovery);
+        assertTrue(events.get(2) instanceof AfterDeploymentValidation);
+        assertTrue(events.get(3) instanceof ServletContextEvent);
+    }
 
 }

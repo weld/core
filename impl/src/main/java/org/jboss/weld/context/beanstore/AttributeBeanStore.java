@@ -9,12 +9,18 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.context.beanstore;
+
+import org.jboss.weld.context.api.ContextualInstance;
+import org.slf4j.cal10n.LocLogger;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -22,12 +28,6 @@ import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_FOUND;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
-
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.jboss.weld.context.api.ContextualInstance;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * <p>
@@ -37,192 +37,168 @@ import org.slf4j.cal10n.LocLogger;
  * reattched, then any local modifications will be written to the underlying
  * store.
  * </p>
- * 
+ * <p/>
  * <p>
  * This construct is not thread safe.
  * </p>
- * 
+ *
  * @author Pete Muir
  * @author Nicklas Karlsson
  * @author David Allen
  */
-public abstract class AttributeBeanStore implements BoundBeanStore
-{
+public abstract class AttributeBeanStore implements BoundBeanStore {
 
-   private static final long serialVersionUID = 8923580660774253915L;
-   private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
+    private static final long serialVersionUID = 8923580660774253915L;
+    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
-   private final HashMapBeanStore beanStore;
-   private final NamingScheme namingScheme;
+    private final HashMapBeanStore beanStore;
+    private final NamingScheme namingScheme;
 
-   private boolean attached;
+    private boolean attached;
 
-   public AttributeBeanStore(NamingScheme namingScheme)
-   {
-      this.namingScheme = namingScheme;
-      this.beanStore = new HashMapBeanStore();
-   }
+    public AttributeBeanStore(NamingScheme namingScheme) {
+        this.namingScheme = namingScheme;
+        this.beanStore = new HashMapBeanStore();
+    }
 
-   /**
-    * Detach the bean store, causing updates to longer be written through to the
-    * underlying store.
-    */
-   public boolean detach()
-   {
-      if (attached)
-      {
-         attached = false;
-         log.trace("Bean store " + this + " is detached");
-         return true;
-      }
-      else
-      {
-         return false;
-      }
-   }
+    /**
+     * Detach the bean store, causing updates to longer be written through to the
+     * underlying store.
+     */
+    public boolean detach() {
+        if (attached) {
+            attached = false;
+            log.trace("Bean store " + this + " is detached");
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-   /**
-    * <p>
-    * Attach the bean store, any updates from now on will be written through to
-    * the underlying store.
-    * </p>
-    * 
-    * <p>
-    * When the bean store is attached, the detached state is assumed to be
-    * authoritative if there are any conflicts.
-    * </p>
-    */
-   public boolean attach()
-   {
-      if (!attached)
-      {
-         attached = true;
-         // beanStore is authoritative, so copy everything to the backing store
-         for (String id : beanStore)
-         {
-            ContextualInstance<?> instance = beanStore.get(id);
-            String prefixedId = getNamingScheme().prefix(id);
-            log.trace("Updating underlying store with contextual " + instance + " under ID " + id);
-            setAttribute(prefixedId, instance);
-         }
-
-         /*
-          * Additionally copy anything not in the bean store but in the session
-          * into the bean store
-          */
-         for (String prefixedId : getPrefixedAttributeNames())
-         {
-            String id = getNamingScheme().deprefix(prefixedId);
-            if (!beanStore.contains(id))
-            {
-               ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
-               beanStore.put(id, instance);
-               log.trace("Adding detached contextual " + instance + " under ID " + id);
+    /**
+     * <p>
+     * Attach the bean store, any updates from now on will be written through to
+     * the underlying store.
+     * </p>
+     * <p/>
+     * <p>
+     * When the bean store is attached, the detached state is assumed to be
+     * authoritative if there are any conflicts.
+     * </p>
+     */
+    public boolean attach() {
+        if (!attached) {
+            attached = true;
+            // beanStore is authoritative, so copy everything to the backing store
+            for (String id : beanStore) {
+                ContextualInstance<?> instance = beanStore.get(id);
+                String prefixedId = getNamingScheme().prefix(id);
+                log.trace("Updating underlying store with contextual " + instance + " under ID " + id);
+                setAttribute(prefixedId, instance);
             }
-         }
-         return true;
-      }
-      else
-      {
-         return false;
-      }
-   }
 
-   public boolean isAttached()
-   {
-      return attached;
-   }
+            /*
+            * Additionally copy anything not in the bean store but in the session
+            * into the bean store
+            */
+            for (String prefixedId : getPrefixedAttributeNames()) {
+                String id = getNamingScheme().deprefix(prefixedId);
+                if (!beanStore.contains(id)) {
+                    ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
+                    beanStore.put(id, instance);
+                    log.trace("Adding detached contextual " + instance + " under ID " + id);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-   public <T> ContextualInstance<T> get(String id)
-   {
-      ContextualInstance<T> instance = beanStore.get(id);
-      log.trace(CONTEXTUAL_INSTANCE_FOUND, id, instance, this);
-      return instance;
-   }
+    public boolean isAttached() {
+        return attached;
+    }
 
-   public <T> void put(String id, ContextualInstance<T> instance)
-   {
-      if (isAttached())
-      {
-         String prefixedId = namingScheme.prefix(id);
-         setAttribute(prefixedId, instance);
-      }
-      beanStore.put(id, instance);
-      log.trace(CONTEXTUAL_INSTANCE_ADDED, instance.getContextual(), id, this);
-   }
+    public <T> ContextualInstance<T> get(String id) {
+        ContextualInstance<T> instance = beanStore.get(id);
+        log.trace(CONTEXTUAL_INSTANCE_FOUND, id, instance, this);
+        return instance;
+    }
 
-   public void clear()
-   {
-      Iterator<String> it = iterator();
-      while (it.hasNext())
-      {
-         String id = it.next();
-         if (isAttached())
-         {
+    public <T> void put(String id, ContextualInstance<T> instance) {
+        if (isAttached()) {
             String prefixedId = namingScheme.prefix(id);
-            removeAttribute(prefixedId);
-         }
-         it.remove();
-         log.trace(CONTEXTUAL_INSTANCE_REMOVED, id, this);
-      }
-      log.trace(CONTEXT_CLEARED, this);
-   }
+            setAttribute(prefixedId, instance);
+        }
+        beanStore.put(id, instance);
+        log.trace(CONTEXTUAL_INSTANCE_ADDED, instance.getContextual(), id, this);
+    }
 
-   public boolean contains(String id)
-   {
-      return get(id) != null;
-   }
+    public void clear() {
+        Iterator<String> it = iterator();
+        while (it.hasNext()) {
+            String id = it.next();
+            if (isAttached()) {
+                String prefixedId = namingScheme.prefix(id);
+                removeAttribute(prefixedId);
+            }
+            it.remove();
+            log.trace(CONTEXTUAL_INSTANCE_REMOVED, id, this);
+        }
+        log.trace(CONTEXT_CLEARED, this);
+    }
 
-   protected NamingScheme getNamingScheme()
-   {
-      return namingScheme;
-   }
-   
-   public Iterator<String> iterator()
-   {
-      return beanStore.iterator();
-   }
+    public boolean contains(String id) {
+        return get(id) != null;
+    }
 
-   /**
-    * Gets an attribute from the underlying storage
-    * 
-    * @param prefixedId The (prefixed) id of the attribute
-    * @return The data
-    */
-   protected abstract Object getAttribute(String prefixedId);
+    protected NamingScheme getNamingScheme() {
+        return namingScheme;
+    }
 
-   /**
-    * Removes an attribute from the underlying storage
-    * 
-    * @param prefixedId The (prefixed) id of the attribute to remove
-    */
-   protected abstract void removeAttribute(String prefixedId);
+    public Iterator<String> iterator() {
+        return beanStore.iterator();
+    }
 
-   /**
-    * Gets an enumeration of the attribute names present in the underlying
-    * storage
-    * 
-    * @return The attribute names
-    */
-   protected abstract Collection<String> getAttributeNames();
-   
-   /**
-    * Gets an enumeration of the attribute names present in the underlying
-    * storage
-    * 
-    * @return The attribute names
-    */
-   protected Collection<String> getPrefixedAttributeNames()
-   {
-      return getNamingScheme().filterIds(getAttributeNames());
-   }
+    /**
+     * Gets an attribute from the underlying storage
+     *
+     * @param prefixedId The (prefixed) id of the attribute
+     * @return The data
+     */
+    protected abstract Object getAttribute(String prefixedId);
 
-   /**
-    * Sets an instance under a key in the underlying storage
-    * 
-    * @param prefixedId The (prefixed) id of the attribute to set
-    * @param instance The instance
-    */
-   protected abstract void setAttribute(String prefixedId, Object instance);
+    /**
+     * Removes an attribute from the underlying storage
+     *
+     * @param prefixedId The (prefixed) id of the attribute to remove
+     */
+    protected abstract void removeAttribute(String prefixedId);
+
+    /**
+     * Gets an enumeration of the attribute names present in the underlying
+     * storage
+     *
+     * @return The attribute names
+     */
+    protected abstract Collection<String> getAttributeNames();
+
+    /**
+     * Gets an enumeration of the attribute names present in the underlying
+     * storage
+     *
+     * @return The attribute names
+     */
+    protected Collection<String> getPrefixedAttributeNames() {
+        return getNamingScheme().filterIds(getAttributeNames());
+    }
+
+    /**
+     * Sets an instance under a key in the underlying storage
+     *
+     * @param prefixedId The (prefixed) id of the attribute to set
+     * @param instance   The instance
+     */
+    protected abstract void setAttribute(String prefixedId, Object instance);
 
 }

@@ -9,85 +9,71 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.context.beanstore;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import org.jboss.weld.context.api.ContextualInstance;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.context.api.ContextualInstance;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-public abstract class AbstractMapBackedBeanStore implements BeanStore
-{
+public abstract class AbstractMapBackedBeanStore implements BeanStore {
 
-   protected abstract Map<String, Object> delegate();
+    protected abstract Map<String, Object> delegate();
 
-   public <T> ContextualInstance<T> get(String id)
-   {
-      return cast(delegate().get(id));
-   }
+    public <T> ContextualInstance<T> get(String id) {
+        return cast(delegate().get(id));
+    }
 
-   public void clear()
-   {
-      delegate().clear();
-   }
-   
-   public boolean contains(String id)
-   {
-      return delegate().containsKey(id);
-   }
-   
-   public void remove(String id)
-   {
-      delegate().remove(id);
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj instanceof AbstractMapBackedBeanStore)
-      {
-         AbstractMapBackedBeanStore that = (AbstractMapBackedBeanStore) obj;
-         return this.delegate().equals(that.delegate());
-      }
-      else
-      {
-         return false;
-      }
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
+    public void clear() {
+        delegate().clear();
+    }
 
-   public Set<String> getContextualIds()
-   {
-      return delegate().keySet();
-   }
+    public boolean contains(String id) {
+        return delegate().containsKey(id);
+    }
 
-   public <T> void put(String id, ContextualInstance<T> beanInstance)
-   {
-      delegate().put(id, beanInstance);
-   }
+    public void remove(String id) {
+        delegate().remove(id);
+    }
 
-   @Override
-   public String toString()
-   {
-      return "holding " + delegate().size() + " instances";
-   }
-   
-   public Iterator<String> iterator()
-   {
-      return delegate().keySet().iterator();
-   }
-   
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AbstractMapBackedBeanStore) {
+            AbstractMapBackedBeanStore that = (AbstractMapBackedBeanStore) obj;
+            return this.delegate().equals(that.delegate());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    public Set<String> getContextualIds() {
+        return delegate().keySet();
+    }
+
+    public <T> void put(String id, ContextualInstance<T> beanInstance) {
+        delegate().put(id, beanInstance);
+    }
+
+    @Override
+    public String toString() {
+        return "holding " + delegate().size() + " instances";
+    }
+
+    public Iterator<String> iterator() {
+        return delegate().keySet().iterator();
+    }
+
 }

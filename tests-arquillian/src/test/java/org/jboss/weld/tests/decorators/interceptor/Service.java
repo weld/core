@@ -17,7 +17,6 @@
 
 package org.jboss.weld.tests.decorators.interceptor;
 
-public interface Service
-{
+public interface Service {
     void execute();
 }

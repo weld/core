@@ -11,31 +11,28 @@ import org.junit.runner.RunWith;
 
 
 @RunWith(Arquillian.class)
-public class BeansXmlTest 
-{
-   @Deployment //@Expected(Exception.class)
-   public static Archive<?> deploy() 
-   {
-      return ShrinkWrap.create(JavaArchive.class)
-         .addPackage(BeansXmlTest.class.getPackage())
-         .addAsManifestResource(
-               new StringAsset(
-                "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" xmlns:weld=\"http://jboss.org/schema/weld/beans\">\n" + 
-         		"   <alternatives>\n" + 
-         		"      <foo></foo>\n" + 
-         		"   </alternatives>\n" + 
-         		"   <weld:scan>\n" + 
-         		"    <bar></bar>\n" + 
-         		"   </weld:scan>\n" + 
-         		"</beans>\n" + 
-         		""),
-         		"beans.xml");
-   }
-   
-   @Test
-   public void test()
-   {
-      //assert false;
-   }
-   
+public class BeansXmlTest {
+    @Deployment //@Expected(Exception.class)
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(JavaArchive.class)
+                .addPackage(BeansXmlTest.class.getPackage())
+                .addAsManifestResource(
+                        new StringAsset(
+                                "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" xmlns:weld=\"http://jboss.org/schema/weld/beans\">\n" +
+                                        "   <alternatives>\n" +
+                                        "      <foo></foo>\n" +
+                                        "   </alternatives>\n" +
+                                        "   <weld:scan>\n" +
+                                        "    <bar></bar>\n" +
+                                        "   </weld:scan>\n" +
+                                        "</beans>\n" +
+                                        ""),
+                        "beans.xml");
+    }
+
+    @Test
+    public void test() {
+        //assert false;
+    }
+
 }

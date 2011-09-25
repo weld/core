@@ -32,265 +32,215 @@ import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 
 @ApplicationScoped
-public class OtherObserver
-{
-   
-   private boolean allBeforeBeanDiscovery;
-   private boolean allAfterBeanDiscovery;
-   private boolean allAfterDeploymentValidation;
-   private boolean allProcessBean;
-   private boolean allProcessInjectionTarget;
-   private boolean allProcessManagedBean;
-   private boolean allProcessObserverMethod;
-   private boolean allProcessProducer;
-   private boolean allProcessProducerField;
-   private boolean allProcessProducerMethod;
-   private boolean allProcessSession;
-   private boolean allProcessAnnotatedType;
-   
-   private boolean beforeBeanDiscovery;
-   private boolean afterBeanDiscovery;
-   private boolean afterDeploymentValidation;
-   private boolean processBean;
-   private boolean processInjectionTarget;
-   private boolean processManagedBean;
-   private boolean processObserverMethod;
-   private boolean processProducer;
-   private boolean processProducerField;
-   private boolean processProducerMethod;
-   private boolean processSessionBean;
-   private boolean processAnnotatedType;
+public class OtherObserver {
 
-   public void observeAll(@Observes Object event)
-   {
-      if (event instanceof BeforeBeanDiscovery)
-      {
-         allBeforeBeanDiscovery = true;
-      }
-      if (event instanceof AfterBeanDiscovery)
-      {
-         allAfterBeanDiscovery = true;
-      }
-      if (event instanceof AfterDeploymentValidation)
-      {
-         allAfterDeploymentValidation = true;
-      }
-      if (event instanceof ProcessBean<?> && !(event instanceof ProcessProducerField<?, ?> || event instanceof ProcessProducerMethod<?, ?> || event instanceof ProcessManagedBean<?> || event instanceof ProcessSessionBean<?>))
-      {
-         allProcessBean = true;
-      }
-      if (event instanceof ProcessInjectionTarget<?>)
-      {
-         allProcessInjectionTarget = true;
-      }
-      if (event instanceof ProcessManagedBean<?>)
-      {
-         allProcessManagedBean = true;
-      }
-      if (event instanceof ProcessObserverMethod<?, ?>)
-      {
-         allProcessObserverMethod = true;
-      }
-      if (event instanceof ProcessProducer<?, ?>)
-      {
-         allProcessProducer = true;
-      }
-      if (event instanceof ProcessProducerField<?, ?>)
-      {
-         allProcessProducerField = true;
-      }
-      if (event instanceof ProcessProducerMethod<?, ?>)
-      {
-         allProcessProducerMethod = true;
-      }
-      if (event instanceof ProcessSessionBean<?>)
-      {
-         allProcessSession = true;
-      }
-      if (event instanceof ProcessAnnotatedType<?>)
-      {
-         allProcessAnnotatedType = true;
-      }
-   }
-   
-   public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event)
-   {
-      beforeBeanDiscovery = true;
-   }
-   
-   public void observeAfterBeanDiscovery(@Observes AfterBeanDiscovery event)
-   {
-      afterBeanDiscovery = true;
-   }
-   
-   public void observeAfterDeploymentValidation(@Observes AfterDeploymentValidation event)
-   {
-      afterDeploymentValidation = true;
-   }
-   
-   public void observeProcessBean(@Observes ProcessBean<?> event)
-   {
-      processBean = true;
-   }
-   
-   public void observeProcessInjectionTarget(@Observes ProcessInjectionTarget<?> event)
-   {
-      processInjectionTarget = true;
-   }
-   
-   public void observeProcessProducer(@Observes ProcessProducer<?, ?> event)
-   {
-      processProducer = true;
-   }
-   
-   public void observeProcessProducerMethod(@Observes ProcessProducerMethod<?, ?> event)
-   {
-      processProducerMethod = true;
-   }
-   
-   public void observeProcessProducerField(@Observes ProcessProducerField<?, ?> event)
-   {
-      processProducerField = true;
-   }
-   
-   public void observeProcessObserverMethod(@Observes ProcessObserverMethod<?, ?> event)
-   {
-      processObserverMethod = true;
-   }
-   
-   public void observeProcessManagedBean(@Observes ProcessManagedBean<?> event)
-   {
-      processManagedBean = true;
-   }
-   
-   public void observeProcessSessionBean(@Observes ProcessSessionBean<?> event)
-   {
-      processSessionBean = true;
-   }
-   
-   public void observeProcessAnnotatedType(@Observes ProcessAnnotatedType<?> event)
-   {
-      processAnnotatedType = true;
-   }
+    private boolean allBeforeBeanDiscovery;
+    private boolean allAfterBeanDiscovery;
+    private boolean allAfterDeploymentValidation;
+    private boolean allProcessBean;
+    private boolean allProcessInjectionTarget;
+    private boolean allProcessManagedBean;
+    private boolean allProcessObserverMethod;
+    private boolean allProcessProducer;
+    private boolean allProcessProducerField;
+    private boolean allProcessProducerMethod;
+    private boolean allProcessSession;
+    private boolean allProcessAnnotatedType;
 
-   public boolean isAllBeforeBeanDiscovery()
-   {
-      return allBeforeBeanDiscovery;
-   }
+    private boolean beforeBeanDiscovery;
+    private boolean afterBeanDiscovery;
+    private boolean afterDeploymentValidation;
+    private boolean processBean;
+    private boolean processInjectionTarget;
+    private boolean processManagedBean;
+    private boolean processObserverMethod;
+    private boolean processProducer;
+    private boolean processProducerField;
+    private boolean processProducerMethod;
+    private boolean processSessionBean;
+    private boolean processAnnotatedType;
 
-   public boolean isAllAfterBeanDiscovery()
-   {
-      return allAfterBeanDiscovery;
-   }
+    public void observeAll(@Observes Object event) {
+        if (event instanceof BeforeBeanDiscovery) {
+            allBeforeBeanDiscovery = true;
+        }
+        if (event instanceof AfterBeanDiscovery) {
+            allAfterBeanDiscovery = true;
+        }
+        if (event instanceof AfterDeploymentValidation) {
+            allAfterDeploymentValidation = true;
+        }
+        if (event instanceof ProcessBean<?> && !(event instanceof ProcessProducerField<?, ?> || event instanceof ProcessProducerMethod<?, ?> || event instanceof ProcessManagedBean<?> || event instanceof ProcessSessionBean<?>)) {
+            allProcessBean = true;
+        }
+        if (event instanceof ProcessInjectionTarget<?>) {
+            allProcessInjectionTarget = true;
+        }
+        if (event instanceof ProcessManagedBean<?>) {
+            allProcessManagedBean = true;
+        }
+        if (event instanceof ProcessObserverMethod<?, ?>) {
+            allProcessObserverMethod = true;
+        }
+        if (event instanceof ProcessProducer<?, ?>) {
+            allProcessProducer = true;
+        }
+        if (event instanceof ProcessProducerField<?, ?>) {
+            allProcessProducerField = true;
+        }
+        if (event instanceof ProcessProducerMethod<?, ?>) {
+            allProcessProducerMethod = true;
+        }
+        if (event instanceof ProcessSessionBean<?>) {
+            allProcessSession = true;
+        }
+        if (event instanceof ProcessAnnotatedType<?>) {
+            allProcessAnnotatedType = true;
+        }
+    }
 
-   public boolean isAllAfterDeploymentValidation()
-   {
-      return allAfterDeploymentValidation;
-   }
+    public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event) {
+        beforeBeanDiscovery = true;
+    }
 
-   public boolean isAllProcessBean()
-   {
-      return allProcessBean;
-   }
+    public void observeAfterBeanDiscovery(@Observes AfterBeanDiscovery event) {
+        afterBeanDiscovery = true;
+    }
 
-   public boolean isAllProcessInjectionTarget()
-   {
-      return allProcessInjectionTarget;
-   }
+    public void observeAfterDeploymentValidation(@Observes AfterDeploymentValidation event) {
+        afterDeploymentValidation = true;
+    }
 
-   public boolean isAllProcessManagedBean()
-   {
-      return allProcessManagedBean;
-   }
+    public void observeProcessBean(@Observes ProcessBean<?> event) {
+        processBean = true;
+    }
 
-   public boolean isAllProcessObserverMethod()
-   {
-      return allProcessObserverMethod;
-   }
+    public void observeProcessInjectionTarget(@Observes ProcessInjectionTarget<?> event) {
+        processInjectionTarget = true;
+    }
 
-   public boolean isAllProcessProducer()
-   {
-      return allProcessProducer;
-   }
+    public void observeProcessProducer(@Observes ProcessProducer<?, ?> event) {
+        processProducer = true;
+    }
 
-   public boolean isAllProcessProducerField()
-   {
-      return allProcessProducerField;
-   }
+    public void observeProcessProducerMethod(@Observes ProcessProducerMethod<?, ?> event) {
+        processProducerMethod = true;
+    }
 
-   public boolean isAllProcessProducerMethod()
-   {
-      return allProcessProducerMethod;
-   }
+    public void observeProcessProducerField(@Observes ProcessProducerField<?, ?> event) {
+        processProducerField = true;
+    }
 
-   public boolean isAllProcessSessionBean()
-   {
-      return allProcessSession;
-   }
+    public void observeProcessObserverMethod(@Observes ProcessObserverMethod<?, ?> event) {
+        processObserverMethod = true;
+    }
 
-   public boolean isAllProcessAnnotatedType()
-   {
-      return allProcessAnnotatedType;
-   }
+    public void observeProcessManagedBean(@Observes ProcessManagedBean<?> event) {
+        processManagedBean = true;
+    }
 
-   public boolean isBeforeBeanDiscovery()
-   {
-      return beforeBeanDiscovery;
-   }
+    public void observeProcessSessionBean(@Observes ProcessSessionBean<?> event) {
+        processSessionBean = true;
+    }
 
-   public boolean isAfterBeanDiscovery()
-   {
-      return afterBeanDiscovery;
-   }
+    public void observeProcessAnnotatedType(@Observes ProcessAnnotatedType<?> event) {
+        processAnnotatedType = true;
+    }
 
-   public boolean isAfterDeploymentValidation()
-   {
-      return afterDeploymentValidation;
-   }
+    public boolean isAllBeforeBeanDiscovery() {
+        return allBeforeBeanDiscovery;
+    }
 
-   public boolean isProcessBean()
-   {
-      return processBean;
-   }
+    public boolean isAllAfterBeanDiscovery() {
+        return allAfterBeanDiscovery;
+    }
 
-   public boolean isProcessInjectionTarget()
-   {
-      return processInjectionTarget;
-   }
+    public boolean isAllAfterDeploymentValidation() {
+        return allAfterDeploymentValidation;
+    }
 
-   public boolean isProcessManagedBean()
-   {
-      return processManagedBean;
-   }
+    public boolean isAllProcessBean() {
+        return allProcessBean;
+    }
 
-   public boolean isProcessObserverMethod()
-   {
-      return processObserverMethod;
-   }
+    public boolean isAllProcessInjectionTarget() {
+        return allProcessInjectionTarget;
+    }
 
-   public boolean isProcessProducer()
-   {
-      return processProducer;
-   }
+    public boolean isAllProcessManagedBean() {
+        return allProcessManagedBean;
+    }
 
-   public boolean isProcessProducerField()
-   {
-      return processProducerField;
-   }
+    public boolean isAllProcessObserverMethod() {
+        return allProcessObserverMethod;
+    }
 
-   public boolean isProcessProducerMethod()
-   {
-      return processProducerMethod;
-   }
+    public boolean isAllProcessProducer() {
+        return allProcessProducer;
+    }
 
-   public boolean isProcessSessionBean()
-   {
-      return processSessionBean;
-   }
+    public boolean isAllProcessProducerField() {
+        return allProcessProducerField;
+    }
 
-   public boolean isProcessAnnotatedType()
-   {
-      return processAnnotatedType;
-   }
-   
+    public boolean isAllProcessProducerMethod() {
+        return allProcessProducerMethod;
+    }
+
+    public boolean isAllProcessSessionBean() {
+        return allProcessSession;
+    }
+
+    public boolean isAllProcessAnnotatedType() {
+        return allProcessAnnotatedType;
+    }
+
+    public boolean isBeforeBeanDiscovery() {
+        return beforeBeanDiscovery;
+    }
+
+    public boolean isAfterBeanDiscovery() {
+        return afterBeanDiscovery;
+    }
+
+    public boolean isAfterDeploymentValidation() {
+        return afterDeploymentValidation;
+    }
+
+    public boolean isProcessBean() {
+        return processBean;
+    }
+
+    public boolean isProcessInjectionTarget() {
+        return processInjectionTarget;
+    }
+
+    public boolean isProcessManagedBean() {
+        return processManagedBean;
+    }
+
+    public boolean isProcessObserverMethod() {
+        return processObserverMethod;
+    }
+
+    public boolean isProcessProducer() {
+        return processProducer;
+    }
+
+    public boolean isProcessProducerField() {
+        return processProducerField;
+    }
+
+    public boolean isProcessProducerMethod() {
+        return processProducerMethod;
+    }
+
+    public boolean isProcessSessionBean() {
+        return processSessionBean;
+    }
+
+    public boolean isProcessAnnotatedType() {
+        return processAnnotatedType;
+    }
+
 }

@@ -24,19 +24,16 @@ import javax.inject.Inject;
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
 @Decorator
-public abstract class UncheckedExceptionThrowingDecorator implements Simple
-{
-   @Inject
-   @Delegate
-   Simple delegate;
+public abstract class UncheckedExceptionThrowingDecorator implements Simple {
+    @Inject
+    @Delegate
+    Simple delegate;
 
-   public boolean invoked()
-   {
-      return delegate.invoked();
-   }
+    public boolean invoked() {
+        return delegate.invoked();
+    }
 
-   public String speak()
-   {
-      throw new UnsupportedOperationException("Sorry, no can do");
-   }
+    public String speak() {
+        throw new UnsupportedOperationException("Sorry, no can do");
+    }
 }

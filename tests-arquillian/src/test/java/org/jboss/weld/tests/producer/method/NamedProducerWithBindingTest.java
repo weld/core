@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.tests.producer.method;
 
-import java.util.Date;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -32,28 +27,29 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+import java.util.Date;
+
 /**
  * @author Dan Allen
  */
 @RunWith(Arquillian.class)
-public class NamedProducerWithBindingTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(NamedProducerWithBindingTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class NamedProducerWithBindingTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(NamedProducerWithBindingTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject
-   private BeanManagerImpl beanManager;
+    @Inject
+    private BeanManagerImpl beanManager;
 
-   @Test
-   public void testGetNamedProducerWithBinding()
-   {
-      Bean<?> bean = beanManager.resolve(beanManager.getBeans("date"));
-      Date date = (Date) beanManager.getReference(bean, Object.class, beanManager.createCreationalContext(bean));
-      Assert.assertNotNull(date);
-   }
+    @Test
+    public void testGetNamedProducerWithBinding() {
+        Bean<?> bean = beanManager.resolve(beanManager.getBeans("date"));
+        Date date = (Date) beanManager.getReference(bean, Object.class, beanManager.createCreationalContext(bean));
+        Assert.assertNotNull(date);
+    }
 }

@@ -29,21 +29,18 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class ProxiabilityTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(ProxiabilityTest.class.getPackage());
-   }
+public class ProxiabilityTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(ProxiabilityTest.class.getPackage());
+    }
 
-   /*
+    /*
     * description = "WELD-477"
     */
-   @Test
-   public void testClassWithPrivateFinalMethodsProxyable(InjectedClass injectedClassInstance)
-   {
-       Assert.assertNotNull(injectedClassInstance.getDependency());
-   }
+    @Test
+    public void testClassWithPrivateFinalMethodsProxyable(InjectedClass injectedClassInstance) {
+        Assert.assertNotNull(injectedClassInstance.getDependency());
+    }
 }

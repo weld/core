@@ -27,6 +27,5 @@ import javax.ejb.Stateless;
  * @author Stuart Douglas
  */
 @Stateless
-public class MotorBikeBean
-{
+public class MotorBikeBean {
 }

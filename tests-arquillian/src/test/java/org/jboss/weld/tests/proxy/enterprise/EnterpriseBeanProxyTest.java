@@ -31,31 +31,28 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class EnterpriseBeanProxyTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
-         .addAsModule(
-               ShrinkWrap.create(JavaArchive.class)
-                  .addPackage(EnterpriseBeanProxyTest.class.getPackage())
-                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-         );
-   }
+public class EnterpriseBeanProxyTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                .addAsModule(
+                        ShrinkWrap.create(JavaArchive.class)
+                                .addPackage(EnterpriseBeanProxyTest.class.getPackage())
+                                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                );
+    }
 
-   /*
+    /*
     * description = "WBRI-109"
     *
     * <a href="https://jira.jboss.org/jira/browse/WBRI-109">WBRI-109</a>
     */
-   // Broken due to WELDINT-45
-   @Test
-   @Category(Broken.class)
-   public void testNoInterfaceView(Mouse mouse) throws Exception
-   {
-      Assert.assertTrue(Utils.isProxy(mouse));
-      Assert.assertTrue(mouse instanceof Mouse);
-   }
+    // Broken due to WELDINT-45
+    @Test
+    @Category(Broken.class)
+    public void testNoInterfaceView(Mouse mouse) throws Exception {
+        Assert.assertTrue(Utils.isProxy(mouse));
+        Assert.assertTrue(mouse instanceof Mouse);
+    }
 
 }

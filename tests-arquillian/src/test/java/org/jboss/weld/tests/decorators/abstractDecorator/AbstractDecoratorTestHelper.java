@@ -20,18 +20,16 @@ package org.jboss.weld.tests.decorators.abstractDecorator;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class AbstractDecoratorTestHelper
-{
-   static void resetAll()
-   {
-      WindowImpl.drawn = false;
-      WindowImpl.moved = false;
-      FrameWithFieldInjectedDelegate.drawn = false;
-      FrameWithFieldInjectedDelegateAndAbstractMethod.moved = false;
-      FrameWithFieldInjectedDelegateAndSelfInvokedAbstractMethod.moved = false;
-      FrameWithConstructorInjectedDelegate.drawn = false;
-      FrameWithConstructorInjectedDelegateAndAbstractMethod.moved = false;
-      FrameWithInitializerMethodInjectedDelegate.drawn = false;
-      FrameWithInitializerMethodInjectedDelegateAndAbstractMethod.moved = false;
-   }
+public class AbstractDecoratorTestHelper {
+    static void resetAll() {
+        WindowImpl.drawn = false;
+        WindowImpl.moved = false;
+        FrameWithFieldInjectedDelegate.drawn = false;
+        FrameWithFieldInjectedDelegateAndAbstractMethod.moved = false;
+        FrameWithFieldInjectedDelegateAndSelfInvokedAbstractMethod.moved = false;
+        FrameWithConstructorInjectedDelegate.drawn = false;
+        FrameWithConstructorInjectedDelegateAndAbstractMethod.moved = false;
+        FrameWithInitializerMethodInjectedDelegate.drawn = false;
+        FrameWithInitializerMethodInjectedDelegateAndAbstractMethod.moved = false;
+    }
 }

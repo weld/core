@@ -20,18 +20,15 @@ package org.jboss.weld.tests.decorators.custom;
 /**
  * @author Marius Bogoevici
  */
-public class WindowImpl implements Window
-{
-   public static boolean drawn = false;
+public class WindowImpl implements Window {
+    public static boolean drawn = false;
 
-   public void draw()
-   {
-      drawn = true;
-   }
-   
-   public static void reset()
-   {
-      drawn = false;
-   }
+    public void draw() {
+        drawn = true;
+    }
+
+    public static void reset() {
+        drawn = false;
+    }
 
 }

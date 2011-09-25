@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -85,596 +85,494 @@ import java.util.Set;
 
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ValidatorMessage.*;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
+import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
+import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DISPOSAL_METHODS_WITHOUT_PRODUCER;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_DEPENDENT_BEAN;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_WILDCARD;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_WITH_TYPE_VARIABLE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
+import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses
- * 
+ *
  * @author Nicklas Karlsson
  * @author David Allen
  */
-public class Validator implements Service
-{
+public class Validator implements Service {
 
-   private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
+    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
-   private void validateBean(Bean<?> bean, BeanManagerImpl beanManager)
-   {
-      for (InjectionPoint ij : bean.getInjectionPoints())
-      {
-         validateInjectionPoint(ij, beanManager);
-      }
-      boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
-      if (normalScoped && !Beans.isBeanProxyable(bean))
-      {
-         throw Proxies.getUnproxyableTypesException(bean.getTypes());
-      }
-      if (!normalScoped)
-      {
-         validatePseudoScopedBean(bean, beanManager);
-      }
-   }
+    private void validateBean(Bean<?> bean, BeanManagerImpl beanManager) {
+        for (InjectionPoint ij : bean.getInjectionPoints()) {
+            validateInjectionPoint(ij, beanManager);
+        }
+        boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+        if (normalScoped && !Beans.isBeanProxyable(bean)) {
+            throw Proxies.getUnproxyableTypesException(bean.getTypes());
+        }
+        if (!normalScoped) {
+            validatePseudoScopedBean(bean, beanManager);
+        }
+    }
 
-   /**
-    * Validate an RIBean. This includes validating whether two beans specialize
-    * the same bean
-    * 
-    * @param bean the bean to validate
-    * @param beanManager the current manager
-    * @param specializedBeans the existing specialized beans
-    */
-   private void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans)
-   {
-      validateBean(bean, beanManager);
-      if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>))
-      {
-         RIBean<?> abstractBean = bean;
-         if (abstractBean.isSpecializing())
-         {
-            if (specializedBeans.contains(abstractBean.getSpecializedBean()))
-            {
-               throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, bean);
+    /**
+     * Validate an RIBean. This includes validating whether two beans specialize
+     * the same bean
+     *
+     * @param bean             the bean to validate
+     * @param beanManager      the current manager
+     * @param specializedBeans the existing specialized beans
+     */
+    private void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans) {
+        validateBean(bean, beanManager);
+        if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>)) {
+            RIBean<?> abstractBean = bean;
+            if (abstractBean.isSpecializing()) {
+                if (specializedBeans.contains(abstractBean.getSpecializedBean())) {
+                    throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, bean);
+                }
+                specializedBeans.add(abstractBean.getSpecializedBean());
             }
-            specializedBeans.add(abstractBean.getSpecializedBean());
-         }
-         if ((bean instanceof AbstractClassBean<?>))
-         {
-            AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
-            if (classBean.hasDecorators())
-            {
-               validateDecorators(beanManager, classBean);
+            if ((bean instanceof AbstractClassBean<?>)) {
+                AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
+                if (classBean.hasDecorators()) {
+                    validateDecorators(beanManager, classBean);
+                }
+                // validate CDI-defined interceptors
+                if (classBean.hasInterceptors()) {
+                    validateInterceptors(beanManager, classBean);
+                }
             }
-            // validate CDI-defined interceptors
-            if (classBean.hasInterceptors())
-            {
-               validateInterceptors(beanManager, classBean);
+        }
+    }
+
+    private void validateInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean) {
+        InterceptionModel<ClassMetadata<?>, ?> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getType());
+        if (interceptionModel != null) {
+            Set<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getAllInterceptors();
+            if (interceptors.size() > 0) {
+                for (InterceptorMetadata<?> interceptorMetadata : interceptors) {
+                    if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof SerializableContextual) {
+                        SerializableContextual<Interceptor<?>, ?> serializableContextual = cast(interceptorMetadata.getInterceptorReference().getInterceptor());
+
+                        if (classBean.isPassivationCapableBean() && !((InterceptorImpl<?>) serializableContextual.get()).isSerializable()) {
+                            throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, serializableContextual.get());
+                        }
+                        for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints()) {
+                            Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
+                            validateInjectionPoint(injectionPoint, beanManager);
+                            if (classBean.isPassivationCapableBean()) {
+                                validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                            }
+                        }
+                    }
+                    if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof ClassMetadata<?>) {
+                        ClassMetadata<?> classMetadata = (ClassMetadata<?>) interceptorMetadata.getInterceptorReference().getInterceptor();
+                        if (classBean.isPassivationCapableBean() && !Reflections.isSerializable(classMetadata.getJavaClass())) {
+                            throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
+                        }
+                        InjectionTarget<Object> injectionTarget = cast(beanManager.createInjectionTarget(beanManager.createAnnotatedType(classMetadata.getJavaClass())));
+                        for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints()) {
+                            Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
+                            validateInjectionPoint(injectionPoint, beanManager);
+                            if (classBean.isPassivationCapableBean()) {
+                                validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                            }
+                        }
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   private void validateInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
-   {
-      InterceptionModel<ClassMetadata<?>, ?> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getType());
-      if (interceptionModel != null)
-      {
-         Set<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getAllInterceptors();
-         if (interceptors.size() > 0)
-         {
-            for (InterceptorMetadata<?> interceptorMetadata : interceptors)
-            {
-               if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof SerializableContextual)
-               {
-                  SerializableContextual<Interceptor<?>, ?> serializableContextual = cast(interceptorMetadata.getInterceptorReference().getInterceptor());
-
-                  if (classBean.isPassivationCapableBean() && !((InterceptorImpl<?>) serializableContextual.get()).isSerializable())
-                  {
-                     throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, serializableContextual.get());
-                  }
-                  for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints())
-                  {
-                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                     validateInjectionPoint(injectionPoint, beanManager);
-                     if (classBean.isPassivationCapableBean())
-                     {
-                        validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
-                     }
-                  }
-               }
-               if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof ClassMetadata<?>)
-               {
-                  ClassMetadata<?> classMetadata = (ClassMetadata<?>) interceptorMetadata.getInterceptorReference().getInterceptor();
-                  if (classBean.isPassivationCapableBean() && !Reflections.isSerializable(classMetadata.getJavaClass()))
-                  {
-                     throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
-                  }
-                  InjectionTarget<Object> injectionTarget = cast(beanManager.createInjectionTarget(beanManager.createAnnotatedType(classMetadata.getJavaClass())));
-                  for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
-                  {
-                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                     validateInjectionPoint(injectionPoint, beanManager);
-                     if (classBean.isPassivationCapableBean())
-                     {
-                        validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
-                     }
-                  }
-               }
+    private void validateDecorators(BeanManagerImpl beanManager, AbstractClassBean<?> classBean) {
+        for (Decorator<?> decorator : classBean.getDecorators()) {
+            if (classBean.isPassivationCapableBean() && !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
+                throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
             }
-         }
-      }
-   }
-
-   private void validateDecorators(BeanManagerImpl beanManager, AbstractClassBean<?> classBean)
-   {
-      for (Decorator<?> decorator : classBean.getDecorators())
-      {
-         if (classBean.isPassivationCapableBean() && !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable())
-         {
-            throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
-         }
-         for (InjectionPoint ij : decorator.getInjectionPoints())
-         {
-            if (!ij.isDelegate())
-            {
-               Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
-               validateInjectionPoint(ij, beanManager);
-               if (classBean.isPassivationCapableBean())
-               {
-                  validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
-               }
+            for (InjectionPoint ij : decorator.getInjectionPoints()) {
+                if (!ij.isDelegate()) {
+                    Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
+                    validateInjectionPoint(ij, beanManager);
+                    if (classBean.isPassivationCapableBean()) {
+                        validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   /**
-    * Validate an injection point
-    * 
-    * @param ij the injection point to validate
-    * @param beanManager the bean manager
-    */
-   public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager)
-   {
-      if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1)
-      {
-         throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
-      }
-      if (ij.getType().equals(InjectionPoint.class) && ij.getBean() == null)
-      {
-         throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
-      }
-      if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(ij.getBean().getScope()))
-      {
-         throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
-      }
-      if (ij.getType() instanceof TypeVariable<?>)
-      {
-         throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, ij);
-      }
-      if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) && ij.getAnnotated().getAnnotation(Named.class).value().equals(""))
-      {
-         throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, ij);
-      }
-      boolean newBean = (ij.getBean() instanceof NewManagedBean<?>) || (ij.getBean() instanceof NewSessionBean<?>);
-      if (!newBean)
-      {
-         checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
-      }
-      checkFacadeInjectionPoint(ij, Instance.class);
-      checkFacadeInjectionPoint(ij, Event.class);
-      Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
-      Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
-      if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager))
-      {
-         throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()));
-      }
-      if (resolvedBeans.size() > 1 && !ij.isDelegate())
-      {
-         throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()), resolvedBeans);
-      }
-      // Account for the case this is disabled decorator
-      if (!resolvedBeans.isEmpty())
-      {
-         Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-         if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType()))
-         {
-            throw new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
-         }
-         if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable())
-         {
-            throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
-         }
-         if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean))
-         {
-            validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
-         }
-      }
-   }
-   
-   public void validateInjectionTarget(InjectionTarget<?> injectionTarget, BeanManagerImpl beanManager)
-   {
-      for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints())
-      {
-         validateInjectionPoint(injectionPoint, beanManager);
-      }
-   }
-
-   private void checkScopeAnnotations(InjectionPoint ij, MetaAnnotationStore metaAnnotationStore)
-   {
-      for (Annotation annotation : ij.getAnnotated().getAnnotations())
-      {
-         if (hasScopeMetaAnnotation(annotation))
-         {
-            log.warn(SCOPE_ANNOTATION_ON_INJECTION_POINT, annotation, ij);
-         }
-      }
-   }
-
-   private boolean hasScopeMetaAnnotation(Annotation annotation)
-   {
-      Class<? extends Annotation> annotationType = annotation.annotationType();
-      return annotationType.isAnnotationPresent(Scope.class) || annotationType.isAnnotationPresent(NormalScope.class);
-   }
-
-   public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager)
-   {
-      if (!ij.isTransient() && !Beans.isPassivationCapableDependency(resolvedBean))
-      {
-         if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?, ?>)
-         {
-            throw new IllegalProductException(NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN, ij.getBean(), resolvedBean);
-         }
-         throw new UnserializableDependencyException(INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY, ij.getBean(), resolvedBean);
-      }
-   }
-
-   public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment)
-   {
-      validateDecorators(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
-      validateInterceptors(manager.getInterceptors());
-      validateBeans(manager.getBeans(), new ArrayList<RIBean<?>>(), manager);
-      validateEnabledDecoratorClasses(manager);
-      validateEnabledInterceptorClasses(manager);
-      validateEnabledAlternatives(manager);
-      validateDisposalMethods(environment);
-      validateObserverMethods(environment.getObservers(), manager);
-      validateBeanNames(manager);
-   }
-
-   public void validateBeans(Collection<? extends Bean<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager)
-   {
-      final List<RuntimeException> problems = new ArrayList<RuntimeException>();
-
-      for (Bean<?> bean : beans)
-      {
-         try {
-            if (bean instanceof RIBean<?>)
-            {
-               validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+    /**
+     * Validate an injection point
+     *
+     * @param ij          the injection point to validate
+     * @param beanManager the bean manager
+     */
+    public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
+        if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
+            throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
+        }
+        if (ij.getType().equals(InjectionPoint.class) && ij.getBean() == null) {
+            throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
+        }
+        if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(ij.getBean().getScope())) {
+            throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
+        }
+        if (ij.getType() instanceof TypeVariable<?>) {
+            throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, ij);
+        }
+        if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) && ij.getAnnotated().getAnnotation(Named.class).value().equals("")) {
+            throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, ij);
+        }
+        boolean newBean = (ij.getBean() instanceof NewManagedBean<?>) || (ij.getBean() instanceof NewSessionBean<?>);
+        if (!newBean) {
+            checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
+        }
+        checkFacadeInjectionPoint(ij, Instance.class);
+        checkFacadeInjectionPoint(ij, Event.class);
+        Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
+        Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
+        if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
+            throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()));
+        }
+        if (resolvedBeans.size() > 1 && !ij.isDelegate()) {
+            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()), resolvedBeans);
+        }
+        // Account for the case this is disabled decorator
+        if (!resolvedBeans.isEmpty()) {
+            Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
+            if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType())) {
+                throw new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
             }
-            else
-            {
-               validateBean(bean, manager);
+            if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {
+                throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
             }
-         } catch (RuntimeException e) {
-            problems.add(e);
-         }
-      }
-      if(!problems.isEmpty()) {
-         if(problems.size() == 1) {
-            throw problems.get(0);
-         } else {
-            throw new DeploymentException((List)problems);
-         }
-      }
-   }
+            if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean)) {
+                validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+            }
+        }
+    }
 
-   public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors)
-   {
-      for (Interceptor<?> interceptor : interceptors)
-      {
-         // TODO: confirm that producer methods, fields and disposers can be
-         // only found on Weld interceptors?
-         if (interceptor instanceof InterceptorImpl<?>)
-         {
-            WeldClass<?> annotated = ((InterceptorImpl<?>) interceptor).getWeldAnnotated();
-            while (annotated != null && annotated.getJavaClass() != Object.class)
-            {
-            if (!annotated.getDeclaredWeldMethods(Produces.class).isEmpty())
-            {
-               throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
-            }
-            if (!annotated.getDeclaredWeldFields(Produces.class).isEmpty())
-            {
-               throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS, interceptor);
-            }
-            if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
-            {
-               throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
-            }
-               annotated = annotated.getWeldSuperclass();
-            }
-         }
-      }
-   }
+    public void validateInjectionTarget(InjectionTarget<?> injectionTarget, BeanManagerImpl beanManager) {
+        for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints()) {
+            validateInjectionPoint(injectionPoint, beanManager);
+        }
+    }
 
-   public void validateDecorators(Collection<? extends Decorator<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager)
-   {
-      for (Bean<?> bean : beans)
-      {
-         if (bean instanceof RIBean<?>)
-         {
-            validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+    private void checkScopeAnnotations(InjectionPoint ij, MetaAnnotationStore metaAnnotationStore) {
+        for (Annotation annotation : ij.getAnnotated().getAnnotations()) {
+            if (hasScopeMetaAnnotation(annotation)) {
+                log.warn(SCOPE_ANNOTATION_ON_INJECTION_POINT, annotation, ij);
+            }
+        }
+    }
 
-            if (bean instanceof WeldDecorator<?>)
-            {
-               WeldClass<?> annotatated = ((WeldDecorator<?>) bean).getWeldAnnotated();
-               while (annotatated != null && annotatated.getJavaClass() != Object.class)
-               {
-                  if (!annotatated.getDeclaredWeldMethods(Produces.class).isEmpty())
-                  {
-                     throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, bean);
-                  }
-                  if (!annotatated.getDeclaredWeldFields(Produces.class).isEmpty())
-                  {
-                     throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, bean);
-                  }
-                  if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty())
-                  {
-                     throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
-                  }
-                  annotatated = annotatated.getWeldSuperclass();
-               }
+    private boolean hasScopeMetaAnnotation(Annotation annotation) {
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        return annotationType.isAnnotationPresent(Scope.class) || annotationType.isAnnotationPresent(NormalScope.class);
+    }
+
+    public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager) {
+        if (!ij.isTransient() && !Beans.isPassivationCapableDependency(resolvedBean)) {
+            if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?, ?>) {
+                throw new IllegalProductException(NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN, ij.getBean(), resolvedBean);
+            }
+            throw new UnserializableDependencyException(INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY, ij.getBean(), resolvedBean);
+        }
+    }
+
+    public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment) {
+        validateDecorators(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
+        validateInterceptors(manager.getInterceptors());
+        validateBeans(manager.getBeans(), new ArrayList<RIBean<?>>(), manager);
+        validateEnabledDecoratorClasses(manager);
+        validateEnabledInterceptorClasses(manager);
+        validateEnabledAlternatives(manager);
+        validateDisposalMethods(environment);
+        validateObserverMethods(environment.getObservers(), manager);
+        validateBeanNames(manager);
+    }
+
+    public void validateBeans(Collection<? extends Bean<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
+        final List<RuntimeException> problems = new ArrayList<RuntimeException>();
+
+        for (Bean<?> bean : beans) {
+            try {
+                if (bean instanceof RIBean<?>) {
+                    validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+                } else {
+                    validateBean(bean, manager);
+                }
+            } catch (RuntimeException e) {
+                problems.add(e);
+            }
+        }
+        if (!problems.isEmpty()) {
+            if (problems.size() == 1) {
+                throw problems.get(0);
+            } else {
+                throw new DeploymentException((List) problems);
+            }
+        }
+    }
+
+    public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors) {
+        for (Interceptor<?> interceptor : interceptors) {
+            // TODO: confirm that producer methods, fields and disposers can be
+            // only found on Weld interceptors?
+            if (interceptor instanceof InterceptorImpl<?>) {
+                WeldClass<?> annotated = ((InterceptorImpl<?>) interceptor).getWeldAnnotated();
+                while (annotated != null && annotated.getJavaClass() != Object.class) {
+                    if (!annotated.getDeclaredWeldMethods(Produces.class).isEmpty()) {
+                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
+                    }
+                    if (!annotated.getDeclaredWeldFields(Produces.class).isEmpty()) {
+                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS, interceptor);
+                    }
+                    if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
+                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
+                    }
+                    annotated = annotated.getWeldSuperclass();
+                }
+            }
+        }
+    }
+
+    public void validateDecorators(Collection<? extends Decorator<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
+        for (Bean<?> bean : beans) {
+            if (bean instanceof RIBean<?>) {
+                validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+
+                if (bean instanceof WeldDecorator<?>) {
+                    WeldClass<?> annotatated = ((WeldDecorator<?>) bean).getWeldAnnotated();
+                    while (annotatated != null && annotatated.getJavaClass() != Object.class) {
+                        if (!annotatated.getDeclaredWeldMethods(Produces.class).isEmpty()) {
+                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, bean);
+                        }
+                        if (!annotatated.getDeclaredWeldFields(Produces.class).isEmpty()) {
+                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, bean);
+                        }
+                        if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
+                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
+                        }
+                        annotatated = annotatated.getWeldSuperclass();
+                    }
+                }
+
+            } else {
+                validateBean(bean, manager);
+            }
+        }
+    }
+
+    public void validateBeanNames(BeanManagerImpl beanManager) {
+        SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>() {
+
+            public Set<Bean<?>> get() {
+                return new HashSet<Bean<?>>();
             }
 
-         }
-         else
-         {
-            validateBean(bean, manager);
-         }
-      }
-   }
-
-   public void validateBeanNames(BeanManagerImpl beanManager)
-   {
-      SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>()
-      {
-
-         public Set<Bean<?>> get()
-         {
-            return new HashSet<Bean<?>>();
-         }
-
-      });
-      for (Bean<?> bean : beanManager.getAccessibleBeans())
-      {
-         if (bean.getName() != null)
-         {
-            namedAccessibleBeans.put(bean.getName(), bean);
-         }
-      }
-
-      List<String> accessibleNamespaces = new ArrayList<String>();
-      for (String namespace : beanManager.getAccessibleNamespaces())
-      {
-         accessibleNamespaces.add(namespace);
-      }
-
-      for (String name : namedAccessibleBeans.keySet())
-      {
-         Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledAndSpecializedBeans(namedAccessibleBeans.get(name), beanManager));
-         if (resolvedBeans.size() > 1)
-         {
-            throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);
-         }
-         if (accessibleNamespaces.contains(name))
-         {
-            throw new DeploymentException(BEAN_NAME_IS_PREFIX, name);
-         }
-      }
-   }
-
-   private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager)
-   {
-      Set<Class<?>> interceptorBeanClasses = new HashSet<Class<?>>();
-      for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors())
-      {
-         interceptorBeanClasses.add(interceptor.getBeanClass());
-      }
-      for (Metadata<Class<?>> enabledInterceptorClass : beanManager.getEnabled().getInterceptors())
-      {
-         if (!interceptorBeanClasses.contains(enabledInterceptorClass.getValue()))
-         {
-            throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, enabledInterceptorClass);
-         }
-      }
-   }
-
-   private void validateEnabledDecoratorClasses(BeanManagerImpl beanManager)
-   {
-      // TODO Move building this list to the boot or sth
-      Set<Class<?>> decoratorBeanClasses = new HashSet<Class<?>>();
-      for (Decorator<?> bean : beanManager.getAccessibleDecorators())
-      {
-         decoratorBeanClasses.add(bean.getBeanClass());
-      }
-      for (Metadata<Class<?>> clazz : beanManager.getEnabled().getDecorators())
-      {
-         if (!decoratorBeanClasses.contains(clazz.getValue()))
-         {
-            throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, clazz, decoratorBeanClasses);
-         }
-      }
-   }
-
-   private void validateEnabledAlternatives(BeanManagerImpl beanManager)
-   {
-      for (Metadata<Class<? extends Annotation>> stereotype : beanManager.getEnabled().getAlternativeStereotypes())
-      {
-         if (!beanManager.isStereotype(stereotype.getValue()))
-         {
-            throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, stereotype);
-         }
-         if (!isAlternative(beanManager, stereotype.getValue()))
-         {
-            throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, stereotype);
-         }
-      }
-      for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternativeClasses())
-      {
-         if (clazz.getValue().isAnnotation() || clazz.getValue().isInterface())
-         {
-            throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
-         }
-         WeldClass<?> weldClass = Container.instance().services().get(ClassTransformer.class).loadClass(clazz.getValue());
-         if (!weldClass.isAnnotationPresent(Alternative.class))
-         {
-            throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
-         }
-      }
-   }
-   
-   private static boolean isAlternative(BeanManager beanManager, Class<? extends Annotation> stereotype)
-   {
-      for (Annotation annotation : beanManager.getStereotypeDefinition(stereotype))
-      {
-         if (annotation.annotationType().equals(Alternative.class))
-         {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   private void validateDisposalMethods(BeanDeployerEnvironment environment)
-   {
-      Set<DisposalMethod<?, ?>> beans = environment.getUnresolvedDisposalBeans();
-      if (!beans.isEmpty())
-      {
-         throw new DefinitionException(DISPOSAL_METHODS_WITHOUT_PRODUCER, beans);
-      }
-   }
-
-   private void validateObserverMethods(Iterable<ObserverMethodImpl<?, ?>> observers, BeanManagerImpl beanManager)
-   {
-      for (ObserverMethodImpl<?, ?> omi : observers)
-      {
-         for (InjectionPoint ip : omi.getInjectionPoints())
-            validateInjectionPoint(ip, beanManager);
-      }
-   }
-
-   private static void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type)
-   {
-      if (injectionPoint.getAnnotated().getBaseType().equals(type))
-      {
-         if (injectionPoint.getType() instanceof ParameterizedType)
-         {
-            ParameterizedType parameterizedType = (ParameterizedType) injectionPoint.getType();
-            if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>)
-            {
-               throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, injectionPoint);
+        });
+        for (Bean<?> bean : beanManager.getAccessibleBeans()) {
+            if (bean.getName() != null) {
+                namedAccessibleBeans.put(bean.getName(), bean);
             }
-            if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType)
-            {
-               throw new DefinitionException(INJECTION_POINT_HAS_WILDCARD, type, injectionPoint);
+        }
+
+        List<String> accessibleNamespaces = new ArrayList<String>();
+        for (String namespace : beanManager.getAccessibleNamespaces()) {
+            accessibleNamespaces.add(namespace);
+        }
+
+        for (String name : namedAccessibleBeans.keySet()) {
+            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledAndSpecializedBeans(namedAccessibleBeans.get(name), beanManager));
+            if (resolvedBeans.size() > 1) {
+                throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);
             }
-         }
-         else
-         {
-            throw new DefinitionException(INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER, type, injectionPoint);
-         }
-      }
+            if (accessibleNamespaces.contains(name)) {
+                throw new DeploymentException(BEAN_NAME_IS_PREFIX, name);
+            }
+        }
+    }
 
-   }
+    private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager) {
+        Set<Class<?>> interceptorBeanClasses = new HashSet<Class<?>>();
+        for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors()) {
+            interceptorBeanClasses.add(interceptor.getBeanClass());
+        }
+        for (Metadata<Class<?>> enabledInterceptorClass : beanManager.getEnabled().getInterceptors()) {
+            if (!interceptorBeanClasses.contains(enabledInterceptorClass.getValue())) {
+                throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, enabledInterceptorClass);
+            }
+        }
+    }
 
-   private static boolean isInjectionPointSatisfied(InjectionPoint ij, Set<?> resolvedBeans, BeanManagerImpl beanManager)
-   {
-      if (ij.getBean() instanceof Decorator<?>)
-      {
-         if (beanManager.getEnabled().getDecorator(ij.getBean().getBeanClass()) != null)
-         {
+    private void validateEnabledDecoratorClasses(BeanManagerImpl beanManager) {
+        // TODO Move building this list to the boot or sth
+        Set<Class<?>> decoratorBeanClasses = new HashSet<Class<?>>();
+        for (Decorator<?> bean : beanManager.getAccessibleDecorators()) {
+            decoratorBeanClasses.add(bean.getBeanClass());
+        }
+        for (Metadata<Class<?>> clazz : beanManager.getEnabled().getDecorators()) {
+            if (!decoratorBeanClasses.contains(clazz.getValue())) {
+                throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, clazz, decoratorBeanClasses);
+            }
+        }
+    }
+
+    private void validateEnabledAlternatives(BeanManagerImpl beanManager) {
+        for (Metadata<Class<? extends Annotation>> stereotype : beanManager.getEnabled().getAlternativeStereotypes()) {
+            if (!beanManager.isStereotype(stereotype.getValue())) {
+                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, stereotype);
+            }
+            if (!isAlternative(beanManager, stereotype.getValue())) {
+                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, stereotype);
+            }
+        }
+        for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternativeClasses()) {
+            if (clazz.getValue().isAnnotation() || clazz.getValue().isInterface()) {
+                throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
+            }
+            WeldClass<?> weldClass = Container.instance().services().get(ClassTransformer.class).loadClass(clazz.getValue());
+            if (!weldClass.isAnnotationPresent(Alternative.class)) {
+                throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
+            }
+        }
+    }
+
+    private static boolean isAlternative(BeanManager beanManager, Class<? extends Annotation> stereotype) {
+        for (Annotation annotation : beanManager.getStereotypeDefinition(stereotype)) {
+            if (annotation.annotationType().equals(Alternative.class)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void validateDisposalMethods(BeanDeployerEnvironment environment) {
+        Set<DisposalMethod<?, ?>> beans = environment.getUnresolvedDisposalBeans();
+        if (!beans.isEmpty()) {
+            throw new DefinitionException(DISPOSAL_METHODS_WITHOUT_PRODUCER, beans);
+        }
+    }
+
+    private void validateObserverMethods(Iterable<ObserverMethodImpl<?, ?>> observers, BeanManagerImpl beanManager) {
+        for (ObserverMethodImpl<?, ?> omi : observers) {
+            for (InjectionPoint ip : omi.getInjectionPoints())
+                validateInjectionPoint(ip, beanManager);
+        }
+    }
+
+    private static void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type) {
+        if (injectionPoint.getAnnotated().getBaseType().equals(type)) {
+            if (injectionPoint.getType() instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) injectionPoint.getType();
+                if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>) {
+                    throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, injectionPoint);
+                }
+                if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
+                    throw new DefinitionException(INJECTION_POINT_HAS_WILDCARD, type, injectionPoint);
+                }
+            } else {
+                throw new DefinitionException(INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER, type, injectionPoint);
+            }
+        }
+
+    }
+
+    private static boolean isInjectionPointSatisfied(InjectionPoint ij, Set<?> resolvedBeans, BeanManagerImpl beanManager) {
+        if (ij.getBean() instanceof Decorator<?>) {
+            if (beanManager.getEnabled().getDecorator(ij.getBean().getBeanClass()) != null) {
+                return resolvedBeans.size() > 0;
+            } else {
+                return true;
+            }
+        } else {
             return resolvedBeans.size() > 0;
-         }
-         else
-         {
-            return true;
-         }
-      }
-      else
-      {
-         return resolvedBeans.size() > 0;
-      }
-   }
+        }
+    }
 
-   /**
-    * Checks to make sure that pseudo scoped beans (i.e. @Dependent scoped
-    * beans) have no circular dependencies
-    * 
-    */
-   private static void validatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager)
-   {
-      reallyValidatePseudoScopedBean(bean, beanManager, new LinkedHashSet<Bean<?>>(), new HashSet<Bean<?>>());
-   }
+    /**
+     * Checks to make sure that pseudo scoped beans (i.e. @Dependent scoped
+     * beans) have no circular dependencies
+     */
+    private static void validatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager) {
+        reallyValidatePseudoScopedBean(bean, beanManager, new LinkedHashSet<Bean<?>>(), new HashSet<Bean<?>>());
+    }
 
-   /**
-    * checks if a bean has been seen before in the dependecyPath. If not, it
-    * resolves the InjectionPoints and adds the resolved beans to the set of
-    * beans to be validated
-    */
-   private static void reallyValidatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans)
-   {
-      // see if we have already seen this bean in the dependency path
-      if (dependencyPath.contains(bean))
-      {
-         // create a list that shows the path to the bean
-         List<Bean<?>> realDepdencyPath = new ArrayList<Bean<?>>(dependencyPath);
-         realDepdencyPath.add(bean);
-         throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, realDepdencyPath);
-      }
-      if (validatedBeans.contains(bean))
-      {
-         return;
-      }
-      dependencyPath.add(bean);
-      for (InjectionPoint injectionPoint : bean.getInjectionPoints())
-      {
-         validatePseudoScopedInjectionPoint(injectionPoint, beanManager, dependencyPath, validatedBeans);
-      }
-      validatedBeans.add(bean);
-      dependencyPath.remove(bean);
-   }
+    /**
+     * checks if a bean has been seen before in the dependecyPath. If not, it
+     * resolves the InjectionPoints and adds the resolved beans to the set of
+     * beans to be validated
+     */
+    private static void reallyValidatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans) {
+        // see if we have already seen this bean in the dependency path
+        if (dependencyPath.contains(bean)) {
+            // create a list that shows the path to the bean
+            List<Bean<?>> realDepdencyPath = new ArrayList<Bean<?>>(dependencyPath);
+            realDepdencyPath.add(bean);
+            throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, realDepdencyPath);
+        }
+        if (validatedBeans.contains(bean)) {
+            return;
+        }
+        dependencyPath.add(bean);
+        for (InjectionPoint injectionPoint : bean.getInjectionPoints()) {
+            validatePseudoScopedInjectionPoint(injectionPoint, beanManager, dependencyPath, validatedBeans);
+        }
+        validatedBeans.add(bean);
+        dependencyPath.remove(bean);
+    }
 
-   /**
-    * finds pseudo beans and adds them to the list of beans to be validated
-    */
-   private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans)
-   {
-      Set<Bean<?>> resolved = beanManager.getBeans(ij);
-      try
-      {
-         Bean<? extends Object> bean = beanManager.resolve(resolved);
-         if (bean != null)
-         {
-            if (!(bean instanceof AbstractBuiltInBean<?>))
-            {
-               boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
-               if (!normalScoped)
-               {
-                  reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
-               }
+    /**
+     * finds pseudo beans and adds them to the list of beans to be validated
+     */
+    private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans) {
+        Set<Bean<?>> resolved = beanManager.getBeans(ij);
+        try {
+            Bean<? extends Object> bean = beanManager.resolve(resolved);
+            if (bean != null) {
+                if (!(bean instanceof AbstractBuiltInBean<?>)) {
+                    boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+                    if (!normalScoped) {
+                        reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+                    }
+                }
             }
-         }
-      }
-      catch (AmbiguousResolutionException e)
-      {
-         // this is handled by another validator
-      }
-   }
+        } catch (AmbiguousResolutionException e) {
+            // this is handled by another validator
+        }
+    }
 
-   public void cleanup()
-   {
-   }
+    public void cleanup() {
+    }
 
 }

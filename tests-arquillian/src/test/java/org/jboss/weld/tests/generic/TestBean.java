@@ -22,35 +22,34 @@ import javax.inject.Inject;
 /**
  * @author Marius Bogoevici
  */
-public class TestBean
-{
-   @Inject GenericInterface<String> genericStringField;
+public class TestBean {
+    @Inject
+    GenericInterface<String> genericStringField;
 
-   @Inject GenericInterface<Integer> genericIntegerField;
+    @Inject
+    GenericInterface<Integer> genericIntegerField;
 
-   @Inject BoundedGenericBean<Subclass> boundedGenericSubclassField;
+    @Inject
+    BoundedGenericBean<Subclass> boundedGenericSubclassField;
 
-   @Inject BoundedGenericBean<BaseClass> boundedGenericBaseField;
+    @Inject
+    BoundedGenericBean<BaseClass> boundedGenericBaseField;
 
 
-   public String echo(String param)
-   {
-      return genericStringField.echo(param);
-   }
+    public String echo(String param) {
+        return genericStringField.echo(param);
+    }
 
-   public Integer echo(Integer param)
-   {
-      return genericIntegerField.echo(param);
-   }
+    public Integer echo(Integer param) {
+        return genericIntegerField.echo(param);
+    }
 
-   public Subclass echo (Subclass param)
-   {
-      return boundedGenericSubclassField.echo(param);
-   }
+    public Subclass echo(Subclass param) {
+        return boundedGenericSubclassField.echo(param);
+    }
 
-   public BaseClass echo (BaseClass param)
-   {
-      return boundedGenericBaseField.echo(param);
-   }
-   
+    public BaseClass echo(BaseClass param) {
+        return boundedGenericBaseField.echo(param);
+    }
+
 }

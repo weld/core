@@ -20,27 +20,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A simple, threadsafe counter which can be incremented and inspected.
+ *
  * @author Peter Royle
  */
 public abstract class Counter {
 
-   AtomicInteger count = new AtomicInteger(0);
+    AtomicInteger count = new AtomicInteger(0);
 
-   public Counter() {
-   }
+    public Counter() {
+    }
 
-   /**
-    * Get the current value of the counter.
-    */
-   public int getCount() {
-      return this.count.get();
-   }
+    /**
+     * Get the current value of the counter.
+     */
+    public int getCount() {
+        return this.count.get();
+    }
 
-   /**
-    * Increment and return the new value of counter.
-    */
-   public int increment() {
-      return this.count.incrementAndGet();
-   }
+    /**
+     * Increment and return the new value of counter.
+     */
+    public int increment() {
+        return this.count.incrementAndGet();
+    }
 
 }

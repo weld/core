@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,50 +18,40 @@ package org.jboss.weld.manager;
 
 import javax.enterprise.context.spi.Context;
 
-class CurrentActivity
-{
+class CurrentActivity {
 
-   private final Context context;
-   private final BeanManagerImpl manager;
-	
-   public CurrentActivity(Context context, BeanManagerImpl manager)
-   {
-      this.context = context;
-      this.manager = manager;
-   }
+    private final Context context;
+    private final BeanManagerImpl manager;
 
-   public Context getContext()
-   {
-      return context;
-   }
-   
-   public BeanManagerImpl getManager()
-   {
-      return manager;
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj instanceof CurrentActivity)
-      {
-         return this.getContext().equals(((CurrentActivity) obj).getContext());
-      }
-      else
-      {
-         return false;
-      }
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return getContext().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return getContext() + " -> " + getManager();
-   }
+    public CurrentActivity(Context context, BeanManagerImpl manager) {
+        this.context = context;
+        this.manager = manager;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public BeanManagerImpl getManager() {
+        return manager;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CurrentActivity) {
+            return this.getContext().equals(((CurrentActivity) obj).getContext());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getContext().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getContext() + " -> " + getManager();
+    }
 }

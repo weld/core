@@ -20,16 +20,14 @@ package org.jboss.weld.tests.interceptors.retrySimple;
 /**
  * @author Marius Bogoevici
  */
-public class FailingProcessor
-{
-   int attempts = 0;
+public class FailingProcessor {
+    int attempts = 0;
 
-   @Retriable
-   @Transactional
-   public int tryToProcess()
-   {
-      if (++attempts < 3)
-         throw new RuntimeException("Try harder");
-      return attempts;
-   }
+    @Retriable
+    @Transactional
+    public int tryToProcess() {
+        if (++attempts < 3)
+            throw new RuntimeException("Try harder");
+        return attempts;
+    }
 }

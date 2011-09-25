@@ -26,29 +26,25 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-@MessageDriven(activationConfig={
-      @ActivationConfigProperty(propertyName="destinationType", propertyValue="javax.jms.Queue"),
-      @ActivationConfigProperty(propertyName="destination",     propertyValue="queue/testQueue")
-  })
-public class MilkMan implements MessageListener
-{
-   
-   @Inject Control control;
-   
-   @Resource
-   private MessageDrivenContext context;
+@MessageDriven(activationConfig = {
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+        @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/testQueue")
+})
+public class MilkMan implements MessageListener {
 
-   public void onMessage(Message message)
-   {
-      try
-      {
-         control.setContext(context);
-         control.setMessageDelivered(((TextMessage) message).getText().equals(EJBTest.MESSAGE));
-      }
-      catch (JMSException e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+    @Inject
+    Control control;
+
+    @Resource
+    private MessageDrivenContext context;
+
+    public void onMessage(Message message) {
+        try {
+            control.setContext(context);
+            control.setMessageDelivered(((TextMessage) message).getText().equals(EJBTest.MESSAGE));
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

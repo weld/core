@@ -32,27 +32,24 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class CustomDecoratorTest
-{
+public class CustomDecoratorTest {
 
-   @Deployment
-   public static Archive<?> deployment()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(CustomWindowFrame.class)
-         .addAsManifestResource(new ByteArrayAsset("org.jboss.weld.tests.decorators.custom.CustomDecoratorDeploymentObserver".getBytes()), "services/javax.enterprise.inject.spi.Extension")
-         .addPackage(CustomDecoratorTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+    @Deployment
+    public static Archive<?> deployment() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(CustomWindowFrame.class)
+                .addAsManifestResource(new ByteArrayAsset("org.jboss.weld.tests.decorators.custom.CustomDecoratorDeploymentObserver".getBytes()), "services/javax.enterprise.inject.spi.Extension")
+                .addPackage(CustomDecoratorTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Test
-   public <T> void testCustomDecoratorAppliedByItself(Window window)
-   {
-      WindowImpl.reset();
+    @Test
+    public <T> void testCustomDecoratorAppliedByItself(Window window) {
+        WindowImpl.reset();
 
-      window.draw();
-      Assert.assertTrue(WindowImpl.drawn);
-      Assert.assertTrue(CustomWindowFrame.drawn);
-   }
+        window.draw();
+        Assert.assertTrue(WindowImpl.drawn);
+        Assert.assertTrue(CustomWindowFrame.drawn);
+    }
 
 }

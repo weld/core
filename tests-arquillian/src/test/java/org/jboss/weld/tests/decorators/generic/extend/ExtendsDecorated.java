@@ -20,6 +20,5 @@ package org.jboss.weld.tests.decorators.generic.extend;
 /**
  * @author Marius Bogoevici
  */
-public interface ExtendsDecorated extends Decorated<String>
-{
+public interface ExtendsDecorated extends Decorated<String> {
 }

@@ -23,9 +23,7 @@ package org.jboss.weld.tests.interceptors.invalidContract;
  * @version $Revision: $
  */
 @Intercept
-public class ServiceImpl implements Service
-{
-	public void on() 
-	{
-	}
+public class ServiceImpl implements Service {
+    public void on() {
+    }
 }

@@ -29,39 +29,32 @@ import javax.enterprise.context.ApplicationScoped;
  */
 @Tx
 @ApplicationScoped
-public abstract class GenericDAO<T extends Entity> implements DAO<T>
-{
-   abstract Class<T> entityClass();
+public abstract class GenericDAO<T extends Entity> implements DAO<T> {
+    abstract Class<T> entityClass();
 
-   public void save(T t)
-   {
-   }
+    public void save(T t) {
+    }
 
-   @Tx(1)
-   public T find(Long id)
-   {
-      return find(entityClass(), id);
-   }
+    @Tx(1)
+    public T find(Long id) {
+        return find(entityClass(), id);
+    }
 
-   @Tx(1)
-   public <U> U find(Class<U> clazz, Long id)
-   {
-      if (clazz == null)
-         throw new IllegalArgumentException("Null clazz");
-      if (id == null)
-         throw new IllegalArgumentException("Null id");
+    @Tx(1)
+    public <U> U find(Class<U> clazz, Long id) {
+        if (clazz == null)
+            throw new IllegalArgumentException("Null clazz");
+        if (id == null)
+            throw new IllegalArgumentException("Null id");
 
-      Object marker = TxInterceptor.clients.get();
-      if (marker == null)
-         throw new IllegalArgumentException("No Tx marker!");
+        Object marker = TxInterceptor.clients.get();
+        if (marker == null)
+            throw new IllegalArgumentException("No Tx marker!");
 
-      try
-      {
-         return clazz.newInstance();
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+        try {
+            return clazz.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

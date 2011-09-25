@@ -20,11 +20,10 @@ package org.jboss.weld.tests.interceptors.generic;
 /**
  * @author Marius Bogoevici
  */
-public abstract class AbstractMessageProcessor<I>
-{
-   void process(I input) {
-      // do nothing; 
-   }
+public abstract class AbstractMessageProcessor<I> {
+    void process(I input) {
+        // do nothing;
+    }
 
-   abstract I generate();
+    abstract I generate();
 }

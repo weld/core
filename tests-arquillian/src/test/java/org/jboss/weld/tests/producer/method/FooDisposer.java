@@ -22,35 +22,30 @@ import javax.enterprise.inject.Produces;
 
 /**
  * @author pmuir
- *
  */
-public class FooDisposer
-{
+public class FooDisposer {
 
-   private static boolean disposed;
-   
-   public static void reset()
-   {
-      disposed = false;
-   }
-   
-   void disposeFoo(@Disposes @Any Foo foo)
-   {
-      disposed = true;
-   }
-   
-   /**
-    * @return the disposed
-    */
-   public static boolean isDisposed()
-   {
-      return disposed;
-   }
-   
-   @Produces @Important
-   public Foo getFoo()
-   {
-      return new Foo("bar!");
-   }
-   
+    private static boolean disposed;
+
+    public static void reset() {
+        disposed = false;
+    }
+
+    void disposeFoo(@Disposes @Any Foo foo) {
+        disposed = true;
+    }
+
+    /**
+     * @return the disposed
+     */
+    public static boolean isDisposed() {
+        return disposed;
+    }
+
+    @Produces
+    @Important
+    public Foo getFoo() {
+        return new Foo("bar!");
+    }
+
 }

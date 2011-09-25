@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
-import static org.jboss.weld.environment.servlet.Listener.BEAN_MANAGER_ATTRIBUTE_NAME;
+import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
+import org.jboss.weld.environment.servlet.util.Reflections;
+import org.jboss.weld.environment.servlet.util.TransparentELResolver;
 
 import javax.el.ELContextListener;
 import javax.el.ELResolver;
@@ -26,106 +28,88 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
-import org.jboss.weld.environment.servlet.util.Reflections;
-import org.jboss.weld.environment.servlet.util.TransparentELResolver;
+import static org.jboss.weld.environment.servlet.Listener.BEAN_MANAGER_ATTRIBUTE_NAME;
 
 /**
  * @author Pete Muir
  * @author Dan Allen
  */
-public class WeldApplication extends ForwardingApplication
-{
-   /**
-    * The BeanManager may not have been initialized at the time JSF is initializing. Therefore,
-    * we stick in a ForwardingELResolver that delegates to the BeanManager ELResolver, which will
-    * be plugged in when it's available. If the ELResolver is invoked before the BeanManager
-    * is available, the resolver will perform no action (and thus produce no result).
-    */
-   private static class LazyBeanManagerIntegrationELResolver extends ForwardingELResolver
-   {
-      private ELResolver delegate;
+public class WeldApplication extends ForwardingApplication {
+    /**
+     * The BeanManager may not have been initialized at the time JSF is initializing. Therefore,
+     * we stick in a ForwardingELResolver that delegates to the BeanManager ELResolver, which will
+     * be plugged in when it's available. If the ELResolver is invoked before the BeanManager
+     * is available, the resolver will perform no action (and thus produce no result).
+     */
+    private static class LazyBeanManagerIntegrationELResolver extends ForwardingELResolver {
+        private ELResolver delegate;
 
-      public LazyBeanManagerIntegrationELResolver() {
-         delegate = new TransparentELResolver();
-      }
-      
-      public void beanManagerReady(BeanManager beanManager)
-      {
-         this.delegate = beanManager.getELResolver();
-      }
+        public LazyBeanManagerIntegrationELResolver() {
+            delegate = new TransparentELResolver();
+        }
 
-      @Override
-      protected ELResolver delegate()
-      {
-         return delegate;
-      }
-   }
-   
-   private final Application application;
-   private LazyBeanManagerIntegrationELResolver elResolver;
-   private ExpressionFactory expressionFactory;
-   private BeanManager beanManager;
-   
-   public WeldApplication(Application application)
-   {
-      this.application = application;
-      // QUESTION should the context listener be registered in init() instead?
-      application.addELContextListener(Reflections.<ELContextListener>newInstance("org.jboss.weld.el.WeldELContextListener"));
-      elResolver = new LazyBeanManagerIntegrationELResolver();
-      application.addELResolver(elResolver);
-   }
-   
-   private void init()
-   {
-      ExpressionFactory expressionFactory = null;
-      BeanManager beanManager = null;
-      if (expressionFactory == null && (expressionFactory = application.getExpressionFactory()) != null && (beanManager = beanManager()) != null)
-      {
-         elResolver.beanManagerReady(beanManager);
-         this.expressionFactory = beanManager.wrapExpressionFactory(expressionFactory);
-      }
-   }
+        public void beanManagerReady(BeanManager beanManager) {
+            this.delegate = beanManager.getELResolver();
+        }
 
-   @Override
-   protected Application delegate()
-   {
-      init();
-      return application;
-   }
-   
-   @Override
-   public ExpressionFactory getExpressionFactory()
-   {
-      init();
-      if (expressionFactory == null)
-      {
-         return application.getExpressionFactory();
-      }
-      else
-      {
-         return expressionFactory;
-      }
-   }
-   
-   private BeanManager beanManager()
-   {
-      FacesContext facesContext;
-      if (beanManager == null && (facesContext = FacesContext.getCurrentInstance()) != null)
-      {
-         if (!(facesContext.getExternalContext().getContext() instanceof ServletContext))
-         {
-            throw new IllegalStateException("Not in a servlet environment!");
-         }
-         ServletContext ctx = (ServletContext) facesContext.getExternalContext().getContext();
-         if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null)
-         {
-            return null;
-         }
-         this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
-      }
-      
-      return beanManager;
-   }
+        @Override
+        protected ELResolver delegate() {
+            return delegate;
+        }
+    }
+
+    private final Application application;
+    private LazyBeanManagerIntegrationELResolver elResolver;
+    private ExpressionFactory expressionFactory;
+    private BeanManager beanManager;
+
+    public WeldApplication(Application application) {
+        this.application = application;
+        // QUESTION should the context listener be registered in init() instead?
+        application.addELContextListener(Reflections.<ELContextListener>newInstance("org.jboss.weld.el.WeldELContextListener"));
+        elResolver = new LazyBeanManagerIntegrationELResolver();
+        application.addELResolver(elResolver);
+    }
+
+    private void init() {
+        ExpressionFactory expressionFactory = null;
+        BeanManager beanManager = null;
+        if (expressionFactory == null && (expressionFactory = application.getExpressionFactory()) != null && (beanManager = beanManager()) != null) {
+            elResolver.beanManagerReady(beanManager);
+            this.expressionFactory = beanManager.wrapExpressionFactory(expressionFactory);
+        }
+    }
+
+    @Override
+    protected Application delegate() {
+        init();
+        return application;
+    }
+
+    @Override
+    public ExpressionFactory getExpressionFactory() {
+        init();
+        if (expressionFactory == null) {
+            return application.getExpressionFactory();
+        } else {
+            return expressionFactory;
+        }
+    }
+
+    private BeanManager beanManager() {
+        FacesContext facesContext;
+        if (beanManager == null && (facesContext = FacesContext.getCurrentInstance()) != null) {
+            if (!(facesContext.getExternalContext().getContext() instanceof ServletContext)) {
+                throw new IllegalStateException("Not in a servlet environment!");
+            }
+            ServletContext ctx = (ServletContext) facesContext.getExternalContext().getContext();
+            if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null) {
+                return null;
+            }
+            this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+        }
+
+        return beanManager;
+    }
 
 }

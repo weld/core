@@ -31,53 +31,45 @@ import org.jboss.weld.environment.se.events.ContainerInitialized;
  * @author Pete Muir
  * @author Ales Justin
  */
-public class StartMain
-{
-   public static String[] PARAMETERS;
+public class StartMain {
+    public static String[] PARAMETERS;
 
-   public StartMain(String[] commandLineArgs)
-   {
-      PARAMETERS = commandLineArgs;
-   }
+    public StartMain(String[] commandLineArgs) {
+        PARAMETERS = commandLineArgs;
+    }
 
-   public WeldContainer go()
-   {
-      Weld weld = new Weld();
-      WeldContainer container = weld.initialize();
-      container.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
-      Runtime.getRuntime().addShutdownHook(new ShutdownHook(weld));
-      return container;
-   }
+    public WeldContainer go() {
+        Weld weld = new Weld();
+        WeldContainer container = weld.initialize();
+        container.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook(weld));
+        return container;
+    }
 
-   /**
-    * The main method called from the command line.
-    *
-    * @param args the command line arguments
-    */
-   public static void main(String[] args)
-   {
-      new StartMain(args).go();
-   }
+    /**
+     * The main method called from the command line.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        new StartMain(args).go();
+    }
 
-   public static String[] getParameters()
-   {
-      String[] copy = new String[PARAMETERS.length];
-      System.arraycopy(PARAMETERS, 0, copy, 0, PARAMETERS.length);
-      return copy;
-   }
+    public static String[] getParameters() {
+        String[] copy = new String[PARAMETERS.length];
+        System.arraycopy(PARAMETERS, 0, copy, 0, PARAMETERS.length);
+        return copy;
+    }
 
-   static class ShutdownHook extends Thread
-   {
-      private final Weld weld;
+    static class ShutdownHook extends Thread {
+        private final Weld weld;
 
-      ShutdownHook(Weld weld)
-      {
-         this.weld = weld;
-      }
+        ShutdownHook(Weld weld) {
+            this.weld = weld;
+        }
 
-      public void run()
-      {
-         weld.shutdown();
-      }
-   }
+        public void run() {
+            weld.shutdown();
+        }
+    }
 }

@@ -16,8 +16,19 @@
  */
 package org.jboss.weld.test;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
+import javassist.util.proxy.ProxyObject;
+import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.test.el.EL;
+import org.jboss.weld.util.collections.EnumerationList;
 
+import javax.el.ELContext;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,166 +42,123 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javassist.util.proxy.ProxyObject;
-
-import javax.el.ELContext;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.TypeLiteral;
-
-import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.test.el.EL;
-import org.jboss.weld.util.collections.EnumerationList;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
 
 
-public class Utils
-{
+public class Utils {
 
-   /**
-    * Checks if all annotations are in a given set of annotations
-    * 
-    * @param annotations The annotation set
-    * @param annotationTypes The annotations to match
-    * @return True if match, false otherwise
-    */
-   public static boolean annotationSetMatches(Set<? extends Annotation> annotations, Class<? extends Annotation>... annotationTypes)
-   {
-      List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
-      annotationTypeList.addAll(Arrays.asList(annotationTypes));
-      for (Annotation annotation : annotations)
-      {
-         if (annotationTypeList.contains(annotation.annotationType()))
-         {
-            annotationTypeList.remove(annotation.annotationType());
-         }
-         else
-         {
-            return false;
-         }
-      }
-      return annotationTypeList.size() == 0;
-   }
+    /**
+     * Checks if all annotations are in a given set of annotations
+     *
+     * @param annotations     The annotation set
+     * @param annotationTypes The annotations to match
+     * @return True if match, false otherwise
+     */
+    public static boolean annotationSetMatches(Set<? extends Annotation> annotations, Class<? extends Annotation>... annotationTypes) {
+        List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
+        annotationTypeList.addAll(Arrays.asList(annotationTypes));
+        for (Annotation annotation : annotations) {
+            if (annotationTypeList.contains(annotation.annotationType())) {
+                annotationTypeList.remove(annotation.annotationType());
+            } else {
+                return false;
+            }
+        }
+        return annotationTypeList.size() == 0;
+    }
 
-   public static boolean typeSetMatches(Set<Type> types, Type... requiredTypes)
-   {
-      List<Type> typeList = Arrays.asList(requiredTypes);
-      return requiredTypes.length == types.size() && types.containsAll(typeList);
-   }
+    public static boolean typeSetMatches(Set<Type> types, Type... requiredTypes) {
+        List<Type> typeList = Arrays.asList(requiredTypes);
+        return requiredTypes.length == types.size() && types.containsAll(typeList);
+    }
 
-   public static Iterable<URL> getResources(Class<?> clazz, String name)
-   {
-      if (name.startsWith("/"))
-      {
-         name = name.substring(1);
-      }
-      else
-      {
-         name = clazz.getPackage().getName().replace(".", "/") + "/" + name;
-      }
-      try
-      {
-         return new EnumerationList<URL>(clazz.getClassLoader().getResources(name));
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException("Error loading resource from classloader" + name, e);
-      }
-   }
+    public static Iterable<URL> getResources(Class<?> clazz, String name) {
+        if (name.startsWith("/")) {
+            name = name.substring(1);
+        } else {
+            name = clazz.getPackage().getName().replace(".", "/") + "/" + name;
+        }
+        try {
+            return new EnumerationList<URL>(clazz.getClassLoader().getResources(name));
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading resource from classloader" + name, e);
+        }
+    }
 
-   public static byte[] serialize(Object instance) throws IOException
-   {
-      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-      ObjectOutputStream out = new ObjectOutputStream(bytes);
-      out.writeObject(instance);
-      return bytes.toByteArray();
-   }
+    public static byte[] serialize(Object instance) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bytes);
+        out.writeObject(instance);
+        return bytes.toByteArray();
+    }
 
-   public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException
-   {
-      ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-      return (T) in.readObject();
-   }
+    public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        return (T) in.readObject();
+    }
 
-   public static boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException )
-   {
-      while (exception != null)
-      {
-         if (exception.getClass().equals(expectedException))
-         {
-            return true;
-         }
-         exception = exception.getCause();
-      }
-      return false;
-   }
-   
-   public static <T> Bean<T> getBean(BeanManager beanManager, Type beanType, Annotation... bindings)
-   {
-      Set<Bean<?>> beans = beanManager.getBeans(beanType, bindings);
-      Bean<?> bean = beanManager.resolve(beans);
-      if (bean == null)
-      {
-         throw new UnsatisfiedResolutionException(UNRESOLVABLE_TYPE, beanType, Arrays.toString(bindings)); 
-      }
-      
-      @SuppressWarnings("unchecked")
-      Bean<T> typedBean = (Bean<T>) bean;
-      
-      return typedBean;
-   }
+    public static boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException) {
+        while (exception != null) {
+            if (exception.getClass().equals(expectedException)) {
+                return true;
+            }
+            exception = exception.getCause();
+        }
+        return false;
+    }
 
-   @SuppressWarnings("unchecked")
-   public static <T> Set<Bean<T>> getBeans(BeanManager beanManager, Class<T> type, Annotation... bindings)
-   {
-      return (Set) beanManager.getBeans(type, bindings);
-   }
+    public static <T> Bean<T> getBean(BeanManager beanManager, Type beanType, Annotation... bindings) {
+        Set<Bean<?>> beans = beanManager.getBeans(beanType, bindings);
+        Bean<?> bean = beanManager.resolve(beans);
+        if (bean == null) {
+            throw new UnsatisfiedResolutionException(UNRESOLVABLE_TYPE, beanType, Arrays.toString(bindings));
+        }
 
-   @SuppressWarnings("unchecked")
-   public static <T> Set<Bean<T>> getBeans(BeanManager beanManager, TypeLiteral<T> type, Annotation... bindings)
-   {
-      return (Set) beanManager.getBeans(type.getType(), bindings);
-   }
+        @SuppressWarnings("unchecked")
+        Bean<T> typedBean = (Bean<T>) bean;
 
-   @SuppressWarnings("unchecked")
-   public static <T> T getReference(BeanManager beanManager, Class<T> beanType, Annotation... bindings)
-   {
-      Bean<?> bean = getBean(beanManager, beanType, bindings);
-      return (T) beanManager.getReference(bean, beanType, beanManager.createCreationalContext(bean));
-   }
-   
-   @SuppressWarnings("unchecked")
-   public static <T> T getReference(BeanManager beanManager, Bean<T> bean)
-   {
-      return (T) beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean));
-   }
+        return typedBean;
+    }
 
-   @SuppressWarnings("unchecked")
-   public static <T> T evaluateValueExpression(BeanManagerImpl beanManager, String expression, Class<T> expectedType)
-   {
-      ELContext elContext = EL.createELContext(beanManager.getCurrent());
-      return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
-   }
+    @SuppressWarnings("unchecked")
+    public static <T> Set<Bean<T>> getBeans(BeanManager beanManager, Class<T> type, Annotation... bindings) {
+        return (Set) beanManager.getBeans(type, bindings);
+    }
 
-   public static boolean isProxy(Object proxy)
-   {
-      return proxy instanceof ProxyObject;
-   }
-   
-   
-   public static <T extends Context> T getActiveContext(WeldManager beanManager, Class<T> type)
-   {
-      for (T context : beanManager.instance().select(type))
-      {
-         if (context.isActive())
-         {
-            return context;
-         }
-      }
-      throw new ContextNotActiveException();
-   }
-   
+    @SuppressWarnings("unchecked")
+    public static <T> Set<Bean<T>> getBeans(BeanManager beanManager, TypeLiteral<T> type, Annotation... bindings) {
+        return (Set) beanManager.getBeans(type.getType(), bindings);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getReference(BeanManager beanManager, Class<T> beanType, Annotation... bindings) {
+        Bean<?> bean = getBean(beanManager, beanType, bindings);
+        return (T) beanManager.getReference(bean, beanType, beanManager.createCreationalContext(bean));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getReference(BeanManager beanManager, Bean<T> bean) {
+        return (T) beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T evaluateValueExpression(BeanManagerImpl beanManager, String expression, Class<T> expectedType) {
+        ELContext elContext = EL.createELContext(beanManager.getCurrent());
+        return (T) EL.EXPRESSION_FACTORY.createValueExpression(elContext, expression, expectedType).getValue(elContext);
+    }
+
+    public static boolean isProxy(Object proxy) {
+        return proxy instanceof ProxyObject;
+    }
+
+
+    public static <T extends Context> T getActiveContext(WeldManager beanManager, Class<T> type) {
+        for (T context : beanManager.instance().select(type)) {
+            if (context.isActive()) {
+                return context;
+            }
+        }
+        throw new ContextNotActiveException();
+    }
+
 }

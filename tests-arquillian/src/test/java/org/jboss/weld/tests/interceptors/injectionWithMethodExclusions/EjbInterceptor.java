@@ -23,14 +23,12 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Marius Bogoevici
  */
-public class EjbInterceptor
-{
-   static int count;
+public class EjbInterceptor {
+    static int count;
 
-   @AroundInvoke
-   public Object doInTransaction(InvocationContext invocationContext) throws Exception
-   {
-      count = Counter.next();
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object doInTransaction(InvocationContext invocationContext) throws Exception {
+        count = Counter.next();
+        return invocationContext.proceed();
+    }
 }

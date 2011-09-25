@@ -17,59 +17,56 @@
 
 package org.jboss.weld.tests.interceptors.passivation;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-
 import org.jboss.testharness.impl.packaging.Artifact;
 import org.jboss.testharness.impl.packaging.jsr299.BeansXml;
 import org.jboss.weld.test.AbstractWeldTest;
 import org.testng.annotations.Test;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * @author Marius Bogoevici
  */
 @Artifact
 @BeansXml("beans.xml")
-public class PassivationActivationTest extends AbstractWeldTest
-{
+public class PassivationActivationTest extends AbstractWeldTest {
 
-   @Test(groups = "incontainer-broken")
-   public void testPassivationAndActivation() throws Exception
-   {
-      Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
-      CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
+    @Test(groups = "incontainer-broken")
+    public void testPassivationAndActivation() throws Exception {
+        Bean bean = getCurrentManager().getBeans(Ball.class).iterator().next();
+        CreationalContext creationalContext = getCurrentManager().createCreationalContext(bean);
 
-      PassivationActivationInterceptor.initialMessage = "Goal!";
+        PassivationActivationInterceptor.initialMessage = "Goal!";
 
-      Ball ball = (Ball) bean.create(creationalContext);
+        Ball ball = (Ball) bean.create(creationalContext);
 
-      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-      new ObjectOutputStream(byteArrayOutputStream).writeObject(ball);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        new ObjectOutputStream(byteArrayOutputStream).writeObject(ball);
 
-      PassivationActivationInterceptor oldInterceptor = PassivationActivationInterceptor.instance;
+        PassivationActivationInterceptor oldInterceptor = PassivationActivationInterceptor.instance;
 
-      PassivationActivationInterceptor.initialMessage = "Miss!";
+        PassivationActivationInterceptor.initialMessage = "Miss!";
 
-      assert PassivationActivationInterceptor.prePassivateInvoked;
-      assert !PassivationActivationInterceptor.postActivateInvoked;
-      assert PassivationActivationInterceptor.instance  != null;
+        assert PassivationActivationInterceptor.prePassivateInvoked;
+        assert !PassivationActivationInterceptor.postActivateInvoked;
+        assert PassivationActivationInterceptor.instance != null;
 
-      PassivationActivationInterceptor.prePassivateInvoked = false;
-      PassivationActivationInterceptor.postActivateInvoked = false;
-      PassivationActivationInterceptor.instance = null;
+        PassivationActivationInterceptor.prePassivateInvoked = false;
+        PassivationActivationInterceptor.postActivateInvoked = false;
+        PassivationActivationInterceptor.instance = null;
 
-      ball = (Ball)new ObjectInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())).readObject();
+        ball = (Ball) new ObjectInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray())).readObject();
 
-      assert !PassivationActivationInterceptor.prePassivateInvoked;
-      assert PassivationActivationInterceptor.postActivateInvoked;
-      assert PassivationActivationInterceptor.instance  != null;
-      assert PassivationActivationInterceptor.instance != oldInterceptor;
-      assert PassivationActivationInterceptor.instance.message != null;
-      assert PassivationActivationInterceptor.instance.message.equals(oldInterceptor.message);
-   }
+        assert !PassivationActivationInterceptor.prePassivateInvoked;
+        assert PassivationActivationInterceptor.postActivateInvoked;
+        assert PassivationActivationInterceptor.instance != null;
+        assert PassivationActivationInterceptor.instance != oldInterceptor;
+        assert PassivationActivationInterceptor.instance.message != null;
+        assert PassivationActivationInterceptor.instance.message.equals(oldInterceptor.message);
+    }
 }

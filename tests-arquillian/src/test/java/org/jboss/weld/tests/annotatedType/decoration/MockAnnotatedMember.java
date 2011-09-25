@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
 
 import javax.enterprise.inject.spi.Annotated;
@@ -21,31 +21,25 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public abstract class MockAnnotatedMember<X> extends MockAnnotated implements AnnotatedMember<X>
-{
-   public MockAnnotatedMember(Annotated delegate)
-   {
-      super(delegate);
-   }
+public abstract class MockAnnotatedMember<X> extends MockAnnotated implements AnnotatedMember<X> {
+    public MockAnnotatedMember(Annotated delegate) {
+        super(delegate);
+    }
 
-   @Override
-   AnnotatedMember<X> getDelegate()
-   {
-      return (AnnotatedMember<X>)super.getDelegate();
-   }
-   
-   public AnnotatedType<X> getDeclaringType()
-   {
-      return getDelegate().getDeclaringType();
-   }
+    @Override
+    AnnotatedMember<X> getDelegate() {
+        return (AnnotatedMember<X>) super.getDelegate();
+    }
 
-   public boolean isStatic()
-   {
-      return getDelegate().isStatic();
-   }
+    public AnnotatedType<X> getDeclaringType() {
+        return getDelegate().getDeclaringType();
+    }
+
+    public boolean isStatic() {
+        return getDelegate().isStatic();
+    }
 
 }

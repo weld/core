@@ -9,57 +9,50 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.el;
 
-import static org.jboss.weld.logging.messages.ElMessage.NULL_EXPRESSION_FACTORY;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.util.el.ForwardingExpressionFactory;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.util.el.ForwardingExpressionFactory;
+import static org.jboss.weld.logging.messages.ElMessage.NULL_EXPRESSION_FACTORY;
 
 /**
  * @author pmuir
- *
  */
-public class WeldExpressionFactory extends ForwardingExpressionFactory
-{
+public class WeldExpressionFactory extends ForwardingExpressionFactory {
 
-   private final ExpressionFactory delegate;
-   
-   public WeldExpressionFactory(ExpressionFactory expressionFactory)
-   {
-      if (expressionFactory == null)
-      {
-         throw new IllegalArgumentException(NULL_EXPRESSION_FACTORY);
-      }
-      this.delegate = expressionFactory;
-   }
-   
-   @Override
-   protected ExpressionFactory delegate()
-   {
-      return delegate;
-   }
-   
-   @Override
-   public ValueExpression createValueExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedType)
-   {
-      return new WeldValueExpression(super.createValueExpression(context, expression, expectedType));
-   }
-   
-   @Override
-   public MethodExpression createMethodExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedReturnType, @SuppressWarnings("rawtypes") Class[] expectedParamTypes)
-   {
-      return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
-   }
+    private final ExpressionFactory delegate;
+
+    public WeldExpressionFactory(ExpressionFactory expressionFactory) {
+        if (expressionFactory == null) {
+            throw new IllegalArgumentException(NULL_EXPRESSION_FACTORY);
+        }
+        this.delegate = expressionFactory;
+    }
+
+    @Override
+    protected ExpressionFactory delegate() {
+        return delegate;
+    }
+
+    @Override
+    public ValueExpression createValueExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedType) {
+        return new WeldValueExpression(super.createValueExpression(context, expression, expectedType));
+    }
+
+    @Override
+    public MethodExpression createMethodExpression(ELContext context, String expression, @SuppressWarnings("rawtypes") Class expectedReturnType, @SuppressWarnings("rawtypes") Class[] expectedParamTypes) {
+        return new WeldMethodExpression(super.createMethodExpression(context, expression, expectedReturnType, expectedParamTypes));
+    }
 
 }

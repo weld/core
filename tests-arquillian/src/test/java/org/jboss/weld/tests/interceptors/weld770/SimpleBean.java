@@ -22,26 +22,22 @@ import javax.inject.Inject;
 /**
  * @author Marius Bogoevici
  */
-public class SimpleBean
-{
+public class SimpleBean {
 
-   private Counter invocationsCounter;
+    private Counter invocationsCounter;
 
-   @Inject
-   public SimpleBean(Counter counter)
-   {
-      this.invocationsCounter = counter;
-   }
+    @Inject
+    public SimpleBean(Counter counter) {
+        this.invocationsCounter = counter;
+    }
 
-   public int getInvocationsCount()
-   {
-      return invocationsCounter.getCount();
-   }
+    public int getInvocationsCount() {
+        return invocationsCounter.getCount();
+    }
 
 
-   @Transactional
-   public void intercepted()
-   {
-      invocationsCounter.increment();
-   }
+    @Transactional
+    public void intercepted() {
+        invocationsCounter.increment();
+    }
 }

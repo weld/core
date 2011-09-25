@@ -16,29 +16,25 @@
  */
 package org.jboss.weld.tests.injectionPoint;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named
 @SessionScoped
-public class DoubleConsumer implements Serializable
-{
+public class DoubleConsumer implements Serializable {
 
-   private static final long serialVersionUID = 6619645042310126425L;
+    private static final long serialVersionUID = 6619645042310126425L;
 
-   @Inject
-   private double maxNumber;
+    @Inject
+    private double maxNumber;
 
-   public DoubleConsumer()
-   {
-   }
-   
-   public void ping()
-   {
-      
-   }
+    public DoubleConsumer() {
+    }
+
+    public void ping() {
+
+    }
 
 }

@@ -16,30 +16,26 @@
  */
 package org.jboss.weld.tests.interceptors.finalMethod;
 
-public class TopSecretBriefing
-{
-   public static final String MESSAGE = "Briefing";
+public class TopSecretBriefing {
+    public static final String MESSAGE = "Briefing";
 
-   private boolean briefingPerformed = false;
+    private boolean briefingPerformed = false;
 
-   @TopSecret
-   public String performBriefing()
-   {
-      briefingPerformed = true;
-      return getBriefingMessage();
-   }
+    @TopSecret
+    public String performBriefing() {
+        briefingPerformed = true;
+        return getBriefingMessage();
+    }
 
-   /**
-    * As this method is final it will currently be invoked on the proxy rather
-    * than the underlying bean
-    */
-   public final boolean isBriefingPerformed()
-   {
-      return briefingPerformed;
-   }
+    /**
+     * As this method is final it will currently be invoked on the proxy rather
+     * than the underlying bean
+     */
+    public final boolean isBriefingPerformed() {
+        return briefingPerformed;
+    }
 
-   private final String getBriefingMessage()
-   {
-      return MESSAGE;
-   }
+    private final String getBriefingMessage() {
+        return MESSAGE;
+    }
 }

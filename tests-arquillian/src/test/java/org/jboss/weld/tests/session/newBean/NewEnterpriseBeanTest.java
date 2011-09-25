@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.tests.session.newBean;
 
-import java.util.Set;
-
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -39,67 +32,65 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import java.util.Set;
+
 @RunWith(Arquillian.class)
-public class NewEnterpriseBeanTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(NewEnterpriseBeanTest.class.getPackage())
-                  .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-   }
+public class NewEnterpriseBeanTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(NewEnterpriseBeanTest.class.getPackage())
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-   private static final New NEW_LITERAL = new NewLiteral()
-   {
-      @Override
-      public java.lang.Class<?> value()
-      {
-         return WrappedEnterpriseBean.class;
-      }
+    private static final New NEW_LITERAL = new NewLiteral() {
+        @Override
+        public java.lang.Class<?> value() {
+            return WrappedEnterpriseBean.class;
+        }
 
-   };
+    };
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   private SessionBean<WrappedEnterpriseBeanLocal> wrappedEnterpriseBean;
-   private NewSessionBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
+    private SessionBean<WrappedEnterpriseBeanLocal> wrappedEnterpriseBean;
+    private NewSessionBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
 
-   public void initNewBean()
-   {
-      Set<Bean<?>> beans = beanManager.getBeans(WrappedEnterpriseBeanLocal.class);
-      Assert.assertEquals(1, beanManager.getBeans(WrappedEnterpriseBeanLocal.class).size());
-      Assert.assertTrue(beanManager.getBeans(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof SessionBean<?>);
-      wrappedEnterpriseBean = (SessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();
+    public void initNewBean() {
+        Set<Bean<?>> beans = beanManager.getBeans(WrappedEnterpriseBeanLocal.class);
+        Assert.assertEquals(1, beanManager.getBeans(WrappedEnterpriseBeanLocal.class).size());
+        Assert.assertTrue(beanManager.getBeans(WrappedEnterpriseBeanLocal.class).iterator().next() instanceof SessionBean<?>);
+        wrappedEnterpriseBean = (SessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();
 
-      Assert.assertEquals(1, beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size());
-      Assert.assertTrue(beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewSessionBean<?>);
-      newEnterpriseBean = (NewSessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
-   }
+        Assert.assertEquals(1, beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size());
+        Assert.assertTrue(beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewSessionBean<?>);
+        newEnterpriseBean = (NewSessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
+    }
 
-   @Test
-   @Category(Broken.class)
-   public void testNewBeanHasImplementationClassOfInjectionPointType()
-   {
-      initNewBean();
-      Assert.assertEquals(WrappedEnterpriseBean.class, newEnterpriseBean.getType());
-   }
+    @Test
+    @Category(Broken.class)
+    public void testNewBeanHasImplementationClassOfInjectionPointType() {
+        initNewBean();
+        Assert.assertEquals(WrappedEnterpriseBean.class, newEnterpriseBean.getType());
+    }
 
-   @Test
-   public void testNewBeanHasSameInitializerMethodsAsWrappedBean()
-   {
-      initNewBean();
-      Assert.assertEquals(wrappedEnterpriseBean.getInitializerMethods(), newEnterpriseBean.getInitializerMethods());
-   }
+    @Test
+    public void testNewBeanHasSameInitializerMethodsAsWrappedBean() {
+        initNewBean();
+        Assert.assertEquals(wrappedEnterpriseBean.getInitializerMethods(), newEnterpriseBean.getInitializerMethods());
+    }
 
-   @Test
-   public void testNewBeanHasSameInjectedFieldsAsWrappedBean()
-   {
-      initNewBean();
-      Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getWeldInjectionPoints();
-      Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getWeldInjectionPoints();
-      Assert.assertEquals(wrappedBeanInjectionPoints, newBeanInjectionPoints);
-   }
+    @Test
+    public void testNewBeanHasSameInjectedFieldsAsWrappedBean() {
+        initNewBean();
+        Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getWeldInjectionPoints();
+        Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getWeldInjectionPoints();
+        Assert.assertEquals(wrappedBeanInjectionPoints, newBeanInjectionPoints);
+    }
 
 }

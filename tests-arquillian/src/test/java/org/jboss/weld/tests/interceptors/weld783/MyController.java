@@ -30,15 +30,13 @@ import javax.interceptor.Interceptors;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Named
-public class MyController
-{
-   @EJB
-   private MyEJB ejb;
+public class MyController {
+    @EJB
+    private MyEJB ejb;
 
-   @Interceptors(MyInterceptor.class)
-   public void control()
-   {
-      System.err.println("Here: " + getClass());
-      ejb.doSomething(); /* NPE */
-   }
+    @Interceptors(MyInterceptor.class)
+    public void control() {
+        System.err.println("Here: " + getClass());
+        ejb.doSomething(); /* NPE */
+    }
 }

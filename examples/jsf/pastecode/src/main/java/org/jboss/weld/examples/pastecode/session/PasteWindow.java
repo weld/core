@@ -21,93 +21,80 @@
  */
 package org.jboss.weld.examples.pastecode.session;
 
+import org.jboss.weld.examples.pastecode.model.CodeFragment;
+
 import javax.ejb.EJBException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.weld.examples.pastecode.model.CodeFragment;
-
 /**
  * PasteWindow holds the code fragment and other selections when a code fragment
  * is viewed and entered
- * 
+ *
  * @author Pete Muir
  * @author Martin Gencur
- * 
  */
 @Named
 @RequestScoped
-public class PasteWindow
-{
-   private CodeFragment codeFragment;
+public class PasteWindow {
+    private CodeFragment codeFragment;
 
-   private String codeFragmentId;
+    private String codeFragmentId;
 
-   private Theme theme;
+    private Theme theme;
 
-   private boolean privateFragment;
+    private boolean privateFragment;
 
-   @Inject
-   private CodeFragmentManager codeFragmentManager;
+    @Inject
+    private CodeFragmentManager codeFragmentManager;
 
-   public PasteWindow()
-   {
-      this.codeFragment = new CodeFragment();
-      this.theme = Theme.DEFAULT;
-   }
+    public PasteWindow() {
+        this.codeFragment = new CodeFragment();
+        this.theme = Theme.DEFAULT;
+    }
 
-   // The send method is called when we hit the Send button
-   public String send()
-   {
-      codeFragmentId = codeFragmentManager.addCodeFragment(codeFragment, privateFragment);
-      return "success";
-   }
+    // The send method is called when we hit the Send button
+    public String send() {
+        codeFragmentId = codeFragmentManager.addCodeFragment(codeFragment, privateFragment);
+        return "success";
+    }
 
-   // loadCodeFragment is a view action called to load the code fragment from
-   // the database when requested for viewing
-   public void loadCodeFragment()
-   {
-      this.codeFragment = codeFragmentManager.getCodeFragment(codeFragmentId);
+    // loadCodeFragment is a view action called to load the code fragment from
+    // the database when requested for viewing
+    public void loadCodeFragment() {
+        this.codeFragment = codeFragmentManager.getCodeFragment(codeFragmentId);
 
-      if (this.codeFragment == null)
-      {
-         throw new EJBException("Could not read entity with given id value");
-      }
-   }
+        if (this.codeFragment == null) {
+            throw new EJBException("Could not read entity with given id value");
+        }
+    }
 
-   public CodeFragment getCodeFragment()
-   {
-      return codeFragment;
-   }
+    public CodeFragment getCodeFragment() {
+        return codeFragment;
+    }
 
-   public String getCodeFragmentId()
-   {
-      return codeFragmentId;
-   }
+    public String getCodeFragmentId() {
+        return codeFragmentId;
+    }
 
-   public void setCodeFragmentId(String codeFragmentId)
-   {
-      this.codeFragmentId = codeFragmentId;
-   }
+    public void setCodeFragmentId(String codeFragmentId) {
+        this.codeFragmentId = codeFragmentId;
+    }
 
-   public Theme getTheme()
-   {
-      return theme;
-   }
+    public Theme getTheme() {
+        return theme;
+    }
 
-   public void setTheme(Theme theme)
-   {
-      this.theme = theme;
-   }
+    public void setTheme(Theme theme) {
+        this.theme = theme;
+    }
 
-   public boolean isPrivateFragment()
-   {
-      return privateFragment;
-   }
+    public boolean isPrivateFragment() {
+        return privateFragment;
+    }
 
-   public void setPrivateFragment(boolean privateFragment)
-   {
-      this.privateFragment = privateFragment;
-   }
+    public void setPrivateFragment(boolean privateFragment) {
+        this.privateFragment = privateFragment;
+    }
 }

@@ -9,36 +9,32 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.resources;
 
+import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
+public class SingleThreadScheduledExecutorServiceFactory implements ScheduledExecutorServiceFactory {
 
-public class SingleThreadScheduledExecutorServiceFactory implements ScheduledExecutorServiceFactory
-{
+    private final ScheduledExecutorService executorService;
 
-   private final ScheduledExecutorService executorService;
+    public SingleThreadScheduledExecutorServiceFactory() {
+        this.executorService = Executors.newScheduledThreadPool(1);
+    }
 
-   public SingleThreadScheduledExecutorServiceFactory()
-   {
-      this.executorService = Executors.newScheduledThreadPool(1);
-   }
-   
-   public ScheduledExecutorService get()
-   {
-      return executorService;
-   }
-   
-   public void cleanup()
-   {
-      this.executorService.shutdown();
-   }
-   
+    public ScheduledExecutorService get() {
+        return executorService;
+    }
+
+    public void cleanup() {
+        this.executorService.shutdown();
+    }
+
 }

@@ -23,28 +23,26 @@ import org.jboss.weld.bootstrap.api.Environments;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
-public class ContainerStatusTest
-{
-   
-   @Test
-   public void testStatus()
-   {
-      TestContainer container = new TestContainer();
-      Assert.assertFalse(Container.available());
-      container.getBootstrap().startContainer(Environments.SE, container.getDeployment());
-      Assert.assertFalse(Container.available());
-      Assert.assertEquals(ContainerState.STARTING, Container.instance().getState());
-      container.getBootstrap().startInitialization();
-      Assert.assertFalse(Container.available());
-      Assert.assertEquals(ContainerState.STARTING, Container.instance().getState());
-      container.getBootstrap().deployBeans();
-      Assert.assertTrue(Container.available());
-      Assert.assertEquals(ContainerState.INITIALIZED, Container.instance().getState());
-      container.getBootstrap().validateBeans().endInitialization();
-      Assert.assertTrue(Container.available());
-      Assert.assertEquals(ContainerState.VALIDATED, Container.instance().getState());
-      container.stopContainer();
-      Assert.assertFalse(Container.available());
-   }
+public class ContainerStatusTest {
+
+    @Test
+    public void testStatus() {
+        TestContainer container = new TestContainer();
+        Assert.assertFalse(Container.available());
+        container.getBootstrap().startContainer(Environments.SE, container.getDeployment());
+        Assert.assertFalse(Container.available());
+        Assert.assertEquals(ContainerState.STARTING, Container.instance().getState());
+        container.getBootstrap().startInitialization();
+        Assert.assertFalse(Container.available());
+        Assert.assertEquals(ContainerState.STARTING, Container.instance().getState());
+        container.getBootstrap().deployBeans();
+        Assert.assertTrue(Container.available());
+        Assert.assertEquals(ContainerState.INITIALIZED, Container.instance().getState());
+        container.getBootstrap().validateBeans().endInitialization();
+        Assert.assertTrue(Container.available());
+        Assert.assertEquals(ContainerState.VALIDATED, Container.instance().getState());
+        container.stopContainer();
+        Assert.assertFalse(Container.available());
+    }
 
 }

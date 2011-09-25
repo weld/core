@@ -20,30 +20,26 @@ import javax.inject.Inject;
 
 /**
  * @author pmuir
- *
  */
-public class Foo
-{
-   
-   @Inject
-   private Bar bar;
-   
-   public String message;
-   
-   /**
-    * @return the bar
-    */
-   public Bar getBar()
-   {
-      return bar;
-   }
-   
-   /**
-    * @return the message
-    */
-   public String getMessage()
-   {
-      return message;
-   }
+public class Foo {
+
+    @Inject
+    private Bar bar;
+
+    public String message;
+
+    /**
+     * @return the bar
+     */
+    public Bar getBar() {
+        return bar;
+    }
+
+    /**
+     * @return the message
+     */
+    public String getMessage() {
+        return message;
+    }
 
 }

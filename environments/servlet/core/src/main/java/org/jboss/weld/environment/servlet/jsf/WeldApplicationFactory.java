@@ -24,47 +24,38 @@ import javax.faces.application.ApplicationFactory;
  * @author pmuir
  * @author alesj
  */
-public class WeldApplicationFactory extends ForwardingApplicationFactory
-{
+public class WeldApplicationFactory extends ForwardingApplicationFactory {
 
-   private final ApplicationFactory applicationFactory;
+    private final ApplicationFactory applicationFactory;
 
-   private volatile Application application;
+    private volatile Application application;
 
-   public WeldApplicationFactory(ApplicationFactory applicationFactory)
-   {
-      this.applicationFactory = applicationFactory;
-   }
+    public WeldApplicationFactory(ApplicationFactory applicationFactory) {
+        this.applicationFactory = applicationFactory;
+    }
 
-   @Override
-   protected ApplicationFactory delegate()
-   {
-      return applicationFactory;
-   }
+    @Override
+    protected ApplicationFactory delegate() {
+        return applicationFactory;
+    }
 
-   @Override
-   public Application getApplication()
-   {
-      if(application == null)
-      {
-         synchronized (this)
-         {
-            if(application == null)
-            {
-               application = new WeldApplication(delegate().getApplication());
+    @Override
+    public Application getApplication() {
+        if (application == null) {
+            synchronized (this) {
+                if (application == null) {
+                    application = new WeldApplication(delegate().getApplication());
+                }
             }
-         }
-      }
-      return application;
-   }
+        }
+        return application;
+    }
 
-   @Override
-   public void setApplication(Application application)
-   {
-      synchronized (this)
-      {
-         this.application = null; // invalidate the instance, so it picks up new application
-         super.setApplication(application);
-      }
-   }
+    @Override
+    public void setApplication(Application application) {
+        synchronized (this) {
+            this.application = null; // invalidate the instance, so it picks up new application
+            super.setApplication(application);
+        }
+    }
 }

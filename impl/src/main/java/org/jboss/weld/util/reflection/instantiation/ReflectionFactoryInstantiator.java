@@ -16,61 +16,50 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.REFLECTIONFACTORY_INSTANTIATION_FAILED;
+import org.jboss.weld.exceptions.WeldException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import org.jboss.weld.exceptions.WeldException;
+import static org.jboss.weld.logging.messages.ReflectionMessage.REFLECTIONFACTORY_INSTANTIATION_FAILED;
 
 /**
  * A instantiator for sun.reflect.ReflectionFactory
- * 
- * @author Nicklas Karlsson
  *
+ * @author Nicklas Karlsson
  */
-public class ReflectionFactoryInstantiator implements Instantiator
-{
-   private static final String REFLECTION_CLASS_NAME = "sun.reflect.ReflectionFactory";
+public class ReflectionFactoryInstantiator implements Instantiator {
+    private static final String REFLECTION_CLASS_NAME = "sun.reflect.ReflectionFactory";
 
-   private Method generator = null;
-   private Object reflectionFactoryInstance = null;
+    private Method generator = null;
+    private Object reflectionFactoryInstance = null;
 
-   public ReflectionFactoryInstantiator()
-   {
-      try
-      {
-         Class<?> reflectionFactory = Class.forName(REFLECTION_CLASS_NAME);
-         Method accessor = reflectionFactory.getMethod("getReflectionFactory");
-         reflectionFactoryInstance = accessor.invoke(null);
-         generator = reflectionFactory.getMethod("newConstructorForSerialization", new Class[] { Class.class, Constructor.class });
-      }
-      catch (Exception e)
-      {
-         // TODO Catch explicit subclasses
-         // OK to fail
-      }
-   }
+    public ReflectionFactoryInstantiator() {
+        try {
+            Class<?> reflectionFactory = Class.forName(REFLECTION_CLASS_NAME);
+            Method accessor = reflectionFactory.getMethod("getReflectionFactory");
+            reflectionFactoryInstance = accessor.invoke(null);
+            generator = reflectionFactory.getMethod("newConstructorForSerialization", new Class[]{Class.class, Constructor.class});
+        } catch (Exception e) {
+            // TODO Catch explicit subclasses
+            // OK to fail
+        }
+    }
 
-   @SuppressWarnings("unchecked")
-   public <T> T instantiate(Class<T> clazz)
-   {
-      T instance = null;
-      try
-      {
-         Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, new Object[] { clazz, Object.class.getDeclaredConstructor() });
-         instance = instanceConstructor.newInstance();
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(REFLECTIONFACTORY_INSTANTIATION_FAILED, e, clazz);
-      }
-      return instance;
-   }
+    @SuppressWarnings("unchecked")
+    public <T> T instantiate(Class<T> clazz) {
+        T instance = null;
+        try {
+            Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, new Object[]{clazz, Object.class.getDeclaredConstructor()});
+            instance = instanceConstructor.newInstance();
+        } catch (Exception e) {
+            throw new WeldException(REFLECTIONFACTORY_INSTANTIATION_FAILED, e, clazz);
+        }
+        return instance;
+    }
 
-   public boolean isAvailable()
-   {
-      return generator != null && reflectionFactoryInstance != null;
-   }
+    public boolean isAvailable() {
+        return generator != null && reflectionFactoryInstance != null;
+    }
 
 }

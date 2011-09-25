@@ -16,42 +16,37 @@
  */
 package org.jboss.weld.tck;
 
+import org.jboss.jsr299.tck.spi.Beans;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.jboss.jsr299.tck.spi.Beans;
-
 /**
  * Implements the Beans SPI for the TCK specifically for the JBoss RI.
- * 
+ *
  * @author Shane Bryzak
  * @author Pete Muir
  * @author David Allen
- * 
  */
-public class BeansImpl implements Beans
-{
+public class BeansImpl implements Beans {
 
-   public boolean isProxy(Object instance)
-   {
-      return instance.getClass().getName().indexOf("_$$_Weld") > 0;
-   }
+    public boolean isProxy(Object instance) {
+        return instance.getClass().getName().indexOf("_$$_Weld") > 0;
+    }
 
-   public byte[] serialize(Object instance) throws IOException
-   {
-      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-      ObjectOutputStream out = new ObjectOutputStream(bytes);
-      out.writeObject(instance);
-      return bytes.toByteArray();
-   }
+    public byte[] serialize(Object instance) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bytes);
+        out.writeObject(instance);
+        return bytes.toByteArray();
+    }
 
-   public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException
-   {
-      ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-      return in.readObject();
-   }
+    public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        return in.readObject();
+    }
 
 }

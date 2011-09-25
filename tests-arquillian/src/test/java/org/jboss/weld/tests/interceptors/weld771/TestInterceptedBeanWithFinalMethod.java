@@ -30,22 +30,19 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class TestInterceptedBeanWithFinalMethod
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .intercept(TransactionalInterceptor.class)
-         .addPackage(TestInterceptedBeanWithFinalMethod.class.getPackage());
-   }
+public class TestInterceptedBeanWithFinalMethod {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .intercept(TransactionalInterceptor.class)
+                .addPackage(TestInterceptedBeanWithFinalMethod.class.getPackage());
+    }
 
-   @Test
-   public void testFinalMethodProperlyInvoked(SimpleBean simpleBean) throws Exception
-   {
-      simpleBean.intercepted();
-      Assert.assertEquals(1, simpleBean.getNotInterceptedInvocationCount());
-      Assert.assertEquals(1, simpleBean.getInterceptedInvocationCount());
-      Assert.assertEquals(1, TransactionalInterceptor.interceptorInvocationCount);
-   }
+    @Test
+    public void testFinalMethodProperlyInvoked(SimpleBean simpleBean) throws Exception {
+        simpleBean.intercepted();
+        Assert.assertEquals(1, simpleBean.getNotInterceptedInvocationCount());
+        Assert.assertEquals(1, simpleBean.getInterceptedInvocationCount());
+        Assert.assertEquals(1, TransactionalInterceptor.interceptorInvocationCount);
+    }
 }

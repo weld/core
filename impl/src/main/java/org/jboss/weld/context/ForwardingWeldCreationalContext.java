@@ -9,73 +9,62 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.context;
 
-import javax.enterprise.context.spi.Contextual;
-
 import org.jboss.weld.context.api.ContextualInstance;
+
+import javax.enterprise.context.spi.Contextual;
 
 
 /**
  * @author pmuir
- *
  */
-public abstract class ForwardingWeldCreationalContext<T> implements WeldCreationalContext<T>
-{
-   
-   protected abstract WeldCreationalContext<T> delegate();
+public abstract class ForwardingWeldCreationalContext<T> implements WeldCreationalContext<T> {
 
-   public void push(T incompleteInstance)
-   {
-      delegate().push(incompleteInstance);
-   }
+    protected abstract WeldCreationalContext<T> delegate();
 
-   public void release()
-   {
-      delegate().release();
-   }
+    public void push(T incompleteInstance) {
+        delegate().push(incompleteInstance);
+    }
 
-   public boolean containsIncompleteInstance(Contextual<?> bean)
-   {
-      return delegate().containsIncompleteInstance(bean);
-   }
+    public void release() {
+        delegate().release();
+    }
 
-   public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual)
-   {
-      return delegate().getCreationalContext(Contextual);
-   }
+    public boolean containsIncompleteInstance(Contextual<?> bean) {
+        return delegate().containsIncompleteInstance(bean);
+    }
 
-   public <S> S getIncompleteInstance(Contextual<S> bean)
-   {
-      return delegate().getIncompleteInstance(bean);
-   }
+    public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual) {
+        return delegate().getCreationalContext(Contextual);
+    }
 
-   public void addDependentInstance(ContextualInstance<?> contextualInstance)
-   {
-      delegate().addDependentInstance(contextualInstance);
-   }
-   
-   @Override
-   public boolean equals(Object obj)
-   {
-      return delegate().equals(obj);
-   }
-   
-   @Override
-   public int hashCode()
-   {
-      return delegate().hashCode();
-   }
-   
-   @Override
-   public String toString()
-   {
-      return delegate().toString();
-   }
+    public <S> S getIncompleteInstance(Contextual<S> bean) {
+        return delegate().getIncompleteInstance(bean);
+    }
+
+    public void addDependentInstance(ContextualInstance<?> contextualInstance) {
+        delegate().addDependentInstance(contextualInstance);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
 
 }

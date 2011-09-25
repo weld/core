@@ -20,17 +20,14 @@ package org.jboss.weld.tests.interceptors.weld770;
 /**
  * @author Marius Bogoevici
  */
-public class Counter
-{
-   private int count = 0;
+public class Counter {
+    private int count = 0;
 
-   public int getCount()
-   {
-      return count;
-   }
+    public int getCount() {
+        return count;
+    }
 
-   public void increment()
-   {
-      this.count ++;
-   }
+    public void increment() {
+        this.count++;
+    }
 }

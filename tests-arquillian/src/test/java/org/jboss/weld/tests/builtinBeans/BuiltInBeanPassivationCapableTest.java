@@ -16,26 +16,6 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
-import static org.jboss.weld.tests.builtinBeans.Checker.checkBeanManager;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkEquality;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkEvent;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkInjectionPoint;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkInstance;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkPrincipal;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkUserTransaction;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkValidator;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkValidatorFactory;
-
-import java.security.Principal;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.transaction.UserTransaction;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -49,111 +29,117 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.transaction.UserTransaction;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.security.Principal;
+
+import static org.jboss.weld.tests.builtinBeans.Checker.checkBeanManager;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkEquality;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkEvent;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkInjectionPoint;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkInstance;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkPrincipal;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkUserTransaction;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkValidator;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkValidatorFactory;
+
 @RunWith(Arquillian.class)
-public class BuiltInBeanPassivationCapableTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
-         .addClass(Utils.class);
-   }
+public class BuiltInBeanPassivationCapableTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Test
-   public void testDefaultValidatorBean(Validator validator) throws Throwable
-   {
-      Validator validator1 = Utils.deserialize(Utils.serialize(validator));
-      Assert.assertTrue(checkValidator(validator1));
-   }
+    @Test
+    public void testDefaultValidatorBean(Validator validator) throws Throwable {
+        Validator validator1 = Utils.deserialize(Utils.serialize(validator));
+        Assert.assertTrue(checkValidator(validator1));
+    }
 
-   @Test
-   public void testDefaultValidatorFactoryBean(ValidatorFactory validatorFactory) throws Throwable
-   {
-      ValidatorFactory validatorFactory1 = Utils.deserialize(Utils.serialize(validatorFactory));
-      Assert.assertTrue(checkValidatorFactory(validatorFactory1));
-   }
+    @Test
+    public void testDefaultValidatorFactoryBean(ValidatorFactory validatorFactory) throws Throwable {
+        ValidatorFactory validatorFactory1 = Utils.deserialize(Utils.serialize(validatorFactory));
+        Assert.assertTrue(checkValidatorFactory(validatorFactory1));
+    }
 
-   @Test
-   @Category({Integration.class, Broken.class})
-   public void testPrincipal(Principal principal) throws Throwable
-   {
-      Principal principal1 = Utils.deserialize(Utils.serialize(principal));
-      Assert.assertTrue(checkPrincipal(principal1));
-   }
+    @Test
+    @Category({Integration.class, Broken.class})
+    public void testPrincipal(Principal principal) throws Throwable {
+        Principal principal1 = Utils.deserialize(Utils.serialize(principal));
+        Assert.assertTrue(checkPrincipal(principal1));
+    }
 
-   @Test
-   public void testUserTransactionBean(UserTransaction userTransaction) throws Throwable
-   {
-      UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
-      Assert.assertTrue(checkUserTransaction(userTransaction1));
-   }
+    @Test
+    public void testUserTransactionBean(UserTransaction userTransaction) throws Throwable {
+        UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
+        Assert.assertTrue(checkUserTransaction(userTransaction1));
+    }
 
-   @Test
-   public void testBeanManagerBean(BeanManager beanManager) throws Throwable
-   {
-      BeanManager beanManager1 = Utils.deserialize(Utils.serialize(beanManager));
-      Assert.assertTrue(checkBeanManager(beanManager1));
-      Assert.assertTrue(checkEquality(beanManager, beanManager1));
-   }
+    @Test
+    public void testBeanManagerBean(BeanManager beanManager) throws Throwable {
+        BeanManager beanManager1 = Utils.deserialize(Utils.serialize(beanManager));
+        Assert.assertTrue(checkBeanManager(beanManager1));
+        Assert.assertTrue(checkEquality(beanManager, beanManager1));
+    }
 
-   @Test
-   public void testInstance(Consumer consumer) throws Throwable
-   {
-      Instance<Cow> instance = consumer.getCow();
-      Instance<Cow> instance1 = Utils.deserialize(Utils.serialize(instance));
-      Assert.assertTrue(checkInstance(instance1));
-      Assert.assertTrue(checkEquality(instance, instance1));
-   }
+    @Test
+    public void testInstance(Consumer consumer) throws Throwable {
+        Instance<Cow> instance = consumer.getCow();
+        Instance<Cow> instance1 = Utils.deserialize(Utils.serialize(instance));
+        Assert.assertTrue(checkInstance(instance1));
+        Assert.assertTrue(checkEquality(instance, instance1));
+    }
 
-   @Test
-   public void testEvent(Consumer consumer, CowEventObserver observer) throws Throwable
-   {
-      Event<Cow> event = consumer.getEvent();
-      Event<Cow> event1 = Utils.deserialize(Utils.serialize(event));
-      Assert.assertTrue(checkEvent(event1, observer));
-      Assert.assertTrue(checkEquality(event, event1));
-   }
+    @Test
+    public void testEvent(Consumer consumer, CowEventObserver observer) throws Throwable {
+        Event<Cow> event = consumer.getEvent();
+        Event<Cow> event1 = Utils.deserialize(Utils.serialize(event));
+        Assert.assertTrue(checkEvent(event1, observer));
+        Assert.assertTrue(checkEquality(event, event1));
+    }
 
-   @Test
-   public void testFieldInjectionPoint(FieldInjectionPointConsumer consumer) throws Throwable
-   {
-      Dog.reset();
-      consumer.ping();
-      InjectionPoint injectionPoint = Dog.getInjectionPoint();
-      InjectionPoint injectionPoint1 = Utils.deserialize(Utils.serialize(injectionPoint));
-      Assert.assertTrue(checkInjectionPoint(injectionPoint1, FieldInjectionPointConsumer.class));
-      Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
-   }
+    @Test
+    public void testFieldInjectionPoint(FieldInjectionPointConsumer consumer) throws Throwable {
+        Dog.reset();
+        consumer.ping();
+        InjectionPoint injectionPoint = Dog.getInjectionPoint();
+        InjectionPoint injectionPoint1 = Utils.deserialize(Utils.serialize(injectionPoint));
+        Assert.assertTrue(checkInjectionPoint(injectionPoint1, FieldInjectionPointConsumer.class));
+        Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
+    }
 
-   @Test
-   public void testConstructorInjectionPoint(ConstructorInjectionPointConsumer consumer) throws Throwable
-   {
-      Dog.reset();
-      consumer.ping();
-      InjectionPoint injectionPoint = Dog.getInjectionPoint();
-      InjectionPoint injectionPoint1 = Utils.deserialize(Utils.serialize(injectionPoint));
-      Assert.assertTrue(checkInjectionPoint(injectionPoint1, ConstructorInjectionPointConsumer.class));
-      Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
-   }
+    @Test
+    public void testConstructorInjectionPoint(ConstructorInjectionPointConsumer consumer) throws Throwable {
+        Dog.reset();
+        consumer.ping();
+        InjectionPoint injectionPoint = Dog.getInjectionPoint();
+        InjectionPoint injectionPoint1 = Utils.deserialize(Utils.serialize(injectionPoint));
+        Assert.assertTrue(checkInjectionPoint(injectionPoint1, ConstructorInjectionPointConsumer.class));
+        Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
+    }
 
-   @Test
-   public void testMethodInjectionPoint(MethodInjectionPointConsumer consumer) throws Throwable
-   {
-      Dog.reset();
-      consumer.ping();
-      InjectionPoint injectionPoint = Dog.getInjectionPoint();
-      InjectionPoint injectionPoint1 = Utils.deserialize(Utils.serialize(injectionPoint));
-      Assert.assertTrue(checkInjectionPoint(injectionPoint1, MethodInjectionPointConsumer.class));
-      Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
-   }
+    @Test
+    public void testMethodInjectionPoint(MethodInjectionPointConsumer consumer) throws Throwable {
+        Dog.reset();
+        consumer.ping();
+        InjectionPoint injectionPoint = Dog.getInjectionPoint();
+        InjectionPoint injectionPoint1 = Utils.deserialize(Utils.serialize(injectionPoint));
+        Assert.assertTrue(checkInjectionPoint(injectionPoint1, MethodInjectionPointConsumer.class));
+        Assert.assertTrue(checkEquality(injectionPoint, injectionPoint1));
+    }
 
-   @Test
-   public void testAllOnBean(Consumer consumer) throws Throwable
-   {
-      consumer.check();
-      Consumer consumer1 = Utils.deserialize(Utils.serialize(consumer));
-      consumer1.check();
-   }
+    @Test
+    public void testAllOnBean(Consumer consumer) throws Throwable {
+        consumer.check();
+        Consumer consumer1 = Utils.deserialize(Utils.serialize(consumer));
+        consumer1.check();
+    }
 
 }

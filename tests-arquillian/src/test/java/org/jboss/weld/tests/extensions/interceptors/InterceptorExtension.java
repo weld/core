@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.interceptors;
 
-import java.lang.reflect.Method;
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -28,68 +28,69 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
+import java.lang.reflect.Method;
 
 /**
- * 
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
- * 
  */
-public class InterceptorExtension implements Extension
-{
-   /**
-    * registers two interceptors via the SPI
-    */
-   public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) throws SecurityException, NoSuchMethodException
-   {
-      event.addInterceptorBinding(Incremented.class);
-      event.addInterceptorBinding(FullMarathon.class);
+public class InterceptorExtension implements Extension {
+    /**
+     * registers two interceptors via the SPI
+     */
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) throws SecurityException, NoSuchMethodException {
+        event.addInterceptorBinding(Incremented.class);
+        event.addInterceptorBinding(FullMarathon.class);
 
-      TestAnnotatedTypeBuilder<IncrementingInterceptor> incBuilder = new TestAnnotatedTypeBuilder<IncrementingInterceptor>(IncrementingInterceptor.class);
-      incBuilder.addToClass(new InterceptorLiteral());
-      incBuilder.addToClass(new IncrementedLiteral());
+        TestAnnotatedTypeBuilder<IncrementingInterceptor> incBuilder = new TestAnnotatedTypeBuilder<IncrementingInterceptor>(IncrementingInterceptor.class);
+        incBuilder.addToClass(new InterceptorLiteral());
+        incBuilder.addToClass(new IncrementedLiteral());
 
-      Method around = IncrementingInterceptor.class.getMethod("doAround", InvocationContext.class);
-      incBuilder.addToMethod(around, new AroundInvokeLiteral());
-      event.addAnnotatedType(incBuilder.create());
+        Method around = IncrementingInterceptor.class.getMethod("doAround", InvocationContext.class);
+        incBuilder.addToMethod(around, new AroundInvokeLiteral());
+        event.addAnnotatedType(incBuilder.create());
 
-      TestAnnotatedTypeBuilder<LifecycleInterceptor> marBuilder = new TestAnnotatedTypeBuilder<LifecycleInterceptor>(LifecycleInterceptor.class);
-      marBuilder.addToClass(new InterceptorLiteral());
-      marBuilder.addToClass(new FullMarathonImpl());
+        TestAnnotatedTypeBuilder<LifecycleInterceptor> marBuilder = new TestAnnotatedTypeBuilder<LifecycleInterceptor>(LifecycleInterceptor.class);
+        marBuilder.addToClass(new InterceptorLiteral());
+        marBuilder.addToClass(new FullMarathonImpl());
 
-      Method pre = LifecycleInterceptor.class.getMethod("preDestroy", InvocationContext.class);
-      marBuilder.addToMethod(pre, new PreDestroyLiteral());
+        Method pre = LifecycleInterceptor.class.getMethod("preDestroy", InvocationContext.class);
+        marBuilder.addToMethod(pre, new PreDestroyLiteral());
 
-      Method post = LifecycleInterceptor.class.getMethod("postConstruct", InvocationContext.class);
-      marBuilder.addToMethod(post, new PostConstructLiteral());
+        Method post = LifecycleInterceptor.class.getMethod("postConstruct", InvocationContext.class);
+        marBuilder.addToMethod(post, new PostConstructLiteral());
 
-      event.addAnnotatedType(marBuilder.create());
+        event.addAnnotatedType(marBuilder.create());
 
-   }
+    }
 
-   private static class InterceptorLiteral extends AnnotationLiteral<Interceptor> implements Interceptor
-   {
-   };
+    private static class InterceptorLiteral extends AnnotationLiteral<Interceptor> implements Interceptor {
+    }
 
-   private static class IncrementedLiteral extends AnnotationLiteral<Incremented> implements Incremented
-   {
-   };
+    ;
 
-   private static class AroundInvokeLiteral extends AnnotationLiteral<AroundInvoke> implements AroundInvoke
-   {
-   };
+    private static class IncrementedLiteral extends AnnotationLiteral<Incremented> implements Incremented {
+    }
 
-   private static class PreDestroyLiteral extends AnnotationLiteral<PreDestroy> implements PreDestroy
-   {
-   };
+    ;
 
-   private static class PostConstructLiteral extends AnnotationLiteral<PostConstruct> implements PostConstruct
-   {
-   };
+    private static class AroundInvokeLiteral extends AnnotationLiteral<AroundInvoke> implements AroundInvoke {
+    }
 
-   private static class FullMarathonImpl extends AnnotationLiteral<FullMarathon> implements FullMarathon
-   {
-   };
+    ;
+
+    private static class PreDestroyLiteral extends AnnotationLiteral<PreDestroy> implements PreDestroy {
+    }
+
+    ;
+
+    private static class PostConstructLiteral extends AnnotationLiteral<PostConstruct> implements PostConstruct {
+    }
+
+    ;
+
+    private static class FullMarathonImpl extends AnnotationLiteral<FullMarathon> implements FullMarathon {
+    }
+
+    ;
 
 }

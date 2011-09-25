@@ -1,23 +1,20 @@
 /**
- * 
+ *
  */
 package org.jboss.weld.tests.extensions.multipleBeans;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-class AuthorLiteral extends AnnotationLiteral<Author> implements Author
-{
+class AuthorLiteral extends AnnotationLiteral<Author> implements Author {
 
-   final String name;
+    final String name;
 
-   AuthorLiteral(String name)
-   {
-      this.name = name;
-   }
+    AuthorLiteral(String name) {
+        this.name = name;
+    }
 
-   public String name()
-   {
-      return name;
-   }
+    public String name() {
+        return name;
+    }
 
 }

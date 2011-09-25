@@ -16,20 +16,18 @@
  */
 package org.jboss.weld.tests.extensions.qualifiers;
 
+import org.junit.Assert;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-import org.junit.Assert;
+public class QuickExtension implements Extension {
 
-public class QuickExtension implements Extension
-{
-
-   public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager manager)
-   {
-      Assert.assertFalse(manager.isQualifier(Quick.class));
-      event.addQualifier(Quick.class);
-   }
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager manager) {
+        Assert.assertFalse(manager.isQualifier(Quick.class));
+        event.addQualifier(Quick.class);
+    }
 
 }

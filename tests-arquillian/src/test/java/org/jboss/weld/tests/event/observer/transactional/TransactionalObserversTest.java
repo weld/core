@@ -17,10 +17,6 @@
 
 package org.jboss.weld.tests.event.observer.transactional;
 
-import java.math.BigInteger;
-
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,103 +29,92 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+import java.math.BigInteger;
+
 /**
  * Integration tests for Web Bean events.
  *
  * @author David Allen
- *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class TransactionalObserversTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-                  .addPackage(TransactionalObserversTest.class.getPackage())
-                  .addClass(Utils.class);
-   }
+public class TransactionalObserversTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(TransactionalObserversTest.class.getPackage())
+                .addClass(Utils.class);
+    }
 
-   @Inject @Tame
-   private PomeranianInterface dog;
+    @Inject
+    @Tame
+    private PomeranianInterface dog;
 
-   @Inject
-   private Agent               dogAgent;
+    @Inject
+    private Agent dogAgent;
 
-   @Test
-   @Category(Broken.class)
-   public void testTransactionalObserverNotifiedImmediatelyWhenNoTransactionInProgress()
-   {
-      dog.setCorrectContext(false);
-      dog.setCorrectTransactionState(false);
-      assert dogAgent != null;
-      dogAgent.sendOutsideTransaction(BigInteger.TEN);
-      assert dog.isCorrectTransactionState();
-   }
+    @Test
+    @Category(Broken.class)
+    public void testTransactionalObserverNotifiedImmediatelyWhenNoTransactionInProgress() {
+        dog.setCorrectContext(false);
+        dog.setCorrectTransactionState(false);
+        assert dogAgent != null;
+        dogAgent.sendOutsideTransaction(BigInteger.TEN);
+        assert dog.isCorrectTransactionState();
+    }
 
-   @Test
-   public void testAfterTransactionCompletionObserver() throws InterruptedException
-   {
-      dog.setCorrectContext(false);
-      dog.setCorrectTransactionState(false);
-      dogAgent.sendInTransaction("event");
-      Thread.sleep(100);
-      assert dog.isCorrectTransactionState();
-   }
+    @Test
+    public void testAfterTransactionCompletionObserver() throws InterruptedException {
+        dog.setCorrectContext(false);
+        dog.setCorrectTransactionState(false);
+        dogAgent.sendInTransaction("event");
+        Thread.sleep(100);
+        assert dog.isCorrectTransactionState();
+    }
 
-   @Test
-   public void testAfterTransactionSuccessObserver() throws InterruptedException
-   {
-      dog.setCorrectContext(false);
-      dog.setCorrectTransactionState(false);
-      dogAgent.sendInTransaction(new Integer(4));
-      Thread.sleep(100);
-      assert dog.isCorrectTransactionState();
-   }
+    @Test
+    public void testAfterTransactionSuccessObserver() throws InterruptedException {
+        dog.setCorrectContext(false);
+        dog.setCorrectTransactionState(false);
+        dogAgent.sendInTransaction(new Integer(4));
+        Thread.sleep(100);
+        assert dog.isCorrectTransactionState();
+    }
 
-   @Test
-   public void testAfterTransactionFailureObserver() throws Exception
-   {
-      dog.setCorrectContext(false);
-      dog.setCorrectTransactionState(false);
-      try
-      {
-         dogAgent.sendInTransactionAndFail(new Float(4.0));
-      }
-      catch (Exception e)
-      {
-         if (!isThrowablePresent(e))
-         {
-            throw e;
-         }
-      }
-      Thread.sleep(100);
-      assert dog.isCorrectTransactionState();
-   }
+    @Test
+    public void testAfterTransactionFailureObserver() throws Exception {
+        dog.setCorrectContext(false);
+        dog.setCorrectTransactionState(false);
+        try {
+            dogAgent.sendInTransactionAndFail(new Float(4.0));
+        } catch (Exception e) {
+            if (!isThrowablePresent(e)) {
+                throw e;
+            }
+        }
+        Thread.sleep(100);
+        assert dog.isCorrectTransactionState();
+    }
 
-   @Test
-   @Category(Broken.class)
-   public void testBeforeTransactionCompletionObserver()
-   {
-      dog.setCorrectContext(false);
-      dog.setCorrectTransactionState(false);
-      dogAgent.sendInTransaction(new RuntimeException("test event"));
-      assert dog.isCorrectTransactionState();
-   }
+    @Test
+    @Category(Broken.class)
+    public void testBeforeTransactionCompletionObserver() {
+        dog.setCorrectContext(false);
+        dog.setCorrectTransactionState(false);
+        dogAgent.sendInTransaction(new RuntimeException("test event"));
+        assert dog.isCorrectTransactionState();
+    }
 
-   private boolean isThrowablePresent(Exception exception)
-   {
-      boolean present = false;
-      Throwable t = exception;
-      while (t != null)
-      {
-         if (t instanceof FooException)
-         {
-            present = true;
-         }
-         t = t.getCause();
-      }
-      return present;
-   }
+    private boolean isThrowablePresent(Exception exception) {
+        boolean present = false;
+        Throwable t = exception;
+        while (t != null) {
+            if (t instanceof FooException) {
+                present = true;
+            }
+            t = t.getCause();
+        }
+        return present;
+    }
 }

@@ -1,214 +1,214 @@
+<!--
+   /* * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER. * *
+   Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved. *
+   * Use is subject to license terms. * * Licensed under the Apache
+   License, Version 2.0 (the "License"); * you may not use this file
+   except in compliance with the License. * You may obtain a copy of
+   the License at * http://www.apache.org/licenses/LICENSE-2.0 *
+   Unless required by applicable law or agreed to in writing,
+   software * distributed under the License is distributed on an "AS
+   IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+   express or implied. * See the License for the specific language
+   governing permissions and * limitations under the License. */
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>weld-core-parent</artifactId>
+        <groupId>org.jboss.weld</groupId>
+        <version>1.1.3-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-   <!--
-      /* * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER. * *
-      Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved. *
-      * Use is subject to license terms. * * Licensed under the Apache
-      License, Version 2.0 (the "License"); * you may not use this file
-      except in compliance with the License. * You may obtain a copy of
-      the License at * http://www.apache.org/licenses/LICENSE-2.0 *
-      Unless required by applicable law or agreed to in writing,
-      software * distributed under the License is distributed on an "AS
-      IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-      express or implied. * See the License for the specific language
-      governing permissions and * limitations under the License. */
-   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <artifactId>weld-core-parent</artifactId>
-      <groupId>org.jboss.weld</groupId>
-      <version>1.1.3-SNAPSHOT</version>
-      <relativePath>../../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld</groupId>
+    <artifactId>weld-osgi-bundle</artifactId>
+    <name>Weld OSGi Bundle</name>
+    <description>Weld runtime packaged as an OSGi bundle</description>
 
-   <groupId>org.jboss.weld</groupId>
-   <artifactId>weld-osgi-bundle</artifactId>
-   <name>Weld OSGi Bundle</name>
-   <description>Weld runtime packaged as an OSGi bundle</description>
+    <developers>
+        <developer>
+            <id>ss141213</id>
+            <name>Sanjeeb Sahoo</name>
+            <url>http://weblogs.dev.java.net/ss141213</url>
+            <organization>Sun Microsystems, Inc.</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Roger Kitain</name>
+            <id>rogerk</id>
+            <organization>Sun Microsystems, Inc.</organization>
+        </developer>
+    </developers>
 
-   <developers>
-      <developer>
-         <id>ss141213</id>
-         <name>Sanjeeb Sahoo</name>
-         <url>http://weblogs.dev.java.net/ss141213</url>
-         <organization>Sun Microsystems, Inc.</organization>
-         <roles>
-            <role>developer</role>
-         </roles>
-      </developer>
-      <developer>
-         <name>Roger Kitain</name>
-         <id>rogerk</id>
-         <organization>Sun Microsystems, Inc.</organization>
-      </developer>
-   </developers>
-
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
-   <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+    <url>http://www.seamframework.org/Weld</url>
 
 
-   <properties>
-      <osgi.version>1.0</osgi.version>
-      <parsedVersion.osgiVersion>${project.version}</parsedVersion.osgiVersion>
-   </properties>
-   
-   <build>
-      <plugins>
+    <properties>
+        <osgi.version>1.0</osgi.version>
+        <parsedVersion.osgiVersion>${project.version}</parsedVersion.osgiVersion>
+    </properties>
 
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <configuration>
-               <instructions>
-                  <_include>-osgi.bundle</_include>
+    <build>
+        <plugins>
 
-                  <Embed-Dependency>*; scope=compile; inline=true, slf4j-jdk14; inline=true</Embed-Dependency>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <_include>-osgi.bundle</_include>
 
-                  <_exportcontents>
-                     javax.inject;
-                     javax.decorator;
-                     javax.enterprise.*;
-                     version=${osgi.version},
-                     org.jboss.weld.context;
-                     org.jboss.weld.ejb;
-                     org.jboss.weld.bean;
-                     org.jboss.weld.bean.builtin;
-                     org.jboss.weld.bean.proxy;
-                     org.jboss.weld.*.api.*;
-                     org.jboss.weld.*.spi.*;
-                     org.jboss.weld.conversation;
-                     org.jboss.weld;
-                     org.jboss.weld.bootstrap;
-                     org.jboss.weld.event;
-                     org.jboss.weld.injection;
-                     org.jboss.weld.introspector;
-                     org.jboss.weld.introspector.jlr;
-                     org.jboss.weld.manager;
-                     org.jboss.weld.servlet;
-                     org.jboss.weld.util;
-                     org.jboss.interceptor.*;
-                     version=${osgi.version},
-                     org.jboss.weld.el;
-                     version=${osgi.version},
-                     org.jboss.weld.jsf;
-                     version=${osgi.version}
-                 </_exportcontents>
+                        <Embed-Dependency>*; scope=compile; inline=true, slf4j-jdk14; inline=true</Embed-Dependency>
 
-                  <!-- A note about how slf4j is handled:
-                       We optionally import slf4j APIs (i.e. packages that are part of slf4j-api.jar).
-                       We also bundle them privately along with the jdk14-logging binding. 
-                       This allows us to function even when there is no separate slf4j bundle.
-                       When there is a separate slf4j bundle, because of our optional Import-Package header,
-                       we will get wired to that bundle. Please also note that we don't import impl package,
-                       as it is sufficient to import just the api. In some other environment, user can
-                       deploy slf4j-api bundle and their desired binding bundle. The binding bundle is
-                       a fragement which attaches itself to the api bundle. We will get wired to the 
-                       api bundle and everything will work.
-                       We also bundle all the slf4j extension and cal10n stuff to avoid having dependency
-                       on foreign bundles.
-                  -->
-                  <Import-Package>
-                     org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=${slf4j.version}; resolution:=optional,
-                     ch.qos.cal10n; version=${cal10n.version}; resolution:=optional,
-                     javax.interceptor.*, *;
-                     resolution:=optional
-                 </Import-Package>
+                        <_exportcontents>
+                            javax.inject;
+                            javax.decorator;
+                            javax.enterprise.*;
+                            version=${osgi.version},
+                            org.jboss.weld.context;
+                            org.jboss.weld.ejb;
+                            org.jboss.weld.bean;
+                            org.jboss.weld.bean.builtin;
+                            org.jboss.weld.bean.proxy;
+                            org.jboss.weld.*.api.*;
+                            org.jboss.weld.*.spi.*;
+                            org.jboss.weld.conversation;
+                            org.jboss.weld;
+                            org.jboss.weld.bootstrap;
+                            org.jboss.weld.event;
+                            org.jboss.weld.injection;
+                            org.jboss.weld.introspector;
+                            org.jboss.weld.introspector.jlr;
+                            org.jboss.weld.manager;
+                            org.jboss.weld.servlet;
+                            org.jboss.weld.util;
+                            org.jboss.interceptor.*;
+                            version=${osgi.version},
+                            org.jboss.weld.el;
+                            version=${osgi.version},
+                            org.jboss.weld.jsf;
+                            version=${osgi.version}
+                        </_exportcontents>
 
-                  <Private-Package>
-                     !javax.interceptor.*, org.slf4j.*; -split-package:=merge-first, ch.qos.cal10n.*
-                 </Private-Package>
+                        <!-- A note about how slf4j is handled:
+                             We optionally import slf4j APIs (i.e. packages that are part of slf4j-api.jar).
+                             We also bundle them privately along with the jdk14-logging binding.
+                             This allows us to function even when there is no separate slf4j bundle.
+                             When there is a separate slf4j bundle, because of our optional Import-Package header,
+                             we will get wired to that bundle. Please also note that we don't import impl package,
+                             as it is sufficient to import just the api. In some other environment, user can
+                             deploy slf4j-api bundle and their desired binding bundle. The binding bundle is
+                             a fragement which attaches itself to the api bundle. We will get wired to the
+                             api bundle and everything will work.
+                             We also bundle all the slf4j extension and cal10n stuff to avoid having dependency
+                             on foreign bundles.
+                        -->
+                        <Import-Package>
+                            org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=${slf4j.version}; resolution:=optional,
+                            ch.qos.cal10n; version=${cal10n.version}; resolution:=optional,
+                            javax.interceptor.*, *;
+                            resolution:=optional
+                        </Import-Package>
 
-               </instructions>
+                        <Private-Package>
+                            !javax.interceptor.*, org.slf4j.*; -split-package:=merge-first, ch.qos.cal10n.*
+                        </Private-Package>
 
-               <!--
-                  Maven uses the output directory (target/classes)
-                  rather than the final bundle, when compiling against
-                  projects in the same reactor (ie. the same build).
-                  Since this jar comprises of classes that come from
-                  some other jar and other modules may depend on this
-                  artifact, we need to unpack.
-               -->
-               <unpackBundle>true</unpackBundle>
-            </configuration>
-            <executions>
-               <execution>
-                  <id>osgi-bundle</id>
-                  <goals>
-                     <goal>bundle</goal>
-                  </goals>
-                  <phase>package</phase>
-               </execution>
-            </executions>
-         </plugin>
-      </plugins>
-   </build>
+                    </instructions>
 
-   <dependencies>
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-api</artifactId>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core</artifactId>
-      </dependency>
+                    <!--
+                       Maven uses the output directory (target/classes)
+                       rather than the final bundle, when compiling against
+                       projects in the same reactor (ie. the same build).
+                       Since this jar comprises of classes that come from
+                       some other jar and other modules may depend on this
+                       artifact, we need to unpack.
+                    -->
+                    <unpackBundle>true</unpackBundle>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>osgi-bundle</id>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-spi</artifactId>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.javassist</groupId>
-         <artifactId>javassist</artifactId>
-      </dependency>
-      
-      <dependency>
-         <groupId>com.google.guava</groupId>
-         <artifactId>guava</artifactId>
-      </dependency>
-      
-      <dependency>
-         <groupId>javax.inject</groupId>
-         <artifactId>javax.inject</artifactId>
-      </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-spi</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-core</artifactId>
-      </dependency>
-      
-      <!-- We bundle jdk binding inside this OSGi bundle -->
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-jdk14</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      
-   </dependencies>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+        </dependency>
 
-   <!-- SCM and distribution management -->
-   <scm>
-      <connection>scm:git:git://github.com/weld/core.git</connection>
-      <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
-      <url>scm:git:git://github.com/weld/core.git</url>
-   </scm>
-   
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-spi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-spi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-core</artifactId>
+        </dependency>
+
+        <!-- We bundle jdk binding inside this OSGi bundle -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- SCM and distribution management -->
+    <scm>
+        <connection>scm:git:git://github.com/weld/core.git</connection>
+        <developerConnection>scm:git:git://github.com/weld/core.git</developerConnection>
+        <url>scm:git:git://github.com/weld/core.git</url>
+    </scm>
+
 </project>

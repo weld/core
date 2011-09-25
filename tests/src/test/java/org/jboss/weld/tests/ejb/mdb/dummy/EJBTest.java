@@ -26,14 +26,12 @@ import org.testng.annotations.Test;
 @Artifact
 @Packaging(PackagingType.EAR)
 @IntegrationTest
-public class EJBTest extends AbstractWeldTest
-{
-   
-   public static final String MESSAGE = "Hello!";
-   
-   @Test
-   public void testMdbDeploys()
-   {
-   }
-   
+public class EJBTest extends AbstractWeldTest {
+
+    public static final String MESSAGE = "Hello!";
+
+    @Test
+    public void testMdbDeploys() {
+    }
+
 }

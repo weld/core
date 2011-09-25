@@ -17,46 +17,43 @@
 
 package org.jboss.weld.tests.interceptors.weld783;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
-import java.util.Set;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.tests.category.Integration;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import java.util.Set;
 
 /**
  * @author Ales Justin
  */
 @RunWith(Arquillian.class)
-public class IgnoredAtEJBTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(IgnoredAtEJBTest.class.getPackage());
-   }
+public class IgnoredAtEJBTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(IgnoredAtEJBTest.class.getPackage());
+    }
 
-   @Inject BeanManager manager;
+    @Inject
+    BeanManager manager;
 
-   @Test @Category(Integration.class)
-   public void testMyController() throws Exception
-   {
-      Set<Bean<?>> beans = manager.getBeans("myController");
-      if (beans.isEmpty())
-         throw new IllegalArgumentException("Empty beans");
+    @Test
+    @Category(Integration.class)
+    public void testMyController() throws Exception {
+        Set<Bean<?>> beans = manager.getBeans("myController");
+        if (beans.isEmpty())
+            throw new IllegalArgumentException("Empty beans");
 
-      MyController controller = (MyController) manager.getReference(beans.iterator().next(), MyController.class, manager.createCreationalContext(null));
-      controller.control();
-   }
+        MyController controller = (MyController) manager.getReference(beans.iterator().next(), MyController.class, manager.createCreationalContext(null));
+        controller.control();
+    }
 }

@@ -22,26 +22,24 @@
 
 package org.jboss.weld.tests.interceptors.lhotse.fst;
 
-import java.io.Serializable;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Tx
 @Interceptor
-public class TxInterceptor implements Serializable
-{
-   public static boolean used = false;
+public class TxInterceptor implements Serializable {
+    public static boolean used = false;
 
-   @AroundInvoke
-   public Object aroundInvoke(final InvocationContext invocation) throws Exception
-   {
-      System.err.println("invocation = " + invocation);
+    @AroundInvoke
+    public Object aroundInvoke(final InvocationContext invocation) throws Exception {
+        System.err.println("invocation = " + invocation);
 
-      used = true;
-      return invocation.proceed();
-   }
+        used = true;
+        return invocation.proceed();
+    }
 }

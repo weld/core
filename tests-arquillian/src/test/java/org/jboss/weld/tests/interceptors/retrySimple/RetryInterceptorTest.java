@@ -30,22 +30,19 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class RetryInterceptorTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .intercept(RetryInterceptor.class, TransactionalInterceptor.class)
-         .addPackage(RetryInterceptorTest.class.getPackage());
-   }
+public class RetryInterceptorTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .intercept(RetryInterceptor.class, TransactionalInterceptor.class)
+                .addPackage(RetryInterceptorTest.class.getPackage());
+    }
 
-   @Test
-   public void testRetry(FailingProcessor processor)
-   {
-      System.out.println(processor);
-      Assert.assertEquals(3, processor.tryToProcess());
-      Assert.assertEquals(3, TransactionalInterceptor.invocationCount);
-   }
+    @Test
+    public void testRetry(FailingProcessor processor) {
+        System.out.println(processor);
+        Assert.assertEquals(3, processor.tryToProcess());
+        Assert.assertEquals(3, TransactionalInterceptor.invocationCount);
+    }
 
 }

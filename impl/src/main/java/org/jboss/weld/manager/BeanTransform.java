@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -18,27 +18,21 @@ package org.jboss.weld.manager;
 
 import javax.enterprise.inject.spi.Bean;
 
-public class BeanTransform implements Transform<Bean<?>>
-{
-   
-   private final BeanManagerImpl declaringBeanManager;
+public class BeanTransform implements Transform<Bean<?>> {
 
-   public BeanTransform(BeanManagerImpl declaringBeanManager)
-   {
-      this.declaringBeanManager = declaringBeanManager;
-   }
+    private final BeanManagerImpl declaringBeanManager;
 
-   public Iterable<Bean<?>> transform(BeanManagerImpl beanManager)
-   {
-      // New beans and built in beans aren't resolvable transitively
-      if (beanManager.equals(declaringBeanManager))
-      {
-         return beanManager.getBeans();
-      }
-      else
-      {
-         return beanManager.getTransitiveBeans();
-      }
-   }
-   
+    public BeanTransform(BeanManagerImpl declaringBeanManager) {
+        this.declaringBeanManager = declaringBeanManager;
+    }
+
+    public Iterable<Bean<?>> transform(BeanManagerImpl beanManager) {
+        // New beans and built in beans aren't resolvable transitively
+        if (beanManager.equals(declaringBeanManager)) {
+            return beanManager.getBeans();
+        } else {
+            return beanManager.getTransitiveBeans();
+        }
+    }
+
 }

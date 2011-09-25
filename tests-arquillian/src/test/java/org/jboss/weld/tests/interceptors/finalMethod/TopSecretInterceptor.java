@@ -22,14 +22,12 @@ import javax.interceptor.InvocationContext;
 
 @TopSecret
 @Interceptor
-public class TopSecretInterceptor
-{
+public class TopSecretInterceptor {
 
-   public static final String MESSAGE = " this message will self destruct in 5 seconds";
+    public static final String MESSAGE = " this message will self destruct in 5 seconds";
 
-   @AroundInvoke
-   public Object intercept(InvocationContext context) throws Exception
-   {
-      return ((String) context.proceed()) + MESSAGE;
-   }
+    @AroundInvoke
+    public Object intercept(InvocationContext context) throws Exception {
+        return ((String) context.proceed()) + MESSAGE;
+    }
 }

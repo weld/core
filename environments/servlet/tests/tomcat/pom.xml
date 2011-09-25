@@ -1,195 +1,196 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <artifactId>weld-servlet-parent</artifactId>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <version>1.1.3-SNAPSHOT</version>
-      <relativePath>../../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.servlet</groupId>
-   <artifactId>weld-servlet-test-tomcat</artifactId>
-   <packaging>jar</packaging>
-   <name>Weld Servlet Integration Tests (Tomcat)</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>weld-servlet-parent</artifactId>
+        <groupId>org.jboss.weld.servlet</groupId>
+        <version>1.1.3-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.servlet</groupId>
+    <artifactId>weld-servlet-test-tomcat</artifactId>
+    <packaging>jar</packaging>
+    <name>Weld Servlet Integration Tests (Tomcat)</name>
 
-   <dependencies>
+    <dependencies>
 
-      <dependency>
-         <groupId>org.jboss.spec.javax.ejb</groupId>
-         <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>commons-httpclient</groupId>
-         <artifactId>commons-httpclient</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.arquillian.junit</groupId>
-         <artifactId>arquillian-junit-container</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.servlet</groupId>
-         <artifactId>weld-servlet-test-base</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-test-base</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <!-- Weld servlet, EL and JSP required for testing CDI injections -->
-      <dependency>
-         <groupId>org.jboss.weld.servlet</groupId>
-         <artifactId>weld-servlet-core</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <!-- Weld servlet, EL and JSP required for testing CDI injections -->
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-core</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-jdk14</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.faces</groupId>
-         <artifactId>jsf-api</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.faces</groupId>
-         <artifactId>jsf-impl</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.servlet</groupId>
-         <artifactId>jstl</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-   </dependencies>
+    </dependencies>
 
-   <build>
-      <defaultGoal>test</defaultGoal>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>generate-test-report</id>
-                  <phase>test</phase>
-                  <goals>
-                     <goal>report-only</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
-               <outputName>test-report</outputName>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-               <!--
-                  Set parallel none to force a more modern JUnitCore
-                  provider that understands Suites,
-                  http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html
-               -->
-               <parallel>none</parallel>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>
+    <build>
+        <defaultGoal>test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-test-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report-only</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
+                    <outputName>test-report</outputName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!--
+                       Set parallel none to force a more modern JUnitCore
+                       provider that understands Suites,
+                       http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html
+                    -->
+                    <parallel>none</parallel>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-   <profiles>
-      <profile>
-         <id>default</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-            <property>
-               <name>default</name>
-            </property>
-         </activation>
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-surefire-plugin</artifactId>
-                  <configuration>
-                     <!-- Skip the tests by default, they are all "incontainer" -->
-                     <skipTests>true</skipTests>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
-      <profile>
-         <id>incontainer</id>
-         <activation>
-            <property>
-               <name>incontainer</name>
-            </property>
-         </activation>
-         <dependencies>
-            <dependency>
-               <groupId>org.jboss.arquillian.container</groupId>
-               <artifactId>arquillian-tomcat-embedded-6</artifactId>
-               <scope>test</scope>
-            </dependency>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>default</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- Skip the tests by default, they are all "incontainer" -->
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>incontainer</id>
+            <activation>
+                <property>
+                    <name>incontainer</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-embedded-6</artifactId>
+                    <scope>test</scope>
+                </dependency>
 
-            <dependency>
-               <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-               <artifactId>shrinkwrap-descriptors-impl</artifactId>
-               <scope>test</scope>
-            </dependency>
+                <dependency>
+                    <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+                    <artifactId>shrinkwrap-descriptors-impl</artifactId>
+                    <scope>test</scope>
+                </dependency>
 
-            <dependency>
-               <groupId>org.apache.tomcat</groupId>
-               <artifactId>catalina</artifactId>
-               <scope>test</scope>
-            </dependency>
+                <dependency>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>catalina</artifactId>
+                    <scope>test</scope>
+                </dependency>
 
-            <dependency>
-               <groupId>org.apache.tomcat</groupId>
-               <artifactId>coyote</artifactId>
-               <scope>provided</scope>
-            </dependency>
+                <dependency>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>coyote</artifactId>
+                    <scope>provided</scope>
+                </dependency>
 
-            <!-- Make sure this comes before Tomcat's EL on the classpath -->
-            <dependency>
-               <groupId>org.glassfish.web</groupId>
-               <artifactId>el-impl</artifactId>
-               <scope>test</scope>
-            </dependency>
+                <!-- Make sure this comes before Tomcat's EL on the classpath -->
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>test</scope>
+                </dependency>
 
-            <dependency>
-               <groupId>org.apache.tomcat</groupId>
-               <artifactId>jasper</artifactId>
-               <scope>provided</scope>
-               <exclusions>
-                  <exclusion>
-                     <groupId>org.apache.tomcat</groupId>
-                     <artifactId>el-api</artifactId>
-                  </exclusion>
-               </exclusions>
-            </dependency>
+                <dependency>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>jasper</artifactId>
+                    <scope>provided</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.apache.tomcat</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
 
-         </dependencies>
-      </profile>
-   </profiles>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>

@@ -20,10 +20,8 @@ import javax.ejb.Local;
 
 /**
  * @author pmuir
- *
  */
 @Local
-public interface CatLocal
-{
+public interface CatLocal {
 
 }

@@ -26,24 +26,23 @@ import javax.interceptor.InvocationContext;
  * @author Marius Bogoevici
  */
 @Stateless
-public class FailingProcessor implements Processor
-{
-   int attempts = 0;
+public class FailingProcessor implements Processor {
+    int attempts = 0;
 
-   static int intercepts = 0;
+    static int intercepts = 0;
 
-   @Retriable @Secured @Interceptors(TransactionalInterceptor.class)
-   public int tryToProcess()
-   {
-      if (++attempts < 3)
-         throw new RuntimeException("Try harder");
-      return attempts;
-   }
+    @Retriable
+    @Secured
+    @Interceptors(TransactionalInterceptor.class)
+    public int tryToProcess() {
+        if (++attempts < 3)
+            throw new RuntimeException("Try harder");
+        return attempts;
+    }
 
-   @AroundInvoke
-   public Object aroundInvoke(InvocationContext invocationContext) throws Exception
-   {
-      intercepts ++;
-      return invocationContext.proceed();
-   }
+    @AroundInvoke
+    public Object aroundInvoke(InvocationContext invocationContext) throws Exception {
+        intercepts++;
+        return invocationContext.proceed();
+    }
 }

@@ -26,18 +26,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class InstanceTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .addPackage(InstanceTest.class.getPackage());
-   }
+public class InstanceTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(InstanceTest.class.getPackage());
+    }
 
-	@Test
-	public void testNewInstance(Bar bar)
-	{
-	   Assert.assertNotNull(bar);
-	}
+    @Test
+    public void testNewInstance(Bar bar) {
+        Assert.assertNotNull(bar);
+    }
 }

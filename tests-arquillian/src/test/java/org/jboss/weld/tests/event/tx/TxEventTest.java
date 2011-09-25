@@ -33,38 +33,34 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class TxEventTest extends AbstractHtmlUnit
-{
-   @Deployment(testable = false)
-   public static WebArchive createDeployment()
-   {
-      WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
-               .addClasses(Foo.class, Updated.class)
-               .addAsWebInfResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
-               .addAsWebInfResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-               .addAsWebResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
-               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-      
-      war.toString(Formatters.VERBOSE);
-      
-      return war;
-   }
+public class TxEventTest extends AbstractHtmlUnit {
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(Foo.class, Updated.class)
+                .addAsWebInfResource(TxEventTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(TxEventTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsWebResource(TxEventTest.class.getPackage(), "home.xhtml", "home.xhtml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
-   /*
+        war.toString(Formatters.VERBOSE);
+
+        return war;
+    }
+
+    /*
     * description = "WBRI-401"
     */
-   @Test
-   public void testRequestContextLifecycle() throws Exception
-   {
-      WebClient webClient = new WebClient();
-      HtmlPage home = webClient.getPage(getPath("home.jsf"));
-      HtmlSubmitInput beginConversationButton = getFirstMatchingElement(home, HtmlSubmitInput.class, "SaveButton");
-      beginConversationButton.click();
-   }
+    @Test
+    public void testRequestContextLifecycle() throws Exception {
+        WebClient webClient = new WebClient();
+        HtmlPage home = webClient.getPage(getPath("home.jsf"));
+        HtmlSubmitInput beginConversationButton = getFirstMatchingElement(home, HtmlSubmitInput.class, "SaveButton");
+        beginConversationButton.click();
+    }
 
-   protected String getPath(String page)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + page;
-   }
+    protected String getPath(String page) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/" + page;
+    }
 }

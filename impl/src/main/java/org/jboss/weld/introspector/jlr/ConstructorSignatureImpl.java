@@ -9,59 +9,50 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.introspector.jlr;
 
-import java.util.Arrays;
-
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.util.collections.Arrays2;
 
-public class ConstructorSignatureImpl implements ConstructorSignature
-{
-   
-   private static final long serialVersionUID = -9111642596078876778L;
-   
-   private final String[] parameterTypes;
-   
-   public ConstructorSignatureImpl(WeldConstructor<?> method)
-   {
-      this.parameterTypes = new String[method.getWeldParameters().size()];
-      for (int i = 0; i < method.getWeldParameters().size(); i++)
-      {
-         parameterTypes[i] = method.getWeldParameters().get(i).getJavaClass().getName();
-      }
-      
-   }
+import java.util.Arrays;
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj instanceof ConstructorSignature)
-      {
-         ConstructorSignature that = (ConstructorSignature) obj;
-         return Arrays.equals(this.getParameterTypes(), that.getParameterTypes());
-      }
-      else
-      {
-         return false;
-      }
-   }
-   
-   @Override
-   public int hashCode()
-   {
-     return Arrays.hashCode(parameterTypes);
-   }
-   
-   public String[] getParameterTypes()
-   {
-      return Arrays2.copyOf(parameterTypes, parameterTypes.length);
-   }
-   
+public class ConstructorSignatureImpl implements ConstructorSignature {
+
+    private static final long serialVersionUID = -9111642596078876778L;
+
+    private final String[] parameterTypes;
+
+    public ConstructorSignatureImpl(WeldConstructor<?> method) {
+        this.parameterTypes = new String[method.getWeldParameters().size()];
+        for (int i = 0; i < method.getWeldParameters().size(); i++) {
+            parameterTypes[i] = method.getWeldParameters().get(i).getJavaClass().getName();
+        }
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ConstructorSignature) {
+            ConstructorSignature that = (ConstructorSignature) obj;
+            return Arrays.equals(this.getParameterTypes(), that.getParameterTypes());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(parameterTypes);
+    }
+
+    public String[] getParameterTypes() {
+        return Arrays2.copyOf(parameterTypes, parameterTypes.length);
+    }
+
 }

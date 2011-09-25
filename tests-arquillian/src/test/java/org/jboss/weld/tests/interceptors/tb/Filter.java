@@ -27,28 +27,23 @@ import javax.inject.Inject;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class Filter
-{
-   private CDAO cdao;
+public class Filter {
+    private CDAO cdao;
 
-   public void save(Client c)
-   {
-      cdao.save(c);
-   }
+    public void save(Client c) {
+        cdao.save(c);
+    }
 
-   public Client verify()
-   {
-      return cdao.find(123L);
-   }
+    public Client verify() {
+        return cdao.find(123L);
+    }
 
-   public Client check()
-   {
-      return cdao.checkClient(123L);
-   }
+    public Client check() {
+        return cdao.checkClient(123L);
+    }
 
-   @Inject
-   public void setCdao(CDAO cdao)
-   {
-      this.cdao = cdao;
-   }
+    @Inject
+    public void setCdao(CDAO cdao) {
+        this.cdao = cdao;
+    }
 }

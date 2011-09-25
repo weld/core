@@ -19,20 +19,16 @@ package org.jboss.weld.tests.interceptors.hierarchical;
 /**
  * @author Marius Bogoevici
  */
-public class Player
-{
-   public void playBall()
-   {
+public class Player {
+    public void playBall() {
 
-   }
+    }
 
-   public void receiveInstructions()
-   {
+    public void receiveInstructions() {
 
-   }
+    }
 
-   public Player cloneMe()
-   {
-      return this;
-   }
+    public Player cloneMe() {
+        return this;
+    }
 }

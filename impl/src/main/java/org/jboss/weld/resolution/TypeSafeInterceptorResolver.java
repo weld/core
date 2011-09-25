@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -17,50 +17,43 @@
 
 package org.jboss.weld.resolution;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.enterprise.inject.spi.Interceptor;
-
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+
+import javax.enterprise.inject.spi.Interceptor;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>>
-{
+public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>> {
 
-   private final BeanManagerImpl manager;
+    private final BeanManagerImpl manager;
 
-   public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors)
-   {
-      super(interceptors);
-      this.manager = manager;
-   }
+    public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors) {
+        super(interceptors);
+        this.manager = manager;
+    }
 
-   @Override
-   protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean)
-   {
-      return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabled().getInterceptor(bean.getBeanClass()) != null;
-   }
+    @Override
+    protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean) {
+        return bean.intercepts(resolvable.getInterceptionType()) && bean.getInterceptorBindings().size() > 0 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager()) && getManager().getEnabled().getInterceptor(bean.getBeanClass()) != null;
+    }
 
-   @Override
-   protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors)
-   {
-      Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(getManager().getEnabled().getInterceptorComparator());
-      sortedBeans.addAll(matchedInterceptors);
-      return sortedBeans;
-   }
+    @Override
+    protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors) {
+        Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(getManager().getEnabled().getInterceptorComparator());
+        sortedBeans.addAll(matchedInterceptors);
+        return sortedBeans;
+    }
 
-   @Override
-   protected Set<Interceptor<?>> filterResult(Set<Interceptor<?>> matched)
-   {
-      return matched;
-   }
+    @Override
+    protected Set<Interceptor<?>> filterResult(Set<Interceptor<?>> matched) {
+        return matched;
+    }
 
-   public BeanManagerImpl getManager()
-   {
-      return manager;
-   }
+    public BeanManagerImpl getManager() {
+        return manager;
+    }
 }

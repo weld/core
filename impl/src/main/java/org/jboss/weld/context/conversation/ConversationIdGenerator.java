@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -22,32 +22,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The default conversation id generator
- *  
- * @author Nicklas Karlsson
  *
+ * @author Nicklas Karlsson
  */
-public class ConversationIdGenerator implements Callable<String>, Serializable
-{
-   
-   public static final String CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME = ConversationIdGenerator.class.getName();
+public class ConversationIdGenerator implements Callable<String>, Serializable {
 
-   private static final long serialVersionUID = 8489811313900825684L;
-   
-   // The next conversation ID
-   private final AtomicInteger id;
+    public static final String CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME = ConversationIdGenerator.class.getName();
 
-   /**
-    * Creates a new conversation ID generator
-    */
-   public ConversationIdGenerator()
-   {
-      this.id = new AtomicInteger(1);
-   }
+    private static final long serialVersionUID = 8489811313900825684L;
 
-   public String call()
-   {
-      int nextId = id.getAndIncrement();
-      return String.valueOf(nextId);
-   }
+    // The next conversation ID
+    private final AtomicInteger id;
+
+    /**
+     * Creates a new conversation ID generator
+     */
+    public ConversationIdGenerator() {
+        this.id = new AtomicInteger(1);
+    }
+
+    public String call() {
+        int nextId = id.getAndIncrement();
+        return String.valueOf(nextId);
+    }
 
 }

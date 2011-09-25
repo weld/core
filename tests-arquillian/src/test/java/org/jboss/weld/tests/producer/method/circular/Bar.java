@@ -21,7 +21,14 @@ import javax.inject.Inject;
 
 class Bar {
 
-    @Inject void injectFoo(Foo foo) {}
-    @Produces Foo produceFoo() { return new Foo() {}; }
+    @Inject
+    void injectFoo(Foo foo) {
+    }
+
+    @Produces
+    Foo produceFoo() {
+        return new Foo() {
+        };
+    }
 
 }

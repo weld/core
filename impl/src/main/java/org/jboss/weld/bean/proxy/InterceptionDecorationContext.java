@@ -20,102 +20,80 @@ package org.jboss.weld.bean.proxy;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A class that holds the interception (and decoration) contexts which are currently in progress.
- *
+ * <p/>
  * An interception context is a set of {@link CombinedInterceptorAndDecoratorStackMethodHandler} references for which interception is currently
  * suppressed (so that self-invocation is not possible).
  * Such references are added as soon as a CombinedMethodHandler is executed in an interception context that
  * does not hold it.
- *
+ * <p/>
  * Classes may create new interception contexts as necessary (e.g. allowing client proxies to create new interception
  * contexts in order to make circular references interceptable multiple times).
  *
  * @author Marius Bogoevici
  */
-public class InterceptionDecorationContext
-{
-   private static ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>();
-   
-   private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> pop()
-   {
-      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-      if (stack == null)
-      {
-         throw new EmptyStackException();
-      }
-      else
-      {
-         try
-         {
-            return stack.remove(stack.size() - 1);
-         }
-         finally
-         {
-            if (stack.isEmpty())
-            {
-               interceptionContexts.remove();
+public class InterceptionDecorationContext {
+    private static ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>();
+
+    private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> pop() {
+        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+        if (stack == null) {
+            throw new EmptyStackException();
+        } else {
+            try {
+                return stack.remove(stack.size() - 1);
+            } finally {
+                if (stack.isEmpty()) {
+                    interceptionContexts.remove();
+                }
             }
-         }
-      }
-   }
-   
-   private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> push(Set<CombinedInterceptorAndDecoratorStackMethodHandler> item)
-   {
-      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-      if (stack == null)
-      {
-         stack = new ArrayList<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>();
-         interceptionContexts.set(stack);
-      }
-      stack.add(item);
-      return item;
-   }
-   
-   public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> peek()
-   {
-      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-      if (stack == null)
-      {
-         throw new EmptyStackException();
-      }
-      else
-      {
-         int last = stack.size() - 1;
-         Set<CombinedInterceptorAndDecoratorStackMethodHandler> result = stack.get(last);
-         if (result == null)
-         {
-            result = new HashSet<CombinedInterceptorAndDecoratorStackMethodHandler>();
-            stack.set(last, result);
-         }
-         return result;
-      }
-   }
-   
-   public static boolean empty()
-   {
-      List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-      if (stack == null)
-      {
-         return true;
-      }
-      else
-      {
-         return stack.isEmpty();
-      }
-   }
-   
+        }
+    }
 
-   public static void endInterceptorContext()
-   {
-      pop();
-   }
+    private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> push(Set<CombinedInterceptorAndDecoratorStackMethodHandler> item) {
+        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+        if (stack == null) {
+            stack = new ArrayList<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>();
+            interceptionContexts.set(stack);
+        }
+        stack.add(item);
+        return item;
+    }
 
-   public static void startInterceptorContext()
-   {
-      push(null);
-   }
+    public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> peek() {
+        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+        if (stack == null) {
+            throw new EmptyStackException();
+        } else {
+            int last = stack.size() - 1;
+            Set<CombinedInterceptorAndDecoratorStackMethodHandler> result = stack.get(last);
+            if (result == null) {
+                result = new HashSet<CombinedInterceptorAndDecoratorStackMethodHandler>();
+                stack.set(last, result);
+            }
+            return result;
+        }
+    }
+
+    public static boolean empty() {
+        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
+        if (stack == null) {
+            return true;
+        } else {
+            return stack.isEmpty();
+        }
+    }
+
+
+    public static void endInterceptorContext() {
+        pop();
+    }
+
+    public static void startInterceptorContext() {
+        push(null);
+    }
 }

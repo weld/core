@@ -9,46 +9,42 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.logging;
 
-public enum Category
-{
+public enum Category {
 
-   BOOTSTRAP("Bootstrap"),
-   VERSION("Version"),
-   UTIL("Utilities"),
-   BEAN("Bean"), 
-   SERVLET("Servlet"),
-   REFLECTION("Reflection"),
-   JSF("JSF"),
-   EVENT("Event"),
-   CONVERSATION("Conversation"),
-   CONTEXT("Context"),
-   EL("El"),
-   CLASS_LOADING("ClassLoading");
-   
-   private static final String LOG_PREFIX = "org.jboss.weld.";
-   
-   private final String name;
-   
-   Category(String name)
-   {
-      this.name = createName(name);
-   }
-   
-   String getName()
-   {
-      return name;
-   }
-   
-   private static String createName(String name)
-   {
-      return new StringBuilder().append(LOG_PREFIX).append(name).toString();
-   }
+    BOOTSTRAP("Bootstrap"),
+    VERSION("Version"),
+    UTIL("Utilities"),
+    BEAN("Bean"),
+    SERVLET("Servlet"),
+    REFLECTION("Reflection"),
+    JSF("JSF"),
+    EVENT("Event"),
+    CONVERSATION("Conversation"),
+    CONTEXT("Context"),
+    EL("El"),
+    CLASS_LOADING("ClassLoading");
+
+    private static final String LOG_PREFIX = "org.jboss.weld.";
+
+    private final String name;
+
+    Category(String name) {
+        this.name = createName(name);
+    }
+
+    String getName() {
+        return name;
+    }
+
+    private static String createName(String name) {
+        return new StringBuilder().append(LOG_PREFIX).append(name).toString();
+    }
 
 }

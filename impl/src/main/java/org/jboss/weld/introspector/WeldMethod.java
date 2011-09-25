@@ -9,67 +9,64 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.enterprise.inject.spi.AnnotatedMethod;
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
  * class defined either in Java or XML
- * 
+ *
  * @author Pete Muir
- * 
  */
-public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedMethod<X>
-{
+public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedMethod<X> {
 
-   /**
-    * Get the parameter types as an array
-    */
-   public Class<?>[] getParameterTypesAsArray();
-   
-   /**
-    * Invokes the method
-    * 
-    * @param instance The instance to invoke
-    * @param parameters The method parameters
-    * @return A reference to the instance
-    */
-   public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
+    /**
+     * Get the parameter types as an array
+     */
+    Class<?>[] getParameterTypesAsArray();
 
-   /**
-    * Invokes the method on the class of the passed instance, not the declaring
-    * class. Useful with proxies
-    * 
-    * @param instance The instance to invoke
-    * @param manager The Bean manager
-    * @return A reference to the instance
-    */
-   public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
+    /**
+     * Invokes the method
+     *
+     * @param instance   The instance to invoke
+     * @param parameters The method parameters
+     * @return A reference to the instance
+     */
+    T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 
-   /**
-    * Gets the property name
-    * 
-    * @return The name
-    */
-   public String getPropertyName();
+    /**
+     * Invokes the method on the class of the passed instance, not the declaring
+     * class. Useful with proxies
+     *
+     * @param instance The instance to invoke
+     * @param manager  The Bean manager
+     * @return A reference to the instance
+     */
+    T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
-   /**
-    * Checks if a this is equivalent to a JLR method
-    * 
-    * @param method The JLR method
-    * @return true if equivalent
-    */
-   public boolean isEquivalent(Method method);
+    /**
+     * Gets the property name
+     *
+     * @return The name
+     */
+    String getPropertyName();
 
-   public MethodSignature getSignature();
+    /**
+     * Checks if a this is equivalent to a JLR method
+     *
+     * @param method The JLR method
+     * @return true if equivalent
+     */
+    boolean isEquivalent(Method method);
+
+    MethodSignature getSignature();
 
 }

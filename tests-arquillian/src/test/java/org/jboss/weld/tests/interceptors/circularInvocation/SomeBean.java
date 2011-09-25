@@ -20,9 +20,8 @@ package org.jboss.weld.tests.interceptors.circularInvocation;
 /**
  * @author Marius Bogoevici
  */
-public interface SomeBean
-{
-   void methodA();
+public interface SomeBean {
+    void methodA();
 
-   void methodB();
+    void methodB();
 }

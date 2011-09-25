@@ -9,44 +9,38 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.jboss.weld.manager;
 
-import javax.enterprise.context.spi.CreationalContext;
-
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.util.Beans;
 
+import javax.enterprise.context.spi.CreationalContext;
+
 /**
- * 
  * @author Nicklas Karlsson
- *
- * Injection target implementation for message driven beans, does not inject resources.
+ *         <p/>
+ *         Injection target implementation for message driven beans, does not inject resources.
  */
-public class MessageDrivenInjectionTarget<T> extends SimpleInjectionTarget<T>
-{
+public class MessageDrivenInjectionTarget<T> extends SimpleInjectionTarget<T> {
 
-   public MessageDrivenInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager)
-   {
-      super(type, beanManager);
-   }
-   
-   @Override
-   public void inject(final T instance, final CreationalContext<T> ctx)
-   {
-      new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance)
-      {
-         public void proceed()
-         {
-            Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
-         }
-      }.run();
+    public MessageDrivenInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager) {
+        super(type, beanManager);
+    }
 
-   }   
+    @Override
+    public void inject(final T instance, final CreationalContext<T> ctx) {
+        new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance) {
+            public void proceed() {
+                Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
+            }
+        }.run();
+
+    }
 
 }

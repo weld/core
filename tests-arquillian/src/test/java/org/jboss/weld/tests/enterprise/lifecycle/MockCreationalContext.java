@@ -18,18 +18,15 @@ package org.jboss.weld.tests.enterprise.lifecycle;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-public class MockCreationalContext<T> implements CreationalContext<T>
-{
+public class MockCreationalContext<T> implements CreationalContext<T> {
 
-   public void push(T incompleteInstance)
-   {
+    public void push(T incompleteInstance) {
 
-   }
-   
-   public void release()
-   {
-      // TODO Auto-generated method stub
-      
-   }
+    }
+
+    public void release() {
+        // TODO Auto-generated method stub
+
+    }
 
 }

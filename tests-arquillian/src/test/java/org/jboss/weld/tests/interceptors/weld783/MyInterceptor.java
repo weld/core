@@ -24,19 +24,16 @@ package org.jboss.weld.tests.interceptors.weld783;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
-
 import java.io.Serializable;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class MyInterceptor implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class MyInterceptor implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @AroundInvoke
-   public Object doSomething(InvocationContext context) throws Exception
-   {
-      return context.proceed();
-   }
+    @AroundInvoke
+    public Object doSomething(InvocationContext context) throws Exception {
+        return context.proceed();
+    }
 }

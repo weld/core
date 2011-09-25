@@ -6,15 +6,13 @@ import javax.inject.Inject;
 /**
  *
  */
-public class BeanOne
-{
+public class BeanOne {
 
-   @Inject
-   private BeanManager beanManager;
+    @Inject
+    private BeanManager beanManager;
 
-   public BeanManager getBeanManager()
-   {
-      return beanManager;
-   }
+    public BeanManager getBeanManager() {
+        return beanManager;
+    }
 
 }

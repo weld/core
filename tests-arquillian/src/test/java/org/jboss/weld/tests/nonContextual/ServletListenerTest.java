@@ -31,26 +31,23 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class ServletListenerTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(WebArchive.class, "test.war")
-         .addClasses(ServletContextListenerImpl.class, LogManager.class)
-         .addAsWebInfResource(
-               ServletListenerTest.class.getPackage(), "web.xml", ArchivePaths.create("web.xml"))
-         .addAsWebInfResource(
-               EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+public class ServletListenerTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(ServletContextListenerImpl.class, LogManager.class)
+                .addAsWebInfResource(
+                        ServletListenerTest.class.getPackage(), "web.xml", ArchivePaths.create("web.xml"))
+                .addAsWebInfResource(
+                        EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
 
-   }
+    }
 
-   /**
-    * description="WELD-445"
-    */
-   @Test
-   public void test()
-   {
-      Assert.assertTrue(ServletContextListenerImpl.ok);
-   }
+    /**
+     * description="WELD-445"
+     */
+    @Test
+    public void test() {
+        Assert.assertTrue(ServletContextListenerImpl.ok);
+    }
 }

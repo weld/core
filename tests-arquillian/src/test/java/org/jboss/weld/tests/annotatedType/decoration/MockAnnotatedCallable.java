@@ -13,88 +13,74 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.jboss.weld.tests.annotatedType.decoration;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
- * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
  */
-public abstract class MockAnnotatedCallable<X> extends MockAnnotatedMember<X> implements AnnotatedCallable<X>
-{
-   
-   private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject
-   {
-      
-   }
-   
-   private final static Inject INITIALIZER = new InjectLiteral();
+public abstract class MockAnnotatedCallable<X> extends MockAnnotatedMember<X> implements AnnotatedCallable<X> {
 
-   private final List<AnnotatedParameter<X>> parameters;
+    private static class InjectLiteral extends AnnotationLiteral<Inject> implements Inject {
 
-   public MockAnnotatedCallable(Annotated delegate)
-   {
-      super(delegate);
-      parameters = initialiseParameters();
-   }
+    }
 
-   @Override
-   AnnotatedCallable<X> getDelegate()
-   {
-      return (AnnotatedCallable<X>) super.getDelegate();
-   }
-   
-   private List<AnnotatedParameter<X>> initialiseParameters()
-   {
-      int size = getDelegate().getParameters().size();
-      List<AnnotatedParameter<X>> params = new ArrayList<AnnotatedParameter<X>>(size);
-      if (size > 0)
-      {
-         for (AnnotatedParameter<X> param : getDelegate().getParameters())
-         {
-            params.add(new MockAnnotatedParameter<X>(param, this));
-         }
-      }
-      return params;
-   }
+    private final static Inject INITIALIZER = new InjectLiteral();
 
-   public List<AnnotatedParameter<X>> getParameters()
-   {
-      return parameters;
-   }
-   
-   @Override
-   public <T extends Annotation> T getAnnotation(Class<T> annotationType)
-   {
-      if (annotationType == Inject.class)
-      {
-         return (T)INITIALIZER;
-      }
-      return null;
-   }
+    private final List<AnnotatedParameter<X>> parameters;
 
-   @Override
-   public Set<Annotation> getAnnotations()
-   {
-      return Collections.singleton((Annotation)INITIALIZER);
-   }
+    public MockAnnotatedCallable(Annotated delegate) {
+        super(delegate);
+        parameters = initialiseParameters();
+    }
 
-   @Override
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      return annotationType == Inject.class;
-   }
+    @Override
+    AnnotatedCallable<X> getDelegate() {
+        return (AnnotatedCallable<X>) super.getDelegate();
+    }
+
+    private List<AnnotatedParameter<X>> initialiseParameters() {
+        int size = getDelegate().getParameters().size();
+        List<AnnotatedParameter<X>> params = new ArrayList<AnnotatedParameter<X>>(size);
+        if (size > 0) {
+            for (AnnotatedParameter<X> param : getDelegate().getParameters()) {
+                params.add(new MockAnnotatedParameter<X>(param, this));
+            }
+        }
+        return params;
+    }
+
+    public List<AnnotatedParameter<X>> getParameters() {
+        return parameters;
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+        if (annotationType == Inject.class) {
+            return (T) INITIALIZER;
+        }
+        return null;
+    }
+
+    @Override
+    public Set<Annotation> getAnnotations() {
+        return Collections.singleton((Annotation) INITIALIZER);
+    }
+
+    @Override
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return annotationType == Inject.class;
+    }
 }

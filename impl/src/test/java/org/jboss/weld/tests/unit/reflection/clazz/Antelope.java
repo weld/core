@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.unit.reflection.clazz;
 
 
-class Antelope implements Animal
-{
+class Antelope implements Animal {
 
 }

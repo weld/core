@@ -1,23 +1,19 @@
 package org.jboss.weld.tests.contexts;
 
+import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-
 @SessionScoped
-public class House implements Serializable
-{
-   
-   private Mouse mouse;
-   
-   public Mouse getMouse()
-   {
-      return mouse;
-   }
-   
-   public void setMouse(Mouse mouse)
-   {
-      this.mouse = mouse;
-   }
-   
+public class House implements Serializable {
+
+    private Mouse mouse;
+
+    public Mouse getMouse() {
+        return mouse;
+    }
+
+    public void setMouse(Mouse mouse) {
+        this.mouse = mouse;
+    }
+
 }

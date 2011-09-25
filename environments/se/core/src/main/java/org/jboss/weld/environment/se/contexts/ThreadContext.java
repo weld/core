@@ -22,36 +22,32 @@
  */
 package org.jboss.weld.environment.se.contexts;
 
-import java.lang.annotation.Annotation;
-
 import org.jboss.weld.context.AbstractUnboundContext;
 import org.jboss.weld.context.beanstore.HashMapBeanStore;
+
+import java.lang.annotation.Annotation;
 
 /**
  * The thread context. Works with @ThreadScoped beans, maintaining a separate
  * context for each thread.
- * 
+ *
  * @author Nicklas Karlsson
  * @author Peter Royle
  */
-public class ThreadContext extends AbstractUnboundContext
-{
+public class ThreadContext extends AbstractUnboundContext {
 
-   public ThreadContext()
-   {
-      super(false);
-   }
+    public ThreadContext() {
+        super(false);
+    }
 
-   public Class<? extends Annotation> getScope()
-   {
-      return ThreadScoped.class;
-   }
-   
-   @Override
-   public void activate()
-   {
-      super.activate();
-      setBeanStore(new HashMapBeanStore());
-   }
+    public Class<? extends Annotation> getScope() {
+        return ThreadScoped.class;
+    }
+
+    @Override
+    public void activate() {
+        super.activate();
+        setBeanStore(new HashMapBeanStore());
+    }
 
 }

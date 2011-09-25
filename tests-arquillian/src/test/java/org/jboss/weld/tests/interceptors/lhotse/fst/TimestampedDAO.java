@@ -25,10 +25,8 @@ package org.jboss.weld.tests.interceptors.lhotse.fst;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public abstract class TimestampedDAO<T extends Timestamped> extends GenericDAO<T> implements TDAO<T>
-{
-   public boolean isExpired(T t)
-   {
-      return System.currentTimeMillis() - 10000 > t.timestamp;
-   }
+public abstract class TimestampedDAO<T extends Timestamped> extends GenericDAO<T> implements TDAO<T> {
+    public boolean isExpired(T t) {
+        return System.currentTimeMillis() - 10000 > t.timestamp;
+    }
 }

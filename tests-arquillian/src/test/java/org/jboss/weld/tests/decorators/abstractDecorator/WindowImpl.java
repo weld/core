@@ -19,25 +19,21 @@ package org.jboss.weld.tests.decorators.abstractDecorator;
 import javax.inject.Inject;
 
 /**
- *
  * @author Marius Bogoevici
  */
-public class WindowImpl implements Window
-{
-   @Inject
-   WindowPane pane;
+public class WindowImpl implements Window {
+    @Inject
+    WindowPane pane;
 
-   static boolean drawn;
+    static boolean drawn;
 
-   static boolean moved;
+    static boolean moved;
 
-   public void draw()
-   {
-      drawn = true;
-   }
+    public void draw() {
+        drawn = true;
+    }
 
-   public void move()
-   {
-      moved = true; 
-   }
+    public void move() {
+        moved = true;
+    }
 }

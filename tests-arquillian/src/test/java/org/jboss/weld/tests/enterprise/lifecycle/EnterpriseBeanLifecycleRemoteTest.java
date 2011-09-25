@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
-import static org.junit.Assert.assertEquals;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
@@ -40,54 +36,53 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.servlet.http.HttpServletResponse;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * Sections
- *
+ * <p/>
  * 6.5. Lifecycle of stateful session beans 6.6. Lifecycle of stateless session
  * and singleton beans 6.11. Lifecycle of EJBs
- *
+ * <p/>
  * Mostly overlapping with other tests...
  *
  * @author Nicklas Karlsson
  * @author David Allen
- *
+ *         <p/>
  *         Spec version: Public Release Draft 2
- *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class EnterpriseBeanLifecycleRemoteTest
-{
-   @Deployment(testable = false)
-   public static Archive<?> deploy()
-   {
-      EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
-      ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
-            .addClass(RemoteClient.class)
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-      );
-      ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test.jar")
-            .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
-            .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
-            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-      );
-      return ear;
-   }
+public class EnterpriseBeanLifecycleRemoteTest {
+    @Deployment(testable = false)
+    public static Archive<?> deploy() {
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
+        ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClass(RemoteClient.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        );
+        ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test.jar")
+                .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
+                .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+        );
+        return ear;
+    }
 
-   @Test
-   public void testDestroyRemovesSFSB() throws Exception
-   {
-      WebClient client = new WebClient();
-      Page page = client.getPage(getPath("request1"));
-      assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
-      page = client.getPage(getPath("request2"));
-      assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
-   }
+    @Test
+    public void testDestroyRemovesSFSB() throws Exception {
+        WebClient client = new WebClient();
+        Page page = client.getPage(getPath("request1"));
+        assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
+        page = client.getPage(getPath("request2"));
+        assertEquals(page.getWebResponse().getStatusCode(), HttpServletResponse.SC_OK);
+    }
 
-   protected String getPath(String viewId)
-   {
-      // TODO: this should be moved out and be handled by Arquillian
-      return "http://localhost:8080/test/" + viewId;
-   }
+    protected String getPath(String viewId) {
+        // TODO: this should be moved out and be handled by Arquillian
+        return "http://localhost:8080/test/" + viewId;
+    }
 
 }

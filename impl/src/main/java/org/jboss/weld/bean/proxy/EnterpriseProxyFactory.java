@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -17,57 +17,47 @@
 
 package org.jboss.weld.bean.proxy;
 
-import java.lang.reflect.Method;
-
-import javassist.bytecode.AccessFlag;
 import javassist.bytecode.ClassFile;
-
-import javax.enterprise.inject.spi.Bean;
-
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 
+import javax.enterprise.inject.spi.Bean;
+import java.lang.reflect.Method;
+
 /**
  * This factory produces client proxies specific for enterprise beans, in
  * particular session beans. It adds the interface
  * {@link EnterpriseBeanInstance} on the proxy.
- * 
+ *
  * @author David Allen
  */
-public class EnterpriseProxyFactory<T> extends ProxyFactory<T>
-{
-   /**
-    * Produces a factory for a specific bean implementation.
-    * 
-    * @param proxiedBeanType the actual enterprise bean
-    */
-   public EnterpriseProxyFactory(Class<T> proxiedBeanType, Bean<T> bean)
-   {
-      super(proxiedBeanType, bean.getTypes(), bean);
-   }
+public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
+    /**
+     * Produces a factory for a specific bean implementation.
+     *
+     * @param proxiedBeanType the actual enterprise bean
+     */
+    public EnterpriseProxyFactory(Class<T> proxiedBeanType, Bean<T> bean) {
+        super(proxiedBeanType, bean.getTypes(), bean);
+    }
 
-   @Override
-   protected void addSpecialMethods(ClassFile proxyClassType)
-   {
-      super.addSpecialMethods(proxyClassType);
+    @Override
+    protected void addSpecialMethods(ClassFile proxyClassType) {
+        super.addSpecialMethods(proxyClassType);
 
-      // Add methods for the EnterpriseBeanInstance interface
-      try
-      {
-         proxyClassType.addInterface(EnterpriseBeanInstance.class.getName());
-         for (Method method : EnterpriseBeanInstance.class.getDeclaredMethods())
-         {
-            log.trace("Adding method " + method);
-            MethodInformation methodInfo = new RuntimeMethodInformation(method);
-            proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
-         }
-      }
-      catch (Exception e)
-      {
-         throw new WeldException(e);
-      }
+        // Add methods for the EnterpriseBeanInstance interface
+        try {
+            proxyClassType.addInterface(EnterpriseBeanInstance.class.getName());
+            for (Method method : EnterpriseBeanInstance.class.getDeclaredMethods()) {
+                log.trace("Adding method " + method);
+                MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), createInterceptorBody(proxyClassType, methodInfo), proxyClassType.getConstPool()));
+            }
+        } catch (Exception e) {
+            throw new WeldException(e);
+        }
 
-   }
+    }
 }

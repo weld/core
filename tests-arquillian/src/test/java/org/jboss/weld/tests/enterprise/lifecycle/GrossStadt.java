@@ -19,23 +19,22 @@ package org.jboss.weld.tests.enterprise.lifecycle;
 import javax.ejb.Local;
 
 @Local
-public interface GrossStadt
-{
-   public void kleinStadtCreated();
-   
-   public void kleinStadtDestroyed();
-   
-   public boolean isKleinStadtCreated();
-   
-   public boolean isKleinStadtDestroyed();
-   
-   public void resetCreatedFlags();
-   
-   public void resetDestroyedFlags();
-   
-   public void dispose();
+public interface GrossStadt {
+    void kleinStadtCreated();
 
-   public void schlossDestroyed();
+    void kleinStadtDestroyed();
 
-   public boolean isSchlossDestroyed();
+    boolean isKleinStadtCreated();
+
+    boolean isKleinStadtDestroyed();
+
+    void resetCreatedFlags();
+
+    void resetDestroyedFlags();
+
+    void dispose();
+
+    void schlossDestroyed();
+
+    boolean isSchlossDestroyed();
 }

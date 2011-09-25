@@ -18,27 +18,26 @@
 package org.jboss.weld.environment.se.test.decorators;
 
 /**
- *
  * @author Peter Royle
  */
 public interface Door {
 
-   boolean close();
+    boolean close();
 
-   boolean isLocked();
+    boolean isLocked();
 
-   boolean isOpen();
+    boolean isOpen();
 
-   /**
-    * Lock and unlock the door. Can't lock an open door.
-    */
-   boolean lock();
+    /**
+     * Lock and unlock the door. Can't lock an open door.
+     */
+    boolean lock();
 
-   /**
-    * Open and close the door. Can't open a locked door.
-    */
-   boolean open();
+    /**
+     * Open and close the door. Can't open a locked door.
+     */
+    boolean open();
 
-   void unlock();
+    void unlock();
 
 }

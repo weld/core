@@ -16,14 +16,14 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.Deployment;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.Deployment;
 
 /**
  * An immutable implementation of {@link BeanDeploymentArchive} which must have
@@ -31,45 +31,38 @@ import org.jboss.weld.bootstrap.spi.Deployment;
  * {@link ImmutableBeanDeploymentArchive#ImmutableBeanDeploymentArchive(String, Collection, Collection, List)}
  * or
  * {@link ImmutableBeanDeploymentArchive#ImmutableBeanDeploymentArchive(String, Collection, Collection)}
- * 
+ * <p/>
  * See {@link Deployment} for more detailed information on creating deployment
  * structures.
- * 
+ *
  * @author Pete Muir
- * 
  */
-public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArchive
-{
+public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArchive {
 
-   private final Collection<String> beanClasses;
-   private final BeansXml beansXml;
-   private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
+    private final Collection<String> beanClasses;
+    private final BeansXml beansXml;
+    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
 
-   public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives)
-   {
-      super(id);
-      this.beanClasses = beanClasses;
-      this.beansXml = beansXml;
-      this.beanDeploymentArchives = beanDeploymentArchives;
-   }
+    public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives) {
+        super(id);
+        this.beanClasses = beanClasses;
+        this.beansXml = beansXml;
+        this.beanDeploymentArchives = beanDeploymentArchives;
+    }
 
-   public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml)
-   {
-      this(id, beanClasses, beansXml, new ArrayList<BeanDeploymentArchive>());
-   }
+    public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
+        this(id, beanClasses, beansXml, new ArrayList<BeanDeploymentArchive>());
+    }
 
-   public Collection<String> getBeanClasses()
-   {
-      return Collections.unmodifiableCollection(beanClasses);
-   }
+    public Collection<String> getBeanClasses() {
+        return Collections.unmodifiableCollection(beanClasses);
+    }
 
-   public Collection<BeanDeploymentArchive> getBeanDeploymentArchives()
-   {
-      return Collections.unmodifiableCollection(beanDeploymentArchives);
-   }
+    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
+        return Collections.unmodifiableCollection(beanDeploymentArchives);
+    }
 
-   public BeansXml getBeansXml()
-   {
-      return beansXml;
-   }
+    public BeansXml getBeansXml() {
+        return beansXml;
+    }
 }

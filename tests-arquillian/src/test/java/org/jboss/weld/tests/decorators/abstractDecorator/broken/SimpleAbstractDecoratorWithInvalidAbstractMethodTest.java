@@ -33,21 +33,18 @@ import org.junit.runner.RunWith;
  */
 //@ExpectedDeploymentException(DefinitionException.class)
 @RunWith(Arquillian.class)
-public class SimpleAbstractDecoratorWithInvalidAbstractMethodTest
-{
-   @Deployment
-   public static Archive<?> deploy()
-   {
-      return ShrinkWrap.create(BeanArchive.class)
-         .decorate(Frame.class)
-         .addPackage(SimpleAbstractDecoratorWithInvalidAbstractMethodTest.class.getPackage());
-   }
+public class SimpleAbstractDecoratorWithInvalidAbstractMethodTest {
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .decorate(Frame.class)
+                .addPackage(SimpleAbstractDecoratorWithInvalidAbstractMethodTest.class.getPackage());
+    }
 
-   @Test
-   @Category(Broken.class)
-   // TODO: needs exception transformer to run in JBAS
-   public void testAbstractDecoratorApplied()
-   {
-      Assert.assertFalse(false);
-   }
+    @Test
+    @Category(Broken.class)
+    // TODO: needs exception transformer to run in JBAS
+    public void testAbstractDecoratorApplied() {
+        Assert.assertFalse(false);
+    }
 }

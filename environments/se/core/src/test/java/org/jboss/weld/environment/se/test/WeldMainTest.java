@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.jboss.weld.environment.se.ShutdownManager;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -30,55 +26,54 @@ import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
- * 
  * @author Peter Royle
  */
-public class WeldMainTest
-{
+public class WeldMainTest {
 
-   /**
-    * Test the alternate API for boting WeldContainer from an SE app.
-    */
-   @Test
-   public void testInitialize()
-   {
+    /**
+     * Test the alternate API for boting WeldContainer from an SE app.
+     */
+    @Test
+    public void testInitialize() {
 
-      WeldContainer weld = new Weld().initialize();
+        WeldContainer weld = new Weld().initialize();
 
-      MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
-      assertNotNull(mainTestBean);
+        MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
+        assertNotNull(mainTestBean);
 
-      ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
-      assertNotNull(paramsBean);
-      assertNotNull(paramsBean.getParameters());
+        ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
+        assertNotNull(paramsBean);
+        assertNotNull(paramsBean.getParameters());
 
-      shutdownManager(weld);
-   }
+        shutdownManager(weld);
+    }
 
-   /**
-    * Test the firing of observers using the alternate API for boting WeldContainer from an SE app.
-    */
-   @Test
-   public void testObservers()
-   {
-      InitObserverTestBean.reset();
-      ObserverTestBean.reset();
+    /**
+     * Test the firing of observers using the alternate API for boting WeldContainer from an SE app.
+     */
+    @Test
+    public void testObservers() {
+        InitObserverTestBean.reset();
+        ObserverTestBean.reset();
 
 
-      WeldContainer weld = new Weld().initialize();
-      weld.event().select(CustomEvent.class).fire(new CustomEvent());
+        WeldContainer weld = new Weld().initialize();
+        weld.event().select(CustomEvent.class).fire(new CustomEvent());
 
-      assertTrue(ObserverTestBean.isBuiltInObserved());
-      assertTrue(ObserverTestBean.isCustomObserved());
-      assertFalse(ObserverTestBean.isInitObserved());
+        assertTrue(ObserverTestBean.isBuiltInObserved());
+        assertTrue(ObserverTestBean.isCustomObserved());
+        assertFalse(ObserverTestBean.isInitObserved());
 
-      assertFalse(InitObserverTestBean.isInitObserved());
-   }
+        assertFalse(InitObserverTestBean.isInitObserved());
+    }
 
-   private void shutdownManager(WeldContainer weld)
-   {
-      ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-      shutdownManager.shutdown();
-   }
+    private void shutdownManager(WeldContainer weld) {
+        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
+        shutdownManager.shutdown();
+    }
 }

@@ -20,9 +20,8 @@ package org.jboss.weld.tests.generic;
 /**
  * @author Marius Bogoevici
  */
-public class BoundedGenericBean<T extends BaseClass>
-{
-  public T echo (T param) {
-     return param;
-  }
+public class BoundedGenericBean<T extends BaseClass> {
+    public T echo(T param) {
+        return param;
+    }
 }

@@ -18,7 +18,6 @@ package org.jboss.weld.test.harness;
 
 import org.jboss.testharness.spi.StandaloneContainers;
 
-public class StandaloneContainersImpl extends AbstractStandaloneContainersImpl implements StandaloneContainers
-{
-   
+public class StandaloneContainersImpl extends AbstractStandaloneContainersImpl implements StandaloneContainers {
+
 }

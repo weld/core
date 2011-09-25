@@ -22,7 +22,6 @@ package org.jboss.weld.tests.interceptors.invalidContract;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public interface Service
-{
-	void on();
+public interface Service {
+    void on();
 }

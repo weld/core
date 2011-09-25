@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -21,20 +21,19 @@ import javax.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation literal for {@link New}
- * 
+ *
  * @author Pete Muir
  */
 @SuppressWarnings("all")
-public class NewLiteral extends AnnotationLiteral<New> implements New 
-{
+public class NewLiteral extends AnnotationLiteral<New> implements New {
 
-   private static final long serialVersionUID = 5740797331347409678L;
+    private static final long serialVersionUID = 5740797331347409678L;
 
-   public Class<?> value()
-   {
-      return New.class;
-   }
-   
-   public NewLiteral() {}
+    public Class<?> value() {
+        return New.class;
+    }
+
+    public NewLiteral() {
+    }
 
 }

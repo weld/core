@@ -19,9 +19,8 @@ package org.jboss.weld.tests.decorators.unwrapException;
 /**
  * @author <a href="mailto:lightguard.jp@gmail.com">Jason Porter</a>
  */
-public interface Simple
-{
-   boolean invoked();
+public interface Simple {
+    boolean invoked();
 
-   String speak();
+    String speak();
 }
