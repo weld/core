@@ -62,13 +62,13 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
 
     protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, EnhancedAnnotatedType<T> type, Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
         ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
-        EnhancedAnnotatedType<T> enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass(type, bean), type.slim().getIdentifier().getBdaId());
+        EnhancedAnnotatedType<T> enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass(type, bean, manager), type.slim().getIdentifier().getBdaId());
         return EnhancedAnnotatedConstructorImpl.of(enhancedSubclass.getDeclaredEnhancedConstructor(originalConstructorInjectionPoint.getSignature()),
                 enhancedSubclass,
                 transformer);
     }
 
-    protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean) {
+    protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
         Set<MethodSignature> enhancedMethodSignatures = new HashSet<MethodSignature>();
         for (AnnotatedMethod<?> method : Beans.getInterceptableMethods(type)) {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
@@ -80,7 +80,7 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
         } else {
             types = bean.getTypes();
         }
-        return new InterceptedSubclassFactory<T>(type.getJavaClass(), types, bean, enhancedMethodSignatures).getProxyClass();
+        return new InterceptedSubclassFactory<T>(manager.getContextId(), type.getJavaClass(), types, bean, enhancedMethodSignatures).getProxyClass();
     }
 
     @Override

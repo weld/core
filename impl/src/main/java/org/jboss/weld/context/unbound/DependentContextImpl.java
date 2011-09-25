@@ -59,7 +59,7 @@ public class DependentContextImpl implements DependentContext {
      * Overridden method always creating a new instance
      *
      * @param contextual The bean to create
-     * @param create     Should a new one be created
+     * @param creationalContext The creation context
      */
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
         if (!isActive()) {

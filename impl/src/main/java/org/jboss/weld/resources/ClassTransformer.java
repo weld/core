@@ -85,7 +85,7 @@ public class ClassTransformer implements BootstrapService {
         @Override
         public BackedAnnotatedType<?> load(TypeHolder<?> typeHolder) {
             BackedAnnotatedType<?> type = BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), cache,
-                    reflectionCache, typeHolder.getBdaId());
+                    reflectionCache, contextId, typeHolder.getBdaId());
             return updateLookupTable(type);
         }
     }
@@ -155,7 +155,10 @@ public class ClassTransformer implements BootstrapService {
     private final SharedObjectCache cache;
     private final ReflectionCache reflectionCache;
 
-    public ClassTransformer(TypeStore typeStore, SharedObjectCache cache, ReflectionCache reflectionCache) {
+    private final String contextId;
+
+    public ClassTransformer(TypeStore typeStore, SharedObjectCache cache, ReflectionCache reflectionCache, String contextId) {
+        this.contextId = contextId;
 
         CacheBuilder<Object, Object> defaultBuilder = CacheBuilder.newBuilder();
         // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop
@@ -200,12 +203,12 @@ public class ClassTransformer implements BootstrapService {
     }
 
     public <T> UnbackedAnnotatedType<T> getUnbackedAnnotatedType(AnnotatedType<T> source, String bdaId, String suffix) {
-        UnbackedAnnotatedType<T> type = UnbackedAnnotatedType.additionalAnnotatedType(source, bdaId, suffix);
+        UnbackedAnnotatedType<T> type = UnbackedAnnotatedType.additionalAnnotatedType(contextId, source, bdaId, suffix, cache);
         return updateLookupTable(type);
     }
 
     public <T> UnbackedAnnotatedType<T> getUnbackedAnnotatedType(SlimAnnotatedType<T> originalType, AnnotatedType<T> source) {
-        UnbackedAnnotatedType<T> type = UnbackedAnnotatedType.modifiedAnnotatedType(originalType, source);
+        UnbackedAnnotatedType<T> type = UnbackedAnnotatedType.modifiedAnnotatedType(originalType, source, cache);
         return updateLookupTable(type);
     }
 

@@ -67,7 +67,7 @@ public class DecorationHelper<T> {
     List<Decorator<?>> decorators;
 
     public DecorationHelper(TargetBeanInstance originalInstance, Bean<?> bean, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators) {
-        this.originalInstance = Reflections.cast(originalInstance.getInstance());
+        this.originalInstance = Reflections.<T>cast(originalInstance.getInstance());
         this.targetBeanInstance = originalInstance;
         this.beanManager = beanManager;
         this.contextualStore = contextualStore;
@@ -111,7 +111,7 @@ public class DecorationHelper<T> {
             Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
             DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
             newTargetBeanInstance.setInterceptorsHandler(methodHandler);
-            ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
+            ProxyFactory.setBeanInstance(beanManager.getContextId(), proxy, newTargetBeanInstance, bean);
             return proxy;
         } catch (PrivilegedActionException e) {
             if (e.getCause() instanceof InstantiationException) {

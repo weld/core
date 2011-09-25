@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.context;
 
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
-
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
 
 public class SerializableContextualInstanceImpl<C extends Contextual<I>, I> implements SerializableContextualInstance<C, I> {
 

@@ -60,8 +60,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     private final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private final Field delegateField;
 
-    public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPointAttributes<?, ?> delegateInjectionPoint, Bean<?> bean) {
-        super(proxyType, Collections.<Type>emptySet(), bean);
+    public DecoratorProxyFactory(String contextId, Class<T> proxyType, WeldInjectionPointAttributes<?, ?> delegateInjectionPoint, Bean<?> bean) {
+        super(contextId, proxyType, Collections.<Type>emptySet(), bean);
         this.delegateInjectionPoint = delegateInjectionPoint;
         if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
             delegateField = (Field) ((FieldInjectionPoint<?, ?>) delegateInjectionPoint).getMember();

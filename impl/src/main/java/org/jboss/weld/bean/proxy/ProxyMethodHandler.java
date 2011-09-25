@@ -17,6 +17,11 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_INSTANCE_NOT_SET_ON_PROXY;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
@@ -30,11 +35,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_INSTANCE_NOT_SET_ON_PROXY;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN;
 
 /**
  * A general purpose MethodHandler for all proxies which routes calls to the
@@ -57,9 +57,12 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
 
     private transient Bean<?> bean;
 
-    public ProxyMethodHandler(BeanInstance beanInstance, Bean<?> bean) {
+    private final String contextId;
+
+    public ProxyMethodHandler(String contextId, BeanInstance beanInstance, Bean<?> bean) {
         this.beanInstance = beanInstance;
         this.bean = bean;
+        this.contextId = contextId;
         if (bean instanceof PassivationCapable) {
             this.beanId = ((PassivationCapable) bean).getId();
         } else {
@@ -92,7 +95,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
             }
         } else if (thisMethod.getName().equals("_initMH")) {
             log.trace("Setting new MethodHandler with bean instance for {} on {}", args[0], self.getClass());
-            return new ProxyMethodHandler(new TargetBeanInstance(args[0]), getBean());
+            return new ProxyMethodHandler(contextId, new TargetBeanInstance(args[0]), getBean());
         } else {
             if (beanInstance == null) {
                 throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY);
@@ -113,7 +116,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
             if (beanId == null) {
                 throw new WeldException(PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN);
             }
-            bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+            bean = Container.instance(contextId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
         }
         return bean;
     }

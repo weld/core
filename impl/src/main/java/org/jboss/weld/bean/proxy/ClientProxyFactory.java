@@ -99,9 +99,9 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         CACHABLE_SCOPES = Collections.unmodifiableSet(scopes);
     }
 
-    public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
-        super(proxiedBeanType, typeClosure, bean);
-        beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+    public ClientProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
+        super(contextId, proxiedBeanType, typeClosure, bean);
+        beanId = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
     }
 
     @Override
@@ -165,7 +165,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.dup();
         b.aload(0);
         b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, LJAVA_LANG_STRING);
-        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_STRING + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.ldc(getContextId());
+        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(Ljava/lang/String;Ljava/lang/String;)V");
         b.returnInstruction();
     }
 

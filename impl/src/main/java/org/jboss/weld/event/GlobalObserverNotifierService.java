@@ -53,11 +53,11 @@ public class GlobalObserverNotifierService implements BootstrapService {
     private final ObserverNotifier globalLenientObserverNotifier;
     private final ObserverNotifier globalStrictObserverNotifier;
 
-    public GlobalObserverNotifierService(ServiceRegistry services) {
+    public GlobalObserverNotifierService(ServiceRegistry services, String contextId) {
         this.beanManagers = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver resolver = new TypeSafeObserverResolver(services.get(MetaAnnotationStore.class), createGlobalObserverMethodIterable(beanManagers));
-        this.globalLenientObserverNotifier = ObserverNotifier.of(resolver, services, false);
-        this.globalStrictObserverNotifier = ObserverNotifier.of(resolver, services, true);
+        this.globalLenientObserverNotifier = ObserverNotifier.of(contextId, resolver, services, false);
+        this.globalStrictObserverNotifier = ObserverNotifier.of(contextId, resolver, services, true);
     }
 
     private static Iterable<ObserverMethod<?>> createGlobalObserverMethodIterable(final Set<BeanManagerImpl> beanManagers) {

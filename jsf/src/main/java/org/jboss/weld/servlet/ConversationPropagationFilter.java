@@ -17,6 +17,7 @@
 package org.jboss.weld.servlet;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.jsf.FacesUrlTransformer;
@@ -51,8 +52,13 @@ import java.io.IOException;
  * @author Nicklas Karlsson
  */
 public class ConversationPropagationFilter implements Filter {
+    private String contextId;
 
     public void init(FilterConfig config) throws ServletException {
+        contextId = (String) config.getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+        if (contextId == null) {
+            contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+        }
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -71,7 +77,7 @@ public class ConversationPropagationFilter implements Filter {
             public void sendRedirect(String path) throws IOException {
                 FacesContext context = FacesContext.getCurrentInstance();
                 if (context != null) { // this is a JSF request
-                    ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+                    ConversationContext conversationContext = instance(contextId).select(HttpConversationContext.class).get();
                     if (conversationContext.isActive()) {
                         Conversation conversation = conversationContext.getCurrentConversation();
                         if (!conversation.isTransient()) {
@@ -89,7 +95,7 @@ public class ConversationPropagationFilter implements Filter {
     }
 
 
-    private static Instance<Context> instance() {
-        return Container.instance().deploymentManager().instance().select(Context.class);
+    private static Instance<Context> instance(String id) {
+        return Container.instance(id).deploymentManager().instance().select(Context.class);
     }
 }

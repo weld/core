@@ -43,21 +43,21 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
     private final InjectionPointIdentifier identifier;
 
-    public InjectionPointHolder(InjectionPoint ip) {
+    public InjectionPointHolder(String contextId, InjectionPoint ip) {
         super(ip);
         if (ip.getBean() == null) {
             this.identifier = new NoopInjectionPointIdentifier(ip);
         } else if (ip.getAnnotated() instanceof AnnotatedField<?>) {
             AnnotatedField<?> field = Reflections.cast(ip.getAnnotated());
-            this.identifier = new FieldInjectionPointIdentifier(ip.getBean(), field);
+            this.identifier = new FieldInjectionPointIdentifier(contextId, ip.getBean(), field);
         } else if (ip.getAnnotated() instanceof AnnotatedParameter<?>) {
             AnnotatedParameter<?> parameter = Reflections.cast(ip.getAnnotated());
             if (parameter.getDeclaringCallable() instanceof AnnotatedConstructor<?>) {
                 AnnotatedConstructor<?> constructor = Reflections.cast(parameter.getDeclaringCallable());
-                this.identifier = new ConstructorParameterInjectionPointIdentifier(ip.getBean(), parameter.getPosition(), constructor);
+                this.identifier = new ConstructorParameterInjectionPointIdentifier(contextId, ip.getBean(), parameter.getPosition(), constructor);
             } else if (parameter.getDeclaringCallable() instanceof AnnotatedMethod<?>) {
                 AnnotatedMethod<?> method = Reflections.cast(parameter.getDeclaringCallable());
-                this.identifier = new MethodParameterInjectionPointIdentifier(ip.getBean(), parameter.getPosition(), method);
+                this.identifier = new MethodParameterInjectionPointIdentifier(contextId, ip.getBean(), parameter.getPosition(), method);
             } else {
                 throw new IllegalArgumentException(BeanMessage.INVALID_ANNOTATED_CALLABLE, parameter.getDeclaringCallable());
             }
@@ -106,8 +106,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private final BeanHolder<?> bean;
 
-        public AbstractInjectionPointIdentifier(Bean<?> bean) {
-            this.bean = BeanHolder.of(bean);
+        public AbstractInjectionPointIdentifier(String contextId, Bean<?> bean) {
+            this.bean = BeanHolder.of(contextId, bean);
         }
 
         @Override
@@ -136,8 +136,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private final FieldHolder field;
 
-        public FieldInjectionPointIdentifier(Bean<?> bean, AnnotatedField<?> field) {
-            super(bean);
+        public FieldInjectionPointIdentifier(String contextId, Bean<?> bean, AnnotatedField<?> field) {
+            super(contextId, bean);
             this.field = new FieldHolder(field.getJavaMember());
         }
 
@@ -157,8 +157,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private final int position;
 
-        public AbstractParameterInjectionPointIdentifier(Bean<?> bean, int position) {
-            super(bean);
+        public AbstractParameterInjectionPointIdentifier(String contextId, Bean<?> bean, int position) {
+            super(contextId, bean);
             this.position = position;
         }
 
@@ -180,8 +180,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private final ConstructorHolder<?> constructor;
 
-        public ConstructorParameterInjectionPointIdentifier(Bean<?> bean, int position, AnnotatedConstructor<?> constructor) {
-            super(bean, position);
+        public ConstructorParameterInjectionPointIdentifier(String contextId, Bean<?> bean, int position, AnnotatedConstructor<?> constructor) {
+            super(contextId, bean, position);
             this.constructor = ConstructorHolder.of(constructor.getJavaMember());
         }
 
@@ -201,8 +201,8 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private final MethodHolder method;
 
-        public MethodParameterInjectionPointIdentifier(Bean<?> bean, int position, AnnotatedMethod<?> constructor) {
-            super(bean, position);
+        public MethodParameterInjectionPointIdentifier(String contextId, Bean<?> bean, int position, AnnotatedMethod<?> constructor) {
+            super(contextId, bean, position);
             this.method = MethodHolder.of(constructor);
         }
 

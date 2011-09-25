@@ -12,6 +12,10 @@ import org.jboss.weld.servlet.SessionHolder;
 
 public class HttpConversationContextImpl extends AbstractConversationContext<HttpServletRequest, HttpSession> implements HttpConversationContext {
 
+    public HttpConversationContextImpl(String contextId) {
+        super(contextId);
+    }
+
     @Override
     protected void setSessionAttribute(HttpServletRequest request, String name, Object value, boolean create) {
         if (create || SessionHolder.getSessionIfExists() != null) {

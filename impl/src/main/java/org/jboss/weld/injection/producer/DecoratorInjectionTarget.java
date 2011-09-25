@@ -77,8 +77,8 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
             final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, injectionPoints);
             return new SubclassedComponentInstantiator<T>(type, bean, originalConstructor, beanManager) {
                 @Override
-                protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean) {
-                    return new DecoratorProxyFactory<T>(type.getJavaClass(), delegateInjectionPoint, bean).getProxyClass();
+                protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
+                    return new DecoratorProxyFactory<T>(manager.getContextId(), type.getJavaClass(), delegateInjectionPoint, bean).getProxyClass();
                 }
             };
         } else {
@@ -111,7 +111,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
             } catch (IllegalAccessException e) {
                 throw new WeldException(ACCESS_ERROR_ON_FIELD, e, accessibleField.getName(), accessibleField.getDeclaringClass());
             }
-            final ProxyMethodHandler handler = new ProxyMethodHandler(new TargetBeanInstance(delegate), getBean());
+            final ProxyMethodHandler handler = new ProxyMethodHandler(beanManager.getContextId(), new TargetBeanInstance(delegate), getBean());
             ((ProxyObject) instance).setHandler(handler);
         }
     }

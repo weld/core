@@ -64,7 +64,7 @@ public class InterceptedBeanMetadataBean extends BeanMetadataBean {
             if (bean instanceof Serializable) {
                 return bean;
             } else {
-                return SerializableForwardingBean.of(bean);
+                return SerializableForwardingBean.of(getBeanManager().getContextId(), bean);
             }
         } else {
             throw new IllegalArgumentException("Unable to determine @Intercepted Bean<?> for this interceptor.");

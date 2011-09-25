@@ -36,8 +36,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class SubclassDecoratorApplyingInstantiator<T> extends AbstractDecoratorApplyingInstantiator<T> {
 
-    public SubclassDecoratorApplyingInstantiator(Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
-        super(delegate, bean, decorators);
+    public SubclassDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
+        super(contextId, delegate, bean, decorators);
     }
 
     @Override

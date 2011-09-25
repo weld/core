@@ -17,10 +17,12 @@ import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
 public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
 
     private final NamingScheme namingScheme;
+    private final String contextId;
 
-    public HttpSessionContextImpl() {
-        super(true);
+    public HttpSessionContextImpl(String contextId) {
+        super(contextId, true);
         this.namingScheme = new SimpleNamingScheme(HttpSessionContext.class.getName());
+        this.contextId = contextId;
     }
 
     public boolean associate(HttpServletRequest request) {
@@ -60,10 +62,10 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     protected HttpConversationContext getConversationContext() {
-        return Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
+        return Container.instance(contextId).deploymentManager().instance().select(HttpConversationContext.class).get();
     }
 
     protected Conversation getConversation() {
-        return Container.instance().deploymentManager().instance().select(Conversation.class).get();
+        return Container.instance(contextId).deploymentManager().instance().select(Conversation.class).get();
     }
 }

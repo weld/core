@@ -29,8 +29,8 @@ public class SerializableForwardingInjectionPoint extends ForwardingInjectionPoi
 
     private final InjectionPointHolder ip;
 
-    public SerializableForwardingInjectionPoint(InjectionPoint ip) {
-        this.ip = new InjectionPointHolder(ip);
+    public SerializableForwardingInjectionPoint(String contextId, InjectionPoint ip) {
+        this.ip = new InjectionPointHolder(contextId, ip);
     }
 
     @Override

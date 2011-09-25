@@ -38,14 +38,16 @@ public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends Enter
     private static final long serialVersionUID = 166825647603520280L;
 
     private final InjectionPointHolder injectionPointHolder;
+    private final String contextId;
     private transient SLSBInvocationInjectionPoint slsbInvocationInjectionPoint;
 
     public InjectionPointPropagatingEnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler, BeanManagerImpl manager) {
         super(baseType, methodHandler);
+        this.contextId = manager.getContextId();
         this.slsbInvocationInjectionPoint = manager.getServices().get(SLSBInvocationInjectionPoint.class);
         InjectionPoint ip = manager.getServices().get(CurrentInjectionPoint.class).peek();
         if (ip != null) {
-            this.injectionPointHolder = new InjectionPointHolder(ip);
+            this.injectionPointHolder = new InjectionPointHolder(manager.getContextId(), ip);
         } else {
             this.injectionPointHolder = null;
         }
@@ -67,7 +69,7 @@ public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends Enter
     }
 
     private Object readResolve() throws ObjectStreamException {
-        this.slsbInvocationInjectionPoint = Container.instance().services().get(SLSBInvocationInjectionPoint.class);
+        this.slsbInvocationInjectionPoint = Container.instance(contextId).services().get(SLSBInvocationInjectionPoint.class);
         return this;
     }
 }

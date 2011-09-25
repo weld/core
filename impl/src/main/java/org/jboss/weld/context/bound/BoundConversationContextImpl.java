@@ -9,6 +9,10 @@ import java.util.Map;
 
 public class BoundConversationContextImpl extends AbstractConversationContext<BoundRequest, Map<String, Object>> implements BoundConversationContext {
 
+    public BoundConversationContextImpl(String contextId) {
+        super(contextId);
+    }
+
     @Override
     protected void setSessionAttribute(BoundRequest request, String name, Object value, boolean create) {
         request.getSessionMap(create).put(name, value);

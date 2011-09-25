@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
@@ -45,21 +46,23 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class SimpleWeldClassTest {
-    @Deployment
-    public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .addPackage(InterceptorsWithHierarchyTest.class.getPackage());
-    }
+public class SimpleWeldClassTest
+{
+   @Deployment
+   public static Archive<?> deploy()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(InterceptorsWithHierarchyTest.class.getPackage());
+   }
 
-    /*
+   /*
     * description = "WELD-568"
     */
     @Category(Broken.class)
     @Test
     public void testWeldClassForCovariantReturnType() {
         TypeStore typeStore = new TypeStore();
-        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore)).getEnhancedAnnotatedType(Attacker.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
+        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE).getEnhancedAnnotatedType(Attacker.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
         Collection<EnhancedAnnotatedMethod<?, ? super Attacker>> methods = weldClass.getEnhancedMethods();
         Assert.assertEquals(4, methods.size());
         List<AnnotatedMethod<?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);

@@ -49,6 +49,6 @@ public class UnbackedMemberIdentifier<X> implements Serializable {
     }
 
     private Object readResolve() throws ObjectStreamException {
-        return Container.instance().services().get(MemberTransformer.class).getUnbackedMember(this);
+        return Container.instance(type.getIdentifier().getContextId()).services().get(MemberTransformer.class).getUnbackedMember(this);
     }
 }

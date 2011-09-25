@@ -15,9 +15,10 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.Formats;
 
 import com.google.common.base.Objects;
@@ -37,13 +38,13 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
-    public static <X> UnbackedAnnotatedType<X> additionalAnnotatedType(AnnotatedType<X> source, String bdaId, String suffix) {
-        return new UnbackedAnnotatedType<X>(source, AnnotatedTypeIdentifier.of(bdaId, source.getJavaClass().getName(), suffix, false));
+    public static <X> UnbackedAnnotatedType<X> additionalAnnotatedType(String contextId, AnnotatedType<X> source, String bdaId, String suffix, SharedObjectCache cache) {
+        return new UnbackedAnnotatedType<X>(source, AnnotatedTypeIdentifier.of(contextId, bdaId, source.getJavaClass().getName(), suffix, false), cache);
     }
 
-    public static <X> UnbackedAnnotatedType<X> modifiedAnnotatedType(SlimAnnotatedType<X> originalType, AnnotatedType<X> source) {
+    public static <X> UnbackedAnnotatedType<X> modifiedAnnotatedType(SlimAnnotatedType<X> originalType, AnnotatedType<X> source, SharedObjectCache cache) {
         AnnotatedTypeIdentifier identifier = AnnotatedTypeIdentifier.forModifiedAnnotatedType(originalType.getIdentifier());
-        return new UnbackedAnnotatedType<X>(source, identifier);
+        return new UnbackedAnnotatedType<X>(source, identifier, cache);
     }
 
     private final Class<X> javaClass;
@@ -52,22 +53,22 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     private final Set<AnnotatedField<? super X>> fields;
     private final AnnotatedTypeIdentifier identifier;
 
-    private UnbackedAnnotatedType(AnnotatedType<X> source, AnnotatedTypeIdentifier identifier) {
+    private UnbackedAnnotatedType(AnnotatedType<X> source, AnnotatedTypeIdentifier identifier, SharedObjectCache cache) {
         super(source.getBaseType(), source.getTypeClosure(), source.getAnnotations());
         this.javaClass = source.getJavaClass();
         Set<AnnotatedConstructor<X>> constructors = new HashSet<AnnotatedConstructor<X>>(source.getConstructors().size());
         for (AnnotatedConstructor<X> constructor : source.getConstructors()) {
-            constructors.add(UnbackedAnnotatedConstructor.of(constructor, this));
+            constructors.add(UnbackedAnnotatedConstructor.of(constructor, this, cache));
         }
         this.constructors = immutableSet(constructors);
         Set<AnnotatedMethod<? super X>> methods = new HashSet<AnnotatedMethod<? super X>>(source.getMethods().size());
         for (AnnotatedMethod<? super X> originalMethod : source.getMethods()) {
-            methods.add(UnbackedAnnotatedMethod.of(originalMethod, this));
+            methods.add(UnbackedAnnotatedMethod.of(originalMethod, this, cache));
         }
         this.methods = immutableSet(methods);
         Set<AnnotatedField<? super X>> fields = new HashSet<AnnotatedField<? super X>>(source.getFields().size());
         for (AnnotatedField<? super X> originalField : source.getFields()) {
-            fields.add(UnbackedAnnotatedField.of(originalField, this));
+            fields.add(UnbackedAnnotatedField.of(originalField, this, cache));
         }
         this.fields = immutableSet(fields);
         this.identifier = identifier;

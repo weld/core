@@ -32,7 +32,6 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -95,7 +94,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         this.manager = manager;
         this.services = services;
         this.environment = environment;
-        this.containerLifecycleEvents = Container.instance().deploymentManager().getServices().get(ContainerLifecycleEvents.class);
+        this.containerLifecycleEvents = manager.getServices().get(ContainerLifecycleEvents.class);
         this.classTransformer = services.get(ClassTransformer.class);
         this.slimAnnotatedTypeStore = services.get(SlimAnnotatedTypeStore.class);
         this.specializationAndEnablementRegistry = services.get(SpecializationAndEnablementRegistry.class);

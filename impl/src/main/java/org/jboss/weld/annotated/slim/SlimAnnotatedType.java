@@ -48,7 +48,7 @@ public interface SlimAnnotatedType<T> extends AnnotatedType<T>, Identified<Annot
         }
 
         private Object readResolve() throws ObjectStreamException {
-            return Container.instance().services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
+            return Container.instance(identifier.getContextId()).services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
         }
     }
 }

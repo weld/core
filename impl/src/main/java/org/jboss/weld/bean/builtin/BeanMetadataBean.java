@@ -50,7 +50,7 @@ public class BeanMetadataBean extends AbstractBuiltInMetadataBean<Bean<?>> {
             if (contextual instanceof Serializable) {
                 return Reflections.cast(contextual);
             } else {
-                return SerializableForwardingBean.of((Bean<?>) contextual);
+                return SerializableForwardingBean.of(getBeanManager().getContextId(), (Bean<?>) contextual);
             }
         } else {
             throw new IllegalArgumentException("Unable to determine Bean metadata for " + ip);

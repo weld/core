@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.annotated.slim;
 
+import static com.google.common.base.Objects.equal;
+
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.New;
@@ -54,36 +56,38 @@ public class AnnotatedTypeIdentifier implements Identifier {
 
     public static final String SYNTHETIC_ANNOTATION_SUFFIX = "syntheticAnnotation";
 
-    public static AnnotatedTypeIdentifier forBackedAnnotatedType(Class<?> javaClass, Type type, String bdaId) {
-        return new AnnotatedTypeIdentifier(bdaId, javaClass.getName(), getTypeId(type), false);
+    public static AnnotatedTypeIdentifier forBackedAnnotatedType(String contextId, Class<?> javaClass, Type type, String bdaId) {
+        return new AnnotatedTypeIdentifier(contextId, bdaId, javaClass.getName(), getTypeId(type), false);
     }
 
     public static AnnotatedTypeIdentifier forModifiedAnnotatedType(AnnotatedTypeIdentifier originalIdentifier) {
         if (originalIdentifier.modified) {
             throw new IllegalArgumentException("Cannot create a modified identifier for an already modified identifier.");
         }
-        return new AnnotatedTypeIdentifier(originalIdentifier.bdaId, originalIdentifier.className,
+        return new AnnotatedTypeIdentifier(originalIdentifier.contextId, originalIdentifier.bdaId, originalIdentifier.className,
                 originalIdentifier.suffix, true);
     }
 
-    public static AnnotatedTypeIdentifier of(String bdaId, String className, String suffix, boolean modified) {
-        return new AnnotatedTypeIdentifier(bdaId, className, suffix, modified);
+    public static AnnotatedTypeIdentifier of(String contextId, String bdaId, String className, String suffix, boolean modified) {
+        return new AnnotatedTypeIdentifier(contextId, bdaId, className, suffix, modified);
     }
 
     private static final long serialVersionUID = -264184070652700144L;
 
+    private final String contextId;
     private final String bdaId;
     private final String className;
     private final String suffix;
     private final boolean modified;
     private final int hashCode;
 
-    private AnnotatedTypeIdentifier(String bdaId, String className, String suffix, boolean modified) {
+    private AnnotatedTypeIdentifier(String contextId, String bdaId, String className, String suffix, boolean modified) {
+        this.contextId = contextId;
         this.bdaId = bdaId;
         this.className = className;
         this.suffix = suffix;
         this.modified = modified;
-        this.hashCode = Objects.hashCode(bdaId, className, suffix, modified);
+        this.hashCode = Objects.hashCode(contextId, bdaId, className, suffix, modified);
     }
 
     private static String getTypeId(Type type) {
@@ -91,6 +95,10 @@ public class AnnotatedTypeIdentifier implements Identifier {
             return null;
         }
         return Types.getTypeId(type);
+    }
+
+    public String getContextId() {
+        return contextId;
     }
 
     public String getBdaId() {
@@ -117,8 +125,8 @@ public class AnnotatedTypeIdentifier implements Identifier {
         }
         if (obj instanceof AnnotatedTypeIdentifier) {
             AnnotatedTypeIdentifier they = (AnnotatedTypeIdentifier) obj;
-            return Objects.equal(bdaId, they.bdaId) && Objects.equal(className, they.className)
-                    && Objects.equal(suffix, they.suffix) && Objects.equal(modified, they.modified);
+            return equal(bdaId, they.bdaId) && equal(className, they.className)
+                    && equal(suffix, they.suffix) && equal(modified, they.modified) && equal(contextId, they.contextId);
         }
         return false;
     }
@@ -126,6 +134,8 @@ public class AnnotatedTypeIdentifier implements Identifier {
     @Override
     public String asString() {
         StringBuilder builder = new StringBuilder();
+        builder.append(contextId);
+        builder.append(ID_SEPARATOR);
         builder.append(bdaId);
         builder.append(ID_SEPARATOR);
         builder.append(className);
@@ -138,6 +148,9 @@ public class AnnotatedTypeIdentifier implements Identifier {
 
     @Override
     public String toString() {
-        return "AnnotatedTypeIdentifier [bdaId=" + bdaId + ", className=" + className + ", suffix=" + suffix + ", modified=" + modified + "]";
+        return "AnnotatedTypeIdentifier [contextId=" + contextId + ", bdaId=" + bdaId + ", className=" + className + ", suffix=" + suffix + ", modified="
+                + modified + "]";
     }
+
+
 }

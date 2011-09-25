@@ -17,15 +17,13 @@
 
 package org.jboss.weld.bean.proxy;
 
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Bean;
 
 /**
- * A simple {@link BeanInstance} which always maintains a specific bean instance
- * that is being proxied.
+ * A simple {@link BeanInstance} which always maintains a specific bean instance that is being proxied.
  *
  * @author David Allen
  */
@@ -92,5 +90,4 @@ public class TargetBeanInstance extends AbstractBeanInstance implements Serializ
             return super.invoke(instance, method, arguments);
         }
     }
-
 }

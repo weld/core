@@ -44,7 +44,7 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
     private final AnnotatedParameter<X> parameter;
 
     protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        super(bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
+        super(manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
         this.parameter = parameter.slim();
     }
 

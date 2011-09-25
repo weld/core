@@ -55,7 +55,7 @@ public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<I
         if (injectionPoint instanceof SerializableForwardingInjectionPoint) {
             return injectionPoint;
         }
-        injectionPoint = new SerializableForwardingInjectionPoint(injectionPoint);
+        injectionPoint = new SerializableForwardingInjectionPoint(getBeanManager().getContextId(), injectionPoint);
         injectionPoint = SessionBeanInjectionPoint.wrapIfNecessary(injectionPoint);
         return injectionPoint;
     }

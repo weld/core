@@ -118,7 +118,7 @@ public class BeanDeployment {
 
         InstantiatorFactory factory = registry.get(InstantiatorFactory.class);
         if (factory == null) {
-            registry.add(InstantiatorFactory.class, new DefaultInstantiatorFactory());
+            registry.add(InstantiatorFactory.class, new DefaultInstantiatorFactory(resourceLoader));
         }
 
         ServiceRegistry services = new SimpleServiceRegistry();

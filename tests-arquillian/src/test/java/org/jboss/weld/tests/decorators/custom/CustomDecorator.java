@@ -35,6 +35,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
@@ -66,7 +67,7 @@ public class CustomDecorator implements Decorator<Object> {
     }
 
     public Set<Type> getTypes() {
-        return Collections.<Type>singleton(CustomWindowFrame.class);
+        return Collections.<Type> singleton(CustomWindowFrame.class);
     }
 
     public Set<Annotation> getQualifiers() {
@@ -117,7 +118,7 @@ public class CustomDecorator implements Decorator<Object> {
 
         public CustomInjectionPoint() {
             TypeStore ts = new TypeStore();
-            ClassTransformer transformer = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts));
+            ClassTransformer transformer = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts), RegistrySingletonProvider.STATIC_INSTANCE);
             EnhancedAnnotatedType<?> targetClass = transformer.getEnhancedAnnotatedType(CustomWindowFrame.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
             windowField = targetClass.getDeclaredEnhancedField("window");
         }
@@ -127,7 +128,7 @@ public class CustomDecorator implements Decorator<Object> {
         }
 
         public Set<Annotation> getQualifiers() {
-            return Collections.<Annotation>singleton(DefaultLiteral.INSTANCE);
+            return Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
         }
 
         public Bean<?> getBean() {

@@ -163,11 +163,11 @@ public class Beans {
      * @param bean The bean to test
      * @return True if proxyable, false otherwise
      */
-    public static boolean isBeanProxyable(Bean<?> bean) {
+    public static boolean isBeanProxyable(Bean<?> bean, BeanManagerImpl manager) {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isProxyable();
         } else {
-            return Proxies.isTypesProxyable(bean.getTypes());
+            return Proxies.isTypesProxyable(bean.getTypes(), manager.getServices());
         }
     }
 
@@ -409,22 +409,22 @@ public class Beans {
         return annotatedItem.isAnnotationPresent(Decorator.class);
     }
 
-    public static Annotation[] mergeInQualifiers(Annotation[] qualifiers, Annotation[] newQualifiers) {
+    public static Annotation[] mergeInQualifiers(String contextId, Annotation[] qualifiers, Annotation[] newQualifiers) {
         if (qualifiers == null || newQualifiers == null) {
             return EMPTY_ANNOTATIONS;
         }
 
-        return mergeInQualifiers(asList(qualifiers), newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
+        return mergeInQualifiers(contextId, asList(qualifiers), newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
     }
 
-    public static Set<Annotation> mergeInQualifiers(Collection<Annotation> qualifiers, Annotation[] newQualifiers) {
+    public static Set<Annotation> mergeInQualifiers(String contextId, Collection<Annotation> qualifiers, Annotation[] newQualifiers) {
         Set<Annotation> result = new HashSet<Annotation>();
 
         if (qualifiers != null && !(qualifiers.isEmpty())) {
             result.addAll(qualifiers);
         }
         if (newQualifiers != null && newQualifiers.length > 0) {
-            final MetaAnnotationStore store = Container.instance().services().get(MetaAnnotationStore.class);
+            final MetaAnnotationStore store = Container.instance(contextId).services().get(MetaAnnotationStore.class);
             Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
             for (Annotation qualifier : newQualifiers) {
                 if (!store.getBindingTypeModel(qualifier.annotationType()).isValid()) {
@@ -437,7 +437,6 @@ public class Beans {
             }
             result.addAll(checkedNewQualifiers);
         }
-
         return result;
     }
 

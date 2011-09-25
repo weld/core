@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -50,16 +51,32 @@ public class ClientProxyProvider {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private static final Object BEAN_NOT_PROXYABLE_MARKER = new Object();
-    private static final CacheLoader<Bean<Object>, Object> CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY = new CacheLoader<Bean<Object>, Object>() {
+
+    private final CacheLoader<Bean<Object>, Object> CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY;
+    private final CacheLoader<RequestedTypeHolder, Object> CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY;
+
+    private class CreateClientProxy extends CacheLoader<Bean<Object>, Object> {
         @Override
         public Object load(Bean<Object> from) {
-            if (Proxies.isTypesProxyable(from)) {
+            if (Proxies.isTypesProxyable(from, services)) {
                 return createClientProxy(from);
             } else {
                 return BEAN_NOT_PROXYABLE_MARKER;
             }
         }
     };
+
+    private class CreateClientProxyForType extends CacheLoader<RequestedTypeHolder, Object> {
+        @Override
+        public Object load(RequestedTypeHolder input) {
+            Set<Type> requestedTypeClosure = Container.instance(contextId).services().get(SharedObjectCache.class).getTypeClosureHolder(input.requestedType).get();
+            if (Proxies.isTypesProxyable(requestedTypeClosure, services)) {
+                return createClientProxy(input.bean, requestedTypeClosure);
+            } else {
+                return BEAN_NOT_PROXYABLE_MARKER;
+            }
+        }
+    }
 
     private static class RequestedTypeHolder {
         private final Type requestedType;
@@ -109,18 +126,6 @@ public class ClientProxyProvider {
         }
     }
 
-    private static final CacheLoader<RequestedTypeHolder, Object> CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY = new CacheLoader<ClientProxyProvider.RequestedTypeHolder, Object>() {
-        @Override
-        public Object load(RequestedTypeHolder input) {
-            Set<Type> requestedTypeClosure = Container.instance().services().get(SharedObjectCache.class).getTypeClosureHolder(input.requestedType).get();
-            if (Proxies.isTypesProxyable(requestedTypeClosure)) {
-                return createClientProxy(input.bean, requestedTypeClosure);
-            } else {
-                return BEAN_NOT_PROXYABLE_MARKER;
-            }
-        }
-    };
-
     /**
      * A container/cache for previously created proxies
      *
@@ -129,13 +134,20 @@ public class ClientProxyProvider {
     private final LoadingCache<Bean<Object>, Object> beanTypeClosureProxyPool;
     private final LoadingCache<RequestedTypeHolder, Object> requestedTypeClosureProxyPool;
 
+    private final String contextId;
+    private final ServiceRegistry services;
+
     /**
      * Constructor
      */
-    public ClientProxyProvider() {
+    public ClientProxyProvider(String contextId, ServiceRegistry services) {
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
+        this.CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY = new CreateClientProxy();
+        this.CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY = new CreateClientProxyForType();
         this.beanTypeClosureProxyPool = cacheBuilder.build(CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY);
         this.requestedTypeClosureProxyPool = cacheBuilder.build(CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY);
+        this.contextId = contextId;
+        this.services = services;
     }
 
     /**
@@ -151,18 +163,18 @@ public class ClientProxyProvider {
      * @throws InstantiationException When the proxy couldn't be created
      * @throws IllegalAccessException When the proxy couldn't be created
      */
-    private static <T> T createClientProxy(Bean<T> bean) throws RuntimeException {
+    private <T> T createClientProxy(Bean<T> bean) throws RuntimeException {
         return createClientProxy(bean, bean.getTypes());
     }
 
-    private static <T> T createClientProxy(Bean<T> bean, Set<Type> types) {
-        String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+    private <T> T createClientProxy(Bean<T> bean, Set<Type> types) {
+        String id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
         if (id == null) {
             throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);
         }
-        ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
+        ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id, contextId);
         TypeInfo typeInfo = TypeInfo.of(types);
-        T proxy = new ClientProxyFactory<T>(typeInfo.getSuperClass(), types, bean).create(beanInstance);
+        T proxy = new ClientProxyFactory<T>(contextId, typeInfo.getSuperClass(), types, bean).create(beanInstance);
         log.trace(CREATED_NEW_CLIENT_PROXY_TYPE, proxy.getClass(), bean, id);
         return proxy;
     }
@@ -170,7 +182,7 @@ public class ClientProxyProvider {
     public <T> T getClientProxy(final Bean<T> bean) {
         T proxy = getCastCacheValue(beanTypeClosureProxyPool, bean);
         if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
-            throw Proxies.getUnproxyableTypesException(bean);
+            throw Proxies.getUnproxyableTypesException(bean, services);
         }
         log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);
         return proxy;
@@ -195,7 +207,7 @@ public class ClientProxyProvider {
              */
             proxy = getCastCacheValue(requestedTypeClosureProxyPool, new RequestedTypeHolder(requestedType, bean));
             if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
-                throw Proxies.getUnproxyableTypeException(requestedType);
+                throw Proxies.getUnproxyableTypeException(requestedType, services);
             }
         }
         log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);

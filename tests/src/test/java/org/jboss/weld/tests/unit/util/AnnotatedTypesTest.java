@@ -29,6 +29,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedTypeImpl;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
@@ -38,11 +39,10 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-
 /**
  * Test comparison and id creation for AnnotatedTypes
- *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
+ *
  */
 public class AnnotatedTypesTest {
     /**
@@ -52,9 +52,9 @@ public class AnnotatedTypesTest {
     public void testComparison() throws SecurityException, NoSuchFieldException, NoSuchMethodException {
         //check that two weld classes on the same underlying are equal
         TypeStore ts = new TypeStore();
-        ClassTransformer ct = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts));
-        EnhancedAnnotatedType<Chair> chair1 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache(), AnnotatedTypeIdentifier.NULL_BDA_ID), ct);
-        EnhancedAnnotatedType<Chair> chair2 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache(), AnnotatedTypeIdentifier.NULL_BDA_ID), ct);
+        ClassTransformer ct = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts), RegistrySingletonProvider.STATIC_INSTANCE);
+        EnhancedAnnotatedType<Chair> chair1 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache(), RegistrySingletonProvider.STATIC_INSTANCE, AnnotatedTypeIdentifier.NULL_BDA_ID), ct);
+        EnhancedAnnotatedType<Chair> chair2 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache(), RegistrySingletonProvider.STATIC_INSTANCE, AnnotatedTypeIdentifier.NULL_BDA_ID), ct);
         Assert.assertTrue(AnnotatedTypes.compareAnnotatedTypes(chair1, chair2));
 
         //check that a different implementation of annotated type is equal to the weld implementation

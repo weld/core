@@ -33,8 +33,8 @@ public abstract class AbstractSharedContext extends AbstractContext {
     /**
      * Constructor
      */
-    protected AbstractSharedContext() {
-        super(true);
+    protected AbstractSharedContext(String contextId) {
+        super(contextId, true);
         this.beanStore = new ConcurrentHashMapBeanStore();
     }
 

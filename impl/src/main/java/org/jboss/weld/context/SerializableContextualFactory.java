@@ -39,11 +39,11 @@ public class SerializableContextualFactory {
     }
 
     @java.lang.SuppressWarnings({ "rawtypes", "unchecked" })
-    public static <C extends Contextual<I>, I> SerializableContextual<C, I> create(C contextual, ContextualStore contextualStore) {
+    public static <C extends Contextual<I>, I> SerializableContextual<C, I> create(String contextId, C contextual, ContextualStore contextualStore) {
         if (contextual instanceof PassivationCapable) {
-            return new PassivationCapableSerializableContextual(contextual, contextualStore);
+            return new PassivationCapableSerializableContextual(contextId, contextual, contextualStore);
         } else {
-            return new DefaultSerializableContextual<C, I>(contextual, contextualStore);
+            return new DefaultSerializableContextual<C, I>(contextId, contextual, contextualStore);
         }
     }
 
@@ -65,9 +65,12 @@ public class SerializableContextualFactory {
         // the id of a non-serializable, passivation capable contextual
         private String id;
 
+        private String contextId;
+
         private transient ContextualStore cachedContextualStore;
 
-        public AbstractSerializableContextual(C contextual, ContextualStore contextualStore) {
+        public AbstractSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
+            this.contextId = contextId;
             this.cachedContextualStore = contextualStore;
             if (contextual instanceof Serializable) {
                 // the contextual is serializable, so we can just use it
@@ -84,7 +87,7 @@ public class SerializableContextualFactory {
 
         private ContextualStore getContextualStore() {
             if (cachedContextualStore == null) {
-                this.cachedContextualStore = Container.instance().services().get(ContextualStore.class);
+                this.cachedContextualStore = Container.instance(contextId).services().get(ContextualStore.class);
             }
             return this.cachedContextualStore;
         }
@@ -128,8 +131,8 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = -5102624795925717767L;
 
-        public DefaultSerializableContextual(C contextual, ContextualStore contextualStore) {
-            super(contextual, contextualStore);
+        public DefaultSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
+            super(contextId, contextual, contextualStore);
         }
 
         @Override
@@ -144,8 +147,8 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = -2753893863961869301L;
 
-        public PassivationCapableSerializableContextual(C contextual, ContextualStore contextualStore) {
-            super(contextual, contextualStore);
+        public PassivationCapableSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
+            super(contextId, contextual, contextualStore);
         }
 
         @Override

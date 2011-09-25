@@ -59,7 +59,7 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
         try {
             T instance = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
             ctx.push(instance);
-            ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(), bean);
+            ProxyFactory.setBeanInstance(bean.getBeanManager().getContextId(), instance, createEnterpriseTargetBeanInstance(), bean);
             return instance;
         } catch (PrivilegedActionException e) {
             if (e.getCause() instanceof InstantiationException) {

@@ -39,12 +39,12 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD_STORE", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
-    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String bdaId) {
-        return of(javaClass, javaClass, sharedObjectCache, reflectionCache, bdaId);
+    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String contextId, String bdaId) {
+        return of(javaClass, javaClass, sharedObjectCache, reflectionCache, contextId, bdaId);
     }
 
-    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String bdaId) {
-        return new BackedAnnotatedType<X>(javaClass, baseType, sharedObjectCache, reflectionCache, bdaId);
+    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String contextId, String bdaId) {
+        return new BackedAnnotatedType<X>(javaClass, baseType, sharedObjectCache, reflectionCache, contextId, bdaId);
     }
 
     private final Class<X> javaClass;
@@ -55,7 +55,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private final ReflectionCache reflectionCache;
     private final AnnotatedTypeIdentifier identifier;
 
-    private BackedAnnotatedType(Class<X> rawType, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String bdaId) {
+    private BackedAnnotatedType(Class<X> rawType, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache, String contextId, String bdaId) {
         super(baseType, sharedObjectCache);
         this.javaClass = rawType;
         this.sharedObjectCache = sharedObjectCache;
@@ -64,7 +64,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
         this.methods = new BackedAnnotatedMethods();
-        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(rawType, baseType, bdaId);
+        this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId);
     }
 
     @Override

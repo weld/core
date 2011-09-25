@@ -84,7 +84,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         if (!decorators.isEmpty()) {
             Instantiator<T> instantiator = getInstantiator();
             instantiator = new SubclassedComponentInstantiator<T>(annotatedType, getBean(), (DefaultInstantiator<T>) instantiator, beanManager);
-            instantiator = new SubclassDecoratorApplyingInstantiator<T>(instantiator, getBean(), decorators);
+            instantiator = new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), instantiator, getBean(), decorators);
             setInstantiator(instantiator);
         }
 

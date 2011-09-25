@@ -58,7 +58,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         super(observer, declaringBean, manager);
-        this.containerLifecycleEventDeliveryLock = Container.instance();
+        this.containerLifecycleEventDeliveryLock = Container.instance(manager.getContextId());
         this.requiredTypeAnnotations = initRequiredTypeAnnotations(observer);
     }
 

@@ -60,4 +60,3 @@ public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationIn
     }
 }
 
-

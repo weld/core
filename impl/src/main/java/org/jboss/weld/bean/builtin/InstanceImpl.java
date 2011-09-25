@@ -17,8 +17,8 @@
 package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.DESTROY_UNSUPPORTED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.logging.messages.BeanMessage.INSTANCE_ITERATOR_REMOVE_UNSUPPORTED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -131,7 +131,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
-        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(),
+        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getBeanManager().getContextId(), getInjectionPoint(), subtype, getQualifiers(),
                 newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
