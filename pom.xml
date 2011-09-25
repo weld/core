@@ -38,6 +38,7 @@
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
         <cdi.api.version>1.0-SP4</cdi.api.version>
         <cdi.tck.version>1.0.4.SP3</cdi.tck.version>
+        <checkstyle.plugin.version>2.5</checkstyle.plugin.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.3.2</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
@@ -69,6 +70,10 @@
         <weld.api.version>1.1.Beta2</weld.api.version>
     </properties>
 
+    <modules>
+        <module>build-config</module>
+        <module>impl</module>
+    </modules>
 
     <!-- Dependency management. KEEP IN ALPHABETICAL ORDER-->
     <dependencyManagement>
@@ -484,9 +489,42 @@
                     <artifactId>selenium-maven-plugin</artifactId>
                     <version>${selenium.maven.plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${checkstyle.plugin.version}</version>
+                </plugin>
             </plugins>
 
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>weld-checkstyle/checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <useFile/>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.weld</groupId>
+                        <artifactId>weld-build-config</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>check-style</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 
@@ -499,18 +537,6 @@
 
 
     <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <property>
-                    <name>weld.default.build</name>
-                    <value>!false</value>
-                </property>
-            </activation>
-            <modules>
-                <module>impl</module>
-            </modules>
-        </profile>
         <profile>
             <id>update-jboss-as</id>
             <modules>

@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -33,21 +33,21 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      *
      * @return A set of abstracted fields
      */
-    public Collection<WeldField<?, ?>> getWeldFields();
+    Collection<WeldField<?, ?>> getWeldFields();
 
     /**
      * Gets all fields on the type
      *
      * @return A set of abstracted fields
      */
-    public Collection<WeldMethod<?, ? super T>> getWeldMethods();
+    Collection<WeldMethod<?, ? super T>> getWeldMethods();
 
     /**
      * Gets all fields on the type
      *
      * @return A set of abstracted fields
      */
-    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods();
+    Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods();
 
     /**
      * Get a field by name
@@ -56,7 +56,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @param fieldName the field name
      * @return the field
      */
-    public <F> WeldField<F, ?> getDeclaredWeldField(String fieldName);
+    <F> WeldField<F, ?> getDeclaredWeldField(String fieldName);
 
     /**
      * Gets all fields which are annotated with the given annotation type on this
@@ -66,7 +66,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @return A set of abstracted fields with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    public Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType);
+    Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType);
 
     /**
      * Gets all fields which are annotated with the given annotation type on this
@@ -76,7 +76,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @return A set of abstracted fields with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    public Collection<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType);
+    Collection<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType);
 
     /**
      * Gets all constructors which are annotated with annotationType
@@ -85,14 +85,14 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @return A set of abstracted fields with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    public Collection<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType);
+    Collection<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType);
 
     /**
      * Gets the no-args constructor
      *
      * @return The no-args constructor, or null if not defined
      */
-    public WeldConstructor<T> getNoArgsWeldConstructor();
+    WeldConstructor<T> getNoArgsWeldConstructor();
 
     /**
      * Get the constructor which matches the argument list provided
@@ -100,7 +100,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @param parameterTypes the parameters of the constructor
      * @return the matching constructor, or null if not defined
      */
-    public WeldConstructor<T> getDeclaredWeldConstructor(ConstructorSignature signature);
+    WeldConstructor<T> getDeclaredWeldConstructor(ConstructorSignature signature);
 
     /**
      * Gets all methods annotated with annotationType
@@ -109,7 +109,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @return A set of abstracted methods with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    public Collection<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType);
+    Collection<WeldMethod<?, ?>> getWeldMethods(Class<? extends Annotation> annotationType);
 
     /**
      * Gets all methods annotated with annotationType
@@ -118,7 +118,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @return A set of abstracted methods with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType);
+    Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods(Class<? extends Annotation> annotationType);
 
     /**
      * Find the annotated method for a given methodDescriptor
@@ -128,7 +128,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      */
     // TODO replace with MethodSignature variant
     @Deprecated
-    public WeldMethod<?, ?> getWeldMethod(Method method);
+    WeldMethod<?, ?> getWeldMethod(Method method);
 
     /**
      * Get a method by name
@@ -137,7 +137,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @param signature the name of the method
      * @return the method, or null if it doesn't exist
      */
-    public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature);
+    <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature);
 
     /**
      * Get a method by name
@@ -146,11 +146,11 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @param signature the name of the method
      * @return the method, or null if it doesn't exist
      */
-    public <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature);
+    <M> WeldMethod<M, ?> getWeldMethod(MethodSignature signature);
 
     // TODO Replace with MethodSignature variant
     @Deprecated
-    public WeldMethod<?, ?> getDeclaredWeldMethod(Method method);
+    WeldMethod<?, ?> getDeclaredWeldMethod(Method method);
 
     /**
      * Gets declared with parameters annotated with annotationType
@@ -159,34 +159,34 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @return A set of abstracted methods with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+    Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
     /**
      * Gets the superclass.
      *
      * @return The abstracted superclass, null if there is no superclass
      */
-    public WeldClass<? super T> getWeldSuperclass();
+    WeldClass<? super T> getWeldSuperclass();
 
-    public boolean isParameterizedType();
+    boolean isParameterizedType();
 
-    public boolean isAbstract();
+    boolean isAbstract();
 
-    public boolean isEnum();
+    boolean isEnum();
 
-    public boolean isMemberClass();
+    boolean isMemberClass();
 
-    public boolean isLocalClass();
+    boolean isLocalClass();
 
-    public boolean isAnonymousClass();
+    boolean isAnonymousClass();
 
-    public boolean isSerializable();
+    boolean isSerializable();
 
-    public boolean isDiscovered();
+    boolean isDiscovered();
 
-    public <S> S cast(Object object);
+    <S> S cast(Object object);
 
-    public <U> WeldClass<? extends U> asWeldSubclass(WeldClass<U> clazz);
+    <U> WeldClass<? extends U> asWeldSubclass(WeldClass<U> clazz);
 
     /**
      * Check if this is equivalent to a java class
@@ -194,9 +194,9 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @param clazz The Java class
      * @return true if equivalent
      */
-    public boolean isEquivalent(Class<?> clazz);
+    boolean isEquivalent(Class<?> clazz);
 
-    public String getSimpleName();
+    String getSimpleName();
 
 
     /**
@@ -207,6 +207,6 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      * @return A set of matching meta-annotations. Returns an empty set if there
      *         are no matches.
      */
-    public Collection<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
+    Collection<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
 
 }
