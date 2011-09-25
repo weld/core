@@ -46,7 +46,7 @@ public class DecoratorMetadataBean extends AbstractBuiltInMetadataBean<Decorator
     protected Decorator<?> newInstance(InjectionPoint ip, CreationalContext<Decorator<?>> creationalContext) {
         Contextual<?> bean = getParentCreationalContext(creationalContext).getContextual();
         if (bean instanceof Decorator<?>) {
-            return SerializableProxy.of((Decorator<?>) bean);
+            return SerializableProxy.of(getBeanManager().getContextId(), (Decorator<?>) bean);
         }
         throw new IllegalArgumentException("Unable to inject " + bean + " into " + ip);
     }
@@ -55,14 +55,14 @@ public class DecoratorMetadataBean extends AbstractBuiltInMetadataBean<Decorator
 
         private static final long serialVersionUID = 398927939412634913L;
 
-        public static <T> SerializableProxy<T> of(Bean<T> bean) {
-            return new SerializableProxy<T>(bean);
+        public static <T> SerializableProxy<T> of(String contextId, Bean<T> bean) {
+            return new SerializableProxy<T>(contextId, bean);
         }
 
         private BeanHolder<T> holder;
 
-        protected SerializableProxy(Bean<T> bean) {
-            this.holder = new BeanHolder<T>(bean);
+        protected SerializableProxy(String contextId, Bean<T> bean) {
+            this.holder = new BeanHolder<T>(contextId, bean);
         }
 
         @Override

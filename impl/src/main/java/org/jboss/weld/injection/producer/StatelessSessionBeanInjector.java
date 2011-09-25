@@ -45,7 +45,7 @@ public class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
 
     @Override
     public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager) {
-        currentInjectionPoint.push(new DynamicInjectionPoint(manager.getServices()));
+        currentInjectionPoint.push(new DynamicInjectionPoint(manager));
         try {
             super.inject(instance, ctx, manager);
         } finally {

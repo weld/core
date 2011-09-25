@@ -41,19 +41,19 @@ public class SwitchableSingletonProvider extends SingletonProvider {
             this.store = new Hashtable<Integer, T>();
         }
 
-        public void clear() {
+        public void clear(String ident) {
             store.remove(id);
         }
 
-        public T get() {
+        public T get(String ident) {
             return store.get(id);
         }
 
-        public boolean isSet() {
+        public boolean isSet(String ident) {
             return store.containsKey(id);
         }
 
-        public void set(T object) {
+        public void set(String ident, T object) {
             store.put(id, object);
         }
 

@@ -25,7 +25,7 @@ public class InjectionTargetService extends AbstractBootstrapService {
         this.validator = new Validator();
         this.producersToValidate = new ConcurrentLinkedQueue<Producer<?>>();
         this.injectionTargetsToInitialize = new ConcurrentLinkedQueue<InjectionTargetInitializationContext<?>>();
-        this.container = Container.instance();
+        this.container = Container.instance(beanManager.getContextId());
         this.beanManager = beanManager;
     }
 

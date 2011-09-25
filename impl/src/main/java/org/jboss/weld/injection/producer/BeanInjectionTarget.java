@@ -129,7 +129,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
             DefaultInstantiator<T> delegate = (DefaultInstantiator<T>) getInstantiator();
             setInstantiator(new SubclassedComponentInstantiator<T>(annotatedType, getBean(), delegate, beanManager));
             if (hasDecorators) {
-                setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getInstantiator(), getBean(), decorators));
+                setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), getInstantiator(), getBean(), decorators));
             }
             if (hasNonConstructorInterceptors) {
                 setInstantiator(new InterceptorApplyingInstantiator<T>(getInstantiator(), interceptionModel));

@@ -70,7 +70,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         this.enhancedAnnotatedField = field;
         this.annotatedField = field.slim();
         initType();
-        this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure());
+        this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure(), beanManager.getServices());
         setProducer(new ProducerFieldProducer<X, T>(field, disposalMethod) {
 
             @Override

@@ -19,10 +19,12 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     public static final SimpleNamingScheme NAMING_SCHEME = new SimpleNamingScheme(HttpSessionContext.class.getName());
 
     private final NamingScheme namingScheme;
+    private final String contextId;
 
-    public HttpSessionContextImpl() {
-        super(true);
+    public HttpSessionContextImpl(String contextId) {
+        super(contextId, true);
         this.namingScheme = NAMING_SCHEME;
+        this.contextId = contextId;
     }
 
     public boolean associate(HttpServletRequest request) {
@@ -62,10 +64,10 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     protected HttpConversationContext getConversationContext() {
-        return Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
+        return Container.instance(contextId).deploymentManager().instance().select(HttpConversationContext.class).get();
     }
 
     protected Conversation getConversation() {
-        return Container.instance().deploymentManager().instance().select(Conversation.class).get();
+        return Container.instance(contextId).deploymentManager().instance().select(Conversation.class).get();
     }
 }

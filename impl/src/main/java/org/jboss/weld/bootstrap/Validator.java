@@ -185,8 +185,8 @@ public class Validator implements Service {
          * Named beans are validated eagerly. If a bean is not named, it is validated for proxyability based on discovered
          * injection points.
          */
-        if (normalScoped && bean.getName() != null && !Beans.isBeanProxyable(bean)) {
-            UnproxyableResolutionException ue = Proxies.getUnproxyableTypesException(bean);
+        if (normalScoped && bean.getName() != null && !Beans.isBeanProxyable(bean, beanManager)) {
+            UnproxyableResolutionException ue = Proxies.getUnproxyableTypesException(bean, beanManager.getServices());
             if (ue != null) {
                 throw new DeploymentException(ue);
             }
@@ -424,7 +424,7 @@ public class Validator implements Service {
         if (!resolvedBeans.isEmpty()) {
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
             if (beanManager.isNormalScope(resolvedBean.getScope())) {
-                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean);
+                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean, beanManager.getServices());
                 if (ue != null) {
                     throw new DeploymentException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ue, ij);
                 }

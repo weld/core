@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -26,22 +27,22 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> implements AnnotatedMethod<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedMethod<X> of(AnnotatedMethod<X> originalMethod, UnbackedAnnotatedType<Y> declaringType) {
+    public static <X, Y extends X> AnnotatedMethod<X> of(AnnotatedMethod<X> originalMethod, UnbackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {
         UnbackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
         return new UnbackedAnnotatedMethod<X>(originalMethod.getBaseType(), originalMethod.getTypeClosure(), originalMethod.getAnnotations(), downcastDeclaringType,
-                originalMethod.getParameters(), originalMethod.getJavaMember());
+                originalMethod.getParameters(), originalMethod.getJavaMember(), cache);
     }
 
     private final Method method;
     private final List<AnnotatedParameter<X>> parameters;
 
     public UnbackedAnnotatedMethod(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, UnbackedAnnotatedType<X> declaringType,
-            List<AnnotatedParameter<X>> originalParameters, Method method) {
-        super(baseType, typeClosure, annotations, declaringType);
+            List<AnnotatedParameter<X>> originalParameters, Method method, SharedObjectCache cache) {
+        super(baseType, typeClosure, cache.getSharedSet(annotations), declaringType);
         this.method = method;
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(originalParameters.size());
         for (AnnotatedParameter<X> originalParameter : originalParameters) {
-            parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getTypeClosure(), originalParameter.getAnnotations(),
+            parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
                     originalParameter.getPosition(), this));
         }
         this.parameters = immutableList(parameters);

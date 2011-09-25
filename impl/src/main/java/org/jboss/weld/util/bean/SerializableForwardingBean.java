@@ -27,14 +27,14 @@ public class SerializableForwardingBean<T> extends ForwardingBean<T> implements 
 
     private static final long serialVersionUID = 6857565199244590365L;
 
-    public static <T> SerializableForwardingBean<T> of(Bean<T> bean) {
-        return new SerializableForwardingBean<T>(bean);
+    public static <T> SerializableForwardingBean<T> of(String contextId, Bean<T> bean) {
+        return new SerializableForwardingBean<T>(contextId, bean);
     }
 
     private final BeanHolder<T> holder;
 
-    public SerializableForwardingBean(Bean<T> bean) {
-        this.holder = new BeanHolder<T>(bean);
+    public SerializableForwardingBean(String contextId, Bean<T> bean) {
+        this.holder = new BeanHolder<T>(contextId, bean);
     }
 
     @Override

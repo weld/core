@@ -52,7 +52,10 @@ public class ContextualStoreImpl implements ContextualStore {
 
     private final AtomicInteger idGenerator;
 
-    public ContextualStoreImpl() {
+    private final String contextId;
+
+    public ContextualStoreImpl(String contextId) {
+        this.contextId = contextId;
         this.idGenerator = new AtomicInteger(0);
         this.contextuals = new ConcurrentHashMap<Contextual<?>, String>();
         this.contextualsInverse = new ConcurrentHashMap<String, Contextual<?>>();
@@ -113,7 +116,7 @@ public class ContextualStoreImpl implements ContextualStore {
         if (contextual instanceof SerializableContextual<?, ?>) {
             return cast(contextual);
         }
-        return SerializableContextualFactory.create(Reflections.<C>cast(contextual), this);
+        return SerializableContextualFactory.create(contextId, Reflections.<C>cast(contextual), this);
     }
 
     public <C extends Contextual<I>, I> SerializableContextualInstance<C, I> getSerializableContextualInstance(Contextual<I> contextual, I instance, CreationalContext<I> creationalContext) {

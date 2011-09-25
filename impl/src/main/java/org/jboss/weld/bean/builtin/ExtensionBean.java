@@ -47,7 +47,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
         this.annotatedType = clazz.slim();
         this.instance = instance;
         this.passivationCapable = clazz.isSerializable();
-        this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType());
+        this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType(), manager.getServices());
     }
 
     public Set<Type> getTypes() {

@@ -19,8 +19,8 @@ import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 public class HttpSessionDestructionContext extends AbstractBoundContext<HttpSession> {
 
 
-    public HttpSessionDestructionContext() {
-        super(true);
+    public HttpSessionDestructionContext(String contextId) {
+        super(contextId, true);
     }
 
     @Override

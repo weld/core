@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -28,16 +26,16 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class DefaultInstantiatorFactory extends AbstractInstantiatorFactory {
     private volatile Boolean enabled;
+    private final ResourceLoader loader;
+
+    public DefaultInstantiatorFactory(ResourceLoader resourceLoader) {
+        this.loader = resourceLoader;
+    }
 
     public boolean useInstantiators() {
         if (enabled == null) {
             synchronized (this) {
                 if (enabled == null) {
-                    ResourceLoader loader = Container.instance().services().get(ResourceLoader.class);
-                    if (loader == null) {
-                        loader = DefaultResourceLoader.INSTANCE;
-                    }
-
                     boolean tmp = loader.getResource(MARKER) != null;
 
                     if (tmp) {

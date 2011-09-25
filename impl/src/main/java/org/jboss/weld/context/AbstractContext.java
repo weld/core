@@ -62,9 +62,9 @@ public abstract class AbstractContext implements AlterableContext {
      * Constructor
      *
      */
-    public AbstractContext(boolean multithreaded) {
+    public AbstractContext(String contextId, boolean multithreaded) {
         this.multithreaded = multithreaded;
-        this.serviceRegistry = Container.instance().services();
+        this.serviceRegistry = Container.instance(contextId).services();
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class AbstractContext implements AlterableContext {
                 T instance = contextual.create(creationalContext);
                 if (instance != null) {
                     beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, serviceRegistry.get(ContextualStore.class));
-                    beanStore.put(id, beanInstance);
+                    getBeanStore().put(id, beanInstance);
                 }
                 return instance;
             } finally {
@@ -178,8 +178,8 @@ public abstract class AbstractContext implements AlterableContext {
         }
     }
 
-    protected static <T> Contextual<T> getContextual(String id) {
-        return Container.instance().services().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
+    protected static <T> Contextual<T> getContextual(String contextId, String id) {
+        return Container.instance(contextId).services().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
     }
 
     protected String getId(Contextual<?> contextual) {

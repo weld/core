@@ -287,6 +287,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private final AtomicInteger childIds;
     private final String id;
+    private final String contextId;
 
     /**
      * Interception model
@@ -304,7 +305,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @param serviceRegistry
      * @return
      */
-    public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry) {
+    public static BeanManagerImpl newRootManager(String contextId, String id, ServiceRegistry serviceRegistry) {
         Map<Class<? extends Annotation>, List<Context>> contexts = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
 
         return new BeanManagerImpl(
@@ -316,13 +317,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArrayList<ObserverMethod<?>>(),
                 new CopyOnWriteArrayList<String>(),
                 new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
-                new ClientProxyProvider(),
+                new ClientProxyProvider(contextId, serviceRegistry),
                 contexts,
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
                 new AtomicInteger(),
-                new HashSet<BeanManagerImpl>());
+                new HashSet<BeanManagerImpl>(),
+                contextId);
     }
 
     public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services) {
@@ -341,7 +343,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
                 new AtomicInteger(),
-                rootManager.managers);
+                rootManager.managers,
+                rootManager.contextId);
     }
 
     /**
@@ -376,7 +379,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 parentManager.getEnabled(),
                 new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
                 parentManager.getChildIds(),
-                parentManager.managers);
+                parentManager.managers,
+                parentManager.contextId);
     }
 
     private BeanManagerImpl(
@@ -394,7 +398,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             ModuleEnablement enabled,
             String id,
             AtomicInteger childIds,
-            Set<BeanManagerImpl> managers) {
+            Set<BeanManagerImpl> managers,
+            String contextId) {
         this.services = serviceRegistry;
         this.enabledBeans = beans;
         this.transitiveBeans = transitiveBeans;
@@ -410,6 +415,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.id = id;
         this.childIds = new AtomicInteger();
         this.managers = managers;
+        this.contextId = contextId;
 
         managers.add(this);
 
@@ -426,7 +432,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
-        this.accessibleLenientObserverNotifier = ObserverNotifier.of(accessibleObserverResolver, getServices(), false);
+        this.accessibleLenientObserverNotifier = ObserverNotifier.of(contextId, accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
         this.globalStrictObserverNotifier = globalObserverNotifierService.getGlobalStrictObserverNotifier();
@@ -445,6 +451,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 return Iterators.concat(Iterators.transform(result.iterator(), IterableToIteratorFunction.<T>instance()));
             }
         };
+    }
+
+    public String getContextId() {
+        return contextId;
     }
 
     private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform) {
@@ -569,7 +579,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
-            currentInjectionPoint = services.get(CurrentInjectionPoint.class);
+            currentInjectionPoint = Container.instance(contextId).services().get(CurrentInjectionPoint.class);
             currentInjectionPoint.push(injectionPoint);
         }
         try {
@@ -774,6 +784,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
 
+        final ServiceRegistry services = Container.instance(contextId).services();
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
             currentInjectionPoint = services.get(CurrentInjectionPoint.class);
@@ -820,8 +831,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, resolvable);
         }
 
-        if (isNormalScope(bean.getScope()) && !Beans.isBeanProxyable(bean)) {
-            throw Proxies.getUnproxyableTypesException(bean);
+        if (isNormalScope(bean.getScope()) && !Beans.isBeanProxyable(bean, this)) {
+            throw Proxies.getUnproxyableTypesException(bean, services);
         }
         return bean;
     }
@@ -971,7 +982,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public BeanManagerImpl createActivity() {
         BeanManagerImpl childActivity = newChildActivityManager(this);
         childActivities.add(childActivity);
-        Container.instance().addActivity(childActivity);
+        Container.instance(contextId).addActivity(childActivity);
         return childActivity;
     }
 
@@ -1009,7 +1020,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     // Serialization
 
     protected Object readResolve() throws ObjectStreamException {
-        return Container.instance().activityManager(id);
+        return Container.instance(contextId).activityManager(id);
     }
 
     public ClientProxyProvider getClientProxyProvider() {

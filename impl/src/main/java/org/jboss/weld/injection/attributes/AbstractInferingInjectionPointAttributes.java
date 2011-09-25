@@ -39,8 +39,8 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
     private final Set<Annotation> qualifiers;
     private final TypeAttribute typeAttribute;
 
-    public AbstractInferingInjectionPointAttributes(Bean<?> bean, Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
-        this.bean = BeanHolder.of(bean);
+    public AbstractInferingInjectionPointAttributes(String contextId, Bean<?> bean, Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
+        this.bean = BeanHolder.of(contextId, bean);
         this.qualifiers = qualifiers;
         if (bean == null) {
             this.typeAttribute = new NonContextualInjectionPointTypeAttribute(declaringComponentClass);

@@ -77,13 +77,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     private final BeanManagerImpl manager;
 
-    public AbstractConversationContext() {
-        super(true);
+    public AbstractConversationContext(String contextId) {
+        super(contextId, true);
         this.parameterName = new AtomicReference<String>(PARAMETER_NAME);
         this.defaultTimeout = new AtomicLong(DEFAULT_TIMEOUT);
         this.concurrentAccessTimeout = new AtomicLong(CONCURRENT_ACCESS_TIMEOUT);
         this.associated = new ThreadLocal<R>();
-        this.manager = Container.instance().deploymentManager();
+        this.manager = Container.instance(contextId).deploymentManager();
         this.conversationContexts = manager.instance().select(ConversationContext.class);
     }
 

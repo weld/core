@@ -224,7 +224,6 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         return getQualifiers().toArray(EMPTY_ANNOTATIONS);
     }
 
-
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
         return annotationType.cast(annotationMap.get(annotationType));
     }

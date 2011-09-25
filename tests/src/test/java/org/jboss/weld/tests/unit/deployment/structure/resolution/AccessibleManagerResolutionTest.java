@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.resolution;
 
+import static org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider.STATIC_INSTANCE;
+
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -29,6 +31,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironmentFactory;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.event.GlobalObserverNotifierService;
@@ -56,14 +59,14 @@ public class AccessibleManagerResolutionTest {
     @BeforeMethod
     public void beforeMethod() {
         this.typeStore = new TypeStore();
-        this.classTransformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore));
+        this.classTransformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
         this.services = new SimpleServiceRegistry();
         this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
-        this.services.add(ContextualStore.class, new ContextualStoreImpl());
+        this.services.add(ContextualStore.class, new ContextualStoreImpl(STATIC_INSTANCE));
         this.services.add(ClassTransformer.class, classTransformer);
         this.services.add(SharedObjectCache.class, new SharedObjectCache());
-        this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services));
-        this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager("foo", services)));
+        this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));
+        this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager(STATIC_INSTANCE, "foo", services)));
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
     }
@@ -79,9 +82,9 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testAccessibleDynamicallySingleLevel() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
         addBean(root, Cow.class);
         Assert.assertEquals(1, root.getBeans(Cow.class).size());
         Assert.assertEquals(0, child.getBeans(Cow.class).size());
@@ -95,12 +98,12 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testAccessibleThreeLevelsWithMultiple() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
-        BeanManagerImpl child1 = BeanManagerImpl.newRootManager("child1", services);
-        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
-        BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager("greatGrandchild", services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
+        BeanManagerImpl child1 = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child1", services);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "grandchild", services);
+        BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "greatGrandchild", services);
         child.addAccessibleBeanManager(root);
         grandchild.addAccessibleBeanManager(child1);
         grandchild.addAccessibleBeanManager(child);
@@ -136,10 +139,10 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testSameManagerAddedTwice() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
-        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "grandchild", services);
         grandchild.addAccessibleBeanManager(child);
         child.addAccessibleBeanManager(root);
         grandchild.addAccessibleBeanManager(root);
@@ -159,10 +162,10 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testCircular() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
-        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "child", services);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(STATIC_INSTANCE, "grandchild", services);
         grandchild.addAccessibleBeanManager(child);
         child.addAccessibleBeanManager(root);
         grandchild.addAccessibleBeanManager(root);

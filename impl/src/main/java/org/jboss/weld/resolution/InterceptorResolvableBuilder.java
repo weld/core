@@ -38,7 +38,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
         super(manager);
     }
 
-    public InterceptorResolvableBuilder(Type type, final BeanManagerImpl manager) {
+    public InterceptorResolvableBuilder(final Type type, final BeanManagerImpl manager) {
         super(type, manager);
     }
 

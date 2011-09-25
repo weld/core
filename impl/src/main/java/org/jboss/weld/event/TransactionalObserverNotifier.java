@@ -32,9 +32,11 @@ import org.jboss.weld.transaction.spi.TransactionServices;
 public class TransactionalObserverNotifier extends ObserverNotifier {
 
     private final TransactionServices transactionServices;
+    private final String contextId;
 
-    protected TransactionalObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+    protected TransactionalObserverNotifier(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         super(resolver, services, strict);
+        this.contextId = contextId;
         this.transactionServices = services.get(TransactionServices.class);
     }
 
@@ -58,7 +60,7 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
      * @param eventPacket The event object
      */
     private <T> void deferNotification(final EventPacket<T> packet, final ObserverMethod<? super T> observer) {
-        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(packet, observer, currentEventMetadata);
+        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(contextId, packet, observer, currentEventMetadata);
         TransactionPhase transactionPhase = observer.getTransactionPhase();
 
         if (transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION)) {

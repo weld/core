@@ -9,8 +9,8 @@ import java.lang.annotation.Annotation;
 
 public class RequestContextImpl extends AbstractUnboundContext implements RequestContext {
 
-    public RequestContextImpl() {
-        super(false);
+    public RequestContextImpl(String contextId) {
+        super(contextId, false);
     }
 
     public Class<? extends Annotation> getScope() {

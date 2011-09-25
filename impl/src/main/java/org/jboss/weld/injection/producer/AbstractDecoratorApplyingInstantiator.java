@@ -49,11 +49,11 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> extends Forwardin
     private final Class<T> proxyClass;
     private final List<Decorator<?>> decorators;
 
-    public AbstractDecoratorApplyingInstantiator(Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
+    public AbstractDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
         super(delegate);
         this.bean = bean;
         this.decorators = decorators;
-        ProxyFactory<T> factory = new ProxyFactory<T>(bean.getBeanClass(), bean.getTypes(), bean);
+        ProxyFactory<T> factory = new ProxyFactory<T>(contextId, bean.getBeanClass(), bean.getTypes(), bean);
         // eagerly generate the proxy class
         this.proxyClass = factory.getProxyClass();
     }

@@ -61,9 +61,9 @@ public class ObserverNotifier {
      * @param strict indicates whether event type should be performed or not
      * @return ObserverNotifier instance
      */
-    public static ObserverNotifier of(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+    public static ObserverNotifier of(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         if (services.contains(TransactionServices.class)) {
-            return new TransactionalObserverNotifier(resolver, services, strict);
+            return new TransactionalObserverNotifier(contextId, resolver, services, strict);
         } else {
             return new ObserverNotifier(resolver, services, strict);
         }

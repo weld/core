@@ -23,6 +23,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resources.ClassTransformer;
@@ -33,15 +34,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class StereotypesTest {
-    @Deployment
-    public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .addPackage(StereotypesTest.class.getPackage());
-    }
+public class StereotypesTest
+{
+   @Deployment
+   public static Archive<?> deploy()
+   {
+      return ShrinkWrap.create(BeanArchive.class)
+         .addPackage(StereotypesTest.class.getPackage());
+   }
 
     private final TypeStore typeStore = new TypeStore();
-    private final ClassTransformer transformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore));
+    private final ClassTransformer transformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
 
     @Test
     public void testAnimalStereotype() {

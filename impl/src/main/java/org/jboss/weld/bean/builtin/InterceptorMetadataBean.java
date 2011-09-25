@@ -46,7 +46,7 @@ public class InterceptorMetadataBean extends AbstractBuiltInMetadataBean<Interce
     protected Interceptor<?> newInstance(InjectionPoint ip, CreationalContext<Interceptor<?>> creationalContext) {
         Contextual<?> bean = getParentCreationalContext(creationalContext).getContextual();
         if (bean instanceof Interceptor<?>) {
-            return SerializableProxy.of((Interceptor<?>) bean);
+            return SerializableProxy.of(getBeanManager().getContextId(), (Interceptor<?>) bean);
         }
         throw new IllegalArgumentException("Unable to inject " + bean + " into " + ip);
     }
@@ -55,14 +55,14 @@ public class InterceptorMetadataBean extends AbstractBuiltInMetadataBean<Interce
 
         private static final long serialVersionUID = 8482112157695944011L;
 
-        public static <T> SerializableProxy<T> of(Bean<T> bean) {
-            return new SerializableProxy<T>(bean);
+        public static <T> SerializableProxy<T> of(String contextId, Bean<T> bean) {
+            return new SerializableProxy<T>(contextId, bean);
         }
 
         private BeanHolder<T> holder;
 
-        protected SerializableProxy(Bean<T> bean) {
-            this.holder = new BeanHolder<T>(bean);
+        protected SerializableProxy(String contextId, Bean<T> bean) {
+            this.holder = new BeanHolder<T>(contextId, bean);
         }
 
         @Override

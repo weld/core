@@ -17,14 +17,15 @@
 
 package org.jboss.weld.bean.proxy.util;
 
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.serialization.spi.ContextualStore;
-
-import javax.enterprise.inject.spi.Bean;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 
 /**
  * A wrapper mostly for client proxies which provides header information useful
@@ -40,9 +41,11 @@ public class SerializableClientProxy implements Serializable {
     private static final long serialVersionUID = -46820068707447753L;
 
     private final String beanId;
+    private final String containerId;
 
-    public SerializableClientProxy(final String beanId) {
+    public SerializableClientProxy(final String beanId, final String containerId) {
         this.beanId = beanId;
+        this.containerId = containerId;
     }
 
     /**
@@ -52,11 +55,11 @@ public class SerializableClientProxy implements Serializable {
      * @throws java.io.ObjectStreamException
      */
     Object readResolve() throws ObjectStreamException {
-        Bean<?> bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+        Bean<?> bean = Container.instance(containerId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
         if (bean == null) {
             throw new WeldException(BeanMessage.PROXY_DESERIALIZATION_FAILURE);
         }
-        return Container.instance().deploymentManager().getClientProxyProvider().getClientProxy(bean);
+        return Container.instance(containerId).deploymentManager().getClientProxyProvider().getClientProxy(bean);
     }
 
 }

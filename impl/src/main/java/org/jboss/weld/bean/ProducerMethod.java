@@ -65,7 +65,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         this.enhancedAnnotatedMethod = method;
         this.annotatedMethod = method.slim();
         initType();
-        this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
+        this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure(), beanManager.getServices());
         setProducer(new ProducerMethodProducer<X, T>(method, disposalMethod) {
 
             @Override

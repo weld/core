@@ -38,6 +38,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.security.GetDeclaredConstructorAction;
@@ -139,12 +140,12 @@ public class Proxies {
      * @param type The class to test
      * @return True if proxyable, false otherwise
      */
-    public static boolean isTypeProxyable(Type type) {
-        return getUnproxyableTypeException(type) == null;
+    public static boolean isTypeProxyable(Type type, ServiceRegistry services) {
+        return getUnproxyableTypeException(type, services) == null;
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypeException(Type type) {
-        return getUnproxyableTypeException(type, null);
+    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, ServiceRegistry services) {
+        return getUnproxyableTypeException(type, null, services);
     }
 
     /**
@@ -153,8 +154,8 @@ public class Proxies {
      * @param declaringBean with types to test
      * @return True if proxyable, false otherwise
      */
-    public static boolean isTypesProxyable(Bean<?> declaringBean) {
-        return getUnproxyableTypesException(declaringBean) == null;
+    public static boolean isTypesProxyable(Bean<?> declaringBean, ServiceRegistry services) {
+        return getUnproxyableTypesException(declaringBean, services) == null;
     }
 
     /**
@@ -163,30 +164,30 @@ public class Proxies {
      * @param types The types to test
      * @return True if proxyable, false otherwise
      */
-    public static boolean isTypesProxyable(Iterable<? extends Type> types) {
-        return getUnproxyableTypesException(types) == null;
+    public static boolean isTypesProxyable(Iterable<? extends Type> types, ServiceRegistry services) {
+        return getUnproxyableTypesException(types, services) == null;
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean) {
+    public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean, ServiceRegistry services) {
         if (declaringBean == null) {
             throw new java.lang.IllegalArgumentException("Null declaring bean!");
         }
 
-        return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean);
+        return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean, services);
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types) {
-        return getUnproxyableTypesExceptionInt(types, null);
+    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types, ServiceRegistry services) {
+        return getUnproxyableTypesExceptionInt(types, null, services);
     }
 
 
-    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean) {
+    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean, ServiceRegistry services) {
         if (type instanceof Class<?>) {
-            return getUnproxyableClassException((Class<?>) type, declaringBean);
+            return getUnproxyableClassException((Class<?>) type, declaringBean, services);
         } else if (type instanceof ParameterizedType) {
             Type rawType = ((ParameterizedType) type).getRawType();
             if (rawType instanceof Class<?>) {
-                return getUnproxyableClassException((Class<?>) rawType, declaringBean);
+                return getUnproxyableClassException((Class<?>) rawType, declaringBean, services);
             }
         }
         return new UnproxyableResolutionException(NOT_PROXYABLE_UNKNOWN, type, getDeclaringBeanInfo(declaringBean));
@@ -194,12 +195,12 @@ public class Proxies {
 
     // --- private
 
-    private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types, Bean<?> declaringBean) {
+    private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types, Bean<?> declaringBean, ServiceRegistry services) {
         for (Type apiType : types) {
             if (Object.class.equals(apiType)) {
                 continue;
             }
-            UnproxyableResolutionException e = getUnproxyableTypeException(apiType, declaringBean);
+            UnproxyableResolutionException e = getUnproxyableTypeException(apiType, declaringBean, services);
             if (e != null) {
                 return e;
             }
@@ -207,7 +208,7 @@ public class Proxies {
         return null;
     }
 
-    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean) {
+    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean, ServiceRegistry services) {
         if (clazz.isInterface()) {
             return null;
         }

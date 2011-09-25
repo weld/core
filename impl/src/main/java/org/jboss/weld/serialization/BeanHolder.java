@@ -32,18 +32,20 @@ public class BeanHolder<T> extends AbstractSerializableHolder<Bean<T>> {
 
     private static final long serialVersionUID = 6039992808930111222L;
 
-    public static <T> BeanHolder<T> of(Bean<T> bean) {
-        return new BeanHolder<T>(bean);
+    public static <T> BeanHolder<T> of(String contextId, Bean<T> bean) {
+        return new BeanHolder<T>(contextId, bean);
     }
 
+    private final String contextId;
     private final String beanId;
 
-    public BeanHolder(Bean<T> bean) {
+    public BeanHolder(String contextId, Bean<T> bean) {
         super(bean);
+        this.contextId = contextId;
         if (bean == null) {
             beanId = null;
         } else {
-            beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+            beanId = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
         }
     }
 
@@ -52,6 +54,6 @@ public class BeanHolder<T> extends AbstractSerializableHolder<Bean<T>> {
         if (beanId == null) {
             return null;
         }
-        return Container.instance().services().get(ContextualStore.class).<Bean<T>, T> getContextual(beanId);
+        return Container.instance(contextId).services().get(ContextualStore.class).<Bean<T>, T> getContextual(beanId);
     }
 }

@@ -27,8 +27,8 @@ public abstract class AbstractBoundContext<S> extends AbstractManagedContext imp
 
     private final ThreadLocal<BoundBeanStore> beanStore;
 
-    public AbstractBoundContext(boolean multithreaded) {
-        super(multithreaded);
+    public AbstractBoundContext(String contextId, boolean multithreaded) {
+        super(contextId, multithreaded);
         this.beanStore = new ThreadLocal<BoundBeanStore>();
     }
 

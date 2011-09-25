@@ -26,7 +26,6 @@ import java.util.Set;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
-import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.util.collections.ArraySet;
 
@@ -59,7 +58,7 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
         if (supportedInterceptorTypes.isEmpty()) {
             this.supportedInterceptorTypes = Collections.emptySet();
         } else {
-            this.supportedInterceptorTypes = SharedObjectFacade.wrap(supportedInterceptorTypes);
+            this.supportedInterceptorTypes = supportedInterceptorTypes;
         }
     }
 
