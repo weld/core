@@ -19,28 +19,25 @@ package org.jboss.weld.osgi.tests.lifecycle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class OSGiActivator implements BundleActivator
-{
-   Timer timer = new Timer();
-   AsynchronousListener asynchronousListener = new AsynchronousListener();
-   SynchronousListener synchronousListener = new SynchronousListener();
+public class OSGiActivator implements BundleActivator {
+    Timer timer = new Timer();
+    AsynchronousListener asynchronousListener = new AsynchronousListener();
+    SynchronousListener synchronousListener = new SynchronousListener();
 
-   @Override
-   public void start(BundleContext context) throws Exception
-   {
-      context.addBundleListener(asynchronousListener);
-      context.addBundleListener(synchronousListener);
-      FlagFarm.osgiStartEntrance = FlagFarm.currentRank++;
-      timer.process(500);
-      FlagFarm.osgiStartExit = FlagFarm.currentRank++;
-   }
+    @Override
+    public void start(BundleContext context) throws Exception {
+        context.addBundleListener(asynchronousListener);
+        context.addBundleListener(synchronousListener);
+        FlagFarm.osgiStartEntrance = FlagFarm.currentRank++;
+        timer.process(500);
+        FlagFarm.osgiStartExit = FlagFarm.currentRank++;
+    }
 
-   @Override
-   public void stop(BundleContext context) throws Exception
-   {
-      FlagFarm.osgiStopEntrance = FlagFarm.currentRank++;
-      timer.process(1000);
-      FlagFarm.osgiStopExit = FlagFarm.currentRank++;
-   }
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        FlagFarm.osgiStopEntrance = FlagFarm.currentRank++;
+        timer.process(1000);
+        FlagFarm.osgiStopExit = FlagFarm.currentRank++;
+    }
 
 }

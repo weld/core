@@ -16,9 +16,8 @@
  */
 package org.jboss.weld.osgi.tests.lifecycle;
 
-public class Timer
-{
-   public void process(int timeout) throws InterruptedException {
-      Thread.sleep(timeout);
-   }
+public class Timer {
+    public void process(int timeout) throws InterruptedException {
+        Thread.sleep(timeout);
+    }
 }

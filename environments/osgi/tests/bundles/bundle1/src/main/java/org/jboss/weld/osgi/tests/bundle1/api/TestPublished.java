@@ -18,6 +18,6 @@
 package org.jboss.weld.osgi.tests.bundle1.api;
 
 public interface TestPublished {
-    public PropertyService getService();
-    public PropertyService getService2();
+    PropertyService getService();
+    PropertyService getService2();
 }

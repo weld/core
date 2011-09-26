@@ -16,26 +16,24 @@
  */
 package org.jboss.weld.osgi.tests.lifecycle;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
 
-public class CDIActivator
-{
-   @Inject
-   Timer timer;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-   public void start(@Observes BundleContainerEvents.BundleContainerInitialized evt) throws Exception
-   {
-      FlagFarm.cdiStartEntrance = FlagFarm.currentRank++;
-      timer.process(500);
-      FlagFarm.cdiStartExit = FlagFarm.currentRank++;
-   }
+public class CDIActivator {
+    @Inject
+    Timer timer;
 
-   public void stop(@Observes BundleContainerEvents.BundleContainerShutdown evt) throws Exception
-   {
-      FlagFarm.cdiStopEntrance = FlagFarm.currentRank++;
-      timer.process(500);
-      FlagFarm.cdiStopExit = FlagFarm.currentRank++;
-   }
+    public void start(@Observes BundleContainerEvents.BundleContainerInitialized evt) throws Exception {
+        FlagFarm.cdiStartEntrance = FlagFarm.currentRank++;
+        timer.process(500);
+        FlagFarm.cdiStartExit = FlagFarm.currentRank++;
+    }
+
+    public void stop(@Observes BundleContainerEvents.BundleContainerShutdown evt) throws Exception {
+        FlagFarm.cdiStopEntrance = FlagFarm.currentRank++;
+        timer.process(500);
+        FlagFarm.cdiStopExit = FlagFarm.currentRank++;
+    }
 }

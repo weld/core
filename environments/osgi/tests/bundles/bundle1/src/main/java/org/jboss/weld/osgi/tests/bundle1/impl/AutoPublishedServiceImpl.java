@@ -22,7 +22,7 @@ import org.jboss.weld.environment.osgi.api.annotation.Publish;
 
 @Publish
 public class AutoPublishedServiceImpl implements AutoPublishedService {
-    
+
     @Override
     public String whoAmI() {
         return getClass().getName();

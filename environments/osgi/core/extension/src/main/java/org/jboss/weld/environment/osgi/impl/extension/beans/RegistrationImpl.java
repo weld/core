@@ -20,7 +20,12 @@ import org.jboss.weld.environment.osgi.api.Registration;
 import org.jboss.weld.environment.osgi.api.RegistrationHolder;
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
