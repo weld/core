@@ -79,9 +79,6 @@ public class BundleProvider {
     @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2") @BundleHeader("Bundle-SymbolicName")
     String symbolicName2;
 
-    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2") @BundleDataFile("test.txt")
-    File file2;
-
     public Bundle getBundle2() {
         return bundle2;
     }
@@ -98,7 +95,4 @@ public class BundleProvider {
         return symbolicName2;
     }
 
-    public File getFile2() {
-        return file2;
-    }
 }

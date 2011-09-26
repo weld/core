@@ -16,10 +16,9 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
-import org.jboss.weld.environment.osgi.api.Service;
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +31,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.jboss.weld.environment.osgi.api.Service;
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
 
 /**
  * Implementation of {@link Service}.
@@ -56,8 +57,8 @@ public class ServiceImpl<T> implements Service<T> {
 
     public ServiceImpl(Type t, BundleContext registry) {
         logger.debug("Creation of a new service provider for bundle {}"
-                + " as {} with no filter",
-                registry.getBundle(), t);
+                     + " as {} with no filter",
+                     registry.getBundle(), t);
         serviceClass = (Class) t;
         serviceName = serviceClass.getName();
         this.registry = registry;
@@ -66,11 +67,10 @@ public class ServiceImpl<T> implements Service<T> {
 
     public ServiceImpl(Type t, BundleContext registry, Filter filter) {
         logger.debug("Creation of a new service provider for bundle {}"
-                + " as {} with filter {}",
-                new Object[]
-                        {
-                                registry.getBundle(), t, filter
-                        });
+                     + " as {} with filter {}",
+                     new Object[]{
+                    registry.getBundle(), t, filter
+                });
         serviceClass = (Class) t;
         serviceName = serviceClass.getName();
         this.registry = registry;
@@ -79,17 +79,11 @@ public class ServiceImpl<T> implements Service<T> {
 
     @Override
     public T get() {
-        if (service == null) {
-            try {
-                populateServices();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        populateServices();
         return service;
     }
 
-    private void populateServices() throws Exception {
+    private void populateServices() {
         logger.trace("Scanning matching service for service provider {}", this);
         services.clear();
         String filterString = null;
@@ -106,18 +100,30 @@ public class ServiceImpl<T> implements Service<T> {
 //            }
 //        }
 //        service = services.size() > 0 ? services.get(0) : null;
-        ServiceReference[] refs = registry.getServiceReferences(serviceName, filterString);
+        ServiceReference[] refs = null;
+        try {
+            refs = registry.getServiceReferences(serviceName, filterString);
+        }
+        catch(InvalidSyntaxException ex) {
+            logger.warn("Unblale to find service references "
+                        + "for service {} with filter {} due to {}",
+                        new Object[]{
+                        serviceName,
+                        filterString,
+                        ex
+                    });
+        }
         if (refs != null) {
             for (ServiceReference ref : refs) {
                 if (!serviceClass.isInterface()) {
                     services.add((T) registry.getService(ref));
-                } else {
+                }
+                else {
                     services.add((T) Proxy.newProxyInstance(
                             getClass().getClassLoader(),
-                            new Class[]
-                                    {
-                                            (Class) serviceClass
-                                    },
+                            new Class[]{
+                                (Class) serviceClass
+                            },
                             new ServiceReferenceHandler(ref, registry)));
                 }
             }
@@ -154,7 +160,8 @@ public class ServiceImpl<T> implements Service<T> {
         if (service == null) {
             try {
                 populateServices();
-            } catch (Exception e) {
+            }
+            catch(Exception e) {
                 e.printStackTrace();
                 return -1;
             }
@@ -166,7 +173,8 @@ public class ServiceImpl<T> implements Service<T> {
     public Iterator<T> iterator() {
         try {
             populateServices();
-        } catch (Exception ex) {
+        }
+        catch(Exception ex) {
             ex.printStackTrace();
             services = Collections.emptyList();
         }
@@ -176,8 +184,8 @@ public class ServiceImpl<T> implements Service<T> {
     @Override
     public String toString() {
         return "ServiceImpl{ Service class "
-                + serviceName + " with filter "
-                + filter.value() + '}';
+               + serviceName + " with filter "
+               + filter.value() + '}';
     }
 
     @Override
@@ -187,12 +195,14 @@ public class ServiceImpl<T> implements Service<T> {
             public Iterator<T> iterator() {
                 try {
                     populateServices();
-                } catch (Exception ex) {
+                }
+                catch(Exception ex) {
                     return Collections.<T>emptyList().iterator();
                 }
                 if (services.isEmpty()) {
                     return Collections.<T>emptyList().iterator();
-                } else {
+                }
+                else {
                     return Collections.singletonList(services.get(0)).iterator();
                 }
             }
