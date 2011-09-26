@@ -44,65 +44,59 @@ import org.osgi.framework.Version;
  * @see BundleEventType
  * @see javax.enterprise.event.Observes
  */
-public abstract class AbstractBundleEvent
-{
-   private final Bundle bundle;
+public abstract class AbstractBundleEvent {
+    private final Bundle bundle;
 
-   /**
-    * Construct a new bundle event for the current bundle.
-    *
-    * @param bundle the firing bundle (current bundle).
-    */
-   public AbstractBundleEvent(Bundle bundle)
-   {
-      this.bundle = bundle;
-   }
+    /**
+     * Construct a new bundle event for the current bundle.
+     *
+     * @param bundle the firing bundle (current bundle).
+     */
+    public AbstractBundleEvent(Bundle bundle) {
+        this.bundle = bundle;
+    }
 
-   /**
-    * Get the bundle event type.
-    *
-    * @return the {@link BundleEventType} of the fired bundle event.
-    */
-   public abstract BundleEventType getType();
+    /**
+     * Get the bundle event type.
+     *
+     * @return the {@link BundleEventType} of the fired bundle event.
+     */
+    public abstract BundleEventType getType();
 
-   /**
-    * Get the firing bundle id.
-    *
-    * @return the firing bundle id.
-    */
-   public long getBundleId()
-   {
-      return bundle.getBundleId();
-   }
+    /**
+     * Get the firing bundle id.
+     *
+     * @return the firing bundle id.
+     */
+    public long getBundleId() {
+        return bundle.getBundleId();
+    }
 
-   /**
-    * Get the firing bundle symbolic name.
-    *
-    * @return the firing bundle symbolic name.
-    */
-   public String getSymbolicName()
-   {
-      return bundle.getSymbolicName();
-   }
+    /**
+     * Get the firing bundle symbolic name.
+     *
+     * @return the firing bundle symbolic name.
+     */
+    public String getSymbolicName() {
+        return bundle.getSymbolicName();
+    }
 
-   /**
-    * Get the firing bundle version.
-    *
-    * @return the firing bundle version.
-    */
-   public Version getVersion()
-   {
-      return bundle.getVersion();
-   }
+    /**
+     * Get the firing bundle version.
+     *
+     * @return the firing bundle version.
+     */
+    public Version getVersion() {
+        return bundle.getVersion();
+    }
 
-   /**
-    * Get the firing bundle.
-    *
-    * @return the firing bundle.
-    */
-   public Bundle getBundle()
-   {
-      return bundle;
-   }
+    /**
+     * Get the firing bundle.
+     *
+     * @return the firing bundle.
+     */
+    public Bundle getBundle() {
+        return bundle;
+    }
 
 }

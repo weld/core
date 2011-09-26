@@ -42,12 +42,11 @@ import static java.lang.annotation.ElementType.PARAMETER;
  * @see org.osgi.framework.Bundle
  */
 @Target(
-{
-   PARAMETER
-})
+        {
+                PARAMETER
+        })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface Sent
-{
+public @interface Sent {
 }

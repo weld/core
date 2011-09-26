@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -34,9 +36,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.*;
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This the bean class for all beans generated from a
@@ -46,247 +50,203 @@ import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class OSGiServiceBean implements Bean
-{
-   private final static Logger logger =
+public class OSGiServiceBean implements Bean {
+    private final static Logger logger =
             LoggerFactory.getLogger(OSGiServiceBean.class);
 
-   private final Map<Object, DynamicServiceHandler> handlers =
+    private final Map<Object, DynamicServiceHandler> handlers =
             new HashMap<Object, DynamicServiceHandler>();
 
-   private final InjectionPoint injectionPoint;
+    private final InjectionPoint injectionPoint;
 
-   private Filter filter;
+    private Filter filter;
 
-   private Set<Annotation> qualifiers;
+    private Set<Annotation> qualifiers;
 
-   private Type type;
+    private Type type;
 
-   private long timeout;
+    private long timeout;
 
-   public OSGiServiceBean(InjectionPoint injectionPoint)
-   {
-      logger.debug("Creation of a new OSGiServiceBean for injection point: {}",
-                   injectionPoint);
-      this.injectionPoint = injectionPoint;
-      type = injectionPoint.getType();
-      qualifiers = injectionPoint.getQualifiers();
-      filter = FilterGenerator.makeFilter(injectionPoint);
-      for (Annotation annotation : injectionPoint.getQualifiers())
-      {
-         if (annotation.annotationType().equals(OSGiService.class))
-         {
-            timeout = ((OSGiService) annotation).value();
-            break;
-         }
-      }
-   }
-
-   @Override
-   public Set<Type> getTypes()
-   {
-      Set<Type> s = new HashSet<Type>();
-      s.add(injectionPoint.getType());
-      s.add(Object.class);
-      return s;
-   }
-
-   @Override
-   public Set<Annotation> getQualifiers()
-   {
-      Set<Annotation> result = new HashSet<Annotation>();
-      result.addAll(qualifiers);
-      result.add(new AnnotationLiteral<Any>()
-      {
-      });
-      return result;
-   }
-
-   @Override
-   public Class<? extends Annotation> getScope()
-   {
-      return Dependent.class;
-   }
-
-   @Override
-   public String getName()
-   {
-      return null;
-   }
-
-   @Override
-   public Set<Class<? extends Annotation>> getStereotypes()
-   {
-      return Collections.emptySet();
-   }
-
-   @Override
-   public Class getBeanClass()
-   {
-      return (Class) type;
-   }
-
-   @Override
-   public boolean isAlternative()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isNullable()
-   {
-      return false;
-   }
-
-   @Override
-   public Set<InjectionPoint> getInjectionPoints()
-   {
-      return Collections.emptySet();
-   }
-
-   @Override
-   public Object create(CreationalContext ctx)
-   {
-      logger.debug("Instantiation of an {}", this);
-      try
-      {
-         Bundle bundle = FrameworkUtil.getBundle(injectionPoint.getMember()
-                                                         .getDeclaringClass());
-         DynamicServiceHandler handler =
-                               new DynamicServiceHandler(bundle, ((Class) type)
-                                       .getName(), filter, qualifiers, timeout);
-         Object proxy = Proxy.newProxyInstance(
-                 getClass().getClassLoader(),
-                 new Class[]
-                 {
-                    getBeanClass()
-                 },
-                 handler);
-         if (handlers.containsKey(proxy))
-         {
-            handler.setStored(true);
-         }
-         else
-         {
-            handlers.put(proxy, handler);
-            handler.setStored(true);
-         }
-         return proxy;
-      }
-      catch(Exception e)
-      {
-         logger.error("Unable to instantiate {} due to {}", this, e);
-         throw new CreationException(e);
-      }
-   }
-
-   @Override
-   public void destroy(Object instance, CreationalContext creationalContext)
-   {
-      // Nothing to do, services are unget after each call.
-      DynamicServiceHandler handler = handlers.get(instance);
-      if (handler != null)
-      {
-         handler.closeHandler();
-         handlers.remove(instance);
-      }
-      else
-      {
-         logger.info("Can't close tracker for bean {}", this.toString());
-      }
-   }
-
-   @Override
-   public boolean equals(Object o)
-   {
-      if (this == o)
-      {
-         return true;
-      }
-      if (!(o instanceof OSGiServiceBean))
-      {
-         return false;
-      }
-
-      OSGiServiceBean that = (OSGiServiceBean) o;
-
-      if (!filter.value().equals(that.filter.value()))
-      {
-         return false;
-      }
-      if (!getTypes().equals(that.getTypes()))
-      {
-         return false;
-      }
-      if (!getQualifiers().equals(that.getQualifiers()))
-      {
-         return false;
-      }
-
-      return true;
-   }
-
-   @Override
-   public int hashCode()
-   {
-      int result = getTypes().hashCode();
-      result = 31 * result + filter.value().hashCode();
-      result = 31 * result + getQualifiers().hashCode();
-      return result;
-   }
-
-   @Override
-   public String toString()
-   {
-      return "OSGiServiceBean ["
-             + ((Class) type).getSimpleName()
-             + "] with qualifiers ["
-             + printQualifiers()
-             + "]";
-   }
-
-   public String printQualifiers()
-   {
-      String result = "";
-      for (Annotation qualifier : getQualifiers())
-      {
-         if (!result.equals(""))
-         {
-            result += " ";
-         }
-         result += "@" + qualifier.annotationType().getSimpleName();
-         result += printValues(qualifier);
-      }
-      return result;
-   }
-
-   private String printValues(Annotation qualifier)
-   {
-      String result = "(";
-      for (Method m : qualifier.annotationType().getDeclaredMethods())
-      {
-         if (!m.isAnnotationPresent(Nonbinding.class))
-         {
-            try
-            {
-               Object value = m.invoke(qualifier);
-               if (value == null)
-               {
-                  value = m.getDefaultValue();
-               }
-               if (value != null)
-               {
-                  result += m.getName() + "=" + value.toString();
-               }
+    public OSGiServiceBean(InjectionPoint injectionPoint) {
+        logger.debug("Creation of a new OSGiServiceBean for injection point: {}",
+                injectionPoint);
+        this.injectionPoint = injectionPoint;
+        type = injectionPoint.getType();
+        qualifiers = injectionPoint.getQualifiers();
+        filter = FilterGenerator.makeFilter(injectionPoint);
+        for (Annotation annotation : injectionPoint.getQualifiers()) {
+            if (annotation.annotationType().equals(OSGiService.class)) {
+                timeout = ((OSGiService) annotation).value();
+                break;
             }
-            catch(Throwable t)
-            {
-               // ignore
+        }
+    }
+
+    @Override
+    public Set<Type> getTypes() {
+        Set<Type> s = new HashSet<Type>();
+        s.add(injectionPoint.getType());
+        s.add(Object.class);
+        return s;
+    }
+
+    @Override
+    public Set<Annotation> getQualifiers() {
+        Set<Annotation> result = new HashSet<Annotation>();
+        result.addAll(qualifiers);
+        result.add(new AnnotationLiteral<Any>() {
+        });
+        return result;
+    }
+
+    @Override
+    public Class<? extends Annotation> getScope() {
+        return Dependent.class;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public Set<Class<? extends Annotation>> getStereotypes() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Class getBeanClass() {
+        return (Class) type;
+    }
+
+    @Override
+    public boolean isAlternative() {
+        return false;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return false;
+    }
+
+    @Override
+    public Set<InjectionPoint> getInjectionPoints() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Object create(CreationalContext ctx) {
+        logger.debug("Instantiation of an {}", this);
+        try {
+            Bundle bundle = FrameworkUtil.getBundle(injectionPoint.getMember()
+                    .getDeclaringClass());
+            DynamicServiceHandler handler =
+                    new DynamicServiceHandler(bundle, ((Class) type)
+                            .getName(), filter, qualifiers, timeout);
+            Object proxy = Proxy.newProxyInstance(
+                    getClass().getClassLoader(),
+                    new Class[]
+                            {
+                                    getBeanClass()
+                            },
+                    handler);
+            if (handlers.containsKey(proxy)) {
+                handler.setStored(true);
+            } else {
+                handlers.put(proxy, handler);
+                handler.setStored(true);
             }
-         }
-      }
-      result += ")";
-      return result.equals("()") ? "" : result;
-   }
+            return proxy;
+        } catch (Exception e) {
+            logger.error("Unable to instantiate {} due to {}", this, e);
+            throw new CreationException(e);
+        }
+    }
+
+    @Override
+    public void destroy(Object instance, CreationalContext creationalContext) {
+        // Nothing to do, services are unget after each call.
+        DynamicServiceHandler handler = handlers.get(instance);
+        if (handler != null) {
+            handler.closeHandler();
+            handlers.remove(instance);
+        } else {
+            logger.info("Can't close tracker for bean {}", this.toString());
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OSGiServiceBean)) {
+            return false;
+        }
+
+        OSGiServiceBean that = (OSGiServiceBean) o;
+
+        if (!filter.value().equals(that.filter.value())) {
+            return false;
+        }
+        if (!getTypes().equals(that.getTypes())) {
+            return false;
+        }
+        if (!getQualifiers().equals(that.getQualifiers())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getTypes().hashCode();
+        result = 31 * result + filter.value().hashCode();
+        result = 31 * result + getQualifiers().hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "OSGiServiceBean ["
+                + ((Class) type).getSimpleName()
+                + "] with qualifiers ["
+                + printQualifiers()
+                + "]";
+    }
+
+    public String printQualifiers() {
+        String result = "";
+        for (Annotation qualifier : getQualifiers()) {
+            if (!result.equals("")) {
+                result += " ";
+            }
+            result += "@" + qualifier.annotationType().getSimpleName();
+            result += printValues(qualifier);
+        }
+        return result;
+    }
+
+    private String printValues(Annotation qualifier) {
+        String result = "(";
+        for (Method m : qualifier.annotationType().getDeclaredMethods()) {
+            if (!m.isAnnotationPresent(Nonbinding.class)) {
+                try {
+                    Object value = m.invoke(qualifier);
+                    if (value == null) {
+                        value = m.getDefaultValue();
+                    }
+                    if (value != null) {
+                        result += m.getName() + "=" + value.toString();
+                    }
+                } catch (Throwable t) {
+                    // ignore
+                }
+            }
+        }
+        result += ")";
+        return result.equals("()") ? "" : result;
+    }
 
 }

@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.environment.osgi.impl;
 
-import java.lang.annotation.Annotation;
+import org.jboss.weld.environment.osgi.api.annotation.Sent;
+import org.jboss.weld.environment.osgi.api.annotation.Specification;
+import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.impl.integration.Weld;
+import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -26,14 +30,10 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
-import javax.enterprise.util.AnnotationLiteral;
-import org.jboss.weld.environment.osgi.api.annotation.Sent;
-import org.jboss.weld.environment.osgi.api.annotation.Specification;
-import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
-import org.jboss.weld.environment.osgi.spi.CDIContainer;
 
 /**
  * This is the {@link CDIContainer} implementation using Weld.
@@ -41,187 +41,158 @@ import org.jboss.weld.environment.osgi.spi.CDIContainer;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class WeldCDIContainer implements CDIContainer
-{
-   private Logger logger = LoggerFactory.getLogger(WeldCDIContainer.class);
+public class WeldCDIContainer implements CDIContainer {
+    private Logger logger = LoggerFactory.getLogger(WeldCDIContainer.class);
 
-   private final Bundle bundle;
+    private final Bundle bundle;
 
-   private Weld container;
+    private Weld container;
 
-   private Collection<ServiceRegistration> registrations =
+    private Collection<ServiceRegistration> registrations =
             new ArrayList<ServiceRegistration>();
 
-   public WeldCDIContainer(Bundle bundle)
-   {
-      logger.debug("Creation of a new Weld CDI container for bundle {}", bundle);
-      this.bundle = bundle;
-      container = new Weld(bundle);
-   }
+    public WeldCDIContainer(Bundle bundle) {
+        logger.debug("Creation of a new Weld CDI container for bundle {}", bundle);
+        this.bundle = bundle;
+        container = new Weld(bundle);
+    }
 
-   @Override
-   public void setRegistrations(Collection<ServiceRegistration> registrations)
-   {
-      this.registrations = registrations;
-   }
+    @Override
+    public void setRegistrations(Collection<ServiceRegistration> registrations) {
+        this.registrations = registrations;
+    }
 
-   @Override
-   public Collection<ServiceRegistration> getRegistrations()
-   {
-      return registrations;
-   }
+    @Override
+    public Collection<ServiceRegistration> getRegistrations() {
+        return registrations;
+    }
 
-   @Override
-   public Bundle getBundle()
-   {
-      return bundle;
-   }
+    @Override
+    public Bundle getBundle() {
+        return bundle;
+    }
 
-   @Override
-   public boolean shutdown()
-   {
-      logger.debug("Weld CDI container is shutting down for bundle {}", bundle);
-      return container.shutdown();
-   }
+    @Override
+    public boolean shutdown() {
+        logger.debug("Weld CDI container is shutting down for bundle {}", bundle);
+        return container.shutdown();
+    }
 
-   @Override
-   public void fire(InterBundleEvent event)
-   {
-      logger.debug("Weld CDI container for bundle {} is firing "
-                   + "an inter bundle event: {}",
-                   bundle,
-                   event);
-      Long set = CDIOSGiExtension.currentBundle.get();
-      CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
-      container.getEvent().select(InterBundleEvent.class,
-                                  new SpecificationAnnotation(
-                                          event.type()),
-                                  new SentAnnotation()).fire(
-                                          event);
-      if (set != null)
-      {
-         CDIOSGiExtension.currentBundle.set(set);
-      }
-      else
-      {
-         CDIOSGiExtension.currentBundle.remove();
-      }
-   }
+    @Override
+    public void fire(InterBundleEvent event) {
+        logger.debug("Weld CDI container for bundle {} is firing "
+                + "an inter bundle event: {}",
+                bundle,
+                event);
+        Long set = CDIOSGiExtension.currentBundle.get();
+        CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
+        container.getEvent().select(InterBundleEvent.class,
+                new SpecificationAnnotation(
+                        event.type()),
+                new SentAnnotation()).fire(
+                event);
+        if (set != null) {
+            CDIOSGiExtension.currentBundle.set(set);
+        } else {
+            CDIOSGiExtension.currentBundle.remove();
+        }
+    }
 
-   @Override
-   public boolean initialize()
-   {
-      return container.initialize();
-   }
+    @Override
+    public boolean initialize() {
+        return container.initialize();
+    }
 
-   @Override
-   public boolean isStarted()
-   {
-      return container.isStarted();
-   }
+    @Override
+    public boolean isStarted() {
+        return container.isStarted();
+    }
 
-   @Override
-   public Event getEvent()
-   {
-      return container.getInstance().select(Event.class).get();
-   }
+    @Override
+    public Event getEvent() {
+        return container.getInstance().select(Event.class).get();
+    }
 
-   @Override
-   public BeanManager getBeanManager()
-   {
-      return container.getBeanManager();
-   }
+    @Override
+    public BeanManager getBeanManager() {
+        return container.getBeanManager();
+    }
 
-   @Override
-   public Instance<Object> getInstance()
-   {
-      return container.getInstance();
-   }
+    @Override
+    public Instance<Object> getInstance() {
+        return container.getInstance();
+    }
 
-   @Override
-   public Collection<String> getBeanClasses()
-   {
-      return container.getBeanClasses();
-   }
+    @Override
+    public Collection<String> getBeanClasses() {
+        return container.getBeanClasses();
+    }
 
-   @Override
-   public boolean equals(Object o)
-   {
-      if (this == o)
-      {
-         return true;
-      }
-      if (!(o instanceof WeldCDIContainer))
-      {
-         return false;
-      }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof WeldCDIContainer)) {
+            return false;
+        }
 
-      WeldCDIContainer that = (WeldCDIContainer) o;
+        WeldCDIContainer that = (WeldCDIContainer) o;
 
-      if (bundle != null ? !bundle.equals(that.bundle) : that.bundle != null)
-      {
-         return false;
-      }
-      if (container != null ?
-          !container.equals(that.container) :
-          that.container != null)
-      {
-         return false;
-      }
-      if (registrations != null ?
-          !registrations.equals(that.registrations) :
-          that.registrations != null)
-      {
-         return false;
-      }
+        if (bundle != null ? !bundle.equals(that.bundle) : that.bundle != null) {
+            return false;
+        }
+        if (container != null ?
+                !container.equals(that.container) :
+                that.container != null) {
+            return false;
+        }
+        if (registrations != null ?
+                !registrations.equals(that.registrations) :
+                that.registrations != null) {
+            return false;
+        }
 
-      return true;
-   }
+        return true;
+    }
 
-   @Override
-   public int hashCode()
-   {
-      int result = bundle != null ? bundle.hashCode() : 0;
-      result = 31 * result + (container != null ? container.hashCode() : 0);
-      result = 31 * result + (registrations != null ?
-                              registrations.hashCode() :
-                              0);
-      return result;
-   }
+    @Override
+    public int hashCode() {
+        int result = bundle != null ? bundle.hashCode() : 0;
+        result = 31 * result + (container != null ? container.hashCode() : 0);
+        result = 31 * result + (registrations != null ?
+                registrations.hashCode() :
+                0);
+        return result;
+    }
 
-   public static class SpecificationAnnotation
-   extends AnnotationLiteral<Specification> implements Specification
-   {
-      private final Class value;
+    public static class SpecificationAnnotation
+            extends AnnotationLiteral<Specification> implements Specification {
+        private final Class value;
 
-      public SpecificationAnnotation(Class value)
-      {
-         this.value = value;
-      }
+        public SpecificationAnnotation(Class value) {
+            this.value = value;
+        }
 
-      @Override
-      public Class value()
-      {
-         return value;
-      }
+        @Override
+        public Class value() {
+            return value;
+        }
 
-      @Override
-      public Class<? extends Annotation> annotationType()
-      {
-         return Specification.class;
-      }
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Specification.class;
+        }
 
-   }
+    }
 
-   public static class SentAnnotation
-   extends AnnotationLiteral<Sent> implements Sent
-   {
-      @Override
-      public Class<? extends Annotation> annotationType()
-      {
-         return Sent.class;
-      }
+    public static class SentAnnotation
+            extends AnnotationLiteral<Sent> implements Sent {
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Sent.class;
+        }
 
-   }
+    }
 
 }

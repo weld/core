@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -36,7 +37,6 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
 
 /**
  * This the bean class for all beans generated from a {@link Service} typed {@link InjectionPoint}.
@@ -44,197 +44,164 @@ import org.jboss.weld.environment.osgi.api.annotation.Filter;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class OSGiServiceProducerBean<Service> implements Bean<Service>
-{
-   private static Logger logger = LoggerFactory.getLogger(OSGiServiceProducerBean.class);
+public class OSGiServiceProducerBean<Service> implements Bean<Service> {
+    private static Logger logger = LoggerFactory.getLogger(OSGiServiceProducerBean.class);
 
-   private final InjectionPoint injectionPoint;
+    private final InjectionPoint injectionPoint;
 
-   private Filter filter;
+    private Filter filter;
 
-   private Set<Annotation> qualifiers;
+    private Set<Annotation> qualifiers;
 
-   private Type type;
+    private Type type;
 
-   public OSGiServiceProducerBean(InjectionPoint injectionPoint)
-   {
-      logger.debug("Creation of a new OSGiServiceProducerBean for injection point: {}", injectionPoint);
-      this.injectionPoint = injectionPoint;
-      type = injectionPoint.getType();
-      qualifiers = injectionPoint.getQualifiers();
-      filter = FilterGenerator.makeFilter(injectionPoint);
-   }
+    public OSGiServiceProducerBean(InjectionPoint injectionPoint) {
+        logger.debug("Creation of a new OSGiServiceProducerBean for injection point: {}", injectionPoint);
+        this.injectionPoint = injectionPoint;
+        type = injectionPoint.getType();
+        qualifiers = injectionPoint.getQualifiers();
+        filter = FilterGenerator.makeFilter(injectionPoint);
+    }
 
-   @Override
-   public Set<Type> getTypes()
-   {
-      Set<Type> s = new HashSet<Type>();
-      s.add(type);
-      s.add(Object.class);
-      return s;
-   }
+    @Override
+    public Set<Type> getTypes() {
+        Set<Type> s = new HashSet<Type>();
+        s.add(type);
+        s.add(Object.class);
+        return s;
+    }
 
-   @Override
-   public Set<Annotation> getQualifiers()
-   {
-      Set<Annotation> result = new HashSet<Annotation>();
-      result.addAll(qualifiers);
-      result.add(new AnnotationLiteral<Any>()
-      {
-      });
-      return result;
-   }
+    @Override
+    public Set<Annotation> getQualifiers() {
+        Set<Annotation> result = new HashSet<Annotation>();
+        result.addAll(qualifiers);
+        result.add(new AnnotationLiteral<Any>() {
+        });
+        return result;
+    }
 
-   @Override
-   public Class<? extends Annotation> getScope()
-   {
-      return Dependent.class;
-   }
+    @Override
+    public Class<? extends Annotation> getScope() {
+        return Dependent.class;
+    }
 
-   @Override
-   public String getName()
-   {
-      return null;
-   }
+    @Override
+    public String getName() {
+        return null;
+    }
 
-   @Override
-   public Set<Class<? extends Annotation>> getStereotypes()
-   {
-      return Collections.emptySet();
-   }
+    @Override
+    public Set<Class<? extends Annotation>> getStereotypes() {
+        return Collections.emptySet();
+    }
 
-   @Override
-   public Class getBeanClass()
-   {
-      return (Class) ((ParameterizedType) type).getRawType();
-   }
+    @Override
+    public Class getBeanClass() {
+        return (Class) ((ParameterizedType) type).getRawType();
+    }
 
-   @Override
-   public boolean isAlternative()
-   {
-      return false;
-   }
+    @Override
+    public boolean isAlternative() {
+        return false;
+    }
 
-   @Override
-   public boolean isNullable()
-   {
-      return false;
-   }
+    @Override
+    public boolean isNullable() {
+        return false;
+    }
 
-   @Override
-   public Set<InjectionPoint> getInjectionPoints()
-   {
-      return Collections.emptySet();
-   }
+    @Override
+    public Set<InjectionPoint> getInjectionPoints() {
+        return Collections.emptySet();
+    }
 
-   @Override
-   public Service create(CreationalContext creationalContext)
-   {
-      logger.debug("Instantiation of an {}", this);
-      BundleContext registry = FrameworkUtil.getBundle(
-              injectionPoint.getMember().getDeclaringClass()).getBundleContext();
-      return (Service) new ServiceImpl(((ParameterizedType) type)
-              .getActualTypeArguments()[0], registry, filter);
-   }
+    @Override
+    public Service create(CreationalContext creationalContext) {
+        logger.debug("Instantiation of an {}", this);
+        BundleContext registry = FrameworkUtil.getBundle(
+                injectionPoint.getMember().getDeclaringClass()).getBundleContext();
+        return (Service) new ServiceImpl(((ParameterizedType) type)
+                .getActualTypeArguments()[0], registry, filter);
+    }
 
-   @Override
-   public void destroy(Service instance,
-   CreationalContext<Service> creationalContext)
-   {
-      // Nothing to do, services are unget after each call.
-   }
+    @Override
+    public void destroy(Service instance,
+                        CreationalContext<Service> creationalContext) {
+        // Nothing to do, services are unget after each call.
+    }
 
-   @Override
-   public boolean equals(Object o)
-   {
-      if (this == o)
-      {
-         return true;
-      }
-      if (!(o instanceof OSGiServiceProducerBean))
-      {
-         return false;
-      }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OSGiServiceProducerBean)) {
+            return false;
+        }
 
-      OSGiServiceProducerBean that = (OSGiServiceProducerBean) o;
+        OSGiServiceProducerBean that = (OSGiServiceProducerBean) o;
 
-      if (!filter.value().equals(that.filter.value()))
-      {
-         return false;
-      }
-      if (!getTypes().equals(that.getTypes()))
-      {
-         return false;
-      }
-      if (!getQualifiers().equals(that.getQualifiers()))
-      {
-         return false;
-      }
+        if (!filter.value().equals(that.filter.value())) {
+            return false;
+        }
+        if (!getTypes().equals(that.getTypes())) {
+            return false;
+        }
+        if (!getQualifiers().equals(that.getQualifiers())) {
+            return false;
+        }
 
-      return true;
-   }
+        return true;
+    }
 
-   @Override
-   public int hashCode()
-   {
-      int result = getTypes().hashCode();
-      result = 31 * result + filter.value().hashCode();
-      result = 31 * result + getQualifiers().hashCode();
-      return result;
-   }
+    @Override
+    public int hashCode() {
+        int result = getTypes().hashCode();
+        result = 31 * result + filter.value().hashCode();
+        result = 31 * result + getQualifiers().hashCode();
+        return result;
+    }
 
-   @Override
-   public String toString()
-   {
-      return "OSGiServiceProducerBean ["
-             + injectionPoint.getType().toString()
-             + "] with qualifiers ["
-             + printQualifiers()
-             + "]";
-   }
+    @Override
+    public String toString() {
+        return "OSGiServiceProducerBean ["
+                + injectionPoint.getType().toString()
+                + "] with qualifiers ["
+                + printQualifiers()
+                + "]";
+    }
 
-   public String printQualifiers()
-   {
-      String result = "";
-      for (Annotation qualifier : getQualifiers())
-      {
-         if (!result.equals(""))
-         {
-            result += " ";
-         }
-         result += "@" + qualifier.annotationType().getSimpleName();
-         result += printValues(qualifier);
-      }
-      return result;
-   }
-
-   private String printValues(Annotation qualifier)
-   {
-      String result = "(";
-      for (Method m : qualifier.annotationType().getDeclaredMethods())
-      {
-         if (!m.isAnnotationPresent(Nonbinding.class))
-         {
-            try
-            {
-               Object value = m.invoke(qualifier);
-               if (value == null)
-               {
-                  value = m.getDefaultValue();
-               }
-               if (value != null)
-               {
-                  result += m.getName() + "=" + value.toString();
-               }
+    public String printQualifiers() {
+        String result = "";
+        for (Annotation qualifier : getQualifiers()) {
+            if (!result.equals("")) {
+                result += " ";
             }
-            catch(Throwable t)
-            {
-               // ignore
+            result += "@" + qualifier.annotationType().getSimpleName();
+            result += printValues(qualifier);
+        }
+        return result;
+    }
+
+    private String printValues(Annotation qualifier) {
+        String result = "(";
+        for (Method m : qualifier.annotationType().getDeclaredMethods()) {
+            if (!m.isAnnotationPresent(Nonbinding.class)) {
+                try {
+                    Object value = m.invoke(qualifier);
+                    if (value == null) {
+                        value = m.getDefaultValue();
+                    }
+                    if (value != null) {
+                        result += m.getName() + "=" + value.toString();
+                    }
+                } catch (Throwable t) {
+                    // ignore
+                }
             }
-         }
-      }
-      result += ")";
-      return result.equals("()") ? "" : result;
-   }
+        }
+        result += ")";
+        return result.equals("()") ? "" : result;
+    }
 
 }

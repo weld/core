@@ -22,7 +22,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
  * <p>This annotation qualifies an injection point that represents all headers of a
@@ -41,12 +43,11 @@ import static java.lang.annotation.ElementType.*;
  * @see BundleHeader
  */
 @Target(
-{
-   METHOD, PARAMETER, FIELD
-})
+        {
+                METHOD, PARAMETER, FIELD
+        })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface BundleHeaders
-{
+public @interface BundleHeaders {
 }

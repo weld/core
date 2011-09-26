@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +27,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 
 /**
  * CDI-OSGi annotated type. Wrap regular CDI annotated types in order to enable
@@ -35,187 +35,150 @@ import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class CDIOSGiAnnotatedType<T> implements AnnotatedType<T>
-{
-   private static Logger logger = LoggerFactory.getLogger(
-           CDIOSGiAnnotatedType.class);
+public class CDIOSGiAnnotatedType<T> implements AnnotatedType<T> {
+    private static Logger logger = LoggerFactory.getLogger(
+            CDIOSGiAnnotatedType.class);
 
-   AnnotatedType<T> annotatedType;
+    AnnotatedType<T> annotatedType;
 
-   Set<AnnotatedConstructor<T>> constructors =
-                                new HashSet<AnnotatedConstructor<T>>();
+    Set<AnnotatedConstructor<T>> constructors =
+            new HashSet<AnnotatedConstructor<T>>();
 
-   Set<AnnotatedMethod<? super T>> methods =
-                                   new HashSet<AnnotatedMethod<? super T>>();
+    Set<AnnotatedMethod<? super T>> methods =
+            new HashSet<AnnotatedMethod<? super T>>();
 
-   Set<AnnotatedField<? super T>> fields =
-                                  new HashSet<AnnotatedField<? super T>>();
+    Set<AnnotatedField<? super T>> fields =
+            new HashSet<AnnotatedField<? super T>>();
 
-   public CDIOSGiAnnotatedType(AnnotatedType<T> annotatedType) throws Exception
-   {
-      logger.debug("Creation of a new CDIOSGiAnnotatedType wrapping {}",
-                   annotatedType);
-      this.annotatedType = annotatedType;
-      process();
-   }
+    public CDIOSGiAnnotatedType(AnnotatedType<T> annotatedType) throws Exception {
+        logger.debug("Creation of a new CDIOSGiAnnotatedType wrapping {}",
+                annotatedType);
+        this.annotatedType = annotatedType;
+        process();
+    }
 
-   private void process() throws Exception
-   {
-      if (getJavaClass().getAnnotation(Filter.class) != null)
-      {
-         StringBuilder msg = new StringBuilder();
-         msg.append("Filter qualifier: ")
-                 .append(getAnnotation(Filter.class))
-                 .append(", does not apply to bean class (")
-                 .append(getBaseType())
-                 .append(')');
-         logger.error(msg.toString());
-         throw new Exception(msg.toString());
-      }
-      for (Annotation annotation : getJavaClass().getAnnotations())
-      {
-         if (annotation.annotationType().isAnnotationPresent(Filter.class))
-         {
+    private void process() throws Exception {
+        if (getJavaClass().getAnnotation(Filter.class) != null) {
             StringBuilder msg = new StringBuilder();
-            msg.append("Filter stereotype: ")
-                    .append(annotation)
+            msg.append("Filter qualifier: ")
+                    .append(getAnnotation(Filter.class))
                     .append(", does not apply to bean class (")
                     .append(getBaseType())
                     .append(')');
             logger.error(msg.toString());
             throw new Exception(msg.toString());
-         }
-      }
-      for (AnnotatedConstructor<T> constructor : annotatedType.getConstructors())
-      {
-         logger.trace("Processing constructor {}", constructor);
-         if (isCDIOSGiConstructor(constructor))
-         {
-            constructors.add(new CDIOSGiAnnotatedConstructor<T>(constructor));
-         }
-         else
-         {
-            constructors.add(constructor);
-         }
-      }
-      for (AnnotatedMethod<? super T> method : annotatedType.getMethods())
-      {
-         logger.trace("Processing method {}", method);
-         if (isCDIOSGiMethod(method))
-         {
-            methods.add(new CDIOSGiAnnotatedMethod<T>(method));
-         }
-         else
-         {
-            methods.add(method);
-         }
-      }
-      for (AnnotatedField<? super T> field : annotatedType.getFields())
-      {
-         logger.trace("Processing field {}", field);
-         if (isCDIOSGiField(field))
-         {
-            fields.add(new CDIOSGiAnnotatedField<T>(field));
-         }
-         else
-         {
-            fields.add(field);
-         }
-      }
-   }
-
-   @Override
-   public Class getJavaClass()
-   {
-      return annotatedType.getJavaClass();
-   }
-
-   @Override
-   public Set<AnnotatedConstructor<T>> getConstructors()
-   {
-      return constructors;
-   }
-
-   @Override
-   public Set<AnnotatedMethod<? super T>> getMethods()
-   {
-      return methods;
-   }
-
-   @Override
-   public Set<AnnotatedField<? super T>> getFields()
-   {
-      return fields;
-   }
-
-   @Override
-   public Type getBaseType()
-   {
-      return annotatedType.getBaseType();
-   }
-
-   @Override
-   public Set<Type> getTypeClosure()
-   {
-      return annotatedType.getTypeClosure();
-   }
-
-   @Override
-   public <T extends Annotation> T getAnnotation(Class<T> annotationType)
-   {
-      return annotationType.getAnnotation(annotationType);
-   }
-
-   @Override
-   public Set<Annotation> getAnnotations()
-   {
-      return annotatedType.getAnnotations();
-   }
-
-   @Override
-   public boolean isAnnotationPresent(Class<? extends Annotation> annotationType)
-   {
-      return annotatedType.isAnnotationPresent(annotationType);
-   }
-
-   private boolean isCDIOSGiField(AnnotatedField<? super T> field)
-   {
-      if (field.isAnnotationPresent(Inject.class) && field.isAnnotationPresent(
-              OSGiService.class))
-      {
-         return true;
-      }
-      return false;
-   }
-
-   private boolean isCDIOSGiMethod(AnnotatedMethod<? super T> method)
-   {
-      if (method.isAnnotationPresent(Inject.class))
-      {
-         for (AnnotatedParameter parameter : method.getParameters())
-         {
-            if (parameter.isAnnotationPresent(OSGiService.class))
-            {
-               return true;
+        }
+        for (Annotation annotation : getJavaClass().getAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(Filter.class)) {
+                StringBuilder msg = new StringBuilder();
+                msg.append("Filter stereotype: ")
+                        .append(annotation)
+                        .append(", does not apply to bean class (")
+                        .append(getBaseType())
+                        .append(')');
+                logger.error(msg.toString());
+                throw new Exception(msg.toString());
             }
-         }
-      }
-      return false;
-   }
-
-   private boolean isCDIOSGiConstructor(AnnotatedConstructor<T> constructor)
-   {
-      if (constructor.isAnnotationPresent(Inject.class))
-      {
-         for (AnnotatedParameter parameter : constructor.getParameters())
-         {
-            if (parameter.isAnnotationPresent(OSGiService.class))
-            {
-               return true;
+        }
+        for (AnnotatedConstructor<T> constructor : annotatedType.getConstructors()) {
+            logger.trace("Processing constructor {}", constructor);
+            if (isCDIOSGiConstructor(constructor)) {
+                constructors.add(new CDIOSGiAnnotatedConstructor<T>(constructor));
+            } else {
+                constructors.add(constructor);
             }
-         }
-      }
-      return false;
-   }
+        }
+        for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
+            logger.trace("Processing method {}", method);
+            if (isCDIOSGiMethod(method)) {
+                methods.add(new CDIOSGiAnnotatedMethod<T>(method));
+            } else {
+                methods.add(method);
+            }
+        }
+        for (AnnotatedField<? super T> field : annotatedType.getFields()) {
+            logger.trace("Processing field {}", field);
+            if (isCDIOSGiField(field)) {
+                fields.add(new CDIOSGiAnnotatedField<T>(field));
+            } else {
+                fields.add(field);
+            }
+        }
+    }
+
+    @Override
+    public Class getJavaClass() {
+        return annotatedType.getJavaClass();
+    }
+
+    @Override
+    public Set<AnnotatedConstructor<T>> getConstructors() {
+        return constructors;
+    }
+
+    @Override
+    public Set<AnnotatedMethod<? super T>> getMethods() {
+        return methods;
+    }
+
+    @Override
+    public Set<AnnotatedField<? super T>> getFields() {
+        return fields;
+    }
+
+    @Override
+    public Type getBaseType() {
+        return annotatedType.getBaseType();
+    }
+
+    @Override
+    public Set<Type> getTypeClosure() {
+        return annotatedType.getTypeClosure();
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+        return annotationType.getAnnotation(annotationType);
+    }
+
+    @Override
+    public Set<Annotation> getAnnotations() {
+        return annotatedType.getAnnotations();
+    }
+
+    @Override
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return annotatedType.isAnnotationPresent(annotationType);
+    }
+
+    private boolean isCDIOSGiField(AnnotatedField<? super T> field) {
+        if (field.isAnnotationPresent(Inject.class) && field.isAnnotationPresent(
+                OSGiService.class)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isCDIOSGiMethod(AnnotatedMethod<? super T> method) {
+        if (method.isAnnotationPresent(Inject.class)) {
+            for (AnnotatedParameter parameter : method.getParameters()) {
+                if (parameter.isAnnotationPresent(OSGiService.class)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isCDIOSGiConstructor(AnnotatedConstructor<T> constructor) {
+        if (constructor.isAnnotationPresent(Inject.class)) {
+            for (AnnotatedParameter parameter : constructor.getParameters()) {
+                if (parameter.isAnnotationPresent(OSGiService.class)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

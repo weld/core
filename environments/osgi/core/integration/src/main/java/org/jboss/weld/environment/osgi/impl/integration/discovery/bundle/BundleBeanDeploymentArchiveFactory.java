@@ -26,7 +26,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,163 +43,134 @@ import java.util.zip.ZipInputStream;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class BundleBeanDeploymentArchiveFactory
-{
-   private Logger logger = LoggerFactory.getLogger(
-           BundleBeanDeploymentArchiveFactory.class);
+public class BundleBeanDeploymentArchiveFactory {
+    private Logger logger = LoggerFactory.getLogger(
+            BundleBeanDeploymentArchiveFactory.class);
 
-   private Set<String> discoveredClasses = new HashSet<String>();
+    private Set<String> discoveredClasses = new HashSet<String>();
 
-   private List<URL> discoveredBeanXmlUrls = new ArrayList<URL>();
+    private List<URL> discoveredBeanXmlUrls = new ArrayList<URL>();
 
-   private Bundle bundle = null;
+    private Bundle bundle = null;
 
-   public BeanDeploymentArchive scan(Bundle bundle, Bootstrap bootstrap)
-   {
-      logger.debug("Scanning bundle {}", bundle);
+    public BeanDeploymentArchive scan(Bundle bundle, Bootstrap bootstrap) {
+        logger.debug("Scanning bundle {}", bundle);
 
-      this.bundle = bundle;
-      discoveredBeanXmlUrls.clear();
-      discoveredClasses.clear();
+        this.bundle = bundle;
+        discoveredBeanXmlUrls.clear();
+        discoveredClasses.clear();
 
-      Enumeration beansXmlMarkers = bundle.findEntries("/", "beans.xml", true);
-      Enumeration innerJars = bundle.findEntries("/", "*.jar", true);
-      Enumeration innerZips = bundle.findEntries("/", "*.zip", true);
+        Enumeration beansXmlMarkers = bundle.findEntries("/", "beans.xml", true);
+        Enumeration innerJars = bundle.findEntries("/", "*.jar", true);
+        Enumeration innerZips = bundle.findEntries("/", "*.zip", true);
 
-      if (beansXmlMarkers != null)
-      {
-         scanRoot(beansXmlMarkers);
-      }
-      if (innerZips != null)
-      {
-         while (innerZips.hasMoreElements())
-         {
-            scanZip((URL) innerZips.nextElement());
-         }
-      }
-      if (innerJars != null)
-      {
-         while (innerJars.hasMoreElements())
-         {
-            scanZip((URL) innerJars.nextElement());
-         }
-      }
+        if (beansXmlMarkers != null) {
+            scanRoot(beansXmlMarkers);
+        }
+        if (innerZips != null) {
+            while (innerZips.hasMoreElements()) {
+                scanZip((URL) innerZips.nextElement());
+            }
+        }
+        if (innerJars != null) {
+            while (innerJars.hasMoreElements()) {
+                scanZip((URL) innerJars.nextElement());
+            }
+        }
 
-      if (discoveredBeanXmlUrls.size() < 1)
-      {
-         logger.debug("No beans.xml file found for bundle {}", bundle);
-         return null;
-      }
+        if (discoveredBeanXmlUrls.size() < 1) {
+            logger.debug("No beans.xml file found for bundle {}", bundle);
+            return null;
+        }
 
-      logger.debug("Creation of a BundleBeanDeploymentArchive for bundle {}",
-                   bundle);
-      BundleBeanDeploymentArchive archive =
-                                  new BundleBeanDeploymentArchive("bundle-bean-deployment-archive-"
-                                                                  + bundle.getBundleId());
-      archive.setBeansXml(bootstrap.parse(discoveredBeanXmlUrls));
-      archive.setBeanClasses(discoveredClasses);
+        logger.debug("Creation of a BundleBeanDeploymentArchive for bundle {}",
+                bundle);
+        BundleBeanDeploymentArchive archive =
+                new BundleBeanDeploymentArchive("bundle-bean-deployment-archive-"
+                        + bundle.getBundleId());
+        archive.setBeansXml(bootstrap.parse(discoveredBeanXmlUrls));
+        archive.setBeanClasses(discoveredClasses);
 
-      return archive;
-   }
+        return archive;
+    }
 
-   private void scanZip(URL zipUrl)
-   {
-      ZipInputStream zipInputStream = null;
-      ZipEntry zipEntry = null;
-      String zipPath = zipUrl.getPath();
-      String zipEntryPath = "";
-      Set<String> zipClasses = new HashSet<String>();
-      List<URL> zipBeanXmlUrls = new ArrayList<URL>();
-      try
-      {
-         logger.trace("Scanning zip file {} for bean classes", zipPath);
-         zipInputStream = new ZipInputStream(zipUrl.openStream());
-         zipEntry = zipInputStream.getNextEntry();
-         while (zipEntry != null)
-         {
-            zipEntryPath = "/" + zipEntry.getName();
-            if (zipEntryPath.toLowerCase().endsWith(".zip")
-                || zipEntryPath.toLowerCase().endsWith(".jar"))
-            {
-               logger.trace("Found an inner zip file {} within zip file {}",
+    private void scanZip(URL zipUrl) {
+        ZipInputStream zipInputStream = null;
+        ZipEntry zipEntry = null;
+        String zipPath = zipUrl.getPath();
+        String zipEntryPath = "";
+        Set<String> zipClasses = new HashSet<String>();
+        List<URL> zipBeanXmlUrls = new ArrayList<URL>();
+        try {
+            logger.trace("Scanning zip file {} for bean classes", zipPath);
+            zipInputStream = new ZipInputStream(zipUrl.openStream());
+            zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                zipEntryPath = "/" + zipEntry.getName();
+                if (zipEntryPath.toLowerCase().endsWith(".zip")
+                        || zipEntryPath.toLowerCase().endsWith(".jar")) {
+                    logger.trace("Found an inner zip file {} within zip file {}",
                             zipEntryPath,
                             zipPath);
-               scanZip(new URL("jar:" + zipUrl + "!" + zipEntryPath));
-            }
-            else if (zipEntryPath.toLowerCase().endsWith(".class"))
-            {
-               String clazz = zipEntryPath.substring(1).
-                       replace("/", ".").
-                       replace(".class", "");
-               logger.trace("Found a new bean class: {}", clazz);
-               zipClasses.add(clazz);
-            }
-            else if (zipEntryPath.toLowerCase().endsWith("beans.xml"))
-            {
-               if (!zipEntryPath.equalsIgnoreCase("/meta-inf/beans.xml"))
-               {
-                  logger.warn("Invalid location for beans.xml file: {}",
-                              zipEntryPath);
-               }
-               else
-               {
-                  logger.trace("Found a new beans.xml file: {}",
-                               zipEntryPath);
-                  zipBeanXmlUrls.add(new URL("jar:" + zipUrl + "!"
-                                             + zipEntryPath));
-               }
+                    scanZip(new URL("jar:" + zipUrl + "!" + zipEntryPath));
+                } else if (zipEntryPath.toLowerCase().endsWith(".class")) {
+                    String clazz = zipEntryPath.substring(1).
+                            replace("/", ".").
+                            replace(".class", "");
+                    logger.trace("Found a new bean class: {}", clazz);
+                    zipClasses.add(clazz);
+                } else if (zipEntryPath.toLowerCase().endsWith("beans.xml")) {
+                    if (!zipEntryPath.equalsIgnoreCase("/meta-inf/beans.xml")) {
+                        logger.warn("Invalid location for beans.xml file: {}",
+                                zipEntryPath);
+                    } else {
+                        logger.trace("Found a new beans.xml file: {}",
+                                zipEntryPath);
+                        zipBeanXmlUrls.add(new URL("jar:" + zipUrl + "!"
+                                + zipEntryPath));
+                    }
 
+                }
+                zipEntry = zipInputStream.getNextEntry();
             }
-            zipEntry = zipInputStream.getNextEntry();
-         }
-         if (zipBeanXmlUrls.size() > 1)
-         {
-            discoveredBeanXmlUrls.addAll(zipBeanXmlUrls);
-            discoveredClasses.addAll(zipClasses);
-         }
-      }
-      catch(MalformedURLException e)
-      {
-         logger.error("Malformed URL", e);
-         e.printStackTrace();
-      }
-      catch(IOException e)
-      {
-         logger.warn("The zip file (or one of its entries) {} "
-                     + "was inaccessible: {}",
-                     zipUrl,
-                     e);
-      }
-   }
+            if (zipBeanXmlUrls.size() > 1) {
+                discoveredBeanXmlUrls.addAll(zipBeanXmlUrls);
+                discoveredClasses.addAll(zipClasses);
+            }
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URL", e);
+            e.printStackTrace();
+        } catch (IOException e) {
+            logger.warn("The zip file (or one of its entries) {} "
+                    + "was inaccessible: {}",
+                    zipUrl,
+                    e);
+        }
+    }
 
-   private void scanRoot(Enumeration beansXmlMarkers)
-   {
-      while (beansXmlMarkers.hasMoreElements())
-      {
-         URL beansXmlUrl = (URL) beansXmlMarkers.nextElement();
-         String beansXmlPath = beansXmlUrl.getPath();
-         logger.trace("Found a new beans.xml file: {}", beansXmlPath);
-         if (!beansXmlPath.equalsIgnoreCase("/meta-inf/beans.xml"))
-         {
-            logger.warn("Invalid location for beans.xml file: {}", beansXmlPath);
-            continue;
-         }
-         discoveredBeanXmlUrls.add(beansXmlUrl);
-         logger.trace("Scanning bundle {} for bean classes", bundle);
-         Enumeration beanClasses = bundle.findEntries("/", "*.class", true);
-         if (beanClasses != null)
-         {
-            while (beanClasses.hasMoreElements())
-            {
-               URL url = (URL) beanClasses.nextElement();
-               String clazz = url.getFile().substring(1).
-                       replace("/", ".").
-                       replace(".class", "");
-               logger.trace("Found a new bean class: {}", clazz);
-               discoveredClasses.add(clazz);
+    private void scanRoot(Enumeration beansXmlMarkers) {
+        while (beansXmlMarkers.hasMoreElements()) {
+            URL beansXmlUrl = (URL) beansXmlMarkers.nextElement();
+            String beansXmlPath = beansXmlUrl.getPath();
+            logger.trace("Found a new beans.xml file: {}", beansXmlPath);
+            if (!beansXmlPath.equalsIgnoreCase("/meta-inf/beans.xml")) {
+                logger.warn("Invalid location for beans.xml file: {}", beansXmlPath);
+                continue;
             }
-         }
-      }
-   }
+            discoveredBeanXmlUrls.add(beansXmlUrl);
+            logger.trace("Scanning bundle {} for bean classes", bundle);
+            Enumeration beanClasses = bundle.findEntries("/", "*.class", true);
+            if (beanClasses != null) {
+                while (beanClasses.hasMoreElements()) {
+                    URL url = (URL) beanClasses.nextElement();
+                    String clazz = url.getFile().substring(1).
+                            replace("/", ".").
+                            replace(".class", "");
+                    logger.trace("Found a new bean class: {}", clazz);
+                    discoveredClasses.add(clazz);
+                }
+            }
+        }
+    }
 
 }

@@ -20,6 +20,7 @@ package org.jboss.weld.environment.osgi.impl.integration;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.impl.integration.discovery.bundle.BundleBeanDeploymentArchiveFactory;
 import org.jboss.weld.environment.osgi.impl.integration.discovery.bundle.BundleDeployment;
 import org.jboss.weld.manager.api.WeldManager;
@@ -30,7 +31,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import java.util.Collection;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 
 /**
  * Weld container used for bean bundles by
@@ -81,11 +81,11 @@ public class Weld {
             bootstrap = new WeldBootstrap();
             BundleDeployment deployment = createDeployment(bootstrap);
             BeanDeploymentArchive beanDeploymentArchive =
-                     deployment.getBeanDeploymentArchive();
+                    deployment.getBeanDeploymentArchive();
             if (beanDeploymentArchive == null) {
                 logger.debug("Unable to generate a BeanDeploymentArchive "
-                             + "for bundle {}",
-                             bundle);
+                        + "for bundle {}",
+                        bundle);
                 return started;
             }
             logger.info("Starting Weld instance for bundle {}", bundle);
@@ -102,9 +102,9 @@ public class Weld {
             started = true;
         } catch (Throwable t) {
             logger.error("Initialization of Weld instance for bundle {}"
-                         + " caused an error: {}",
-                         bundle,
-                         t);
+                    + " caused an error: {}",
+                    bundle,
+                    t);
             t.printStackTrace();
         } finally {
             if (!set) {
@@ -129,16 +129,16 @@ public class Weld {
                         bootstrap.shutdown();
                     } catch (Throwable t) {
                         logger.error("Shutdown of Weld instance for bundle {} "
-                                     + "caused an error: {}",
-                                     bundle,
-                                     t);
+                                + "caused an error: {}",
+                                bundle,
+                                t);
                     }
                     started = false;
                     return true;
                 } else {
                     logger.warn("Skipping spurious call to shutdown"
-                                + " Weld instance for bundle {}",
-                                bundle);
+                            + " Weld instance for bundle {}",
+                            bundle);
                     return false;
                 }
             }

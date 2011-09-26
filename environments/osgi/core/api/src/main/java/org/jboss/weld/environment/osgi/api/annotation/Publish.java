@@ -49,28 +49,22 @@ import static java.lang.annotation.ElementType.TYPE;
  * @see org.jboss.weld.environment.osgi.api.Service
  * @see org.jboss.weld.environment.osgi.api.ServiceRegistry
  */
-@Target(
-{
-   TYPE
-})
+@Target({TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Publish
-{
-   /**
-    * The contracts the annotated class fulfills.
-    *
-    * @return the contracts of the annotated implementation as an array of interfaces.
-    */
-   public Class[] contracts() default
-   {
-   };
+public @interface Publish {
+    /**
+     * The contracts the annotated class fulfills.
+     *
+     * @return the contracts of the annotated implementation as an array of interfaces.
+     */
+    Class[] contracts() default {};
 
-   /**
-    * The rank of the service to find the best available service on lookups.
-    *
-    * @return the rank of the service. Default is 0.
-    */
-   public int rank() default 0;
+    /**
+     * The rank of the service to find the best available service on lookups.
+     *
+     * @return the rank of the service. Default is 0.
+     */
+    int rank() default 0;
 
 }

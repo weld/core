@@ -22,7 +22,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
  * <p>This annotation qualifies an injection point that represents a required
@@ -37,12 +39,11 @@ import static java.lang.annotation.ElementType.*;
  * @see org.jboss.weld.environment.osgi.api.ServiceRegistry
  */
 @Target(
-{
-   METHOD, PARAMETER, FIELD
-})
+        {
+                METHOD, PARAMETER, FIELD
+        })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface Required
-{
+public @interface Required {
 }

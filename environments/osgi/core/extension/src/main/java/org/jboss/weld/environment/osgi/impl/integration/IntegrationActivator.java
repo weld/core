@@ -17,10 +17,13 @@
 
 package org.jboss.weld.environment.osgi.impl.integration;
 
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
+import org.jboss.weld.environment.osgi.api.events.Invalid;
 import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
-import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.spi.CDIContainer;
+import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.osgi.framework.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +36,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.jboss.weld.environment.osgi.api.BundleState;
-import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
-import org.jboss.weld.environment.osgi.api.events.Invalid;
-import org.jboss.weld.environment.osgi.spi.CDIContainer;
-import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 
 /**
  * This is the activator of the CDI-OSGi extension part. It starts with the extension bundle.
@@ -173,9 +171,9 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             holder.getInstance().select(ContainerObserver.class).get().setCurrentContainer(holder);
             // registering publishable services
             ServicePublisher publisher = new ServicePublisher(holder.getBeanClasses(),
-                                                              bundle,
-                                                              holder.getInstance(),
-                                                              factory().getContractBlacklist());
+                    bundle,
+                    holder.getInstance(),
+                    factory().getContractBlacklist());
             publisher.registerAndLaunchComponents();
             // fire container start
             holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));
@@ -191,7 +189,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             }
             holder.setRegistrations(regs);
             factory().addContainer(holder);
-            managed.put(bundle.getBundleId(),holder);
+            managed.put(bundle.getBundleId(), holder);
             logger.debug("Bundle {} is managed", bundle.getSymbolicName());
         } else {
             logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
@@ -212,15 +210,16 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                 try {
                     logger.trace("Firing the BundleState.INVALID event");
                     holder.getBeanManager().fireEvent(new Invalid());
-                    logger.trace("The container {} has been unregistered",holder);
+                    logger.trace("The container {} has been unregistered", holder);
                     logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
                     // here singleton issue ?
                     holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
-                } catch (Throwable t) {}
+                } catch (Throwable t) {
+                }
                 logger.trace("Shutting down the container {}", holder);
                 //holder.shutdown();
                 managed.remove(bundle.getBundleId());
-                if(started.get()) {
+                if (started.get()) {
                     if (factoryRef != null) {
                         factory().removeContainer(bundle);
                     }

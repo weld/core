@@ -24,3 +24,4 @@ examples/jsf/permalink/src/main/webapp/META-INF/MANIFEST.MF
 tests-arquillian/src/test/resources/org/jboss/weld/tests/contexts/conversation/exceptionInPhaseListener/.faces-config.xml.jsfdia
 .externalToolBuilders
 bin
+nb-configuration.xml

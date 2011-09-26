@@ -17,22 +17,13 @@
 
 package org.jboss.weld.environment.osgi.impl.integration;
 
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
-import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
+import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.jboss.weld.environment.osgi.spi.EmbeddedCDIContainer;
@@ -44,6 +35,15 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class EmbeddedContainer {
 
@@ -212,10 +212,10 @@ public class EmbeddedContainer {
             for (Class<?> clazz : classes) {
                 try {
                     broadcaster.select(eventClass,
-                       filteredServicesQualifiers(event,
-                          new ExtensionActivator.SpecificationAnnotation(clazz),
-                          instance))
-                               .fire(event);
+                            filteredServicesQualifiers(event,
+                                    new ExtensionActivator.SpecificationAnnotation(clazz),
+                                    instance))
+                            .fire(event);
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
@@ -246,9 +246,9 @@ public class EmbeddedContainer {
         private void fireAllEvent(AbstractBundleEvent event, Event broadcaster) {
             try {
                 broadcaster.select(event.getClass(),
-                   new ExtensionActivator.BundleNameAnnotation(event.getSymbolicName()),
-                   new ExtensionActivator.BundleVersionAnnotation(event.getVersion().toString()))
-                       .fire(event);
+                        new ExtensionActivator.BundleNameAnnotation(event.getSymbolicName()),
+                        new ExtensionActivator.BundleVersionAnnotation(event.getVersion().toString()))
+                        .fire(event);
             } catch (Throwable t) {
                 t.printStackTrace();
             }

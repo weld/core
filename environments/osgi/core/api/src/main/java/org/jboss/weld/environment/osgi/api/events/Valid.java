@@ -36,9 +36,8 @@ package org.jboss.weld.environment.osgi.api.events;
  * @see org.osgi.cdi.api.extension.BundleState
  * @see Invalid
  */
-public class Valid
-{
-   // TODO : find a better name
-   // as @ConsistantDependencies
-   // or make it as a start/stop event for container only when deps. are OK
+public class Valid {
+    // TODO : find a better name
+    // as @ConsistantDependencies
+    // or make it as a start/stop event for container only when deps. are OK
 }

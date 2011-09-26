@@ -16,15 +16,14 @@
  */
 package org.jboss.weld.environment.osgi.spi;
 
-import java.util.Collection;
+import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceRegistration;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
-
-import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceRegistration;
+import java.util.Collection;
 
 /**
  * <p>This interface represents an iterable list of CDI containers used by
@@ -69,98 +68,97 @@ import org.osgi.framework.ServiceRegistration;
  * @see org.osgi.framework.ServiceRegistration
  * @see InterBundleEvent
  */
-public interface CDIContainer extends EmbeddedCDIContainer
-{
-   /**
-    * Initialize the CDI container.
-    *
-    * @return true if the CDI container is initialized, false if anything goes
-    * wrong.
-    */
-   boolean initialize();
+public interface CDIContainer extends EmbeddedCDIContainer {
+    /**
+     * Initialize the CDI container.
+     *
+     * @return true if the CDI container is initialized, false if anything goes
+     *         wrong.
+     */
+    boolean initialize();
 
-   /**
-    * Shutdown the CDI container.
-    *
-    * @return true if the CDI container is off, false if anything goes wrong.
-    */
-   boolean shutdown();
+    /**
+     * Shutdown the CDI container.
+     *
+     * @return true if the CDI container is off, false if anything goes wrong.
+     */
+    boolean shutdown();
 
-   /**
-    * Test if the CDI container is on and initialized.
-    *
-    * @return true if the CDI container is started, false otherwise.
-    */
-   boolean isStarted();
+    /**
+     * Test if the CDI container is on and initialized.
+     *
+     * @return true if the CDI container is started, false otherwise.
+     */
+    boolean isStarted();
 
-   /**
-    * Fire an {@link InterBundleEvent} from the
-    * {@link org.osgi.framework.Bundle} of this {@link CDIContainer}.
-    *
-    * @param event the {@link InterBundleEvent} to fire.
-    */
-   void fire(InterBundleEvent event);
+    /**
+     * Fire an {@link InterBundleEvent} from the
+     * {@link org.osgi.framework.Bundle} of this {@link CDIContainer}.
+     *
+     * @param event the {@link InterBundleEvent} to fire.
+     */
+    void fire(InterBundleEvent event);
 
-   /**
-    * Obtain the {@link org.osgi.framework.Bundle} corresponding to this
-    * {@link CDIContainer}.
-    *
-    * @return the {@link org.osgi.framework.Bundle} corresponding to this
-    * {@link CDIContainer}.
-    */
-   Bundle getBundle();
+    /**
+     * Obtain the {@link org.osgi.framework.Bundle} corresponding to this
+     * {@link CDIContainer}.
+     *
+     * @return the {@link org.osgi.framework.Bundle} corresponding to this
+     *         {@link CDIContainer}.
+     */
+    Bundle getBundle();
 
-   /**
-    * Obtain the {@link javax.enterprise.inject.spi.BeanManager} of this
-    * {@link CDIContainer}.
-    *
-    * @return the {@link javax.enterprise.inject.spi.BeanManager} of this
-    * {@link CDIContainer}.
-    */
-   BeanManager getBeanManager();
+    /**
+     * Obtain the {@link javax.enterprise.inject.spi.BeanManager} of this
+     * {@link CDIContainer}.
+     *
+     * @return the {@link javax.enterprise.inject.spi.BeanManager} of this
+     *         {@link CDIContainer}.
+     */
+    BeanManager getBeanManager();
 
-   /**
-    * Obtain the {@link javax.enterprise.event.Event} of this
-    * {@link CDIContainer}.
-    *
-    * @return the {@link javax.enterprise.event.Event} of this
-    * {@link CDIContainer}.
-    */
-   Event getEvent();
+    /**
+     * Obtain the {@link javax.enterprise.event.Event} of this
+     * {@link CDIContainer}.
+     *
+     * @return the {@link javax.enterprise.event.Event} of this
+     *         {@link CDIContainer}.
+     */
+    Event getEvent();
 
-   /**
-    * Obtain the managed bean {@link javax.enterprise.inject.Instance} of this
-    * {@link CDIContainer}.
-    *
-    * @return the managed bean {@link javax.enterprise.inject.Instance} of this
-    * {@link CDIContainer}.
-    */
-   Instance<Object> getInstance();
+    /**
+     * Obtain the managed bean {@link javax.enterprise.inject.Instance} of this
+     * {@link CDIContainer}.
+     *
+     * @return the managed bean {@link javax.enterprise.inject.Instance} of this
+     *         {@link CDIContainer}.
+     */
+    Instance<Object> getInstance();
 
-   /**
-    * Obtain the managed bean class of this {@link CDIContainer}.
-    *
-    * @return the managed bean class of this {@link CDIContainer} as a
-    * {@link java.util.Collection} of {@link String}.
-    */
-   Collection<String> getBeanClasses();
+    /**
+     * Obtain the managed bean class of this {@link CDIContainer}.
+     *
+     * @return the managed bean class of this {@link CDIContainer} as a
+     *         {@link java.util.Collection} of {@link String}.
+     */
+    Collection<String> getBeanClasses();
 
-   /**
-    * Obtain the {@link org.osgi.framework.ServiceRegistration}s of this
-    * {@link CDIContainer}.
-    *
-    * @return the {@link org.osgi.framework.ServiceRegistration}s of this
-    * {@link CDIContainer} as a {@link java.util.Collection}.
-    */
-   Collection<ServiceRegistration> getRegistrations();
+    /**
+     * Obtain the {@link org.osgi.framework.ServiceRegistration}s of this
+     * {@link CDIContainer}.
+     *
+     * @return the {@link org.osgi.framework.ServiceRegistration}s of this
+     *         {@link CDIContainer} as a {@link java.util.Collection}.
+     */
+    Collection<ServiceRegistration> getRegistrations();
 
-   /**
-    * Set the {@link org.osgi.framework.ServiceRegistration}s for this
-    * {@link CDIContainer}.
-    *
-    * @param registrations the {@link org.osgi.framework.ServiceRegistration}s
-    * for this {@link CDIContainer} as a {@link java.util.Collection}.
-    */
-   void setRegistrations(Collection<ServiceRegistration> registrations);
+    /**
+     * Set the {@link org.osgi.framework.ServiceRegistration}s for this
+     * {@link CDIContainer}.
+     *
+     * @param registrations the {@link org.osgi.framework.ServiceRegistration}s
+     *                      for this {@link CDIContainer} as a {@link java.util.Collection}.
+     */
+    void setRegistrations(Collection<ServiceRegistration> registrations);
 
 }

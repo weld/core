@@ -19,12 +19,12 @@ package org.jboss.weld.environment.osgi.impl.integration;
 
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 
 /**
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
@@ -63,8 +63,8 @@ public class BundleSingletonProvider extends SingletonProvider {
                 for (StackTraceElement element : t.getStackTrace()) {
                     String className = element.getClassName();
                     if (!className.startsWith("org.jboss.weld")
-                        && !className.startsWith("java")
-                        && !className.startsWith("org.apache.felix.framework")) {
+                            && !className.startsWith("java")
+                            && !className.startsWith("org.apache.felix.framework")) {
 
                         if (!classes.containsKey(className)) {
                             //System.out.println("\u001b[1;31mAnalyzing stacktrace for class " + clazz.getName() + ": \u001b[m");
@@ -72,7 +72,7 @@ public class BundleSingletonProvider extends SingletonProvider {
                             Class<?> maybe = null;
                             try {
                                 maybe = this.getClass().getClassLoader()
-                                .loadClass(className);
+                                        .loadClass(className);
                             } catch (ClassNotFoundException ex) {
                                 //System.out.println("CNFE " + element.getClassName());
                                 // Ignore
@@ -101,8 +101,8 @@ public class BundleSingletonProvider extends SingletonProvider {
                     }
                 }
                 throw new IllegalStateException("Singleton is not set for "
-                                                + "bundle "
-                                                + getId());
+                        + "bundle "
+                        + getId());
             }
             return store.get(getId());
         }

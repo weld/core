@@ -25,9 +25,8 @@ package org.jboss.weld.environment.osgi.api.events;
  * @see AbstractBundleContainerEvent
  * @see BundleContainerEvents
  */
-public enum BundleContainerEventType
-{
-   INITIALIZED,
-   SHUTDOWN
+public enum BundleContainerEventType {
+    INITIALIZED,
+    SHUTDOWN
 
 }

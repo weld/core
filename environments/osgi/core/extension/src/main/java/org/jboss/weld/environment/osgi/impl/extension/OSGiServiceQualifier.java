@@ -16,24 +16,22 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
-import javax.enterprise.util.AnnotationLiteral;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
+
+import javax.enterprise.util.AnnotationLiteral;
 
 public class OSGiServiceQualifier
         extends AnnotationLiteral<OSGiService>
-        implements OSGiService
-{
-   private final int timeout;
+        implements OSGiService {
+    private final int timeout;
 
-   public OSGiServiceQualifier(int timeout)
-   {
-      this.timeout = timeout;
-   }
+    public OSGiServiceQualifier(int timeout) {
+        this.timeout = timeout;
+    }
 
-   @Override
-   public int value()
-   {
-      return timeout;
-   }
+    @Override
+    public int value() {
+        return timeout;
+    }
 
 }

@@ -27,9 +27,11 @@ import org.osgi.framework.Bundle;
 
 import javax.enterprise.inject.spi.Extension;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implements the basic requirements of a {@link Deployment}. Provides a service
@@ -41,77 +43,66 @@ import java.util.*;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public abstract class AbstractWeldOSGiDeployment implements Deployment
-{
-   private final ServiceRegistry serviceRegistry;
+public abstract class AbstractWeldOSGiDeployment implements Deployment {
+    private final ServiceRegistry serviceRegistry;
 
-   private final Iterable<Metadata<Extension>> extensions;
+    private final Iterable<Metadata<Extension>> extensions;
 
-   private final Bundle bundle;
+    private final Bundle bundle;
 
-   public AbstractWeldOSGiDeployment(Bootstrap bootstrap, Bundle bundle)
-   {
-      this.serviceRegistry = new SimpleServiceRegistry();
-      this.serviceRegistry.add(ProxyServices.class, new OSGiProxyService());
-      this.bundle = bundle;
-      // OK, Here we can install our own Extensions instances
-       this.extensions = bootstrap.loadExtensions(new BridgeClassLoader(bundle, getClass().getClassLoader()));
-   }
+    public AbstractWeldOSGiDeployment(Bootstrap bootstrap, Bundle bundle) {
+        this.serviceRegistry = new SimpleServiceRegistry();
+        this.serviceRegistry.add(ProxyServices.class, new OSGiProxyService());
+        this.bundle = bundle;
+        // OK, Here we can install our own Extensions instances
+        this.extensions = bootstrap.loadExtensions(new BridgeClassLoader(bundle, getClass().getClassLoader()));
+    }
 
-   @Override
-   public ServiceRegistry getServices()
-   {
-      return serviceRegistry;
-   }
+    @Override
+    public ServiceRegistry getServices() {
+        return serviceRegistry;
+    }
 
-   @Override
-   public Iterable<Metadata<Extension>> getExtensions()
-   {
-      return extensions;
-   }
+    @Override
+    public Iterable<Metadata<Extension>> getExtensions() {
+        return extensions;
+    }
 
-   private static class BridgeClassLoader extends ClassLoader
-   {
-      private final Bundle bundle;
+    private static class BridgeClassLoader extends ClassLoader {
+        private final Bundle bundle;
 
-      private final ClassLoader infra;
+        private final ClassLoader infra;
 
-      public BridgeClassLoader(Bundle bundle, ClassLoader infraClassLoader)
-      {
-         this.bundle = bundle;
-         this.infra = infraClassLoader;
-      }
+        public BridgeClassLoader(Bundle bundle, ClassLoader infraClassLoader) {
+            this.bundle = bundle;
+            this.infra = infraClassLoader;
+        }
 
-      @Override
-      public Class<?> loadClass(String name) throws ClassNotFoundException
-      {
-         Class<?> loadedClass = null;
-         try
-         {
-            loadedClass = bundle.loadClass(name);
-         }
-         catch(ClassNotFoundException cnfe)
-         {
-            // todo : filter on utils class only
-            loadedClass = infra.loadClass(name);
-         }
-         return loadedClass;
-      }
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            Class<?> loadedClass = null;
+            try {
+                loadedClass = bundle.loadClass(name);
+            } catch (ClassNotFoundException cnfe) {
+                // todo : filter on utils class only
+                loadedClass = infra.loadClass(name);
+            }
+            return loadedClass;
+        }
 
-      @Override
-      public Enumeration<URL> getResources(String s) throws IOException
-      {
-         Set<URL> urls = new HashSet<URL>();
-         Enumeration enumBundle = bundle.getResources(s);
-         Enumeration enumInfra = infra.getResources(s);
-         if (enumBundle != null) {
-            urls.addAll(Collections.list(enumBundle));
-         }
-         if (enumInfra != null) {
-            urls.addAll(Collections.list(enumInfra));
-         }
-         return Collections.enumeration(urls);
-      }
-   }
+        @Override
+        public Enumeration<URL> getResources(String s) throws IOException {
+            Set<URL> urls = new HashSet<URL>();
+            Enumeration enumBundle = bundle.getResources(s);
+            Enumeration enumInfra = infra.getResources(s);
+            if (enumBundle != null) {
+                urls.addAll(Collections.list(enumBundle));
+            }
+            if (enumInfra != null) {
+                urls.addAll(Collections.list(enumInfra));
+            }
+            return Collections.enumeration(urls);
+        }
+    }
 
 }

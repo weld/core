@@ -40,39 +40,38 @@ import java.util.List;
  * @see Registration
  * @see ServiceRegistration
  */
-public interface RegistrationHolder
-{
-   /**
-    * Get all service registration in this registration holder.
-    *
-    * @return the list of {@link ServiceRegistration} in this holder.
-    */
-   List<ServiceRegistration> getRegistrations();
+public interface RegistrationHolder {
+    /**
+     * Get all service registration in this registration holder.
+     *
+     * @return the list of {@link ServiceRegistration} in this holder.
+     */
+    List<ServiceRegistration> getRegistrations();
 
-   /**
-    * Add a service registration in this registration holder.
-    *
-    * @param registration the {@link ServiceRegistration} to add to this holder.
-    */
-   void addRegistration(ServiceRegistration registration);
+    /**
+     * Add a service registration in this registration holder.
+     *
+     * @param registration the {@link ServiceRegistration} to add to this holder.
+     */
+    void addRegistration(ServiceRegistration registration);
 
-   /**
-    * Remove a service registration from this registration holder.
-    *
-    * @param registration the {@link ServiceRegistration} to remove from this holder.
-    */
-   void removeRegistration(ServiceRegistration registration);
+    /**
+     * Remove a service registration from this registration holder.
+     *
+     * @param registration the {@link ServiceRegistration} to remove from this holder.
+     */
+    void removeRegistration(ServiceRegistration registration);
 
-   /**
-    * Clear this registration holder, removing all its contained {@link ServiceRegistration}s.
-    */
-   void clear();
+    /**
+     * Clear this registration holder, removing all its contained {@link ServiceRegistration}s.
+     */
+    void clear();
 
-   /**
-    * Get the number of service registrations in this registration holder.
-    *
-    * @return the number of {@link ServiceRegistration} in this holder.
-    */
-   int size();
+    /**
+     * Get the number of service registrations in this registration holder.
+     *
+     * @return the number of {@link ServiceRegistration} in this holder.
+     */
+    int size();
 
 }

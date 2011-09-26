@@ -65,48 +65,47 @@ import javax.enterprise.inject.spi.BeanManager;
  * @see org.osgi.framework.ServiceRegistration
  * @see InterBundleEvent
  */
-public interface EmbeddedCDIContainer
-{
-   /**
-    * Test if the CDI container is on and initialized.
-    *
-    * @return true if the CDI container is started, false otherwise.
-    */
-   boolean isStarted();
+public interface EmbeddedCDIContainer {
+    /**
+     * Test if the CDI container is on and initialized.
+     *
+     * @return true if the CDI container is started, false otherwise.
+     */
+    boolean isStarted();
 
-   /**
-    * Fire an {@link InterBundleEvent} from the
-    * {@link org.osgi.framework.Bundle} of this {@link EmbeddedCDIContainer}.
-    *
-    * @param event the {@link InterBundleEvent} to fire.
-    */
-   void fire(InterBundleEvent event);
+    /**
+     * Fire an {@link InterBundleEvent} from the
+     * {@link org.osgi.framework.Bundle} of this {@link EmbeddedCDIContainer}.
+     *
+     * @param event the {@link InterBundleEvent} to fire.
+     */
+    void fire(InterBundleEvent event);
 
-   /**
-    * Obtain the {@link javax.enterprise.inject.spi.BeanManager} of this
-    * {@link EmbeddedCDIContainer}.
-    *
-    * @return the {@link javax.enterprise.inject.spi.BeanManager} of this
-    * {@link EmbeddedCDIContainer}.
-    */
-   BeanManager getBeanManager();
+    /**
+     * Obtain the {@link javax.enterprise.inject.spi.BeanManager} of this
+     * {@link EmbeddedCDIContainer}.
+     *
+     * @return the {@link javax.enterprise.inject.spi.BeanManager} of this
+     *         {@link EmbeddedCDIContainer}.
+     */
+    BeanManager getBeanManager();
 
-   /**
-    * Obtain the {@link javax.enterprise.event.Event} of this
-    * {@link EmbeddedCDIContainer}.
-    *
-    * @return the {@link javax.enterprise.event.Event} of this
-    * {@link EmbeddedCDIContainer}.
-    */
-   Event getEvent();
+    /**
+     * Obtain the {@link javax.enterprise.event.Event} of this
+     * {@link EmbeddedCDIContainer}.
+     *
+     * @return the {@link javax.enterprise.event.Event} of this
+     *         {@link EmbeddedCDIContainer}.
+     */
+    Event getEvent();
 
-   /**
-    * Obtain the managed bean {@link javax.enterprise.inject.Instance} of this
-    * {@link EmbeddedCDIContainer}.
-    *
-    * @return the managed bean {@link javax.enterprise.inject.Instance} of this
-    * {@link EmbeddedCDIContainer}.
-    */
-   Instance<Object> getInstance();
+    /**
+     * Obtain the managed bean {@link javax.enterprise.inject.Instance} of this
+     * {@link EmbeddedCDIContainer}.
+     *
+     * @return the managed bean {@link javax.enterprise.inject.Instance} of this
+     *         {@link EmbeddedCDIContainer}.
+     */
+    Instance<Object> getInstance();
 
 }

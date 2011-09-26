@@ -42,52 +42,51 @@ import java.util.Set;
  * @see CDIContainer
  * @see org.osgi.framework.Bundle
  */
-public interface CDIContainerFactory
-{
-   /**
-    * Obtain the ID of the used CDI implementation.
-    *
-    * @return the ID of the used CDI implementation.
-    */
-   String getID();
+public interface CDIContainerFactory {
+    /**
+     * Obtain the ID of the used CDI implementation.
+     *
+     * @return the ID of the used CDI implementation.
+     */
+    String getID();
 
-   /**
-    * Obtain the interface black list for service publishing,
-    *
-    * @return the interface black list for service publishing as a
-    * {@link java.util.List} of {@link String}.
-    */
-   Set<String> getContractBlacklist();
+    /**
+     * Obtain the interface black list for service publishing,
+     *
+     * @return the interface black list for service publishing as a
+     *         {@link java.util.List} of {@link String}.
+     */
+    Set<String> getContractBlacklist();
 
-   /**
-    * Obtain the singleton {@link CDIContainer} for the given bundle.
-    *
-    * @param bundle the {@link org.osgi.framework.Bundle} which
-    * {@link CDIContainer} is wanted.
-    * @return the {@link CDIContainer} for the given
-    * {@link org.osgi.framework.Bundle}.
-    */
-   CDIContainer createContainer(Bundle bundle);
+    /**
+     * Obtain the singleton {@link CDIContainer} for the given bundle.
+     *
+     * @param bundle the {@link org.osgi.framework.Bundle} which
+     *               {@link CDIContainer} is wanted.
+     * @return the {@link CDIContainer} for the given
+     *         {@link org.osgi.framework.Bundle}.
+     */
+    CDIContainer createContainer(Bundle bundle);
 
-   /**
-    * Obtain the singleton {@link CDIContainer} for the given bundle.
-    *
-    * @param bundle the {@link org.osgi.framework.Bundle} which
-    * {@link CDIContainer} is wanted.
-    * @return the {@link CDIContainer} for the given
-    * {@link org.osgi.framework.Bundle}.
-    */
-   CDIContainer container(Bundle bundle);
+    /**
+     * Obtain the singleton {@link CDIContainer} for the given bundle.
+     *
+     * @param bundle the {@link org.osgi.framework.Bundle} which
+     *               {@link CDIContainer} is wanted.
+     * @return the {@link CDIContainer} for the given
+     *         {@link org.osgi.framework.Bundle}.
+     */
+    CDIContainer container(Bundle bundle);
 
-   void removeContainer(Bundle bundle);
+    void removeContainer(Bundle bundle);
 
-   void addContainer(CDIContainer container);
+    void addContainer(CDIContainer container);
 
-   /**
-    * Obtaint all {@link CDIContainer}s.
-    *
-    * @return all {@link CDIContainer}s.
-    */
-   Collection<CDIContainer> containers();
+    /**
+     * Obtaint all {@link CDIContainer}s.
+     *
+     * @return all {@link CDIContainer}s.
+     */
+    Collection<CDIContainer> containers();
 
 }

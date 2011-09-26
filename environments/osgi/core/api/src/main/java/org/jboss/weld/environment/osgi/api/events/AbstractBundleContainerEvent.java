@@ -44,35 +44,32 @@ import org.osgi.framework.BundleContext;
  * @see BundleContainerEventType
  * @see javax.enterprise.event.Observes
  */
-public abstract class AbstractBundleContainerEvent
-{
-   private BundleContext bundleContext;
+public abstract class AbstractBundleContainerEvent {
+    private BundleContext bundleContext;
 
-   /**
-    * Construct a new bundle container event for the current bundle.
-    *
-    * @param context the firing bundle context (current bundle context).
-    */
-   public AbstractBundleContainerEvent(final BundleContext context)
-   {
-      this.bundleContext = context;
-   }
+    /**
+     * Construct a new bundle container event for the current bundle.
+     *
+     * @param context the firing bundle context (current bundle context).
+     */
+    public AbstractBundleContainerEvent(final BundleContext context) {
+        this.bundleContext = context;
+    }
 
-   /**
-    * Get the firing bundle context.
-    *
-    * @return the firing {@link org.osgi.framework.BundleContext}.
-    */
-   public BundleContext getBundleContext()
-   {
-      return bundleContext;
-   }
+    /**
+     * Get the firing bundle context.
+     *
+     * @return the firing {@link org.osgi.framework.BundleContext}.
+     */
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
 
-   /**
-    * Get the bundle container event type.
-    *
-    * @return the {@link BundleContainerEventType} of the fired bundle container event.
-    */
-   public abstract BundleContainerEventType getType();
+    /**
+     * Get the bundle container event type.
+     *
+     * @return the {@link BundleContainerEventType} of the fired bundle container event.
+     */
+    public abstract BundleContainerEventType getType();
 
 }
