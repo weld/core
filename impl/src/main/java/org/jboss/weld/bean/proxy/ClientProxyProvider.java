@@ -43,7 +43,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY
 public class ClientProxyProvider {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-    private static Function<Bean<Object>, Object> CREATE_CLIENT_PROXY;
+    private Function<Bean<Object>, Object> createClientProxy;
 
     private static final class CreateClientProxy implements Function<Bean<Object>, Object> {
 
@@ -74,10 +74,8 @@ public class ClientProxyProvider {
      * Constructor
      */
     public ClientProxyProvider(String contextId) {
-        if (CREATE_CLIENT_PROXY == null) {
-            CREATE_CLIENT_PROXY = new CreateClientProxy(contextId);
-        }
-        this.pool = new MapMaker().makeComputingMap(CREATE_CLIENT_PROXY);
+        createClientProxy = new CreateClientProxy(contextId);
+        this.pool = new MapMaker().makeComputingMap(createClientProxy);
     }
 
     /**
