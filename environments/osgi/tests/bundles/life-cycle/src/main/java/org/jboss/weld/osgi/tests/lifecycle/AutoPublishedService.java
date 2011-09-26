@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.osgi.tests.lifecycle;
 
-public class Timer {
-    public void process(int timeout) throws InterruptedException {
-        Thread.sleep(timeout);
+import org.jboss.weld.environment.osgi.api.annotation.Publish;
+
+@Publish
+public class AutoPublishedService {
+    public boolean process() {
+        return true;
     }
 
 }

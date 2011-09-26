@@ -28,15 +28,18 @@ public class SynchronousListener implements SynchronousBundleListener {
             FlagFarm.synchronousStartedEntrance = FlagFarm.currentRank++;
             try {
                 timer.process(500);
-            } catch (InterruptedException ex) {
+            }
+            catch(InterruptedException ex) {
                 throw new RuntimeException();
             }
             FlagFarm.synchronousStartedExit = FlagFarm.currentRank++;
-        } else if (event.getType() == BundleEvent.STOPPING) {
+        }
+        else if (event.getType() == BundleEvent.STOPPING) {
             FlagFarm.synchronousStoppingEntrance = FlagFarm.currentRank++;
             try {
                 timer.process(500);
-            } catch (InterruptedException ex) {
+            }
+            catch(InterruptedException ex) {
                 throw new RuntimeException();
             }
             FlagFarm.synchronousStoppingExit = FlagFarm.currentRank++;

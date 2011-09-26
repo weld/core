@@ -26,7 +26,6 @@ import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceProducerBean;
 import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
-import org.jboss.weld.environment.osgi.impl.extension.beans.CDIOSGiProducer;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceRegistryImpl;
@@ -59,6 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jboss.weld.environment.osgi.impl.extension.beans.OSGiUtilitiesProducer;
 
 /**
  * Weld OSGi extension.
@@ -95,7 +95,7 @@ public class CDIOSGiExtension implements Extension {
                                      BeanManager manager) {
         logger.debug("Observe a BeforeBeanDiscovery event");
         event.addAnnotatedType(
-                manager.createAnnotatedType(CDIOSGiProducer.class));
+                manager.createAnnotatedType(OSGiUtilitiesProducer.class));
         event.addAnnotatedType(
                 manager.createAnnotatedType(BundleHolder.class));
         event.addAnnotatedType(

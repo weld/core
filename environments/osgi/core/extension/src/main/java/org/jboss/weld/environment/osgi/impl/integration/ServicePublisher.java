@@ -126,12 +126,12 @@ public class ServicePublisher {
         if (contracts.length > 0) {// if there are contracts
             String[] names = new String[contracts.length];
             for (int i = 0; i < contracts.length; i++) {
-                if (contracts[i].isAssignableFrom(clazz)) {
+                if (contracts[i].isAssignableFrom(clazz) && contracts[i].isInterface()) {
                     names[i] = contracts[i].getName();
                     logger.info("Registering OSGi service {} as {}", clazz.getName(), names[i]);
                 } else {
                     RuntimeException e = new RuntimeException("Contract " + contracts[i] + " is not assignable from "
-                            + clazz + ". Unable to publish the service " + clazz);
+                            + clazz + ", or is not an interface. Unable to publish the service " + clazz);
                     logger.error(e.getMessage());
                     throw e;
                 }

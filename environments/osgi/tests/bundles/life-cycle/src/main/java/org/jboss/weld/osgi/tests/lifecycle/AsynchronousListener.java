@@ -28,7 +28,8 @@ public class AsynchronousListener implements BundleListener {
             FlagFarm.asynchronousStartedEntrance = FlagFarm.currentRank++;
             try {
                 timer.process(1500);
-            } catch (InterruptedException ex) {
+            }
+            catch(InterruptedException ex) {
                 throw new RuntimeException();
             }
             FlagFarm.asynchronousStartedExit = FlagFarm.currentRank++;
