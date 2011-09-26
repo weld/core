@@ -17,6 +17,16 @@
 
 package org.jboss.weld.osgi.examples.paint.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import org.jboss.weld.osgi.examples.paint.circle.CircleShape;
 import org.osgi.framework.Bundle;
 
@@ -24,13 +34,14 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Required;
 import org.jboss.weld.environment.osgi.api.annotation.Specification;
@@ -151,7 +162,7 @@ public class PaintFrame extends JFrame implements MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent evt) {       
+    public void mouseClicked(MouseEvent evt) {
     }
 
     @Override

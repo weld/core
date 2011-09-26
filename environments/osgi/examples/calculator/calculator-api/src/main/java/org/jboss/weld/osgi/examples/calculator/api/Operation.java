@@ -17,8 +17,6 @@
 
 package org.jboss.weld.osgi.examples.calculator.api;
 
-import org.jboss.weld.osgi.examples.calculator.api.Operator;
-
 public interface Operation {
 
     Operator getOperator();

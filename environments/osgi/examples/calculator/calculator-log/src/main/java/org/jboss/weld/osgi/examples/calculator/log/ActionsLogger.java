@@ -30,12 +30,13 @@ import org.jboss.weld.osgi.examples.calculator.api.Operation;
 @ApplicationScoped
 public class ActionsLogger {
 
-    private @Inject Event<InterBundleEvent> ibEvent;
+   @Inject
+   private Event<InterBundleEvent> ibEvent;
 
     public void listenToEquals(@Observes @Specification(Operation.class) InterBundleEvent event) {
         Operation op = event.typed(Operation.class).get();
 
-        ibEvent.fire(new InterBundleEvent(new NotificationEvent(op.getValue1() 
+        ibEvent.fire(new InterBundleEvent(new NotificationEvent(op.getValue1()
                 + " " + op.getOperator().label()
                 + " " + op.getValue2()
                 + " = " + op.value())));
