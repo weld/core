@@ -40,125 +40,105 @@ import javax.inject.Provider;
  * @see javax.enterprise.event.Observes
  * @see org.jboss.weld.environment.osgi.api.annotation.Sent
  */
-public class InterBundleEvent
-{
-   private final Object event;
+public class InterBundleEvent {
+    private final Object event;
 
-   private boolean sent = false;
+    private boolean sent = false;
 
-   private Class<?> type;
+    private Class<?> type;
 
-   /**
-    * Construct a new {@link InterBundleEvent} with a message.
-    *
-    * @param event the message as an {@link Object}.
-    */
-   public InterBundleEvent(Object event)
-   {
-      this.event = event;
-   }
+    /**
+     * Construct a new {@link InterBundleEvent} with a message.
+     *
+     * @param event the message as an {@link Object}.
+     */
+    public InterBundleEvent(Object event) {
+        this.event = event;
+    }
 
-   /**
-    * Construct a new {@link InterBundleEvent} with a typed message.
-    *
-    * @param event the message as an {@link Object}.
-    * @param type  the type of the message as a {@link Class}
-    */
-   public InterBundleEvent(Object event, Class<?> type)
-   {
-      this.event = event;
-      this.type = type;
-   }
+    /**
+     * Construct a new {@link InterBundleEvent} with a typed message.
+     *
+     * @param event the message as an {@link Object}.
+     * @param type  the type of the message as a {@link Class}
+     */
+    public InterBundleEvent(Object event, Class<?> type) {
+        this.event = event;
+        this.type = type;
+    }
 
-   /**
-    * Obtain the type of the message.
-    *
-    * @return the type of the message as a {@link Class}.
-    */
-   public Class<?> type()
-   {
-      if (type != null)
-      {
-         return type;
-      }
-      else
-      {
-         return event.getClass();
-      }
-   }
+    /**
+     * Obtain the type of the message.
+     *
+     * @return the type of the message as a {@link Class}.
+     */
+    public Class<?> type() {
+        if (type != null) {
+            return type;
+        } else {
+            return event.getClass();
+        }
+    }
 
-   /**
-    * Test if the message type matches the given type.
-    *
-    * @param type the tested type as a {@link Class}
-    * @return true if the given type matches the message type, false otherwise.
-    */
-   public boolean isTyped(Class<?> type)
-   {
-      if (this.type != null)
-      {
-         return this.type.equals(type);
-      }
-      else
-      {
-         return type.isAssignableFrom(event.getClass());
-      }
-   }
+    /**
+     * Test if the message type matches the given type.
+     *
+     * @param type the tested type as a {@link Class}
+     * @return true if the given type matches the message type, false otherwise.
+     */
+    public boolean isTyped(Class<?> type) {
+        if (this.type != null) {
+            return this.type.equals(type);
+        } else {
+            return type.isAssignableFrom(event.getClass());
+        }
+    }
 
-   /**
-    * Obtain a parametrized provider if the given type matches the message type.
-    *
-    * @param type the wanted provider type as a {@link Class}.
-    * @param <T>  the wanted provider type.
-    * @return a {@link Provider} for the wanted type.
-    * @throws {@link RuntimeException} if the wanted type does not match the message type.
-    */
-   public <T> Provider<T> typed(Class<T> type)
-   {
-      if (isTyped(type))
-      {
-         return new Provider<T>()
-         {
-            @Override
-            public T get()
-            {
-               return (T) event;
-            }
+    /**
+     * Obtain a parametrized provider if the given type matches the message type.
+     *
+     * @param type the wanted provider type as a {@link Class}.
+     * @param <T>  the wanted provider type.
+     * @return a {@link Provider} for the wanted type.
+     * @throws {@link RuntimeException} if the wanted type does not match the message type.
+     */
+    public <T> Provider<T> typed(Class<T> type) {
+        if (isTyped(type)) {
+            return new Provider<T>() {
+                @Override
+                public T get() {
+                    return (T) event;
+                }
 
-         };
-      }
-      else
-      {
-         throw new RuntimeException("The event is not of type " + type.getName());
-      }
-   }
+            };
+        } else {
+            throw new RuntimeException("The event is not of type " + type.getName());
+        }
+    }
 
-   /**
-    * Obtain the message.
-    *
-    * @return the message as an {@link Object}
-    */
-   public Object get()
-   {
-      return event;
-   }
+    /**
+     * Obtain the message.
+     *
+     * @return the message as an {@link Object}
+     */
+    public Object get() {
+        return event;
+    }
 
-   /**
-    * Test if the communication event comes from within or outside the current bundle.
-    *
-    * @return
-    */
-   public boolean isSent()
-   {
-      return sent;
-   }
+    /**
+     * Test if the communication event comes from within or outside the current bundle.
+     *
+     * @return
+     */
+    public boolean isSent() {
+        return sent;
+    }
 
-   /**
-    * Mark the communication event as sent outside the firing bundle.
-    */
-   public void sent()
-   {
-      this.sent = true;
-   }
+    /**
+     * Mark the communication event as sent outside the firing bundle.
+     */
+    public void sent() {
+        this.sent = true;
+    }
 
 }

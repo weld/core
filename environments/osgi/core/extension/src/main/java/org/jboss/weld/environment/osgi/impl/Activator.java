@@ -35,30 +35,27 @@ import org.slf4j.LoggerFactory;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class Activator implements BundleActivator
-{
-   private Logger logger = LoggerFactory.getLogger(Activator.class);
+public class Activator implements BundleActivator {
+    private Logger logger = LoggerFactory.getLogger(Activator.class);
 
-   private BundleActivator integration = new IntegrationActivator();
+    private BundleActivator integration = new IntegrationActivator();
 
-   private BundleActivator extension = new ExtensionActivator();
+    private BundleActivator extension = new ExtensionActivator();
 
-   @Override
-   public void start(BundleContext context) throws Exception
-   {
-      logger.debug("CDI-OSGi is starting ...");
-      extension.start(context);
-      integration.start(context);
-      logger.debug("CDI-OSGi STARTED");
-   }
+    @Override
+    public void start(BundleContext context) throws Exception {
+        logger.debug("CDI-OSGi is starting ...");
+        extension.start(context);
+        integration.start(context);
+        logger.debug("CDI-OSGi STARTED");
+    }
 
-   @Override
-   public void stop(BundleContext context) throws Exception
-   {
-      logger.debug("CDI-OSGi is stopping ...");
-      integration.stop(context);
-      extension.stop(context);
-      logger.debug("CDI-OSGi STOPPED");
-   }
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        logger.debug("CDI-OSGi is stopping ...");
+        integration.stop(context);
+        extension.stop(context);
+        logger.debug("CDI-OSGi STOPPED");
+    }
 
 }

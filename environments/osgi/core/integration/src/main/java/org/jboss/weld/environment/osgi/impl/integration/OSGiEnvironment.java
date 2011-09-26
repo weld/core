@@ -30,24 +30,21 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class OSGiEnvironment implements Environment
-{
-   @Override
-   public Set<Class<? extends Service>> getRequiredDeploymentServices()
-   {
-      HashSet<Class<? extends Service>> set =
-                                        new HashSet<Class<? extends Service>>();
-      set.add(ScheduledExecutorServiceFactory.class);
-      return set;
-   }
+public class OSGiEnvironment implements Environment {
+    @Override
+    public Set<Class<? extends Service>> getRequiredDeploymentServices() {
+        HashSet<Class<? extends Service>> set =
+                new HashSet<Class<? extends Service>>();
+        set.add(ScheduledExecutorServiceFactory.class);
+        return set;
+    }
 
-   @Override
-   public Set<Class<? extends Service>> getRequiredBeanDeploymentArchiveServices()
-   {
-      HashSet<Class<? extends Service>> set =
-                                        new HashSet<Class<? extends Service>>();
-      set.add(ResourceLoader.class);
-      return set;
-   }
+    @Override
+    public Set<Class<? extends Service>> getRequiredBeanDeploymentArchiveServices() {
+        HashSet<Class<? extends Service>> set =
+                new HashSet<Class<? extends Service>>();
+        set.add(ResourceLoader.class);
+        return set;
+    }
 
 }

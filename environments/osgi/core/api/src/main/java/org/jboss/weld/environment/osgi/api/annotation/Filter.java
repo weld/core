@@ -22,7 +22,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
 
 /**
  * <p>This annotation qualifies an injection point that represents a LDAP
@@ -42,19 +45,18 @@ import static java.lang.annotation.ElementType.*;
  * @see org.jboss.weld.environment.osgi.api.ServiceRegistry
  */
 @Target(
-{
-   TYPE, METHOD, PARAMETER, FIELD
-})
+        {
+                TYPE, METHOD, PARAMETER, FIELD
+        })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface Filter
-{
-   /**
-    * The LDAP filter.
-    *
-    * @return the LDAP filter as a String.
-    */
-   String value();
+public @interface Filter {
+    /**
+     * The LDAP filter.
+     *
+     * @return the LDAP filter as a String.
+     */
+    String value();
 
 }

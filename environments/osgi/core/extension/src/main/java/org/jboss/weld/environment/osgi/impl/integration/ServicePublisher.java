@@ -21,8 +21,10 @@ import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.api.annotation.Property;
+import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
+import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -35,9 +37,11 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
-import org.jboss.weld.environment.osgi.api.annotation.Property;
-import org.jboss.weld.environment.osgi.api.annotation.Publish;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * This is a class scanner that auto-publishes OSGi services from @Publish annotated classes within a bean bundle.
@@ -122,12 +126,12 @@ public class ServicePublisher {
         if (contracts.length > 0) {// if there are contracts
             String[] names = new String[contracts.length];
             for (int i = 0; i < contracts.length; i++) {
-                if(contracts[i].isAssignableFrom(clazz)) {
+                if (contracts[i].isAssignableFrom(clazz)) {
                     names[i] = contracts[i].getName();
                     logger.info("Registering OSGi service {} as {}", clazz.getName(), names[i]);
                 } else {
                     RuntimeException e = new RuntimeException("Contract " + contracts[i] + " is not assignable from "
-                                                                + clazz + ". Unable to publish the service " + clazz);
+                            + clazz + ". Unable to publish the service " + clazz);
                     logger.error(e.getMessage());
                     throw e;
                 }
@@ -175,13 +179,13 @@ public class ServicePublisher {
                     for (Property property : ((org.jboss.weld.environment.osgi.api.annotation.Properties) qualifier).value()) {
                         properties.setProperty(property.name(), property.value());
                     }
-                } else if(!qualifier.annotationType().equals(Default.class) && !qualifier.annotationType().equals(Any.class)) {
+                } else if (!qualifier.annotationType().equals(Default.class) && !qualifier.annotationType().equals(Any.class)) {
                     if (qualifier.annotationType().getDeclaredMethods().length > 0) {
                         for (Method m : qualifier.annotationType().getDeclaredMethods()) {
                             if (!m.isAnnotationPresent(Nonbinding.class)) {
                                 try {
                                     String key = qualifier.annotationType().getSimpleName().toLowerCase()
-                                                 + "." + m.getName().toLowerCase();
+                                            + "." + m.getName().toLowerCase();
                                     Object value = m.invoke(qualifier);
                                     if (value == null) {
                                         value = m.getDefaultValue();
@@ -195,7 +199,7 @@ public class ServicePublisher {
                             }
                         }
                     } else {
-                        properties.setProperty(qualifier.annotationType().getSimpleName().toLowerCase(),"*");
+                        properties.setProperty(qualifier.annotationType().getSimpleName().toLowerCase(), "*");
                     }
                 }
             }

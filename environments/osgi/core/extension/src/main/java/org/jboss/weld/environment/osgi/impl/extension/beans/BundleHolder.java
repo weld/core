@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
+import org.jboss.weld.environment.osgi.api.BundleState;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import javax.enterprise.context.ApplicationScoped;
-import org.jboss.weld.environment.osgi.api.BundleState;
 
 /**
  * Wrap OSGi {@link Bundle} for CDI-OSGi usages.
@@ -29,42 +29,35 @@ import org.jboss.weld.environment.osgi.api.BundleState;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
-public class BundleHolder
-{
-   private BundleState state = BundleState.INVALID;
+public class BundleHolder {
+    private BundleState state = BundleState.INVALID;
 
-   private Bundle bundle;
+    private Bundle bundle;
 
-   private BundleContext context;
+    private BundleContext context;
 
-   public Bundle getBundle()
-   {
-      return bundle;
-   }
+    public Bundle getBundle() {
+        return bundle;
+    }
 
-   public void setBundle(Bundle bundle)
-   {
-      this.bundle = bundle;
-   }
+    public void setBundle(Bundle bundle) {
+        this.bundle = bundle;
+    }
 
-   public BundleContext getContext()
-   {
-      return context;
-   }
+    public BundleContext getContext() {
+        return context;
+    }
 
-   public void setContext(BundleContext context)
-   {
-      this.context = context;
-   }
+    public void setContext(BundleContext context) {
+        this.context = context;
+    }
 
-   public BundleState getState()
-   {
-      return state;
-   }
+    public BundleState getState() {
+        return state;
+    }
 
-   public void setState(BundleState state)
-   {
-      this.state = state;
-   }
+    public void setState(BundleState state) {
+        this.state = state;
+    }
 
 }

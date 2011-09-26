@@ -54,60 +54,59 @@ import java.lang.annotation.Annotation;
  * @see ServiceRegistry
  * @see Registration
  */
-public interface Service<T> extends Iterable<T>
-{
-   /**
-    * Obtain the first service instance.
-    *
-    * @return an instance of the service.
-    */
-   T get();
+public interface Service<T> extends Iterable<T> {
+    /**
+     * Obtain the first service instance.
+     *
+     * @return an instance of the service.
+     */
+    T get();
 
-   /**
-    * Obtain a subset of the service implementations containing the first
-    * implementation found.
-    *
-    * @return a subset of the service implementations as another {@link Service}.
-    */
-   Iterable<T> first();
+    /**
+     * Obtain a subset of the service implementations containing the first
+     * implementation found.
+     *
+     * @return a subset of the service implementations as another {@link Service}.
+     */
+    Iterable<T> first();
 
-   /**
-    * Obtain a subset of the service implementations that matches the given
-    * {@link javax.inject.Qualifier}
-    *
-    * @param qualifiers the filtering {@link javax.inject.Qualifier}s.
-    * @return a subset of the service implementations as another {@link Service}.
-    */
-   Service<T> select(Annotation... qualifiers);
+    /**
+     * Obtain a subset of the service implementations that matches the given
+     * {@link javax.inject.Qualifier}
+     *
+     * @param qualifiers the filtering {@link javax.inject.Qualifier}s.
+     * @return a subset of the service implementations as another {@link Service}.
+     */
+    Service<T> select(Annotation... qualifiers);
 
-   /**
-    * Obtain a subset of the service implementations that matches the given
-    * {@link javax.inject.Qualifier}
-    *
-    * @param filter the filtering LDAP {@link String}.
-    * @return a subset of the service implementations as another {@link Service}.
-    */
-   Service<T> select(String filter);
+    /**
+     * Obtain a subset of the service implementations that matches the given
+     * {@link javax.inject.Qualifier}
+     *
+     * @param filter the filtering LDAP {@link String}.
+     * @return a subset of the service implementations as another {@link Service}.
+     */
+    Service<T> select(String filter);
 
-   /**
-    * Test if there is no available implementation.
-    *
-    * @return true if there is no implementation, false otherwise.
-    */
-   boolean isUnsatisfied();
+    /**
+     * Test if there is no available implementation.
+     *
+     * @return true if there is no implementation, false otherwise.
+     */
+    boolean isUnsatisfied();
 
-   /**
-    * Test if there are multiple implementations.
-    *
-    * @return true if there are multiple implementations, false otherwise.
-    */
-   boolean isAmbiguous();
+    /**
+     * Test if there are multiple implementations.
+     *
+     * @return true if there are multiple implementations, false otherwise.
+     */
+    boolean isAmbiguous();
 
-   /**
-    * Obtain the number of available implementations
-    *
-    * @return the number of available implementations.
-    */
-   int size();
+    /**
+     * Obtain the number of available implementations
+     *
+     * @return the number of available implementations.
+     */
+    int size();
 
 }

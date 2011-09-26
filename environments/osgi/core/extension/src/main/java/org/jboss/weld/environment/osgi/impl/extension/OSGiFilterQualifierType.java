@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
-import javax.enterprise.util.AnnotationLiteral;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
+
+import javax.enterprise.util.AnnotationLiteral;
 
 /**
  * Helper class representing an instantiable {@link Filter}.
@@ -26,19 +27,16 @@ import org.jboss.weld.environment.osgi.api.annotation.Filter;
  */
 public class OSGiFilterQualifierType
         extends AnnotationLiteral<Filter>
-        implements Filter
-{
-   private final String value;
+        implements Filter {
+    private final String value;
 
-   protected OSGiFilterQualifierType(String value)
-   {
-      this.value = value;
-   }
+    protected OSGiFilterQualifierType(String value) {
+        this.value = value;
+    }
 
-   @Override
-   public String value()
-   {
-      return value;
-   }
+    @Override
+    public String value() {
+        return value;
+    }
 
 }

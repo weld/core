@@ -25,10 +25,9 @@ package org.jboss.weld.environment.osgi.api.events;
  * @see AbstractServiceEvent
  * @see ServiceEvents
  */
-public enum ServiceEventType
-{
-   SERVICE_ARRIVAL,
-   SERVICE_DEPARTURE,
-   SERVICE_CHANGED
+public enum ServiceEventType {
+    SERVICE_ARRIVAL,
+    SERVICE_DEPARTURE,
+    SERVICE_CHANGED
 
 }

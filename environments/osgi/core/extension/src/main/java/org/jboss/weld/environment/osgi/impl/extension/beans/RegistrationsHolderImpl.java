@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
+import org.jboss.weld.environment.osgi.api.RegistrationHolder;
 import org.osgi.framework.ServiceRegistration;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
-import org.jboss.weld.environment.osgi.api.RegistrationHolder;
 
 /**
  * Implementation of {@link RegistrationHolder}.
@@ -30,39 +30,33 @@ import org.jboss.weld.environment.osgi.api.RegistrationHolder;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
-public class RegistrationsHolderImpl implements RegistrationHolder
-{
-   private List<ServiceRegistration> registrations =
+public class RegistrationsHolderImpl implements RegistrationHolder {
+    private List<ServiceRegistration> registrations =
             new ArrayList<ServiceRegistration>();
 
-   @Override
-   public List<ServiceRegistration> getRegistrations()
-   {
-      return registrations;
-   }
+    @Override
+    public List<ServiceRegistration> getRegistrations() {
+        return registrations;
+    }
 
-   @Override
-   public void addRegistration(ServiceRegistration reg)
-   {
-      registrations.add(reg);
-   }
+    @Override
+    public void addRegistration(ServiceRegistration reg) {
+        registrations.add(reg);
+    }
 
-   @Override
-   public void removeRegistration(ServiceRegistration reg)
-   {
-      registrations.remove(reg);
-   }
+    @Override
+    public void removeRegistration(ServiceRegistration reg) {
+        registrations.remove(reg);
+    }
 
-   @Override
-   public void clear()
-   {
-      registrations.clear();
-   }
+    @Override
+    public void clear() {
+        registrations.clear();
+    }
 
-   @Override
-   public int size()
-   {
-      return registrations.size();
-   }
+    @Override
+    public int size() {
+        return registrations.size();
+    }
 
 }

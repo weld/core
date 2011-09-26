@@ -35,42 +35,41 @@ package org.jboss.weld.environment.osgi.api;
  * @see Service
  * @see Registration
  */
-public interface ServiceRegistry
-{
-   /**
-    * Register a service implementation.
-    *
-    * @param contract       the service contract interface.
-    * @param implementation the service implementation class.
-    * @param <T>            the service type.
-    * @return the new service {@link Registration} or null if the registration
-    * goes wrong.
-    */
+public interface ServiceRegistry {
+    /**
+     * Register a service implementation.
+     *
+     * @param contract       the service contract interface.
+     * @param implementation the service implementation class.
+     * @param <T>            the service type.
+     * @return the new service {@link Registration} or null if the registration
+     *         goes wrong.
+     */
     <T> Registration<T> registerService(Class<T> contract,
                                         Class<? extends T> implementation);
 
-   /**
-    * Register a service implementation.
-    *
-    * @param contract       the service contract interface.
-    * @param implementation the service implementation class.
-    * @param <T>            the service type.
-    * @param <U>            the service implementation type.
-    * @return the new service {@link Registration} or null if the registration
-    * goes wrong.
-    */
+    /**
+     * Register a service implementation.
+     *
+     * @param contract       the service contract interface.
+     * @param implementation the service implementation class.
+     * @param <T>            the service type.
+     * @param <U>            the service implementation type.
+     * @return the new service {@link Registration} or null if the registration
+     *         goes wrong.
+     */
     <T, U extends T> Registration<T> registerService(Class<T> contract,
                                                      U implementation);
 
-   /**
-    * Get available service implementations of a service.
-    *
-    * @param contract the service contract interface that implementations are
-    * requested.
-    * @param <T>      the service type.
-    * @return the available service implementations as a {@link Service} or null
-    * if there is no such implementation.
-    */
+    /**
+     * Get available service implementations of a service.
+     *
+     * @param contract the service contract interface that implementations are
+     *                 requested.
+     * @param <T>      the service type.
+     * @return the available service implementations as a {@link Service} or null
+     *         if there is no such implementation.
+     */
     <T> Service<T> getServiceReferences(Class<T> contract);
 
 }

@@ -34,32 +34,29 @@ import org.slf4j.LoggerFactory;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class WeldActivator implements BundleActivator
-{
-   private Logger logger = LoggerFactory.getLogger(WeldActivator.class);
+public class WeldActivator implements BundleActivator {
+    private Logger logger = LoggerFactory.getLogger(WeldActivator.class);
 
-   private CDIContainerFactory factory = new WeldCDIContainerFactory();
+    private CDIContainerFactory factory = new WeldCDIContainerFactory();
 
-   private ServiceRegistration reg = null;
+    private ServiceRegistration reg = null;
 
-   @Override
-   public void start(BundleContext context) throws Exception
-   {
-      logger.debug("Weld implementation bundle for CDI-OSGi is starting ...");
-      SingletonProvider.initialize(new RegistrySingletonProvider());
-      reg = context.registerService(CDIContainerFactory.class.getName(),
-                                    factory,
-                                    null);
-      logger.debug("Weld implementation bundle for CDI-OSGi STARTED");
-   }
+    @Override
+    public void start(BundleContext context) throws Exception {
+        logger.debug("Weld implementation bundle for CDI-OSGi is starting ...");
+        SingletonProvider.initialize(new RegistrySingletonProvider());
+        reg = context.registerService(CDIContainerFactory.class.getName(),
+                factory,
+                null);
+        logger.debug("Weld implementation bundle for CDI-OSGi STARTED");
+    }
 
-   @Override
-   public void stop(BundleContext context) throws Exception
-   {
-      logger.debug("Weld implementation bundle for CDI-OSGi is stopping ...");
-      reg.unregister();
-      SingletonProvider.reset();
-      logger.debug("Weld implementation bundle for CDI-OSGi STOPPED");
-   }
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        logger.debug("Weld implementation bundle for CDI-OSGi is stopping ...");
+        reg.unregister();
+        SingletonProvider.reset();
+        logger.debug("Weld implementation bundle for CDI-OSGi STOPPED");
+    }
 
 }

@@ -40,237 +40,206 @@ import org.osgi.framework.Bundle;
  * @see BundleEventType
  * @see javax.enterprise.event.Observes
  */
-public class BundleEvents
-{
-   /**
-    * Represents the bundle events for the {@link BundleEventType#INSTALLED} state.
-    */
-   public static class BundleInstalled extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleInstalled} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleInstalled(Bundle bundle)
-      {
-         super(bundle);
-      }
+public class BundleEvents {
+    /**
+     * Represents the bundle events for the {@link BundleEventType#INSTALLED} state.
+     */
+    public static class BundleInstalled extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleInstalled} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleInstalled(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.INSTALLED;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.INSTALLED;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the
-    * {@link BundleEventType#LAZY_ACTIVATION} state.
-    */
-   public static class BundleLazyActivation extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleLazyActivation} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleLazyActivation(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the
+     * {@link BundleEventType#LAZY_ACTIVATION} state.
+     */
+    public static class BundleLazyActivation extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleLazyActivation} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleLazyActivation(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.LAZY_ACTIVATION;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.LAZY_ACTIVATION;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#RESOLVED}
-    * state.
-    */
-   public static class BundleResolved extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleResolved} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleResolved(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#RESOLVED}
+     * state.
+     */
+    public static class BundleResolved extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleResolved} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleResolved(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.RESOLVED;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.RESOLVED;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#STARTED} state.
-    */
-   public static class BundleStarted extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleStarted} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleStarted(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#STARTED} state.
+     */
+    public static class BundleStarted extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleStarted} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleStarted(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.STARTED;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.STARTED;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#STARTING} state.
-    */
-   public static class BundleStarting extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleStarting} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleStarting(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#STARTING} state.
+     */
+    public static class BundleStarting extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleStarting} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleStarting(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.STARTING;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.STARTING;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#STOPPED} state.
-    */
-   public static class BundleStopped extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleStopped} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleStopped(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#STOPPED} state.
+     */
+    public static class BundleStopped extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleStopped} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleStopped(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.STOPPED;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.STOPPED;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#STOPPING} state.
-    */
-   public static class BundleStopping extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleStopping} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleStopping(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#STOPPING} state.
+     */
+    public static class BundleStopping extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleStopping} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleStopping(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.STOPPING;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.STOPPING;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#UNINSTALLED} state.
-    */
-   public static class BundleUninstalled extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleUninstalled} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleUninstalled(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#UNINSTALLED} state.
+     */
+    public static class BundleUninstalled extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleUninstalled} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleUninstalled(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.UNINSTALLED;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.UNINSTALLED;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#UNRESOLVED} state.
-    */
-   public static class BundleUnresolved extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleUnresolved} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleUnresolved(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#UNRESOLVED} state.
+     */
+    public static class BundleUnresolved extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleUnresolved} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleUnresolved(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.UNRESOLVED;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.UNRESOLVED;
+        }
 
-   }
+    }
 
-   /**
-    * Represents the bundle events for the {@link BundleEventType#UPDATED} state.
-    */
-   public static class BundleUpdated extends AbstractBundleEvent
-   {
-      /**
-       * Construct a new {@link BundleUpdated} event.
-       *
-       * @param bundle the firing {@link Bundle}.
-       */
-      public BundleUpdated(Bundle bundle)
-      {
-         super(bundle);
-      }
+    /**
+     * Represents the bundle events for the {@link BundleEventType#UPDATED} state.
+     */
+    public static class BundleUpdated extends AbstractBundleEvent {
+        /**
+         * Construct a new {@link BundleUpdated} event.
+         *
+         * @param bundle the firing {@link Bundle}.
+         */
+        public BundleUpdated(Bundle bundle) {
+            super(bundle);
+        }
 
-      @Override
-      public BundleEventType getType()
-      {
-         return BundleEventType.UPDATED;
-      }
+        @Override
+        public BundleEventType getType() {
+            return BundleEventType.UPDATED;
+        }
 
-   }
+    }
 }

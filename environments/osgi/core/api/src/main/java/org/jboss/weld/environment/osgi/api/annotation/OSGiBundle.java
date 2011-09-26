@@ -23,7 +23,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
  * <p>This annotation qualifies an injection point that represents a bundle or a
@@ -45,30 +47,27 @@ import static java.lang.annotation.ElementType.*;
  * @see BundleVersion
  */
 @Target(
-{
-   METHOD, PARAMETER, FIELD
-})
+        {
+                METHOD, PARAMETER, FIELD
+        })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface OSGiBundle
-{
-   /**
-    * The symbolic name of the bundle. Nondiscriminatory value for the typesafe
-    * resolution algorithm.
-    *
-    * @return the symbolic name of the bundle.
-    */
-   @Nonbinding
-   String value();
+public @interface OSGiBundle {
+    /**
+     * The symbolic name of the bundle. Nondiscriminatory value for the typesafe
+     * resolution algorithm.
+     *
+     * @return the symbolic name of the bundle.
+     */
+    @Nonbinding String value();
 
-   /**
-    * The version of the bundle. Nondiscriminatory value for the typesafe
-    * resolution algorithm.
-    *
-    * @return the version of the bundle.
-    */
-   @Nonbinding
-   String version() default "";
+    /**
+     * The version of the bundle. Nondiscriminatory value for the typesafe
+     * resolution algorithm.
+     *
+     * @return the version of the bundle.
+     */
+    @Nonbinding String version() default "";
 
 }

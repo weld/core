@@ -21,7 +21,12 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>This abstract class represents all the CDI-OSGi service events as a
@@ -58,168 +63,146 @@ import java.util.*;
  * @see ServiceEventType
  * @see javax.enterprise.event.Observes
  */
-public abstract class AbstractServiceEvent
-{
-   private final ServiceReference reference;
+public abstract class AbstractServiceEvent {
+    private final ServiceReference reference;
 
-   private final BundleContext context;
+    private final BundleContext context;
 
-   private List<String> classesNames;
+    private List<String> classesNames;
 
-   private List<Class<?>> classes;
+    private List<Class<?>> classes;
 
-   private Map<Class, Boolean> assignable = new HashMap<Class, Boolean>();
+    private Map<Class, Boolean> assignable = new HashMap<Class, Boolean>();
 
-   /**
-    * Construct a new service event for the specified service.
-    *
-    * @param reference the {@link ServiceReference} that changes of state.
-    * @param context   the service {@link BundleContext}.
-    */
-   public AbstractServiceEvent(ServiceReference reference, BundleContext context)
-   {
-      this.reference = reference;
-      this.context = context;
-   }
+    /**
+     * Construct a new service event for the specified service.
+     *
+     * @param reference the {@link ServiceReference} that changes of state.
+     * @param context   the service {@link BundleContext}.
+     */
+    public AbstractServiceEvent(ServiceReference reference, BundleContext context) {
+        this.reference = reference;
+        this.context = context;
+    }
 
-   /**
-    * Get the service event type.
-    *
-    * @return the {@link ServiceEventType} of the fired service event.
-    */
-   public abstract ServiceEventType eventType();
+    /**
+     * Get the service event type.
+     *
+     * @return the {@link ServiceEventType} of the fired service event.
+     */
+    public abstract ServiceEventType eventType();
 
-   /**
-    * Get the service reference of the firing service.
-    *
-    * @return the {@link ServiceReference} of the fired service event.
-    */
-   public ServiceReference getReference()
-   {
-      return reference;
-   }
+    /**
+     * Get the service reference of the firing service.
+     *
+     * @return the {@link ServiceReference} of the fired service event.
+     */
+    public ServiceReference getReference() {
+        return reference;
+    }
 
-   /**
-    * Get a service instance of the firing service.
-    *
-    * @return the service instance of the firing service.
-    * @see BundleContext#getService(org.osgi.framework.ServiceReference)
-    */
-   public Object getService()
-   {
-      return context.getService(reference);
-   }
+    /**
+     * Get a service instance of the firing service.
+     *
+     * @return the service instance of the firing service.
+     * @see BundleContext#getService(org.osgi.framework.ServiceReference)
+     */
+    public Object getService() {
+        return context.getService(reference);
+    }
 
-   /**
-    * Release the service instance of the firing service.
-    *
-    * @return false if the service instance is already released or if the
-    * service is unavailable, true otherwhise.
-    * @see BundleContext#ungetService(org.osgi.framework.ServiceReference)
-    */
-   public boolean ungetService()
-   {
-      return context.ungetService(reference);
-   }
+    /**
+     * Release the service instance of the firing service.
+     *
+     * @return false if the service instance is already released or if the
+     *         service is unavailable, true otherwhise.
+     * @see BundleContext#ungetService(org.osgi.framework.ServiceReference)
+     */
+    public boolean ungetService() {
+        return context.ungetService(reference);
+    }
 
-   /**
-    * Get the registering bundle of the firing service.
-    *
-    * @return the registering bundle.
-    */
-   public Bundle getRegisteringBundle()
-   {
-      return reference.getBundle();
-   }
+    /**
+     * Get the registering bundle of the firing service.
+     *
+     * @return the registering bundle.
+     */
+    public Bundle getRegisteringBundle() {
+        return reference.getBundle();
+    }
 
-   /**
-    * Get the class names under which the firing service was registered.
-    *
-    * @return all the class names for the firing service.
-    */
-   public List<String> getServiceClassNames()
-   {
-      if (classesNames == null)
-      {
-         classesNames = Arrays.asList(
-                 (String[]) reference.getProperty(Constants.OBJECTCLASS));
-      }
-      return classesNames;
-   }
+    /**
+     * Get the class names under which the firing service was registered.
+     *
+     * @return all the class names for the firing service.
+     */
+    public List<String> getServiceClassNames() {
+        if (classesNames == null) {
+            classesNames = Arrays.asList(
+                    (String[]) reference.getProperty(Constants.OBJECTCLASS));
+        }
+        return classesNames;
+    }
 
-   /**
-    * Get a service instance of the firing service with the specific type.
-    *
-    * @param type the wanted class for the service instance
-    * @param <T>  the wanted type for the service instance
-    * @return the service instance of the firing service with the given type.
-    * @see BundleContext#getService(org.osgi.framework.ServiceReference)
-    */
-   public <T> T getService(Class<T> type)
-   {
-      if (isTyped(type))
-      {
-         return type.cast(getService());
-      }
-      else
-      {
-         throw new RuntimeException("the type " + type
-                                    + " isn't supported for the service."
-                                    + " Supported types are "
-                                    + getServiceClasses(type));
-      }
-   }
+    /**
+     * Get a service instance of the firing service with the specific type.
+     *
+     * @param type the wanted class for the service instance
+     * @param <T>  the wanted type for the service instance
+     * @return the service instance of the firing service with the given type.
+     * @see BundleContext#getService(org.osgi.framework.ServiceReference)
+     */
+    public <T> T getService(Class<T> type) {
+        if (isTyped(type)) {
+            return type.cast(getService());
+        } else {
+            throw new RuntimeException("the type " + type
+                    + " isn't supported for the service."
+                    + " Supported types are "
+                    + getServiceClasses(type));
+        }
+    }
 
-   /**
-    * If the specified type is a implementation of the firing service.
-    *
-    * @param type the tested type for being a firing service implementation.
-    * @return true if the specified type is assignable for the firing service,
-    * false otherwise.
-    */
-   public boolean isTyped(Class<?> type)
-   {
-      boolean typed = false;
-      if (!assignable.containsKey(type))
-      {
-         for (Class clazz : getServiceClasses(type))
-         {
-            if (type.isAssignableFrom(clazz))
-            {
-               typed = true;
-               break;
+    /**
+     * If the specified type is a implementation of the firing service.
+     *
+     * @param type the tested type for being a firing service implementation.
+     * @return true if the specified type is assignable for the firing service,
+     *         false otherwise.
+     */
+    public boolean isTyped(Class<?> type) {
+        boolean typed = false;
+        if (!assignable.containsKey(type)) {
+            for (Class clazz : getServiceClasses(type)) {
+                if (type.isAssignableFrom(clazz)) {
+                    typed = true;
+                    break;
+                }
             }
-         }
-         assignable.put(type, typed);
-      }
-      return assignable.get(type);
-   }
+            assignable.put(type, typed);
+        }
+        return assignable.get(type);
+    }
 
-   /**
-    * Get the class that are the firing service implementations.
-    *
-    * @param type the class from which the service will be loaded
-    * @return all the firing service implementation classes.
-    */
-   public List<Class<?>> getServiceClasses(Class<?> type)
-   {
-      if (classes == null)
-      {
-         classes = new ArrayList<Class<?>>();
-         for (String className : getServiceClassNames())
-         {
-            try
-            {
-               classes.add(type.getClassLoader().loadClass(className));
+    /**
+     * Get the class that are the firing service implementations.
+     *
+     * @param type the class from which the service will be loaded
+     * @return all the firing service implementation classes.
+     */
+    public List<Class<?>> getServiceClasses(Class<?> type) {
+        if (classes == null) {
+            classes = new ArrayList<Class<?>>();
+            for (String className : getServiceClassNames()) {
+                try {
+                    classes.add(type.getClassLoader().loadClass(className));
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                    return Collections.emptyList();
+                }
             }
-            catch(ClassNotFoundException ex)
-            {
-               ex.printStackTrace();
-               return Collections.emptyList();
-            }
-         }
-      }
-      return classes;
-   }
+        }
+        return classes;
+    }
 
 }

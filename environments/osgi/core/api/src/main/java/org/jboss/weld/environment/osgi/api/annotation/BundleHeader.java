@@ -23,7 +23,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
  * <p>This annotation qualifies an injection point that represents a specific bundle
@@ -47,21 +49,19 @@ import static java.lang.annotation.ElementType.*;
  * @see BundleHeaders
  */
 @Target(
-{
-   METHOD, PARAMETER, FIELD
-})
+        {
+                METHOD, PARAMETER, FIELD
+        })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Qualifier
-public @interface BundleHeader
-{
-   /**
-    * The name of the specific bundle header. Nondiscriminatory value for the
-    * typesafe resolution algorithm.
-    *
-    * @return the name of the bundle header.
-    */
-   @Nonbinding
-   String value();
+public @interface BundleHeader {
+    /**
+     * The name of the specific bundle header. Nondiscriminatory value for the
+     * typesafe resolution algorithm.
+     *
+     * @return the name of the bundle header.
+     */
+    @Nonbinding String value();
 
 }

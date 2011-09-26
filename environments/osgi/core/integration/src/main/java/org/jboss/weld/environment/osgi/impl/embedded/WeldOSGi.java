@@ -34,54 +34,45 @@ import javax.enterprise.inject.spi.BeanManager;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class WeldOSGi extends org.jboss.weld.environment.se.Weld
-{
-   private WeldCDIContainer container;
+public class WeldOSGi extends org.jboss.weld.environment.se.Weld {
+    private WeldCDIContainer container;
 
-   public WeldOSGi(BundleContext context)
-   {
-      super();
-      container = new WeldCDIContainer(context.getBundle());
-   }
+    public WeldOSGi(BundleContext context) {
+        super();
+        container = new WeldCDIContainer(context.getBundle());
+    }
 
-   public WeldContainer initialize()
-   {
-      container.initialize();
-      return new WeldOSGiContainer(this);
-   }
+    public WeldContainer initialize() {
+        container.initialize();
+        return new WeldOSGiContainer(this);
+    }
 
-   public void shutdown()
-   {
-      container.shutdown();
-   }
+    public void shutdown() {
+        container.shutdown();
+    }
 
-   public static class WeldOSGiContainer extends WeldContainer
-   {
-      private final WeldOSGi weld;
+    public static class WeldOSGiContainer extends WeldContainer {
+        private final WeldOSGi weld;
 
-      public WeldOSGiContainer(WeldOSGi weld)
-      {
-         super(null, null);
-         this.weld = weld;
-      }
+        public WeldOSGiContainer(WeldOSGi weld) {
+            super(null, null);
+            this.weld = weld;
+        }
 
-      @Override
-      public Instance<Object> instance()
-      {
-         return weld.container.getInstance();
-      }
+        @Override
+        public Instance<Object> instance() {
+            return weld.container.getInstance();
+        }
 
-      @Override
-      public Event<Object> event()
-      {
-         return weld.container.getEvent();
-      }
+        @Override
+        public Event<Object> event() {
+            return weld.container.getEvent();
+        }
 
-      @Override
-      public BeanManager getBeanManager()
-      {
-         return weld.container.getBeanManager();
-      }
+        @Override
+        public BeanManager getBeanManager() {
+            return weld.container.getBeanManager();
+        }
 
-   }
+    }
 }
