@@ -10,8 +10,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Ignore;
 import org.junit.Test;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 
