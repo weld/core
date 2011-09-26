@@ -18,18 +18,25 @@
 package org.jboss.weld.osgi.examples.calculator.core;
 
 
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Specification;
 import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
@@ -49,11 +56,17 @@ public class CalculatorGUI extends JFrame {
     private Operation currentOperation = new OperationImpl();
     private String currentValue = "";
     private String displayedValue = "";
-    private @Inject Event<InterBundleEvent> ibEvent;
+
+    @Inject
+    private Event<InterBundleEvent> ibEvent;
+
     private Service<Operator> operators;
+
     private DefaultListModel model = new DefaultListModel();
+
     private JPanel pan;
     private JPanel panel;
+
     private Map<String, OperatorListener> registeredOperators = new HashMap<String, OperatorListener>();
 
     @Inject

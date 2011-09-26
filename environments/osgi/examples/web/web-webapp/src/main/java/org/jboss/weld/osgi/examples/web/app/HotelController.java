@@ -34,7 +34,7 @@ import org.jboss.weld.osgi.examples.web.fwk.view.Render;
 public class HotelController implements Controller {
 
     @Inject @Required Service<HotelProvider> providers;
-    
+
     @Inject App app;
 
     @GET

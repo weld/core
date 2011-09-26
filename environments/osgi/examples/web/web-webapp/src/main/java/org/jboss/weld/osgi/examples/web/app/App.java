@@ -36,16 +36,16 @@ public class App {
     private static final String CONTEXT_ROOT = "/app";
 
     @Inject @Any Instance<Object> instances;
-        
+
     private ServiceTracker tracker;
     private AtomicBoolean valid = new AtomicBoolean(false);
 
     public void start(@Observes BundleContainerEvents.BundleContainerInitialized init) throws Exception {
-        this.tracker = new HttpServiceTracker(init.getBundleContext(), 
+        this.tracker = new HttpServiceTracker(init.getBundleContext(),
                 getClass().getClassLoader(), instances, CONTEXT_ROOT);
         this.tracker.open();
     }
-    
+
     public void validate(@Observes Valid event) {
         valid.compareAndSet(false, true);
     }

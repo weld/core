@@ -24,6 +24,6 @@ public interface ShapeContainer extends Shape {
     List<Shape> getShapes();
 
     void addShape(Shape shape);
-    
+
     void clearShapes();
 }

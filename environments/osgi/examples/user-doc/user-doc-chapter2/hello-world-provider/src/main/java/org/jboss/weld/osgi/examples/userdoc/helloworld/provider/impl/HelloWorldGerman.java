@@ -8,7 +8,7 @@ import org.jboss.weld.osgi.examples.userdoc.helloworld.provider.api.Presentation
 @Language("GERMAN")
 @Publish
 public class HelloWorldGerman implements HelloWorld {
-    
+
     @Override @Presentation
     public void sayHello() {
         System.out.println("Hallo Welt!");
