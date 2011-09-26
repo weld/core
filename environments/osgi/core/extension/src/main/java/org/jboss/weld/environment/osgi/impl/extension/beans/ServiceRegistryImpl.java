@@ -26,7 +26,7 @@ import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
 import org.jboss.weld.environment.osgi.api.events.Invalid;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
 import org.jboss.weld.environment.osgi.api.events.Valid;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -81,7 +81,7 @@ public class ServiceRegistryImpl implements ServiceRegistry {
     private Event<Invalid> invalidEvent;
 
     @Inject
-    private CDIOSGiExtension extension;
+    private WeldOSGiExtension extension;
 
     @Inject
     private BundleHolder bundleHolder;

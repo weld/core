@@ -38,9 +38,9 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class CDIOSGIAnnotatedParameter<T> implements AnnotatedParameter<T> {
+public class OSGIServiceAnnotatedParameter<T> implements AnnotatedParameter<T> {
     private static Logger logger = LoggerFactory.getLogger(
-            CDIOSGIAnnotatedParameter.class);
+            OSGIServiceAnnotatedParameter.class);
 
     AnnotatedParameter parameter;
 
@@ -48,7 +48,7 @@ public class CDIOSGIAnnotatedParameter<T> implements AnnotatedParameter<T> {
 
     Filter filter;
 
-    public CDIOSGIAnnotatedParameter(AnnotatedParameter parameter) {
+    public OSGIServiceAnnotatedParameter(AnnotatedParameter parameter) {
         logger.debug("Creation of a new CDIOSGIAnnotatedParameter wrapping {}",
                 parameter);
         this.parameter = parameter;

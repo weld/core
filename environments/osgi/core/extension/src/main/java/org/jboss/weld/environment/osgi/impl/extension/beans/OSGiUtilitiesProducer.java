@@ -111,9 +111,7 @@ public class OSGiUtilitiesProducer {
             if (bundleVersion == null || bundleVersion.value().equals("")) {
                 Bundle result =
                        (Bundle) Proxy.newProxyInstance(getClass().getClassLoader(),
-                                                       new Class[]{
-                            Bundle.class
-                        },
+                                                       new Class[] { Bundle.class },
                                                        new BundleHandler(
                         bundleName.value(),
                         "",

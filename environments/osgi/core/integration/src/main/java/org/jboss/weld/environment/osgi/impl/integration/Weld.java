@@ -20,7 +20,7 @@ package org.jboss.weld.environment.osgi.impl.integration;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.jboss.weld.environment.osgi.impl.integration.discovery.bundle.BundleBeanDeploymentArchiveFactory;
 import org.jboss.weld.environment.osgi.impl.integration.discovery.bundle.BundleDeployment;
 import org.jboss.weld.manager.api.WeldManager;
@@ -75,8 +75,8 @@ public class Weld {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         // -------------
-        boolean set = CDIOSGiExtension.currentBundle.get() != null;
-        CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
+        boolean set = WeldOSGiExtension.currentBundle.get() != null;
+        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
         try {
             bootstrap = new WeldBootstrap();
             BundleDeployment deployment = createDeployment(bootstrap);
@@ -108,7 +108,7 @@ public class Weld {
             t.printStackTrace();
         } finally {
             if (!set) {
-                CDIOSGiExtension.currentBundle.remove();
+                WeldOSGiExtension.currentBundle.remove();
             }
             Thread.currentThread().setContextClassLoader(old);
         }

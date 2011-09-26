@@ -21,7 +21,7 @@ import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
 import org.jboss.weld.environment.osgi.api.events.Invalid;
 import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.osgi.framework.Bundle;
@@ -164,8 +164,8 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             return;
         }
         logger.debug("Managing {}", bundle.getSymbolicName());
-        boolean set = CDIOSGiExtension.currentBundle.get() != null;
-        CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
+        boolean set = WeldOSGiExtension.currentBundle.get() != null;
+        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
         CDIContainer holder = factory().createContainer(bundle);
         logger.trace("CDI container created");
         holder.initialize();
@@ -203,14 +203,14 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
         }
         if (!set) {
-            CDIOSGiExtension.currentBundle.remove();
+            WeldOSGiExtension.currentBundle.remove();
         }
     }
 
     private void stopManagement(Bundle bundle) {
         logger.debug("Unmanaging {}", bundle.getSymbolicName());
-        boolean set = CDIOSGiExtension.currentBundle.get() != null;
-        CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
+        boolean set = WeldOSGiExtension.currentBundle.get() != null;
+        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
         CDIContainer holder = managed.get(bundle.getBundleId());
         if (started.get() && managed.containsKey(bundle.getBundleId())) {
             if (holder != null) {
@@ -239,7 +239,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             }
         }
         if (!set) {
-            CDIOSGiExtension.currentBundle.remove();
+            WeldOSGiExtension.currentBundle.remove();
         }
     }
 

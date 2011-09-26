@@ -17,7 +17,7 @@
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -98,7 +98,7 @@ public class DynamicServiceHandler implements InvocationHandler {
         logger.trace("Call on the DynamicServiceHandler {} for method {}",
                 this,
                 method);
-        CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
+        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
         if (!stored && method.getName().equals("hashCode")) { //intercept hashCode method
             int result = name.hashCode();
             result = 31 * result + filter.value().hashCode();
@@ -128,7 +128,7 @@ public class DynamicServiceHandler implements InvocationHandler {
             throw new RuntimeException(t);
         } finally {
             bundle.getBundleContext().ungetService(reference);
-            CDIOSGiExtension.currentBundle.remove();
+            WeldOSGiExtension.currentBundle.remove();
         }
 //        Object instanceToUse = this.tracker.waitForService(timeout);
 //        try {
@@ -137,7 +137,7 @@ public class DynamicServiceHandler implements InvocationHandler {
 //            logger.error("Unable to find a matching service for {} with filter {} due to {}", new Object[] {name, filter.value(), t});
 //            throw new RuntimeException(t);
 //        } finally {
-//            CDIOSGiExtension.currentBundle.remove();
+//            WeldOSGiExtension.currentBundle.remove();
 //        }
     }
 

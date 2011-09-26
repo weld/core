@@ -19,7 +19,7 @@ package org.jboss.weld.environment.osgi.impl;
 import org.jboss.weld.environment.osgi.api.annotation.Sent;
 import org.jboss.weld.environment.osgi.api.annotation.Specification;
 import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.jboss.weld.environment.osgi.impl.integration.Weld;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.osgi.framework.Bundle;
@@ -84,17 +84,17 @@ public class WeldCDIContainer implements CDIContainer {
                 + "an inter bundle event: {}",
                 bundle,
                 event);
-        Long set = CDIOSGiExtension.currentBundle.get();
-        CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
+        Long set = WeldOSGiExtension.currentBundle.get();
+        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
         container.getEvent().select(InterBundleEvent.class,
                 new SpecificationAnnotation(
                         event.type()),
                 new SentAnnotation()).fire(
                 event);
         if (set != null) {
-            CDIOSGiExtension.currentBundle.set(set);
+            WeldOSGiExtension.currentBundle.set(set);
         } else {
-            CDIOSGiExtension.currentBundle.remove();
+            WeldOSGiExtension.currentBundle.remove();
         }
     }
 

@@ -39,9 +39,9 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class CDIOSGiAnnotatedField<T> implements AnnotatedField<T> {
+public class OSGiServiceAnnotatedField<T> implements AnnotatedField<T> {
     private static Logger logger = LoggerFactory.getLogger(
-            CDIOSGiAnnotatedField.class);
+            OSGiServiceAnnotatedField.class);
 
     AnnotatedField field;
 
@@ -49,7 +49,7 @@ public class CDIOSGiAnnotatedField<T> implements AnnotatedField<T> {
 
     Filter filter;
 
-    public CDIOSGiAnnotatedField(final AnnotatedField<? super T> field) {
+    public OSGiServiceAnnotatedField(final AnnotatedField<? super T> field) {
         logger.debug("Creation of a new CDIOSGiAnnotatedField wrapping {}", field);
         this.field = field;
         filter = FilterGenerator.makeFilter(filter, field.getAnnotations());

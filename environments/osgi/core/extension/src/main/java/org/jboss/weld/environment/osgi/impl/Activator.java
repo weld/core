@@ -27,16 +27,20 @@ import org.slf4j.LoggerFactory;
  * This is the {@link BundleActivator} of the extension bundle. It represents
  * the entry point of CDI-OSGi.
  * <p/>
- * It is responsible for starting both extension and integration part of CDI-OSGi.
+ * It is responsible for starting both extension and integration part of Weld-OSGi.
  * First the extension is started, then the integration.
- * It also stops both part when CDI-OSGi shutdown.
+ * It also stops both part when Weld-OSGi shutdown.
+ * <p/>
+ * @see ExtensionActivator
+ * @see IntegrationActivator
  *
  * @author Guillaume Sauthier
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public class Activator implements BundleActivator {
-    private Logger logger = LoggerFactory.getLogger(Activator.class);
+
+    private static Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private BundleActivator integration = new IntegrationActivator();
 
@@ -44,18 +48,28 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        logger.debug("CDI-OSGi is starting ...");
+        logger.trace("Entering {} : {} with parameter {}",
+                     new Object[] {getClass().getName(),
+                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
+                                   context
+                });
+        logger.debug("Weld-OSGi is starting ...");
         extension.start(context);
         integration.start(context);
-        logger.debug("CDI-OSGi STARTED");
+        logger.info("Weld-OSGi STARTED");
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        logger.debug("CDI-OSGi is stopping ...");
+        logger.trace("Entering {} : {} with parameter {}",
+                     new Object[] {getClass().getName(),
+                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
+                                   context
+                });
+        logger.debug("Weld-OSGi is stopping ...");
         integration.stop(context);
         extension.stop(context);
-        logger.debug("CDI-OSGi STOPPED");
+        logger.info("Weld-OSGi STOPPED");
     }
 
 }
