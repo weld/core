@@ -19,37 +19,28 @@ package org.jboss.weld.osgi.tests.lifecycle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
 
-public class SynchronousListener implements SynchronousBundleListener
-{
-   Timer timer = new Timer();
+public class SynchronousListener implements SynchronousBundleListener {
+    Timer timer = new Timer();
 
-   @Override
-   public void bundleChanged(BundleEvent event)
-   {
-      if (event.getType() == BundleEvent.STARTED)
-      {
-         FlagFarm.synchronousStartedEntrance = FlagFarm.currentRank++;
-         try
-         {
-            timer.process(500);
-         }
-         catch(InterruptedException ex)
-         {
-            throw new RuntimeException();
-         }
-         FlagFarm.synchronousStartedExit = FlagFarm.currentRank++;
-      } else if (event.getType() == BundleEvent.STOPPING) {
-         FlagFarm.synchronousStoppingEntrance = FlagFarm.currentRank++;
-         try
-         {
-            timer.process(500);
-         }
-         catch(InterruptedException ex)
-         {
-            throw new RuntimeException();
-         }
-         FlagFarm.synchronousStoppingExit = FlagFarm.currentRank++;
-      }
-   }
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        if (event.getType() == BundleEvent.STARTED) {
+            FlagFarm.synchronousStartedEntrance = FlagFarm.currentRank++;
+            try {
+                timer.process(500);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException();
+            }
+            FlagFarm.synchronousStartedExit = FlagFarm.currentRank++;
+        } else if (event.getType() == BundleEvent.STOPPING) {
+            FlagFarm.synchronousStoppingEntrance = FlagFarm.currentRank++;
+            try {
+                timer.process(500);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException();
+            }
+            FlagFarm.synchronousStoppingExit = FlagFarm.currentRank++;
+        }
+    }
 
 }

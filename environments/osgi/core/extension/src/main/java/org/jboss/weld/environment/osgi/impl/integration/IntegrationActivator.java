@@ -24,7 +24,15 @@ import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
 import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.SynchronousBundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

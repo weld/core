@@ -51,7 +51,7 @@ import java.util.Set;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public class OSGiServiceBean implements Bean {
-    private final static Logger logger =
+    private static final Logger logger =
             LoggerFactory.getLogger(OSGiServiceBean.class);
 
     private final Map<Object, DynamicServiceHandler> handlers =

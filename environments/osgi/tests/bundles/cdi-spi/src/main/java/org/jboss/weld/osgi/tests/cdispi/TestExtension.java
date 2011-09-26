@@ -21,7 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.InjectionException;
-import javax.enterprise.inject.spi.*;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import java.lang.reflect.Field;
 import java.util.Set;
 

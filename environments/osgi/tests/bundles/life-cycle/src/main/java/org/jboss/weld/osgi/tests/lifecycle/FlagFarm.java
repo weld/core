@@ -16,27 +16,26 @@
  */
 package org.jboss.weld.osgi.tests.lifecycle;
 
-public class FlagFarm
-{
+public class FlagFarm {
 
-   public static int currentRank = 0;
+    public static int currentRank = 0;
 
-   public static int osgiStartEntrance = -1;
-   public static int osgiStartExit = -1;
-   public static int osgiStopEntrance = -1;
-   public static int osgiStopExit = -1;
+    public static int osgiStartEntrance = -1;
+    public static int osgiStartExit = -1;
+    public static int osgiStopEntrance = -1;
+    public static int osgiStopExit = -1;
 
-   public static int cdiStartEntrance = -1;
-   public static int cdiStartExit = -1;
-   public static int cdiStopEntrance = -1;
-   public static int cdiStopExit = -1;
+    public static int cdiStartEntrance = -1;
+    public static int cdiStartExit = -1;
+    public static int cdiStopEntrance = -1;
+    public static int cdiStopExit = -1;
 
-   public static int asynchronousStartedEntrance = -1;
-   public static int asynchronousStartedExit = -1;
+    public static int asynchronousStartedEntrance = -1;
+    public static int asynchronousStartedExit = -1;
 
-   public static int synchronousStartedEntrance = -1;
-   public static int synchronousStartedExit = -1;
-   public static int synchronousStoppingEntrance = -1;
-   public static int synchronousStoppingExit = -1;
+    public static int synchronousStartedEntrance = -1;
+    public static int synchronousStartedExit = -1;
+    public static int synchronousStoppingEntrance = -1;
+    public static int synchronousStoppingExit = -1;
 
 }

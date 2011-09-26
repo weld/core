@@ -21,7 +21,11 @@ import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.inject.spi.*;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

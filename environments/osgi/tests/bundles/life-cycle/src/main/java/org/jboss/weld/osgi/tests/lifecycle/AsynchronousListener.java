@@ -19,26 +19,20 @@ package org.jboss.weld.osgi.tests.lifecycle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 
-public class AsynchronousListener implements BundleListener
-{
-   Timer timer = new Timer();
+public class AsynchronousListener implements BundleListener {
+    Timer timer = new Timer();
 
-   @Override
-   public void bundleChanged(BundleEvent event)
-   {
-      if (event.getType() == BundleEvent.STARTED)
-      {
-         FlagFarm.asynchronousStartedEntrance = FlagFarm.currentRank++;
-         try
-         {
-            timer.process(1500);
-         }
-         catch(InterruptedException ex)
-         {
-            throw new RuntimeException();
-         }
-         FlagFarm.asynchronousStartedExit = FlagFarm.currentRank++;
-      }
-   }
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        if (event.getType() == BundleEvent.STARTED) {
+            FlagFarm.asynchronousStartedEntrance = FlagFarm.currentRank++;
+            try {
+                timer.process(1500);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException();
+            }
+            FlagFarm.asynchronousStartedExit = FlagFarm.currentRank++;
+        }
+    }
 
 }
