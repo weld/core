@@ -100,11 +100,10 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
     @Override
     public String getActionURL(FacesContext facesContext, String viewId) {
         if (contextId == null) {
-            if (facesContext.getAttributes().containsKey(Container.CONTEXT_ID_KEY)) {
-                contextId = (String) facesContext.getAttributes().get(Container.CONTEXT_ID_KEY);
-            } else {
-                contextId = RegistrySingletonProvider.STATIC_INSTANCE;
-            }
+            contextId = WeldPhaseListener.getServletContext(facesContext).getInitParameter(Container.CONTEXT_ID_KEY);
+        }
+        if (contextId == null) {
+            contextId = RegistrySingletonProvider.STATIC_INSTANCE;
         }
         String actionUrl = super.getActionURL(facesContext, viewId);
         Conversation conversation = getConversationContext(contextId).getCurrentConversation();

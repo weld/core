@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * <p>
@@ -55,7 +56,7 @@ public class ConversationPropagationFilter implements Filter {
     private String contextId;
 
     public void init(FilterConfig config) throws ServletException {
-        contextId = (String) config.getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+        contextId = (String) config.getServletContext().getInitParameter(Container.CONTEXT_ID_KEY);
         if (contextId == null) {
             contextId = RegistrySingletonProvider.STATIC_INSTANCE;
         }

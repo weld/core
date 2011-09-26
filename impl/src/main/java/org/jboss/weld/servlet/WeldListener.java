@@ -84,7 +84,7 @@ public class WeldListener extends AbstractServletListener {
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
         if (contextId == null) {
-            contextId = (String) event.getSession().getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+            contextId = (String) event.getSession().getServletContext().getInitParameter(Container.CONTEXT_ID_KEY);
         }
         if (contextId == null) {
             contextId = RegistrySingletonProvider.STATIC_INSTANCE;
@@ -101,7 +101,7 @@ public class WeldListener extends AbstractServletListener {
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
         if (contextId == null) {
-            contextId = (String) event.getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+            contextId = (String) event.getServletContext().getInitParameter(Container.CONTEXT_ID_KEY);
         }
         if (contextId == null) {
             contextId = RegistrySingletonProvider.STATIC_INSTANCE;
@@ -139,11 +139,12 @@ public class WeldListener extends AbstractServletListener {
     @Override
     public void requestInitialized(ServletRequestEvent event) {
         if (contextId == null) {
-            contextId = (String) event.getServletContext().getAttribute(Container.CONTEXT_ID_KEY);
+            contextId = (String) event.getServletContext().getInitParameter(Container.CONTEXT_ID_KEY);
         }
         if (contextId == null) {
             contextId = RegistrySingletonProvider.STATIC_INSTANCE;
         }
+
         log.trace(REQUEST_INITIALIZED, event.getServletRequest());
         // JBoss AS will still start the deployment even if Weld fails to start
         if (Container.available(contextId)) {
