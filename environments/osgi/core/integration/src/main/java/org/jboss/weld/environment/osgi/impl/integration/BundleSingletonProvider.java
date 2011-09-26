@@ -19,7 +19,7 @@ package org.jboss.weld.environment.osgi.impl.integration;
 
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -47,7 +47,7 @@ public class BundleSingletonProvider extends SingletonProvider {
         }
 
         private Long getId() {
-            Long value = CDIOSGiExtension.currentBundle.get();
+            Long value = WeldOSGiExtension.currentBundle.get();
             // fix with a patched version of weld ProxyMethodHandler
 //            if (value == null) {
 //                return FrameworkUtil.getBundle(ProxyMethodHandler.currentCaller.get()).getBundleId();
@@ -88,10 +88,10 @@ public class BundleSingletonProvider extends SingletonProvider {
                         if (maybeBundle != null) {
                             if (!maybeBundle.getSymbolicName()
                                     .equals("org.jboss.weld.osgi.weld-osgi")) {
-                                CDIOSGiExtension.currentBundle.
+                                WeldOSGiExtension.currentBundle.
                                         set(maybeBundle.getBundleId());
                                 maybeObject = get(null);
-                                CDIOSGiExtension.currentBundle.remove();
+                                WeldOSGiExtension.currentBundle.remove();
                                 if (maybeObject != null) {
                                     return maybeObject;
                                 }

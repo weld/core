@@ -24,7 +24,7 @@ import javassist.NotFoundException;
 import org.jboss.weld.environment.osgi.api.annotation.Property;
 import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -166,7 +166,7 @@ public class ServicePublisher {
             }
         }
         if (registration != null) {
-            CDIOSGiExtension.currentBundle.set(bundle.getBundleId());
+            WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
             instance.select(RegistrationsHolderImpl.class).get().addRegistration(registration);
         }
     }

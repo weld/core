@@ -23,7 +23,7 @@ import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
 import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
-import org.jboss.weld.environment.osgi.impl.extension.service.CDIOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.jboss.weld.environment.osgi.spi.EmbeddedCDIContainer;
@@ -44,6 +44,10 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
 
 public class EmbeddedContainer {
 
@@ -140,8 +144,8 @@ public class EmbeddedContainer {
                         bundleEvent = new BundleEvents.BundleUpdated(bundle);
                         break;
                 }
-                boolean set = CDIOSGiExtension.currentBundle.get() != null;
-                CDIOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
+                boolean set = WeldOSGiExtension.currentBundle.get() != null;
+                WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
                 try {
                     //broadcast the OSGi event through CDI event system
                     container.getEvent().select(BundleEvent.class).fire(event);
@@ -153,7 +157,7 @@ public class EmbeddedContainer {
                     fireAllEvent(bundleEvent, container.getEvent());
                 }
                 if (!set) {
-                    CDIOSGiExtension.currentBundle.remove();
+                    WeldOSGiExtension.currentBundle.remove();
                 }
             }
         }
@@ -179,8 +183,8 @@ public class EmbeddedContainer {
                         serviceEvent = new ServiceEvents.ServiceDeparture(ref, context);
                         break;
                 }
-                boolean set = CDIOSGiExtension.currentBundle.get() != null;
-                CDIOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
+                boolean set = WeldOSGiExtension.currentBundle.get() != null;
+                WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
                 try {
                     //broadcast the OSGi event through CDI event system
                     container.getEvent().select(ServiceEvent.class).fire(event);
@@ -192,7 +196,7 @@ public class EmbeddedContainer {
                     fireAllEvent(serviceEvent, container.getEvent(), container.getInstance());
                 }
                 if (!set) {
-                    CDIOSGiExtension.currentBundle.remove();
+                    WeldOSGiExtension.currentBundle.remove();
                 }
             }
         }
@@ -213,7 +217,7 @@ public class EmbeddedContainer {
                 try {
                     broadcaster.select(eventClass,
                             filteredServicesQualifiers(event,
-                                    new ExtensionActivator.SpecificationAnnotation(clazz),
+                                    new SpecificationAnnotation(clazz),
                                     instance))
                             .fire(event);
                 } catch (Throwable t) {
@@ -223,18 +227,18 @@ public class EmbeddedContainer {
         }
 
         private Annotation[] filteredServicesQualifiers(AbstractServiceEvent event,
-                                                        ExtensionActivator.SpecificationAnnotation specific,
+                                                        SpecificationAnnotation specific,
                                                         Instance<Object> instance) {
             Set<Annotation> eventQualifiers = new HashSet<Annotation>();
             eventQualifiers.add(specific);
-            CDIOSGiExtension extension = instance.select(CDIOSGiExtension.class).get();
+            WeldOSGiExtension extension = instance.select(WeldOSGiExtension.class).get();
             for (Annotation annotation : extension.getObservers()) {
                 String value = ((Filter) annotation).value();
                 try {
                     org.osgi.framework.Filter filter
                             = context.createFilter(value);
                     if (filter.match(event.getReference())) {
-                        eventQualifiers.add(new ExtensionActivator.FilterAnnotation(value));
+                        eventQualifiers.add(new FilterAnnotation(value));
                     }
                 } catch (InvalidSyntaxException ex) {
                     //ex.printStackTrace();
@@ -246,8 +250,8 @@ public class EmbeddedContainer {
         private void fireAllEvent(AbstractBundleEvent event, Event broadcaster) {
             try {
                 broadcaster.select(event.getClass(),
-                        new ExtensionActivator.BundleNameAnnotation(event.getSymbolicName()),
-                        new ExtensionActivator.BundleVersionAnnotation(event.getVersion().toString()))
+                        new BundleNameAnnotation(event.getSymbolicName()),
+                        new BundleVersionAnnotation(event.getVersion().toString()))
                         .fire(event);
             } catch (Throwable t) {
                 t.printStackTrace();

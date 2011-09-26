@@ -39,9 +39,9 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class CDIOSGiAnnotatedType<T> implements AnnotatedType<T> {
+public class OSGiServiceAnnotatedType<T> implements AnnotatedType<T> {
     private static Logger logger = LoggerFactory.getLogger(
-            CDIOSGiAnnotatedType.class);
+            OSGiServiceAnnotatedType.class);
 
     AnnotatedType<T> annotatedType;
 
@@ -54,7 +54,7 @@ public class CDIOSGiAnnotatedType<T> implements AnnotatedType<T> {
     Set<AnnotatedField<? super T>> fields =
             new HashSet<AnnotatedField<? super T>>();
 
-    public CDIOSGiAnnotatedType(AnnotatedType<T> annotatedType) throws Exception {
+    public OSGiServiceAnnotatedType(AnnotatedType<T> annotatedType) throws Exception {
         logger.debug("Creation of a new CDIOSGiAnnotatedType wrapping {}",
                 annotatedType);
         this.annotatedType = annotatedType;
@@ -87,7 +87,7 @@ public class CDIOSGiAnnotatedType<T> implements AnnotatedType<T> {
         for (AnnotatedConstructor<T> constructor : annotatedType.getConstructors()) {
             logger.trace("Processing constructor {}", constructor);
             if (isCDIOSGiConstructor(constructor)) {
-                constructors.add(new CDIOSGiAnnotatedConstructor<T>(constructor));
+                constructors.add(new OSGiServiceAnnotatedConstructor<T>(constructor));
             } else {
                 constructors.add(constructor);
             }
@@ -95,7 +95,7 @@ public class CDIOSGiAnnotatedType<T> implements AnnotatedType<T> {
         for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
             logger.trace("Processing method {}", method);
             if (isCDIOSGiMethod(method)) {
-                methods.add(new CDIOSGiAnnotatedMethod<T>(method));
+                methods.add(new OSGiServiceAnnotatedMethod<T>(method));
             } else {
                 methods.add(method);
             }
@@ -103,7 +103,7 @@ public class CDIOSGiAnnotatedType<T> implements AnnotatedType<T> {
         for (AnnotatedField<? super T> field : annotatedType.getFields()) {
             logger.trace("Processing field {}", field);
             if (isCDIOSGiField(field)) {
-                fields.add(new CDIOSGiAnnotatedField<T>(field));
+                fields.add(new OSGiServiceAnnotatedField<T>(field));
             } else {
                 fields.add(field);
             }

@@ -20,7 +20,7 @@ import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.api.annotation.Required;
-import org.jboss.weld.environment.osgi.impl.extension.CDIOSGiAnnotatedType;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceAnnotatedType;
 import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
@@ -69,9 +69,9 @@ import org.jboss.weld.environment.osgi.impl.extension.beans.OSGiUtilitiesProduce
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
-public class CDIOSGiExtension implements Extension {
+public class WeldOSGiExtension implements Extension {
     private static Logger logger = LoggerFactory.getLogger(
-            CDIOSGiExtension.class);
+            WeldOSGiExtension.class);
 
     // hack for weld integration
     public static ThreadLocal<Long> currentBundle = new ThreadLocal<Long>();
@@ -230,7 +230,7 @@ public class CDIOSGiExtension implements Extension {
     private AnnotatedType discoverAndProcessCDIOSGiClass(
             AnnotatedType annotatedType) {
         try {
-            return new CDIOSGiAnnotatedType(annotatedType);
+            return new OSGiServiceAnnotatedType(annotatedType);
         } catch (Exception e) {
             exceptions.add(e);
         }
