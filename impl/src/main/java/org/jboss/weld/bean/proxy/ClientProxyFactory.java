@@ -96,12 +96,12 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     public ClientProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
         super(contextId, proxiedBeanType, typeClosure, bean);
-        beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+        beanId = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
     }
 
     public ClientProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
         super(contextId, proxiedBeanType, typeClosure, proxyName, bean);
-        beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+        beanId = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
     }
 
     @Override
