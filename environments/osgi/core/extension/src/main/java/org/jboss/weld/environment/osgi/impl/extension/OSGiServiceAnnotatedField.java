@@ -34,21 +34,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * CDI-OSGi annotated field. Wrap {@link OSGiService} annotated fields in order
- * to enable CDI-OSGi features.
- *
+ * This is an {@link AnnotatedField} that wrap all {@link OSGiService}
+ * annotated parameter processed by Weld-OSGi bean bundles Weld containers,
+ * to avoid ambiguous dependency with regular CDI injection point.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
+ * @see OSGiServiceAnnotatedParameter
+ * @see OSGiServiceAnnotatedType
  */
 public class OSGiServiceAnnotatedField<T> implements AnnotatedField<T> {
-    private static Logger logger = LoggerFactory.getLogger(
-            OSGiServiceAnnotatedField.class);
 
-    AnnotatedField field;
+    private static Logger logger =
+                          LoggerFactory.getLogger(OSGiServiceAnnotatedField.class);
 
-    Set<Annotation> annotations = new HashSet<Annotation>();
+    private AnnotatedField field;
 
-    Filter filter;
+    private Set<Annotation> annotations = new HashSet<Annotation>();
+
+    private Filter filter;
 
     public OSGiServiceAnnotatedField(final AnnotatedField<? super T> field) {
         logger.debug("Creation of a new CDIOSGiAnnotatedField wrapping {}", field);
@@ -67,6 +72,7 @@ public class OSGiServiceAnnotatedField<T> implements AnnotatedField<T> {
                 annotations.add(annotation);
             }
         }
+        logger.debug("New OSGiServiceAnnotatedField constructed {}", this);
     }
 
     @Override

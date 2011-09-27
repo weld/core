@@ -33,25 +33,31 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * CDI-OSGi annotated parameter. Wrap {@link OSGiService} annotated parameters
- * in order to enable CDI-OSGi features.
- *
+ * This is an {@link AnnotatedParameter} that wrap all {@link OSGiService}
+ * annotated parameter processed by Weld-OSGi bean bundles Weld containers,
+ * to avoid ambiguous dependency with regular CDI injection point.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
+ * @see OSGiServiceAnnotatedParameter
+ * @see OSGiServiceAnnotatedType
  */
-public class OSGIServiceAnnotatedParameter<T> implements AnnotatedParameter<T> {
-    private static Logger logger = LoggerFactory.getLogger(
-            OSGIServiceAnnotatedParameter.class);
+public class OSGiServiceAnnotatedParameter<T> implements AnnotatedParameter<T> {
 
-    AnnotatedParameter parameter;
+    private static Logger logger =
+                          LoggerFactory.getLogger(OSGiServiceAnnotatedParameter.class);
 
-    Set<Annotation> annotations = new HashSet<Annotation>();
+    private AnnotatedParameter parameter;
 
-    Filter filter;
+    private Set<Annotation> annotations = new HashSet<Annotation>();
 
-    public OSGIServiceAnnotatedParameter(AnnotatedParameter parameter) {
-        logger.debug("Creation of a new CDIOSGIAnnotatedParameter wrapping {}",
-                parameter);
+    private Filter filter;
+
+    public OSGiServiceAnnotatedParameter(AnnotatedParameter parameter) {
+        logger.trace("Entering OSGiServiceAnnotatedParameter : "
+                     + "OSGiServiceAnnotatedParameter() with parameter {}",
+                     new Object[] {parameter});
         this.parameter = parameter;
         filter = FilterGenerator.makeFilter(parameter.getAnnotations());
         annotations.add(filter);
@@ -67,6 +73,7 @@ public class OSGIServiceAnnotatedParameter<T> implements AnnotatedParameter<T> {
                 annotations.add(annotation);
             }
         }
+        logger.debug("New OSGiServiceAnnotatedParameter constructed {}", this);
     }
 
     @Override

@@ -31,32 +31,42 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * CDI-OSGi annotated method. Wrap regular CDI methods in order to enable
- * CDI-OSGi features.
- *
+ * This is an {@link AnnotatedMethod} that wrap all {@link Inject}
+ * annotated method processed by Weld-OSGi bean bundles Weld containers.
+ * <p/>
+ * It wrap any {@link OSGiService} annotated injection point in these
+ * methods to avoid ambiguous dependency with regular CDI injection point.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
+ * @see OSGiServiceAnnotatedParameter
+ * @see OSGiServiceAnnotatedType
  */
 public class OSGiServiceAnnotatedMethod<T> implements AnnotatedMethod<T> {
-    private static Logger logger = LoggerFactory.getLogger(
-            OSGiServiceAnnotatedMethod.class);
+
+    private static Logger logger =
+                          LoggerFactory.getLogger(OSGiServiceAnnotatedMethod.class);
 
     AnnotatedMethod method;
 
-    List<AnnotatedParameter<T>> parameters = new ArrayList<AnnotatedParameter<T>>();
+    List<AnnotatedParameter<T>> parameters =
+                                new ArrayList<AnnotatedParameter<T>>();
 
     public OSGiServiceAnnotatedMethod(AnnotatedMethod<? super T> method) {
-        logger.debug("Creation of a new CDIOSGiAnnotatedMethod wrapping {}",
-                method);
+        logger.trace("Entering OSGiServiceAnnotatedMethod : "
+                     + "OSGiServiceAnnotatedMethod() with parameter {}",
+                     new Object[] {method});
         this.method = method;
         for (AnnotatedParameter parameter : method.getParameters()) {
-            logger.trace("Processing parameter {}", parameter);
             if (parameter.isAnnotationPresent(OSGiService.class)) {
-                parameters.add(new OSGIServiceAnnotatedParameter(parameter));
-            } else {
+                parameters.add(new OSGiServiceAnnotatedParameter(parameter));
+            }
+            else {
                 parameters.add(parameter);
             }
         }
+        logger.debug("New OSGiServiceAnnotatedMethod constructed {}", this);
     }
 
     @Override
