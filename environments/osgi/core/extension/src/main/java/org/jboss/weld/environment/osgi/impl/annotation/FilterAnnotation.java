@@ -26,7 +26,8 @@ import org.jboss.weld.environment.osgi.api.annotation.Filter;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class FilterAnnotation extends AnnotationLiteral<Filter> implements Filter {
+public class FilterAnnotation extends AnnotationLiteral<Filter>
+                              implements Filter {
 
     private final String value;
 

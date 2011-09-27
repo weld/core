@@ -81,11 +81,8 @@ public class ExtensionActivator implements BundleActivator,
 
     @Override
     public void start(BundleContext context) throws Exception {
-        logger.trace("Entering {} : {} with parameter {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   context
-                });
+        logger.trace("Entering ExtensionActivator : start() with parameter {}",
+                     new Object[] {context});
         this.context = context;
         context.addBundleListener(this);
         context.addServiceListener(this);
@@ -94,11 +91,8 @@ public class ExtensionActivator implements BundleActivator,
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        logger.trace("Entering {} : {} with parameter {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   context
-                });
+        logger.trace("Entering ExtensionActivator : stop() with parameter {}",
+                     new Object[] {context});
         //nothing to do here
     }
 
@@ -113,11 +107,9 @@ public class ExtensionActivator implements BundleActivator,
      */
     @Override
     public void bundleChanged(BundleEvent event) {
-        logger.trace("Entering {} : {} with parameter {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   event
-                });
+        logger.trace("Entering ExtensionActivator : "
+                     + "bundleChanged() with parameter {}",
+                     new Object[] {event});
         ServiceReference[] cdiEventServiceReferences =
                            findReferences(context, Event.class);
         if (cdiEventServiceReferences != null) {
@@ -207,11 +199,9 @@ public class ExtensionActivator implements BundleActivator,
      */
     @Override
     public void serviceChanged(ServiceEvent event) {
-        logger.trace("Entering {} : {} with parameter {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   event
-                });
+        logger.trace("Entering ExtensionActivator : "
+                     + "serviceChanged() with parameter {}",
+                     new Object[] {event});
         ServiceReference[] cdiInstanceServiceReferences =
                            findReferences(context, Instance.class);
         if (cdiInstanceServiceReferences != null) {
@@ -221,17 +211,20 @@ public class ExtensionActivator implements BundleActivator,
                 case ServiceEvent.MODIFIED:
                     logger.debug("Receiving a new OSGi service event MODIFIED");
                     resultingWeldOSGiServiceEvent =
-                    new ServiceEvents.ServiceChanged(originServiceReference, context);
+                    new ServiceEvents.ServiceChanged(originServiceReference,
+                                                     context);
                     break;
                 case ServiceEvent.REGISTERED:
                     logger.debug("Receiving a new OSGi service event REGISTERED");
                     resultingWeldOSGiServiceEvent =
-                    new ServiceEvents.ServiceArrival(originServiceReference, context);
+                    new ServiceEvents.ServiceArrival(originServiceReference,
+                                                     context);
                     break;
                 case ServiceEvent.UNREGISTERING:
                     logger.debug("Receiving a new OSGi service event UNREGISTERING");
                     resultingWeldOSGiServiceEvent =
-                    new ServiceEvents.ServiceDeparture(originServiceReference, context);
+                    new ServiceEvents.ServiceDeparture(originServiceReference,
+                                                       context);
                     break;
             }
             for (ServiceReference reference : cdiInstanceServiceReferences) {
@@ -240,10 +233,13 @@ public class ExtensionActivator implements BundleActivator,
                 Instance<Object> instance =
                                  (Instance<Object>) context.getService(reference);
                 try {
-                    Event<Object> e = instance.select(Event.class).get();
-                    e.select(ServiceEvent.class).fire(event);
+                    Event<Object> broadcastingCDIEvent =
+                                  instance.select(Event.class).get();
+                    broadcastingCDIEvent.select(ServiceEvent.class).fire(event);
                     if (resultingWeldOSGiServiceEvent != null) {
-                        fireAllEvent(resultingWeldOSGiServiceEvent, e, instance);
+                        fireAllEvent(resultingWeldOSGiServiceEvent,
+                                     broadcastingCDIEvent,
+                                     instance);
                     }
                 }
                 catch(Throwable t) {
@@ -256,13 +252,12 @@ public class ExtensionActivator implements BundleActivator,
         }
     }
 
-    private ServiceReference[] findReferences(BundleContext context, Class<?> type) {
-        logger.trace("Entering {} : {} with parameters {} | {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   context,
-                                   type
-                });
+    private ServiceReference[] findReferences(BundleContext context,
+                                              Class<?> type) {
+        logger.trace("Entering ExtensionActivator : "
+                     + "findReferences() with parameters {} | {}",
+                     new Object[] {context,
+                                   type});
         ServiceReference[] references = null;
         try {
             references = context.getServiceReferences(type.getName(), null);
@@ -274,12 +269,9 @@ public class ExtensionActivator implements BundleActivator,
     }
 
     private void fireAllEvent(AbstractBundleEvent event, Event broadcaster) {
-        logger.trace("Entering {} : {} with parameters {} | {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   event,
-                                   broadcaster
-                });
+        logger.trace("Entering ExtensionActivator : "
+                     + "fireAllEvent() with parameters {}",
+                     new Object[] {event});
         try {
             broadcaster.select(event.getClass(),
                                new BundleNameAnnotation(event.getSymbolicName()),
@@ -293,13 +285,10 @@ public class ExtensionActivator implements BundleActivator,
     private void fireAllEvent(AbstractServiceEvent event,
                               Event broadcaster,
                               Instance<Object> instance) {
-        logger.trace("Entering {} : {} with parameters {} | {} | {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   event,
-                                   broadcaster,
-                                   instance
-                });
+        logger.trace("Entering ExtensionActivator : "
+                     + "fireAllEvent() with parameters {} | {}",
+                     new Object[] {event,
+                                   instance});
         List<Class<?>> classes = event.getServiceClasses(getClass());
         Class eventClass = event.getClass();
         for (Class<?> clazz : classes) {
@@ -319,13 +308,11 @@ public class ExtensionActivator implements BundleActivator,
     private Annotation[] filteredServicesQualifiers(AbstractServiceEvent event,
                                                     SpecificationAnnotation specific,
                                                     Instance<Object> instance) {
-        logger.trace("Entering {} : {} with parameters {} | {} | {}",
-                     new Object[] {getClass().getName(),
-                                   Thread.currentThread().getStackTrace()[1].getMethodName(),
-                                   event,
+        logger.trace("Entering ExtensionActivator : "
+                     + "filteredServicesQualifiers() with parameters {} | {} | {}",
+                     new Object[] {event,
                                    specific,
-                                   instance
-                });
+                                   instance});
         Set<Annotation> eventQualifiers = new HashSet<Annotation>();
         eventQualifiers.add(specific);
         WeldOSGiExtension extension = instance.select(WeldOSGiExtension.class).get();

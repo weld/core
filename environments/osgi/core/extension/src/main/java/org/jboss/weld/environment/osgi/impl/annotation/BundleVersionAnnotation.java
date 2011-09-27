@@ -26,7 +26,8 @@ import org.jboss.weld.environment.osgi.api.annotation.BundleVersion;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class BundleVersionAnnotation extends AnnotationLiteral<BundleVersion> implements BundleVersion {
+public class BundleVersionAnnotation extends AnnotationLiteral<BundleVersion>
+                                     implements BundleVersion {
 
     private final String value;
 

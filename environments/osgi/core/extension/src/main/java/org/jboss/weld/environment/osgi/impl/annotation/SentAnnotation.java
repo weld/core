@@ -26,7 +26,8 @@ import org.jboss.weld.environment.osgi.api.annotation.Sent;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class SentAnnotation extends AnnotationLiteral<Sent> implements Sent {
+public class SentAnnotation extends AnnotationLiteral<Sent>
+                            implements Sent {
 
     @Override
     public Class<? extends Annotation> annotationType() {
