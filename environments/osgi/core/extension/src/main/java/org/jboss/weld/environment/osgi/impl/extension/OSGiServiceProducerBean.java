@@ -39,13 +39,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This the bean class for all beans generated from a {@link Service} typed {@link InjectionPoint}.
- *
+ * This the bean class for all beans generated from a {@link Service} typed
+ * {@link InjectionPoint}.
+ * <b/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
+ * @see OSGiServiceBean
  */
 public class OSGiServiceProducerBean<Service> implements Bean<Service> {
-    private static Logger logger = LoggerFactory.getLogger(OSGiServiceProducerBean.class);
+
+    private static Logger logger =
+                          LoggerFactory.getLogger(OSGiServiceProducerBean.class);
 
     private final InjectionPoint injectionPoint;
 
@@ -56,11 +61,14 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
     private Type type;
 
     public OSGiServiceProducerBean(InjectionPoint injectionPoint) {
-        logger.debug("Creation of a new OSGiServiceProducerBean for injection point: {}", injectionPoint);
+        logger.trace("Entering OSGiServiceProducerBean : "
+                     + "OSGiServiceProducerBean() with parameter {}",
+                     new Object[] {injectionPoint});
         this.injectionPoint = injectionPoint;
         type = injectionPoint.getType();
         qualifiers = injectionPoint.getQualifiers();
         filter = FilterGenerator.makeFilter(injectionPoint);
+        logger.debug("New OSGiServiceProducerBean constructed {}", this);
     }
 
     @Override
@@ -117,16 +125,24 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
 
     @Override
     public Service create(CreationalContext creationalContext) {
-        logger.debug("Instantiation of an {}", this);
+        logger.trace("Entering OSGiServiceProducerBean : create() with parameter {}",
+                     new Object[] {creationalContext});
         BundleContext registry = FrameworkUtil.getBundle(
                 injectionPoint.getMember().getDeclaringClass()).getBundleContext();
-        return (Service) new ServiceImpl(((ParameterizedType) type)
-                .getActualTypeArguments()[0], registry, filter);
+        Service result =
+                (Service) new ServiceImpl(((ParameterizedType) type).getActualTypeArguments()[0],
+                                          registry,
+                                          filter);
+        logger.debug("New service for {} created {}", this, result);
+        return result;
     }
 
     @Override
     public void destroy(Service instance,
                         CreationalContext<Service> creationalContext) {
+        logger.trace("Entering OSGiServiceProducerBean : "
+                     + "destroy() with parameter {} | {}",
+                     new Object[] {instance, creationalContext});
         // Nothing to do, services are unget after each call.
     }
 
@@ -165,10 +181,10 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
     @Override
     public String toString() {
         return "OSGiServiceProducerBean ["
-                + injectionPoint.getType().toString()
-                + "] with qualifiers ["
-                + printQualifiers()
-                + "]";
+               + injectionPoint.getType().toString()
+               + "] with qualifiers ["
+               + printQualifiers()
+               + "]";
     }
 
     public String printQualifiers() {
@@ -195,7 +211,8 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
                     if (value != null) {
                         result += m.getName() + "=" + value.toString();
                     }
-                } catch (Throwable t) {
+                }
+                catch(Throwable t) {
                     // ignore
                 }
             }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.osgi.impl.extension.beans;
+package org.jboss.weld.environment.osgi.impl.extension;
 
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
@@ -29,13 +29,14 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 /**
- * Handler for OSGi dynamic service in use by
- * {@link org.osgi.cdi.impl.extension.OSGiServiceBean}.
- *
+ * Handler for proxy used by {@link OSGiServiceBean}. Dynamicaly lookup for a
+ * matching OSGi service at method call.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public class DynamicServiceHandler implements InvocationHandler {
+
     private static Logger logger = LoggerFactory.getLogger(
             DynamicServiceHandler.class);
 
@@ -44,7 +45,8 @@ public class DynamicServiceHandler implements InvocationHandler {
     private final String name;
 
     private Filter filter;
-//    private final ServiceTracker tracker;
+
+    /*private final ServiceTracker tracker;*/
 
     private final long timeout;
 
@@ -57,36 +59,36 @@ public class DynamicServiceHandler implements InvocationHandler {
                                  Filter filter,
                                  Set<Annotation> qualifiers,
                                  long timeout) {
-        logger.debug("Creation of a new DynamicServiceHandler for bundle {} "
-                + "as a {} with filter {}",
-                new Object[]
-                        {
-                                bundle, name, filter.value()
-                        });
+        logger.trace("Entering DynamicServiceHandler : "
+                     + "DynamicServiceHandler() with parameter {} | {} | {} | {} | {}",
+                     new Object[] {bundle, name, filter, qualifiers, timeout});
         this.bundle = bundle;
         this.name = name;
         this.filter = filter;
         this.timeout = timeout;
         this.qualifiers = qualifiers;
-//        try {
-//            if (filter != null && filter.value() != null && filter.value().length() > 0) {
-//                this.tracker = new ServiceTracker(bundle.getBundleContext(),
-//                    bundle.getBundleContext().createFilter(
-//                        "(&(objectClass=" + name + ")" + filter.value() + ")"),
-//                    null);
-//            } else {
-//                this.tracker = new ServiceTracker(bundle.getBundleContext(), name, null);
-//            }
-//        } catch (Exception e) {
-//            logger.error("Unable to create the DynamicServiceHandler.",e);
-//            throw new RuntimeException(e);
-//        }
-//        this.tracker.open();
+        /* ServiceTracker usage, currently fails
+        try {
+            if (filter != null && filter.value() != null && filter.value().length() > 0) {
+                this.tracker = new ServiceTracker(bundle.getBundleContext(),
+                    bundle.getBundleContext().createFilter(
+                        "(&(objectClass=" + name + ")" + filter.value() + ")"),
+                    null);
+            } else {
+                this.tracker = new ServiceTracker(bundle.getBundleContext(), name, null);
+            }
+        } catch (Exception e) {
+            logger.error("Unable to create the DynamicServiceHandler.",e);
+            throw new RuntimeException(e);
+        }
+        this.tracker.open();
+         */
+        logger.debug("New DynamicServiceHandler constructed {}", this);
     }
 
-    public void closeHandler() {
-//        this.tracker.close();
-    }
+    /*public void closeHandler() {
+        this.tracker.close();
+    }*/
 
     public void setStored(boolean stored) {
         this.stored = stored;
@@ -99,46 +101,54 @@ public class DynamicServiceHandler implements InvocationHandler {
                 this,
                 method);
         WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
-        if (!stored && method.getName().equals("hashCode")) { //intercept hashCode method
+        //intercept HashCode method when the handler is not allready registered
+        //map.put() need a correct hashCode() method to use
+        //see OSGiServiceBean
+        if (!stored && method.getName().equals("hashCode")) {
             int result = name.hashCode();
             result = 31 * result + filter.value().hashCode();
             result = 31 * result + qualifiers.hashCode();
+            result = 31 * result + (int) timeout;
             return result;
         }
         ServiceReference reference = null;
-        if (filter != null && filter.value() != null && filter.value().length() > 0) {
+        if (filter != null &&
+            filter.value() != null &&
+            filter.value().length() > 0) {
             ServiceReference[] refs =
-                    bundle.getBundleContext()
-                            .getServiceReferences(name, filter.value());
+                               bundle.getBundleContext().getServiceReferences(name, filter.value());
             if (refs != null && refs.length > 0) {
                 reference = refs[0];
             }
-        } else {
+        }
+        else {
             reference = bundle.getBundleContext().getServiceReference(name);
         }
         if (reference == null) {
             throw new IllegalStateException("Can't call service "
-                    + name
-                    + ". No matching service found.");
+                                            + name
+                                            + ". No matching service found.");
         }
         Object instanceToUse = bundle.getBundleContext().getService(reference);
         try {
             return method.invoke(instanceToUse, args);
-        } catch (Throwable t) {
+        }
+        catch(Throwable t) {
             throw new RuntimeException(t);
-        } finally {
+        }
+        finally {
             bundle.getBundleContext().ungetService(reference);
             WeldOSGiExtension.currentBundle.remove();
         }
-//        Object instanceToUse = this.tracker.waitForService(timeout);
-//        try {
-//            return method.invoke(instanceToUse, args);
-//        } catch(Throwable t) {
-//            logger.error("Unable to find a matching service for {} with filter {} due to {}", new Object[] {name, filter.value(), t});
-//            throw new RuntimeException(t);
-//        } finally {
-//            WeldOSGiExtension.currentBundle.remove();
-//        }
+        /*Object instanceToUse = this.tracker.waitForService(timeout);
+        try {
+            return method.invoke(instanceToUse, args);
+        } catch(Throwable t) {
+            logger.error("Unable to find a matching service for {} with filter {} due to {}", new Object[] {name, filter.value(), t});
+            throw new RuntimeException(t);
+        } finally {
+            WeldOSGiExtension.currentBundle.remove();
+        }*/
     }
 
 }

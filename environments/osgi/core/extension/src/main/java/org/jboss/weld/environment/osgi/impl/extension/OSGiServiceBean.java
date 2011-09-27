@@ -18,7 +18,6 @@ package org.jboss.weld.environment.osgi.impl.extension;
 
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
-import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
@@ -46,16 +45,19 @@ import java.util.Set;
  * This the bean class for all beans generated from a
  * {@link org.osgi.cdi.api.extension.annotation.OSGiService} annotated
  * {@link InjectionPoint}.
- *
+ * <b/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
+ * @see OSGiServiceProducerBean
  */
 public class OSGiServiceBean implements Bean {
+
     private static final Logger logger =
-            LoggerFactory.getLogger(OSGiServiceBean.class);
+                                LoggerFactory.getLogger(OSGiServiceBean.class);
 
     private final Map<Object, DynamicServiceHandler> handlers =
-            new HashMap<Object, DynamicServiceHandler>();
+                                                     new HashMap<Object, DynamicServiceHandler>();
 
     private final InjectionPoint injectionPoint;
 
@@ -68,8 +70,9 @@ public class OSGiServiceBean implements Bean {
     private long timeout;
 
     public OSGiServiceBean(InjectionPoint injectionPoint) {
-        logger.debug("Creation of a new OSGiServiceBean for injection point: {}",
-                injectionPoint);
+        logger.trace("Entering OSGiServiceBean : "
+                     + "OSGiServiceBean() with parameter {}",
+                     new Object[] {injectionPoint});
         this.injectionPoint = injectionPoint;
         type = injectionPoint.getType();
         qualifiers = injectionPoint.getQualifiers();
@@ -80,6 +83,7 @@ public class OSGiServiceBean implements Bean {
                 break;
             }
         }
+        logger.debug("New OSGiServiceBean constructed {}", this);
     }
 
     @Override
@@ -135,29 +139,35 @@ public class OSGiServiceBean implements Bean {
     }
 
     @Override
-    public Object create(CreationalContext ctx) {
-        logger.debug("Instantiation of an {}", this);
+    public Object create(CreationalContext creationalContext) {
+        logger.trace("Entering OSGiServiceBean : create() with parameter {}",
+                     new Object[] {creationalContext});
         try {
-            Bundle bundle = FrameworkUtil.getBundle(injectionPoint.getMember()
-                    .getDeclaringClass());
+            Bundle bundle =
+                   FrameworkUtil.getBundle(injectionPoint.getMember().getDeclaringClass());
             DynamicServiceHandler handler =
-                    new DynamicServiceHandler(bundle, ((Class) type)
-                            .getName(), filter, qualifiers, timeout);
-            Object proxy = Proxy.newProxyInstance(
-                    getClass().getClassLoader(),
-                    new Class[]
-                            {
-                                    getBeanClass()
-                            },
-                    handler);
+                                  new DynamicServiceHandler(bundle,
+                                                            ((Class) type).getName(),
+                                                            filter,
+                                                            qualifiers,
+                                                            timeout);
+            Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(),
+                                                  new Class[] {getBeanClass()},
+                                                  handler);
+            //memorize if the handler has been allready stored
             if (handlers.containsKey(proxy)) {
                 handler.setStored(true);
-            } else {
+            }
+            else {
+                //map.put() need a correct hashCode() method to use
+                //see DynamicServiceHandler
                 handlers.put(proxy, handler);
                 handler.setStored(true);
             }
+            logger.debug("New proxy for {} created {}", this, proxy);
             return proxy;
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             logger.error("Unable to instantiate {} due to {}", this, e);
             throw new CreationException(e);
         }
@@ -165,13 +175,18 @@ public class OSGiServiceBean implements Bean {
 
     @Override
     public void destroy(Object instance, CreationalContext creationalContext) {
+        logger.trace("Entering OSGiServiceBean : "
+                     + "destroy() with parameter {} | {}",
+                     new Object[] {instance, creationalContext});
         // Nothing to do, services are unget after each call.
         DynamicServiceHandler handler = handlers.get(instance);
         if (handler != null) {
-            handler.closeHandler();
+            /* ServiceTracker usage, currently fails
+            handler.closeHandler();*/
             handlers.remove(instance);
-        } else {
-            logger.info("Can't close tracker for bean {}", this.toString());
+        }
+        else {
+            logger.info("Can't close handler for bean {}", this.toString());
         }
     }
 
@@ -210,10 +225,10 @@ public class OSGiServiceBean implements Bean {
     @Override
     public String toString() {
         return "OSGiServiceBean ["
-                + ((Class) type).getSimpleName()
-                + "] with qualifiers ["
-                + printQualifiers()
-                + "]";
+               + ((Class) type).getSimpleName()
+               + "] with qualifiers ["
+               + printQualifiers()
+               + "]";
     }
 
     public String printQualifiers() {
@@ -240,7 +255,8 @@ public class OSGiServiceBean implements Bean {
                     if (value != null) {
                         result += m.getName() + "=" + value.toString();
                     }
-                } catch (Throwable t) {
+                }
+                catch(Throwable t) {
                     // ignore
                 }
             }
