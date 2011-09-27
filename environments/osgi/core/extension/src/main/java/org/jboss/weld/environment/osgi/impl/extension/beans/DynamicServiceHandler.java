@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.osgi.impl.extension;
+package org.jboss.weld.environment.osgi.impl.extension.beans;
 
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
@@ -30,15 +30,16 @@ import java.util.Set;
 
 /**
  * Handler for proxy used by {@link OSGiServiceBean}. Dynamicaly lookup for a
- * matching OSGi service at method call.
+ * matching OSGi service at method call. Automaticaly release the services after
+ * each use.
  * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public class DynamicServiceHandler implements InvocationHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(
-            DynamicServiceHandler.class);
+    private static Logger logger =
+                          LoggerFactory.getLogger(DynamicServiceHandler.class);
 
     private final Bundle bundle;
 
@@ -47,7 +48,6 @@ public class DynamicServiceHandler implements InvocationHandler {
     private Filter filter;
 
     /*private final ServiceTracker tracker;*/
-
     private final long timeout;
 
     private Set<Annotation> qualifiers;
@@ -60,7 +60,7 @@ public class DynamicServiceHandler implements InvocationHandler {
                                  Set<Annotation> qualifiers,
                                  long timeout) {
         logger.trace("Entering DynamicServiceHandler : "
-                     + "DynamicServiceHandler() with parameter {} | {} | {} | {} | {}",
+                     + "DynamicServiceHandler() with parameters {} | {} | {} | {} | {}",
                      new Object[] {bundle, name, filter, qualifiers, timeout});
         this.bundle = bundle;
         this.name = name;
@@ -69,17 +69,17 @@ public class DynamicServiceHandler implements InvocationHandler {
         this.qualifiers = qualifiers;
         /* ServiceTracker usage, currently fails
         try {
-            if (filter != null && filter.value() != null && filter.value().length() > 0) {
-                this.tracker = new ServiceTracker(bundle.getBundleContext(),
-                    bundle.getBundleContext().createFilter(
-                        "(&(objectClass=" + name + ")" + filter.value() + ")"),
-                    null);
-            } else {
-                this.tracker = new ServiceTracker(bundle.getBundleContext(), name, null);
-            }
+        if (filter != null && filter.value() != null && filter.value().length() > 0) {
+        this.tracker = new ServiceTracker(bundle.getBundleContext(),
+        bundle.getBundleContext().createFilter(
+        "(&(objectClass=" + name + ")" + filter.value() + ")"),
+        null);
+        } else {
+        this.tracker = new ServiceTracker(bundle.getBundleContext(), name, null);
+        }
         } catch (Exception e) {
-            logger.error("Unable to create the DynamicServiceHandler.",e);
-            throw new RuntimeException(e);
+        logger.error("Unable to create the DynamicServiceHandler.",e);
+        throw new RuntimeException(e);
         }
         this.tracker.open();
          */
@@ -87,9 +87,8 @@ public class DynamicServiceHandler implements InvocationHandler {
     }
 
     /*public void closeHandler() {
-        this.tracker.close();
+    this.tracker.close();
     }*/
-
     public void setStored(boolean stored) {
         this.stored = stored;
     }
@@ -98,8 +97,8 @@ public class DynamicServiceHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
         logger.trace("Call on the DynamicServiceHandler {} for method {}",
-                this,
-                method);
+                     this,
+                     method);
         WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
         //intercept HashCode method when the handler is not allready registered
         //map.put() need a correct hashCode() method to use
@@ -112,9 +111,9 @@ public class DynamicServiceHandler implements InvocationHandler {
             return result;
         }
         ServiceReference reference = null;
-        if (filter != null &&
-            filter.value() != null &&
-            filter.value().length() > 0) {
+        if (filter != null
+            && filter.value() != null
+            && filter.value().length() > 0) {
             ServiceReference[] refs =
                                bundle.getBundleContext().getServiceReferences(name, filter.value());
             if (refs != null && refs.length > 0) {
@@ -142,12 +141,12 @@ public class DynamicServiceHandler implements InvocationHandler {
         }
         /*Object instanceToUse = this.tracker.waitForService(timeout);
         try {
-            return method.invoke(instanceToUse, args);
+        return method.invoke(instanceToUse, args);
         } catch(Throwable t) {
-            logger.error("Unable to find a matching service for {} with filter {} due to {}", new Object[] {name, filter.value(), t});
-            throw new RuntimeException(t);
+        logger.error("Unable to find a matching service for {} with filter {} due to {}", new Object[] {name, filter.value(), t});
+        throw new RuntimeException(t);
         } finally {
-            WeldOSGiExtension.currentBundle.remove();
+        WeldOSGiExtension.currentBundle.remove();
         }*/
     }
 

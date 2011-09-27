@@ -23,8 +23,10 @@ import org.osgi.framework.BundleContext;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Wrap OSGi {@link Bundle} for CDI-OSGi usages.
- *
+ * This the reference to the current bundle used by Weld-OSGi. It wraps the OSGi
+ * {@link Bundle}. It is aware of the new {@link BundleState}s for bean bundles.
+ * It may be injected anywhere in the bean bundle.
+ * <b/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
@@ -36,6 +38,10 @@ public class BundleHolder {
 
     private BundleContext context;
 
+    /**
+     * Get the OSGi {@link Bundle} object wrapped by this BundleHolder.
+     * @return the Bundle object for the current bean bundle.
+     */
     public Bundle getBundle() {
         return bundle;
     }

@@ -26,8 +26,6 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -42,7 +40,6 @@ import java.util.List;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public class RegistrationImpl<T> implements Registration<T> {
-    private static Logger logger = LoggerFactory.getLogger(RegistrationImpl.class);
 
     private final Class<T> contract;
 
@@ -52,10 +49,12 @@ public class RegistrationImpl<T> implements Registration<T> {
 
     private final RegistrationHolder holder;
 
-    private List<Registration<T>> registrations = new ArrayList<Registration<T>>();
+    private List<Registration<T>> registrations =
+                                  new ArrayList<Registration<T>>();
 
     public RegistrationImpl(Class<T> contract,
-                            BundleContext registry, Bundle bundle,
+                            BundleContext registry,
+                            Bundle bundle,
                             RegistrationHolder holder) {
         this.contract = contract;
         this.registry = registry;
@@ -80,7 +79,7 @@ public class RegistrationImpl<T> implements Registration<T> {
     public Registration<T> select(Annotation... qualifiers) {
         if (qualifiers == null) {
             throw new IllegalArgumentException("You can't pass null array"
-                    + " of qualifiers");
+                                               + " of qualifiers");
         }
         String filter = FilterGenerator.makeFilter(
                 Arrays.asList(qualifiers)).value();
@@ -92,9 +91,10 @@ public class RegistrationImpl<T> implements Registration<T> {
         Filter osgiFilter = null;
         try {
             osgiFilter = FrameworkUtil.createFilter(filter);
-        } catch (InvalidSyntaxException e) {
+        }
+        catch(InvalidSyntaxException e) {
             throw new IllegalArgumentException("Invalid LDAP filter : "
-                    + e.getMessage());
+                                               + e.getMessage());
         }
         RegistrationHolder holder = new RegistrationsHolderImpl();
         for (ServiceRegistration registration : holder.getRegistrations()) {
@@ -122,11 +122,12 @@ public class RegistrationImpl<T> implements Registration<T> {
             List<ServiceRegistration> regs = holder.getRegistrations();
             for (ServiceRegistration reg : regs) {
                 registrations.add(new RegistrationImpl<T>(contract,
-                        registry,
-                        bundle,
-                        holder));
+                                                          registry,
+                                                          bundle,
+                                                          holder));
             }
-        } catch (Exception ex) {
+        }
+        catch(Exception ex) {
             ex.printStackTrace();
         }
     }
