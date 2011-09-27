@@ -33,42 +33,54 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * CDI-OSGi annotated type. Wrap regular CDI annotated types in order to enable
- * CDI-OSGi features.
- *
+ * This is an {@link AnnotatedType} that wrap all annotated type processed by
+ * Weld-OSGi bean bundles Weld containers.
+ * <p/>
+ * It wrap any {@link OSGiService} annotated injection point to avoid ambiguous
+ * dependency with regular CDI injection point.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
+ * @see OSGiServiceAnnotatedConstructor
+ * @see OSGiServiceAnnotatedMethod
+ * @see OSGiServiceAnnotatedField
+ * @see OSGIServiceAnnotatedParameter
  */
 public class OSGiServiceAnnotatedType<T> implements AnnotatedType<T> {
-    private static Logger logger = LoggerFactory.getLogger(
-            OSGiServiceAnnotatedType.class);
 
-    AnnotatedType<T> annotatedType;
+    private static Logger logger =
+                          LoggerFactory.getLogger(OSGiServiceAnnotatedType.class);
 
-    Set<AnnotatedConstructor<T>> constructors =
-            new HashSet<AnnotatedConstructor<T>>();
+    private AnnotatedType<T> annotatedType;
 
-    Set<AnnotatedMethod<? super T>> methods =
-            new HashSet<AnnotatedMethod<? super T>>();
+    private Set<AnnotatedConstructor<T>> constructors =
+                                         new HashSet<AnnotatedConstructor<T>>();
 
-    Set<AnnotatedField<? super T>> fields =
-            new HashSet<AnnotatedField<? super T>>();
+    private Set<AnnotatedMethod<? super T>> methods =
+                                            new HashSet<AnnotatedMethod<? super T>>();
+
+    private Set<AnnotatedField<? super T>> fields =
+                                           new HashSet<AnnotatedField<? super T>>();
 
     public OSGiServiceAnnotatedType(AnnotatedType<T> annotatedType) throws Exception {
-        logger.debug("Creation of a new CDIOSGiAnnotatedType wrapping {}",
-                annotatedType);
+        logger.trace("Entering OSGiServiceAnnotatedType : "
+                     + "OSGiServiceAnnotatedType() with parameter {}",
+                     new Object[] {annotatedType});
         this.annotatedType = annotatedType;
         process();
+        logger.debug("New OSGiServiceAnnotatedType constructed {}", this);
     }
 
     private void process() throws Exception {
+        logger.trace("Entering OSGiServiceAnnotatedType : "
+                     + "process() with no parameter");
         if (getJavaClass().getAnnotation(Filter.class) != null) {
             StringBuilder msg = new StringBuilder();
             msg.append("Filter qualifier: ")
-                    .append(getAnnotation(Filter.class))
-                    .append(", does not apply to bean class (")
-                    .append(getBaseType())
-                    .append(')');
+               .append(getAnnotation(Filter.class))
+               .append(", does not apply to bean class (")
+               .append(getBaseType()).append(')');
             logger.error(msg.toString());
             throw new Exception(msg.toString());
         }
@@ -76,35 +88,34 @@ public class OSGiServiceAnnotatedType<T> implements AnnotatedType<T> {
             if (annotation.annotationType().isAnnotationPresent(Filter.class)) {
                 StringBuilder msg = new StringBuilder();
                 msg.append("Filter stereotype: ")
-                        .append(annotation)
-                        .append(", does not apply to bean class (")
-                        .append(getBaseType())
-                        .append(')');
+                   .append(annotation)
+                   .append(", does not apply to bean class (")
+                   .append(getBaseType()).append(')');
                 logger.error(msg.toString());
                 throw new Exception(msg.toString());
             }
         }
         for (AnnotatedConstructor<T> constructor : annotatedType.getConstructors()) {
-            logger.trace("Processing constructor {}", constructor);
             if (isCDIOSGiConstructor(constructor)) {
                 constructors.add(new OSGiServiceAnnotatedConstructor<T>(constructor));
-            } else {
+            }
+            else {
                 constructors.add(constructor);
             }
         }
         for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
-            logger.trace("Processing method {}", method);
             if (isCDIOSGiMethod(method)) {
                 methods.add(new OSGiServiceAnnotatedMethod<T>(method));
-            } else {
+            }
+            else {
                 methods.add(method);
             }
         }
         for (AnnotatedField<? super T> field : annotatedType.getFields()) {
-            logger.trace("Processing field {}", field);
             if (isCDIOSGiField(field)) {
                 fields.add(new OSGiServiceAnnotatedField<T>(field));
-            } else {
+            }
+            else {
                 fields.add(field);
             }
         }

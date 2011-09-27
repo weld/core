@@ -29,34 +29,45 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.inject.Inject;
 
 /**
- * CDI-OSGi annotated constructor. Wrap regular CDI constructors in order to
- * enable CDI-OSGi features.
- *
+ * This is an {@link AnnotatedConstructor} that wrap all {@link Inject}
+ * annotated constructor processed by Weld-OSGi bean bundles Weld containers.
+ * <p/>
+ * It wrap any {@link OSGiService} annotated injection point in these
+ * constructors to avoid ambiguous dependency with regular CDI injection point.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
+ * @see OSGiServiceAnnotatedParameter
+ * @see OSGiServiceAnnotatedType
  */
 public class OSGiServiceAnnotatedConstructor<T> implements AnnotatedConstructor<T> {
-    private static Logger logger = LoggerFactory.getLogger(
-            OSGiServiceAnnotatedConstructor.class);
 
-    AnnotatedConstructor constructor;
+    private static Logger logger =
+                          LoggerFactory.getLogger(OSGiServiceAnnotatedConstructor.class);
 
-    List<AnnotatedParameter<T>> parameters = new ArrayList<AnnotatedParameter<T>>();
+    private AnnotatedConstructor constructor;
+
+    private List<AnnotatedParameter<T>> parameters =
+                                        new ArrayList<AnnotatedParameter<T>>();
 
     public OSGiServiceAnnotatedConstructor(AnnotatedConstructor<T> constructor) {
-        logger.debug("Creation of a new CDIOSGiAnnotatedConstructor wrapping {}",
-                constructor);
+        logger.trace("Entering OSGiServiceAnnotatedConstructor : "
+                     + "OSGiServiceAnnotatedConstructor() with parameter {}",
+                     new Object[] {constructor});
         this.constructor = constructor;
         for (AnnotatedParameter parameter : constructor.getParameters()) {
-            logger.trace("Processing parameter {}", parameter);
             if (parameter.isAnnotationPresent(OSGiService.class)) {
-                parameters.add(new OSGIServiceAnnotatedParameter(parameter));
-            } else {
+                parameters.add(new OSGiServiceAnnotatedParameter(parameter));
+            }
+            else {
                 parameters.add(parameter);
             }
         }
+        logger.debug("New OSGiServiceAnnotatedConstructor constructed {}", this);
     }
 
     @Override
