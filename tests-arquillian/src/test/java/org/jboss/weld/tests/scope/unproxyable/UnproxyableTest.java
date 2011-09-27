@@ -16,19 +16,31 @@
  */
 package org.jboss.weld.tests.scope.unproxyable;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.ExpectedDeploymentException;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.UnproxyableResolutionException;
 
-@Artifact
-@ExpectedDeploymentException(UnproxyableResolutionException.class)
-public class UnproxyableTest extends AbstractWeldTest {
+@RunWith(Arquillian.class)
+public class UnproxyableTest {
 
-    @Test(groups = "incontainer-broken")
-    //JBoss AS is producing the wrong exception.
+    @Deployment
+    @ShouldThrowException(UnproxyableResolutionException.class)
+    public static JavaArchive deploy() {
+        BeanArchive archive = ShrinkWrap.create(BeanArchive.class);
+        archive.addPackage(UnproxyableTest.class.getPackage());
+
+        return archive;
+    }
+
+    //groups = "incontainer-broken"
+    @Test
     public void test() {
 
     }
