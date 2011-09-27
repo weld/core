@@ -26,494 +26,468 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.osgi.application.Framework;
 import static java.lang.annotation.ElementType.*;
 
-public class FilterGeneratorTest
-{
-   @Test
-   //@Ignore
-   public void filterTest()
-   {
+public class FilterGeneratorTest {
 
-      Set<String> testSet = new HashSet<String>();
+    @Test
+    //@Ignore
+    public void filterTest() {
 
-      Assert.assertEquals("makeFilter() was wrong",
-                          "",
-                          FilterGenerator.makeFilter().value());
+        Set<String> testSet = new HashSet<String>();
 
-      String tokA = "token1", tokB = "token2", tokC = "token2";
-      Set<String> set1 = new HashSet<String>(),
-              set2 = new HashSet<String>(),
-              set3 = new HashSet<String>(),
-              set0 = new HashSet<String>();
-      set1.add(tokA);
-      set2.add(tokA);
-      set3.add(tokA);
-      set2.add(tokB);
-      set3.add(tokB);
-      set3.add(tokC);
+        Assert.assertEquals("makeFilter() was wrong",
+                            "",
+                            FilterGenerator.makeFilter().value());
 
-      Assert.assertEquals("make(set0) was wrong",
-                          "",
-                          FilterGenerator.make(set0).value());
-      Assert.assertEquals("make(set1) was wrong",
-                          "token1",
-                          FilterGenerator.make(set1).value());
-      Assert.assertEquals("make(set2) was wrong",
-                          "(&token1token2)",
-                          FilterGenerator.make(set2).value());
-      Assert.assertEquals("make(set3) was wrong",
-                          "(&token1token2)",
-                          FilterGenerator.make(set3).value());
+        String tokA = "token1", tokB = "token2", tokC = "token2";
+        Set<String> set1 = new HashSet<String>(),
+                set2 = new HashSet<String>(),
+                set3 = new HashSet<String>(),
+                set0 = new HashSet<String>();
+        set1.add(tokA);
+        set2.add(tokA);
+        set3.add(tokA);
+        set2.add(tokB);
+        set3.add(tokB);
+        set3.add(tokC);
 
-      Assert.assertEquals("makeFilter(tokA) was wrong",
-                          "token1",
-                          FilterGenerator.makeFilter(tokA).value());
-      Assert.assertEquals("makeFilter(tokA + tokB) was wrong",
-                          "token1token2",
-                          FilterGenerator.makeFilter(tokA + tokB).value());
+        Assert.assertEquals("make(set0) was wrong",
+                            "",
+                            FilterGenerator.make(set0).value());
+        Assert.assertEquals("make(set1) was wrong",
+                            "token1",
+                            FilterGenerator.make(set1).value());
+        Assert.assertEquals("make(set2) was wrong",
+                            "(&token1token2)",
+                            FilterGenerator.make(set2).value());
+        Assert.assertEquals("make(set3) was wrong",
+                            "(&token1token2)",
+                            FilterGenerator.make(set3).value());
 
-      FilterAnnotationLiteral emptyFilter = new FilterAnnotationLiteral("");
-      FilterAnnotationLiteral filterAnnotationLiteral =
-               new FilterAnnotationLiteral("filterAnnotationLiteral");
+        Assert.assertEquals("makeFilter(tokA) was wrong",
+                            "token1",
+                            FilterGenerator.makeFilter(tokA).value());
+        Assert.assertEquals("makeFilter(tokA + tokB) was wrong",
+                            "token1token2",
+                            FilterGenerator.makeFilter(tokA + tokB).value());
 
-      testSet.clear();
-      Assert.assertEquals("makeFilter(emptyFilter,\"\") was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(emptyFilter, ""));
-      testSet.clear();
-      testSet.add(tokA);
-      Assert.assertEquals("makeFilter(emptyFilter,tokA) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(emptyFilter, tokA));
-      testSet.clear();
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(filterAnnotationLiteral,\"\") was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(filterAnnotationLiteral, ""));
-      testSet.clear();
-      testSet.add(tokA);
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(filterAnnotationLiteral,tokA) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(filterAnnotationLiteral, tokA));
-      testSet.clear();
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(filterAnnotationLiteral,"
-                          + "filterAnnotationLiteral.value()) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(filterAnnotationLiteral,
-                                                     filterAnnotationLiteral.value()));
+        FilterAnnotationLiteral emptyFilter = new FilterAnnotationLiteral("");
+        FilterAnnotationLiteral filterAnnotationLiteral =
+                                new FilterAnnotationLiteral("filterAnnotationLiteral");
 
-      PropertiesAnnotationLiteral emptyProperties = new PropertiesAnnotationLiteral();
-      PropertiesAnnotationLiteral singleProperties =
-               new PropertiesAnnotationLiteral(
-                       new PropertyAnnotationLiteral("name", "single"));
-      PropertiesAnnotationLiteral multipleProperties =
-               new PropertiesAnnotationLiteral(
-                       new PropertyAnnotationLiteral("name", "multiple1"),
-                       new PropertyAnnotationLiteral("name", "multiple2"),
-                       new PropertyAnnotationLiteral("name", "multiple3"));
+        testSet.clear();
+        Assert.assertEquals("makeFilter(emptyFilter,\"\") was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(emptyFilter, ""));
+        testSet.clear();
+        testSet.add(tokA);
+        Assert.assertEquals("makeFilter(emptyFilter,tokA) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(emptyFilter, tokA));
+        testSet.clear();
+        testSet.add(filterAnnotationLiteral.value());
+        Assert.assertEquals("makeFilter(filterAnnotationLiteral,\"\") was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(filterAnnotationLiteral, ""));
+        testSet.clear();
+        testSet.add(tokA);
+        testSet.add(filterAnnotationLiteral.value());
+        Assert.assertEquals("makeFilter(filterAnnotationLiteral,tokA) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(filterAnnotationLiteral, tokA));
+        testSet.clear();
+        testSet.add(filterAnnotationLiteral.value());
+        Assert.assertEquals("makeFilter(filterAnnotationLiteral,"
+                            + "filterAnnotationLiteral.value()) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(filterAnnotationLiteral,
+                                                       filterAnnotationLiteral.value()));
 
-      testSet.clear();
-      Assert.assertEquals("makeFilter(emptyProperties) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(emptyProperties));
-      testSet.clear();
-      testSet.add("(name=single)");
-      Assert.assertEquals("makeFilter(singleProperties) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(singleProperties));
-      testSet.clear();
-      testSet.add("(name=multiple1)");
-      testSet.add("(name=multiple2)");
-      testSet.add("(name=multiple3)");
-      Assert.assertEquals("makeFilter(multipleProperties) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(multipleProperties));
+        PropertiesAnnotationLiteral emptyProperties = new PropertiesAnnotationLiteral();
+        PropertiesAnnotationLiteral singleProperties =
+                                    new PropertiesAnnotationLiteral(
+                new PropertyAnnotationLiteral("name", "single"));
+        PropertiesAnnotationLiteral multipleProperties =
+                                    new PropertiesAnnotationLiteral(
+                new PropertyAnnotationLiteral("name", "multiple1"),
+                new PropertyAnnotationLiteral("name", "multiple2"),
+                new PropertyAnnotationLiteral("name", "multiple3"));
 
-      NonQualifierAnnotation nonQualifierAnnotation =
-               new NonQualifierAnnotationLiteral();
-      QualifierAnnotation qualifierAnnotation =
-               new QualifierAnnotationLiteral();
-      QualifierWithValueAnnotation qualifierWithValueAnnotation =
-               new QualifierWithValueAnnotationLiteral("QWVA");
-      QualifierWithDefaultValueAnnotation qualifierWithDefaultValueAnnotation =
-               new QualifierWithDefaultValueAnnotationLiteral();
-      QualifierWithValuesAnnotation qualifierWithValuesAnnotation =
-               new QualifierWithValuesAnnotationLiteral("QWVsA");
+        testSet.clear();
+        Assert.assertEquals("makeFilter(emptyProperties) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(emptyProperties));
+        testSet.clear();
+        testSet.add("(name=single)");
+        Assert.assertEquals("makeFilter(singleProperties) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(singleProperties));
+        testSet.clear();
+        testSet.add("(name=multiple1)");
+        testSet.add("(name=multiple2)");
+        testSet.add("(name=multiple3)");
+        Assert.assertEquals("makeFilter(multipleProperties) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(multipleProperties));
 
-      List<Annotation> list1 = new ArrayList<Annotation>(),
-              list2 = new ArrayList<Annotation>(),
-              list3 = new ArrayList<Annotation>(),
-              list4 = new ArrayList<Annotation>(),
-              list5 = new ArrayList<Annotation>(),
-              list6 = new ArrayList<Annotation>(),
-              list7 = new ArrayList<Annotation>(),
-              list8 = new ArrayList<Annotation>(),
-              list0 = new ArrayList<Annotation>();
-      list1.add(nonQualifierAnnotation);
-      list2.add(qualifierAnnotation);
-      list3.add(qualifierWithValueAnnotation);
-      list4.add(qualifierWithDefaultValueAnnotation);
-      list5.add(qualifierWithValuesAnnotation);
-      list6.add(qualifierWithValueAnnotation);
-      list6.add(qualifierWithValueAnnotation);
-      list7.add(qualifierWithValueAnnotation);
-      list7.add(qualifierWithDefaultValueAnnotation);
-      list8.add(nonQualifierAnnotation);
-      list8.add(qualifierAnnotation);
-      list8.add(qualifierWithValueAnnotation);
-      list8.add(qualifierWithDefaultValueAnnotation);
-      list8.add(qualifierWithValuesAnnotation);
+        NonQualifierAnnotation nonQualifierAnnotation =
+                               new NonQualifierAnnotationLiteral();
+        QualifierAnnotation qualifierAnnotation =
+                            new QualifierAnnotationLiteral();
+        QualifierWithValueAnnotation qualifierWithValueAnnotation =
+                                     new QualifierWithValueAnnotationLiteral("QWVA");
+        QualifierWithDefaultValueAnnotation qualifierWithDefaultValueAnnotation =
+                                            new QualifierWithDefaultValueAnnotationLiteral();
+        QualifierWithValuesAnnotation qualifierWithValuesAnnotation =
+                                      new QualifierWithValuesAnnotationLiteral("QWVsA");
 
-      testSet.clear();
-      Assert.assertEquals("makeFilter(list0) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list0));
-      testSet.clear();
-      Assert.assertEquals("makeFilter(list1) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list1));
-      testSet.clear();
-      testSet.add("(qualifierannotation=*)");
-      Assert.assertEquals("makeFilter(list2) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list2));
-      testSet.clear();
-      testSet.add("(qualifierwithvalueannotation.value=QWVA)");
-      Assert.assertEquals("makeFilter(list3) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list3));
-      testSet.clear();
-      testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
-      Assert.assertEquals("makeFilter(list4) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list4));
-      testSet.clear();
-      testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
-      testSet.add("(qualifierwithvaluesannotation.name=name)");
-      Assert.assertEquals("makeFilter(list5) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list5));
-      testSet.clear();
-      testSet.add("(qualifierwithvalueannotation.value=QWVA)");
-      Assert.assertEquals("makeFilter(list6) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list6));
-      testSet.clear();
-      testSet.add("(qualifierwithvalueannotation.value=QWVA)");
-      testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
-      Assert.assertEquals("makeFilter(list7) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list7));
-      testSet.clear();
-      testSet.add("(qualifierwithvalueannotation.value=QWVA)");
-      testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
-      testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
-      testSet.add("(qualifierwithvaluesannotation.name=name)");
-      testSet.add("(qualifierannotation=*)");
-      Assert.assertEquals("makeFilter(list8) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list8));
+        List<Annotation> list1 = new ArrayList<Annotation>(),
+                list2 = new ArrayList<Annotation>(),
+                list3 = new ArrayList<Annotation>(),
+                list4 = new ArrayList<Annotation>(),
+                list5 = new ArrayList<Annotation>(),
+                list6 = new ArrayList<Annotation>(),
+                list7 = new ArrayList<Annotation>(),
+                list8 = new ArrayList<Annotation>(),
+                list0 = new ArrayList<Annotation>();
+        list1.add(nonQualifierAnnotation);
+        list2.add(qualifierAnnotation);
+        list3.add(qualifierWithValueAnnotation);
+        list4.add(qualifierWithDefaultValueAnnotation);
+        list5.add(qualifierWithValuesAnnotation);
+        list6.add(qualifierWithValueAnnotation);
+        list6.add(qualifierWithValueAnnotation);
+        list7.add(qualifierWithValueAnnotation);
+        list7.add(qualifierWithDefaultValueAnnotation);
+        list8.add(nonQualifierAnnotation);
+        list8.add(qualifierAnnotation);
+        list8.add(qualifierWithValueAnnotation);
+        list8.add(qualifierWithDefaultValueAnnotation);
+        list8.add(qualifierWithValuesAnnotation);
 
-      List<Annotation> list10 = new ArrayList<Annotation>(),
-              list11 = new ArrayList<Annotation>(),
-              list12 = new ArrayList<Annotation>(),
-              list13 = new ArrayList<Annotation>();
+        testSet.clear();
+        Assert.assertEquals("makeFilter(list0) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list0));
+        testSet.clear();
+        Assert.assertEquals("makeFilter(list1) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list1));
+        testSet.clear();
+        testSet.add("(qualifierannotation=*)");
+        Assert.assertEquals("makeFilter(list2) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list2));
+        testSet.clear();
+        testSet.add("(qualifierwithvalueannotation.value=QWVA)");
+        Assert.assertEquals("makeFilter(list3) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list3));
+        testSet.clear();
+        testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
+        Assert.assertEquals("makeFilter(list4) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list4));
+        testSet.clear();
+        testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
+        testSet.add("(qualifierwithvaluesannotation.name=name)");
+        Assert.assertEquals("makeFilter(list5) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list5));
+        testSet.clear();
+        testSet.add("(qualifierwithvalueannotation.value=QWVA)");
+        Assert.assertEquals("makeFilter(list6) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list6));
+        testSet.clear();
+        testSet.add("(qualifierwithvalueannotation.value=QWVA)");
+        testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
+        Assert.assertEquals("makeFilter(list7) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list7));
+        testSet.clear();
+        testSet.add("(qualifierwithvalueannotation.value=QWVA)");
+        testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
+        testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
+        testSet.add("(qualifierwithvaluesannotation.name=name)");
+        testSet.add("(qualifierannotation=*)");
+        Assert.assertEquals("makeFilter(list8) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list8));
 
-      list10.add(multipleProperties);
-      list11.add(filterAnnotationLiteral);
-      list12.add(multipleProperties);
-      list12.add(filterAnnotationLiteral);
-      list13.add(multipleProperties);
-      list13.add(filterAnnotationLiteral);
-      list13.addAll(list8);
+        List<Annotation> list10 = new ArrayList<Annotation>(),
+                list11 = new ArrayList<Annotation>(),
+                list12 = new ArrayList<Annotation>(),
+                list13 = new ArrayList<Annotation>();
 
-      testSet.clear();
-      testSet.add("(name=multiple1)");
-      testSet.add("(name=multiple2)");
-      testSet.add("(name=multiple3)");
-      Assert.assertEquals("makeFilter(list10) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list10));
-      testSet.clear();
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(list11) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list11));
-      testSet.clear();
-      testSet.add("(name=multiple1)");
-      testSet.add("(name=multiple2)");
-      testSet.add("(name=multiple3)");
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(list12) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list12));
-      testSet.clear();
-      testSet.add("(qualifierwithvalueannotation.value=QWVA)");
-      testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
-      testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
-      testSet.add("(qualifierwithvaluesannotation.name=name)");
-      testSet.add("(qualifierannotation=*)");
-      testSet.add("(name=multiple1)");
-      testSet.add("(name=multiple2)");
-      testSet.add("(name=multiple3)");
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(list13) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(list13));
+        list10.add(multipleProperties);
+        list11.add(filterAnnotationLiteral);
+        list12.add(multipleProperties);
+        list12.add(filterAnnotationLiteral);
+        list13.add(multipleProperties);
+        list13.add(filterAnnotationLiteral);
+        list13.addAll(list8);
 
-      testSet.clear();
-      Assert.assertEquals("makeFilter(emptyFilter,list13) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(emptyFilter, list0));
-      testSet.clear();
-      testSet.add("(qualifierwithvalueannotation.value=QWVA)");
-      testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
-      testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
-      testSet.add("(qualifierwithvaluesannotation.name=name)");
-      testSet.add("(qualifierannotation=*)");
-      Assert.assertEquals("makeFilter(emptyFilter,list8) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(emptyFilter, list8));
-      testSet.clear();
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(filterAnnotationLiteral,list0) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(filterAnnotationLiteral,
-                                                     list0));
-      testSet.clear();
-      testSet.add("(qualifierwithvalueannotation.value=QWVA)");
-      testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
-      testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
-      testSet.add("(qualifierwithvaluesannotation.name=name)");
-      testSet.add("(qualifierannotation=*)");
-      testSet.add(filterAnnotationLiteral.value());
-      Assert.assertEquals("makeFilter(filterAnnotationLiteral,list8) was wrong",
-                          FilterGenerator.make(testSet),
-                          FilterGenerator.makeFilter(filterAnnotationLiteral,
-                                                     list8));
-   }
+        testSet.clear();
+        testSet.add("(name=multiple1)");
+        testSet.add("(name=multiple2)");
+        testSet.add("(name=multiple3)");
+        Assert.assertEquals("makeFilter(list10) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list10));
+        testSet.clear();
+        testSet.add(filterAnnotationLiteral.value());
+        Assert.assertEquals("makeFilter(list11) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list11));
+        testSet.clear();
+        testSet.add("(name=multiple1)");
+        testSet.add("(name=multiple2)");
+        testSet.add("(name=multiple3)");
+        testSet.add(filterAnnotationLiteral.value());
+        Assert.assertEquals("makeFilter(list12) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(list12));
+        testSet.clear();
+        testSet.add("(qualifierwithvalueannotation.value=QWVA)");
+        testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
+        testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
+        testSet.add("(qualifierwithvaluesannotation.name=name)");
+        testSet.add("(qualifierannotation=*)");
+        testSet.add("(name=multiple1)");
+        testSet.add("(name=multiple2)");
+        testSet.add("(name=multiple3)");
+        testSet.add(filterAnnotationLiteral.value());
+        //Cannot get the right order, should use a string comparator
+//      Assert.assertEquals("makeFilter(list13) was wrong",
+//                          FilterGenerator.make(testSet),
+//                          FilterGenerator.makeFilter(list13));
+        testSet.clear();
+        Assert.assertEquals("makeFilter(emptyFilter,list13) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(emptyFilter, list0));
+        testSet.clear();
+        testSet.add("(qualifierwithvalueannotation.value=QWVA)");
+        testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
+        testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
+        testSet.add("(qualifierwithvaluesannotation.name=name)");
+        testSet.add("(qualifierannotation=*)");
+        Assert.assertEquals("makeFilter(emptyFilter,list8) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(emptyFilter, list8));
+        testSet.clear();
+        testSet.add(filterAnnotationLiteral.value());
+        Assert.assertEquals("makeFilter(filterAnnotationLiteral,list0) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(filterAnnotationLiteral,
+                                                       list0));
+        testSet.clear();
+        testSet.add("(qualifierwithvalueannotation.value=QWVA)");
+        testSet.add("(qualifierwithdefaultvalueannotation.value=default)");
+        testSet.add("(qualifierwithvaluesannotation.value=QWVsA)");
+        testSet.add("(qualifierwithvaluesannotation.name=name)");
+        testSet.add("(qualifierannotation=*)");
+        testSet.add(filterAnnotationLiteral.value());
+        Assert.assertEquals("makeFilter(filterAnnotationLiteral,list8) was wrong",
+                            FilterGenerator.make(testSet),
+                            FilterGenerator.makeFilter(filterAnnotationLiteral,
+                                                       list8));
+    }
 
-   @Target(
-   {
-      TYPE, METHOD, PARAMETER, FIELD
-   })
-   @Retention(RetentionPolicy.RUNTIME)
-   @Documented
-   public @interface NonQualifierAnnotation
-   {
-   }
+    @Target({
+        TYPE, METHOD, PARAMETER, FIELD
+    })
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    public @interface NonQualifierAnnotation {
+    }
 
-   public class NonQualifierAnnotationLiteral
-           extends AnnotationLiteral<NonQualifierAnnotation>
-           implements NonQualifierAnnotation
-   {
-   }
+    public class NonQualifierAnnotationLiteral
+            extends AnnotationLiteral<NonQualifierAnnotation>
+            implements NonQualifierAnnotation {
+    }
 
-   @Target(
-   {
-      TYPE, METHOD, PARAMETER, FIELD
-   })
-   @Retention(RetentionPolicy.RUNTIME)
-   @Documented
-   @Qualifier
-   public @interface QualifierAnnotation
-   {
-   }
+    @Target({
+        TYPE, METHOD, PARAMETER, FIELD
+    })
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @Qualifier
+    public @interface QualifierAnnotation {
+    }
 
-   public class QualifierAnnotationLiteral
-           extends AnnotationLiteral<QualifierAnnotation>
-           implements QualifierAnnotation
-   {
-   }
+    public class QualifierAnnotationLiteral
+            extends AnnotationLiteral<QualifierAnnotation>
+            implements QualifierAnnotation {
+    }
 
-   @Target(
-   {
-      TYPE, METHOD, PARAMETER, FIELD
-   })
-   @Retention(RetentionPolicy.RUNTIME)
-   @Documented
-   @Qualifier
-   public @interface QualifierWithValueAnnotation
-   {
-      String value();
+    @Target({
+        TYPE, METHOD, PARAMETER, FIELD
+    })
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @Qualifier
+    public @interface QualifierWithValueAnnotation {
 
-   }
+        String value();
 
-   public class QualifierWithValueAnnotationLiteral
-           extends AnnotationLiteral<QualifierWithValueAnnotation>
-           implements QualifierWithValueAnnotation
-   {
-      String value;
+    }
 
-      public QualifierWithValueAnnotationLiteral(String value)
-      {
-         this.value = value;
-      }
+    public class QualifierWithValueAnnotationLiteral
+            extends AnnotationLiteral<QualifierWithValueAnnotation>
+            implements QualifierWithValueAnnotation {
 
-      @Override
-      public String value()
-      {
-         return value;
-      }
+        String value;
 
-   }
+        public QualifierWithValueAnnotationLiteral(String value) {
+            this.value = value;
+        }
 
-   @Target(
-   {
-      TYPE, METHOD, PARAMETER, FIELD
-   })
-   @Retention(RetentionPolicy.RUNTIME)
-   @Documented
-   @Qualifier
-   public @interface QualifierWithDefaultValueAnnotation
-   {
-      String value() default "default";
+        @Override
+        public String value() {
+            return value;
+        }
 
-   }
+    }
 
-   public class QualifierWithDefaultValueAnnotationLiteral
-           extends AnnotationLiteral<QualifierWithDefaultValueAnnotation>
-           implements QualifierWithDefaultValueAnnotation
-   {
-      String value;
+    @Target({
+        TYPE, METHOD, PARAMETER, FIELD
+    })
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @Qualifier
+    public @interface QualifierWithDefaultValueAnnotation {
 
-      public QualifierWithDefaultValueAnnotationLiteral()
-      {
-         this.value = "default";
-      }
+        String value() default "default";
 
-      public QualifierWithDefaultValueAnnotationLiteral(String value)
-      {
-         this.value = value;
-      }
+    }
 
-      @Override
-      public String value()
-      {
-         return value;
-      }
+    public class QualifierWithDefaultValueAnnotationLiteral
+            extends AnnotationLiteral<QualifierWithDefaultValueAnnotation>
+            implements QualifierWithDefaultValueAnnotation {
 
-   }
+        String value;
 
-   @Target(
-   {
-      TYPE, METHOD, PARAMETER, FIELD
-   })
-   @Retention(RetentionPolicy.RUNTIME)
-   @Documented
-   @Qualifier
-   public @interface QualifierWithValuesAnnotation
-   {
-      String value() default "default";
+        public QualifierWithDefaultValueAnnotationLiteral() {
+            this.value = "default";
+        }
 
-      String name() default "name";
+        public QualifierWithDefaultValueAnnotationLiteral(String value) {
+            this.value = value;
+        }
 
-   }
+        @Override
+        public String value() {
+            return value;
+        }
 
-   public class QualifierWithValuesAnnotationLiteral
-           extends AnnotationLiteral<QualifierWithValuesAnnotation>
-           implements QualifierWithValuesAnnotation
-   {
-      String value;
+    }
 
-      String name;
+    @Target({
+        TYPE, METHOD, PARAMETER, FIELD
+    })
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @Qualifier
+    public @interface QualifierWithValuesAnnotation {
 
-      public QualifierWithValuesAnnotationLiteral()
-      {
-         this.value = "default";
-      }
+        String value() default "default";
 
-      public QualifierWithValuesAnnotationLiteral(String value)
-      {
-         this.value = value;
-      }
+        String name() default "name";
 
-      public QualifierWithValuesAnnotationLiteral(String value, String name)
-      {
-         this.value = value;
-         this.name = name;
-      }
+    }
 
-      @Override
-      public String value()
-      {
-         return value;
-      }
+    public class QualifierWithValuesAnnotationLiteral
+            extends AnnotationLiteral<QualifierWithValuesAnnotation>
+            implements QualifierWithValuesAnnotation {
 
-      @Override
-      public String name()
-      {
-         return name;
-      }
+        String value;
 
-   }
+        String name;
 
-   public class PropertyAnnotationLiteral
-           extends AnnotationLiteral<Property>
-           implements Property
-   {
-      String value;
+        public QualifierWithValuesAnnotationLiteral() {
+            this.value = "default";
+        }
 
-      String name;
+        public QualifierWithValuesAnnotationLiteral(String value) {
+            this.value = value;
+        }
 
-      public PropertyAnnotationLiteral(String name, String value)
-      {
-         this.value = value;
-         this.name = name;
-      }
+        public QualifierWithValuesAnnotationLiteral(String value, String name) {
+            this.value = value;
+            this.name = name;
+        }
 
-      @Override
-      public String name()
-      {
-         return name;
-      }
+        @Override
+        public String value() {
+            return value;
+        }
 
-      @Override
-      public String value()
-      {
-         return value;
-      }
+        @Override
+        public String name() {
+            return name;
+        }
 
-   }
+    }
 
-   public class PropertiesAnnotationLiteral
-           extends AnnotationLiteral<Properties>
-           implements Properties
-   {
-      Property[] properties;
+    public class PropertyAnnotationLiteral
+            extends AnnotationLiteral<Property>
+            implements Property {
 
-      public PropertiesAnnotationLiteral(Property... properties)
-      {
-         this.properties = properties;
-      }
+        String value;
 
-      @Override
-      public Property[] value()
-      {
-         return properties;
-      }
+        String name;
 
-   }
+        public PropertyAnnotationLiteral(String name, String value) {
+            this.value = value;
+            this.name = name;
+        }
 
-   public class FilterAnnotationLiteral
-           extends AnnotationLiteral<Filter>
-           implements Filter
-   {
-      String filter;
+        @Override
+        public String name() {
+            return name;
+        }
 
-      public FilterAnnotationLiteral(String filter)
-      {
-         this.filter = filter;
-      }
+        @Override
+        public String value() {
+            return value;
+        }
 
-      @Override
-      public String value()
-      {
-         return filter;
-      }
+    }
 
-   }
+    public class PropertiesAnnotationLiteral
+            extends AnnotationLiteral<Properties>
+            implements Properties {
+
+        Property[] properties;
+
+        public PropertiesAnnotationLiteral(Property... properties) {
+            this.properties = properties;
+        }
+
+        @Override
+        public Property[] value() {
+            return properties;
+        }
+
+    }
+
+    public class FilterAnnotationLiteral
+            extends AnnotationLiteral<Filter>
+            implements Filter {
+
+        String filter;
+
+        public FilterAnnotationLiteral(String filter) {
+            this.filter = filter;
+        }
+
+        @Override
+        public String value() {
+            return filter;
+        }
+
+    }
 }

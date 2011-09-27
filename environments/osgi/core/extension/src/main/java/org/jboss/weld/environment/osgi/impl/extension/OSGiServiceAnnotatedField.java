@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
+import org.jboss.weld.environment.osgi.impl.annotation.OSGiServiceAnnotation;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.api.annotation.Required;
@@ -55,7 +56,7 @@ public class OSGiServiceAnnotatedField<T> implements AnnotatedField<T> {
         filter = FilterGenerator.makeFilter(filter, field.getAnnotations());
         annotations.add(filter);
         //annotations.add(new AnnotationLiteral<OSGiService>() {});
-        annotations.add(new OSGiServiceQualifier(
+        annotations.add(new OSGiServiceAnnotation(
                 field.getJavaMember().getAnnotation(OSGiService.class).value()));
         if (field.getAnnotation(Required.class) != null) {
             annotations.add(new AnnotationLiteral<Required>() {
