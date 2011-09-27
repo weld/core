@@ -16,19 +16,25 @@
  */
 package org.jboss.weld.tests.ejb.mdb.dummy;
 
-import org.jboss.testharness.impl.packaging.Artifact;
-import org.jboss.testharness.impl.packaging.IntegrationTest;
-import org.jboss.testharness.impl.packaging.Packaging;
-import org.jboss.testharness.impl.packaging.PackagingType;
-import org.jboss.weld.test.AbstractWeldTest;
-import org.testng.annotations.Test;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
-@Artifact
-@Packaging(PackagingType.EAR)
-@IntegrationTest
-public class EJBTest extends AbstractWeldTest {
+@Category(Integration.class)
+@RunWith(Arquillian.class)
+public class EJBTest {
 
-    public static final String MESSAGE = "Hello!";
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addPackage(EJBTest.class.getPackage());
+    }
 
     @Test
     public void testMdbDeploys() {
