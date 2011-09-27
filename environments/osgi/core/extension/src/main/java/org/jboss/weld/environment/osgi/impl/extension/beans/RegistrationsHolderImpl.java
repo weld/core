@@ -31,8 +31,9 @@ import java.util.List;
  */
 @ApplicationScoped
 public class RegistrationsHolderImpl implements RegistrationHolder {
+
     private List<ServiceRegistration> registrations =
-            new ArrayList<ServiceRegistration>();
+                                      new ArrayList<ServiceRegistration>();
 
     @Override
     public List<ServiceRegistration> getRegistrations() {

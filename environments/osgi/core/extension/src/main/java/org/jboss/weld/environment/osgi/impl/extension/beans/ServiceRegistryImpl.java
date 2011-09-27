@@ -59,6 +59,7 @@ import java.util.Set;
  */
 @ApplicationScoped
 public class ServiceRegistryImpl implements ServiceRegistry {
+
     @Inject
     private BundleContext registry;
 
@@ -88,24 +89,27 @@ public class ServiceRegistryImpl implements ServiceRegistry {
 
     private Map<Class, Set<Filter>> osgiServiceDependencies;
 
-    private Map<Class<?>, Beantype<?>> types = new HashMap<Class<?>, Beantype<?>>();
+    private Map<Class<?>, Beantype<?>> types =
+                                       new HashMap<Class<?>, Beantype<?>>();
 
     @Override
-    public <T> Registration<T> registerService(Class<T> contract, Class<? extends T> implementation) {
+    public <T> Registration<T> registerService(Class<T> contract,
+                                               Class<? extends T> implementation) {
         ServiceRegistration reg = registry.registerService(contract.getName(),
-                instances.select(implementation).get(), null);
+                                                           instances.select(implementation).get(),
+                                                           null);
         holder.addRegistration(reg);
-        return new RegistrationImpl<T>(
-                contract, registry, bundle, holder);
+        return new RegistrationImpl<T>(contract, registry, bundle, holder);
     }
 
     @Override
-    public <T, U extends T> Registration<T> registerService(Class<T> contract, U implementation) {
+    public <T, U extends T> Registration<T> registerService(Class<T> contract,
+                                                            U implementation) {
         ServiceRegistration reg = registry.registerService(contract.getName(),
-                implementation, null);
+                                                           implementation,
+                                                           null);
         holder.addRegistration(reg);
-        return new RegistrationImpl<T>(
-                contract, registry, bundle, holder);
+        return new RegistrationImpl<T>(contract, registry, bundle, holder);
     }
 
     @Override
@@ -154,13 +158,14 @@ public class ServiceRegistryImpl implements ServiceRegistry {
                         try {
                             ServiceReference[] refs = null;
                             if (filter != null
-                                    && filter.value() != null
-                                    && filter.value().length() > 0) {
+                                && filter.value() != null
+                                && filter.value().length() > 0) {
                                 refs = registry.getServiceReferences(clazz.getName(),
-                                        filter.value());
-                            } else {
+                                                                     filter.value());
+                            }
+                            else {
                                 refs = registry.getServiceReferences(clazz.getName(),
-                                        null);
+                                                                     null);
                             }
                             if (refs != null) {
                                 int available = refs.length;
@@ -168,11 +173,13 @@ public class ServiceRegistryImpl implements ServiceRegistry {
                                     valid = false;
                                     break invalid;
                                 }
-                            } else {
+                            }
+                            else {
                                 valid = false;
                                 break invalid;
                             }
-                        } catch (InvalidSyntaxException ex) {
+                        }
+                        catch(InvalidSyntaxException ex) {
                             valid = false;
                             break invalid;
                         }
@@ -183,7 +190,8 @@ public class ServiceRegistryImpl implements ServiceRegistry {
             if (valid && bundleHolder.getState().equals(BundleState.INVALID)) {
                 bundleHolder.setState(BundleState.VALID);
                 validEvent.fire(new Valid());
-            } else if (!valid && bundleHolder.getState().equals(BundleState.VALID)) {
+            }
+            else if (!valid && bundleHolder.getState().equals(BundleState.VALID)) {
                 bundleHolder.setState(BundleState.INVALID);
                 invalidEvent.fire(new Invalid());
             }
@@ -200,6 +208,7 @@ public class ServiceRegistryImpl implements ServiceRegistry {
     }
 
     private class Beantype<T> implements Provider<T> {
+
         private final Class<T> clazz;
 
         private final BeanManager manager;

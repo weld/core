@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
+import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.osgi.framework.Bundle;

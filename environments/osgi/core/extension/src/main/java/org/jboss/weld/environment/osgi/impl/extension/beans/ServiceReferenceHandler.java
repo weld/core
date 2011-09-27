@@ -21,29 +21,47 @@ import org.osgi.framework.ServiceReference;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceProducerBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Handler for proxy used by {@link OSGiServiceProducerBean}.Automaticaly
+ * release the services after each use.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
- * @deprecated {@link DynamicServiceHandler}
  */
 public class ServiceReferenceHandler implements InvocationHandler {
-    private final ServiceReference ref;
+
+    private static Logger logger =
+                          LoggerFactory.getLogger(ServiceReferenceHandler.class);
+
+    private final ServiceReference serviceReference;
 
     private final BundleContext registry;
 
-    public ServiceReferenceHandler(ServiceReference ref, BundleContext registry) {
-        this.ref = ref;
+    public ServiceReferenceHandler(ServiceReference serviceReference,
+                                   BundleContext registry) {
+        logger.trace("Entering ServiceReferenceHandler : "
+                     + "ServiceReferenceHandler() with parameter {} | {}",
+                     new Object[] {serviceReference, registry});
+        this.serviceReference = serviceReference;
         this.registry = registry;
+        logger.debug("New ServiceReferenceHandler constructed {}", this);
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object instanceToUse = registry.getService(ref);
+        logger.trace("Call on the ServiceReferenceHandler {} for method {}",
+                     this,
+                     method);
+        Object instanceToUse = registry.getService(serviceReference);
         try {
             return method.invoke(instanceToUse, args);
-        } finally {
-            registry.ungetService(ref);
+        }
+        finally {
+            registry.ungetService(serviceReference);
         }
     }
 

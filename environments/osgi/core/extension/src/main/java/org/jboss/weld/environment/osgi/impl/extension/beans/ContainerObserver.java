@@ -26,15 +26,17 @@ import javax.enterprise.event.Observes;
 import java.util.Collection;
 
 /**
- * Store the CDI container of the current bundle and the all other CDI containers.
- * Broadcast {@link InterBundleEvent} from current bundle.
- *
+ * Store Weld containers of all bean bundle. Broadcast {@link InterBundleEvent}
+ * from current bean bundle to others.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
 public class ContainerObserver {
-    private static Logger logger = LoggerFactory.getLogger(ContainerObserver.class);
+
+    private static Logger logger =
+                          LoggerFactory.getLogger(ContainerObserver.class);
 
     private CDIContainer currentContainer;
 
@@ -49,21 +51,24 @@ public class ContainerObserver {
     }
 
     public void listenInterBundleEvents(@Observes InterBundleEvent event) {
-        logger.trace("Receiving an inter bundle event");
+        logger.trace("Entering DynamicServiceHandler : "
+                     + "DynamicServiceHandler() with parameter {}",
+                     new Object[] {event});
         if (!event.isSent()) {
-            logger.debug("Broadcasting the inter bundle event: {}; from bundle {}",
-                    event,
-                    currentContainer.getBundle());
+            logger.debug("Broadcasting the inter bundle event {} from bundle {}",
+                         event,
+                         currentContainer.getBundle());
             event.sent();
             for (CDIContainer container : containers) {
                 if (!container.equals(currentContainer)) {
                     try {
-                        logger.trace("Broadcasting the inter bundle event: {}; "
-                                + "to bundle {}",
-                                event,
-                                container.getBundle());
+                        logger.trace("Broadcasting the inter bundle event {} "
+                                     + "to bundle {}",
+                                     event,
+                                     container.getBundle());
                         container.fire(event);
-                    } catch (Throwable t) {
+                    }
+                    catch(Throwable t) {
                         logger.warn("InterBundle event broadcast failed", t);
                     }
                 }
