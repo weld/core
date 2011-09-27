@@ -94,6 +94,7 @@ public class ExtensionActivator implements BundleActivator,
         logger.trace("Entering ExtensionActivator : stop() with parameter {}",
                      new Object[] {context});
         //nothing to do here
+        logger.debug("Weld-OSGi extension part STOPPED");
     }
 
     /**

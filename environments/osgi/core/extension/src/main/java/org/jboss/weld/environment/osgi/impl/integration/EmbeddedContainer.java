@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.integration;
 
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
@@ -22,7 +21,6 @@ import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
-import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
@@ -30,7 +28,6 @@ import org.jboss.weld.environment.osgi.spi.EmbeddedCDIContainer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -48,8 +45,20 @@ import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
+import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
+import org.osgi.framework.SynchronousBundleListener;
 
+/**
+ * This is an embedded container for the current bundle. This bundle is not
+ * managed by Weld-OSGi framework.
+ * <b/>
+ * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
+ * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ */
 public class EmbeddedContainer {
+
+    private static Logger logger =
+                          LoggerFactory.getLogger(EmbeddedContainer.class);
 
     private final CDIContainer container;
 
@@ -58,18 +67,27 @@ public class EmbeddedContainer {
     private final EmbeddedListener listener;
 
     public EmbeddedContainer(BundleContext context) {
+        logger.trace("Entering EmbeddedContainer : "
+                     + "EmbeddedContainer() with parameter {}",
+                     new Object[] {context});
         this.context = context;
         try {
             ServiceReference ref = context.getServiceReference(CDIContainerFactory.class.getName());
             CDIContainerFactory factory = (CDIContainerFactory) context.getService(ref);
             container = factory.createContainer(context.getBundle());
             listener = new EmbeddedListener(context, container);
-        } catch (Exception e) {
-            throw new IllegalStateException("You can't start an embedded container without having a container factory registered", e);
         }
+        catch(Exception e) {
+            throw new IllegalStateException("You can't start an embedded "
+                                            + "container without having a "
+                                            + "container factory registered", e);
+        }
+        logger.debug("New EmbeddedContainer constructed {}", this);
     }
 
     public EmbeddedCDIContainer initialize() {
+        logger.trace("Entering EmbeddedContainer : "
+                     + "initialize() with no parameter");
         container.initialize();
         context.addBundleListener(listener);
         context.addServiceListener(listener);
@@ -77,12 +95,18 @@ public class EmbeddedContainer {
     }
 
     public void shutdown() {
+        logger.trace("Entering EmbeddedContainer : "
+                     + "shutdown() with no parameter");
         container.shutdown();
         context.removeBundleListener(listener);
         context.removeServiceListener(listener);
     }
 
-    public static class EmbeddedListener implements BundleListener, ServiceListener {
+    /**
+     * @see ExtensionActivator
+     */
+    public static class EmbeddedListener implements SynchronousBundleListener,
+                                                    ServiceListener {
 
         private static Logger logger = LoggerFactory.getLogger(EmbeddedListener.class);
 
@@ -102,7 +126,7 @@ public class EmbeddedContainer {
             if (references != null) { //if there are some listening bean bundles
                 Bundle bundle = event.getBundle();
                 AbstractBundleEvent bundleEvent = null;
-                switch (event.getType()) {
+                switch(event.getType()) {
                     case BundleEvent.INSTALLED:
                         logger.debug("Receiving a new OSGi bundle event INSTALLED");
                         bundleEvent = new BundleEvents.BundleInstalled(bundle);
@@ -149,7 +173,8 @@ public class EmbeddedContainer {
                 try {
                     //broadcast the OSGi event through CDI event system
                     container.getEvent().select(BundleEvent.class).fire(event);
-                } catch (Throwable t) {
+                }
+                catch(Throwable t) {
                     t.printStackTrace();
                 }
                 if (bundleEvent != null) {
@@ -169,7 +194,7 @@ public class EmbeddedContainer {
             if (references != null) { //if there are some listening bean bundles
                 ServiceReference ref = event.getServiceReference();
                 AbstractServiceEvent serviceEvent = null;
-                switch (event.getType()) {
+                switch(event.getType()) {
                     case ServiceEvent.MODIFIED:
                         logger.debug("Receiving a new OSGi service event MODIFIED");
                         serviceEvent = new ServiceEvents.ServiceChanged(ref, context);
@@ -188,7 +213,8 @@ public class EmbeddedContainer {
                 try {
                     //broadcast the OSGi event through CDI event system
                     container.getEvent().select(ServiceEvent.class).fire(event);
-                } catch (Throwable t) {
+                }
+                catch(Throwable t) {
                     t.printStackTrace();
                 }
                 if (serviceEvent != null) {
@@ -205,7 +231,8 @@ public class EmbeddedContainer {
             ServiceReference[] references = null;
             try {
                 references = context.getServiceReferences(type.getName(), null);
-            } catch (InvalidSyntaxException e) {// Ignored
+            }
+            catch(InvalidSyntaxException e) {// Ignored
             }
             return references;
         }
@@ -216,11 +243,11 @@ public class EmbeddedContainer {
             for (Class<?> clazz : classes) {
                 try {
                     broadcaster.select(eventClass,
-                            filteredServicesQualifiers(event,
-                                    new SpecificationAnnotation(clazz),
-                                    instance))
-                            .fire(event);
-                } catch (Throwable t) {
+                                       filteredServicesQualifiers(event,
+                                                                  new SpecificationAnnotation(clazz),
+                                                                  instance)).fire(event);
+                }
+                catch(Throwable t) {
                     t.printStackTrace();
                 }
             }
@@ -235,12 +262,12 @@ public class EmbeddedContainer {
             for (Annotation annotation : extension.getObservers()) {
                 String value = ((Filter) annotation).value();
                 try {
-                    org.osgi.framework.Filter filter
-                            = context.createFilter(value);
+                    org.osgi.framework.Filter filter = context.createFilter(value);
                     if (filter.match(event.getReference())) {
                         eventQualifiers.add(new FilterAnnotation(value));
                     }
-                } catch (InvalidSyntaxException ex) {
+                }
+                catch(InvalidSyntaxException ex) {
                     //ex.printStackTrace();
                 }
             }
@@ -250,14 +277,13 @@ public class EmbeddedContainer {
         private void fireAllEvent(AbstractBundleEvent event, Event broadcaster) {
             try {
                 broadcaster.select(event.getClass(),
-                        new BundleNameAnnotation(event.getSymbolicName()),
-                        new BundleVersionAnnotation(event.getVersion().toString()))
-                        .fire(event);
-            } catch (Throwable t) {
+                                   new BundleNameAnnotation(event.getSymbolicName()),
+                                   new BundleVersionAnnotation(event.getVersion().toString())).fire(event);
+            }
+            catch(Throwable t) {
                 t.printStackTrace();
             }
         }
+
     }
 }
-
-

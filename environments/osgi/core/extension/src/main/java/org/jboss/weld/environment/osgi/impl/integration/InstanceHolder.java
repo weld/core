@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.integration;
 
 import javax.enterprise.inject.Any;
@@ -25,7 +24,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * It allows a bean bundle to retrieve any of its bean using an {@link Instance}.
- *
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.impl.integration;
 
 import javassist.ClassClassPath;
@@ -44,43 +43,61 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * This is a class scanner that auto-publishes OSGi services from @Publish annotated classes within a bean bundle.
- *
+ * This class scans all bean classes of the current bean bundle and publishes
+ * as OSGi services all that are {@link Publish} annotated.
+ * <p/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public class ServicePublisher {
 
-    private static Logger logger = LoggerFactory.getLogger(ServicePublisher.class);
+    private static Logger logger =
+                          LoggerFactory.getLogger(ServicePublisher.class);
 
     private final Collection<String> classes;
+
     private final Bundle bundle;
+
     private final Instance<Object> instance;
+
     private final Set<String> blackList;
 
-    public ServicePublisher(Collection<String> classes, Bundle bundle, Instance<Object> instance, Set<String> blackList) {
-        logger.debug("Create a new ServicePublisher for bundle {}", bundle.getSymbolicName());
+    public ServicePublisher(Collection<String> classes,
+                            Bundle bundle,
+                            Instance<Object> instance,
+                            Set<String> blackList) {
+        logger.trace("Entering ServicePublisher : "
+                     + "ServicePublisher() with parameters {} | {} | {} | {}",
+                     new Object[] {classes, bundle, instance, blackList});
         this.classes = classes;
         this.bundle = bundle;
         this.instance = instance;
         this.blackList = blackList;
+        logger.debug("New ServicePublisher constructed {}", this);
     }
 
+    /**
+     * This method scan all bean classes and load and publish there that are
+     * Publish annoted.
+     * <p/>
+     */
     public void registerAndLaunchComponents() {
-        logger.info("Registering/Starting OSGi Service for bundle {}", bundle.getSymbolicName());
-
+        logger.trace("Entering ServicePublisher : "
+                     + "registerAndLaunchComponents() with no parameter");
+        logger.info("Registering/Starting OSGi Service for bundle {}",
+                    bundle.getSymbolicName());
         if (!classes.isEmpty()) {
             ClassPool classPool = new ClassPool();
             try {
                 classPool.appendClassPath(new ClassClassPath(bundle.loadClass(classes.iterator().next())));
-            } catch (ClassNotFoundException e) {
+            }
+            catch(ClassNotFoundException e) {
                 logger.warn("Bundle {} is inaccessible", bundle);
             }
             CtClass ctClass = null;
             Class<?> clazz;
             for (String className : classes) {
                 logger.trace("Scanning class {}", className);
-
                 try {
                     ctClass = classPool.get(className);
                     if (ctClass.getAnnotation(Publish.class) != null) {
@@ -93,17 +110,21 @@ public class ServicePublisher {
                             Instance instance = instanceHolder.select(clazz, qualifiers.toArray(new Annotation[qualifiers.size()]));
                             service = instance.get();
                             logger.trace("Service instance generated");
-                        } catch (Throwable e) {
+                        }
+                        catch(Throwable e) {
                             logger.error("Unable to instantiate the service for class {}, CDI return this error: {}", clazz, e);
                             throw new RuntimeException(e);
                         }
                         publish(clazz, service, qualifiers);
                     }
-                } catch (NotFoundException e) {//inaccessible class
+                }
+                catch(NotFoundException e) {//inaccessible class
                     logger.warn("Class file {} is inaccessible", className);
-                } catch (ClassNotFoundException e) {
+                }
+                catch(ClassNotFoundException e) {
                     logger.warn("Class file {} cannot be read/load", className);
-                } finally {
+                }
+                finally {
                     if (ctClass != null) {
                         ctClass.detach();
                         ctClass = null;
@@ -114,8 +135,27 @@ public class ServicePublisher {
 
     }
 
-    private void publish(Class<?> clazz, Object service, List<Annotation> qualifiers) {
-        logger.debug("Publishing a new service implementation {}", clazz.getSimpleName());
+    /**
+     * This method publish a bean class as an OSGi service.
+     * <p/>
+     * The class is published under (in order):
+     * <ul>
+     *  <li> The contract list of its Publish annotation
+     *  <li> Its interfaces
+     *  <li> Its supertype
+     *  <li> Its proper type
+     * </ul>
+     * with the right properties extracted from its annotations.
+     * @param clazz
+     * @param service
+     * @param qualifiers
+     */
+    private void publish(Class<?> clazz,
+                         Object service,
+                         List<Annotation> qualifiers) {
+        logger.trace("Entering ServicePublisher : "
+                     + "publish() with parameters {} | {} | {}",
+                     new Object[] {clazz, service, qualifiers});
         ServiceRegistration registration = null;
         Publish publish = clazz.getAnnotation(Publish.class);
         Class[] contracts = publish.contracts();
@@ -126,18 +166,30 @@ public class ServicePublisher {
         if (contracts.length > 0) {// if there are contracts
             String[] names = new String[contracts.length];
             for (int i = 0; i < contracts.length; i++) {
-                if (contracts[i].isAssignableFrom(clazz) && contracts[i].isInterface()) {
+                if (contracts[i].isAssignableFrom(clazz)
+                    && contracts[i].isInterface()) {
                     names[i] = contracts[i].getName();
-                    logger.info("Registering OSGi service {} as {}", clazz.getName(), names[i]);
-                } else {
-                    RuntimeException e = new RuntimeException("Contract " + contracts[i] + " is not assignable from "
-                            + clazz + ", or is not an interface. Unable to publish the service " + clazz);
+                    logger.info("Registering OSGi service {} as {}",
+                                clazz.getName(),
+                                names[i]);
+                }
+                else {
+                    RuntimeException e = new RuntimeException("Contract "
+                                                              + contracts[i]
+                                                              + " is not assignable from "
+                                                              + clazz
+                                                              + ", or is not an interface."
+                                                              + " Unable to publish the service "
+                                                              + clazz);
                     logger.error(e.getMessage());
                     throw e;
                 }
             }
-            registration = bundle.getBundleContext().registerService(names, service, properties);
-        } else {
+            registration = bundle.getBundleContext().registerService(names,
+                                                                     service,
+                                                                     properties);
+        }
+        else {
             if (clazz.getInterfaces().length > 0) {
                 List<Class> interfaces = new ArrayList<Class>();
                 for (Class itf : clazz.getInterfaces()) {
@@ -151,17 +203,31 @@ public class ServicePublisher {
                 String[] names = new String[contracts.length];
                 for (int i = 0; i < contracts.length; i++) {
                     names[i] = contracts[i].getName();
-                    logger.info("Registering OSGi service {} as {}", clazz.getName(), names[i]);
+                    logger.info("Registering OSGi service {} as {}",
+                                clazz.getName(),
+                                names[i]);
                 }
-                registration = bundle.getBundleContext().registerService(names, service, properties);
-            } else {
+                registration = bundle.getBundleContext().registerService(names,
+                                                                         service,
+                                                                         properties);
+            }
+            else {
                 Class superClass = clazz.getClass().getSuperclass();
                 if (superClass != null && superClass != Object.class) {// if there is a superclass
-                    logger.info("Registering OSGi service {} as {}", clazz.getName(), superClass.getName());
-                    registration = bundle.getBundleContext().registerService(superClass.getName(), service, properties);
-                } else {// publish directly with the implementation type
-                    logger.info("Registering OSGi service {} as {}", clazz.getName(), clazz.getName());
-                    registration = bundle.getBundleContext().registerService(clazz.getName(), service, properties);
+                    logger.info("Registering OSGi service {} as {}",
+                                clazz.getName(),
+                                superClass.getName());
+                    registration = bundle.getBundleContext().registerService(superClass.getName(),
+                                                                             service,
+                                                                             properties);
+                }
+                else {// publish directly with the implementation type
+                    logger.info("Registering OSGi service {} as {}",
+                                clazz.getName(),
+                                clazz.getName());
+                    registration = bundle.getBundleContext().registerService(clazz.getName(),
+                                                                             service,
+                                                                             properties);
                 }
             }
         }
@@ -172,6 +238,9 @@ public class ServicePublisher {
     }
 
     private static Properties getServiceProperties(List<Annotation> qualifiers) {
+        logger.trace("Entering ServicePublisher : "
+                     + "getServiceProperties() with parameter {}",
+                     new Object[] {qualifiers});
         Properties properties = new Properties();
         if (!qualifiers.isEmpty()) {
             for (Annotation qualifier : qualifiers) {
@@ -179,13 +248,14 @@ public class ServicePublisher {
                     for (Property property : ((org.jboss.weld.environment.osgi.api.annotation.Properties) qualifier).value()) {
                         properties.setProperty(property.name(), property.value());
                     }
-                } else if (!qualifier.annotationType().equals(Default.class) && !qualifier.annotationType().equals(Any.class)) {
+                }
+                else if (!qualifier.annotationType().equals(Default.class) && !qualifier.annotationType().equals(Any.class)) {
                     if (qualifier.annotationType().getDeclaredMethods().length > 0) {
                         for (Method m : qualifier.annotationType().getDeclaredMethods()) {
                             if (!m.isAnnotationPresent(Nonbinding.class)) {
                                 try {
                                     String key = qualifier.annotationType().getSimpleName().toLowerCase()
-                                            + "." + m.getName().toLowerCase();
+                                                 + "." + m.getName().toLowerCase();
                                     Object value = m.invoke(qualifier);
                                     if (value == null) {
                                         value = m.getDefaultValue();
@@ -194,11 +264,13 @@ public class ServicePublisher {
                                         }
                                     }
                                     properties.setProperty(key, value.toString());
-                                } catch (Throwable t) {// ignore
+                                }
+                                catch(Throwable t) {// ignore
                                 }
                             }
                         }
-                    } else {
+                    }
+                    else {
                         properties.setProperty(qualifier.annotationType().getSimpleName().toLowerCase(), "*");
                     }
                 }
@@ -208,6 +280,9 @@ public class ServicePublisher {
     }
 
     private static List<Annotation> getQualifiers(Class<?> clazz) {
+        logger.trace("Entering ServicePublisher : "
+                     + "getQualifiers() with parameter {}",
+                     new Object[] {clazz});
         List<Annotation> qualifiers = new ArrayList<Annotation>();
         for (Annotation annotation : clazz.getAnnotations()) {
             if (annotation.annotationType().isAnnotationPresent(Qualifier.class)) {
@@ -216,4 +291,5 @@ public class ServicePublisher {
         }
         return qualifiers;
     }
+
 }
