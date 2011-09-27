@@ -41,6 +41,7 @@ import org.jboss.weld.environment.osgi.api.annotation.Filter;
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 public class ServiceImpl<T> implements Service<T> {
+
     private static Logger logger = LoggerFactory.getLogger(ServiceImpl.class);
 
     private final Class serviceClass;
@@ -55,26 +56,26 @@ public class ServiceImpl<T> implements Service<T> {
 
     private Filter filter;
 
-    public ServiceImpl(Type t, BundleContext registry) {
-        logger.debug("Creation of a new service provider for bundle {}"
-                     + " as {} with no filter",
-                     registry.getBundle(), t);
-        serviceClass = (Class) t;
+    public ServiceImpl(Type type, BundleContext registry) {
+        logger.trace("Entering ServiceImpl : "
+                     + "ServiceImpl() with parameters {} | {}",
+                     new Object[] {type, registry});
+        serviceClass = (Class) type;
         serviceName = serviceClass.getName();
         this.registry = registry;
         filter = FilterGenerator.makeFilter();
+        logger.debug("New ServiceImpl constructed {}", this);
     }
 
-    public ServiceImpl(Type t, BundleContext registry, Filter filter) {
-        logger.debug("Creation of a new service provider for bundle {}"
-                     + " as {} with filter {}",
-                     new Object[]{
-                    registry.getBundle(), t, filter
-                });
-        serviceClass = (Class) t;
+    public ServiceImpl(Type type, BundleContext registry, Filter filter) {
+        logger.trace("Entering ServiceImpl : "
+                     + "ServiceImpl() with parameters {} | {} | {}",
+                     new Object[] {type, registry, filter});
+        serviceClass = (Class) type;
         serviceName = serviceClass.getName();
         this.registry = registry;
         this.filter = filter;
+        logger.debug("New ServiceImpl constructed {}", this);
     }
 
     @Override
@@ -84,22 +85,24 @@ public class ServiceImpl<T> implements Service<T> {
     }
 
     private void populateServices() {
-        logger.trace("Scanning matching service for service provider {}", this);
+        logger.trace("Entering ServiceImpl : "
+                     + "populateServices() with no parameter");
         services.clear();
         String filterString = null;
         if (filter != null && !filter.value().equals("")) {
             filterString = filter.value();
         }
-//        ServiceTracker tracker = new ServiceTracker(registry, registry.createFilter(
-//                "(&(objectClass=" + serviceName + ")" + filterString + ")"), null);
-//        tracker.open();
-//        Object[] instances = tracker.getServices();
-//        if (instances != null) {
-//            for (Object ref : instances) {
-//                services.add((T) ref);
-//            }
-//        }
-//        service = services.size() > 0 ? services.get(0) : null;
+        /* ServiceTracker usage, currently fails
+        ServiceTracker tracker = new ServiceTracker(registry, registry.createFilter(
+        "(&(objectClass=" + serviceName + ")" + filterString + ")"), null);
+        tracker.open();
+        Object[] instances = tracker.getServices();
+        if (instances != null) {
+        for (Object ref : instances) {
+        services.add((T) ref);
+        }
+        }
+        service = services.size() > 0 ? services.get(0) : null;*/
         ServiceReference[] refs = null;
         try {
             refs = registry.getServiceReferences(serviceName, filterString);
@@ -107,7 +110,7 @@ public class ServiceImpl<T> implements Service<T> {
         catch(InvalidSyntaxException ex) {
             logger.warn("Unblale to find service references "
                         + "for service {} with filter {} due to {}",
-                        new Object[]{
+                        new Object[] {
                         serviceName,
                         filterString,
                         ex
@@ -121,7 +124,7 @@ public class ServiceImpl<T> implements Service<T> {
                 else {
                     services.add((T) Proxy.newProxyInstance(
                             getClass().getClassLoader(),
-                            new Class[]{
+                            new Class[] {
                                 (Class) serviceClass
                             },
                             new ServiceReferenceHandler(ref, registry)));
@@ -191,6 +194,7 @@ public class ServiceImpl<T> implements Service<T> {
     @Override
     public Iterable<T> first() {
         return new Iterable<T>() {
+
             @Override
             public Iterator<T> iterator() {
                 try {

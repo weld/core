@@ -61,15 +61,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Weld OSGi extension.
+ * Weld OSGi {@link  Extension}. Contains copy/paste parts from the GlassFish
+ * OSGI-CDI extension.
  * <p/>
- * Contains copy/paste parts from the GlassFish OSGI-CDI extension.
- *
+ * It registers utility beans for Weld-OSGi framework, process OSGi service
+ * injection points and registers OSGi specific observers.
+ * <b/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
 @ApplicationScoped
 public class WeldOSGiExtension implements Extension {
+
     private static Logger logger = LoggerFactory.getLogger(
             WeldOSGiExtension.class);
 
@@ -77,15 +80,15 @@ public class WeldOSGiExtension implements Extension {
     public static ThreadLocal<Long> currentBundle = new ThreadLocal<Long>();
 
     private HashMap<Type, Set<InjectionPoint>> servicesToBeInjected =
-            new HashMap<Type, Set<InjectionPoint>>();
+                                               new HashMap<Type, Set<InjectionPoint>>();
 
     private HashMap<Type, Set<InjectionPoint>> serviceProducerToBeInjected =
-            new HashMap<Type, Set<InjectionPoint>>();
+                                               new HashMap<Type, Set<InjectionPoint>>();
 
     private List<Annotation> observers = new ArrayList<Annotation>();
 
     private Map<Class, Set<Filter>> requiredOsgiServiceDependencies =
-            new HashMap<Class, Set<Filter>>();
+                                    new HashMap<Class, Set<Filter>>();
 
     private ExtensionActivator activator;
 
@@ -108,22 +111,35 @@ public class WeldOSGiExtension implements Extension {
                 manager.createAnnotatedType(InstanceHolder.class));
     }
 
+    /**
+     * Processes all bean class for the current bundle in order to wrap them.
+     * <p/>
+     * @param event the bean class to be processed event.
+     *
+     * @see OSGiServiceAnnotatedType
+     */
     public void discoverCDIOSGiClass(@Observes ProcessAnnotatedType<?> event) {
         logger.debug("Observe a ProcessAnnotatedType event");
         AnnotatedType annotatedType = event.getAnnotatedType();
         annotatedType = discoverAndProcessCDIOSGiClass(annotatedType);
         if (annotatedType != null) {
             event.setAnnotatedType(annotatedType);
-        } else {
+        }
+        else {
             logger.warn("The annotated type {} is ignored", annotatedType);
             event.veto();
         }
     }
 
+    /**
+     * Processes all OSGi service injection points ({@link OSGiService}
+     * annotated, {@link Service} typed and {@link Required}).
+     * <p/>
+     * @param event the injection point to be processed event.
+     */
     public void discoverCDIOSGiServices(@Observes ProcessInjectionTarget<?> event) {
         logger.debug("Observe a ProcessInjectionTarget event");
-        Set<InjectionPoint> injectionPoints = event.getInjectionTarget()
-                .getInjectionPoints();
+        Set<InjectionPoint> injectionPoints = event.getInjectionTarget().getInjectionPoints();
         discoverServiceInjectionPoints(injectionPoints);
     }
 
@@ -147,6 +163,12 @@ public class WeldOSGiExtension implements Extension {
         }
     }
 
+    /**
+     * Creates the beans that match the discovered OSGi service injection points
+     * ({@link OSGiService} annotated and {@link Service} typed).
+     * <p/>
+     * @param event the AfterBeanDiscovery event.
+     */
     public void registerCDIOSGiServices(@Observes AfterBeanDiscovery event) {
         logger.debug("Observe an AfterBeanDiscovery event");
         //runExtension();
@@ -155,22 +177,22 @@ public class WeldOSGiExtension implements Extension {
             event.addDefinitionError(exception);
         }
         for (Iterator<Type> iterator = this.servicesToBeInjected.keySet().iterator();
-             iterator.hasNext(); ) {
+             iterator.hasNext();) {
             Type type = iterator.next();
             if (!(type instanceof Class)) {
                 //TODO: need to handle Instance<Class>. This fails currently
                 logger.error("Unknown type: {}", type);
                 event.addDefinitionError(
                         new UnsupportedOperationException("Injection target type "
-                                + type + "not supported"));
+                                                          + type + "not supported"));
                 break;
             }
             addService(event, this.servicesToBeInjected.get(type));
         }
 
         for (Iterator<Type> iterator =
-                     this.serviceProducerToBeInjected.keySet().iterator();
-             iterator.hasNext(); ) {
+                            this.serviceProducerToBeInjected.keySet().iterator();
+             iterator.hasNext();) {
             Type type = iterator.next();
             addServiceProducer(event, this.serviceProducerToBeInjected.get(type));
         }
@@ -179,48 +201,47 @@ public class WeldOSGiExtension implements Extension {
     private void runExtension() {
         if (!servicesToBeInjected.isEmpty()) {
             Set<InjectionPoint> injections =
-                    servicesToBeInjected.values().iterator().next();
+                                servicesToBeInjected.values().iterator().next();
             if (!injections.isEmpty()) {
                 InjectionPoint ip = injections.iterator().next();
                 Class annotatedElt = ip.getMember().getDeclaringClass();
-                BundleContext bc = BundleReference.class
-                        .cast(annotatedElt.getClassLoader())
-                        .getBundle().getBundleContext();
+                BundleContext bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
                 activator = new ExtensionActivator();
                 try {
                     activator.start(bc);
-                } catch (Exception ex) {
+                }
+                catch(Exception ex) {
                     ex.printStackTrace();
                     return;
                 }
             }
-        } else if (!serviceProducerToBeInjected.isEmpty()) {
+        }
+        else if (!serviceProducerToBeInjected.isEmpty()) {
             Set<InjectionPoint> injections =
-                    serviceProducerToBeInjected.values().iterator().next();
+                                serviceProducerToBeInjected.values().iterator().next();
             if (!injections.isEmpty()) {
                 InjectionPoint ip = injections.iterator().next();
                 Class annotatedElt = ip.getMember().getDeclaringClass();
-                BundleContext bc = BundleReference.class
-                        .cast(annotatedElt.getClassLoader())
-                        .getBundle().getBundleContext();
+                BundleContext bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
                 activator = new ExtensionActivator();
                 try {
                     activator.start(bc);
-                } catch (Exception ex) {
+                }
+                catch(Exception ex) {
                     ex.printStackTrace();
                     return;
                 }
             }
-        } else {
-            BundleContext bc = BundleReference.class
-                    .cast(getClass().getClassLoader())
-                    .getBundle().getBundleContext();
+        }
+        else {
+            BundleContext bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
             activator = new ExtensionActivator();
             try {
                 logger.warn("Starting the extension assuming the bundle is {}",
-                        bc.getBundle().getSymbolicName());
+                            bc.getBundle().getSymbolicName());
                 activator.start(bc);
-            } catch (Exception ex) {
+            }
+            catch(Exception ex) {
                 ex.printStackTrace();
                 return;
             }
@@ -231,7 +252,8 @@ public class WeldOSGiExtension implements Extension {
             AnnotatedType annotatedType) {
         try {
             return new OSGiServiceAnnotatedType(annotatedType);
-        } catch (Exception e) {
+        }
+        catch(Exception e) {
             exceptions.add(e);
         }
         return null;
@@ -240,29 +262,30 @@ public class WeldOSGiExtension implements Extension {
     private void discoverServiceInjectionPoints(
             Set<InjectionPoint> injectionPoints) {
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
-             iterator.hasNext(); ) {
+             iterator.hasNext();) {
             InjectionPoint injectionPoint = iterator.next();
 
             boolean service = false;
             try {
-                if (((ParameterizedType) injectionPoint.getType())
-                        .getRawType().equals(Service.class)) {
+                if (((ParameterizedType) injectionPoint.getType()).getRawType().equals(Service.class)) {
                     service = true;
                 }
-            } catch (Exception e) {//Not a ParameterizedType, skip
+            }
+            catch(Exception e) {//Not a ParameterizedType, skip
             }
 
             if (service) {
                 addServiceProducerInjectionInfo(injectionPoint);
-            } else if (contains(injectionPoint.getQualifiers(), OSGiService.class)) {
+            }
+            else if (contains(injectionPoint.getQualifiers(), OSGiService.class)) {
                 addServiceInjectionInfo(injectionPoint);
             }
             if (contains(injectionPoint.getQualifiers(), Required.class)) {
                 Class key;
                 if (service) {
-                    key = (Class) ((ParameterizedType) injectionPoint
-                            .getType()).getActualTypeArguments()[0];
-                } else {
+                    key = (Class) ((ParameterizedType) injectionPoint.getType()).getActualTypeArguments()[0];
+                }
+                else {
                     key = (Class) injectionPoint.getType();
                 }
                 Filter value = FilterGenerator.makeFilter(injectionPoint);
@@ -294,7 +317,7 @@ public class WeldOSGiExtension implements Extension {
                             final Set<InjectionPoint> injectionPoints) {
         Set<OSGiServiceBean> beans = new HashSet<OSGiServiceBean>();
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
-             iterator.hasNext(); ) {
+             iterator.hasNext();) {
             final InjectionPoint injectionPoint = iterator.next();
             beans.add(new OSGiServiceBean(injectionPoint));
         }
@@ -307,7 +330,7 @@ public class WeldOSGiExtension implements Extension {
                                     final Set<InjectionPoint> injectionPoints) {
         Set<OSGiServiceProducerBean> beans = new HashSet<OSGiServiceProducerBean>();
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
-             iterator.hasNext(); ) {
+             iterator.hasNext();) {
             final InjectionPoint injectionPoint = iterator.next();
             beans.add(new OSGiServiceProducerBean(injectionPoint));
         }
@@ -319,7 +342,7 @@ public class WeldOSGiExtension implements Extension {
     private boolean contains(Set<Annotation> qualifiers,
                              Class<? extends Annotation> qualifier) {
         for (Iterator<Annotation> iterator = qualifiers.iterator();
-             iterator.hasNext(); ) {
+             iterator.hasNext();) {
             if (iterator.next().annotationType().equals(qualifier)) {
                 return true;
             }

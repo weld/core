@@ -45,8 +45,8 @@ import org.jboss.weld.environment.osgi.api.annotation.BundleName;
 import org.jboss.weld.environment.osgi.api.annotation.BundleVersion;
 
 /**
- * Producers for utilities injection.
- *
+ * This the class responsible for OSGi utility injection for the current bundle.
+ * <b/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
