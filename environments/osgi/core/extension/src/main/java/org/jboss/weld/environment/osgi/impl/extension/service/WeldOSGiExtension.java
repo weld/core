@@ -20,6 +20,7 @@ import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.api.annotation.Required;
+import org.jboss.weld.environment.osgi.impl.extension.beans.OSGiUtilitiesProducer;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceAnnotatedType;
 import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
@@ -58,7 +59,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jboss.weld.environment.osgi.impl.extension.beans.OSGiUtilitiesProducer;
 
 /**
  * Weld OSGi extension.

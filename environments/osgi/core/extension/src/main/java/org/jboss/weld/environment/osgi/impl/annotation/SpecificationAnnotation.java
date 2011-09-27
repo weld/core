@@ -26,7 +26,8 @@ import org.jboss.weld.environment.osgi.api.annotation.Specification;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class SpecificationAnnotation extends AnnotationLiteral<Specification> implements Specification {
+public class SpecificationAnnotation extends AnnotationLiteral<Specification>
+                                     implements Specification {
 
     private final Class value;
 
