@@ -306,7 +306,7 @@
          
          <para>
             <literal>InjectionServices</literal> provides a very simple contract, the
-            <literal>InjectionServices.aroundInject(InjectionContext ic);</literal> intercepter will be called for every
+            <literal>InjectionServices.aroundInject(InjectionContext ic);</literal> interceptor will be called for every
             instance that CDI injects, whether it is a contextual instance, or a non-contextual instance injected by
             <literal>InjectionTarget.inject()</literal>.
          </para>
@@ -407,7 +407,7 @@
          <para>
             The bootstrap is split into phases, container initialization, bean deployment, bean validation and shutdown.
             Initialization will create a manager, and add the built-in contexts, and examine the deployment structure.
-            Bean deployment will deploy any beans (defined using annotations, programtically, or built in). Bean
+            Bean deployment will deploy any beans (defined using annotations, programmatically, or built in). Bean
             validation will validate all beans.
          </para>
          
@@ -473,7 +473,7 @@
             <listitem>
                <para>
                   If you are integrating Weld into an environment that supports deployment of multiple applications, you
-                  must enable, automatically, or through user configuation, classloader isolation for each CDI
+                  must enable, automatically, or through user configuration, classloader isolation for each CDI
                   application.
                </para>
             </listitem>
@@ -489,7 +489,7 @@
                   automatically, or through user configuration, for each CDI application which uses Servlet.
                </para>
                <para>
-                  You must ensure that that <literal>WeldListener.contextInitialized()</literal> is called
+                  You must ensure that <literal>WeldListener.contextInitialized()</literal> is called
                   after beans are deployed is complete (<literal>Bootstrap.deployBeans()</literal> has been called). 
                </para>
             </listitem>

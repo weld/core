@@ -3,7 +3,7 @@
 <partintro>
 
    <para>
-      Weld is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide CDI services for
+      Weld is the reference implementation of JSR-299, and is used by JBoss AS and GlassFish to provide CDI services for
       Java Enterprise Edition (Java EE) applications. Weld also goes beyond the environments and APIs defined by the
       JSR-299 specification by providing support for a number of other environments (such as a servlet container such as
       Tomcat, or Java SE).

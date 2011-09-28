@@ -256,7 +256,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
          Now, you may be thinking, <emphasis>"What's the different between using a qualifier and just specifying the
          exact implementation class you want?"</emphasis> It's important to understand that a qualifier is like an
          extension of the interface. It does not create a direct dependency to any particular implementation. There 
-         may be multiple alterative implementations of <literal>@Asynchronous PaymentProcessor</literal>!
+         may be multiple alternative implementations of <literal>@Asynchronous PaymentProcessor</literal>!
       </para>
 
    </section>
@@ -265,7 +265,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
       <title>The built-in qualifiers <literal>@Default</literal> and <literal>@Any</literal></title>
       
       <para>Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the
-      qualifier <literal>@Default</literal>. From time to time, you'll need to decare an injection point without
+      qualifier <literal>@Default</literal>. From time to time, you'll need to declare an injection point without
       specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>.
       Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default
       qualifier, without otherwise restricting the beans that are eligible for injection.</para>
@@ -297,7 +297,7 @@ public @interface PayBy {
 }]]></programlisting> 
    
          <para>
-            Then we select one of the possible member values when appling the qualifier:
+            Then we select one of the possible member values when applying the qualifier:
          </para>
 
          <programlisting role="JAVA"><![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]></programlisting> 
@@ -444,7 +444,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
       <para>
          See <ulink
          url="http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType">this
-         FAQ</ulink> for step-by-step instructions for how to resolve an ambigous resolution exception between a raw
+         FAQ</ulink> for step-by-step instructions for how to resolve an ambiguous resolution exception between a raw
          bean type and a producer method that returns the same bean type.
       </para>
       
@@ -639,7 +639,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
       <programlisting role="JAVA"><![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
       
       <para>
-         Next, we need to obtain an instance of our qualifier type. Since annotatons are interfaces, we can't just write
+         Next, we need to obtain an instance of our qualifier type. Since annotations are interfaces, we can't just write
          <literal>new Asynchronous()</literal>. It's also quite tedious to create a concrete implementation of an annotation 
          type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class 
          <literal>AnnotationLiteral</literal>. 
@@ -743,7 +743,7 @@ public @interface HttpParam {
 }]]></programlisting>
 
   <para>Note that acquiring of the request in this example is JSF-centric. For a more generic solution
-  you could write your own prodcuer for the request and have it injected as a method parameter.</para>
+  you could write your own producer for the request and have it injected as a method parameter.</para>
 
   <para>Note also that the <literal>value()</literal> member of the <literal>HttpParam</literal>
   annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal></para>

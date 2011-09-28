@@ -239,7 +239,7 @@ MyBean(MyExtension myExtension) {
          We recommend that frameworks let CDI take over the job of actually instantiating the framework-controlled 
          objects. That way, the framework-controlled objects can take advantage of constructor injection. However, 
          if the framework requires use of a constructor with a special signature, the framework will need to 
-         instatiate the object itself, and so only method and field injection will be supported.
+         insntatiate the object itself, and so only method and field injection will be supported.
       </para>
       </note>
       
@@ -282,7 +282,7 @@ ctx.release();  //clean up dependent objects
       </para>
       
       <para>
-         The <literal>Bean</literal> interface exposes all the interesting things we dicussed in
+         The <literal>Bean</literal> interface exposes all the interesting things we discussed in
          <xref linkend="bean-anatomy"/>.
       </para>
       

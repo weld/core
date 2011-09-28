@@ -318,7 +318,7 @@ public class HelloWorld
 
             <section>
 
-               <title>Programatic Bootstrap API</title>
+               <title>Programmatic Bootstrap API</title>
 
                <para>For added flexibility, CDI SE also comes with a bootstrap API 
                which can be called from within your application in order to initialize
@@ -405,7 +405,7 @@ public class HelloWorld
                <para>It is not necessary to use @ThreadScoped in all
                   multithreaded applications. The thread context is not intended 
                   as a replacement for defining your own application-specific contexts.
-                  It is generally only useful in situtations where you would otherwise
+                  It is generally only useful in situations where you would otherwise
                   have used ThreadLocal directly, which are typically rare.
                </para>
             </note>

@@ -10,7 +10,7 @@
       only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss 
       AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. 
       Translator is an enterprise (ear) example that contains session beans. This example
-      must be run on JBoss AS 6.0, Glassfish 3.0 or any compliant Java EE 6 container.
+      must be run on JBoss AS 6.0, GlassFish 3.0 or any compliant Java EE 6 container.
    </para>
    
    <para>
@@ -520,7 +520,7 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
 
       <para>
          You have two options if you want to run the example on Jetty from the IDE. You can either install the
-         m2eclispe[link] plugin and run the goals as described above. Your other option is to start the Jetty container
+         m2eclipse[link] plugin and run the goals as described above. Your other option is to start the Jetty container
          from a Java application.
       </para>
 
