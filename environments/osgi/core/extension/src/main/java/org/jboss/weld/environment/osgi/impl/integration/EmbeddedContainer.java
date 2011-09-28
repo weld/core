@@ -91,6 +91,7 @@ public class EmbeddedContainer {
         container.initialize();
         context.addBundleListener(listener);
         context.addServiceListener(listener);
+        container.getEvent();
         return container;
     }
 
@@ -178,7 +179,7 @@ public class EmbeddedContainer {
                     t.printStackTrace();
                 }
                 if (bundleEvent != null) {
-                    //broadcast the corresponding CDI-OSGi event
+                    //broadcast the corresponding Weld-OSGi event
                     fireAllEvent(bundleEvent, container.getEvent());
                 }
                 if (!set) {
@@ -218,7 +219,7 @@ public class EmbeddedContainer {
                     t.printStackTrace();
                 }
                 if (serviceEvent != null) {
-                    //broadcast the corresponding CDI-OSGi event
+                    //broadcast the corresponding Weld-OSGi event
                     fireAllEvent(serviceEvent, container.getEvent(), container.getInstance());
                 }
                 if (!set) {

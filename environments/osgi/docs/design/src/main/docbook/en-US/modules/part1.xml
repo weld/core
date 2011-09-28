@@ -240,7 +240,7 @@ END</programlisting>
          <para>The beans.xml file follows no particular rules and should be the same as in a native CDI environment.
             Thus it can be completely empty or declare interceptors, decorators or alternatives as a regular CDI
             beans.xml file.</para>
-         <para>There will be no different behavior with a classic bean archive except for CDI OSGi extension new
+         <para>There will be no different behavior with a classic bean archive except for Weld-OSGi extension new
             utilities. But these don't need any modification on the <code>META-INF/bean.xml</code> file.</para>
       </section>
       <section>

@@ -43,20 +43,20 @@ public class WeldActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        logger.debug("Weld implementation bundle for CDI-OSGi is starting ...");
+        logger.debug("Weld implementation bundle for Weld-OSGi is starting ...");
         SingletonProvider.initialize(new RegistrySingletonProvider());
         reg = context.registerService(CDIContainerFactory.class.getName(),
                 factory,
                 null);
-        logger.debug("Weld implementation bundle for CDI-OSGi STARTED");
+        logger.debug("Weld implementation bundle for Weld-OSGi STARTED");
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        logger.debug("Weld implementation bundle for CDI-OSGi is stopping ...");
+        logger.debug("Weld implementation bundle for Weld-OSGi is stopping ...");
         reg.unregister();
         SingletonProvider.reset();
-        logger.debug("Weld implementation bundle for CDI-OSGi STOPPED");
+        logger.debug("Weld implementation bundle for Weld-OSGi STOPPED");
     }
 
 }

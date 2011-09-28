@@ -20,7 +20,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 
 /**
- * <p>This abstract class represents all the CDI-OSGi bundle events as a
+ * <p>This abstract class represents all the Weld-OSGi bundle events as a
  * superclass.</p>
  * <p>It allows to:<ul>
  * <li>

@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * <p>This interface represents a CDI container factory used by CDI-OSGi in
+ * <p>This interface represents a CDI container factory used by Weld-OSGi in
  * order to obtain {@link CDIContainer}.</p>
  * <p>It allows to: <ul>
  * <li>

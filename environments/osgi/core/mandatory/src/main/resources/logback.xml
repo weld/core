@@ -12,7 +12,7 @@
     </appender>
 
     <appender name="Log" class="ch.qos.logback.core.FileAppender">
-        <file>cdi-osgi.log</file>
+        <file>weld-osgi.log</file>
         <append>false</append>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>trace</level>

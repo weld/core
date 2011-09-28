@@ -76,29 +76,21 @@ public class WeldOSGiExtension implements Extension {
 
     private static Logger logger = LoggerFactory.getLogger(
             WeldOSGiExtension.class);
-
     private static boolean autoRunInHybridMode = true;
-    
     // hack for weld integration
     public static ThreadLocal<Long> currentBundle = new ThreadLocal<Long>();
-
     private HashMap<Type, Set<InjectionPoint>> servicesToBeInjected =
-                                               new HashMap<Type, Set<InjectionPoint>>();
-
+            new HashMap<Type, Set<InjectionPoint>>();
     private HashMap<Type, Set<InjectionPoint>> serviceProducerToBeInjected =
-                                               new HashMap<Type, Set<InjectionPoint>>();
-
+            new HashMap<Type, Set<InjectionPoint>>();
     private List<Annotation> observers = new ArrayList<Annotation>();
-
     private Map<Class, Set<Filter>> requiredOsgiServiceDependencies =
-                                    new HashMap<Class, Set<Filter>>();
-
+            new HashMap<Class, Set<Filter>>();
     private ExtensionActivator activator;
-
     private List<Exception> exceptions = new ArrayList<Exception>();
 
     public void registerCDIOSGiBeans(@Observes BeforeBeanDiscovery event,
-                                     BeanManager manager) {
+            BeanManager manager) {
         logger.debug("Observe a BeforeBeanDiscovery event");
         event.addAnnotatedType(
                 manager.createAnnotatedType(OSGiUtilitiesProducer.class));
@@ -127,8 +119,7 @@ public class WeldOSGiExtension implements Extension {
         annotatedType = discoverAndProcessCDIOSGiClass(annotatedType);
         if (annotatedType != null) {
             event.setAnnotatedType(annotatedType);
-        }
-        else {
+        } else {
             logger.warn("The annotated type {} is ignored", annotatedType);
             event.veto();
         }
@@ -176,26 +167,26 @@ public class WeldOSGiExtension implements Extension {
         logger.debug("Observe an AfterBeanDiscovery event");
         //runExtension();
         for (Exception exception : exceptions) {
-            logger.error("Registering a CDI-OSGI deployment error {}", exception);
+            logger.error("Registering a Weld-OSGi deployment error {}", exception);
             event.addDefinitionError(exception);
         }
         for (Iterator<Type> iterator = this.servicesToBeInjected.keySet().iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             Type type = iterator.next();
             if (!(type instanceof Class)) {
                 //TODO: need to handle Instance<Class>. This fails currently
                 logger.error("Unknown type: {}", type);
                 event.addDefinitionError(
                         new UnsupportedOperationException("Injection target type "
-                                                          + type + "not supported"));
+                        + type + "not supported"));
                 break;
             }
             addService(event, this.servicesToBeInjected.get(type));
         }
 
         for (Iterator<Type> iterator =
-                            this.serviceProducerToBeInjected.keySet().iterator();
-             iterator.hasNext();) {
+                this.serviceProducerToBeInjected.keySet().iterator();
+                iterator.hasNext();) {
             Type type = iterator.next();
             addServiceProducer(event, this.serviceProducerToBeInjected.get(type));
         }
@@ -204,11 +195,11 @@ public class WeldOSGiExtension implements Extension {
             runExtensionInHybridMode(); // should work if the current classloader is based on osgi classloader
         }
     }
-    
+
     private void runExtensionInHybridMode() {
         if (!servicesToBeInjected.isEmpty()) {
             Set<InjectionPoint> injections =
-                                servicesToBeInjected.values().iterator().next();
+                    servicesToBeInjected.values().iterator().next();
             if (!injections.isEmpty()) {
                 InjectionPoint ip = injections.iterator().next();
                 Class annotatedElt = ip.getMember().getDeclaringClass();
@@ -217,7 +208,7 @@ public class WeldOSGiExtension implements Extension {
             }
         } else if (!serviceProducerToBeInjected.isEmpty()) {
             Set<InjectionPoint> injections =
-                                serviceProducerToBeInjected.values().iterator().next();
+                    serviceProducerToBeInjected.values().iterator().next();
             if (!injections.isEmpty()) {
                 InjectionPoint ip = injections.iterator().next();
                 Class annotatedElt = ip.getMember().getDeclaringClass();
@@ -226,8 +217,8 @@ public class WeldOSGiExtension implements Extension {
             }
         } else {
             BundleContext bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
-                logger.warn("Starting the extension assuming the bundle is {}",
-                            bc.getBundle().getSymbolicName());
+            logger.warn("Starting the extension assuming the bundle is {}",
+                    bc.getBundle().getSymbolicName());
             activator = runInHybridMode(bc);
         }
     }
@@ -235,34 +226,32 @@ public class WeldOSGiExtension implements Extension {
     /**
      * Method used to bootstrap the the OSGi part of the extension in an hybrid environment.
      * Provided for server integration purposes.
-     * 
+     *
      * @param bc
-     * @param activator 
+     * @param activator
      */
     public static void runInHybridMode(BundleContext bc, ExtensionActivator activator) {
         try {
             activator.start(bc);
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
-        }        
+        }
     }
-    
+
     /**
      * Method used to bootstrap the the OSGi part of the extension in an hybrid environment.
      * Provided for server integration purposes.
-     * 
+     *
      * @param bc
-     * @param activator 
+     * @param activator
      */
     public static ExtensionActivator runInHybridMode(BundleContext bc) {
         ExtensionActivator activator = new ExtensionActivator();
         try {
             activator.start(bc);
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
-        } 
+        }
         return activator;
     }
 
@@ -270,8 +259,7 @@ public class WeldOSGiExtension implements Extension {
             AnnotatedType annotatedType) {
         try {
             return new OSGiServiceAnnotatedType(annotatedType);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             exceptions.add(e);
         }
         return null;
@@ -280,7 +268,7 @@ public class WeldOSGiExtension implements Extension {
     private void discoverServiceInjectionPoints(
             Set<InjectionPoint> injectionPoints) {
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             InjectionPoint injectionPoint = iterator.next();
 
             boolean service = false;
@@ -288,22 +276,19 @@ public class WeldOSGiExtension implements Extension {
                 if (((ParameterizedType) injectionPoint.getType()).getRawType().equals(Service.class)) {
                     service = true;
                 }
-            }
-            catch(Exception e) {//Not a ParameterizedType, skip
+            } catch (Exception e) {//Not a ParameterizedType, skip
             }
 
             if (service) {
                 addServiceProducerInjectionInfo(injectionPoint);
-            }
-            else if (contains(injectionPoint.getQualifiers(), OSGiService.class)) {
+            } else if (contains(injectionPoint.getQualifiers(), OSGiService.class)) {
                 addServiceInjectionInfo(injectionPoint);
             }
             if (contains(injectionPoint.getQualifiers(), Required.class)) {
                 Class key;
                 if (service) {
                     key = (Class) ((ParameterizedType) injectionPoint.getType()).getActualTypeArguments()[0];
-                }
-                else {
+                } else {
                     key = (Class) injectionPoint.getType();
                 }
                 Filter value = FilterGenerator.makeFilter(injectionPoint);
@@ -332,10 +317,10 @@ public class WeldOSGiExtension implements Extension {
     }
 
     private void addService(AfterBeanDiscovery event,
-                            final Set<InjectionPoint> injectionPoints) {
+            final Set<InjectionPoint> injectionPoints) {
         Set<OSGiServiceBean> beans = new HashSet<OSGiServiceBean>();
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             final InjectionPoint injectionPoint = iterator.next();
             beans.add(new OSGiServiceBean(injectionPoint));
         }
@@ -345,10 +330,10 @@ public class WeldOSGiExtension implements Extension {
     }
 
     private void addServiceProducer(AfterBeanDiscovery event,
-                                    final Set<InjectionPoint> injectionPoints) {
+            final Set<InjectionPoint> injectionPoints) {
         Set<OSGiServiceProducerBean> beans = new HashSet<OSGiServiceProducerBean>();
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             final InjectionPoint injectionPoint = iterator.next();
             beans.add(new OSGiServiceProducerBean(injectionPoint));
         }
@@ -358,9 +343,9 @@ public class WeldOSGiExtension implements Extension {
     }
 
     private boolean contains(Set<Annotation> qualifiers,
-                             Class<? extends Annotation> qualifier) {
+            Class<? extends Annotation> qualifier) {
         for (Iterator<Annotation> iterator = qualifiers.iterator();
-             iterator.hasNext();) {
+                iterator.hasNext();) {
             if (iterator.next().annotationType().equals(qualifier)) {
                 return true;
             }
@@ -376,7 +361,6 @@ public class WeldOSGiExtension implements Extension {
         return requiredOsgiServiceDependencies;
     }
 
-    
     public static boolean autoRunInHybridMode() {
         return autoRunInHybridMode;
     }
@@ -384,8 +368,8 @@ public class WeldOSGiExtension implements Extension {
     /**
      * Set to false if the server use the manual bootstrap in hybrid mode with runInHybridMode
      * so the extension won't try to do it by itself.
-     * 
-     * @param autoRunInHybridMode 
+     *
+     * @param autoRunInHybridMode
      */
     public static void autoRunInHybridMode(boolean autoRunInHybridMode) {
         WeldOSGiExtension.autoRunInHybridMode = autoRunInHybridMode;
