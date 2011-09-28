@@ -55,6 +55,7 @@ public class Environment {
                 Thread.sleep(500);
             }
         }
+        WeldOSGiWait.waitForContainersToStart(context, context.getBundles());
     }
 
     public static void waitForState(Bundle bundle, int state) throws InterruptedException {

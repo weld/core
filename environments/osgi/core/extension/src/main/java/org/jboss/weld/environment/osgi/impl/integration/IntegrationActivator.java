@@ -255,6 +255,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         if (!set) {
             WeldOSGiExtension.currentBundle.remove();
         }
+        holder.setReady();
     }
 
     private void stopManagement(Bundle bundle) {
