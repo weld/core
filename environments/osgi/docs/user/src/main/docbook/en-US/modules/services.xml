@@ -89,9 +89,9 @@ public class HelloWorld* implements HelloWorld {
                 </listitem>
                 <listitem>
                     <para>Update the Felix configuration file to auto install the bean
-                        bundle<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar \
+                        bundle<programlisting>felix.auto.install.1= file:bundle/weld-osgi-core-api-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-spi-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-mandatory-1.0-SNAPSHOT.jar \
 <emphasis role="bold">file:bundle/hello-world-provider-1.0.jar</emphasis></programlisting></para>
                 </listitem>
                 <listitem>
@@ -107,11 +107,11 @@ START LEVEL 1
     2|Active     |    1|Apache Felix Gogo Command (0.8.0)
     3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
     4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
-    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
-    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
-    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
-    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
-    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+    5|Active     |    1|Weld-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|Weld-OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|Weld-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|Weld-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|Weld-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
    10|Installed  |    1|hello-world-provider (1.0.0)
 g! start 10
 g! Hello World!
@@ -162,7 +162,7 @@ public class MyServiceImpl extends AbsA implements MyService, ItfA, ItfB {
                                 interface types.The blacklist is described below.</para>
                         </listitem>
                         <listitem>
-                            <para>Else if CDI-OSGi the implementation class possesses a
+                            <para>Else if Weld-OSGi the implementation class possesses a
                                 non-blacklisted superclass the service is registered for this
                                 superclass type.</para>
                         </listitem>
@@ -338,9 +338,9 @@ Bundle-Activator com.sample.Activator</programlisting>The
                 </listitem>
                 <listitem>
                     <para>Update the Felix configuration file to auto install the bean
-                        bundle<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar \
+                        bundle<programlisting>felix.auto.install.1= file:bundle/weld-osgi-core-api-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-spi-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-mandatory-1.0-SNAPSHOT.jar \
 file:bundle/hello-world-provider-1.0.jar \
 <emphasis role="bold">file:bundle/hello-world-consumer-1.0.jar</emphasis></programlisting></para>
                 </listitem>
@@ -357,11 +357,11 @@ START LEVEL 1
     2|Active     |    1|Apache Felix Gogo Command (0.8.0)
     3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
     4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
-    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
-    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
-    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
-    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
-    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+    5|Active     |    1|Weld-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|Weld-OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|Weld-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|Weld-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|Weld-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
 <emphasis role="bold">   10|Installed  |    1|hello-world-provider (1.0.0)
    11|Installed  |    1|hello-world-consumer (1.0.0)</emphasis>
 g! </programlisting>Start
@@ -543,9 +543,9 @@ public class Activator implements BundleActivator {
                 </listitem>
                 <listitem>
                     <para>Update the Felix configuration file to auto install the bean
-                        bundle<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar \
+                        bundle<programlisting>felix.auto.install.1= file:bundle/weld-osgi-core-api-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-spi-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-mandatory-1.0-SNAPSHOT.jar \
 file:bundle/hello-world-provider-1.0.jar \
 <emphasis role="bold">file:bundle/hello-world-consumer-multilingual-1.0.jar</emphasis></programlisting></para>
                 </listitem>
@@ -562,11 +562,11 @@ START LEVEL 1
     2|Active     |    1|Apache Felix Gogo Command (0.8.0)
     3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
     4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
-    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
-    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
-    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
-    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
-    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+    5|Active     |    1|Weld-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|Weld-OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|Weld-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|Weld-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|Weld-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
 <emphasis role="bold">   10|Installed  |    1|hello-world-provider (1.0.0)
    11|Installed  |    1|hello-world-consumer-multilingual (1.0.0)</emphasis>
 g! </programlisting>Start
@@ -760,7 +760,7 @@ public class App {
         &lt;/dependency>
         &lt;dependency>
             &lt;groupId>org.osgi.cdi&lt;/groupId>
-            &lt;artifactId>cdi-osgi-extension-api&lt;/artifactId>
+            &lt;artifactId>weld-osgi-core-api&lt;/artifactId>
             &lt;version>1.0-SNAPSHOT&lt;/version>
         &lt;/dependency>
         &lt;dependency>
@@ -825,9 +825,9 @@ public class App {
                 </listitem>
                 <listitem>
                     <para>Update the Felix configuration file to auto install the bean
-                        bundle<programlisting>felix.auto.install.1= file:bundle/cdi-osgi-extension-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-integration-api-1.0-SNAPSHOT.jar \
-file:bundle/cdi-osgi-mandatory-1.0-SNAPSHOT.jar \
+                        bundle<programlisting>felix.auto.install.1= file:bundle/weld-osgi-core-api-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-spi-1.0-SNAPSHOT.jar \
+file:bundle/weld-osgi-core-mandatory-1.0-SNAPSHOT.jar \
 file:bundle/hello-world-provider-1.0.jar \
 file:bundle/hello-world-consumer-multilingual-1.0.jar \
 <emphasis role="bold">file:bundle/hello-world-consumer2-multilingual-1.0.jar</emphasis></programlisting></para>
@@ -845,11 +845,11 @@ START LEVEL 1
     2|Active     |    1|Apache Felix Gogo Command (0.8.0)
     3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
     4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
-    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
-    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
-    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
-    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
-    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+    5|Active     |    1|Weld-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|Weld-OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|Weld-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|Weld-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|Weld-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
    10|Installed  |    1|hello-world-provider (1.0.0)
    11|Installed  |    1|hello-world-consumer-multilingual (1.0.0)
    12|Installed  |    1|hello-world-consumer2-multilingual (1.0.0)
@@ -918,11 +918,11 @@ START LEVEL 1
     2|Active     |    1|Apache Felix Gogo Command (0.8.0)
     3|Active     |    1|Apache Felix Gogo Runtime (0.8.0)
     4|Active     |    1|Apache Felix Gogo Shell (0.8.0)
-    5|Active     |    1|CDI-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
-    6|Active     |    1|CDI OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
-    7|Resolved   |    1|CDI-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
-    8|Resolved   |    1|CDI-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
-    9|Resolved   |    1|CDI-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
+    5|Active     |    1|Weld-OSGi :: Core :: Extension Impl (1.0.0.SNAPSHOT)
+    6|Active     |    1|Weld-OSGi :: Implementation :: Weld Integration (1.0.0.SNAPSHOT)
+    7|Resolved   |    1|Weld-OSGi :: Core :: Extension API (1.0.0.SNAPSHOT)
+    8|Resolved   |    1|Weld-OSGi :: Core :: Integration API (1.0.0.SNAPSHOT)
+    9|Resolved   |    1|Weld-OSGi :: Core :: Mandatory (1.0.0.SNAPSHOT)
    10|Resolved   |    1|hello-world-provider (1.0.0)
    11|Resolved   |    1|hello-world-consumer-multilingual (1.0.0)
    12|Resolved   |    1|hello-world-consumer2-multilingual (1.0.0)

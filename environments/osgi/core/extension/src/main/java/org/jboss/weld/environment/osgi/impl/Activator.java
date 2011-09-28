@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is the {@link BundleActivator} of the extension bundle. It represents
- * the entry point of CDI-OSGi.
+ * the entry point of Weld-OSGi.
  * <p/>
  * It is responsible for starting both extension and integration part of Weld-OSGi.
  * First the extension is started, then the integration.

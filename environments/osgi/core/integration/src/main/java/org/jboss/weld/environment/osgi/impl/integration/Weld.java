@@ -37,7 +37,7 @@ import java.util.Collection;
  * {@link org.jboss.weld.environment.osgi.WeldCDIContainer}.
  * <p/>
  * It is responsible for initialization of a Weld container requested by
- * CDI-OSGi using the {@link
+ * Weld-OSGi using the {@link
  * org.jboss.weld.environment.osgi.WeldCDIContainerFactory}.
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)

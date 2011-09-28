@@ -26,7 +26,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 /**
  * Embedded Weld container used for bean bundles that are not managed by
- * CDI-OSGi directly.
+ * Weld-OSGi directly.
  * <p/>
  * It is responsible for initialization of a Weld container requested by the
  * bean bundles.

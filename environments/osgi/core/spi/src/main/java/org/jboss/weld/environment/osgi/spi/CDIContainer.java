@@ -27,7 +27,7 @@ import java.util.Collection;
 
 /**
  * <p>This interface represents an iterable list of CDI containers used by
- * CDI-OSGi.</p>
+ * Weld-OSGi.</p>
  * <p>It allows to: <ul>
  * <li>
  * <p>Navigate through the list of CDI containers as an

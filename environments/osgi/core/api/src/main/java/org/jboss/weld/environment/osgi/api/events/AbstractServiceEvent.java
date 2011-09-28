@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>This abstract class represents all the CDI-OSGi service events as a
+ * <p>This abstract class represents all the Weld-OSGi service events as a
  * superclass.</p>
  * <p>It allows to:<ul>
  * <li>

@@ -19,7 +19,7 @@ package org.jboss.weld.environment.osgi.api.events;
 import org.osgi.framework.BundleContext;
 
 /**
- * <p>This abstract class represents all the CDI-OSGi bundle container events as a
+ * <p>This abstract class represents all the Weld-OSGi bundle container events as a
  * superclass.</p>
  * <p>It allows to:<ul>
  * <li>
