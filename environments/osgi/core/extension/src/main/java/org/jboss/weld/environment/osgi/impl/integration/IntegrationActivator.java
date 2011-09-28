@@ -264,16 +264,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             if (container != null) {
                 //BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
                 RegistrationsHolderImpl regs = container.getInstance().select(RegistrationsHolderImpl.class).get();
-                for (ServiceRegistration reg : regs.getRegistrations()) {
-                    try {
-                        reg.unregister();
-                    } catch (Throwable t) {
-                        //t.printStackTrace();
-                    }
-                }
                 try {
-                    logger.trace("Firing the BundleState.INVALID event");
-                    container.getBeanManager().fireEvent(new Invalid());
                     logger.trace("The container {} has been unregistered", container);
                     logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
                     // here singleton issue ?
@@ -281,6 +272,15 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                 }
                 catch(Throwable t) {
                 }
+                for (ServiceRegistration reg : regs.getRegistrations()) {
+                    try {
+                        reg.unregister();
+                    } catch (Throwable t) {
+                        //t.printStackTrace();
+                    }
+                }
+                logger.trace("Firing the BundleState.INVALID event");
+                container.getBeanManager().fireEvent(new Invalid());
                 logger.trace("Shutting down the container {}", container);
                 //holder.shutdown();
                 managed.remove(bundle.getBundleId());
