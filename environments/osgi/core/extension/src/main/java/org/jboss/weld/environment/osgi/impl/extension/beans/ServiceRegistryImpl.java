@@ -82,6 +82,9 @@ public class ServiceRegistryImpl implements ServiceRegistry {
     private Event<Invalid> invalidEvent;
 
     @Inject
+    private Event<Invalid> invalidEvent;
+
+    @Inject
     private WeldOSGiExtension extension;
 
     @Inject
