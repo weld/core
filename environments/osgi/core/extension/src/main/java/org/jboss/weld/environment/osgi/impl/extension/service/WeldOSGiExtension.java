@@ -77,6 +77,8 @@ public class WeldOSGiExtension implements Extension {
     private static Logger logger = LoggerFactory.getLogger(
             WeldOSGiExtension.class);
 
+    private static boolean autoRunInHybridMode = true;
+    
     // hack for weld integration
     public static ThreadLocal<Long> currentBundle = new ThreadLocal<Long>();
 
@@ -110,10 +112,6 @@ public class WeldOSGiExtension implements Extension {
                 manager.createAnnotatedType(ContainerObserver.class));
         event.addAnnotatedType(
                 manager.createAnnotatedType(InstanceHolder.class));
-        if (!Activator.osgiStarted()) {
-            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
-            runExtension(); // should work if the current classloader is based on osgi classloader
-        }
     }
 
     /**
@@ -201,9 +199,13 @@ public class WeldOSGiExtension implements Extension {
             Type type = iterator.next();
             addServiceProducer(event, this.serviceProducerToBeInjected.get(type));
         }
+        if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
+            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
+            runExtensionInHybridMode(); // should work if the current classloader is based on osgi classloader
+        }
     }
-
-    private void runExtension() {
+    
+    private void runExtensionInHybridMode() {
         if (!servicesToBeInjected.isEmpty()) {
             Set<InjectionPoint> injections =
                                 servicesToBeInjected.values().iterator().next();
@@ -211,14 +213,7 @@ public class WeldOSGiExtension implements Extension {
                 InjectionPoint ip = injections.iterator().next();
                 Class annotatedElt = ip.getMember().getDeclaringClass();
                 BundleContext bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
-                activator = new ExtensionActivator();
-                try {
-                    activator.start(bc);
-                }
-                catch(Exception ex) {
-                    ex.printStackTrace();
-                    return;
-                }
+                activator = runInHybridMode(bc);
             }
         } else if (!serviceProducerToBeInjected.isEmpty()) {
             Set<InjectionPoint> injections =
@@ -227,28 +222,48 @@ public class WeldOSGiExtension implements Extension {
                 InjectionPoint ip = injections.iterator().next();
                 Class annotatedElt = ip.getMember().getDeclaringClass();
                 BundleContext bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
-                activator = new ExtensionActivator();
-                try {
-                    activator.start(bc);
-                }
-                catch(Exception ex) {
-                    ex.printStackTrace();
-                    return;
-                }
+                activator = runInHybridMode(bc);
             }
         } else {
             BundleContext bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
-            activator = new ExtensionActivator();
-            try {
                 logger.warn("Starting the extension assuming the bundle is {}",
                             bc.getBundle().getSymbolicName());
-                activator.start(bc);
-            }
-            catch(Exception ex) {
-                ex.printStackTrace();
-                return;
-            }
+            activator = runInHybridMode(bc);
         }
+    }
+
+    /**
+     * Method used to bootstrap the the OSGi part of the extension in an hybrid environment.
+     * Provided for server integration purposes.
+     * 
+     * @param bc
+     * @param activator 
+     */
+    public static void runInHybridMode(BundleContext bc, ExtensionActivator activator) {
+        try {
+            activator.start(bc);
+        }
+        catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }        
+    }
+    
+    /**
+     * Method used to bootstrap the the OSGi part of the extension in an hybrid environment.
+     * Provided for server integration purposes.
+     * 
+     * @param bc
+     * @param activator 
+     */
+    public static ExtensionActivator runInHybridMode(BundleContext bc) {
+        ExtensionActivator activator = new ExtensionActivator();
+        try {
+            activator.start(bc);
+        }
+        catch(Exception ex) {
+            throw new RuntimeException(ex);
+        } 
+        return activator;
     }
 
     private AnnotatedType discoverAndProcessCDIOSGiClass(
@@ -361,4 +376,18 @@ public class WeldOSGiExtension implements Extension {
         return requiredOsgiServiceDependencies;
     }
 
+    
+    public static boolean autoRunInHybridMode() {
+        return autoRunInHybridMode;
+    }
+
+    /**
+     * Set to false if the server use the manual bootstrap in hybrid mode with runInHybridMode
+     * so the extension won't try to do it by itself.
+     * 
+     * @param autoRunInHybridMode 
+     */
+    public static void autoRunInHybridMode(boolean autoRunInHybridMode) {
+        WeldOSGiExtension.autoRunInHybridMode = autoRunInHybridMode;
+    }
 }
