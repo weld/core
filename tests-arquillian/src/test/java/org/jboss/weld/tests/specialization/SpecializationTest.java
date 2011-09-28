@@ -33,7 +33,8 @@ public class SpecializationTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addPackage(SpecializationTest.class.getPackage());
+                .addClass(User.class)
+                .addClass(User2.class);
     }
 
     @Inject
