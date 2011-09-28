@@ -193,7 +193,7 @@ public class EventTest {
         int bundleValid = eventListener.getBundleValid();
         int bundleInvalid = eventListener.getBundleInvalid();
         Assert.assertEquals("The number of listened BundleValid event was wrong", 1, bundleValid);
-        Assert.assertEquals("The number of listened BundleInvalid event was wrong", 0, bundleInvalid);
+        Assert.assertEquals("The number of listened BundleInvalid event was wrong", 1, bundleInvalid);
 
         bundle2.stop();
         Environment.waitForState(bundle2, Bundle.RESOLVED);
