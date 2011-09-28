@@ -183,18 +183,20 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                 }
             }
             else if (ServiceEvent.UNREGISTERING == event.getType()) {
-                if (started.get() && (event.getServiceReference().compareTo(factoryRef) == 0)) {
-                    logger.warn("CDI container factory service unregistered");
-                    if (refs == null || refs.length == 0) {
-                        logger.warn("No CDI container factory service found");
-                        factoryRef = null;
-                        stopCDIOSGi();
-                    }
-                    else { //switch to the next factory service
-                        logger.info("Switching to the next factory service");
-                        stopCDIOSGi();
-                        factoryRef = refs[0];
-                        startCDIOSGi();
+                if (factoryRef != null) {
+                    if (started.get() && (event.getServiceReference().compareTo(factoryRef) == 0)) {
+                        logger.warn("CDI container factory service unregistered");
+                        if (refs == null || refs.length == 0) {
+                            logger.warn("No CDI container factory service found");
+                            factoryRef = null;
+                            stopCDIOSGi();
+                        }
+                        else { //switch to the next factory service
+                            logger.info("Switching to the next factory service");
+                            stopCDIOSGi();
+                            factoryRef = refs[0];
+                            startCDIOSGi();
+                        }
                     }
                 }
             }
