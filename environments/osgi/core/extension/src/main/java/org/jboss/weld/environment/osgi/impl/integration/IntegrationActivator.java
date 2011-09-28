@@ -259,11 +259,11 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         logger.debug("Unmanaging {}", bundle.getSymbolicName());
         boolean set = WeldOSGiExtension.currentBundle.get() != null;
         WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
-        CDIContainer holder = managed.get(bundle.getBundleId());
+        CDIContainer container = managed.get(bundle.getBundleId());
         if (started.get() && managed.containsKey(bundle.getBundleId())) {
-            if (holder != null) {
+            if (container != null) {
                 //BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
-                RegistrationsHolderImpl regs = holder.getInstance().select(RegistrationsHolderImpl.class).get();
+                RegistrationsHolderImpl regs = container.getInstance().select(RegistrationsHolderImpl.class).get();
                 for (ServiceRegistration reg : regs.getRegistrations()) {
                     try {
                         reg.unregister();
@@ -273,15 +273,15 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                 }
                 try {
                     logger.trace("Firing the BundleState.INVALID event");
-                    holder.getBeanManager().fireEvent(new Invalid());
-                    logger.trace("The container {} has been unregistered", holder);
+                    container.getBeanManager().fireEvent(new Invalid());
+                    logger.trace("The container {} has been unregistered", container);
                     logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
                     // here singleton issue ?
-                    holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
+                    container.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
                 }
                 catch(Throwable t) {
                 }
-                logger.trace("Shutting down the container {}", holder);
+                logger.trace("Shutting down the container {}", container);
                 //holder.shutdown();
                 managed.remove(bundle.getBundleId());
                 if (started.get()) {
@@ -289,7 +289,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                         factory().removeContainer(bundle);
                     }
                 }
-                holder.shutdown();
+                container.shutdown();
                 logger.debug("Bundle {} is unmanaged", bundle.getSymbolicName());
             }
             else {
