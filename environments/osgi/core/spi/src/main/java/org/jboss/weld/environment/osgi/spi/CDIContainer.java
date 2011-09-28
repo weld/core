@@ -161,4 +161,8 @@ public interface CDIContainer extends EmbeddedCDIContainer {
      */
     void setRegistrations(Collection<ServiceRegistration> registrations);
 
+    void setReady();
+
+    void waitToBeReady();
+
 }

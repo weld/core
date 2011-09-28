@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl;
 
+import java.util.logging.Level;
 import org.jboss.weld.environment.osgi.api.annotation.Sent;
 import org.jboss.weld.environment.osgi.api.annotation.Specification;
 import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
@@ -34,6 +35,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * This is the {@link CDIContainer} implementation using Weld.
@@ -43,6 +45,10 @@ import java.util.Collection;
  */
 public class WeldCDIContainer implements CDIContainer {
     private Logger logger = LoggerFactory.getLogger(WeldCDIContainer.class);
+
+    private CountDownLatch started = new CountDownLatch(1);
+
+    private CountDownLatch ready = new CountDownLatch(1);
 
     private final Bundle bundle;
 
@@ -100,7 +106,11 @@ public class WeldCDIContainer implements CDIContainer {
 
     @Override
     public boolean initialize() {
-        return container.initialize();
+        started = new CountDownLatch(1);
+        ready = new CountDownLatch(1);
+        boolean s = container.initialize();
+        started.countDown();
+        return s;
     }
 
     @Override
@@ -164,6 +174,19 @@ public class WeldCDIContainer implements CDIContainer {
                 registrations.hashCode() :
                 0);
         return result;
+    }
+
+    public void setReady() {
+        ready.countDown();
+    }
+
+    public void waitToBeReady() {
+        try {
+            started.await();
+            ready.await();
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static class SpecificationAnnotation
