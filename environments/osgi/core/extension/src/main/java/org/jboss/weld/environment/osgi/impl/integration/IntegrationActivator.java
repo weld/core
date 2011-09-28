@@ -43,6 +43,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 
 /**
  * This is the activator of the Weld-OSGi integration part.
@@ -261,7 +262,15 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         CDIContainer holder = managed.get(bundle.getBundleId());
         if (started.get() && managed.containsKey(bundle.getBundleId())) {
             if (holder != null) {
-                BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
+                //BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
+                RegistrationsHolderImpl regs = holder.getInstance().select(RegistrationsHolderImpl.class).get();
+                for (ServiceRegistration reg : regs.getRegistrations()) {
+                    try {
+                        reg.unregister();
+                    } catch (Throwable t) {
+                        //t.printStackTrace();
+                    }
+                }
                 try {
                     logger.trace("Firing the BundleState.INVALID event");
                     holder.getBeanManager().fireEvent(new Invalid());
