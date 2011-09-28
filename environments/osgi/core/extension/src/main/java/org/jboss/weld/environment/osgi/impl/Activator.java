@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.osgi.impl;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.jboss.weld.environment.osgi.impl.integration.IntegrationActivator;
 import org.osgi.framework.BundleActivator;
@@ -46,8 +47,11 @@ public class Activator implements BundleActivator {
 
     private BundleActivator extension = new ExtensionActivator();
 
+    private static final AtomicBoolean OSGI_STARTED = new AtomicBoolean(false);
+
     @Override
     public void start(BundleContext context) throws Exception {
+        OSGI_STARTED.getAndSet(true);
         logger.trace("Entering {} : {} with parameter {}",
                      new Object[] {getClass().getName(),
                                    Thread.currentThread().getStackTrace()[1].getMethodName(),
@@ -61,6 +65,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        OSGI_STARTED.getAndSet(false);
         logger.trace("Entering {} : {} with parameter {}",
                      new Object[] {getClass().getName(),
                                    Thread.currentThread().getStackTrace()[1].getMethodName(),
@@ -70,6 +75,14 @@ public class Activator implements BundleActivator {
         integration.stop(context);
         extension.stop(context);
         logger.info("Weld-OSGi STOPPED");
+    }
+
+    public static boolean osgiStarted() {
+        return OSGI_STARTED.get();
+    }
+
+    public static boolean osgiStarted(boolean started) {
+        return OSGI_STARTED.getAndSet(started);
     }
 
 }

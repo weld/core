@@ -59,6 +59,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jboss.weld.environment.osgi.impl.Activator;
 
 /**
  * Weld OSGi {@link  Extension}. Contains copy/paste parts from the GlassFish
@@ -109,6 +110,10 @@ public class WeldOSGiExtension implements Extension {
                 manager.createAnnotatedType(ContainerObserver.class));
         event.addAnnotatedType(
                 manager.createAnnotatedType(InstanceHolder.class));
+        if (!Activator.osgiStarted()) {
+            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
+            runExtension(); // should work if the current classloader is based on osgi classloader
+        }
     }
 
     /**
@@ -215,8 +220,7 @@ public class WeldOSGiExtension implements Extension {
                     return;
                 }
             }
-        }
-        else if (!serviceProducerToBeInjected.isEmpty()) {
+        } else if (!serviceProducerToBeInjected.isEmpty()) {
             Set<InjectionPoint> injections =
                                 serviceProducerToBeInjected.values().iterator().next();
             if (!injections.isEmpty()) {
@@ -232,8 +236,7 @@ public class WeldOSGiExtension implements Extension {
                     return;
                 }
             }
-        }
-        else {
+        } else {
             BundleContext bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
             activator = new ExtensionActivator();
             try {
