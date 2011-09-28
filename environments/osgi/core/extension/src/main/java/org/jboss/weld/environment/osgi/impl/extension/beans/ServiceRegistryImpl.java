@@ -190,8 +190,8 @@ public class ServiceRegistryImpl implements ServiceRegistry {
             if (valid && bundleHolder.getState().equals(BundleState.INVALID)) {
                 bundleHolder.setState(BundleState.VALID);
                 validEvent.fire(new Valid());
-            }
-            else if (!valid && bundleHolder.getState().equals(BundleState.VALID)) {
+            } else if (!valid && (bundleHolder.getState().equals(BundleState.VALID) || event == null)) {
+                logger.debug("Bundle {} is now INVALID", bundleHolder.getBundle());
                 bundleHolder.setState(BundleState.INVALID);
                 invalidEvent.fire(new Invalid());
             }
