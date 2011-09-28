@@ -14,7 +14,7 @@
             Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably,
             component environment injection relies on string-based names to qualify ambiguous types, and there is no 
             real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, 
-            sometimes an EJB link, sometimes a nonportable "mapped name"). Producer fields turned out to be an elegant 
+            sometimes an EJB link, sometimes a non-portable "mapped name"). Producer fields turned out to be an elegant
             adaptor to reduce all this complexity to a common model and get component environment resources to 
             participate in the CDI system just like any other kind of bean.
          </para>

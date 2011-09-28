@@ -1028,7 +1028,7 @@ public class Game
       
       <para>
          More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template,
-         which surrounds the form (ommitted here for brevity):
+         which surrounds the form (omitted here for brevity):
       </para>
       
       <programlisting role="XML"><![CDATA[<h:form id="translator">

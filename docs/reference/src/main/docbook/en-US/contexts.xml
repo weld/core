@@ -7,11 +7,11 @@
       <title>Managing the built in contexts</title>
 
       <para>
-         Weld allows you to easiy manage the built in contexts by injecting them and calling
+         Weld allows you to easily manage the built in contexts by injecting them and calling
          lifecycle methods. Weld defines two types of context, <emphasis>managed</emphasis>
          and <emphasis>unmanaged</emphasis>. Managed contexts can be activated (allowing bean
          instances to be retrieved from the context), invalidated (scheduling bean instances
-         for destruction) and deactivaed (stopping bean instances from being retrieved, and if
+         for destruction) and deactivated (stopping bean instances from being retrieved, and if
          the context has been invalidated, causing the bean instances to destroyed). Unmanaged
          contexts are always active; some may offer the ability to destroy instances.
       </para>
@@ -22,13 +22,13 @@
          in the context in one thread are not visible in other threads), and is destroyed upon
          invalidation and deactivation. Bound contexts are attached to some external data store
          (such as the Http Session or a manually propagated map) by <emphasis>associating</emphasis>
-         the data store with the context before calling activate, and discociating the data store
+         the data store with the context before calling activate, and dissociating the data store
          after calling activate.
       </para>
       
       <tip>
          <para>
-            Weld automatically controls context lifecycle in many scenarios such as Http Requests,
+            Weld automatically controls context lifecycle in many scenarios such as HTTP requests,
             EJB remote invocations, and MDB invocations. Many of the extensions for CDI offer context
             lifecycle for other environments, it's worth checking to see if there is a suitable extension
             before deciding to manage the context yourself.
@@ -163,7 +163,7 @@
          Unmanaged contexts offer little of interest in a discussion about managing context lifecycles, so from here on in
          we will concentrate on the managed contexts (unmanaged contexts of course play a vital role in the functioning of
          your application and Weld!). As you can see from the table above, the managed contexts offer a number of different
-         implmentations for the same scope; in general, each flavor of context for a scope has the same API. We'll walk through
+         implementations for the same scope; in general, each flavor of context for a scope has the same API. We'll walk through
          a number of common lifecycle management scenarios below; armed with this knowledge, and the Javadoc, you should be able
          to work with any of the context implementations Weld offers.
       </para>
@@ -261,7 +261,7 @@
    
    <para>
       The conversation context also offers a number of properties which control the behavior of conversation expiration
-      (after this period of inactivity the conversation will be ended and destroyed by the containber), and the duration 
+      (after this period of inactivity the conversation will be ended and destroyed by the container), and the duration
       of lock timeouts (the conversation context ensures that a single thread is accessing any bean instances by locking
       access, if a lock can't be obtained after a certain time Weld will error rather than continue to wait for the lock).
       Additionally, you can alter the name of the parameter used to transfer the conversation id (by default, <code>cid</code>).
@@ -269,7 +269,7 @@
    
    <para>
       Weld also introduces the notion of a <code>ManagedConversation</code>, which extends the <code>Conversation</code>
-      interface with the abilty to lock, unlock and touch (update the last used timestamp) a conversation. Finally, all
+      interface with the ability to lock, unlock and touch (update the last used timestamp) a conversation. Finally, all
       non-transient conversations in a session can be obtained from the conversation context, as can the current conversation.
    </para>
    

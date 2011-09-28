@@ -436,7 +436,8 @@ public class Calculator { ... }]]></programlisting>
          </para>
 
          <para>
-            This feature is particularly useful with producer methods, as we'll see in the next chapter.
+            This feature is particularly useful with producer methods, as we'll see in
+            <xref linkend="producermethods"/>.
          </para>
 
       </section>
