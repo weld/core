@@ -54,17 +54,20 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
 
     private final InjectionPoint injectionPoint;
 
+    private final BundleContext ctx;
+
     private Filter filter;
 
     private Set<Annotation> qualifiers;
 
     private Type type;
 
-    public OSGiServiceProducerBean(InjectionPoint injectionPoint) {
+    public OSGiServiceProducerBean(InjectionPoint injectionPoint, BundleContext ctx) {
         logger.trace("Entering OSGiServiceProducerBean : "
                      + "OSGiServiceProducerBean() with parameter {}",
                      new Object[] {injectionPoint});
         this.injectionPoint = injectionPoint;
+        this.ctx = ctx;
         type = injectionPoint.getType();
         qualifiers = injectionPoint.getQualifiers();
         filter = FilterGenerator.makeFilter(injectionPoint);
@@ -127,8 +130,11 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
     public Service create(CreationalContext creationalContext) {
         logger.trace("Entering OSGiServiceProducerBean : create() with parameter {}",
                      new Object[] {creationalContext});
-        BundleContext registry = FrameworkUtil.getBundle(
+        BundleContext registry = ctx;
+        if (registry == null) {
+            registry = FrameworkUtil.getBundle(
                 injectionPoint.getMember().getDeclaringClass()).getBundleContext();
+        }
         Service result =
                 (Service) new ServiceImpl(((ParameterizedType) type).getActualTypeArguments()[0],
                                           registry,

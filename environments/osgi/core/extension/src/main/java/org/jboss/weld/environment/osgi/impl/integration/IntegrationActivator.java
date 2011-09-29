@@ -214,6 +214,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         logger.debug("Managing {}", bundle.getSymbolicName());
         boolean set = WeldOSGiExtension.currentBundle.get() != null;
         WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
+        WeldOSGiExtension.currentContext.set(bundle.getBundleContext());
         CDIContainer holder = factory().createContainer(bundle);
         logger.trace("CDI container created");
         holder.initialize();
@@ -255,6 +256,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         if (!set) {
             WeldOSGiExtension.currentBundle.remove();
         }
+        WeldOSGiExtension.currentContext.remove();
         holder.setReady();
     }
 

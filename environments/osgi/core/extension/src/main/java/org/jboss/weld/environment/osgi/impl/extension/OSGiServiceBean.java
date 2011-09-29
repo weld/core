@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.osgi.framework.BundleContext;
 
 /**
  * This the bean class for all beans generated from a
@@ -60,6 +61,8 @@ public class OSGiServiceBean implements Bean {
     private final Map<Object, DynamicServiceHandler> handlers =
                                                      new HashMap<Object, DynamicServiceHandler>();
 
+    private final BundleContext ctx;
+
     private final InjectionPoint injectionPoint;
 
     private Filter filter;
@@ -70,11 +73,12 @@ public class OSGiServiceBean implements Bean {
 
     private long timeout;
 
-    public OSGiServiceBean(InjectionPoint injectionPoint) {
+    public OSGiServiceBean(InjectionPoint injectionPoint, BundleContext ctx) {
         logger.trace("Entering OSGiServiceBean : "
                      + "OSGiServiceBean() with parameter {}",
                      new Object[] {injectionPoint});
         this.injectionPoint = injectionPoint;
+        this.ctx = ctx;
         type = injectionPoint.getType();
         qualifiers = injectionPoint.getQualifiers();
         filter = FilterGenerator.makeFilter(injectionPoint);
@@ -143,8 +147,13 @@ public class OSGiServiceBean implements Bean {
     public Object create(CreationalContext creationalContext) {
         logger.trace("Entering OSGiServiceBean : create() with parameter");
         try {
-            Bundle bundle =
+            Bundle bundle = null;
+            if (ctx != null) {
+                bundle = ctx.getBundle();
+            } else {
+                bundle =
                    FrameworkUtil.getBundle(injectionPoint.getMember().getDeclaringClass());
+            }
             DynamicServiceHandler handler =
                                   new DynamicServiceHandler(bundle,
                                                             ((Class) type).getName(),

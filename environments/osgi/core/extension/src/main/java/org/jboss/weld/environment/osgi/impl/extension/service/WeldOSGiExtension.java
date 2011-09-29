@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.jboss.weld.environment.osgi.impl.Activator;
+import org.osgi.framework.Bundle;
 
 /**
  * Weld OSGi {@link  Extension}. Contains copy/paste parts from the GlassFish
@@ -79,6 +80,7 @@ public class WeldOSGiExtension implements Extension {
     private static boolean autoRunInHybridMode = true;
     // hack for weld integration
     public static ThreadLocal<Long> currentBundle = new ThreadLocal<Long>();
+    public static ThreadLocal<BundleContext> currentContext = new ThreadLocal<BundleContext>();
     private HashMap<Type, Set<InjectionPoint>> servicesToBeInjected =
             new HashMap<Type, Set<InjectionPoint>>();
     private HashMap<Type, Set<InjectionPoint>> serviceProducerToBeInjected =
@@ -322,7 +324,7 @@ public class WeldOSGiExtension implements Extension {
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
                 iterator.hasNext();) {
             final InjectionPoint injectionPoint = iterator.next();
-            beans.add(new OSGiServiceBean(injectionPoint));
+            beans.add(new OSGiServiceBean(injectionPoint, currentContext.get()));
         }
         for (OSGiServiceBean bean : beans) {
             event.addBean(bean);
@@ -331,11 +333,12 @@ public class WeldOSGiExtension implements Extension {
 
     private void addServiceProducer(AfterBeanDiscovery event,
             final Set<InjectionPoint> injectionPoints) {
+        System.out.println(currentBundle.get());
         Set<OSGiServiceProducerBean> beans = new HashSet<OSGiServiceProducerBean>();
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
                 iterator.hasNext();) {
             final InjectionPoint injectionPoint = iterator.next();
-            beans.add(new OSGiServiceProducerBean(injectionPoint));
+            beans.add(new OSGiServiceProducerBean(injectionPoint, currentContext.get()));
         }
         for (OSGiServiceProducerBean bean : beans) {
             event.addBean(bean);
