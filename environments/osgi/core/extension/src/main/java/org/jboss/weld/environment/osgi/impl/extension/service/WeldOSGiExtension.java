@@ -333,7 +333,6 @@ public class WeldOSGiExtension implements Extension {
 
     private void addServiceProducer(AfterBeanDiscovery event,
             final Set<InjectionPoint> injectionPoints) {
-        System.out.println(currentBundle.get());
         Set<OSGiServiceProducerBean> beans = new HashSet<OSGiServiceProducerBean>();
         for (Iterator<InjectionPoint> iterator = injectionPoints.iterator();
                 iterator.hasNext();) {
