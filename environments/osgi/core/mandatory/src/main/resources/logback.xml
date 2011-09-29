@@ -23,7 +23,7 @@
         </filter>
         <encoder>
             <pattern>
-                %d{HH:mm:ss.SSS} %-15.-15([%-14.-14(%.-13thread])) %-5level %.-250(%logger{25} - %msg) %n
+                %d{HH:mm:ss.SSS} %-15.-15([%-14.-14(%.-13thread])) %-5level %logger{25} - %msg %n
             </pattern>
         </encoder>
     </appender>
