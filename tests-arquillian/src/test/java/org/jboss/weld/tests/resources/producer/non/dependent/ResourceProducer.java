@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.resource.producer.non.dependent;
+package org.jboss.weld.tests.resources.producer.non.dependent;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
