@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.osgi;
 
-import org.junit.Ignore;
+import java.io.File;
 import org.jboss.weld.osgi.tests.bundle1.util.BundleProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -60,8 +60,7 @@ public class OSGiFacilitationTest {
         for(Bundle b : context.getBundles()) {
             if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
                 bundle1=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle2")) {
-                bundle2=b;
+                break;
             }
         }
 
@@ -91,32 +90,8 @@ public class OSGiFacilitationTest {
         Assert.assertNotNull("The injected bundle symbolic name was null",symbolicName);
         Assert.assertEquals("The injected symbolic name was not the bundle1 symbolic name",bundle1.getSymbolicName(),symbolicName);
 
-//        File file = bundleProvider.getFile();
-//        Assert.assertNotNull("The injected bundle file was null",file);
-//        Assert.assertEquals("The injected bundle file was not the bundle1 file",injectedContext.getDataFile("test.txt"),file);
-
-        Bundle injectedBundle2 = bundleProvider.getBundle2();
-        Assert.assertNotNull("The injected bundle2 was null", injectedBundle2);
-        Assert.assertEquals("The injected bundle2 was not the bundle2 proxy",bundle2.getSymbolicName(),injectedBundle2.getSymbolicName());
-
-        BundleContext injectedContext2 = bundleProvider.getBundleContext2();
-        Assert.assertNotNull("The injected bundle context2 was null",injectedContext2);
-        Assert.assertEquals("The injected bundle context2 was not the bundle2 bundle context",bundle2,injectedContext2.getBundle());
-
-        Map<String,String> metadata2 = bundleProvider.getMetadata2();
-        Dictionary headers2 = bundle2.getHeaders();
-        Assert.assertNotNull("The injected bundle metadata2 was null", metadata2);
-        Assert.assertEquals("The injected bundle metadata2 had the wrong size",headers2.size(),metadata2.size());
-        for(String s : metadata2.keySet()) {
-            Assert.assertEquals("The injected metadata2 header was not the bundle2 header",headers2.get(s),metadata2.get(s));
-        }
-
-        String symbolicName2 = bundleProvider.getSymbolicName2();
-        Assert.assertNotNull("The injected bundle symbolic name2 was null",symbolicName2);
-        Assert.assertEquals("The injected symbolic name2 was not the bundle2 symbolic name",bundle2.getSymbolicName(),symbolicName2);
-
-//        File file2 = bundleProvider.getFile2();
-//        Assert.assertNotNull("The injected bundle file2 was null",file2);
-//        Assert.assertEquals("The injected bundle file2 was not the bundle2 file",injectedContext2.getDataFile("test.txt"),file2);
+        File file = bundleProvider.getFile();
+        Assert.assertNotNull("The injected bundle file was null",file);
+        Assert.assertEquals("The injected bundle file was not the bundle1 file",injectedContext.getDataFile("test.txt"),file);
     }
 }

@@ -26,7 +26,6 @@ import java.util.Map;
 import org.jboss.weld.environment.osgi.api.annotation.BundleDataFile;
 import org.jboss.weld.environment.osgi.api.annotation.BundleHeader;
 import org.jboss.weld.environment.osgi.api.annotation.BundleHeaders;
-import org.jboss.weld.environment.osgi.api.annotation.BundleName;
 import org.jboss.weld.environment.osgi.api.annotation.Publish;
 
 @Publish
@@ -65,34 +64,6 @@ public class BundleProvider {
 
     public File getFile() {
         return file;
-    }
-
-    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2")
-    Bundle bundle2;
-
-    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2")
-    BundleContext bundleContext2;
-
-    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2") @BundleHeaders
-    Map<String,String> metadata2;
-
-    @Inject @BundleName("org.jboss.weld.osgi.tests.weld-osgi-bundle2") @BundleHeader("Bundle-SymbolicName")
-    String symbolicName2;
-
-    public Bundle getBundle2() {
-        return bundle2;
-    }
-
-    public BundleContext getBundleContext2() {
-        return bundleContext2;
-    }
-
-    public Map<String, String> getMetadata2() {
-        return metadata2;
-    }
-
-    public String getSymbolicName2() {
-        return symbolicName2;
     }
 
 }
