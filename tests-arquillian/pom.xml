@@ -221,6 +221,9 @@
                     <name>default</name>
                 </property>
             </activation>
+            <properties>
+                <test>org.jboss.weld.tests.NormalSuite</test>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
@@ -238,7 +241,7 @@
                             <systemProperties>
                                 <arquillian.launch>weld</arquillian.launch>
                             </systemProperties>
-                            <test>org.jboss.weld.tests.NormalSuite</test>
+                            <test>${test}</test>
                         </configuration>
                     </plugin>
                 </plugins>

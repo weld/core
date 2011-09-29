@@ -1,5 +1,0 @@
-<beans> 
-  <interceptors>
-    <class>org.jboss.weld.tests.interceptors.weld459.fcml.MissileInterceptor</class>
-  </interceptors>
-</beans>
