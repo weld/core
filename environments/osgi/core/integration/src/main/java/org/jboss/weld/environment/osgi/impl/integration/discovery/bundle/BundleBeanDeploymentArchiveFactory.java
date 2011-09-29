@@ -114,21 +114,29 @@ public class BundleBeanDeploymentArchiveFactory {
                             zipPath);
                     scanZip(new URL("jar:" + zipUrl + "!" + zipEntryPath));
                 } else if (zipEntryPath.toLowerCase().endsWith(".class")) {
-                    String clazz = zipEntryPath.substring(1).
+                    String clazz = null;
+                    String[] parts = zipEntryPath.split("!");
+                    if (parts.length > 1) {
+                        clazz = parts[1].substring(1).
                             replace("/", ".").
                             replace(".class", "");
+                    } else {
+                        clazz = zipEntryPath.substring(1).
+                            replace("/", ".").
+                            replace(".class", "");
+                    }
                     logger.trace("Found a new bean class: {}", clazz);
                     zipClasses.add(clazz);
                 } else if (zipEntryPath.toLowerCase().endsWith("beans.xml")) {
-                    if (!zipEntryPath.equalsIgnoreCase("/meta-inf/beans.xml")) {
-                        logger.warn("Invalid location for beans.xml file: {}",
-                                zipEntryPath);
-                    } else {
-                        logger.trace("Found a new beans.xml file: {}",
-                                zipEntryPath);
-                        zipBeanXmlUrls.add(new URL("jar:" + zipUrl + "!"
-                                + zipEntryPath));
-                    }
+//                    if (!zipEntryPath.equalsIgnoreCase("/meta-inf/beans.xml")) {
+//                        logger.warn("Invalid location for beans.xml file: {}",
+//                                zipEntryPath);
+//                    } else {
+                    logger.trace("Found a new beans.xml file: {}",
+                            zipEntryPath);
+                    zipBeanXmlUrls.add(new URL("jar:" + zipUrl + "!"
+                            + zipEntryPath));
+//                    }
 
                 }
                 zipEntry = zipInputStream.getNextEntry();
@@ -153,7 +161,7 @@ public class BundleBeanDeploymentArchiveFactory {
             URL beansXmlUrl = (URL) beansXmlMarkers.nextElement();
             String beansXmlPath = beansXmlUrl.getPath();
             logger.trace("Found a new beans.xml file: {}", beansXmlPath);
-            if (!beansXmlPath.equalsIgnoreCase("/meta-inf/beans.xml")) {
+            if (!beansXmlPath.endsWith("META-INF/beans.xml")) {
                 logger.warn("Invalid location for beans.xml file: {}", beansXmlPath);
                 continue;
             }
@@ -163,9 +171,20 @@ public class BundleBeanDeploymentArchiveFactory {
             if (beanClasses != null) {
                 while (beanClasses.hasMoreElements()) {
                     URL url = (URL) beanClasses.nextElement();
-                    String clazz = url.getFile().substring(1).
+                    String clazz = null;
+                    String[] parts = url.getFile().split("!");
+                    if (parts.length > 1) {
+                        clazz = parts[1].substring(1).
                             replace("/", ".").
                             replace(".class", "");
+                    } else {
+                        clazz = url.getFile().substring(1).
+                            replace("/", ".").
+                            replace(".class", "");
+                    }
+//                    String clazz = url.getFile().substring(1).
+//                            replace("/", ".").
+//                            replace(".class", "");
                     logger.trace("Found a new bean class: {}", clazz);
                     discoveredClasses.add(clazz);
                 }
