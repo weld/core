@@ -24,7 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import static org.jboss.weld.test.Utils.getReference;
+import static org.jboss.weld.test.util.Utils.getReference;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

@@ -21,7 +21,7 @@ import org.jboss.weld.context.bound.BoundConversationContext;
 import org.jboss.weld.context.bound.BoundRequest;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.testng.annotations.Test;
 
 import javax.enterprise.context.Conversation;

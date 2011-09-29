@@ -1,5 +1,0 @@
-<beans> 
-   <alternatives>
-      <class>org.jboss.weld.tests.examples.MockSentenceTranslator</class>
-   </alternatives>
-</beans>

@@ -24,7 +24,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static java.util.Arrays.asList;
-import static org.jboss.weld.test.Utils.getReference;
+import static org.jboss.weld.test.util.Utils.getReference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.scope;
 
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 
 import javax.enterprise.context.RequestScoped;

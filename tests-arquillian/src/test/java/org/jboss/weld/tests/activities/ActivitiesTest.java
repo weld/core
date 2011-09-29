@@ -25,7 +25,7 @@ import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.collections.Arrays2;
 import org.junit.Assert;
 import org.junit.Test;

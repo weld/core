@@ -21,7 +21,7 @@ import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentAr
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 

@@ -25,7 +25,7 @@ import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

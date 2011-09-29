@@ -23,7 +23,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.test.Utils;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
@@ -36,7 +36,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 
-import static org.jboss.weld.test.Utils.getReference;
+import static org.jboss.weld.test.util.Utils.getReference;
 import static org.junit.Assert.assertEquals;
 
 /**

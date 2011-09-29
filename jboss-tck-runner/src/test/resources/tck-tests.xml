@@ -2,55 +2,70 @@
 
 <!-- JSR-299 TCK TestNG configuration for Weld -->
 
-<suite name="Weld / JBoss AS run of CDI TCK" verbose="0"  >
+<suite name="Weld / JBoss AS run of CDI TCK" verbose="0">
 
-   <listeners>
-       <listener class-name="org.jboss.weld.tck.jbossas.SingleTestMethodListener" />
-       <listener class-name="org.jboss.weld.tck.jbossas.DatasourceManager" />
-   </listeners>
+    <listeners>
+        <listener class-name="org.jboss.weld.tck.jbossas.SingleTestMethodListener"/>
+        <listener class-name="org.jboss.weld.tck.jbossas.DatasourceManager"/>
+    </listeners>
 
-   <test name="CDI TCK">
-      <method-selectors>
-         <method-selector>
-            <selector-class name="org.jboss.jsr299.tck.impl.WebProfileMethodSelector" />
-            <selector-class name="org.jboss.testharness.impl.testng.DisableIntegrationTestsMethodSelector" />
-         </method-selector>
-      </method-selectors>
+    <test name="CDI TCK">
+        <method-selectors>
+            <method-selector>
+                <selector-class name="org.jboss.jsr299.tck.impl.WebProfileMethodSelector"/>
+                <selector-class name="org.jboss.testharness.impl.testng.DisableIntegrationTestsMethodSelector"/>
+            </method-selector>
+        </method-selectors>
 
-      <packages>
+        <packages>
 
-         <package name="org.jboss.jsr299.tck.tests.*" />
-         <package name="org.jboss.jsr299.tck.interceptors.tests.*" />
-      </packages>
-      <classes>
+            <package name="org.jboss.jsr299.tck.tests.*"/>
+            <package name="org.jboss.jsr299.tck.interceptors.tests.*"/>
+        </packages>
+        <classes>
 
-         <!-- Ensure that the DefaultDS has been set up -->
+            <!-- Ensure that the DefaultDS has been set up -->
 
-         <!-- Issues in the TCK -->
-         <!-- CDITCK-212 -->
-         <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
-            <methods>
-               <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
-            </methods>
-         </class>
+            <!-- Issues in the TCK -->
+            <!-- CDITCK-212 -->
+            <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
+                <methods>
+                    <exclude name="testDestroyedInstanceMustNotBeReturnedByGet"/>
+                </methods>
+            </class>
 
-         <!-- Issues in Weld (the RI) -->
+            <!-- Issues in Weld (the RI) -->
 
-         <!-- Issues in JBoss AS -->
+            <!-- Issues in JBoss AS -->
 
 
-         <!-- Requires EJB 3.1 -->
-         <!-- TODO Check these -->
+            <!-- Requires EJB 3.1 -->
+            <!-- TODO Check these -->
 
-         <!-- JBAS-8306 -->
-         <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
-            <methods>
-               <exclude name="testRequestScopeActiveDuringCallToEjbTimeoutMethod" />
-               <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
-            </methods>
-         </class>
+            <!-- JBAS-8306 -->
+            <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+                <methods>
+                    <exclude name="testRequestScopeActiveDuringCallToEjbTimeoutMethod"/>
+                    <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod"/>
+                </methods>
+            </class>
 
-      </classes>
-   </test>
+
+            <!-- Remove exclusion when AS7 suports SFSB serialization properly-->
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
+                <methods>
+                    <exclude name="testSerializeSFSB"/>
+                </methods>
+            </class>
+            <!-- Remove exclusion when AS7 suports WS endpoint injection-->
+            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
+                <methods>
+                    <exclude name="testInjectionIntoWebServiceEndpoint"/>
+                </methods>
+            </class>
+
+
+        </classes>
+    </test>
 
 </suite>
