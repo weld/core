@@ -17,21 +17,24 @@
 
 package org.jboss.weld.osgi.examples.standalone;
 
-import org.jboss.weld.environment.osgi.impl.embedded.WeldOSGi;
-import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.osgi.impl.extension.service.EmbeddedContainer;
+import org.jboss.weld.environment.osgi.spi.EmbeddedCDIContainer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class StandaloneActivator implements BundleActivator {
 
-    private WeldContainer container;
-    private WeldOSGi weld;
+    private EmbeddedContainer embedded;
+    private EmbeddedCDIContainer container;
+    private MyService service;
+    private MyListener listener;
 
     @Override
     public void start(BundleContext context) throws Exception {
-        weld = new WeldOSGi(context);
-        container = weld.initialize();
-        MyService service = container.instance().select(MyService.class).get();
+        embedded = new EmbeddedContainer(context);
+        container = embedded.initialize();
+        service = container.getInstance().select(MyService.class).get();
+        listener = container.getInstance().select(MyListener.class).get();
         System.out.println(service.hello());
         System.out.println(service.admin());
         System.out.println(service.adminAvailable());
@@ -39,6 +42,6 @@ public class StandaloneActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        weld.shutdown();
+        embedded.shutdown();
     }
 }
