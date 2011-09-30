@@ -235,14 +235,13 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             // fire container start
             holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));
             // registering utility services
-            Collection<ServiceRegistration> regs = new ArrayList<ServiceRegistration>();
+            Collection<ServiceRegistration> regs = holder.getInstance().select(RegistrationsHolderImpl.class).get().getRegistrations();
             BundleContext bundleContext = bundle.getBundleContext();
             try {
                 regs.add(bundleContext.registerService(Event.class.getName(), holder.getEvent(), null));
                 regs.add(bundleContext.registerService(BeanManager.class.getName(), holder.getBeanManager(), null));
                 regs.add(bundleContext.registerService(Instance.class.getName(), holder.getInstance(), null));
-            }
-            catch(Throwable t) {// Ignore
+            } catch(Throwable t) {// Ignore
                 logger.warn("Unable to register a utility service for bundle {}: {}", bundle, t);
             }
             holder.setRegistrations(regs);
