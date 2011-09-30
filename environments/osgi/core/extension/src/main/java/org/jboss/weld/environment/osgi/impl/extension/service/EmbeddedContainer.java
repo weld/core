@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.osgi.impl.integration;
+package org.jboss.weld.environment.osgi.impl.extension.service;
 
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
-import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.jboss.weld.environment.osgi.spi.EmbeddedCDIContainer;
@@ -88,10 +87,12 @@ public class EmbeddedContainer {
     public EmbeddedCDIContainer initialize() {
         logger.trace("Entering EmbeddedContainer : "
                      + "initialize() with no parameter");
+        WeldOSGiExtension.currentContext.set(context);
         container.initialize();
         context.addBundleListener(listener);
         context.addServiceListener(listener);
         container.getEvent();
+        WeldOSGiExtension.currentContext.remove();
         return container;
     }
 
@@ -122,120 +123,102 @@ public class EmbeddedContainer {
 
         @Override
         public void bundleChanged(BundleEvent event) {
-            ServiceReference[] references = findReferences(context, Event.class);
-
-            if (references != null) { //if there are some listening bean bundles
-                Bundle bundle = event.getBundle();
-                AbstractBundleEvent bundleEvent = null;
-                switch(event.getType()) {
-                    case BundleEvent.INSTALLED:
-                        logger.debug("Receiving a new OSGi bundle event INSTALLED");
-                        bundleEvent = new BundleEvents.BundleInstalled(bundle);
-                        break;
-                    case BundleEvent.LAZY_ACTIVATION:
-                        logger.debug("Receiving a new OSGi bundle event LAZY_ACTIVATION");
-                        bundleEvent = new BundleEvents.BundleLazyActivation(bundle);
-                        break;
-                    case BundleEvent.RESOLVED:
-                        logger.debug("Receiving a new OSGi bundle event RESOLVED");
-                        bundleEvent = new BundleEvents.BundleResolved(bundle);
-                        break;
-                    case BundleEvent.STARTED:
-                        logger.debug("Receiving a new OSGi bundle event STARTED");
-                        bundleEvent = new BundleEvents.BundleStarted(bundle);
-                        break;
-                    case BundleEvent.STARTING:
-                        logger.debug("Receiving a new OSGi bundle event STARTING");
-                        bundleEvent = new BundleEvents.BundleStarting(bundle);
-                        break;
-                    case BundleEvent.STOPPED:
-                        logger.debug("Receiving a new OSGi bundle event STOPPED");
-                        bundleEvent = new BundleEvents.BundleStopped(bundle);
-                        break;
-                    case BundleEvent.STOPPING:
-                        logger.debug("Receiving a new OSGi bundle event STOPPING");
-                        bundleEvent = new BundleEvents.BundleStopping(bundle);
-                        break;
-                    case BundleEvent.UNINSTALLED:
-                        logger.debug("Receiving a new OSGi bundle event UNINSTALLED");
-                        bundleEvent = new BundleEvents.BundleUninstalled(bundle);
-                        break;
-                    case BundleEvent.UNRESOLVED:
-                        logger.debug("Receiving a new OSGi bundle event UNRESOLVED");
-                        bundleEvent = new BundleEvents.BundleUnresolved(bundle);
-                        break;
-                    case BundleEvent.UPDATED:
-                        logger.debug("Receiving a new OSGi bundle event UPDATED");
-                        bundleEvent = new BundleEvents.BundleUpdated(bundle);
-                        break;
-                }
-                boolean set = WeldOSGiExtension.currentBundle.get() != null;
-                WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
-                try {
-                    //broadcast the OSGi event through CDI event system
-                    container.getEvent().select(BundleEvent.class).fire(event);
-                }
-                catch(Throwable t) {
-                    t.printStackTrace();
-                }
-                if (bundleEvent != null) {
-                    //broadcast the corresponding Weld-OSGi event
-                    fireAllEvent(bundleEvent, container.getEvent());
-                }
-                if (!set) {
-                    WeldOSGiExtension.currentBundle.remove();
-                }
+            Bundle bundle = event.getBundle();
+            AbstractBundleEvent bundleEvent = null;
+            switch(event.getType()) {
+                case BundleEvent.INSTALLED:
+                    logger.debug("Receiving a new OSGi bundle event INSTALLED");
+                    bundleEvent = new BundleEvents.BundleInstalled(bundle);
+                    break;
+                case BundleEvent.LAZY_ACTIVATION:
+                    logger.debug("Receiving a new OSGi bundle event LAZY_ACTIVATION");
+                    bundleEvent = new BundleEvents.BundleLazyActivation(bundle);
+                    break;
+                case BundleEvent.RESOLVED:
+                    logger.debug("Receiving a new OSGi bundle event RESOLVED");
+                    bundleEvent = new BundleEvents.BundleResolved(bundle);
+                    break;
+                case BundleEvent.STARTED:
+                    logger.debug("Receiving a new OSGi bundle event STARTED");
+                    bundleEvent = new BundleEvents.BundleStarted(bundle);
+                    break;
+                case BundleEvent.STARTING:
+                    logger.debug("Receiving a new OSGi bundle event STARTING");
+                    bundleEvent = new BundleEvents.BundleStarting(bundle);
+                    break;
+                case BundleEvent.STOPPED:
+                    logger.debug("Receiving a new OSGi bundle event STOPPED");
+                    bundleEvent = new BundleEvents.BundleStopped(bundle);
+                    break;
+                case BundleEvent.STOPPING:
+                    logger.debug("Receiving a new OSGi bundle event STOPPING");
+                    bundleEvent = new BundleEvents.BundleStopping(bundle);
+                    break;
+                case BundleEvent.UNINSTALLED:
+                    logger.debug("Receiving a new OSGi bundle event UNINSTALLED");
+                    bundleEvent = new BundleEvents.BundleUninstalled(bundle);
+                    break;
+                case BundleEvent.UNRESOLVED:
+                    logger.debug("Receiving a new OSGi bundle event UNRESOLVED");
+                    bundleEvent = new BundleEvents.BundleUnresolved(bundle);
+                    break;
+                case BundleEvent.UPDATED:
+                    logger.debug("Receiving a new OSGi bundle event UPDATED");
+                    bundleEvent = new BundleEvents.BundleUpdated(bundle);
+                    break;
+            }
+            boolean set = WeldOSGiExtension.currentBundle.get() != null;
+            WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
+            try {
+                //broadcast the OSGi event through CDI event system
+                container.getEvent().select(BundleEvent.class).fire(event);
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+            if (bundleEvent != null) {
+                //broadcast the corresponding Weld-OSGi event
+                fireAllEvent(bundleEvent, container.getEvent());
+            }
+            if (!set) {
+                WeldOSGiExtension.currentBundle.remove();
             }
         }
 
         @Override
         public void serviceChanged(ServiceEvent event) {
-            ServiceReference[] references = findReferences(context, Instance.class);
-
-            if (references != null) { //if there are some listening bean bundles
-                ServiceReference ref = event.getServiceReference();
-                AbstractServiceEvent serviceEvent = null;
-                switch(event.getType()) {
-                    case ServiceEvent.MODIFIED:
-                        logger.debug("Receiving a new OSGi service event MODIFIED");
-                        serviceEvent = new ServiceEvents.ServiceChanged(ref, context);
-                        break;
-                    case ServiceEvent.REGISTERED:
-                        logger.debug("Receiving a new OSGi service event REGISTERED");
-                        serviceEvent = new ServiceEvents.ServiceArrival(ref, context);
-                        break;
-                    case ServiceEvent.UNREGISTERING:
-                        logger.debug("Receiving a new OSGi service event UNREGISTERING");
-                        serviceEvent = new ServiceEvents.ServiceDeparture(ref, context);
-                        break;
-                }
-                boolean set = WeldOSGiExtension.currentBundle.get() != null;
-                WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
-                try {
-                    //broadcast the OSGi event through CDI event system
-                    container.getEvent().select(ServiceEvent.class).fire(event);
-                }
-                catch(Throwable t) {
-                    t.printStackTrace();
-                }
-                if (serviceEvent != null) {
-                    //broadcast the corresponding Weld-OSGi event
-                    fireAllEvent(serviceEvent, container.getEvent(), container.getInstance());
-                }
-                if (!set) {
-                    WeldOSGiExtension.currentBundle.remove();
-                }
+            ServiceReference ref = event.getServiceReference();
+            AbstractServiceEvent serviceEvent = null;
+            switch(event.getType()) {
+                case ServiceEvent.MODIFIED:
+                    logger.debug("Receiving a new OSGi service event MODIFIED");
+                    serviceEvent = new ServiceEvents.ServiceChanged(ref, context);
+                    break;
+                case ServiceEvent.REGISTERED:
+                    logger.debug("Receiving a new OSGi service event REGISTERED");
+                    serviceEvent = new ServiceEvents.ServiceArrival(ref, context);
+                    break;
+                case ServiceEvent.UNREGISTERING:
+                    logger.debug("Receiving a new OSGi service event UNREGISTERING");
+                    serviceEvent = new ServiceEvents.ServiceDeparture(ref, context);
+                    break;
             }
-        }
-
-        private ServiceReference[] findReferences(BundleContext context, Class<?> type) {
-            ServiceReference[] references = null;
+            boolean set = WeldOSGiExtension.currentBundle.get() != null;
+            WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
             try {
-                references = context.getServiceReferences(type.getName(), null);
+                //broadcast the OSGi event through CDI event system
+                container.getEvent().select(ServiceEvent.class).fire(event);
             }
-            catch(InvalidSyntaxException e) {// Ignored
+            catch(Throwable t) {
+                t.printStackTrace();
             }
-            return references;
+            if (serviceEvent != null) {
+                //broadcast the corresponding Weld-OSGi event
+                fireAllEvent(serviceEvent, container.getEvent(), container.getInstance());
+            }
+            if (!set) {
+                WeldOSGiExtension.currentBundle.remove();
+            }
         }
 
         private void fireAllEvent(AbstractServiceEvent event, Event broadcaster, Instance<Object> instance) {
@@ -285,6 +268,5 @@ public class EmbeddedContainer {
                 t.printStackTrace();
             }
         }
-
     }
 }
