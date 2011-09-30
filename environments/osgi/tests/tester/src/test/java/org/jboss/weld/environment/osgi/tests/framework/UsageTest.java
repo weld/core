@@ -55,7 +55,7 @@ public class UsageTest {
     //@Ignore
     public void launchTest(BundleContext context) throws InterruptedException, BundleException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
-        
+
         Bundle bundle1 = null, bundle2 = null, bundle3 = null;
         for(Bundle b : context.getBundles()) {
             Assert.assertEquals("Bundle" + b.getSymbolicName() + " is not ACTIVE", Bundle.ACTIVE, b.getState());
@@ -92,8 +92,8 @@ public class UsageTest {
 
         Collection<ServiceRegistration> registrations1 = container1.getRegistrations();
         Collection<ServiceRegistration> registrations2 = container2.getRegistrations();
-        Assert.assertEquals("The registration collection 1 had the wrong number of registrations",3,registrations1.size());
-        Assert.assertEquals("The registration collection 2 had the wrong number of registrations",3,registrations2.size());
+        Assert.assertEquals("The registration collection 1 had the wrong number of registrations",(3+9+3),registrations1.size());
+        Assert.assertEquals("The registration collection 2 had the wrong number of registrations",(3+2),registrations2.size());
 
         Collection<String> beanClasses1 = container1.getBeanClasses();
         Collection<String> beanClasses2 = container2.getBeanClasses();
