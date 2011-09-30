@@ -114,8 +114,32 @@ public class WeldCDIContainer implements CDIContainer {
     }
 
     @Override
+    public boolean setReady() {
+        if(isStarted()) {
+            ready.countDown();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void waitToBeReady() {
+        try {
+            started.await();
+            ready.await();
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
     public boolean isStarted() {
         return container.isStarted();
+    }
+
+    @Override
+    public boolean isReady() {
+        return ready.getCount() == 0;
     }
 
     @Override
@@ -174,19 +198,6 @@ public class WeldCDIContainer implements CDIContainer {
                 registrations.hashCode() :
                 0);
         return result;
-    }
-
-    public void setReady() {
-        ready.countDown();
-    }
-
-    public void waitToBeReady() {
-        try {
-            started.await();
-            ready.await();
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     public static class SpecificationAnnotation
