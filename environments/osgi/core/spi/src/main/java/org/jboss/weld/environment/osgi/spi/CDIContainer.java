@@ -26,51 +26,24 @@ import javax.enterprise.inject.spi.BeanManager;
 import java.util.Collection;
 
 /**
- * <p>This interface represents an iterable list of CDI containers used by
- * Weld-OSGi.</p>
- * <p>It allows to: <ul>
- * <li>
- * <p>Navigate through the list of CDI containers as an
- * {@link Iterable},</p>
- * </li>
- * <li>
- * <p>Obtain the number of CDI containers,</p>
- * </li>
- * <li>
- * <p>Select a specific container by its bundle,</p>
- * </li>
- * <li>
- * <p>Start and stop the selected CDI container,</p>
- * </li>
- * <li>
- * <p>Obtain the state of the selected CDI container,</p>
- * </li>
- * <li>
- * <p>Obtain the corresponding {@link org.osgi.framework.Bundle},
- * {@link javax.enterprise.inject.spi.BeanManager},
- * {@link javax.enterprise.event.Event}, managed bean {@link Class} and
- * {@link javax.enterprise.inject.Instance} and registred service as
- * {@link org.osgi.framework.ServiceRegistration},</p>
- * </li>
- * <li>
- * <p>Fire {@link InterBundleEvent}.</p>
- * </li>
- * </ul></p>
+ * This interface represents the CDI containers that Weld-OSGi provides to
+ * bean bundles. Every bean {@link Bundle} gets such a CDI container.
+ * <p/>
+ * It defines the behavior of such a container. The Weld-OSGi extension bundle
+ * implements this interface with a Weld container.
+ * These CDI container are produced by a CDI container factory service.
+ * <p/>
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
  * @see CDIContainerFactory
- * @see Iterable
- * @see org.osgi.framework.Bundle
- * @see javax.enterprise.inject.spi.BeanManager
- * @see javax.enterprise.inject.Instance
- * @see javax.enterprise.event.Event
- * @see org.osgi.framework.ServiceRegistration
- * @see InterBundleEvent
  */
 public interface CDIContainer extends EmbeddedCDIContainer {
+
     /**
-     * Initialize the CDI container.
+     * Initialize and launch the CDI container. After this method call the
+     * container may be started and CDI enabled in the bean bundle.
      *
      * @return true if the CDI container is initialized, false if anything goes
      *         wrong.
@@ -78,18 +51,43 @@ public interface CDIContainer extends EmbeddedCDIContainer {
     boolean initialize();
 
     /**
-     * Shutdown the CDI container.
+     * Set the CDI container to the state ready. After this method call the
+     * container may be started and Weld-OSGi enabled in the bean bundle. The
+     * container must be stated before this method call.
+     *
+     * @return true if the CDI container is ready, false if anything goes
+     *         wrong.
+     */
+    boolean setReady();
+
+    /**
+     * Wait for the CDI container to be started and ready.
+     */
+    void waitToBeReady();
+
+    /**
+     * Shutdown the CDI container. After this method call the container may be
+     * stopped and Weld-OSGi and CDI disabled in the bean bundle.
      *
      * @return true if the CDI container is off, false if anything goes wrong.
      */
     boolean shutdown();
 
     /**
-     * Test if the CDI container is on and initialized.
+     * Test if the CDI container has been initialized. CDI is enabled in the
+     * bean bundle if the container is initialized.
      *
      * @return true if the CDI container is started, false otherwise.
      */
     boolean isStarted();
+
+    /**
+     * Test if the CDI container is ready. Weld-OSGi is enabled in the
+     * bean bundle if the container is initialized.
+     *
+     * @return true if the CDI container is ready, false otherwise.
+     */
+    boolean isReady();
 
     /**
      * Fire an {@link InterBundleEvent} from the
@@ -100,7 +98,7 @@ public interface CDIContainer extends EmbeddedCDIContainer {
     void fire(InterBundleEvent event);
 
     /**
-     * Obtain the {@link org.osgi.framework.Bundle} corresponding to this
+     * Get the {@link org.osgi.framework.Bundle} corresponding to this
      * {@link CDIContainer}.
      *
      * @return the {@link org.osgi.framework.Bundle} corresponding to this
@@ -109,7 +107,7 @@ public interface CDIContainer extends EmbeddedCDIContainer {
     Bundle getBundle();
 
     /**
-     * Obtain the {@link javax.enterprise.inject.spi.BeanManager} of this
+     * Get the {@link javax.enterprise.inject.spi.BeanManager} of this
      * {@link CDIContainer}.
      *
      * @return the {@link javax.enterprise.inject.spi.BeanManager} of this
@@ -118,7 +116,7 @@ public interface CDIContainer extends EmbeddedCDIContainer {
     BeanManager getBeanManager();
 
     /**
-     * Obtain the {@link javax.enterprise.event.Event} of this
+     * Get the {@link javax.enterprise.event.Event} of this
      * {@link CDIContainer}.
      *
      * @return the {@link javax.enterprise.event.Event} of this
@@ -127,24 +125,24 @@ public interface CDIContainer extends EmbeddedCDIContainer {
     Event getEvent();
 
     /**
-     * Obtain the managed bean {@link javax.enterprise.inject.Instance} of this
+     * Get the {@link javax.enterprise.inject.Instance} of this
      * {@link CDIContainer}.
      *
-     * @return the managed bean {@link javax.enterprise.inject.Instance} of this
+     * @return the {@link javax.enterprise.inject.Instance} of this
      *         {@link CDIContainer}.
      */
     Instance<Object> getInstance();
 
     /**
-     * Obtain the managed bean class of this {@link CDIContainer}.
+     * Get the managed bean classes names of this {@link CDIContainer}.
      *
-     * @return the managed bean class of this {@link CDIContainer} as a
+     * @return the managed bean classes names of this {@link CDIContainer} as a
      *         {@link java.util.Collection} of {@link String}.
      */
     Collection<String> getBeanClasses();
 
     /**
-     * Obtain the {@link org.osgi.framework.ServiceRegistration}s of this
+     * Get the {@link org.osgi.framework.ServiceRegistration}s of this
      * {@link CDIContainer}.
      *
      * @return the {@link org.osgi.framework.ServiceRegistration}s of this
@@ -160,9 +158,4 @@ public interface CDIContainer extends EmbeddedCDIContainer {
      *                      for this {@link CDIContainer} as a {@link java.util.Collection}.
      */
     void setRegistrations(Collection<ServiceRegistration> registrations);
-
-    void setReady();
-
-    void waitToBeReady();
-
 }
