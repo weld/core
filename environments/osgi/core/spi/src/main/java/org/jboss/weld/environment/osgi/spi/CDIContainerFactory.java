@@ -22,27 +22,22 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * <p>This interface represents a CDI container factory used by Weld-OSGi in
- * order to obtain {@link CDIContainer}.</p>
- * <p>It allows to: <ul>
- * <li>
- * <p>Obtain the CDI container of a specific bean
- * {@link org.osgi.framework.Bundle} (singleton for each bean bundle),</p>
- * </li>
- * <li>
- * <p>Provide a interface black list for service publishing,</p>
- * </li>
- * <li>
- * <p>Obtain the ID of the used CDI implementation.</p>
- * </li>
- * </ul></p>
+ * This interface represents a CDI container factory that Weld-OSGi uses in
+ * order to produce {@link CDIContainer} for bean bundle.
+ * <p/>
+ * It defines the behavior of such a factory. The Weld-OSGi extension bundle
+ * use an OSGi service of this type to provide CDI container to bean bundle.
+ * The Weld-OSGi extension bundle implements this interface with a Weld
+ * container factory.
+ * <p/>
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ *
  * @see CDIContainer
- * @see org.osgi.framework.Bundle
  */
 public interface CDIContainerFactory {
+
     /**
      * Obtain the ID of the used CDI implementation.
      *
