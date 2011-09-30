@@ -21,90 +21,71 @@ import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
+import org.osgi.framework.Bundle;
 
 /**
- * <p>This interface represents an iterable list of CDI containers used by
- * Weld-OSGi.</p>
- * <p>It allows to: <ul>
- * <li>
- * <p>Navigate through the list of CDI containers as an
- * {@link Iterable},</p>
- * </li>
- * <li>
- * <p>Obtain the number of CDI containers,</p>
- * </li>
- * <li>
- * <p>Select a specific container by its bundle,</p>
- * </li>
- * <li>
- * <p>Start and stop the selected CDI container,</p>
- * </li>
- * <li>
- * <p>Obtain the state of the selected CDI container,</p>
- * </li>
- * <li>
- * <p>Obtain the corresponding {@link org.osgi.framework.Bundle},
- * {@link javax.enterprise.inject.spi.BeanManager},
- * {@link javax.enterprise.event.Event}, managed bean {@link Class} and
- * {@link javax.enterprise.inject.Instance} and registred service as
- * {@link org.osgi.framework.ServiceRegistration},</p>
- * </li>
- * <li>
- * <p>Fire {@link InterBundleEvent}.</p>
- * </li>
- * </ul></p>
+ * This interface represents the embedded CDI containers that Weld-OSGi
+ * provides to bean bundles. Every unmanaged bean {@link Bundle} gets such an
+ * embedded CDI container.
+ * <p/>
+ * It defines the behavior of such a container. The Weld-OSGi extension bundle
+ * use this interface to provide embedded container to unmanaged bean bundle.
+ * These CDI container are produced by a CDI container factory service.
+ * <p/>
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
- * @see CDIContainerFactory
- * @see Iterable
- * @see org.osgi.framework.Bundle
- * @see javax.enterprise.inject.spi.BeanManager
- * @see javax.enterprise.inject.Instance
- * @see javax.enterprise.event.Event
- * @see org.osgi.framework.ServiceRegistration
- * @see InterBundleEvent
  */
 public interface EmbeddedCDIContainer {
+
     /**
-     * Test if the CDI container is on and initialized.
+     * Test if the CDI container has been initialized. CDI is enabled in the
+     * bean bundle if the container is initialized.
      *
      * @return true if the CDI container is started, false otherwise.
      */
     boolean isStarted();
 
     /**
+     * Test if the CDI container is ready. Weld-OSGi is enabled in the
+     * bean bundle if the container is initialized.
+     *
+     * @return true if the CDI container is ready, false otherwise.
+     */
+    boolean isReady();
+
+    /**
      * Fire an {@link InterBundleEvent} from the
-     * {@link org.osgi.framework.Bundle} of this {@link EmbeddedCDIContainer}.
+     * {@link org.osgi.framework.Bundle} of this {@link CDIContainer}.
      *
      * @param event the {@link InterBundleEvent} to fire.
      */
     void fire(InterBundleEvent event);
 
     /**
-     * Obtain the {@link javax.enterprise.inject.spi.BeanManager} of this
-     * {@link EmbeddedCDIContainer}.
+     * Get the {@link javax.enterprise.inject.spi.BeanManager} of this
+     * {@link CDIContainer}.
      *
      * @return the {@link javax.enterprise.inject.spi.BeanManager} of this
-     *         {@link EmbeddedCDIContainer}.
+     *         {@link CDIContainer}.
      */
     BeanManager getBeanManager();
 
     /**
-     * Obtain the {@link javax.enterprise.event.Event} of this
-     * {@link EmbeddedCDIContainer}.
+     * Get the {@link javax.enterprise.event.Event} of this
+     * {@link CDIContainer}.
      *
      * @return the {@link javax.enterprise.event.Event} of this
-     *         {@link EmbeddedCDIContainer}.
+     *         {@link CDIContainer}.
      */
     Event getEvent();
 
     /**
-     * Obtain the managed bean {@link javax.enterprise.inject.Instance} of this
-     * {@link EmbeddedCDIContainer}.
+     * Get the {@link javax.enterprise.inject.Instance} of this
+     * {@link CDIContainer}.
      *
-     * @return the managed bean {@link javax.enterprise.inject.Instance} of this
-     *         {@link EmbeddedCDIContainer}.
+     * @return the {@link javax.enterprise.inject.Instance} of this
+     *         {@link CDIContainer}.
      */
     Instance<Object> getInstance();
 

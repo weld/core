@@ -27,9 +27,9 @@ import java.util.Collection;
 
 /**
  * This interface represents the CDI containers that Weld-OSGi provides to
- * bean bundles. Every bean {@link Bundle} gets such a CDI container.
+ * bean bundles. Every managed bean {@link Bundle} gets such a CDI container.
  * <p/>
- * It defines the behavior of such a container. The Weld-OSGi extension bundle
+ * It defines the behavior of such a container. The Weld-OSGi integration bundle
  * implements this interface with a Weld container.
  * These CDI container are produced by a CDI container factory service.
  * <p/>
