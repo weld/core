@@ -151,6 +151,13 @@ public class ServiceRegistryImpl implements ServiceRegistry {
     }
 
     private void checkForValidDependencies(AbstractServiceEvent event) {
+        logger.trace("Entering ServiceRegistryImpl : "
+                     + "checkForValidDependencies() with parameter {} "
+                     + "for bundle {} and instance {}",
+                     new Object[] {event, bundle, this});
+        if (osgiServiceDependencies == null) {
+            osgiServiceDependencies = extension.getRequiredOsgiServiceDependencies();
+        }
         if (event == null || applicable(event.getServiceClasses(getClass()))) {
             boolean valid = true;
             if (!osgiServiceDependencies.isEmpty()) {
