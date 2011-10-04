@@ -1,7 +1,38 @@
 <chapter>
-    <title>TODO</title>
-    <section>
-        <title>TODO</title>
-        <para>TODO</para>
-    </section>
+    <title>OSGi is still alive</title>
+   <para>Weld-OSGi do not fordid you to use classic OSGi mechanisms. More it give you some way to easily get main OSGi
+      object like Bundle or BundleContext. You just inject them, don't need to use OSGi verbosity.</para>
+   <para>There are :<itemizedlist>
+         <listitem>
+            <para>Current bundle injection: <programlisting>@Inject
+Bundle bundle;</programlisting>It provides the
+               current bundle OSGi <code>Bundle</code> instance.</para>
+         </listitem>
+         <listitem>
+            <para>Current bundle context injection: <programlisting>@Inject
+BundleContext context;</programlisting>It
+               provides the current bundle OSGi <code>BundleContext</code> instance.</para>
+         </listitem>
+         <listitem>
+            <para>Current bundle file
+               injection:<programlisting>@Inject @DataFile("path/to/file")
+File dataFile;</programlisting>It provides a
+               file within the current bundle path.</para>
+         </listitem>
+         <listitem>
+            <para>Current bundle manifest headers injection:
+               <programlisting>@Inject @BundleHeaders
+Map&lt;String,String> headers;
+
+@Inject @BundleHeader("header-name")
+String header;</programlisting>It
+               provides all the manifest headers or a specific header of the current bundle.</para>
+         </listitem>
+         <listitem>
+            <para>Current bundle Weld-OSGi
+               registration:<programlisting>@Inject
+Registration registration;</programlisting>It provides all the
+               registrations for OSGi services managed by Weld-OSGi for the current bundle.</para>
+         </listitem>
+      </itemizedlist></para>
 </chapter>

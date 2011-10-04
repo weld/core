@@ -16,10 +16,9 @@
         </itemizedlist></para>
     <section>
         <title>Get OSGi event notifications in your bean bundles</title>
-        <para>From here you will create a new application based on bean bundles. So far your bundles
-            your bundles were greeting and saying goodbye, let them be a bit more interactive. You
-            will have three bean bundles that present themselves when they start and greet newcomers
-            (and say goodbye to leavers) when they start (or stop).</para>
+        <para>From here you will create a new application based on bean bundles. So far your bundles were greeting and
+         saying goodbye, let them be a bit more interactive. You will have three bean bundles that present themselves
+         when they start and greet newcomers (and say goodbye to leavers) when they start (or stop).</para>
         <para>Create your three bean bundles following this scheme. They will be the
                 <code>welcoming-tom</code>, <code>welcoming-dick</code> and
                 <code>welcoming-harry</code> bean bundles.</para>
