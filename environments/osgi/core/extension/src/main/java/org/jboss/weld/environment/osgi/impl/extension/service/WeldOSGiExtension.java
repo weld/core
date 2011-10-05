@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.service;
 
+import javax.naming.NamingException;
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.api.annotation.Required;
 import org.jboss.weld.environment.osgi.impl.extension.beans.OSGiUtilitiesProducer;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceAnnotatedType;
-import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceProducerBean;
@@ -59,8 +59,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
+import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
+import org.jboss.weld.environment.osgi.api.events.BundleEvents;
+import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
 import org.jboss.weld.environment.osgi.impl.Activator;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 
 /**
  * Weld OSGi {@link  Extension}. Contains copy/paste parts from the GlassFish
@@ -88,10 +104,11 @@ public class WeldOSGiExtension implements Extension {
     private List<Annotation> observers = new ArrayList<Annotation>();
     private Map<Class, Set<Filter>> requiredOsgiServiceDependencies =
             new HashMap<Class, Set<Filter>>();
-    private ExtensionActivator activator;
     private List<Exception> exceptions = new ArrayList<Exception>();
+    private BeanManager beanManager;
+    private HybridListener listener;
 
-    public void registerCDIOSGiBeans(@Observes BeforeBeanDiscovery event,
+    void registerCDIOSGiBeans(@Observes BeforeBeanDiscovery event,
             BeanManager manager) {
         logger.debug("Observe a BeforeBeanDiscovery event");
         event.addAnnotatedType(
@@ -106,6 +123,7 @@ public class WeldOSGiExtension implements Extension {
                 manager.createAnnotatedType(ContainerObserver.class));
         event.addAnnotatedType(
                 manager.createAnnotatedType(InstanceHolder.class));
+        this.beanManager = manager;
     }
 
     /**
@@ -115,7 +133,7 @@ public class WeldOSGiExtension implements Extension {
      *
      * @see OSGiServiceAnnotatedType
      */
-    public void discoverCDIOSGiClass(@Observes ProcessAnnotatedType<?> event) {
+    void discoverCDIOSGiClass(@Observes ProcessAnnotatedType<?> event) {
         logger.debug("Observe a ProcessAnnotatedType event");
         AnnotatedType annotatedType = event.getAnnotatedType();
         annotatedType = discoverAndProcessCDIOSGiClass(annotatedType);
@@ -133,23 +151,23 @@ public class WeldOSGiExtension implements Extension {
      * <p/>
      * @param event the injection point to be processed event.
      */
-    public void discoverCDIOSGiServices(@Observes ProcessInjectionTarget<?> event) {
+    void discoverCDIOSGiServices(@Observes ProcessInjectionTarget<?> event) {
         logger.debug("Observe a ProcessInjectionTarget event");
         Set<InjectionPoint> injectionPoints = event.getInjectionTarget().getInjectionPoints();
         discoverServiceInjectionPoints(injectionPoints);
     }
 
-    public void afterProcessProducer(@Observes ProcessProducer<?, ?> event) {
+    void afterProcessProducer(@Observes ProcessProducer<?, ?> event) {
         //Only using ProcessInjectionTarget for now.
         //TODO do we need to scan these events
     }
 
-    public void afterProcessBean(@Observes ProcessBean<?> event) {
+    void afterProcessBean(@Observes ProcessBean<?> event) {
         //ProcessInjectionTarget and ProcessProducer take care of all relevant injection points.
         //TODO verify that :)
     }
 
-    public void registerObservers(@Observes ProcessObserverMethod<?, ?> event) {
+    void registerObservers(@Observes ProcessObserverMethod<?, ?> event) {
         logger.debug("Observe a ProcessObserverMethod event");
         Set<Annotation> qualifiers = event.getObserverMethod().getObservedQualifiers();
         for (Annotation qualifier : qualifiers) {
@@ -165,9 +183,8 @@ public class WeldOSGiExtension implements Extension {
      * <p/>
      * @param event the AfterBeanDiscovery event.
      */
-    public void registerCDIOSGiServices(@Observes AfterBeanDiscovery event) {
+    void registerCDIOSGiServices(@Observes AfterBeanDiscovery event) {
         logger.debug("Observe an AfterBeanDiscovery event");
-        //runExtension();
         for (Exception exception : exceptions) {
             logger.error("Registering a Weld-OSGi deployment error {}", exception);
             event.addDefinitionError(exception);
@@ -192,36 +209,63 @@ public class WeldOSGiExtension implements Extension {
             Type type = iterator.next();
             addServiceProducer(event, this.serviceProducerToBeInjected.get(type));
         }
+    }
+//
+//    void afterDeployment(@Observes AfterDeploymentValidation event) {
+//        if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
+//            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
+//            runExtensionInHybridMode(); // should work if the current classloader is based on osgi classloader
+//        }
+//    }
+
+    public void startHybridMode() {
         if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
             logger.warn("Starting Weld-OSGi extension in hybrid mode.");
-            runExtensionInHybridMode(); // should work if the current classloader is based on osgi classloader
+            runExtensionInHybridMode();
         }
+    }
+
+    public void startHybridMode(BundleContext ctx) {
+         if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
+            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
+            listener = runInHybridMode(ctx);
+         }
     }
 
     private void runExtensionInHybridMode() {
-        if (!servicesToBeInjected.isEmpty()) {
-            Set<InjectionPoint> injections =
-                    servicesToBeInjected.values().iterator().next();
-            if (!injections.isEmpty()) {
-                InjectionPoint ip = injections.iterator().next();
-                Class annotatedElt = ip.getMember().getDeclaringClass();
-                BundleContext bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
-                activator = runInHybridMode(bc);
+        BundleContext bc = null;
+        try {
+            Context ctx = new InitialContext();
+            bc = (BundleContext) ctx.lookup("java:comp/BundleContext");
+            logger.info("JNDI lookup succeed :-)");
+        } catch (NamingException ex) {
+            logger.warn("Cannot lookup JNDI BundleContext.");
+        }
+        if (bc == null) {
+            if (!servicesToBeInjected.isEmpty()) {
+                Set<InjectionPoint> injections =
+                        servicesToBeInjected.values().iterator().next();
+                if (!injections.isEmpty()) {
+                    InjectionPoint ip = injections.iterator().next();
+                    Class annotatedElt = ip.getMember().getDeclaringClass();
+                    bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
+                    listener = runInHybridMode(bc);
+                }
+            } else if (!serviceProducerToBeInjected.isEmpty()) {
+                Set<InjectionPoint> injections =
+                        serviceProducerToBeInjected.values().iterator().next();
+                if (!injections.isEmpty()) {
+                    InjectionPoint ip = injections.iterator().next();
+                    Class annotatedElt = ip.getMember().getDeclaringClass();
+                    bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
+                    listener = runInHybridMode(bc);
+                }
+            } else {
+                bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
+                logger.warn("Starting the extension assuming the bundle is {}",
+                        bc.getBundle().getSymbolicName());
+                listener = runInHybridMode(bc);
             }
-        } else if (!serviceProducerToBeInjected.isEmpty()) {
-            Set<InjectionPoint> injections =
-                    serviceProducerToBeInjected.values().iterator().next();
-            if (!injections.isEmpty()) {
-                InjectionPoint ip = injections.iterator().next();
-                Class annotatedElt = ip.getMember().getDeclaringClass();
-                BundleContext bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
-                activator = runInHybridMode(bc);
-            }
-        } else {
-            BundleContext bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
-            logger.warn("Starting the extension assuming the bundle is {}",
-                    bc.getBundle().getSymbolicName());
-            activator = runInHybridMode(bc);
         }
     }
 
@@ -232,30 +276,20 @@ public class WeldOSGiExtension implements Extension {
      * @param bc
      * @param activator
      */
-    public static void runInHybridMode(BundleContext bc, ExtensionActivator activator) {
-        try {
-            activator.start(bc);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    private HybridListener runInHybridMode(BundleContext bc) {
+        HybridListener list = new HybridListener(bc, this);
+        bc.addBundleListener(listener);
+        bc.addServiceListener(listener);
+        return list;
     }
 
-    /**
-     * Method used to bootstrap the the OSGi part of the extension in an hybrid environment.
-     * Provided for server integration purposes.
-     *
-     * @param bc
-     * @param activator
-     */
-    public static ExtensionActivator runInHybridMode(BundleContext bc) {
-        ExtensionActivator activator = new ExtensionActivator();
-        try {
-            activator.start(bc);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        return activator;
-    }
+//    @PreDestroy
+//    void stopExtension() {
+//        if (listener != null) {
+//            listener.context.removeBundleListener(listener);
+//            listener.context.removeServiceListener(listener);
+//        }
+//    }
 
     private AnnotatedType discoverAndProcessCDIOSGiClass(
             AnnotatedType annotatedType) {
@@ -363,17 +397,171 @@ public class WeldOSGiExtension implements Extension {
         return requiredOsgiServiceDependencies;
     }
 
-    public static boolean autoRunInHybridMode() {
+    public static void setAutoRunInHybridMode(boolean autoRunInHybridMode) {
+        WeldOSGiExtension.autoRunInHybridMode = autoRunInHybridMode;
+    }
+
+    public static boolean isAutoRunInHybridMode() {
         return autoRunInHybridMode;
     }
 
-    /**
-     * Set to false if the server use the manual bootstrap in hybrid mode with runInHybridMode
-     * so the extension won't try to do it by itself.
-     *
-     * @param autoRunInHybridMode
-     */
-    public static void autoRunInHybridMode(boolean autoRunInHybridMode) {
-        WeldOSGiExtension.autoRunInHybridMode = autoRunInHybridMode;
+    private static class HybridListener implements SynchronousBundleListener,
+                                                    ServiceListener {
+
+        private static Logger logger = LoggerFactory.getLogger(HybridListener.class);
+
+        private final BundleContext context;
+
+        private final WeldOSGiExtension extension;
+
+        public HybridListener(BundleContext context, WeldOSGiExtension extension) {
+            this.context = context;
+            this.extension = extension;
+        }
+
+        @Override
+        public void bundleChanged(BundleEvent event) {
+            Bundle bundle = event.getBundle();
+            AbstractBundleEvent bundleEvent = null;
+            switch(event.getType()) {
+                case BundleEvent.INSTALLED:
+                    logger.debug("Receiving a new OSGi bundle event INSTALLED");
+                    bundleEvent = new BundleEvents.BundleInstalled(bundle);
+                    break;
+                case BundleEvent.LAZY_ACTIVATION:
+                    logger.debug("Receiving a new OSGi bundle event LAZY_ACTIVATION");
+                    bundleEvent = new BundleEvents.BundleLazyActivation(bundle);
+                    break;
+                case BundleEvent.RESOLVED:
+                    logger.debug("Receiving a new OSGi bundle event RESOLVED");
+                    bundleEvent = new BundleEvents.BundleResolved(bundle);
+                    break;
+                case BundleEvent.STARTED:
+                    logger.debug("Receiving a new OSGi bundle event STARTED");
+                    bundleEvent = new BundleEvents.BundleStarted(bundle);
+                    break;
+                case BundleEvent.STARTING:
+                    logger.debug("Receiving a new OSGi bundle event STARTING");
+                    bundleEvent = new BundleEvents.BundleStarting(bundle);
+                    break;
+                case BundleEvent.STOPPED:
+                    logger.debug("Receiving a new OSGi bundle event STOPPED");
+                    bundleEvent = new BundleEvents.BundleStopped(bundle);
+                    break;
+                case BundleEvent.STOPPING:
+                    logger.debug("Receiving a new OSGi bundle event STOPPING");
+                    bundleEvent = new BundleEvents.BundleStopping(bundle);
+                    break;
+                case BundleEvent.UNINSTALLED:
+                    logger.debug("Receiving a new OSGi bundle event UNINSTALLED");
+                    bundleEvent = new BundleEvents.BundleUninstalled(bundle);
+                    break;
+                case BundleEvent.UNRESOLVED:
+                    logger.debug("Receiving a new OSGi bundle event UNRESOLVED");
+                    bundleEvent = new BundleEvents.BundleUnresolved(bundle);
+                    break;
+                case BundleEvent.UPDATED:
+                    logger.debug("Receiving a new OSGi bundle event UPDATED");
+                    bundleEvent = new BundleEvents.BundleUpdated(bundle);
+                    break;
+            }
+            boolean set = WeldOSGiExtension.currentBundle.get() != null;
+            WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
+            try {
+                //broadcast the OSGi event through CDI event system
+                extension.beanManager.fireEvent(event);
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+            if (bundleEvent != null) {
+                //broadcast the corresponding Weld-OSGi event
+                fireAllBundleEvent(bundleEvent);
+            }
+            if (!set) {
+                WeldOSGiExtension.currentBundle.remove();
+            }
+        }
+
+        @Override
+        public void serviceChanged(ServiceEvent event) {
+            ServiceReference ref = event.getServiceReference();
+            AbstractServiceEvent serviceEvent = null;
+            switch(event.getType()) {
+                case ServiceEvent.MODIFIED:
+                    logger.debug("Receiving a new OSGi service event MODIFIED");
+                    serviceEvent = new ServiceEvents.ServiceChanged(ref, context);
+                    break;
+                case ServiceEvent.REGISTERED:
+                    logger.debug("Receiving a new OSGi service event REGISTERED");
+                    serviceEvent = new ServiceEvents.ServiceArrival(ref, context);
+                    break;
+                case ServiceEvent.UNREGISTERING:
+                    logger.debug("Receiving a new OSGi service event UNREGISTERING");
+                    serviceEvent = new ServiceEvents.ServiceDeparture(ref, context);
+                    break;
+            }
+            boolean set = WeldOSGiExtension.currentBundle.get() != null;
+            WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
+            try {
+                //broadcast the OSGi event through CDI event system
+                extension.beanManager.fireEvent(event);
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+            if (serviceEvent != null) {
+                //broadcast the corresponding Weld-OSGi event
+                fireAllServiceEvent(serviceEvent);
+            }
+            if (!set) {
+                WeldOSGiExtension.currentBundle.remove();
+            }
+        }
+
+        private void fireAllServiceEvent(AbstractServiceEvent event) {
+            List<Class<?>> classes = event.getServiceClasses(getClass());
+            Class eventClass = event.getClass();
+            for (Class<?> clazz : classes) {
+                try {
+                    Annotation[] qualifs = filteredServicesQualifiers(event,
+                          new SpecificationAnnotation(clazz));
+                    extension.beanManager.fireEvent(event, qualifs);
+                }
+                catch(Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        }
+
+        private Annotation[] filteredServicesQualifiers(AbstractServiceEvent event,
+                                                        SpecificationAnnotation specific) {
+            Set<Annotation> eventQualifiers = new HashSet<Annotation>();
+            eventQualifiers.add(specific);
+            for (Annotation annotation : extension.getObservers()) {
+                String value = ((Filter) annotation).value();
+                try {
+                    org.osgi.framework.Filter filter = context.createFilter(value);
+                    if (filter.match(event.getReference())) {
+                        eventQualifiers.add(new FilterAnnotation(value));
+                    }
+                }
+                catch(InvalidSyntaxException ex) {
+                    //ex.printStackTrace();
+                }
+            }
+            return eventQualifiers.toArray(new Annotation[eventQualifiers.size()]);
+        }
+
+        private void fireAllBundleEvent(AbstractBundleEvent event) {
+            try {
+                extension.beanManager.fireEvent(event,
+                    new BundleNameAnnotation(event.getSymbolicName()),
+                    new BundleVersionAnnotation(event.getVersion().toString()));
+            }
+            catch(Throwable t) {
+                t.printStackTrace();
+            }
+        }
     }
 }
