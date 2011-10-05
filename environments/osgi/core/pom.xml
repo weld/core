@@ -41,6 +41,7 @@
       <module>extension</module>
       <module>integration</module>
       <module>mandatory</module>
+      <module>ee</module>
    </modules>
 
    <build>
