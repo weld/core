@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
+import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceRegistryImpl;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.BundleContext;
 
@@ -17,9 +19,12 @@ public class BundleContextAccessor {
 
     @Inject
     private WeldOSGiExtension ext;
-
     @Resource
     private BundleContext ctx;
+    @Inject
+    private BundleHolder holder;
+    @Inject
+    private ServiceRegistryImpl sr;
 
     @PostConstruct
     public void start() {
@@ -36,7 +41,10 @@ public class BundleContextAccessor {
                 throw new RuntimeException("Can't start Weld-OSGi in hybrid mode.");
             }
         } else {
-            ext.startHybridMode();
+            ext.startHybridMode(bc);
         }
+        holder.setBundle(ctx.getBundle());
+        holder.setContext(ctx);
+        sr.listenStartup(null);
     }
 }
