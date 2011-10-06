@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hotels management</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" media="screen" href="/ee/static/style/main.css">
+        <script src="/ee/static/js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <div id="header">
+            <h1><a href="/ee/static/html/index.html">Weld-OSGi booking demo</a></h1>
+                <div id="options">
+                    <a href="list.html">Hotels list</a>
+                </div>
+        </div>
+        
+        <div id="content">
+            <div id="countries">
+                <h2>Available countries</h2>
+                <em>
+                    No Hotel service available !
+                </em>
+            </div>
+        </div>
+        <br/>
+        <div id="footer">
+            Created with Weld-OSGi and really inspirated from the booking sample application provided by <a href="http://seamframework.org/">seam framework</a>
+            <br/>Style inspirated from the booking sample application provided by <a href="//http://www.playframework.org/">Play framework</a>
+        </div>
+        
+        <script type="text/javascript">
+
+            function update() {
+                $.ajax({ type: "GET", url: "/ee/res/ctrl/none", success: function(msg){
+                        $.ajax({ type: "GET", url: "/ee/res/ctrl/countries", success: function(msg){
+                                var text = "<h2>Available countries</h2>";
+                                var arr = msg.split(",");
+                                if (arr.length == 1) {
+                                    $('#countries').html("<h2>Available countries</h2><em>No Hotel service available !</em>");
+                                } else {
+                                    for (i = 0; i < arr.length; i++) {
+                                        if (arr[i] != "") {
+                                            text += "<div class='result'>" +
+                                            "<a href='list.html?country=" + arr[i] + "' class='passed'>" +
+                                            "<em>" + arr[i] + "</em>" +
+                                            "</a></div>";
+                                        }
+                                    }
+                                    $('#countries').html(text);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+                        
+            function init() {
+                $('#countries').show();
+                update();
+                return setInterval(update, 1000);
+            }
+            
+            init();
+        </script>
+    </body>
+</html>
