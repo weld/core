@@ -27,6 +27,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Set;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
+import org.osgi.framework.BundleContext;
 
 /**
  * Handler for proxy used by {@link OSGiServiceBean}. Dynamicaly lookup for a
@@ -41,7 +43,7 @@ public class DynamicServiceHandler implements InvocationHandler {
     private static Logger logger =
                           LoggerFactory.getLogger(DynamicServiceHandler.class);
 
-    private final Bundle bundle;
+    private final BundleContext ctx;
 
     private final String name;
 
@@ -54,15 +56,15 @@ public class DynamicServiceHandler implements InvocationHandler {
 
     boolean stored = false;
 
-    public DynamicServiceHandler(Bundle bundle,
+    public DynamicServiceHandler(BundleContext ctx,
                                  String name,
                                  Filter filter,
                                  Set<Annotation> qualifiers,
                                  long timeout) {
         logger.trace("Entering DynamicServiceHandler : "
-                     + "DynamicServiceHandler() with parameters {} | {} | {} | {} | {}",
-                     new Object[] {bundle, name, filter, qualifiers, timeout});
-        this.bundle = bundle;
+                     + "DynamicServiceHandler() with parameters {} | {} | {} | {}",
+                     new Object[] {name, filter, qualifiers, timeout});
+        this.ctx = ctx;
         this.name = name;
         this.filter = filter;
         this.timeout = timeout;
@@ -99,7 +101,7 @@ public class DynamicServiceHandler implements InvocationHandler {
         logger.trace("Call on the DynamicServiceHandler {} for method {}",
                      this,
                      method);
-        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
+        WeldOSGiExtension.currentBundle.set(ctx.getBundle().getBundleId());
         //intercept HashCode method when the handler is not allready registered
         //map.put() need a correct hashCode() method to use
         //see OSGiServiceBean
@@ -115,20 +117,20 @@ public class DynamicServiceHandler implements InvocationHandler {
             && filter.value() != null
             && filter.value().length() > 0) {
             ServiceReference[] refs =
-                               bundle.getBundleContext().getServiceReferences(name, filter.value());
+                               ctx.getServiceReferences(name, filter.value());
             if (refs != null && refs.length > 0) {
                 reference = refs[0];
             }
         }
         else {
-            reference = bundle.getBundleContext().getServiceReference(name);
+            reference = ctx.getServiceReference(name);
         }
         if (reference == null) {
             throw new IllegalStateException("Can't call service "
                                             + name
                                             + ". No matching service found.");
         }
-        Object instanceToUse = bundle.getBundleContext().getService(reference);
+        Object instanceToUse = ctx.getService(reference);
         try {
             return method.invoke(instanceToUse, args);
         }
@@ -136,7 +138,7 @@ public class DynamicServiceHandler implements InvocationHandler {
             throw new RuntimeException(t);
         }
         finally {
-            bundle.getBundleContext().ungetService(reference);
+            ctx.ungetService(reference);
             WeldOSGiExtension.currentBundle.remove();
         }
         /*Object instanceToUse = this.tracker.waitForService(timeout);
