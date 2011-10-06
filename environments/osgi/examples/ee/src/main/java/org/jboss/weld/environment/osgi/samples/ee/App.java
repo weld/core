@@ -21,7 +21,6 @@ public class App {
     }
 
     public boolean isValid() {
-        return true;
-        //return valid.get();
+        return valid.get();
     }
 }
