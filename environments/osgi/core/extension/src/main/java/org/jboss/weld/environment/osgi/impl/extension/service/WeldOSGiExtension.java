@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.service;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.Dictionary;
 import javax.naming.NamingException;
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
@@ -32,7 +35,11 @@ import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderI
 import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceRegistryImpl;
 import org.jboss.weld.environment.osgi.impl.integration.InstanceHolder;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
 import org.osgi.framework.BundleReference;
+import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +66,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
@@ -107,6 +115,7 @@ public class WeldOSGiExtension implements Extension {
     private List<Exception> exceptions = new ArrayList<Exception>();
     private BeanManager beanManager;
     private HybridListener listener;
+    private BundleContextDelegate delegate;
 
     void registerCDIOSGiBeans(@Observes BeforeBeanDiscovery event,
             BeanManager manager) {
@@ -124,6 +133,10 @@ public class WeldOSGiExtension implements Extension {
         event.addAnnotatedType(
                 manager.createAnnotatedType(InstanceHolder.class));
         this.beanManager = manager;
+        if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
+            delegate = new BundleContextDelegate();
+            currentContext.set(delegate);
+        }
     }
 
     /**
@@ -210,13 +223,6 @@ public class WeldOSGiExtension implements Extension {
             addServiceProducer(event, this.serviceProducerToBeInjected.get(type));
         }
     }
-//
-//    void afterDeployment(@Observes AfterDeploymentValidation event) {
-//        if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
-//            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
-//            runExtensionInHybridMode(); // should work if the current classloader is based on osgi classloader
-//        }
-//    }
 
     public void startHybridMode() {
         if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
@@ -242,30 +248,36 @@ public class WeldOSGiExtension implements Extension {
             logger.warn("Cannot lookup JNDI BundleContext.");
         }
         if (bc == null) {
-            if (!servicesToBeInjected.isEmpty()) {
-                Set<InjectionPoint> injections =
-                        servicesToBeInjected.values().iterator().next();
-                if (!injections.isEmpty()) {
-                    InjectionPoint ip = injections.iterator().next();
-                    Class annotatedElt = ip.getMember().getDeclaringClass();
-                    bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
+            try {
+                if (!servicesToBeInjected.isEmpty()) {
+                    Set<InjectionPoint> injections =
+                            servicesToBeInjected.values().iterator().next();
+                    if (!injections.isEmpty()) {
+                        InjectionPoint ip = injections.iterator().next();
+                        Class annotatedElt = ip.getMember().getDeclaringClass();
+                        bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
+                        listener = runInHybridMode(bc);
+                    }
+                } else if (!serviceProducerToBeInjected.isEmpty()) {
+                    Set<InjectionPoint> injections =
+                            serviceProducerToBeInjected.values().iterator().next();
+                    if (!injections.isEmpty()) {
+                        InjectionPoint ip = injections.iterator().next();
+                        Class annotatedElt = ip.getMember().getDeclaringClass();
+                        bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
+                        listener = runInHybridMode(bc);
+                    }
+                } else {
+                    bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
+                    logger.warn("Starting the extension assuming the bundle is {}",
+                            bc.getBundle().getSymbolicName());
                     listener = runInHybridMode(bc);
                 }
-            } else if (!serviceProducerToBeInjected.isEmpty()) {
-                Set<InjectionPoint> injections =
-                        serviceProducerToBeInjected.values().iterator().next();
-                if (!injections.isEmpty()) {
-                    InjectionPoint ip = injections.iterator().next();
-                    Class annotatedElt = ip.getMember().getDeclaringClass();
-                    bc = BundleReference.class.cast(annotatedElt.getClassLoader()).getBundle().getBundleContext();
-                    listener = runInHybridMode(bc);
-                }
-            } else {
-                bc = BundleReference.class.cast(getClass().getClassLoader()).getBundle().getBundleContext();
-                logger.warn("Starting the extension assuming the bundle is {}",
-                        bc.getBundle().getSymbolicName());
-                listener = runInHybridMode(bc);
+            } catch (Exception e) {
+                logger.error("Unable to start Weld-OSGi in Hybrid mode.");
             }
+        } else {
+            listener = runInHybridMode(bc);
         }
     }
 
@@ -278,18 +290,20 @@ public class WeldOSGiExtension implements Extension {
      */
     private HybridListener runInHybridMode(BundleContext bc) {
         HybridListener list = new HybridListener(bc, this);
-        bc.addBundleListener(listener);
-        bc.addServiceListener(listener);
+        delegate.setContext(bc);
+        bc.addBundleListener(list);
+        bc.addServiceListener(list);
+        currentContext.set(bc);
+        currentBundle.set(bc.getBundle().getBundleId());
         return list;
     }
 
-//    @PreDestroy
-//    void stopExtension() {
-//        if (listener != null) {
-//            listener.context.removeBundleListener(listener);
-//            listener.context.removeServiceListener(listener);
-//        }
-//    }
+    void afterDeployment(@Observes AfterDeploymentValidation event) {
+        if (listener != null) {
+            currentContext.remove();
+            currentBundle.remove();
+        }
+    }
 
     private AnnotatedType discoverAndProcessCDIOSGiClass(
             AnnotatedType annotatedType) {
@@ -562,6 +576,116 @@ public class WeldOSGiExtension implements Extension {
             catch(Throwable t) {
                 t.printStackTrace();
             }
+        }
+    }
+
+    private static class BundleContextDelegate implements BundleContext {
+
+        private BundleContext context;
+
+        public void setContext(BundleContext context) {
+            System.out.println("setup delegate context : " + context);
+            this.context = context;
+        }
+
+        public String toString() {
+            return context.toString();
+        }
+
+        public int hashCode() {
+            return context.hashCode();
+        }
+
+        public boolean equals(Object obj) {
+            return context.equals(obj);
+        }
+
+        public boolean ungetService(ServiceReference reference) {
+            return context.ungetService(reference);
+        }
+
+        public void removeServiceListener(ServiceListener listener) {
+            context.removeServiceListener(listener);
+        }
+
+        public void removeFrameworkListener(FrameworkListener listener) {
+            context.removeFrameworkListener(listener);
+        }
+
+        public void removeBundleListener(BundleListener listener) {
+            context.removeBundleListener(listener);
+        }
+
+        public ServiceRegistration registerService(String clazz, Object service, Dictionary properties) {
+            return context.registerService(clazz, service, properties);
+        }
+
+        public ServiceRegistration registerService(String[] clazzes, Object service, Dictionary properties) {
+            return context.registerService(clazzes, service, properties);
+        }
+
+        public Bundle installBundle(String location) throws BundleException {
+            return context.installBundle(location);
+        }
+
+        public Bundle installBundle(String location, InputStream input) throws BundleException {
+            return context.installBundle(location, input);
+        }
+
+        public ServiceReference[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
+            return context.getServiceReferences(clazz, filter);
+        }
+
+        public ServiceReference getServiceReference(String clazz) {
+            return context.getServiceReference(clazz);
+        }
+
+        public Object getService(ServiceReference reference) {
+            return context.getService(reference);
+        }
+
+        public String getProperty(String key) {
+            return context.getProperty(key);
+        }
+
+        public File getDataFile(String filename) {
+            return context.getDataFile(filename);
+        }
+
+        public Bundle[] getBundles() {
+            return context.getBundles();
+        }
+
+        public Bundle getBundle(long id) {
+            return context.getBundle(id);
+        }
+
+        public Bundle getBundle() {
+            return context.getBundle();
+        }
+
+        public ServiceReference[] getAllServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
+            return context.getAllServiceReferences(clazz, filter);
+        }
+
+        public org.osgi.framework.Filter createFilter(String filter) throws InvalidSyntaxException {
+            return context.createFilter(filter);
+        }
+
+        public void addServiceListener(ServiceListener listener) {
+            context.addServiceListener(listener);
+        }
+
+        public void addServiceListener(ServiceListener listener, String filter) throws InvalidSyntaxException {
+            context.addServiceListener(listener, filter);
+        }
+
+        public void addFrameworkListener(FrameworkListener listener) {
+            context.addFrameworkListener(listener);
+        }
+
+        public void addBundleListener(BundleListener listener) {
+            context.addBundleListener(listener);
         }
     }
 }
