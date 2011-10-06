@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.osgi.examples.web.spain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.osgi.examples.web.api.Hotel;
@@ -31,16 +31,23 @@ public class SpainHotelProvider implements HotelProvider {
     @Override
     public Collection<Hotel> hotels() {
         Collection<Hotel> hotels = new ArrayList<Hotel>();
-        hotels.add(new Hotel("Catalonia Plaza Mayor", "Madrid", "Spain"));
-        hotels.add(new Hotel("emperador", "Madrid", "Spain"));
-        hotels.add(new Hotel("Il Castillas hotel", "Madrid", "Spain"));
-        hotels.add(new Hotel("Ada Palace", "Madrid", "Spain"));
-        hotels.add(new Hotel("Palafox Central Suites", "Madrid", "Spain"));
+        hotels.add(new Hotel("Catalonia Plaza Mayor", "Madrid", "Spain", "2222", new Double(100)));
+        hotels.add(new Hotel("emperador", "Madrid", "Spain", "2222", new Double(200)));
+        hotels.add(new Hotel("Il Castillas hotel", "Madrid", "Spain", "2222", new Double(300)));
+        hotels.add(new Hotel("Ada Palace", "Madrid", "Spain", "2222", new Double(400)));
+        hotels.add(new Hotel("Palafox Central Suites", "Madrid", "Spain", "2222", new Double(500)));
         return hotels;
     }
 
     @Override
     public String getCountry() {
         return "Spain";
+    }
+
+    @Override
+    public boolean book(String id, Date checkin, Date checkout, Integer beds,
+            Boolean smocking, String cardNumber, String cardName,
+            String cardMonth, String cardYear) {
+        return true;
     }
 }

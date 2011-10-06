@@ -14,24 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.osgi.examples.web.api;
 
+import java.util.UUID;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Hotel {
 
+    private String id;
     private String name;
-
     private String address;
-
     private String country;
+    private String zip;
+    private Double price;
 
     public Hotel() {
+        this.id = UUID.randomUUID().toString().toLowerCase();
     }
 
-    public Hotel(String name, String address, String country) {
+    public Hotel(String name, String address, String country, String zip, Double price) {
         this.name = name;
         this.address = address;
         this.country = country;
+        this.zip = zip;
+        this.price = price;
+        this.id = UUID.randomUUID().toString().toLowerCase();
     }
 
     public String getAddress() {
@@ -56,5 +64,29 @@ public class Hotel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
