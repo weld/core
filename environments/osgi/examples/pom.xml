@@ -42,6 +42,7 @@
       <module>paint</module>
       <module>calculator</module>
       <module>web</module>
+      <module>ee</module>
       <module>standalone</module>
       <module>user-doc</module>
    </modules>

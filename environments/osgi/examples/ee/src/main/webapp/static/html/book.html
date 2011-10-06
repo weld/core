@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hotels management</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" media="screen" href="/ee/static/style/main.css">
+        <script src="/ee/static/js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <div id="header">
+            <h1><a href="/ee/static/html/index.html">Weld-OSGi booking demo</a></h1>
+                <div id="options">
+                    <a href="list.html">Hotels list</a>
+                </div>
+        </div>
+        
+        <div id="content">
+            <h2></h2>
+            <form action="summary.html" method="GET">
+                <div id="info"></div>
+                <p class=""> 
+                    <strong>Check In Date:</strong> <input type="text" size="10" name="booking.checkinDate" class="datepicker" value=""> (yy-mm-dd) *
+                    <span class="error"></span> 
+                </p> 
+                <p class=""> 
+                    <strong>Check Out Date:</strong> <input type="text" size="10" name="booking.checkoutDate" class="datepicker" value=""> (yy-mm-dd) *
+                    <span class="error"></span> 
+                </p> 
+                <p> 
+                    <strong>Room preference:</strong> 
+            
+                    <select name="booking.beds" size="1" > 
+                        <option value="1" >One king-size bed
+                        </option>            <option value="2" >Two double beds
+                        </option>            <option value="3" >Three beds
+                    </option>            </select> 
+    
+                </p> 
+                <p> 
+                    <strong>Smoking preference:</strong> 
+                    <input type="radio" name="booking.smoking" value="true" > Smoking
+                    <input type="radio" name="booking.smoking" value="false" checked> Non smoking
+                </p> 
+                <p class=""> 
+                    <strong>Credit Card #:</strong> <input type="text" name="booking.creditCard" size="16" value=""> *
+                    <span class="error"></span> 
+                </p> 
+                <p class=""> 
+                    <strong>Credit Card Name:</strong> <input type="text" name="booking.creditCardName" size="16" value=""> *
+                    <span class="error"></span> 
+                </p> 
+                <p> 
+                    <strong>Credit Card Expiry:</strong> 
+            
+                    <select name="booking.creditCardExpiryMonth" size="1" > 
+                        <option value="1" >Jan
+                        </option>            <option value="2" >Feb
+                        </option>            <option value="3" >Mar
+                        </option>            <option value="4" >Apr
+                        </option>            <option value="5" >May
+                        </option>            <option value="6" >Jun
+                        </option>            <option value="7" >Jul
+                        </option>            <option value="8" >Aug
+                        </option>            <option value="9" >Sep
+                        </option>            <option value="10" >Oct
+                        </option>            <option value="11" >Nov
+                        </option>            <option value="112" >Dec
+                    </option>            </select> 
+    
+    
+                    <select name="booking.creditCardExpiryYear" size="1" > 
+                        <option value="2008" >2008
+                        </option>            <option value="2009" >2009
+                        </option>            <option value="2010" >2010
+                        </option>            <option value="2011" >2011
+                        </option>            <option value="2012" >2012
+                    </option>            </select> 
+    
+    
+                </p>   
+                <div id="confirm">
+                    <input type="submit" value="Book"/>
+                </div>
+            </form> 
+        </div>
+        <div id="error" class="result"></div>
+        <div id="footer">
+            Created with Weld-OSGi and really inspirated from the booking sample application provided by <a href="http://seamframework.org/">seam framework</a>
+            <br/>Style inspirated from the booking sample application provided by <a href="//http://www.playframework.org/">Play framework</a>
+        </div>
+        
+        <script type="text/javascript">
+            function update() {
+                var id = getURLParam("id");
+                if (id == "") {
+                    $('#content').fadeOut(500);
+                    $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div><br/><a href='index.html' class='passed'>Home</a>")
+                    $('#error').show();
+                } else {
+                    $.ajax({ type: "GET", url: "/ee/res/ctrl/hotels/" + id, success: function(msg){
+                            if (msg != null) {
+                                $('#error').fadeOut(500);
+                                $('#content').fadeIn(500);
+                                var text = "Book: " + msg.name;
+                                $('#content h2').html(text);
+                                var info = "<input type='hidden' name='hotel.id' value='" + msg.id + "' />" +
+                                    "<input type='hidden' name='hotel.name' value='" + msg.name + "' />" +
+                                    "<input type='hidden' name='hotel.address' value='" + msg.address + "' />" +
+                                    "<input type='hidden' name='hotel.zip' value='" + msg.zip + "' />" +
+                                    "<input type='hidden' name='hotel.country' value='" + msg.country + "' />" +
+                                    "<input type='hidden' name='hotel.price' value='" + msg.price + "' />" +
+                                    "<p><strong>Name:</strong> " + msg.name + "</p> " +
+                                    "<p><strong>City:</strong> " + msg.address + "</p> " +
+                                    "<p><strong>Zip:</strong> " + msg.zip + "</p> " +
+                                    "<p><strong>Country:</strong> " + msg.country + "</p> " +
+                                    "<p><strong>Nightly rate:</strong> " + msg.price + "</p>";
+                                $('#content form #info').html(info);
+                            } else {
+                                $('#content').fadeOut(500);
+                                $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div><br/><a href='index.html' class='passed'>Home</a>")
+                                $('#error').fadeIn(500);
+                            }
+                        }, failure: function(msg) {
+                            $('#content').hide(500);
+                            $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div><br/><a href='index.html' class='passed'>Home</a>")
+                            $('#error').fadeIn(500);
+                        }
+                    });
+                }
+            }
+            
+            function init() {
+                update();
+                return setInterval(update, 1000);
+            }
+            
+            function getURLParam(strParamName){
+                var strReturn = "";
+                var strHref = window.location.href;
+                if ( strHref.indexOf("?") > -1 ){
+                    var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+                    var aQueryString = strQueryString.split("&");
+                    for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
+                        if ( 
+                        aQueryString[iParam].indexOf(strParamName.toLowerCase() + "=") > -1 ){
+                            var aParam = aQueryString[iParam].split("=");
+                            strReturn = aParam[1];
+                            break;
+                        }
+                    }
+                }
+                return unescape(strReturn);
+            }
+            
+            init();
+        </script>
+    </body>
+</html>
