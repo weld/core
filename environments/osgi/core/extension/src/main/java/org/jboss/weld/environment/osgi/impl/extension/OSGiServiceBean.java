@@ -147,15 +147,13 @@ public class OSGiServiceBean implements Bean {
     public Object create(CreationalContext creationalContext) {
         logger.trace("Entering OSGiServiceBean : create() with parameter");
         try {
-            Bundle bundle = null;
-            if (ctx != null) {
-                bundle = ctx.getBundle();
-            } else {
-                bundle =
-                   FrameworkUtil.getBundle(injectionPoint.getMember().getDeclaringClass());
+            BundleContext context = ctx;
+            if (context == null) {
+                context = FrameworkUtil.getBundle(injectionPoint.getMember()
+                        .getDeclaringClass()).getBundleContext();
             }
             DynamicServiceHandler handler =
-                                  new DynamicServiceHandler(bundle,
+                                  new DynamicServiceHandler(context,
                                                             ((Class) type).getName(),
                                                             filter,
                                                             qualifiers,
