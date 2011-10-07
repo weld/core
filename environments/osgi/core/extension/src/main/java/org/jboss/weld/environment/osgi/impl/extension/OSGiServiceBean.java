@@ -19,7 +19,6 @@ package org.jboss.weld.environment.osgi.impl.extension;
 import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,8 +163,7 @@ public class OSGiServiceBean implements Bean {
             //memorize if the handler has been allready stored
             if (handlers.containsKey(proxy)) {
                 handler.setStored(true);
-            }
-            else {
+            } else {
                 //map.put() need a correct hashCode() method to use
                 //see DynamicServiceHandler
                 handlers.put(proxy, handler);

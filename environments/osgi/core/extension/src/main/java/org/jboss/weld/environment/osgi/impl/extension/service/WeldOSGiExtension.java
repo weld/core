@@ -69,6 +69,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
@@ -113,6 +114,7 @@ public class WeldOSGiExtension implements Extension {
     private Map<Class, Set<Filter>> requiredOsgiServiceDependencies =
             new HashMap<Class, Set<Filter>>();
     private List<Exception> exceptions = new ArrayList<Exception>();
+    private List<Class<?>> publishableClasses = new ArrayList<Class<?>>();
     private BeanManager beanManager;
     private HybridListener listener;
     private BundleContextDelegate delegate;
@@ -178,6 +180,10 @@ public class WeldOSGiExtension implements Extension {
     void afterProcessBean(@Observes ProcessBean<?> event) {
         //ProcessInjectionTarget and ProcessProducer take care of all relevant injection points.
         //TODO verify that :)
+        Class<?> clazz = event.getBean().getBeanClass();
+        if (clazz.isAnnotationPresent(Publish.class)) {
+            publishableClasses.add(clazz);
+        }
     }
 
     void registerObservers(@Observes ProcessObserverMethod<?, ?> event) {
@@ -409,6 +415,10 @@ public class WeldOSGiExtension implements Extension {
 
     public Map<Class, Set<Filter>> getRequiredOsgiServiceDependencies() {
         return requiredOsgiServiceDependencies;
+    }
+
+    public List<Class<?>> getPublishableClasses() {
+        return publishableClasses;
     }
 
     public static void setAutoRunInHybridMode(boolean autoRunInHybridMode) {
