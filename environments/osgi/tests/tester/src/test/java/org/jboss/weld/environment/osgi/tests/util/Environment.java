@@ -48,12 +48,13 @@ public class Environment {
         while(!ready) {
             ready = true;
             for(Bundle b : context.getBundles()) {
-                if(b.getState() == Bundle.STARTING) {
+                if(b.getState() != Bundle.ACTIVE) {
                     ready = false;
                     break;
                 }
                 Thread.sleep(500);
             }
+            Thread.sleep(500);
         }
         WeldOSGiWait.waitForContainersToStart(context, context.getBundles());
     }
