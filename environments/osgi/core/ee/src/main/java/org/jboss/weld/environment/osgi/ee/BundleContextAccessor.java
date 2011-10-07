@@ -14,21 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.environment.osgi.ee;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
+import org.jboss.weld.environment.osgi.api.events.Invalid;
 import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
+import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
+import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceRegistryImpl;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.integration.ServicePublisher;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 @Singleton
 @Startup
@@ -37,11 +46,25 @@ public class BundleContextAccessor {
     @Inject
     private WeldOSGiExtension ext;
     @Resource
-    private BundleContext ctx;
+    private BundleContext injectedContext;
+    private BundleContext actualContext;
     @Inject
     private BundleHolder holder;
     @Inject
     private ServiceRegistryImpl sr;
+    @Inject
+    private ContainerObserver observer;
+    @Inject
+    private Event<Invalid> invalid;
+    @Inject
+    private Event<BundleContainerEvents.BundleContainerInitialized> init;
+    @Inject
+    private Event<BundleContainerEvents.BundleContainerShutdown> shutdown;
+    @Inject
+    private RegistrationsHolderImpl registrations;
+    @Inject
+    @Any
+    private Instance<Object> instance;
 
     @PostConstruct
     public void start() {
@@ -52,16 +75,40 @@ public class BundleContextAccessor {
         } catch (NamingException ex) {
         }
         if (bc == null) {
-            if (ctx != null) {
-                ext.startHybridMode(ctx);
+            if (injectedContext != null) {
+                actualContext = injectedContext;
             } else {
                 throw new RuntimeException("Can't start Weld-OSGi in hybrid mode.");
             }
         } else {
-            ext.startHybridMode(bc);
+            actualContext = bc;
         }
-        holder.setBundle(ctx.getBundle());
-        holder.setContext(ctx);
-        sr.listenStartup(null);
+        ext.startHybridMode(actualContext);
+        holder.setBundle(injectedContext.getBundle());
+        holder.setContext(injectedContext);
+//        ServiceReference factoryRef = actualContext.getServiceReference(CDIContainerFactory.class.getName());
+//        if (factoryRef != null) {
+//            CDIContainerFactory factory = (CDIContainerFactory) actualContext.getService(factoryRef);
+//            observer.setContainers(factory.containers());
+//        }
+        ServicePublisher publisher = new ServicePublisher(ext.getPublishableClasses(),
+                actualContext.getBundle(),
+                instance);
+        publisher.registerAndLaunchComponents();
+        init.fire(new BundleContainerEvents.BundleContainerInitialized(actualContext));
+        //sr.listenStartup(null);
+    }
+
+    @PreDestroy
+    public void stop() {
+        shutdown.fire(new BundleContainerEvents.BundleContainerShutdown(actualContext));
+        for (ServiceRegistration reg : registrations.getRegistrations()) {
+            try {
+                reg.unregister();
+            } catch (Throwable t) {
+                //t.printStackTrace();
+            }
+        }
+        invalid.fire(new Invalid());
     }
 }
