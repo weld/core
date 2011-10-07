@@ -28,14 +28,18 @@ import org.jboss.weld.osgi.examples.web.api.HotelProvider;
 @ApplicationScoped
 public class SpainHotelProvider implements HotelProvider {
 
-    @Override
-    public Collection<Hotel> hotels() {
-        Collection<Hotel> hotels = new ArrayList<Hotel>();
+    private static final Collection<Hotel> hotels = new ArrayList<Hotel>();
+
+    static {
         hotels.add(new Hotel("Catalonia Plaza Mayor", "Madrid", "Spain", "2222", new Double(100)));
         hotels.add(new Hotel("emperador", "Madrid", "Spain", "2222", new Double(200)));
         hotels.add(new Hotel("Il Castillas hotel", "Madrid", "Spain", "2222", new Double(300)));
         hotels.add(new Hotel("Ada Palace", "Madrid", "Spain", "2222", new Double(400)));
         hotels.add(new Hotel("Palafox Central Suites", "Madrid", "Spain", "2222", new Double(500)));
+    }
+
+    @Override
+    public Collection<Hotel> hotels() {
         return hotels;
     }
 
