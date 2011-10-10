@@ -78,9 +78,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>1.8.0-rc-3</version>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.7-ea04</version>
         </dependency>
 
         <dependency>
@@ -98,5 +98,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

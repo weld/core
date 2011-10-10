@@ -48,10 +48,12 @@ public class Environment {
         while(!ready) {
             ready = true;
             for(Bundle b : context.getBundles()) {
+                System.out.println("wait for bundle " + b.getSymbolicName());
                 if(b.getState() != Bundle.ACTIVE) {
                     ready = false;
                     break;
                 }
+                System.out.println("bundle " + b.getSymbolicName() + " is ready");
                 Thread.sleep(500);
             }
             Thread.sleep(500);
