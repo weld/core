@@ -38,9 +38,9 @@
 
    <modules>
       <module>container-felix</module>
-      <module>container-equinox</module>
-      <module>container-knopflerfish</module>
-      <module>container-lite</module>
+      <!--><module>container-equinox</module>
+      <module>container-knopflerfish</module>-->
+      <module>container-pojosr</module>
       <module>paint</module>
       <module>calculator</module>
       <module>web</module>
