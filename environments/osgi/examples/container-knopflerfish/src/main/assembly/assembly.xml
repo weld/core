@@ -40,7 +40,6 @@
                 <include>org.apache.felix:org.apache.felix.http.bundle</include>
                 <include>org.apache.felix:org.apache.felix.log</include>
                 <include>org.apache.felix:org.apache.felix.configadmin</include>
-                <include>org.codehaus.groovy:groovy-all</include>
                 <include>javax.ws.rs:jsr311-api</include>
             </includes>
         </dependencySet>

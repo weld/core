@@ -44,6 +44,9 @@ public class OSGiHttpContext implements HttpContext {
 
     @Override
     public String getMimeType(String name) {
+        if (name.endsWith(".css")) {
+            return "text/css";
+        }
         return "*"; // TODO map with real types
     }
 }

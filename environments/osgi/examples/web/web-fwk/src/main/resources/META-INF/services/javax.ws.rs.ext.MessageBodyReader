@@ -18,8 +18,13 @@ com.sun.jersey.core.impl.provider.entity.XMLListElementProvider$Text
 com.sun.jersey.core.impl.provider.entity.XMLListElementProvider$General
 com.sun.jersey.core.impl.provider.entity.ReaderProvider
 com.sun.jersey.core.impl.provider.entity.DocumentProvider
-com.sun.jersey.core.impl.provider.entity.StreamingOutputProvider
-com.sun.jersey.core.impl.provider.entity.SourceProvider$SourceWriter
+com.sun.jersey.core.impl.provider.entity.SourceProvider$StreamSourceReader
+com.sun.jersey.core.impl.provider.entity.SourceProvider$SAXSourceReader
+com.sun.jersey.core.impl.provider.entity.SourceProvider$DOMSourceReader
+com.sun.jersey.core.impl.provider.entity.XMLRootObjectProvider$App
+com.sun.jersey.core.impl.provider.entity.XMLRootObjectProvider$Text
+com.sun.jersey.core.impl.provider.entity.XMLRootObjectProvider$General
+com.sun.jersey.core.impl.provider.entity.EntityHolderReader
 com.sun.jersey.json.impl.provider.entity.JSONRootElementProvider$App
 com.sun.jersey.json.impl.provider.entity.JSONRootElementProvider$General
 com.sun.jersey.json.impl.provider.entity.JSONJAXBElementProvider$App
@@ -30,6 +35,5 @@ com.sun.jersey.json.impl.provider.entity.JSONArrayProvider$App
 com.sun.jersey.json.impl.provider.entity.JSONArrayProvider$General
 com.sun.jersey.json.impl.provider.entity.JSONObjectProvider$App
 com.sun.jersey.json.impl.provider.entity.JSONObjectProvider$General
-com.sun.jersey.json.impl.provider.entity.JSONWithPaddingProvider
 com.sun.jersey.json.impl.provider.entity.JacksonProviderProxy
 

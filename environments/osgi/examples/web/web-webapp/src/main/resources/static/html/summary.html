@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hotels management</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" media="screen" href="/app/static/style/main.css">
+        <script src="/app/static/js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <div id="header">
+            <h1><a href="/app/static/html/index.html">Weld-OSGi booking demo</a></h1>
+                <div id="options">
+                    <a href="list.html">Hotels list</a>
+                </div>
+        </div>
+        
+        <div id="content">
+            <h2>Summary</h2>
+            <form action="index.html" method="GET">
+                
+            </form>
+        </div>
+        <div id="error" class="result"></div>
+        <div class='result' >
+            <a href="index.html" class="passed">Home</a>
+        </div>
+        <div id="footer">
+            Created with Weld-OSGi and really inspirated from the booking sample application provided by <a href="http://seamframework.org/">Seam framework</a>
+            <br/>Style inspirated from the booking sample application provided by <a href="//http://www.playframework.org/">Play framework</a>
+        </div>
+        
+        <script type="text/javascript">
+
+            function update() {
+                var id = getURLParam("hotel.id");
+                var name = getURLParam("hotel.name");
+                var address = getURLParam("hotel.address");
+                var zip = getURLParam("hotel.zip");
+                var country = getURLParam("hotel.country");
+                var price = getURLParam("hotel.price");
+                var checkin = getURLParam("booking.checkinDate");
+                var checkout = getURLParam("booking.checkoutDate");
+                var beds = getURLParam("booking.beds");
+                var smocking = getURLParam("booking.smoking");
+                var cardNumber = getURLParam("booking.creditCard");
+                var cardName = getURLParam("booking.creditCardName");
+                var cardMonth = getURLParam("booking.creditCardExpiryMonth");
+                var cardYear = getURLParam("booking.creditCardExpiryYear");
+                var url = "/app/ctrl/book?hotel.id=" + id;
+                if (id == "") {
+                    $('#content').fadeOut(500);
+                    $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div>")
+                    $('#error').fadeIn(500);
+                } else {
+                    $.ajax({ type: "GET", url: url, success: function(msg){
+                            if (msg == "success") {
+                                $('#error').fadeOut(500);
+                                $('#content').fadeIn(500);
+                                var info = 
+                                    "<p><strong>Hotel:</strong> " + name + "</p> " +
+                                    "<p><strong>City:</strong> " + address + "</p> " +
+                                    "<p><strong>Zip:</strong> " + zip + "</p> " +
+                                    "<p><strong>Country:</strong> " + country + "</p> " +
+                                    "<p><strong>Nightly rate:</strong> " + price + "</p>" +
+                                    "<p><strong>Check In Date:</strong>" + checkin + "</p> " +
+                                    "<p><strong>Check Out Date:</strong>" + checkout + "</p> " +
+                                    "<p><strong>Room preference:</strong>" + beds + "</p> " +
+                                    "<p><strong>Smoking preference:</strong>" + smocking + "</p> " +
+                                    "<p><strong>Credit Card #:</strong>" + cardNumber + "</p> " +
+                                    "<p><strong>Credit Card Name:</strong>" + cardName + "</p> " +
+                                    "<p><strong>Credit Card Expiry:</strong>" + cardMonth +  "/" + cardYear + "</p>   ";
+                                $('#content form').html(info);
+                            } else {
+                                $('#content').fadeOut(500);
+                                $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div>")
+                                $('#error').fadeIn(500);
+                            }
+                        }, failure: function(msg) {
+                            $('#content').hide(500);
+                            $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div>")
+                            $('#error').fadeIn(500);
+                        }
+                    });
+                }
+            }
+            
+            function getURLParam(strParamName){
+                var strReturn = "";
+                var strHref = window.location.href;
+                if ( strHref.indexOf("?") > -1 ){
+                    var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+                    var aQueryString = strQueryString.split("&");
+                    for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
+                        if ( 
+                        aQueryString[iParam].indexOf(strParamName.toLowerCase() + "=") > -1 ){
+                            var aParam = aQueryString[iParam].split("=");
+                            strReturn = aParam[1];
+                            break;
+                        }
+                    }
+                }
+                return unescape(strReturn);
+            }
+            $('#error').hide();
+            update();
+        </script>
+    </body>
+</html>

@@ -38,7 +38,7 @@
 
    <dependencies>
        
-      <dependency>
+       <dependency>
          <groupId>org.jboss.weld.osgi</groupId>
          <artifactId>weld-osgi-core-api</artifactId>
          <version>${project.version}</version>
@@ -72,6 +72,12 @@
          <artifactId>jersey-core</artifactId>
          <version>1.7-ea04</version>
       </dependency>
+      
+      <dependency>
+         <groupId>com.sun.jersey</groupId>
+         <artifactId>jersey-json</artifactId>
+         <version>1.7-ea04</version>
+      </dependency>
         
       <dependency>
          <groupId>asm</groupId>
@@ -82,12 +88,6 @@
       <dependency>
          <groupId>javax.annotation</groupId>
          <artifactId>jsr250-api</artifactId>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.codehaus.groovy</groupId>
-         <artifactId>groovy-all</artifactId>
-         <version>1.8.0-rc-3</version>
       </dependency>
         
       <dependency>

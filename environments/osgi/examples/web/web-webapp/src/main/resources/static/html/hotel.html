@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hotels management</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" media="screen" href="/app/static/style/main.css">
+        <script src="/app/static/js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <div id="header">
+            <h1><a href="/app/static/html/index.html">Weld-OSGi booking demo</a></h1>
+                <div id="options">
+                    <a href="list.html">Hotels list</a>
+                </div>
+        </div>
+        
+        <div id="content">
+            <h2></h2>
+            <img src="/app/static/images/h1.jpg" width="200" height="150">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque imperdiet vehicula orci, volutpat malesuada tortor pulvinar eu. Fusce cursus, nisl sed mollis convallis, ligula sem interdum sem, in elementum nibh turpis at massa. Aliquam tellus magna, vehicula eget euismod sit amet, posuere eget tortor. Nunc eleifend purus et risus consequat id tempus leo mattis. Phasellus non nibh non orci posuere congue. Sed faucibus ante ac eros rhoncus molestie. Nulla gravida, enim id varius pellentesque, libero tellus imperdiet mi, vitae pulvinar tortor nisl sed ipsum. Vestibulum non ligula at leo porta scelerisque. Nam posuere interdum bibendum. Quisque nec aliquet nulla. Fusce sit amet diam eget metus rutrum bibendum a a sem. Cras felis neque, iaculis eu commodo vitae, tempus quis tortor. Donec semper tempus odio, id imperdiet elit mollis ut. Aliquam pretium, erat et placerat consequat, massa ligula posuere libero, ut tincidunt libero mauris vitae tortor. Vestibulum tincidunt erat vitae dui pellentesque nec viverra sapien ultrices.</p>
+
+            <p>Curabitur molestie vestibulum mi in tincidunt. Donec rutrum, purus non condimentum aliquet, sapien urna viverra metus, sed sodales lacus erat ac justo. Morbi sed purus neque. Fusce ut aliquet tortor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Curabitur in lectus leo. Suspendisse potenti. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque orci sapien, lacinia nec elementum ut, elementum eu arcu. In vitae sapien tempus sem egestas cursus. Sed fermentum tellus mattis ligula adipiscing tempus nec in nibh. Nunc vitae lorem odio, sed dapibus nulla. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas</p>
+            <div id="book" class="result"></div>
+        </div>
+        <div id="error" class="result"></div>
+        <div id="footer">
+            Created with Weld-OSGi and really inspirated from the booking sample application provided by <a href="http://seamframework.org/">seam framework</a>
+            <br/>Style inspirated from the booking sample application provided by <a href="//http://www.playframework.org/">Play framework</a>
+        </div>
+        
+        <script type="text/javascript">
+
+            function update() {
+                var id = getURLParam("id");
+                if (id == "") {
+                    $('#content').html("<h2>Hotel isn't available ...</h2>");
+                } else {
+                    $.ajax({ type: "GET", url: "/app/ctrl/hotels/" + id, success: function(msg){
+                            if (msg != null) {
+                                $('#error').fadeOut(500);
+                                $('#content').fadeIn(500);
+                                var text = "Hotel: " + msg.name + " (" + msg.price + "€ / night)";
+                                var link = "<a href='book.html?id=" 
+                                    + id + "' class='passed'>Book</a>";
+                                $('#content h2').html(text);
+                                $('#content #book').html(link);
+                            } else {
+                                $('#content').fadeOut(500);
+                                $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div><br/><a href='index.html' class='passed'>Home</a>")
+                                $('#error').fadeIn(500);
+                            }
+                        }, failure: function(msg) {
+                            $('#content').hide(500);
+                            $('#error').html("<div class='failed'>Hotel isn't available anymore. Please come back later.</div><br/><a href='index.html' class='passed'>Home</a>")
+                            $('#error').fadeIn(500);
+                        }
+                    });
+                }
+            }
+            
+            function init() {
+                update();
+                return setInterval(update, 1000);
+            }
+            
+            function getURLParam(strParamName){
+                var strReturn = "";
+                var strHref = window.location.href;
+                if ( strHref.indexOf("?") > -1 ){
+                    var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+                    var aQueryString = strQueryString.split("&");
+                    for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
+                        if ( 
+                        aQueryString[iParam].indexOf(strParamName.toLowerCase() + "=") > -1 ){
+                            var aParam = aQueryString[iParam].split("=");
+                            strReturn = aParam[1];
+                            break;
+                        }
+                    }
+                }
+                return unescape(strReturn);
+            }
+            
+            init();
+        </script>
+    </body>
+</html>

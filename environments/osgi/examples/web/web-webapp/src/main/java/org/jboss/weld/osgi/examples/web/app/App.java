@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.osgi.examples.web.app;
 
 import org.osgi.util.tracker.ServiceTracker;
@@ -25,7 +24,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
+import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents.BundleContainerInitialized;
 import org.jboss.weld.environment.osgi.api.events.Invalid;
 import org.jboss.weld.environment.osgi.api.events.Valid;
 import org.jboss.weld.osgi.examples.web.fwk.HttpServiceTracker;
@@ -34,27 +33,29 @@ import org.jboss.weld.osgi.examples.web.fwk.HttpServiceTracker;
 public class App {
 
     private static final String CONTEXT_ROOT = "/app";
-
-    @Inject @Any Instance<Object> instances;
-
+    @Inject
+    @Any
+    Instance<Object> instances;
     private ServiceTracker tracker;
     private AtomicBoolean valid = new AtomicBoolean(false);
 
-    public void start(@Observes BundleContainerEvents.BundleContainerInitialized init) throws Exception {
-        this.tracker = new HttpServiceTracker(init.getBundleContext(),
-                getClass().getClassLoader(), instances, CONTEXT_ROOT);
-        this.tracker.open();
-    }
-
     public void validate(@Observes Valid event) {
-        valid.compareAndSet(false, true);
+        valid.getAndSet(true);
     }
 
     public void invalidate(@Observes Invalid event) {
-        valid.compareAndSet(true, false);
+        valid.getAndSet(false);
     }
 
     public boolean isValid() {
         return valid.get();
+    }
+
+    public void start(@Observes BundleContainerInitialized init) throws Exception {
+        this.tracker = new HttpServiceTracker(
+                init.getBundleContext(),
+                getClass().getClassLoader(),
+                instances, CONTEXT_ROOT);
+        this.tracker.open();
     }
 }

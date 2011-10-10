@@ -105,9 +105,4 @@ public class Render {
             .entity("<html><head><title>TODO</title></head>"
                         + "<body><h1>Page not yet implemented</h1></body></html>").build();
     }
-
-    public static View view(String name, Class<?> from) {
-        return new View(name, from);
-    }
-
 }

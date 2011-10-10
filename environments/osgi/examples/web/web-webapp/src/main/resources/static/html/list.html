@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hotels management</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" media="screen" href="/app/static/style/main.css">
+        <script src="/app/static/js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <div id="header">
+            <h1><a href="/app/static/html/index.html">Weld-OSGi booking demo</a></h1>
+                <div id="options">
+                    <a href="list.html">Hotels list</a>
+                </div>
+        </div>
+        
+        <div id="content">
+            <h2>Hotels</h2>
+            <div id="none">
+                There is no hotel provider service available at the moment. <br/>
+                Please retry later ... <br/>
+            </div>
+            <div id="some"> 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>City</th>
+                            <th>Country</th>
+                            <th width='8%'>Zip</th>
+                            <th width='13%'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="footer">
+            Created with Weld-OSGi and really inspirated from the booking sample application provided by <a href="http://seamframework.org/">seam framework</a>
+            <br/>Style inspirated from the booking sample application provided by <a href="//http://www.playframework.org/">Play framework</a>
+        </div>
+        
+        <script type="text/javascript">
+
+            function update() {
+                $.ajax({ type: "GET", url: "/app/ctrl/none", success: function(msg){
+                        var country = getURLParam("country");
+                        if (country != "") {
+                            $('#content h2').html("Hotels in " + country);
+                        }
+                        if (msg == "true") {
+                            $('#some').hide();
+                            $('#none').show();
+                        } else {
+                            $('#none').hide();
+                            $('#some').show();
+                            $.ajax({ type: "GET", url: "/app/ctrl/hotels", dataType: "json", success: function(msg){
+                                   $('#some tbody').empty();
+                                    for (i = 0; i < msg.hotel.length; i++) {
+                                        if (country != "" && country == msg.hotel[i].country.toLowerCase()) {
+                                            $('#some tbody').append(
+                                                "<tr><td>" 
+                                                + msg.hotel[i].name + "</td><td>" 
+                                                + msg.hotel[i].address + "</td><td>" 
+                                                + msg.hotel[i].country + "</td><td>" 
+                                                + msg.hotel[i].zip 
+                                                + "</td><td><a href='hotel.html?id=" + msg.hotel[i].id + "'>View Hotel</a></td></tr>");
+                                        }
+                                        if (country == "") {
+                                            $('#some tbody').append(
+                                                "<tr><td>" 
+                                                + msg.hotel[i].name + "</td><td>" 
+                                                + msg.hotel[i].address + "</td><td>" 
+                                                + msg.hotel[i].country + "</td><td>" 
+                                                + msg.hotel[i].zip 
+                                                + "</td><td><a href='hotel.html?id=" + msg.hotel[i].id + "'>View Hotel</a></td></tr>");
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            
+            function init() {
+                $('#some').hide();
+                update();
+                return setInterval(update, 1000);
+            }
+            
+            function getURLParam(strParamName){
+                var strReturn = "";
+                var strHref = window.location.href;
+                if ( strHref.indexOf("?") > -1 ){
+                    var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+                    var aQueryString = strQueryString.split("&");
+                    for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
+                        if ( 
+                        aQueryString[iParam].indexOf(strParamName.toLowerCase() + "=") > -1 ){
+                            var aParam = aQueryString[iParam].split("=");
+                            strReturn = aParam[1];
+                            break;
+                        }
+                    }
+                }
+                return unescape(strReturn);
+            }
+            
+            init();
+        </script>
+    </body>
+</html>

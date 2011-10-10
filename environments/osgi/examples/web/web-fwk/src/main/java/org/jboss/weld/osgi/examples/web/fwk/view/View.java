@@ -31,7 +31,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  */
 public class View extends Renderable {
 
-    private static final TemplateRenderer renderer = new TemplateRenderer();
     private static final String TYPE = MediaType.TEXT_HTML;
     private final String viewName;
     private final Map<String, Object> context;
@@ -59,7 +58,7 @@ public class View extends Renderable {
     @Override
     public Response render() {
         try {
-            String renderText = renderer.render("views/" + viewName, context, loader);
+            String renderText = "";
             ResponseBuilder builder = Response.ok(renderText, TYPE);
             return builder.build();
         } catch (Exception ex) {
