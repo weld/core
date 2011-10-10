@@ -37,7 +37,9 @@
    </developers>
 
    <modules>
-      <module>container</module>
+      <module>container-felix</module>
+      <module>container-equinox</module>
+      <module>container-knopflerfish</module>
       <module>container-lite</module>
       <module>paint</module>
       <module>calculator</module>
@@ -46,7 +48,7 @@
       <module>standalone</module>
       <module>user-doc</module>
    </modules>
-    
+
    <build>
       <pluginManagement>
          <plugins>
@@ -66,5 +68,5 @@
          </plugins>
       </pluginManagement>
    </build>
-    
+
 </project>

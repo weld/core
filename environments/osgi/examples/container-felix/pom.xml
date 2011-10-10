@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <!--<parent>
+      <groupId>org.jboss.weld.osgi.examples</groupId>
+      <artifactId>weld-osgi-examples</artifactId>
+      <version>1.1.3-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>-->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.examples</groupId>
+    <artifactId>weld-osgi-container-felix</artifactId>
+    <version>1.1.3-SNAPSHOT</version>
+    <name>Weld OSGi (Examples Container Felix)</name>
+
+    <description>Standalone example for Weld-OSGi</description>
+
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-calculator-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-calculator-divide</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-calculator-log</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-calculator-minus</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-calculator-plus</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-calculator-times</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-square</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-triangle</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-standalone</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-web-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-web-app</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-web-england</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-web-fwk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-web-france</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-web-spain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.0-rc-3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-extension</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-mandatory</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.main</artifactId>
+            <version>3.0.6</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix.gogo</groupId>
+            <artifactId>org.apache.felix.gogo.commands</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.bundlerepository</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell.tui</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.bundle</artifactId>
+            <version>2.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.log</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.configadmin</artifactId>
+            <version>1.2.8</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <copy file="target/classes/config.properties" tofile="${project.build.directory}/config.properties"/>
+                                <copy file="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}" tofile="${project.build.directory}/felix.jar"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-executable-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
