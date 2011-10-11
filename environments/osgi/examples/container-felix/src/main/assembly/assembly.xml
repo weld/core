@@ -34,6 +34,7 @@
                 <include>org.jboss.weld.osgi:weld-osgi-core-spi</include>
                 <include>org.jboss.weld.osgi:weld-osgi-core-extension</include>
                 <include>org.jboss.weld.osgi:weld-osgi-core-mandatory</include>
+                <include>org.osgi:org.osgi.compendium</include>
                 <include>org.apache.felix:org.apache.felix.bundlerepository</include>
                 <include>org.apache.felix:org.apache.felix.shell.tui</include>
                 <include>org.apache.felix:org.apache.felix.shell</include>
