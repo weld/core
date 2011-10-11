@@ -6,7 +6,7 @@
     <groupId>org.jboss.weld.osgi.examples</groupId>
     <artifactId>weld-osgi-container-lite</artifactId>
     <version>2.1-SNAPSHOT</version>
-    <name>Weld OSGi (Examples Container Lite)</name>
+    <name>Weld OSGi (Examples Container PojoSR)</name>
 
     <description>Standalone example for Weld-OSGi</description>
 
@@ -172,5 +172,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
