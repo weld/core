@@ -1,0 +1,51 @@
+-init
+-launch
+
+-F org.osgi.framework.storage.clean=onFirstInit
+-F felix.log.level=1
+-F org.osgi.framework.bootdelegation=sun.reflect
+
+-install modules/weld-osgi-core-api-${project.version}.jar
+-install modules/weld-osgi-core-spi-${project.version}.jar
+-install modules/weld-osgi-core-mandatory-${project.version}.jar
+-install modules/weld-osgi-paint-api-${project.version}.jar
+-install modules/weld-osgi-paint-core-${project.version}.jar
+-install modules/weld-osgi-paint-triangle-${project.version}.jar
+-install modules/weld-osgi-paint-square-${project.version}.jar
+-install modules/weld-osgi-calculator-api-${project.version}.jar
+-install modules/weld-osgi-calculator-core-${project.version}.jar
+-install modules/weld-osgi-calculator-log-${project.version}.jar
+-install modules/weld-osgi-calculator-divide-${project.version}.jar
+-install modules/weld-osgi-calculator-minus-${project.version}.jar
+-install modules/weld-osgi-calculator-plus-${project.version}.jar
+-install modules/weld-osgi-calculator-times-${project.version}.jar
+-install modules/weld-osgi-web-api-${project.version}.jar
+-install modules/weld-osgi-web-fwk-${project.version}.jar
+-install modules/weld-osgi-web-france-${project.version}.jar
+-install modules/weld-osgi-web-spain-${project.version}.jar
+-install modules/weld-osgi-web-england-${project.version}.jar
+-install modules/weld-osgi-web-app-${project.version}.jar
+-install modules/weld-osgi-standalone-${project.version}.jar
+-install modules/groovy-all-1.8.0-rc-3.jar
+-install modules/jsr311-api-1.1.jar
+-install modules/org.apache.felix.gogo.commands-0.4.0.jar
+-install modules/org.apache.felix.gogo.runtime-0.4.0.jar
+-install modules/org.osgi.compendium-4.2.0.jar
+
+
+-istart modules/weld-osgi-core-extension-${project.version}.jar
+-istart modules/weld-osgi-core-integration-${project.version}.jar
+-istart modules/org.apache.felix.configadmin-1.2.8.jar
+-istart modules/org.apache.felix.http.bundle-2.0.4.jar
+-istart modules/org.apache.felix.log-1.0.0.jar
+-istart modules/org.apache.felix.shell-1.0.2.jar
+-istart modules/org.apache.felix.shell.tui-1.0.2.jar
+-istart modules/org.apache.felix.bundlerepository-1.2.1.jar
+
+-F org.osgi.service.http.port=9000
+-F org.apache.felix.http.whiteboardEnabled=true
+-F org.apache.felix.http.jettyEnabled=true
+-F org.apache.felix.http=true
+
+-F osgi.shell.telnet=on
+-F obr.repository.url=http://felix.apache.org/obr/releases.xml

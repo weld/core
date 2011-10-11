@@ -34,30 +34,25 @@
                 <include>org.jboss.weld.osgi:weld-osgi-core-spi</include>
                 <include>org.jboss.weld.osgi:weld-osgi-core-extension</include>
                 <include>org.jboss.weld.osgi:weld-osgi-core-mandatory</include>
+                <include>org.osgi:org.osgi.compendium</include>
                 <include>org.apache.felix:org.apache.felix.bundlerepository</include>
                 <include>org.apache.felix:org.apache.felix.shell.tui</include>
                 <include>org.apache.felix:org.apache.felix.shell</include>
                 <include>org.apache.felix:org.apache.felix.http.bundle</include>
                 <include>org.apache.felix:org.apache.felix.log</include>
                 <include>org.apache.felix:org.apache.felix.configadmin</include>
+                <include>org.codehaus.groovy:groovy-all</include>
                 <include>javax.ws.rs:jsr311-api</include>
-            </includes>
-        </dependencySet>
-        <dependencySet>
-            <useProjectArtifact>false</useProjectArtifact>
-            <outputDirectory></outputDirectory>
-            <includes>
-                <include>org.apache.felix:org.apache.felix.main</include>
             </includes>
         </dependencySet>
     </dependencySets>
     <files>
         <file>
-            <source>${project.build.directory}/felix.jar</source>
-            <outputDirectory>bin</outputDirectory>
+            <source>${project.build.directory}/knopflerfish.jar</source>
+            <outputDirectory></outputDirectory>
         </file>
         <file>
-            <source>${project.build.directory}/config.properties</source>
+            <source>${project.build.directory}/config.xargs</source>
             <outputDirectory>conf</outputDirectory>
         </file>
     </files>
