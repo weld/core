@@ -1,9 +1,9 @@
 -init
 -launch
 
--F org.osgi.framework.storage.clean=onFirstInit
--F felix.log.level=1
--F org.osgi.framework.bootdelegation=sun.reflect
+-Forg.osgi.framework.storage.clean=onFirstInit
+-Ffelix.log.level=1
+-Forg.osgi.framework.bootdelegation=sun.reflect
 
 -install modules/weld-osgi-core-api-${project.version}.jar
 -install modules/weld-osgi-core-spi-${project.version}.jar
@@ -42,10 +42,10 @@
 -istart modules/org.apache.felix.shell.tui-1.0.2.jar
 -istart modules/org.apache.felix.bundlerepository-1.2.1.jar
 
--F org.osgi.service.http.port=9000
--F org.apache.felix.http.whiteboardEnabled=true
--F org.apache.felix.http.jettyEnabled=true
--F org.apache.felix.http=true
+-Forg.osgi.service.http.port=9000
+-Forg.apache.felix.http.whiteboardEnabled=true
+-Forg.apache.felix.http.jettyEnabled=true
+-Forg.apache.felix.http=true
 
--F osgi.shell.telnet=on
--F obr.repository.url=http://felix.apache.org/obr/releases.xml
+-Fosgi.shell.telnet=on
+-Fobr.repository.url=http://felix.apache.org/obr/releases.xml
