@@ -304,6 +304,13 @@ public class WeldOSGiExtension implements Extension {
         return list;
     }
 
+    public void removeListeners() {
+        if (delegate != null && listener != null) {
+            delegate.removeBundleListener(listener);
+            delegate.removeServiceListener(listener);
+        }
+    }
+    
     void afterDeployment(@Observes AfterDeploymentValidation event) {
         if (listener != null) {
             currentContext.remove();

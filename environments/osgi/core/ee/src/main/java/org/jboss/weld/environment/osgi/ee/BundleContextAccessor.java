@@ -110,5 +110,6 @@ public class BundleContextAccessor {
             }
         }
         invalid.fire(new Invalid());
+        ext.removeListeners();
     }
 }
