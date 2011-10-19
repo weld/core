@@ -37,4 +37,8 @@ public class Jetty6Container extends AbstractJettyPre72Container {
     protected String classToCheck() {
         return JETTY_REQUIRED_CLASS_NAME;
     }
+
+    protected Class<?> getWeldServletHandlerClass() {
+        return MortbayWeldServletHandler.class;
+    }
 }
