@@ -59,7 +59,10 @@ public class EclipseWeldServletHandler extends ServletHandler {
     }
 
     public static void process(ServletContext context) {
-        WebAppContext wac = findWAC(context);
+        WebAppContext wac = WebAppContext.getCurrentWebAppContext();
+        if (wac == null)
+            wac = findWAC(context);
+
         if (wac != null) {
             process(wac);
         } else {
