@@ -52,21 +52,28 @@ public class EclipseWeldServletHandler extends ServletHandler {
         }
     }
 
-    public static void process(WebAppContext wac) {
+    protected static void process(WebAppContext wac, boolean startNewHandler) throws Exception {
         EclipseWeldServletHandler wHanlder = new EclipseWeldServletHandler(wac.getServletHandler(), wac.getServletContext());
         wac.setServletHandler(wHanlder);
         wac.getSecurityHandler().setHandler(wHanlder);
+
+        if (startNewHandler)
+            wHanlder.start();
     }
 
-    public static void process(ServletContext context) {
+    public static void process(WebAppContext wac) throws Exception {
+        process(wac, false);
+    }
+
+    public static void process(ServletContext context) throws Exception {
         WebAppContext wac = WebAppContext.getCurrentWebAppContext();
         if (wac == null)
             wac = findWAC(context);
 
         if (wac != null) {
-            process(wac);
+            process(wac, true);
         } else {
-            log.info("Cannot find matching WebApplicationContext, no default CDI support: use jetty-env.xml");
+            log.info("Cannot find matching WebApplicationContext, no default CDI support: use jetty-web.xml");
         }
     }
 
