@@ -37,4 +37,8 @@ public class Jetty7Container extends AbstractJettyPre72Container {
     protected String classToCheck() {
         return JETTY_REQUIRED_CLASS_NAME;
     }
+
+    protected Class<?> getWeldServletHandlerClass() {
+        return EclipseWeldServletHandler.class;
+    }
 }
