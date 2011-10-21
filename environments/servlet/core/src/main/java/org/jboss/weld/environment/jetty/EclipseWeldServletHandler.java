@@ -6,6 +6,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import javax.servlet.Filter;
@@ -59,6 +60,14 @@ public class EclipseWeldServletHandler extends ServletHandler {
 
         if (startNewHandler)
             wHanlder.start();
+
+        Resource jettyEnv = null;
+        Resource webInf = wac.getWebInf();
+        if (webInf != null && webInf.exists()) {
+            jettyEnv = webInf.addPath("jetty-env.xml");
+        }
+        if (jettyEnv == null || jettyEnv.exists() == false)
+            log.warning("Missing jetty-env.xml, no BeanManager present in JNDI.");
     }
 
     public static void process(WebAppContext wac) throws Exception {

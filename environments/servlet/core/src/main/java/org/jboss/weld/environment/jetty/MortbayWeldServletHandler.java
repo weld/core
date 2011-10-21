@@ -6,6 +6,7 @@ import org.mortbay.jetty.handler.ContextHandler;
 import org.mortbay.jetty.handler.HandlerCollection;
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.webapp.WebAppContext;
+import org.mortbay.resource.Resource;
 
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
@@ -60,6 +61,14 @@ public class MortbayWeldServletHandler extends ServletHandler {
 
         if (startNewHandler)
             wHanlder.start();
+
+        Resource jettyEnv = null;
+        Resource webInf = wac.getWebInf();
+        if (webInf != null && webInf.exists()) {
+            jettyEnv = webInf.addPath("jetty-env.xml");
+        }
+        if (jettyEnv == null || jettyEnv.exists() == false)
+            log.warning("Missing jetty-env.xml, no BeanManager present in JNDI.");
     }
 
     public static void process(WebAppContext wac) throws Exception {

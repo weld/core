@@ -6,14 +6,13 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 
 import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
-import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_WEB;
 
 @RunWith(Arquillian.class)
 public class ExampleTest extends ExampleTestBase {
 
     @Deployment
     public static WebArchive deployment() {
-        return ExampleTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml").addAsWebInfResource(JETTY_WEB, "jetty-web.xml");
+        return ExampleTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
     }
 
 }
