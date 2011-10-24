@@ -10,13 +10,27 @@ import java.util.List;
 
 public class BeansXml implements Asset {
 
+    public static final String SCHEMA = "<beans>\n";
+    public static final String FULL_SCHEMA =
+            "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" \n" +
+            "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+            "       xmlns:weld=\"http://jboss.org/schema/weld/beans\" \n" +
+            "       xsi:schemaLocation=\"\n" +
+            "          http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd\n" +
+            "          http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd\">\n";
+
+    private String schema = SCHEMA;
+
     private List<Class<?>> alternatives = new ArrayList<Class<?>>();
     private List<Class<?>> interceptors = new ArrayList<Class<?>>();
     private List<Class<?>> decorators = new ArrayList<Class<?>>();
     private List<Class<?>> stereotypes = new ArrayList<Class<?>>();
 
     public BeansXml() {
+    }
 
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     public BeansXml alternatives(Class<?>... alternatives) {
@@ -41,13 +55,18 @@ public class BeansXml implements Asset {
 
     public InputStream openStream() {
         StringBuilder xml = new StringBuilder();
-        xml.append("<beans>\n");
+        xml.append(schema);
         appendAlternatives(alternatives, stereotypes, xml);
         appendSection("interceptors", "class", interceptors, xml);
         appendSection("decorators", "class", decorators, xml);
+        appendExternal(xml);
         xml.append("</beans>");
 
         return new ByteArrayInputStream(xml.toString().getBytes());
+    }
+
+    @SuppressWarnings({"UnusedParameters"})
+    protected void appendExternal(StringBuilder xml) {
     }
 
     private void appendAlternatives(List<Class<?>> alternatives, List<Class<?>> stereotypes, StringBuilder xml) {
