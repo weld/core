@@ -53,13 +53,14 @@ public class ConfigTestBase {
     }
 
     public static WebArchive baseDOSDeployment() {
-        return baseDeployment(DOSBean.class.getPackage()).addClasses(GoodBean.class, DOSBean.class);
+        return baseDeployment(DOSBean.class.getPackage()).addClasses(ConfigTestBase.class, GoodBean.class, DOSBean.class);
     }
 
     @Inject
     private BeanManager beanManager;
 
     protected void assertBeans(Class<?> beanClass, int size) {
+        Assert.assertNotNull("Null bean manager", beanManager);
         Set<Bean<?>> beans = beanManager.getBeans(beanClass);
         Assert.assertEquals(size, beans.size());
     }

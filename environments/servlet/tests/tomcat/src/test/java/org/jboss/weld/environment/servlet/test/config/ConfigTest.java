@@ -25,8 +25,9 @@ package org.jboss.weld.environment.servlet.test.config;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.test.util.JettyDeployments;
 import org.junit.runner.RunWith;
+
+import static org.jboss.weld.environment.servlet.test.util.TomcatDeployments.CONTEXT_XML;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -37,8 +38,8 @@ public class ConfigTest extends ConfigTestBase {
     @Deployment
     public static WebArchive getDeployment() {
         WebArchive war = baseDOSDeployment();
-        war.addAsWebInfResource(JettyDeployments.JETTY_WEB, "jetty-web.xml");
-        war.addAsWebInfResource(JettyDeployments.JETTY_ENV, "jetty-env.xml");
+        war.add(CONTEXT_XML, "META-INF/context.xml");
         return war;
     }
+
 }
