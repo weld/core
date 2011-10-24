@@ -165,6 +165,12 @@
                     <scope>test</scope>
                 </dependency>
 
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-plus</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
                 <!-- Weld servlet, EL and JSP required for testing CDI injections -->
                 <dependency>
                     <groupId>org.jboss.weld.servlet</groupId>

@@ -8,7 +8,7 @@
 
 	<container qualifier="jetty" default="true">
 		<configuration>
-			<property name="jettyPlus">false</property>
+			<property name="jettyPlus">true</property>
 		</configuration>
 	</container>
 </arquillian>
