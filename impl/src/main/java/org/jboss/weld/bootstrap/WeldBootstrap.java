@@ -116,6 +116,7 @@ import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
  * detects and register beans
  *
  * @author Pete Muir
+ * @author Ales Justin
  */
 public class WeldBootstrap implements Bootstrap {
 
@@ -437,10 +438,9 @@ public class WeldBootstrap implements Bootstrap {
             try {
                 ApplicationContext applicationContext = deploymentManager.instance().select(ApplicationContext.class).get();
                 try {
-                    applicationContext.invalidate();
                     BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
                 } finally {
-
+                    applicationContext.invalidate();
                 }
             } finally {
                 Container.instance().setState(ContainerState.SHUTDOWN);

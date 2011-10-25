@@ -235,7 +235,7 @@
                                 <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                             </suiteXmlFiles>
                             <systemPropertyVariables>
-                                <jboss.server.config.file.name>standalone-preview.xml</jboss.server.config.file.name>
+                                <jboss.server.config.file.name>standalone.xml</jboss.server.config.file.name>
                             </systemPropertyVariables>
                             <systemProperties>
                                 <property>
@@ -301,7 +301,7 @@
                                 <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                             </suiteXmlFiles>
                             <systemPropertyVariables>
-                                <jboss.server.config.file.name>standalone-preview.xml</jboss.server.config.file.name>
+                                <jboss.server.config.file.name>standalone.xml</jboss.server.config.file.name>
                             </systemPropertyVariables>
                             <systemProperties>
                                 <property>
