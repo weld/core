@@ -37,7 +37,6 @@ public class ConfigTest extends ConfigTestBase {
     @Deployment
     public static WebArchive getDeployment() {
         WebArchive war = baseDOSDeployment();
-        war.addAsWebInfResource(JettyDeployments.JETTY_WEB, "jetty-web.xml");
         war.addAsWebInfResource(JettyDeployments.JETTY_ENV, "jetty-env.xml");
         return war;
     }
