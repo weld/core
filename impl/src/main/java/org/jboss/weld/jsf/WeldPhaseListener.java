@@ -22,20 +22,6 @@
  */
 package org.jboss.weld.jsf;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.NonexistentConversationException;
-import org.jboss.weld.context.http.HttpConversationContext;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
-import java.util.Map;
-
 import static javax.faces.event.PhaseId.ANY_PHASE;
 import static javax.faces.event.PhaseId.RENDER_RESPONSE;
 import static javax.faces.event.PhaseId.RESTORE_VIEW;
@@ -47,31 +33,46 @@ import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATIO
 import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
+import java.util.Map;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Instance;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.ManagedConversation;
+import org.jboss.weld.context.NonexistentConversationException;
+import org.jboss.weld.context.http.HttpConversationContext;
+import org.slf4j.cal10n.LocLogger;
+
 /**
  * <p>
- * A JSF phase listener that initializes aspects of Weld in a more fine-grained,
- * integrated manner than what is possible with a servlet filter. This phase
- * listener works in conjunction with other hooks and callbacks registered with
- * the JSF runtime to help manage the Weld lifecycle.
+ * A JSF phase listener that initializes aspects of Weld in a more fine-grained, integrated manner than what is possible with a
+ * servlet filter. This phase listener works in conjunction with other hooks and callbacks registered with the JSF runtime to
+ * help manage the Weld lifecycle.
  * </p>
  * <p/>
  * <p>
- * The phase listener restores the long-running conversation if the conversation
- * id token is detected in the request, activates the conversation context in
- * either case (long-running or transient), and finally passivates the
- * conversation after the response has been committed.
+ * The phase listener restores the long-running conversation if the conversation id token is detected in the request, activates
+ * the conversation context in either case (long-running or transient), and finally passivates the conversation after the
+ * response has been committed.
  * </p>
  * <p/>
  * <p>
- * Execute before every phase in the JSF life cycle. The order this phase
- * listener executes in relation to other phase listeners is determined by the
- * ordering of the faces-config.xml descriptors. This phase listener should take
- * precedence over extensions.
+ * Execute before every phase in the JSF life cycle. The order this phase listener executes in relation to other phase listeners
+ * is determined by the ordering of the faces-config.xml descriptors. This phase listener should take precedence over
+ * extensions.
  * </p>
  *
  * @author Nicklas Karlsson
  * @author Dan Allen
  * @author Ales Justin
+ * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  */
 public class WeldPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
@@ -79,6 +80,9 @@ public class WeldPhaseListener implements PhaseListener {
     private static final LocLogger log = loggerFactory().getLogger(JSF);
 
     public static final String NO_CID = "nocid";
+
+    private static final String CONTEXT_ACTIVATED_IN_REQUEST = WeldPhaseListener.class.getName()
+            + "CONTEXT_ACTIVATED_IN_REQUEST";
 
     public void beforePhase(PhaseEvent phaseEvent) {
         if (phaseEvent.getPhaseId().equals(RESTORE_VIEW)) {
@@ -95,16 +99,38 @@ public class WeldPhaseListener implements PhaseListener {
     }
 
     private void activateConversations(FacesContext facesContext) {
-        ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+        HttpConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
         String cid = getConversationId(facesContext, conversationContext);
         log.debug(RESUMING_CONVERSATION, cid);
-        if (cid != null && conversationContext.getConversation(cid) == null) {
-            //CDI 6.7.4 we must activate a new transient conversation before we throw the exception
+        ManagedConversation conversation = conversationContext.getConversation(cid);
+        if (cid != null && conversation == null) {
+            // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
             conversationContext.activate(null);
             // Make sure that the conversation already exists
             throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
         }
-        conversationContext.activate(cid);
+
+        if (!isContextActivatedInRequest(facesContext)) {
+            setContextActivatedInRequest(facesContext);
+            conversationContext.activate(cid);
+        } else {
+            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+            conversationContext.dissociate(request);
+            conversationContext.associate(request);
+            conversationContext.activate(cid);
+        }
+    }
+
+    private void setContextActivatedInRequest(FacesContext facesContext) {
+        facesContext.getExternalContext().getRequestMap().put(CONTEXT_ACTIVATED_IN_REQUEST, true);
+    }
+
+    private boolean isContextActivatedInRequest(FacesContext facesContext) {
+        Object result = facesContext.getExternalContext().getRequestMap().get(CONTEXT_ACTIVATED_IN_REQUEST);
+        if (result == null) {
+            return false;
+        }
+        return (Boolean) result;
     }
 
     /**
@@ -120,12 +146,13 @@ public class WeldPhaseListener implements PhaseListener {
             }
         }
         conversationContext.invalidate();
-        conversationContext.deactivate();
+        if(conversationContext.isActive()) {
+            conversationContext.deactivate();
+        }
     }
 
     /**
-     * The phase id for which this phase listener is active. This phase listener
-     * observes all JSF life-cycle phases.
+     * The phase id for which this phase listener is active. This phase listener observes all JSF life-cycle phases.
      */
     public PhaseId getPhaseId() {
         return ANY_PHASE;
