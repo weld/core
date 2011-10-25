@@ -110,10 +110,19 @@ public class WeldPhaseListener implements PhaseListener {
             throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
         }
 
+        /*
+         * Don't try to reactivate the ConversationContext if we have already activated it for this request
+         * WELD-877
+         */
         if (!isContextActivatedInRequest(facesContext)) {
             setContextActivatedInRequest(facesContext);
             conversationContext.activate(cid);
         } else {
+            /*
+             *  We may have previously been associated with a ConversationContext,
+             *  but the reference to that context may have been lost during a Servlet forward
+             *  WELD-877
+             */
             HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
             conversationContext.dissociate(request);
             conversationContext.associate(request);
@@ -147,6 +156,7 @@ public class WeldPhaseListener implements PhaseListener {
         }
         conversationContext.invalidate();
         if(conversationContext.isActive()) {
+            // Only deactivate the context if one is already active, otherwise we get Exceptions
             conversationContext.deactivate();
         }
     }
