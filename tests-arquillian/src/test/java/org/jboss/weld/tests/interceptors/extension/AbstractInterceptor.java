@@ -21,24 +21,26 @@
  */
 package org.jboss.weld.tests.interceptors.extension;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
-
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Utility class for extension-provided interceptor tests.
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
  *
  */
-public abstract class AbstractInterceptor<T> implements Interceptor<T> {
+public abstract class AbstractInterceptor<T> implements Interceptor<T>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public Set<Type> getTypes() {
         return new HierarchyDiscovery(getBeanClass()).getTypeClosure();
