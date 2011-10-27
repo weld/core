@@ -17,8 +17,6 @@
 package org.jboss.weld.environment.se;
 
 
-import org.jboss.weld.environment.se.events.ContainerInitialized;
-
 /**
  * This is the main class that can be called from the command line for
  * a WeldContainer SE app which makes use of the ContainerInitialized event.
@@ -41,7 +39,6 @@ public class StartMain {
     public WeldContainer go() {
         Weld weld = new Weld();
         WeldContainer container = weld.initialize();
-        container.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(weld));
         return container;
     }
