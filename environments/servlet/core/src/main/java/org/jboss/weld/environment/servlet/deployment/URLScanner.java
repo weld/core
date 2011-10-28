@@ -73,9 +73,36 @@ public class URLScanner {
      * @return decoded url path
      */
     protected String decodeURLPath(String urlPath) {
-        // WELD-834
-        urlPath = urlPath.replaceAll("%", "%25");
-        return urlPath.replaceAll(" ", "%20");
+        // WELD-834, WELD-954
+        StringBuilder builder = new StringBuilder();
+        int length = urlPath.length();
+        for (int i = 0; i < length; i++) {
+            boolean done = false;
+            char ch = urlPath.charAt(i);
+            if (ch == '%') {
+                if (i + 2 < length) {
+                    // ok, it's not %2x
+                    if (urlPath.charAt(i + 1) != '2') {
+                        builder.append("%25");
+                        done = true;
+                    } else {
+                        char ch2 = urlPath.charAt(i + 2);
+                        // it's not %20 or %25
+                        if (ch2 != '0' && ch2 != '5') {
+                            builder.append("%25");
+                            done = true;
+                        }
+                    }
+                }
+            } else if (ch == ' ') {
+                builder.append("%20");
+                done = true;
+            }
+
+            if (done == false)
+                builder.append(ch);
+        }
+        return builder.toString();
     }
 
     public void scanResources(String[] resources, Set<String> classes, Set<URL> urls) {
