@@ -26,7 +26,6 @@ import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -67,9 +66,10 @@ public class WeldMainTest {
 
         assertTrue(ObserverTestBean.isBuiltInObserved());
         assertTrue(ObserverTestBean.isCustomObserved());
-        assertFalse(ObserverTestBean.isInitObserved());
 
-        assertFalse(InitObserverTestBean.isInitObserved());
+        // moved as per WELD-949
+        assertTrue(ObserverTestBean.isInitObserved());
+        assertTrue(InitObserverTestBean.isInitObserved());
     }
 
     private void shutdownManager(WeldContainer weld) {
