@@ -34,6 +34,8 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,14 +50,27 @@ import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
  * This class is NOT threadsafe, and should only be called in a single thread
  *
  * @author Pete Muir
+ * @author Ales Justin
  */
 public class BeansXmlParser {
 
     private static final InputSource[] EMPTY_INPUT_SOURCE_ARRAY = new InputSource[0];
+    private static boolean disableValidating;
+
+    static {
+        try {
+            disableValidating = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                public Boolean run() {
+                    return Boolean.getBoolean("org.jboss.weld.xml.disableValidating");
+                }
+            });
+        } catch (Throwable ignored) {
+        }
+    }
 
     public BeansXml parse(final URL beansXml) {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(true);
+        factory.setValidating(disableValidating == false);
         factory.setNamespaceAware(true);
         if (beansXml == null) {
             throw new IllegalStateException(LOAD_ERROR, "unknown");
