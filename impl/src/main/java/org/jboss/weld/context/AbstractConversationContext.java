@@ -22,16 +22,10 @@
  */
 package org.jboss.weld.context;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.context.beanstore.BoundBeanStore;
-import org.jboss.weld.context.beanstore.ConversationNamingScheme;
-import org.jboss.weld.context.beanstore.NamingScheme;
-import org.jboss.weld.context.conversation.ConversationIdGenerator;
-import org.jboss.weld.context.conversation.ConversationImpl;
-import org.jboss.weld.logging.messages.ConversationMessage;
+import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME;
+import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.inject.Instance;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,9 +34,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Instance;
 
-import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import org.jboss.weld.Container;
+import org.jboss.weld.context.beanstore.BoundBeanStore;
+import org.jboss.weld.context.beanstore.ConversationNamingScheme;
+import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.context.conversation.ConversationIdGenerator;
+import org.jboss.weld.context.conversation.ConversationImpl;
+import org.jboss.weld.logging.messages.ConversationMessage;
 
 
 /**
@@ -50,6 +51,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * forms
  *
  * @author Pete Muir
+ * @author George Sapountzis
  */
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext {
 
@@ -173,6 +175,59 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         this.activate(null);
     }
 
+    protected void associateRequest() {
+        ManagedConversation conversation = new ConversationImpl(conversationContexts);
+        setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
+
+        // Set a temporary bean store, this will be attached at the end of the request if needed
+        NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), "transient");
+        setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
+        setRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME, namingScheme);
+    }
+
+    protected void associateRequest(String cid) {
+        ManagedConversation conversation = getConversation(cid);
+        setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
+
+        NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), cid);
+        setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
+        getBeanStore().attach();
+    }
+
+    public void activate(String cid) {
+        if (getBeanStore() == null) {
+            if (!isAssociated()) {
+                throw new IllegalStateException("Must call associate() before calling activate()");
+            }
+            // Activate the context
+            super.setActive(true);
+
+            // Attach the conversation
+            if (cid != null) {
+                ManagedConversation conversation = getConversation(cid);
+                if (conversation != null) {
+                    boolean lock = conversation.lock(getConcurrentAccessTimeout());
+                    if (lock) {
+                        associateRequest(cid);
+                    } else {
+                        // Associate the request with a new transient conversation
+                        associateRequest();
+                        throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
+                    }
+                } else {
+                    // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
+                    associateRequest();
+                    // Make sure that the conversation already exists
+                    throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
+                }
+            } else {
+                associateRequest();
+            }
+        } else {
+            throw new IllegalStateException("Context is already active");
+        }
+    }
+
     @Override
     public void deactivate() {
         // Disassociate from the current conversation
@@ -221,39 +276,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             super.setActive(false);
         } else {
             throw new IllegalStateException("Context is not active");
-        }
-    }
-
-    public void activate(String cid) {
-        if (getBeanStore() == null) {
-            if (!isAssociated()) {
-                throw new IllegalStateException("Must call associate() before calling activate()");
-            }
-            // Activate the context
-            super.setActive(true);
-
-            // Attach the conversation
-            if (cid == null || getConversation(cid) == null) {
-                ManagedConversation conversation = new ConversationImpl(conversationContexts);
-                setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
-                // Set a temporary bean store, this will be attached at the end of
-                // the request if needed
-                NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), "transient");
-                setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
-                setRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME, namingScheme);
-            } else {
-                setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, getConversation(cid));
-                if (getCurrentConversation().lock(getConcurrentAccessTimeout())) {
-                    NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), cid);
-                    setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
-                    getBeanStore().attach();
-                } else {
-                    throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
-                }
-            }
-
-        } else {
-            throw new IllegalStateException("Context is already active");
         }
     }
 

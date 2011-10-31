@@ -28,13 +28,11 @@ import static javax.faces.event.PhaseId.RESTORE_VIEW;
 import static org.jboss.weld.logging.Category.JSF;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_TRANSIENT_CONVERSATION;
-import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
 import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
 import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
 import java.util.Map;
-
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
@@ -45,8 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.ManagedConversation;
-import org.jboss.weld.context.NonexistentConversationException;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.slf4j.cal10n.LocLogger;
 
@@ -102,13 +98,6 @@ public class WeldPhaseListener implements PhaseListener {
         HttpConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
         String cid = getConversationId(facesContext, conversationContext);
         log.debug(RESUMING_CONVERSATION, cid);
-        ManagedConversation conversation = conversationContext.getConversation(cid);
-        if (cid != null && conversation == null) {
-            // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
-            conversationContext.activate(null);
-            // Make sure that the conversation already exists
-            throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
-        }
 
         /*
          * Don't try to reactivate the ConversationContext if we have already activated it for this request
