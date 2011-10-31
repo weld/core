@@ -68,9 +68,9 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Named;
 import javax.inject.Scope;
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -154,7 +154,7 @@ public class Validator implements Service {
 
                         if (classBean.isPassivationCapableBean()) {
                             Interceptor<?> interceptor = serializableContextual.get();
-                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl) interceptor).isSerializable()  : (interceptor instanceof Serializable);
+                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl) interceptor).isSerializable()  : (interceptor instanceof PassivationCapable);
                             if (isSerializable == false)
                                 throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, interceptor);
                         }
