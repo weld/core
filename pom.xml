@@ -36,7 +36,7 @@
         <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
         <cal10n.version>0.7.2</cal10n.version>
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
-        <cdi.api.version>1.0-SP4</cdi.api.version>
+        <cdi.api.version>1.1.EDR1.1</cdi.api.version>
         <cdi.tck.version>1.0.4.SP3</cdi.tck.version>
         <checkstyle.plugin.version>2.5</checkstyle.plugin.version>
         <contiperf.version>1.06</contiperf.version>

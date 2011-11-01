@@ -20,6 +20,7 @@ import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.ProcessProducerField;
 import java.lang.reflect.Type;
 
@@ -44,6 +45,11 @@ public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<
         } else {
             return null;
         }
+    }
+
+    public AnnotatedParameter<T> getAnnotatedDisposedParameter() {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
     }
 
 }

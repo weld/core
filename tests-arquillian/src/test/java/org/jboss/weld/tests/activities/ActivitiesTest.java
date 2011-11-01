@@ -301,6 +301,10 @@ public class ActivitiesTest {
                 return TransactionPhase.IN_PROGRESS;
             }
 
+            public void notify(NightTime event, Set<Annotation> qualifiers) {
+                notify(event);
+            }
+
         };
         // TODO Fix this test to use an observer method in a child activity
         childActivity.addObserver(observer);

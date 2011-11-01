@@ -81,15 +81,21 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.util.TypeLiteral;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -1116,6 +1122,41 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Instance<Object> instance() {
         return InstanceImpl.of(InstanceInjectionPoint.INSTANCE, createCreationalContext(null), this);
+    }
+
+    public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> type) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, InjectionTarget<?> injectionTarget) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, Producer<?> producer) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public InjectionPoint createInjectionPoint(AnnotatedField<?> field) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public InjectionPoint createInjectionPoint(AnnotatedParameter<?> parameter) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    public <T extends Extension> T getExtension(Class<T> extensionClass) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
     }
 
 }

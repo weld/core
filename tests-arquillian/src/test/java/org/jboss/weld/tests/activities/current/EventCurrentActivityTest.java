@@ -114,6 +114,10 @@ public class EventCurrentActivityTest {
                 return TransactionPhase.IN_PROGRESS;
             }
 
+            public void notify(NightTime event, Set<Annotation> qualifiers) {
+                notify(event);
+            }
+
         };
         childActivity.addObserver(observer);
         childActivity.setCurrent(dummyContext.getScope());

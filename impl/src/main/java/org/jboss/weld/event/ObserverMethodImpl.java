@@ -207,6 +207,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         sendEvent(event);
     }
 
+    public void notify(T event, Set<Annotation> qualifiers) {
+        // TODO
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
     /**
      * Invokes the observer method immediately passing the event.
      *
@@ -288,5 +293,4 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     public int hashCode() {
         return getId().hashCode();
     }
-
 }
