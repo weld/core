@@ -44,7 +44,7 @@ import java.util.Set;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
-import static org.slf4j.ext.XLogger.Level.DEBUG;
+import static org.slf4j.ext.XLogger.Level.INFO;
 
 /**
  * @author pmuir
@@ -76,8 +76,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         try {
             clazz = resourceLoader.classForName(className);
         } catch (ResourceLoadingException e) {
-            log.debug(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-            xlog.catching(DEBUG, e);
+            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+            xlog.catching(INFO, e);
         }
 
         if (clazz != null && !clazz.isAnnotation() && !clazz.isEnum()) {
@@ -85,8 +85,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             try {
                 weldClass = classTransformer.loadClass(clazz);
             } catch (ResourceLoadingException e) {
-                log.debug(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-                xlog.catching(DEBUG, e);
+                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+                xlog.catching(INFO, e);
             }
 
             if (weldClass != null) {
