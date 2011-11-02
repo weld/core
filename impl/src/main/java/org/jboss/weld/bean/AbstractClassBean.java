@@ -72,8 +72,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.jboss.weld.logging.Category.BEAN;
@@ -106,22 +108,110 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     /**
-     * Extracts the complete set of interception bindings from a given set of
-     * annotations.
+     * Extracts a set of interception bindings from a given set of annotations.
      *
-     * @param beanManager
-     * @param annotations
+     * @param addTopLevelInterceptorBindings add top level interceptor bindings to the result set.
+     * @param addInheritedInterceptorBindings add inherited level interceptor bindings to the result set.
      * @return
      */
-    protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl beanManager, Set<Annotation> annotations) {
+    protected static Set<Annotation> filterInterceptorBindings(BeanManagerImpl beanManager, Set<Annotation> annotations,
+            boolean addTopLevelInterceptorBindings, boolean addInheritedInterceptorBindings) {
         Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
         for (Annotation annotation : annotations) {
             if (beanManager.isInterceptorBinding(annotation.annotationType())) {
-                foundInterceptionBindingTypes.add(annotation);
-                foundInterceptionBindingTypes.addAll(beanManager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
+                if (addTopLevelInterceptorBindings) {
+                    foundInterceptionBindingTypes.add(annotation);
+                }
+                if (addInheritedInterceptorBindings) {
+                    foundInterceptionBindingTypes.addAll(beanManager.getServices().get(MetaAnnotationStore.class)
+                            .getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
+                }
             }
         }
         return foundInterceptionBindingTypes;
+    }
+
+    /**
+     * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
+     */
+    protected static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager,
+            WeldClass<?> clazz, Set<Class<? extends Annotation>> stereotypes) {
+        Set<Annotation> classBindingAnnotations = filterInterceptorBindings(beanManager, clazz.getAnnotations(), true, false);
+        Set<Annotation> inheritedBindingAnnotations = new HashSet<Annotation>();
+        inheritedBindingAnnotations.addAll(filterInterceptorBindings(beanManager, clazz.getAnnotations(), false, true));
+        for (Class<? extends Annotation> annotation : stereotypes) {
+            inheritedBindingAnnotations.addAll(filterInterceptorBindings(beanManager,
+                    beanManager.getStereotypeDefinition(annotation), true, true));
+        }
+        try {
+            return mergeBeanInterceptorBindings(beanManager, classBindingAnnotations, inheritedBindingAnnotations);
+        } catch (DeploymentException e) {
+            throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, clazz.getJavaClass());
+        }
+    }
+
+    /**
+     * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
+     */
+    protected static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager,
+            Set<Annotation> classBindingAnnotations, Set<Annotation> inheritedBindingAnnotations) {
+
+        Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>();
+        // conflict detection
+        Map<Class<? extends Annotation>, Annotation> acceptedInheritedBindingTypes = new HashMap<Class<? extends Annotation>, Annotation>();
+
+        // add all class-level interceptor bindings (these have precedence)
+        for (Annotation bindingAnnotation : classBindingAnnotations) {
+            if (mergedBeanBindings.containsKey(bindingAnnotation.annotationType())) {
+                // not possible in Java, but we never know what extension-provided AnnotatedType returns
+                throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS);
+            }
+            mergedBeanBindings.put(bindingAnnotation.annotationType(), bindingAnnotation);
+        }
+        // add inherited interceptor bindings
+        for (Annotation bindingAnnotation : inheritedBindingAnnotations) {
+            Class<? extends Annotation> bindingAnnotationType = bindingAnnotation.annotationType();
+            // replace the previous interceptor binding with current binding
+
+            Annotation previousValue = mergedBeanBindings.get(bindingAnnotationType);
+            if (previousValue == null) {
+                mergedBeanBindings.put(bindingAnnotationType, bindingAnnotation);
+                acceptedInheritedBindingTypes.put(bindingAnnotationType, bindingAnnotation);
+            } else {
+                // check for conflicts
+                if (acceptedInheritedBindingTypes.containsKey(bindingAnnotationType)
+                        && !beanManager.getServices().get(MetaAnnotationStore.class)
+                                .getInterceptorBindingModel(bindingAnnotationType)
+                                .isEqual(previousValue, bindingAnnotation, true)) {
+                    throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS);
+                }
+            }
+        }
+        return mergedBeanBindings;
+    }
+
+    /**
+     * Merges bean interceptor bindings (including inherited ones) with method interceptor bindings. Method interceptor bindings
+     * override bean interceptor bindings. The bean binding map is not modified - a copy is used.
+     */
+    protected Map<Class<? extends Annotation>, Annotation> mergeMethodInterceptorBindings(
+            Map<Class<? extends Annotation>, Annotation> beanBindings, Set<Annotation> methodBindingAnnotations) {
+
+        Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>(
+                beanBindings);
+        // conflict detection
+        Set<Class<? extends Annotation>> processedBindingTypes = new HashSet<Class<? extends Annotation>>();
+
+        for (Annotation methodBinding : methodBindingAnnotations) {
+            Class<? extends Annotation> methodBindingType = methodBinding.annotationType();
+            if (processedBindingTypes.contains(methodBindingType)) {
+                throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
+            }
+            processedBindingTypes.add(methodBindingType);
+            // override bean interceptor binding
+            mergedBeanBindings.put(methodBindingType, methodBinding);
+        }
+        return mergedBeanBindings;
     }
 
     private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
@@ -198,16 +288,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         InterceptionModelBuilder<ClassMetadata<?>, ?> builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(classMetadata);
 
         // initialize CDI interceptors
-        Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations());
-        for (Class<? extends Annotation> annotation : getStereotypes()) {
-            classBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
-        }
-        if (classBindingAnnotations.size() > 0) {
-            if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations)) {
-                throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
-            }
+        Map<Class<? extends Annotation>, Annotation> beanBindingAnnotations = mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes());
 
-            Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
+        if (beanBindingAnnotations.size() > 0) {
+            Annotation[] classBindingAnnotationsArray = beanBindingAnnotations.values().toArray(new Annotation[0]);
 
             List<Interceptor<?>> resolvedPostConstructInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
             builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
@@ -224,14 +308,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
         for (WeldMethod<?, ?> method : businessMethods) {
-            Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
-            methodBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, method.getAnnotations()));
-            if (methodBindingAnnotations.size() > 0) {
-                if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations)) {
-                    throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
-                }
 
-                List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+            Set<Annotation> methodBindingAnnotations = filterInterceptorBindings(beanManager, method.getAnnotations(), true, true);
+            Map<Class<? extends Annotation>, Annotation> mergedMethodBindingAnnotations = mergeMethodInterceptorBindings(beanBindingAnnotations, methodBindingAnnotations);
+            if (mergedMethodBindingAnnotations.size() > 0) {
+                List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, mergedMethodBindingAnnotations.values().toArray(new Annotation[]{}));
                 if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                     if (method.isFinal()) {
                         throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
@@ -239,7 +320,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
                     builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                 }
 
-                methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
+                methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, mergedMethodBindingAnnotations.values().toArray(new Annotation[]{}));
                 if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                     if (method.isFinal()) {
                         throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
@@ -295,8 +376,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             }
             beanManager.getInterceptorModelRegistry().put(getType(), ((InterceptionModel<ClassMetadata<?>, ?>) interceptionModel));
         }
-
-
     }
 
     @Override

@@ -61,11 +61,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
         this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
         this.serializable = type.isSerializable();
-        this.interceptorBindingTypes = new HashSet<Annotation>();
-        interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations()));
-        for (Class<? extends Annotation> annotation : getStereotypes()) {
-            interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
-        }
+        this.interceptorBindingTypes = new HashSet<Annotation>(mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes()).values());
+
         if (this.interceptorBindingTypes.size() == 0) {
             throw new DeploymentException(MISSING_BINDING_ON_INTERCEPTOR, type.getName());
         }
