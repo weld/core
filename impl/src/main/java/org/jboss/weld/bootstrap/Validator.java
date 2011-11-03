@@ -94,6 +94,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  *
  * @author Nicklas Karlsson
  * @author David Allen
+ * @author Jozef Hartinger
  */
 public class Validator implements Service {
 
@@ -247,7 +248,7 @@ public class Validator implements Service {
             if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {
                 throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
             }
-            if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager) && (!ij.isTransient()) && !Beans.isPassivationCapableBean(resolvedBean)) {
+            if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager)) {
                 validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
             }
         }
@@ -273,7 +274,7 @@ public class Validator implements Service {
     }
 
     public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager) {
-        if (!ij.isTransient() && !Beans.isPassivationCapableDependency(resolvedBean)) {
+        if ((ij.getMember() instanceof Field) && !ij.isTransient() && !Beans.isPassivationCapableDependency(resolvedBean)) {
             if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?, ?>) {
                 throw new IllegalProductException(NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN, ij.getBean(), resolvedBean);
             }
