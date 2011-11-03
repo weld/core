@@ -586,7 +586,7 @@
                 </property>
             </activation>
             <modules>
-                <module>jboss-tck-runner</module> 
+                <module>jboss-tck-runner/1.0</module> 
             </modules>
         </profile>
         <profile>
