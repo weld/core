@@ -25,7 +25,6 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -127,8 +126,6 @@ public class Beans {
     public static boolean isPassivatingScope(Bean<?> bean, BeanManagerImpl manager) {
         if (bean == null) {
             return false;
-        } else if (bean instanceof SessionBean<?>) {
-            return ((SessionBean<?>) bean).getEjbDescriptor().isStateful();
         } else {
             return manager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isPassivating();
         }

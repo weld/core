@@ -22,6 +22,7 @@ import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.interceptor.util.InterceptionUtils;
+import org.jboss.weld.Container;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
@@ -66,6 +67,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Scope;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
@@ -257,6 +259,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     protected WeldConstructor<T> constructorForEnhancedSubclass;
 
+    private boolean passivationCapableBean;
+    private boolean passivationCapableDependency;
+
     /**
      * Constructor
      *
@@ -279,7 +284,19 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     public void initialize(BeanDeployerEnvironment environment) {
         super.initialize(environment);
         checkBeanImplementation();
+        initPassivationCapable();
         initTargetClassInterceptors();
+    }
+
+    private void initPassivationCapable() {
+        this.passivationCapableBean = getWeldAnnotated().isSerializable();
+        if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
+            this.passivationCapableDependency = true;
+        } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
+            this.passivationCapableDependency = true;
+        } else {
+            this.passivationCapableDependency = false;
+        }
     }
 
     protected void initInterceptionModelForType() {
@@ -384,10 +401,26 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             initInterceptionModelForType();
         }
         initDecorators();
-        super.initializeAfterBeanDiscovery();
         if (isSubclassed()) {
             initEnhancedSubclass();
         }
+        if (this.passivationCapableBean && this.hasDecorators()) {
+            for (Decorator<?> decorator : this.getDecorators()) {
+                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
+                    this.passivationCapableBean = false;
+                    break;
+                }
+            }
+        }
+        if (this.passivationCapableBean && hasInterceptors()) {
+            for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getType()).getAllInterceptors()) {
+                if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
+                    this.passivationCapableBean = false;
+                    break;
+                }
+            }
+        }
+        super.initializeAfterBeanDiscovery();
     }
 
     public void initDecorators() {
@@ -650,6 +683,16 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
         }
         return new InterceptedSubclassFactory<T>(getType(), Collections.<Type>emptySet(), this, enhancedMethodSignatures).getProxyClass();
+    }
+
+    @Override
+    public boolean isPassivationCapableBean() {
+        return passivationCapableBean;
+    }
+
+    @Override
+    public boolean isPassivationCapableDependency() {
+        return passivationCapableDependency;
     }
 
 }

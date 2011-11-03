@@ -44,6 +44,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.AnnotatedTypes;
@@ -78,6 +79,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.EJB_NOT_FOUND;
 import static org.jboss.weld.logging.messages.BeanMessage.GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.BeanMessage.MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED;
 import static org.jboss.weld.logging.messages.BeanMessage.OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN;
@@ -349,16 +351,10 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         if (!getScope().equals(Dependent.class) && getWeldAnnotated().isGeneric()) {
             throw new DefinitionException(GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT, this);
         }
-    }
-
-    @Override
-    public boolean isPassivationCapableBean() {
-        return getEjbDescriptor().isStateful();
-    }
-
-    @Override
-    public boolean isPassivationCapableDependency() {
-        return true;
+        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(scope).isPassivating();
+        if (passivating && !isPassivationCapableBean()) {
+            throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+        }
     }
 
     public InternalEjbDescriptor<T> getEjbDescriptor() {

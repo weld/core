@@ -93,6 +93,37 @@
                     <exclude name="testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoProducerMethodParameterWithPassivatingScopeFails"/>
                 </methods>
             </class>
+            <!-- CDI-136 -->
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.PassivatingContextTest">
+                <methods>
+                    <exclude name="testBeanWithNonSerializableImplementationInjectedIntoTransientFieldOK"/>
+                    <exclude name="testInjectionOfDependentPrimitiveProductIntoNormalBean"/>
+                    <exclude name="testInjectionOfDependentSerializableProductIntoNormalBean"/>
+                    <exclude name="testManagedBeanWithSerializableDecoratorOK"/>
+                    <exclude name="testManagedBeanWithSerializableImplementationClassOK"/>
+                    <exclude name="testManagedBeanWithSerializableInterceptorClassOK"/>
+                    <exclude name="testNonSerializableProducerFieldDeclaredPassivatingThrowsIllegalProductException"/>
+                    <exclude name="testPassivatingScopeProducerMethodReturnsUnserializableObjectNotOk"/>
+                    <exclude name="testPassivationCapableProducerFieldIsOK"/>
+                    <exclude name="testPassivationCapableProducerMethodIsOK"/>
+                    <exclude name="testPassivationOccurs"/>
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanTest">
+                <methods>
+                    <exclude name="testForEachEnterpriseBeanANewBeanExists"/>
+                    <exclude name="testNewBeanHasNoBeanELName"/>
+                    <exclude name="testNewBeanHasNoObservers"/>
+                    <exclude name="testNewBeanHasNoStereotypes"/>
+                    <exclude name="testNewBeanIsDependentScoped"/>
+                    <exclude name="testNewBeanIsHasOnlyNewBinding"/>
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingDecorator.EnterpriseBeanWithNonPassivatingDecoratorTest">
+                <methods>
+                    <exclude name="testEnterpriseBeanWithNonPassivatingDecoratorFails"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 

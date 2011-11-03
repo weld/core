@@ -16,11 +16,32 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
+import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.util.Set;
+
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+
 import org.jboss.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.interceptor.proxy.InterceptorProxyCreatorImpl;
-import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.util.InterceptionUtils;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
@@ -44,32 +65,9 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.PassivationCapable;
-import java.util.Set;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
-import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
-import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Represents a simple bean
@@ -228,8 +226,6 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     private ManagedBean<?> specializedBean;
 
-    private boolean passivationCapableBean;
-    private boolean passivationCapableDependency;
     private final boolean proxiable;
 
     /**
@@ -313,7 +309,6 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             initPostConstruct();
             initPreDestroy();
             initEEInjectionPoints();
-            initPassivationCapable();
             setInjectionTarget(new ManagedBeanInjectionTarget<T>(this));
         }
     }
@@ -326,51 +321,6 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             T instance = constructorInjectionPointWrapper.newInstance(beanManager, ctx);
             return instance;
         }
-    }
-
-    @Override
-    public void initializeAfterBeanDiscovery() {
-        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
-            initInterceptionModelForType();
-        }
-        if (this.passivationCapableBean && this.hasDecorators()) {
-            for (Decorator<?> decorator : this.getDecorators()) {
-                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
-            }
-        }
-        if (this.passivationCapableBean && hasInterceptors()) {
-            for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getType()).getAllInterceptors()) {
-                if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
-            }
-        }
-        super.initializeAfterBeanDiscovery();
-    }
-
-    private void initPassivationCapable() {
-        this.passivationCapableBean = getWeldAnnotated().isSerializable();
-        if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
-            this.passivationCapableDependency = true;
-        } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
-            this.passivationCapableDependency = true;
-        } else {
-            this.passivationCapableDependency = false;
-        }
-    }
-
-    @Override
-    public boolean isPassivationCapableBean() {
-        return passivationCapableBean;
-    }
-
-    @Override
-    public boolean isPassivationCapableDependency() {
-        return passivationCapableDependency;
     }
 
     private void initEEInjectionPoints() {
