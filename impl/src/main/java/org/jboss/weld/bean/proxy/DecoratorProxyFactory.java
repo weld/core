@@ -39,7 +39,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -108,29 +111,66 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 addHandlerInitializerMethod(proxyClassType);
             }
             Class<?> cls = getBeanType();
-            while (cls != null) {
-                for (Method method : cls.getDeclaredMethods()) {
-                    MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                    if (!method.getDeclaringClass().getName().equals("java.lang.Object") || method.getName().equals("toString")) {
-                        Bytecode methodBody = null;
-                        if ((delegateParameterPosition >= 0) && (initializerMethod.equals(method))) {
-                            methodBody = createDelegateInitializerCode(proxyClassType, methodInfo, delegateParameterPosition);
-                        }
-                        if (Modifier.isAbstract(method.getModifiers())) {
-                            methodBody = createAbstractMethodCode(proxyClassType, methodInfo);
-                        }
+            Set<Method> methods = new LinkedHashSet<Method>();
+            decoratorMethods(cls, methods);
+            for (Method method : methods) {
+                MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                if (!method.getDeclaringClass().getName().equals("java.lang.Object") || method.getName().equals("toString")) {
+                    Bytecode methodBody = null;
+                    if ((delegateParameterPosition >= 0) && (initializerMethod.equals(method))) {
+                        methodBody = createDelegateInitializerCode(proxyClassType, methodInfo, delegateParameterPosition);
+                    }
+                    // exclude bridge methods
+                    if (Modifier.isAbstract(method.getModifiers())) {
+                        methodBody = createAbstractMethodCode(proxyClassType, methodInfo);
+                    }
 
-                        if (methodBody != null) {
-                            log.trace("Adding method " + method);
-                            proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), methodBody, proxyClassType.getConstPool()));
-                        }
+                    if (methodBody != null) {
+                        log.trace("Adding method " + method);
+                        proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), methodBody, proxyClassType.getConstPool()));
                     }
                 }
-                cls = cls.getSuperclass();
             }
         } catch (Exception e) {
             throw new WeldException(e);
         }
+    }
+
+    private void decoratorMethods(Class<?> cls, Set<Method> all) {
+        if (cls == null)
+            return;
+
+        all.addAll(Arrays.asList(cls.getDeclaredMethods()));
+
+        decoratorMethods(cls.getSuperclass(), all);
+
+        // by now we should have all declared methods, let's only add the missing ones
+        for (Class<?> ifc : cls.getInterfaces()) {
+            Method[] methods = ifc.getDeclaredMethods();
+            for (Method m : methods) {
+                boolean isEqual = false;
+                for (Method a : all) {
+                    if (isEqual(m, a)) {
+                        isEqual = true;
+                        break;
+                    }
+                }
+                if (isEqual == false)
+                    all.add(m);
+            }
+        }
+    }
+
+    // m is more generic than a
+    private static boolean isEqual(Method m, Method a) {
+        if (m.getName().equals(a.getName()) && m.getParameterTypes().length == a.getParameterTypes().length && m.getReturnType().isAssignableFrom(a.getReturnType())) {
+            for (int i = 0; i < m.getParameterTypes().length; i++) {
+                if (m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]) == false)
+                    return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
