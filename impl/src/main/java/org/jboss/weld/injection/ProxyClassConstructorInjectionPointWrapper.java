@@ -18,8 +18,10 @@
 package org.jboss.weld.injection;
 
 import javassist.util.proxy.ProxyObject;
+import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.proxy.BeanInstance;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
-import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
+import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -37,9 +39,11 @@ import java.util.List;
  * enhancing the bean instance creation process.
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 // TODO Needs equals/hashcode
 // TODO Would be clearer to make this either a wrapper or not
+// TODO (AJ) this needs proper cleanup!
 public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorInjectionPoint<T> {
     private ConstructorInjectionPoint<T> originalConstructorInjectionPoint;
     private Object decoratorDelegate = null;
@@ -74,9 +78,37 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
         // Once the instance is created, a method handler is required regardless of whether
         // an actual bean instance is known yet.
-        T instance = super.newInstance(manager, creationalContext);
+        final T instance = super.newInstance(manager, creationalContext);
         if (decorator) {
-            DecoratorProxyFactory.setBeanInstance(instance, decoratorDelegate == null ? null : new TargetBeanInstance(decoratorDelegate), bean);
+            BeanInstance beanInstance = null;
+            if (decoratorDelegate != null) {
+                beanInstance = new TargetBeanInstance(decoratorDelegate);
+            } else if (bean instanceof DecoratorImpl) {
+                DecoratorImpl di = (DecoratorImpl) bean;
+                final WeldInjectionPoint ip = di.getDelegateInjectionPoint();
+                if (ip instanceof FieldInjectionPoint) {
+                    beanInstance = new OnDemandBeanInstance(new OnDemandBeanInstance.InstanceProvider() {
+                        public Object provideInstance() {
+                            FieldInjectionPoint fip = (FieldInjectionPoint) ip;
+                            return fip.delegate().get(instance);
+                        }
+                    });
+                } else if (ip instanceof MethodInjectionPoint) {
+                    beanInstance = new OnDemandBeanInstance(new OnDemandBeanInstance.InstanceProvider() {
+                        public Object provideInstance() {
+                            MethodInjectionPoint mip = (MethodInjectionPoint) ip;
+                            try {
+                                return mip.delegate().invokeOnInstance(instance);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                } else {
+                    throw new IllegalArgumentException("Invalid InjectionPoint: " + ip);
+                }
+            }
+            ProxyFactory.setBeanInstance(instance, beanInstance, bean);
         } else {
             if (instance instanceof ProxyObject) {
                 ((ProxyObject) instance).setHandler(new CombinedInterceptorAndDecoratorStackMethodHandler());
