@@ -19,6 +19,7 @@
         <module>build</module>
         <module>tests/base</module>
         <module>tests/tomcat</module>
+        <module>tests/tomcat7</module>
         <module>tests/jetty</module>
         <module>tests/jetty7</module>
     </modules>
@@ -34,6 +35,7 @@
         -->
         <jsf.version>2.0.2-FCS</jsf.version>
         <tomcat.version>6.0.26</tomcat.version>
+        <tomcat7.version>7.0.22</tomcat7.version>
         <jetty.version>6.1.21</jetty.version>
         <jetty7.version>7.2.1.v20101111</jetty7.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
@@ -75,6 +77,24 @@
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>coyote</artifactId>
                 <version>${tomcat.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-catalina</artifactId>
+                <version>${tomcat7.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-jasper</artifactId>
+                <version>${tomcat7.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-coyote</artifactId>
+                <version>${tomcat7.version}</version>
             </dependency>
 
             <dependency>
