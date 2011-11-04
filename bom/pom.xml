@@ -62,10 +62,10 @@
             <artifactId>cdi-api</artifactId>
         </dependency>
 
-        <dependency>
+        <!-- dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-porting-package</artifactId>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>org.jboss.weld</groupId>
@@ -92,22 +92,22 @@
             <artifactId>weld-se-core</artifactId>
         </dependency>
 
-        <dependency>
+        <!-- dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
             <artifactId>jsr299-tck-api</artifactId>
-        </dependency>
+        </dependency-->
 
-        <dependency>
+        <!-- dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
             <artifactId>jsr299-tck-impl</artifactId>
-        </dependency>
+        </dependency-->
 
-        <dependency>
+        <!-- dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
             <artifactId>jsr299-tck-impl</artifactId>
             <classifier>suite</classifier>
             <type>xml</type>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>org.atinject</groupId>

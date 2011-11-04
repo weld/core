@@ -26,8 +26,8 @@
     <properties>
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER-->
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.0.0.CR4</arquillian.version>
-        <arquillian.jboss.version>1.0.0.CR4</arquillian.jboss.version>
+        <arquillian.version>1.0.0.CR5</arquillian.version>
+        <arquillian.jboss.version>1.0.0.CR5</arquillian.jboss.version>
         <arquillian.weld.version>1.0.0.CR2</arquillian.weld.version>
         <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
         <arquillian.tomcat7.version>1.0.0.CR2</arquillian.tomcat7.version>
@@ -38,7 +38,8 @@
         <cal10n.version>0.7.2</cal10n.version>
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
         <cdi.api.version>1.1.EDR1.1</cdi.api.version>
-        <cdi.tck.version>1.0.4.SP3</cdi.tck.version>
+        <cdi.tck-1-0.version>1.0.4.SP3</cdi.tck-1-0.version>
+        <cdi.tck-1-1.version>1.1.0-SNAPSHOT</cdi.tck-1-1.version>
         <checkstyle.plugin.version>2.5</checkstyle.plugin.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.3.2</findbugs-maven-plugin.version>
@@ -300,26 +301,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.jsr299.tck</groupId>
-                <artifactId>jsr299-tck-api</artifactId>
-                <version>${cdi.tck.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.jsr299.tck</groupId>
-                <artifactId>jsr299-tck-impl</artifactId>
-                <version>${cdi.tck.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.jsr299.tck</groupId>
-                <artifactId>jsr299-tck-impl</artifactId>
-                <version>${cdi.tck.version}</version>
-                <classifier>suite</classifier>
-                <type>xml</type>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jboss.metadata</groupId>
                 <artifactId>jboss-metadata</artifactId>
                 <version>${jboss.metadata.version}</version>
@@ -401,7 +382,13 @@
 
             <dependency>
                 <groupId>org.jboss.weld</groupId>
-                <artifactId>weld-porting-package</artifactId>
+                <artifactId>weld-porting-package-tck10</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-porting-package-tck11</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -579,22 +566,35 @@
                 </property>
             </activation>
             <modules>
-                <module>porting-package</module>
+                <module>porting-package/1.0</module>
+                <module>porting-package/1.1</module>
                 <module>tests</module>
                 <module>tests-arquillian</module>
                 <module>inject-tck-runner</module>
             </modules>
         </profile>
         <profile>
-            <id>tck</id>
+            <id>tck10</id>
             <activation>
                 <property>
-                    <name>weld.default.build.cditck</name>
+                    <name>weld.default.build.cditck10</name>
                     <value>!false</value>
                 </property>
             </activation>
             <modules>
                 <module>jboss-tck-runner/1.0</module> 
+            </modules>
+        </profile>
+        <profile>
+            <id>tck11</id>
+            <activation>
+                <property>
+                    <name>weld.default.build.cditck11</name>
+                    <value>!false</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jboss-tck-runner/1.1</module> 
             </modules>
         </profile>
         <profile>

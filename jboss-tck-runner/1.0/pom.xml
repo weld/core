@@ -8,8 +8,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld</groupId>
-    <artifactId>weld-jboss-tck-runner</artifactId>
-    <name>CDI TCK runner for Weld (JBoss AS)</name>
+    <artifactId>weld-jboss-runner-tck10</artifactId>
+    <name>CDI TCK 1.0 runner for Weld (JBoss AS)</name>
     <description>Aggregates dependencies and runs the CDI TCK (both standalone and on JBoss AS)</description>
 
     <licenses>
@@ -35,8 +35,14 @@
 
         <dependency>
             <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-porting-package</artifactId>
+            <artifactId>weld-porting-package-tck10</artifactId>
         </dependency>
+        
+		<dependency>
+         <groupId>org.jboss.jsr299.tck</groupId>
+         <artifactId>jsr299-tck-api</artifactId>
+         <version>${cdi.tck-1-0.version}</version>
+      </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>
@@ -85,10 +91,10 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.jboss.jsr299.tck</groupId>
             <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck-1-0.version}</version>
             <type>xml</type>
             <classifier>suite</classifier>
             <scope>test</scope>
@@ -214,6 +220,7 @@
                 <dependency>
                     <groupId>org.jboss.jsr299.tck</groupId>
                     <artifactId>jsr299-tck-impl</artifactId>
+                    <version>${cdi.tck-1-0.version}</version>
                 </dependency>
 
             </dependencies>

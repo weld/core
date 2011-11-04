@@ -1,0 +1,265 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<!-- JSR-299 TCK TestNG configuration for Weld -->
+<suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
+    
+    <listeners>
+        <listener class-name="org.jboss.weld.tck.SingleTestMethodInterceptor"/>
+    </listeners>
+    
+    <test name="CDI TCK">
+
+        <packages>
+            <package name="org.jboss.jsr299.tck.tests.*" />
+            <package name="org.jboss.jsr299.tck.interceptors.tests.*" />
+        </packages>
+        
+        <classes>
+
+            <!-- Issues in the TCK -->
+            <class name="org.jboss.jsr299.tck.tests.context.DestroyForSameCreationalContext2Test">
+                <methods>
+                    <exclude name="testDestroyForSameCreationalContextOnly" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
+                <methods>
+                    <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
+                </methods>
+            </class>
+            <!-- CDITCK-212 -->
+            <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
+                <methods>
+                    <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
+                </methods>
+            </class>
+
+            <!-- TCK tests no longer valid for CDI 1.1 -->
+            <!-- CDITCK-237 -->
+            <class name="org.jboss.jsr299.tck.tests.interceptors.definition.broken.invalidBindingAnnotations.InvalidInterceptorBindingAnnotationsTest">
+                <methods>
+                    <exclude name="testInterceptorBindingsWithConflictingAnnotationMembersNotOk" />
+                </methods>
+            </class>
+            <!-- CDITCK-141 -->
+            <!-- TestNG does not let us exclude a list of packages :-( -->
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingBeanConstructor.DecoratorWithNonPassivatingBeanConstructorTest">
+                <methods>
+                    <exclude name="testPassivationCapableBeanWithNonPassivatingDecoratorBeanConstructorFails" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingInitializerMethod.DecoratorWithNonPassivatingInitializerMethodTest">
+                <methods>
+                    <exclude name="testPassivationCapableBeanWithNonPassivatingInitializerInDecoratorFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingBeanConstructorParameterInInterceptor.EnterpriseBeanWithNonPassivatingBeanConstructorParameterInInterceptorTest">
+                <methods>
+                    <exclude name="testSessionBeanWithNonPassivatingBeanConstructorParamInInterceptorFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingConstructorFieldInDecorator.EnterpriseBeanWithNonPassivatingFieldInDecoratorTest">
+                <methods>
+                    <exclude name="testSessionBeanWithNonPassivatingConstructorFieldInDecoratorFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingInitializerInDecorator.EnterpriseBeanWithNonPassivatingInitializerInDecoratorTest">
+                <methods>
+                    <exclude name="testSessionBeanWithNonPassivatingInitializerFieldInDecoratorFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingInitializerParameterInInterceptor.EnterpriseBeanWithNonPassivatingInitializerParameterInInterceptorTest">
+                <methods>
+                    <exclude name="testSessionBeanWithNonPassivatingInitializerParamInInterceptorFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.interceptorWithNonPassivatingBeanConstructorParameter.PassivationCapableBeanWithNonPassivatingInterceptorTest">
+                <methods>
+                    <exclude name="testPassivationCapableBeanWithNonPassivatingInterceptorFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.passivatingManagedBeanWithNonPassivatingBeanConstructor.PassivatingManagedBeanWithNonPassivatingBeanConstructorTest">
+                <methods>
+                    <exclude name="testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoConstructorParameterOfWebBeanWithPassivatingScopeFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.passivatingManagedBeanWithNonPassivatingInitializerMethod.PassivatingManagedBeanWithNonPassivatingInitializerMethodTest">
+                <methods>
+                    <exclude name="testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoInitializerParameterOfWebBeanWithPassivatingScopeFails" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.passivatingProducerMethodWithNonPassivatingParameter.PassivatingProducerMethodWithNonPassivatingParameterTest">
+                <methods>
+                    <exclude name="testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoProducerMethodParameterWithPassivatingScopeFails" />
+                </methods>
+            </class>
+            <!-- CDI-136 -->
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.PassivatingContextTest">
+                <methods>
+                    <exclude name="testBeanWithNonSerializableImplementationInjectedIntoTransientFieldOK" />
+                    <exclude name="testInjectionOfDependentPrimitiveProductIntoNormalBean" />
+                    <exclude name="testInjectionOfDependentSerializableProductIntoNormalBean" />
+                    <exclude name="testManagedBeanWithSerializableDecoratorOK" />
+                    <exclude name="testManagedBeanWithSerializableImplementationClassOK" />
+                    <exclude name="testManagedBeanWithSerializableInterceptorClassOK" />
+                    <exclude name="testNonSerializableProducerFieldDeclaredPassivatingThrowsIllegalProductException" />
+                    <exclude name="testPassivatingScopeProducerMethodReturnsUnserializableObjectNotOk" />
+                    <exclude name="testPassivationCapableProducerFieldIsOK" />
+                    <exclude name="testPassivationCapableProducerMethodIsOK" />
+                    <exclude name="testPassivationOccurs" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingDecorator.EnterpriseBeanWithNonPassivatingDecoratorTest">
+                <methods>
+                    <exclude name="testEnterpriseBeanWithNonPassivatingDecoratorFails" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.remove.EnterpriseBeanRemoveMethodTest">
+                <methods>
+                    <exclude name="testApplicationCannotCallRemoveMethodOnNonDependentScopedSessionEnterpriseBean" />
+                    <exclude name="testApplicationMayCallAnyRemoveMethodOnDependentScopedSessionEnterpriseBeans" />
+                    <exclude name="testApplicationMayCallRemoveMethodOnDependentScopedSessionEnterpriseBeansButNoParametersArePassed" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
+                <methods>
+                    <exclude name="testNewBeanHasNoDisposalMethods" />
+                    <exclude name="testNewBeanHasNoProducerMethods" />
+                    <exclude name="testNewBeanHasSameConstructor" />
+                    <exclude name="testNewBeanHasSameInitializers" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.dependentScopedProducerFieldReturnsNonSerializableObjectForInjectionIntoStatefulSessionBean.EnterpriseBeanWithIllegalDependencyTest">
+                <methods>
+                    <exclude name="test" />
+                </methods>
+            </class>
+            <class
+                name="org.jboss.jsr299.tck.tests.context.passivating.broken.dependentScopedProducerMethodReturnsNonSerializableObjectForInjectionIntoStatefulSessionBean.EnterpriseBeanWithIllegalDependencyTest">
+                <methods>
+                    <exclude name="test" />
+                </methods>
+            </class>
+            <!-- CDI-88/CDITCK-174 -->
+            <class name="org.jboss.jsr299.tck.tests.extensions.afterBeanDiscovery.AfterBeanDiscoveryTest">
+                <methods>
+                    <exclude name="testProcessObserverMethodFiredWhileAddingObserverMethod" />
+                </methods>
+            </class>
+            <!-- JAVASERVERFACES_SPEC_PUBLIC-763 -->
+            <class name="org.jboss.jsr299.tck.tests.context.conversation.ClientConversationContextTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.conversation.LongRunningConversationPropagatedByFacesContextTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.conversation.InvalidatingSessionDestroysConversationTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.conversation.ManualCidPropagationTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <!-- ARQ handling multiple EARs -->
+            <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+
+            <!-- Issues in Weld (the RI) -->
+            <!-- WELD-966 -->
+            <class name="org.jboss.jsr299.tck.tests.lookup.byname.ResolutionByNameTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <!-- WELD-458 -->
+            <class name="org.jboss.jsr299.tck.tests.interceptors.definition.broken.interceptorForLifecycleTargetMethod.InterceptorForLifecycleTargetMethodTest">
+                <methods>
+                    <exclude name="testInterceptorForLifecycleTargetMethod" />
+                </methods>
+            </class>
+            <!-- WELD-986 -->
+            <class name="org.jboss.jsr299.tck.tests.interceptors.definition.broken.observer.InterceptorWithObserverMethodTest">
+                <methods>
+                    <exclude name="testInterceptorWithObserverMethodNotOk" />
+                </methods>
+            </class>
+            <!-- WELD-998 -->
+            <class name="org.jboss.jsr299.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <!-- WELD-991 --> 
+            <class name="org.jboss.jsr299.tck.tests.lookup.manager.ManagerTest">
+                <methods>
+                    <exclude name="testGetReferenceWithIllegalBeanType" />
+                </methods>
+            </class>
+            <!-- WELD-430 -->
+            <class name="org.jboss.jsr299.tck.tests.decorators.invocation.DecoratorInvocationTest">
+                <methods>
+                    <exclude name="testDecoratorInvokesDelegateMethodOutsideOfBusinessMethodInterception" />
+                </methods>
+            </class>
+
+            <!-- Issues in JBoss AS -->
+
+            <!-- JBAS-8306 -->
+            <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+                <methods>
+                    <exclude name="testRequestScopeActiveDuringCallToEjbTimeoutMethod" />
+                    <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
+                </methods>
+            </class>
+
+            <!-- Remove exclusion when AS7 suports SFSB serialization properly -->
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
+                <methods>
+                    <exclude name="testSerializeSFSB" />
+                </methods>
+            </class>
+            
+            <!-- AS7-1903 --> 
+            <!-- Remove exclusion when AS7 suports WS endpoint injection -->
+            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
+                <methods>
+                    <exclude name="testInjectionIntoWebServiceEndpoint" />
+                    <exclude name="testResourceBeanTypes"/>
+                </methods>
+            </class>
+            
+            <!-- AS7-2125 -->
+            <class name="org.jboss.jsr299.tck.tests.event.observer.transactional.TransactionalObserverTest">
+                 <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+
+</suite>

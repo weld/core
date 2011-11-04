@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-core-parent</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <version>2.0.0-SNAPSHOT</version>
+      <relativePath>../../pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld</groupId>
+   <artifactId>weld-porting-package-tck11</artifactId>
+   <name>Weld Porting Package for the CDI TCK 1.1</name>
+
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.jsr299.tck</groupId>
+         <artifactId>jsr299-tck-api</artifactId>
+         <version>${cdi.tck-1-1.version}</version>
+      </dependency>
+      
+      <dependency>
+      	<groupId>javax.el</groupId>
+      	<artifactId>el-api</artifactId>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.glassfish.web</groupId>
+         <artifactId>el-impl</artifactId>
+      </dependency>
+      
+      <dependency>
+      	<groupId>org.jboss.weld</groupId>
+        <artifactId>weld-core-test</artifactId>
+        <exclusions>
+        	<exclusion>
+				<groupId>org.testng</groupId>
+         		<artifactId>testng</artifactId>
+        	</exclusion>
+        </exclusions>
+     </dependency>
+   </dependencies>
+   
+</project>
