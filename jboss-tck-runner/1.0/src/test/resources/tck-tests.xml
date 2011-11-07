@@ -124,6 +124,31 @@
                     <exclude name="testEnterpriseBeanWithNonPassivatingDecoratorFails"/>
                 </methods>
             </class>
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.remove.EnterpriseBeanRemoveMethodTest">
+                <methods>
+                    <exclude name="testApplicationCannotCallRemoveMethodOnNonDependentScopedSessionEnterpriseBean"/>
+                    <exclude name="testApplicationMayCallAnyRemoveMethodOnDependentScopedSessionEnterpriseBeans"/>
+                    <exclude name="testApplicationMayCallRemoveMethodOnDependentScopedSessionEnterpriseBeansButNoParametersArePassed"/>
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
+                <methods>
+                    <exclude name="testNewBeanHasNoDisposalMethods"/>
+                    <exclude name="testNewBeanHasNoProducerMethods"/>
+                    <exclude name="testNewBeanHasSameConstructor"/>
+                    <exclude name="testNewBeanHasSameInitializers"/>
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.dependentScopedProducerFieldReturnsNonSerializableObjectForInjectionIntoStatefulSessionBean.EnterpriseBeanWithIllegalDependencyTest">
+                <methods>
+                    <exclude name="test"/>
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.dependentScopedProducerMethodReturnsNonSerializableObjectForInjectionIntoStatefulSessionBean.EnterpriseBeanWithIllegalDependencyTest">
+                <methods>
+                    <exclude name="test"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 
