@@ -171,7 +171,7 @@ public class Reflections {
             return type;
         }
         for (Method method : type.getDeclaredMethods()) {
-            if (isFinal(method) && !isPrivate(method)) {
+            if (isFinal(method) && !isPrivate(method) && !isStatic(method)) {
                 return method;
             }
         }
