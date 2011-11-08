@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jboss.weld.reference-guide</groupId>
     <artifactId>weld-reference-guide</artifactId>
-    <version>1.1.3-SNAPSHOT</version>
+    <version>1.1.3.Test</version>
     <packaging>jdocbook</packaging>
     <name>Weld Reference Guide</name>
     <url>http://www.seamframework.org/Weld</url>
@@ -20,7 +19,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>1.1.3-SNAPSHOT</version>
+        <version>1.1.3.Test</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -52,8 +51,7 @@
                         <phase>process-classes</phase>
                         <configuration>
                             <tasks>
-                                <copy file="${basedir}/target/docbook/publish/en-US/pdf/${pdf.name}"
-                                      todir="${basedir}"/>
+                                <copy file="${basedir}/target/docbook/publish/en-US/pdf/${pdf.name}" todir="${basedir}" />
                             </tasks>
                         </configuration>
                         <goals>
