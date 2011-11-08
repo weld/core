@@ -41,6 +41,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
+import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -102,6 +103,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -576,17 +578,35 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
         Observers.checkEventObjectType(event);
-        notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
+        Set<Annotation> qualifierSet = new HashSet<Annotation>(Arrays.asList(qualifiers));
+        // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
+        notifyObservers(event, qualifierSet, resolveObserverMethods(eventType, qualifiers));
     }
 
     public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers) {
         Observers.checkEventObjectType(event);
-        notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
+        notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
     }
 
-    private <T> void notifyObservers(final T event, final Set<ObserverMethod<? super T>> observers) {
+    private <T> void notifyObservers(final T event, final Set<Annotation> qualifiers, final Set<ObserverMethod<? super T>> observers) {
+        /*
+         * The spec requires that the set of qualifiers of an event always contains the {@link Any} qualifier. We optimize this
+         * and only do it for extension-provided observer methods since {@link ObserverMethodImpl} does not use the qualifiers
+         * anyway.
+         */
+        Set<Annotation> allQualifiers = null;
+
         for (ObserverMethod<? super T> observer : observers) {
-            observer.notify(event);
+            if (observer instanceof ObserverMethodImpl<?, ?>) {
+                observer.notify(event);
+            } else {
+                if (allQualifiers == null) {
+                    allQualifiers = new HashSet<Annotation>(qualifiers);
+                    allQualifiers.add(AnyLiteral.INSTANCE);
+                    allQualifiers = Collections.unmodifiableSet(allQualifiers);
+                }
+                observer.notify(event, allQualifiers);
+            }
         }
     }
 

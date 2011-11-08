@@ -208,8 +208,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     }
 
     public void notify(T event, Set<Annotation> qualifiers) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+        notify(event);
     }
 
     /**
