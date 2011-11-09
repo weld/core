@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.interceptors.binding.inheritance.broken;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -26,11 +24,9 @@ import java.lang.annotation.Target;
 
 import javax.enterprise.inject.Stereotype;
 
-import org.jboss.weld.tests.interceptors.binding.inheritance.Binding;
-
 @Binding(Binding.Type.DELTA)
 @Stereotype
-@Target({ TYPE, METHOD, FIELD })
+@Target({ TYPE })
 @Retention(RUNTIME)
 public @interface European {
 

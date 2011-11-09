@@ -26,8 +26,6 @@ import java.lang.annotation.Target;
 
 import javax.interceptor.InterceptorBinding;
 
-import org.jboss.weld.tests.interceptors.binding.inheritance.Binding;
-
 @Binding(Binding.Type.ALPHA)
 @InterceptorBinding
 @Inherited
