@@ -16,13 +16,16 @@
  */
 package org.jboss.weld.tests.session.newBean;
 
+import java.io.Serializable;
+
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 
+@SuppressWarnings("serial")
 @SessionScoped
 @Stateful
-class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal {
+class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal, Serializable {
     @Remove
     public void bye() {
     }

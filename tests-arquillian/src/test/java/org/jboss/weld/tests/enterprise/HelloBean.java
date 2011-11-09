@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.enterprise;
 
+import java.io.Serializable;
+
 import org.jboss.ejb3.annotation.CacheConfig;
 
 import javax.annotation.Resource;
@@ -24,10 +26,11 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.BeanManager;
 
+@SuppressWarnings("serial")
 @Stateful
 @SessionScoped
 @CacheConfig(idleTimeoutSeconds = 1)
-public class HelloBean implements IHelloBean {
+public class HelloBean implements IHelloBean, Serializable {
     @Resource(mappedName = "java:comp/BeanManager")
     private BeanManager beanManager;
 
