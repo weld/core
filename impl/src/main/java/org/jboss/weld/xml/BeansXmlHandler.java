@@ -90,7 +90,7 @@ public class BeansXmlHandler extends DefaultHandler {
         }
 
         protected boolean isInNamespace(String uri) {
-            return uri.isEmpty() || uri.equals(getUri());
+            return uri.length() == 0 || uri.equals(getUri());
         }
 
         protected static String trim(String str) {
@@ -286,7 +286,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
     private static Container getContainer(String uri, String localName, Collection<Container> containers) {
         for (Container container : containers) {
-            if (uri.isEmpty()) {
+            if (uri.length() == 0) {
                 if (container.getLocalName().equals(localName)) {
                     return container;
                 }

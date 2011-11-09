@@ -102,7 +102,7 @@ public class DatasourceManager implements ITestListener {
                         throw new RuntimeException("DataSource java:/DefaultDS was not found and could not be created automatically: " + result);
                     }
                 } else {
-                    if (test != null && !test.isEmpty()) {
+                    if (test != null && !(test.length() == 0)) {
                         //we do not worry about this if we are only running one test
                         return;
                     }
