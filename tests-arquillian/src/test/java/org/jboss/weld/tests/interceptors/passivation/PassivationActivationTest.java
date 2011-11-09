@@ -18,12 +18,11 @@
 package org.jboss.weld.tests.interceptors.passivation;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.DefinitionException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,11 +41,10 @@ import java.io.ObjectOutputStream;
 @RunWith(Arquillian.class)
 public class PassivationActivationTest {
 
-    @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .intercept(Goalkeeper.class, Defender.class, PassivationActivation.class)
+                .intercept(Goalkeeper.class, Defender.class, PassivationActivationInterceptor.class)
                 .addPackage(PassivationActivationTest.class.getPackage());
     }
 
@@ -54,6 +52,7 @@ public class PassivationActivationTest {
     private BeanManager beanManager;
 
     @Test
+    @Ignore // requires Module CL resolution
     public void testPassivationAndActivation() throws Exception {
         Bean bean = beanManager.getBeans(Ball.class).iterator().next();
         CreationalContext creationalContext = beanManager.createCreationalContext(bean);

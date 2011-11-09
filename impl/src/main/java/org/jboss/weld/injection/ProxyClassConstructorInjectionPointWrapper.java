@@ -75,7 +75,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     }
 
     @Override
-    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+    public T newInstance(final BeanManagerImpl manager, final CreationalContext<?> creationalContext) {
         // Once the instance is created, a method handler is required regardless of whether
         // an actual bean instance is known yet.
         final T instance = super.newInstance(manager, creationalContext);
@@ -102,6 +102,14 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
+                        }
+                    });
+                } else if (ip instanceof ParameterInjectionPoint) {
+                    beanInstance = new OnDemandBeanInstance(new OnDemandBeanInstance.InstanceProvider() {
+                        public Object provideInstance() {
+                            ParameterInjectionPoint pip = (ParameterInjectionPoint) ip;
+                            // special value handling?
+                            return pip.getValueToInject(manager, creationalContext);
                         }
                     });
                 } else {
