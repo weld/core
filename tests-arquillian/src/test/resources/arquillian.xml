@@ -15,6 +15,9 @@
 			<property name="executionType">REMOTE</property>
 			<property name="allowConnectToRunningInstance">true</property>
 		</protocol>
+        <configuration>
+            <property name="outputToConsole">false</property>
+        </configuration>
 	</container>
 
     <container qualifier="jboss-as-6">
