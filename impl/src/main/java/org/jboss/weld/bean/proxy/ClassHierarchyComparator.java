@@ -37,9 +37,9 @@ class ClassHierarchyComparator implements Comparator<Class<?>> {
         if (c1.equals(c2))
             return 0;
         else if (c1.isAssignableFrom(c2))
-            return -1;
-        else if (c2.isAssignableFrom(c1))
             return 1;
+        else if (c2.isAssignableFrom(c1))
+            return -1;
         else
             return 0;
     }
