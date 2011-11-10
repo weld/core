@@ -196,7 +196,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
+                <version>2.10</version>
                 <configuration>
                     <!--
                        Set parallel none to force a more modern JUnitCore
@@ -235,7 +235,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.8</version>
+                        <version>2.10</version>
                         <configuration>
                             <systemProperties>
                                 <arquillian.launch>weld</arquillian.launch>
@@ -372,7 +372,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.8</version>
+                        <version>2.10</version>
                         <configuration>
                             <systemProperties>
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
@@ -415,7 +415,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.9</version>
+                        <version>2.10</version>
                         <configuration>
                             <systemProperties>
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
