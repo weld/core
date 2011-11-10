@@ -51,7 +51,8 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
         if (ignore(event)) {
             return;
         }
-        if ((beanManager.getServices().get(TransactionServices.class) != null) && (beanManager.getServices().get(TransactionServices.class).isTransactionActive())) {
+        TransactionServices txs = beanManager.getServices().get(TransactionServices.class);
+        if (txs != null && txs.isTransactionActive()) {
             deferEvent(event);
         } else {
             sendEvent(event);
