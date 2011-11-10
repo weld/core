@@ -12,14 +12,9 @@
 
 	<container qualifier="jboss-as-7">
         <configuration>
+            <!-- ARQ-649 workaround -->
             <property name="outputToConsole">false</property>
-        </configuration>
-        <protocol type="jmx-as7">
-			<property name="executionType">REMOTE</property>
-			<property name="allowConnectToRunningInstance">true</property>
-		</protocol>
-        <configuration>
-            <property name="outputToConsole">false</property>
+            <property name="allowConnectToRunningInstance">true</property>
         </configuration>
 	</container>
 
