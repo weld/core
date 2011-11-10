@@ -20,7 +20,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 
 @Stateful
-class Elephant implements ElephantLocal {
+public class Elephant implements ElephantLocal {
 
     @Remove
     public void remove1() {
