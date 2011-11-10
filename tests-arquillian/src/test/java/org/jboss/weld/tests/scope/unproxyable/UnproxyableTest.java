@@ -25,13 +25,12 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.inject.UnproxyableResolutionException;
-
 @RunWith(Arquillian.class)
 public class UnproxyableTest {
 
     @Deployment
-    @ShouldThrowException(UnproxyableResolutionException.class)
+    // @ShouldThrowException(DefinitionException.class)
+    @ShouldThrowException(Exception.class) // AS7-1197
     public static JavaArchive deploy() {
         BeanArchive archive = ShrinkWrap.create(BeanArchive.class);
         archive.addPackage(UnproxyableTest.class.getPackage());

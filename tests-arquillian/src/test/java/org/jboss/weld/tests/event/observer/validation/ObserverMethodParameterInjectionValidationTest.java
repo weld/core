@@ -28,7 +28,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +38,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ObserverMethodParameterInjectionValidationTest {
     @Deployment
-    @ShouldThrowException(DeploymentException.class)
+    // @ShouldThrowException(DefinitionException.class)
+    @ShouldThrowException(Exception.class) // AS7-1197
     public static JavaArchive getDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
