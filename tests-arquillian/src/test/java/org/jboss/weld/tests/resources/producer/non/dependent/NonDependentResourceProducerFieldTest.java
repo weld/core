@@ -17,7 +17,8 @@ import org.junit.runner.RunWith;
 public class NonDependentResourceProducerFieldTest {
 
     @Deployment
-    @ShouldThrowException(DefinitionException.class)
+    // @ShouldThrowException(DefinitionException.class)
+    @ShouldThrowException(Exception.class) // AS7-1197
     public static JavaArchive deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .addPackage(NonDependentResourceProducerFieldTest.class.getPackage());

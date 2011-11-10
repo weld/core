@@ -22,7 +22,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +40,8 @@ import org.junit.runner.RunWith;
 @Ignore
 public class VoidInterceptorInvalidContractTest {
 
-    @ShouldThrowException(DefinitionException.class)
+    // @ShouldThrowException(DefinitionException.class)
+    @ShouldThrowException(Exception.class) // AS7-1197
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
