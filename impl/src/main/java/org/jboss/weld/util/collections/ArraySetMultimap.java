@@ -55,7 +55,7 @@ public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>> {
         List<V> result = super.get(key);
         if (result == null) {
             result = new ArrayList<V>();
-            SimpleEntry<K, List<V>> entry = new SimpleEntry<K, List<V>>(key, result);
+            Map.Entry<K, List<V>> entry = new MapEntry<K, List<V>>(key, result);
             entrySet.add(entry);
         }
         result.add(value);
@@ -71,5 +71,51 @@ public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>> {
     @Override
     public Set<java.util.Map.Entry<K, List<V>>> entrySet() {
         return entrySet;
+    }
+
+    static class MapEntry<K, V> implements Map.Entry<K, V> {
+        private K key;
+        private V value;
+
+        MapEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public V setValue(V value) {
+            V previous = this.value;
+            this.value = value;
+            return previous;
+        }
+
+        @Override
+        public int hashCode() {
+            return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof Map.Entry == false) {
+                return false;
+            }
+
+            Map.Entry e = (Map.Entry) o;
+
+            return (key == null ? e.getKey() == null : key.equals(e.getKey()))
+                    && (value == null ? e.getValue() == null : value.equals(e.getValue()));
+        }
+
+        @Override
+        public String toString() {
+            return key + "=" + value;
+        }
     }
 }
