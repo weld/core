@@ -11,7 +11,10 @@
 	</container>
 
 	<container qualifier="jboss-as-7">
-		<protocol type="jmx-as7">
+        <configuration>
+            <property name="outputToConsole">false</property>
+        </configuration>
+        <protocol type="jmx-as7">
 			<property name="executionType">REMOTE</property>
 			<property name="allowConnectToRunningInstance">true</property>
 		</protocol>
