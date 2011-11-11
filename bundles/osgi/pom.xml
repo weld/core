@@ -114,7 +114,7 @@
                              on foreign bundles.
                         -->
                         <Import-Package>
-                            org.slf4j; org.slf4j.spi; org.slf4j.helpers; version=${slf4j.version}; resolution:=optional,
+                            org.slf4j; org.slf4j.spi; org.slf4j.helpers; version="[${slf4j.version},$${version;=+;${slf4j.version}})"; resolution:=optional,
                             ch.qos.cal10n; version=${cal10n.version}; resolution:=optional,
                             javax.interceptor.*, *;
                             resolution:=optional
