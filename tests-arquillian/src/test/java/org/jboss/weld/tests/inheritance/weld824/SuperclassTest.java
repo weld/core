@@ -50,7 +50,7 @@ public class SuperclassTest {
     public static WebArchive createWebArchive() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
         war.addAsLibrary(createJavaArchive());
-        war.addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+        war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         return war;
     }
 
@@ -59,10 +59,10 @@ public class SuperclassTest {
      * However, the Bar class is registered through the SimpleExtension.
      */
     public static JavaArchive createJavaArchive() {
-        JavaArchive war = ShrinkWrap.create(JavaArchive.class, "test.jar");
-        war.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-        war.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
-        return war;
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
+        jar.addClasses(SimpleExtension.class, Foo.class, Bar.class);
+        jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
+        return jar;
     }
 
     @Test

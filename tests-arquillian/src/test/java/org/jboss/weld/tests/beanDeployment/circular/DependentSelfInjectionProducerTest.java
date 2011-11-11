@@ -16,7 +16,7 @@ public class DependentSelfInjectionProducerTest {
     @ShouldThrowException(Exception.class) // AS7-1197
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addClasses(DependentLooping.class, DependentLoopingProducer.class);
+                .addClasses(DependentLooping.class, DependentLoopingProducer.class, Violation.class);
     }
 
     @Test

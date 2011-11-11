@@ -23,7 +23,7 @@ import javax.inject.Named;
 @Stateful
 @Tame
 @Named("Pongo")
-class Hound implements HoundLocal {
+public class Hound implements HoundLocal {
     @Remove
     public void bye() {
     }

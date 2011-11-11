@@ -62,7 +62,7 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -80,6 +80,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @author David Allen
  * @author Stuart Douglas
  * @author Marius Bogoevici
+ * @author Ales Justin
  */
 public class ProxyFactory<T> {
     // The log provider
@@ -89,7 +90,7 @@ public class ProxyFactory<T> {
     public static final String DEFAULT_PROXY_PACKAGE = "org.jboss.weld.proxies";
 
     private final Class<?> beanType;
-    private final Set<Class<?>> additionalInterfaces = new HashSet<Class<?>>();
+    private final Set<Class<?>> additionalInterfaces = new LinkedHashSet<Class<?>>();
     private final ClassLoader classLoader;
     private final String baseProxyName;
     private final Bean<?> bean;
@@ -135,6 +136,11 @@ public class ProxyFactory<T> {
         addDefaultAdditionalInterfaces();
         baseProxyName = proxyName;
         this.classLoader = resolveClassLoaderForBeanProxy(bean, typeInfo);
+        // hierarchy order
+        List<Class<?>> list = new ArrayList<Class<?>>(additionalInterfaces);
+        Collections.sort(list, ClassHierarchyComparator.INSTANCE);
+        additionalInterfaces.clear();
+        additionalInterfaces.addAll(list);
     }
 
     static String getProxyName(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {

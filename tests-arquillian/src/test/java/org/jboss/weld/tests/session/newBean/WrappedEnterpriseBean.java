@@ -22,7 +22,7 @@ import javax.enterprise.context.SessionScoped;
 
 @SessionScoped
 @Stateful
-class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal {
+public class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal {
     @Remove
     public void bye() {
     }
