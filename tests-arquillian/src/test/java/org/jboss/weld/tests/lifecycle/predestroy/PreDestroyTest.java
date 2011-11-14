@@ -27,6 +27,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,6 +52,7 @@ public class PreDestroyTest {
             CreationalContext ctx = bm.createCreationalContext(null);
             TestBean testBean = (TestBean) bm.getReference(b, b.getBeanClass(), ctx);
             b.destroy(testBean, ctx);
+            Assert.assertEquals("PreDestroy invocation number.", 1, testBean.getCounter());
         }
     }
 }

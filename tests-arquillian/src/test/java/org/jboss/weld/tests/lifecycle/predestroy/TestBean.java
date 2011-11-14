@@ -29,13 +29,14 @@ import javax.annotation.PreDestroy;
  */
 public class TestBean {
 
-    private boolean pd;
+    private int counter;
 
     @PreDestroy
     public void predestroy() {
-        if (pd)
-            throw new Error("Already called!");
-        pd = true;
+        counter++;
     }
 
+    public int getCounter() {
+        return counter;
+    }
 }
