@@ -141,6 +141,14 @@ public class Validator implements Service {
                     validateInterceptors(beanManager, classBean);
                 }
             }
+            // for each producer bean validate its disposer method
+            if (bean instanceof AbstractProducerBean<?, ?, ?> && ((AbstractProducerBean<?, ?, ?>)bean).getDisposalMethod() != null) {
+                DisposalMethod<?, ?> disposalMethod = ((AbstractProducerBean<?, ?, ?>)bean).getDisposalMethod();
+                for (InjectionPoint ip : disposalMethod.getInjectionPoints()) {
+                    // pass the producer bean instead of the disposal method bean
+                    validateInjectionPoint(ip, bean, beanManager);
+                }
+            }
         }
     }
 
@@ -217,13 +225,20 @@ public class Validator implements Service {
      * @param beanManager the bean manager
      */
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
+        validateInjectionPoint(ij, ij.getBean(), beanManager);
+    }
+
+    /**
+     * Variation of the validateInjectionPoint method which allows the bean to be defined explicitly (used for disposer method validation)
+     */
+    public void validateInjectionPoint(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
             throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
         }
-        if (ij.getType().equals(InjectionPoint.class) && ij.getBean() == null) {
+        if (ij.getType().equals(InjectionPoint.class) && bean == null) {
             throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
         }
-        if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(ij.getBean().getScope())) {
+        if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
             throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
         }
         if (ij.getType() instanceof TypeVariable<?>) {
@@ -232,7 +247,7 @@ public class Validator implements Service {
         if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) && ij.getAnnotated().getAnnotation(Named.class).value().equals("")) {
             throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, ij);
         }
-        boolean newBean = (ij.getBean() instanceof NewManagedBean<?>) || (ij.getBean() instanceof NewSessionBean<?>);
+        boolean newBean = (bean instanceof NewManagedBean<?>) || (bean instanceof NewSessionBean<?>);
         if (!newBean) {
             checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
         }
@@ -255,7 +270,7 @@ public class Validator implements Service {
             if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {
                 throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
             }
-            if (ij.getBean() != null && Beans.isPassivatingScope(ij.getBean(), beanManager)) {
+            if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
                 validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
             }
         }
