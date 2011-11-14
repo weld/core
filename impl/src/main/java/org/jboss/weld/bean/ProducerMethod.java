@@ -34,17 +34,12 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Set;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Represents a producer method bean
@@ -55,7 +50,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     // The underlying method
     private MethodInjectionPoint<T, ? super X> method;
-    private DisposalMethod<X, ?> disposalMethodBean;
     private ProducerMethod<?, ?> specializedBean;
     private final String id;
     private final boolean proxiable;
@@ -113,18 +107,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         if (!isInitialized()) {
             super.initialize(environment);
             checkProducerMethod();
-            initDisposalMethod(environment);
-            setProducer(new Producer<T>() {
-
-                public void dispose(T instance) {
-                    if (disposalMethodBean != null) {
-                        disposalMethodBean.invokeDisposeMethod(instance);
-                    }
-                }
-
-                public Set<InjectionPoint> getInjectionPoints() {
-                    return cast(getWeldInjectionPoints());
-                }
+            setProducer(new AbstractProducer<T>() {
 
                 public T produce(CreationalContext<T> creationalContext) {
                     Object receiver = getReceiver(creationalContext);
@@ -135,11 +118,9 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
                     }
                 }
 
-                @Override
                 public String toString() {
                     return method.toString();
                 }
-
             });
         }
     }
@@ -179,29 +160,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     }
 
     /**
-     * Initializes the remove method
-     */
-    protected void initDisposalMethod(BeanDeployerEnvironment environment) {
-        Set<DisposalMethod<X, ?>> disposalBeans = environment.<X>resolveDisposalBeans(getTypes(), getQualifiers(), getDeclaringBean());
-
-        if (disposalBeans.size() == 1) {
-            this.disposalMethodBean = disposalBeans.iterator().next();
-        } else if (disposalBeans.size() > 1) {
-            throw new DefinitionException(MULTIPLE_DISPOSAL_METHODS, this, disposalBeans);
-        }
-    }
-
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
-        try {
-            getProducer().dispose(instance);
-        } finally {
-            if (getDeclaringBean().isDependent()) {
-                creationalContext.release();
-            }
-        }
-    }
-
-    /**
      * Gets the annotated item representing the method
      *
      * @return The annotated item
@@ -219,15 +177,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     @Override
     protected String getDefaultName() {
         return method.getPropertyName();
-    }
-
-    /**
-     * Returns the disposal method
-     *
-     * @return The method representation
-     */
-    public DisposalMethod<X, ?> getDisposalMethod() {
-        return disposalMethodBean;
     }
 
     @Override

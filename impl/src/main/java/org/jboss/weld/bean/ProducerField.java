@@ -28,15 +28,11 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 import java.lang.reflect.Field;
-import java.util.Set;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Represents a producer field
@@ -104,21 +100,13 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     public void initialize(BeanDeployerEnvironment environment) {
         if (!isInitialized()) {
             super.initialize(environment);
-            setProducer(new Producer<T>() {
-
-                public void dispose(T instance) {
-                    defaultDispose(instance);
-                }
-
-                public Set<InjectionPoint> getInjectionPoints() {
-                    return cast(getWeldInjectionPoints());
-                }
+            setProducer(new AbstractProducer<T>() {
 
                 public T produce(CreationalContext<T> creationalContext) {
                     // unwrap if we have a proxy
                     Object receiver = getReceiver(creationalContext);
                     if (receiver instanceof TargetInstanceProxy) {
-                        receiver = Reflections.<TargetInstanceProxy<T>>cast(receiver).getTargetInstance();
+                        receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
                     }
                     return field.get(receiver);
                 }
@@ -141,14 +129,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         if (getDeclaringBean() instanceof SessionBean<?> && !field.isStatic()) {
             throw new DefinitionException(PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC, getWeldAnnotated(), getWeldAnnotated().getDeclaringType());
         }
-    }
-
-    protected void defaultDispose(T instance) {
-        // No disposal by default
-    }
-
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
-        getProducer().dispose(instance);
     }
 
     /**

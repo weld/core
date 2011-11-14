@@ -55,6 +55,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_FIELD_INJECTION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR;
@@ -68,6 +69,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_T
 import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * The implicit producer bean
@@ -100,6 +102,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     // Serialization cache for produced types at runtime
     private ConcurrentMap<Class<?>, Boolean> serializationCheckCache;
+
+    private DisposalMethod<X, ?> disposalMethodBean;
 
     /**
      * Constructor
@@ -175,6 +179,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         super.initialize(environment);
         checkProducerReturnType();
         initPassivationCapable();
+        initDisposalMethod(environment);
     }
 
     private void initPassivationCapable() {
@@ -306,4 +311,52 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         }
     }
 
+    public void destroy(T instance, CreationalContext<T> creationalContext) {
+        try {
+            getProducer().dispose(instance);
+        } finally {
+            if (getDeclaringBean().isDependent()) {
+                creationalContext.release();
+            }
+        }
+    }
+
+    /**
+     * Initializes the remove method
+     */
+    protected void initDisposalMethod(BeanDeployerEnvironment environment) {
+        Set<DisposalMethod<X, ?>> disposalBeans = environment.<X>resolveDisposalBeans(getTypes(), getQualifiers(), getDeclaringBean());
+
+        if (disposalBeans.size() == 1) {
+            this.disposalMethodBean = disposalBeans.iterator().next();
+        } else if (disposalBeans.size() > 1) {
+            throw new DefinitionException(MULTIPLE_DISPOSAL_METHODS, this, disposalBeans);
+        }
+    }
+
+    /**
+     * Returns the disposal method
+     *
+     * @return The method representation
+     */
+    public DisposalMethod<X, ?> getDisposalMethod() {
+        return disposalMethodBean;
+    }
+
+    /**
+     * Partial implementation of the {@link Producer} for common functionality.
+     *
+     * @author Jozef Hartinger
+     */
+    protected abstract class AbstractProducer<I> implements Producer<I> {
+        public void dispose(I instance) {
+            if (disposalMethodBean != null) {
+                disposalMethodBean.invokeDisposeMethod(instance);
+            }
+        }
+
+        public Set<InjectionPoint> getInjectionPoints() {
+            return cast(getWeldInjectionPoints());
+        }
+    }
 }
