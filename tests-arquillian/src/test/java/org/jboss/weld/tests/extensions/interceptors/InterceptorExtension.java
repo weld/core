@@ -60,37 +60,23 @@ public class InterceptorExtension implements Extension {
         marBuilder.addToMethod(post, new PostConstructLiteral());
 
         event.addAnnotatedType(marBuilder.create());
-
     }
 
     private static class InterceptorLiteral extends AnnotationLiteral<Interceptor> implements Interceptor {
     }
 
-    ;
-
     private static class IncrementedLiteral extends AnnotationLiteral<Incremented> implements Incremented {
     }
-
-    ;
 
     private static class AroundInvokeLiteral extends AnnotationLiteral<AroundInvoke> implements AroundInvoke {
     }
 
-    ;
-
     private static class PreDestroyLiteral extends AnnotationLiteral<PreDestroy> implements PreDestroy {
     }
-
-    ;
 
     private static class PostConstructLiteral extends AnnotationLiteral<PostConstruct> implements PostConstruct {
     }
 
-    ;
-
     private static class FullMarathonImpl extends AnnotationLiteral<FullMarathon> implements FullMarathon {
     }
-
-    ;
-
 }

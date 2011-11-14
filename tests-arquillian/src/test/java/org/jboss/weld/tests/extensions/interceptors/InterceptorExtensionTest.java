@@ -37,6 +37,8 @@ import javax.inject.Inject;
 /**
  * Tests that interceptors registered via the SPI work correctly
  *
+ * TODO -- fix this test NOT to include actual annotitions.
+ *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
  */
 @Category(Integration.class)
