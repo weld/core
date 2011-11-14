@@ -25,7 +25,7 @@ import javax.enterprise.context.SessionScoped;
 @SuppressWarnings("serial")
 @SessionScoped
 @Stateful
-class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal, Serializable {
+public class WrappedEnterpriseBean implements WrappedEnterpriseBeanLocal, Serializable {
     @Remove
     public void bye() {
     }

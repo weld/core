@@ -27,6 +27,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Named;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.logging.Logger;
 
@@ -43,7 +45,8 @@ import static javax.transaction.Status.STATUS_NO_TRANSACTION;
 @Tame
 @Named("Teddy")
 @SessionScoped
-public class Pomeranian implements PomeranianInterface {
+@SuppressWarnings("serial")
+public class Pomeranian implements PomeranianInterface, Serializable {
     private static final Logger log = Logger.getLogger(Pomeranian.class.getName());
 
     @Resource
