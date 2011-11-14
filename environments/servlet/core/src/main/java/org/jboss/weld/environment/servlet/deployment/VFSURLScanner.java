@@ -42,10 +42,15 @@ public class VFSURLScanner extends URLScanner {
 
     @Override
     protected void handleArchiveByFile(File file, final Set<String> classes, final Set<URL> urls) throws IOException {
-        try {
-            log.trace("archive: " + file);
+        log.trace("archive: " + file);
+        //noinspection deprecation
+        handleURL(file.toURL(), classes, urls);
+    }
 
-            final VirtualFile archive = VFS.getRoot(file.toURI());
+    @Override
+    protected void handleURL(URL url, final Set<String> classes, final Set<URL> urls) {
+        try {
+            final VirtualFile archive = VFS.getRoot(url.toURI());
             archive.visit(new VirtualFileVisitor() {
                 public VisitorAttributes getAttributes() {
                     return VisitorAttributes.RECURSE_LEAVES_ONLY;
@@ -62,7 +67,7 @@ public class VFSURLScanner extends URLScanner {
                 }
             });
         } catch (Exception e) {
-            throw new RuntimeException("Error handling file " + file, e);
+            throw new RuntimeException("Error handling url " + url, e);
         }
     }
 

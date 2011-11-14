@@ -63,6 +63,12 @@ public class URLScanner {
         }
     }
 
+    public void scanURLs(URL[] resources, Set<String> classes, Set<URL> urls) {
+        for (URL res : resources) {
+            handleURL(res, classes, urls);
+        }
+    }
+
     /**
      * Decode the url path.
      * <p/>
@@ -211,6 +217,10 @@ public class URLScanner {
                 }
             }
         }
+    }
+
+    protected void handleURL(URL url, Set<String> classes, Set<URL> urls) {
+        log.warn("Not implemented.");
     }
 
     /**
