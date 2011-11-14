@@ -49,6 +49,7 @@ import org.jboss.weld.bean.interceptor.WeldInterceptorInstantiator;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -75,6 +76,7 @@ import org.slf4j.ext.XLogger.Level;
  * @param <T> The type (class) of the bean
  * @author Pete Muir
  * @author Marius Bogoevici
+ * @author Ales Justin
  */
 public class ManagedBean<T> extends AbstractClassBean<T> {
 
@@ -291,7 +293,12 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         try {
             getInjectionTarget().preDestroy(instance);
-            creationalContext.release();
+            // WELD-1010 hack?
+            if (creationalContext instanceof CreationalContextImpl) {
+                ((CreationalContextImpl<T>) creationalContext).release(this, instance);
+            } else {
+                creationalContext.release();
+            }
         } catch (Exception e) {
             log.error(ERROR_DESTROYING, this, instance);
             xLog.throwing(Level.DEBUG, e);
@@ -318,8 +325,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             return getConstructor().newInstance(beanManager, ctx);
         } else {
             ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, constructorForEnhancedSubclass, getConstructor());
-            T instance = constructorInjectionPointWrapper.newInstance(beanManager, ctx);
-            return instance;
+            return constructorInjectionPointWrapper.newInstance(beanManager, ctx);
         }
     }
 
