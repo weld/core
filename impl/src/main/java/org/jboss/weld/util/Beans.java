@@ -400,6 +400,9 @@ public class Beans {
     public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, MethodInjectionPoint<?, ?> method) {
         ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
         for (WeldParameter<?, ?> parameter : method.getWeldParameters()) {
+            if (parameter.isAnnotationPresent(Disposes.class)) {
+                continue; // disposes parameter is not an injection point
+            }
             injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
         }
         return injectionPoints.trimToSize();
