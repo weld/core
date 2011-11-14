@@ -134,6 +134,7 @@ import static org.jboss.weld.util.reflection.Reflections.isCacheable;
  *
  * @author Pete Muir
  * @author Marius Bogoevici
+ * @author Ales Justin
  */
 public class BeanManagerImpl implements WeldManager, Serializable {
 
@@ -261,12 +262,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new AtomicInteger());
     }
 
-    /**
-     * Create a new, root, manager
-     *
-     * @param serviceRegistry
-     * @return
-     */
     public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services, Enabled enabled) {
         return new BeanManagerImpl(
                 services,
@@ -289,8 +284,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Create a new child manager
      *
-     * @param parentManager
-     * @return
+     * @param parentManager the parent manager
+     * @return new child manager
      */
     public static BeanManagerImpl newChildActivityManager(BeanManagerImpl parentManager) {
         List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
@@ -321,12 +316,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 parentManager.getChildIds());
     }
 
-    /**
-     * Create a new manager
-     *
-     * @param enabledDecoratorClasses
-     * @param ejbServices             the ejbResolver to use
-     */
     private BeanManagerImpl(
             ServiceRegistry serviceRegistry,
             List<Bean<?>> beans,
@@ -940,9 +929,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {
         Contextual<?> key = bean;
         while (specializedBeans.containsKey(key)) {
-            if (key == null) {
-                System.out.println("null key " + bean);
-            }
             key = specializedBeans.get(key);
         }
         return cast(key);

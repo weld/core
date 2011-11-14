@@ -55,6 +55,7 @@ import org.slf4j.cal10n.LocLogger;
 
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 import java.lang.reflect.Member;
@@ -67,6 +68,10 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
 
+/**
+ * @author Pete Muir
+ * @author Ales Justin
+ */
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
@@ -131,10 +136,14 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
         // TODO -- why do observers have to be the last?
         for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers()) {
-            log.debug(FOUND_OBSERVER_METHOD, observer);
-            observer.initialize();
-            ProcessObserverMethodImpl.fire(manager, observer);
-            manager.addObserver(observer);
+            Bean ob = observer.getDeclaringBean();
+            // make sure we're not specialized
+            if (manager.getSpecializedBeans().containsKey(ob) == false) {
+                log.debug(FOUND_OBSERVER_METHOD, observer);
+                observer.initialize();
+                ProcessObserverMethodImpl.fire(manager, observer);
+                manager.addObserver(observer);
+            }
         }
         return this;
     }
