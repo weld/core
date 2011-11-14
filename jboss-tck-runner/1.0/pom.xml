@@ -136,7 +136,7 @@
                         </goals>
                         <configuration>
                             <includeGroupIds>org.jboss.weld</includeGroupIds>
-                            <includeArtifactIds>weld-porting-package,weld-core-test</includeArtifactIds>
+                            <includeArtifactIds>weld-porting-package-tck10,weld-core-test</includeArtifactIds>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
