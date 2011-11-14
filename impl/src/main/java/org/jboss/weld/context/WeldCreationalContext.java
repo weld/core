@@ -69,5 +69,4 @@ public interface WeldCreationalContext<T> extends CreationalContext<T> {
      * instead.
      */
     InjectionPoint loadInjectionPoint();
-
 }

@@ -23,10 +23,8 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Broken;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -49,7 +47,6 @@ public class DisposalMethodInjectionPointTest {
     * description = "WELD-358"
     */
     @Test
-    @Category(Broken.class)
     public void test() {
         BarProducer.reset();
         Bean<BarConsumer> barConsumerBean = Utils.getBean(beanManager, BarConsumer.class);

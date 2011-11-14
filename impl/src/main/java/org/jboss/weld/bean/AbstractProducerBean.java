@@ -80,6 +80,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @param <S>
  * @author Gavin King
  * @author David Allen
+ * @author Jozef Hartinger
  */
 public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S> {
 
@@ -318,11 +319,26 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
+        boolean loadMetadata = (disposalMethodBean != null) && (disposalMethodBean.hasInjectionPointMetadataParameter());
+        // load InjectionPoint from CreationalContext
+        if (loadMetadata) {
+            WeldCreationalContext<T> ctx = getWeldCreationalContext(creationalContext);
+            InjectionPoint ip = ctx.loadInjectionPoint();
+            if (ip == null) {
+                throw new IllegalStateException("Unable to restore InjectionPoint instance.");
+            }
+            currentInjectionPoint.push(ip);
+        }
         try {
-            if (disposalMethodBean != null) {
-                disposalMethodBean.invokeDisposeMethod(instance, creationalContext);
+            if (AbstractProducer.class.isAssignableFrom(producer.getClass())) {
+                ((AbstractProducer) producer).dispose(instance, creationalContext);
+            } else {
+                producer.dispose(instance);
             }
         } finally {
+            if (loadMetadata) {
+                currentInjectionPoint.pop();
+            }
             if (getDeclaringBean().isDependent()) {
                 creationalContext.release();
             }
@@ -388,9 +404,25 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      *
      * @author Jozef Hartinger
      */
-    protected abstract class AbstractProducer<I> implements Producer<I> {
-        public void dispose(I instance) {
-            // noop, the disposer method is called within the destroy() method
+    protected abstract class AbstractProducer implements Producer<T> {
+        // according to the spec, anyone may call this method
+        // we are not able to metadata since we do not have the CreationalContext of the producer bean
+        // we create a new CreationalContext just for the invocation of the disposer method
+        public void dispose(T instance) {
+            CreationalContext<T> ctx = beanManager.createCreationalContext(AbstractProducerBean.this);
+            try {
+                dispose(instance, ctx);
+            } finally {
+                ctx.release();
+            }
+        }
+
+        // invoke a disposer method - if exists
+        // if the disposer metod requires bean metadata, it can be loaded from the CreationalContext
+        public void dispose(T instance, CreationalContext<T> ctx) {
+            if (disposalMethodBean != null) {
+                disposalMethodBean.invokeDisposeMethod(instance, ctx);
+            }
         }
 
         public Set<InjectionPoint> getInjectionPoints() {

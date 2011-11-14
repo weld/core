@@ -107,7 +107,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         if (!isInitialized()) {
             super.initialize(environment);
             checkProducerMethod();
-            setProducer(new AbstractProducer<T>() {
+            setProducer(new AbstractProducer() {
 
                 public T produce(CreationalContext<T> creationalContext) {
                     Object receiver = getReceiver(creationalContext);

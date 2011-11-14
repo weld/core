@@ -100,7 +100,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     public void initialize(BeanDeployerEnvironment environment) {
         if (!isInitialized()) {
             super.initialize(environment);
-            setProducer(new AbstractProducer<T>() {
+            setProducer(new AbstractProducer() {
 
                 public T produce(CreationalContext<T> creationalContext) {
                     // unwrap if we have a proxy

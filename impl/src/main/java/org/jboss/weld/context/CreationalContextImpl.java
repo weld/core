@@ -16,20 +16,21 @@
  */
 package org.jboss.weld.context;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.util.reflection.Reflections;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreationalContext<T>, Serializable {
 
