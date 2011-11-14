@@ -49,6 +49,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances, List<ContextualInstance<?>> parentDependentInstancesStore) {
         this.incompleteInstances = incompleteInstances;
         this.contextual = contextual;
+        // this is direct ref by intention - to track dependencies hierarchy
         this.dependentInstances = Collections.synchronizedList(new ArrayList<ContextualInstance<?>>());
         this.parentDependentInstances = parentDependentInstancesStore;
     }
@@ -66,11 +67,13 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public boolean containsIncompleteInstance(Contextual<?> bean) {
-        return incompleteInstances == null ? false : incompleteInstances.containsKey(bean);
+        return incompleteInstances != null && incompleteInstances.containsKey(bean);
     }
 
     public void addDependentInstance(ContextualInstance<?> contextualInstance) {
-        parentDependentInstances.add(contextualInstance);
+        // do not add cyclic dependency to itself
+        if (contextualInstance.getContextual().equals(contextual) == false)
+            parentDependentInstances.add(contextualInstance);
     }
 
     public void release() {
