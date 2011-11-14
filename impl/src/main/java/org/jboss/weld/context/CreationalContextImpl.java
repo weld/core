@@ -29,6 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Pete Muir
+ * @author Ales Justin
+ */
 public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreationalContext<T>, Serializable {
 
     private static final long serialVersionUID = 7375854583908262422L;
@@ -71,14 +75,21 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public void addDependentInstance(ContextualInstance<?> contextualInstance) {
-        // do not add cyclic dependency to itself
-        if (contextualInstance.getContextual().equals(contextual) == false)
-            parentDependentInstances.add(contextualInstance);
+        parentDependentInstances.add(contextualInstance);
     }
 
+    @java.lang.SuppressWarnings({"NullableProblems"})
     public void release() {
+        release(null, null);
+    }
+
+    // should not be public
+    @java.lang.SuppressWarnings({"UnusedParameters"})
+    public void release(Contextual<T> contextual, T instance) {
         for (ContextualInstance<?> dependentInstance : dependentInstances) {
-            destroy(dependentInstance);
+            // do not destroy contextual again, since it's just being destroyed
+            if (contextual == null || (dependentInstance.getContextual().equals(contextual) == false))
+                destroy(dependentInstance);
         }
         if (incompleteInstances != null) {
             incompleteInstances.clear();
@@ -88,5 +99,4 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     private static <T> void destroy(ContextualInstance<T> beanInstance) {
         beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
     }
-
 }
