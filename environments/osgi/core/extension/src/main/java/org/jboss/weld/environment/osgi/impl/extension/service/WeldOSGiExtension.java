@@ -605,102 +605,127 @@ public class WeldOSGiExtension implements Extension {
             this.context = context;
         }
 
+        @Override
         public String toString() {
             return context.toString();
         }
 
+        @Override
         public int hashCode() {
             return context.hashCode();
         }
 
+        @Override
         public boolean equals(Object obj) {
             return context.equals(obj);
         }
 
+        @Override
         public boolean ungetService(ServiceReference reference) {
             return context.ungetService(reference);
         }
 
+        @Override
         public void removeServiceListener(ServiceListener listener) {
             context.removeServiceListener(listener);
         }
 
+        @Override
         public void removeFrameworkListener(FrameworkListener listener) {
             context.removeFrameworkListener(listener);
         }
 
+        @Override
         public void removeBundleListener(BundleListener listener) {
             context.removeBundleListener(listener);
         }
 
+        @Override
         public ServiceRegistration registerService(String clazz, Object service, Dictionary properties) {
             return context.registerService(clazz, service, properties);
         }
 
+        @Override
         public ServiceRegistration registerService(String[] clazzes, Object service, Dictionary properties) {
             return context.registerService(clazzes, service, properties);
         }
 
+        @Override
         public Bundle installBundle(String location) throws BundleException {
             return context.installBundle(location);
         }
 
+        @Override
         public Bundle installBundle(String location, InputStream input) throws BundleException {
             return context.installBundle(location, input);
         }
 
+        @Override
         public ServiceReference[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
             return context.getServiceReferences(clazz, filter);
         }
 
+        @Override
         public ServiceReference getServiceReference(String clazz) {
             return context.getServiceReference(clazz);
         }
 
+        @Override
         public Object getService(ServiceReference reference) {
             return context.getService(reference);
         }
 
+        @Override
         public String getProperty(String key) {
             return context.getProperty(key);
         }
 
+        @Override
         public File getDataFile(String filename) {
             return context.getDataFile(filename);
         }
 
+        @Override
         public Bundle[] getBundles() {
             return context.getBundles();
         }
 
+        @Override
         public Bundle getBundle(long id) {
             return context.getBundle(id);
         }
 
+        @Override
         public Bundle getBundle() {
             return context.getBundle();
         }
 
+        @Override
         public ServiceReference[] getAllServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
             return context.getAllServiceReferences(clazz, filter);
         }
 
+        @Override
         public org.osgi.framework.Filter createFilter(String filter) throws InvalidSyntaxException {
             return context.createFilter(filter);
         }
 
+        @Override
         public void addServiceListener(ServiceListener listener) {
             context.addServiceListener(listener);
         }
 
+        @Override
         public void addServiceListener(ServiceListener listener, String filter) throws InvalidSyntaxException {
             context.addServiceListener(listener, filter);
         }
 
+        @Override
         public void addFrameworkListener(FrameworkListener listener) {
             context.addFrameworkListener(listener);
         }
 
+        @Override
         public void addBundleListener(BundleListener listener) {
             context.addBundleListener(listener);
         }
