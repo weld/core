@@ -138,7 +138,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers()) {
             Bean ob = observer.getDeclaringBean();
             // make sure we're not specialized
-            if (manager.getSpecializedBeans().containsKey(ob) == false) {
+            if (Beans.isSpecialized(ob, manager) == false) {
                 log.debug(FOUND_OBSERVER_METHOD, observer);
                 observer.initialize();
                 ProcessObserverMethodImpl.fire(manager, observer);
