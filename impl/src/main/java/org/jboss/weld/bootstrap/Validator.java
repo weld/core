@@ -107,7 +107,7 @@ public class Validator implements Service {
         }
         boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
         if (normalScoped && !Beans.isBeanProxyable(bean)) {
-            throw Proxies.getUnproxyableTypesException(bean.getTypes());
+            throw Proxies.getUnproxyableTypesException(bean);
         }
         if (!normalScoped) {
             validatePseudoScopedBean(bean, beanManager);
