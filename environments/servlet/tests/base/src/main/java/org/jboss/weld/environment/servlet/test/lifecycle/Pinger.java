@@ -31,5 +31,6 @@ import java.io.Serializable;
 @SessionScoped
 public class Pinger implements Serializable {
     public void ping() {
+        System.out.println("Pinger-" + System.identityHashCode(this));
     }
 }
