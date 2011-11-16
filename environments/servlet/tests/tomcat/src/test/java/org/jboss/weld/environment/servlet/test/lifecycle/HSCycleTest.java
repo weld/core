@@ -37,7 +37,6 @@ public class HSCycleTest extends HSCycleTestBase {
     public static WebArchive getDeployment() {
         WebArchive war = getBaseDeployment();
         war.add(TomcatDeployments.CONTEXT_XML, "META-INF/context.xml");
-        System.out.println(war.toString(true));
         return war;
     }
 }

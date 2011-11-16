@@ -43,10 +43,7 @@ public class HSCycleTestBase {
     }
 
     @Test
-    public void testNA() throws Exception {
-    }
-
-    public void XtestCycle(Pinger pinger) throws Exception {
+    public void testCycle(Pinger pinger) throws Exception {
         pinger.ping();
     }
 }

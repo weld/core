@@ -4,7 +4,7 @@ import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
-import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
+import org.jboss.weld.context.beanstore.http.LazyCyclicSessionBeanStore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -44,7 +44,7 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
 
     @Override
     protected BoundBeanStore createRequestBeanStore(NamingScheme namingScheme, HttpServletRequest request) {
-        return new LazySessionBeanStore(request, namingScheme);
+        return new LazyCyclicSessionBeanStore(request, namingScheme);
     }
 
     @Override

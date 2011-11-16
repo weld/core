@@ -43,6 +43,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
  * @author Nicklas Karlsson
  * @author David Allen
  * @author Pete Muir
+ * @author Ales Justin
  * @see EagerSessionBeanStore
  */
 public class LazySessionBeanStore extends AbstractSessionBeanStore {
@@ -55,6 +56,14 @@ public class LazySessionBeanStore extends AbstractSessionBeanStore {
         super(namingScheme);
         this.request = request;
         log.trace("Loading bean store " + this + " map from session " + getSession(false));
+    }
+
+    /**
+     * Get the session, create equals false;
+     * @return http session or null if no such session exists
+     */
+    protected HttpSession getSessionIfExists() {
+        return request.getSession(false);
     }
 
     @Override
