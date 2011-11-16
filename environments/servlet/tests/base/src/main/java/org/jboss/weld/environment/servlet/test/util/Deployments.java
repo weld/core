@@ -6,7 +6,9 @@ import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 public class Deployments {
-    public static final String DEFAULT_WEB_XML_PREFIX = "<web-app> <listener><listener-class>org.jboss.weld.environment.servlet.Listener</listener-class></listener> <resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
+    public static final String DEFAULT_WEB_XML_START = "<web-app>";
+    public static final String DEFAULT_WEB_XML_BODY = toListener("org.jboss.weld.environment.servlet.Listener") + "<resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
+    public static final String DEFAULT_WEB_XML_PREFIX = DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY;
     public static final String DEFAULT_WEB_XML_SUFFIX = "</web-app>";
 
     public static final Asset DEFAULT_WEB_XML = new ByteArrayAsset((DEFAULT_WEB_XML_PREFIX + DEFAULT_WEB_XML_SUFFIX).getBytes());
@@ -31,11 +33,15 @@ public class Deployments {
         return baseDeployment(new BeansXml(), webXml);
     }
 
+    public static String toListener(String listenerClassName) {
+        return "<listener><listener-class>" + listenerClassName + "</listener-class></listener>";
+    }
+
     /**
      * Inserts the extension into the end of the default web.xml (just before closing web-app)
      *
-     * @param extension
-     * @return
+     * @param extension the extension
+     * @return extended web xml
      */
     public static String extendDefaultWebXml(String extension) {
         return DEFAULT_WEB_XML_PREFIX + extension + DEFAULT_WEB_XML_SUFFIX;
