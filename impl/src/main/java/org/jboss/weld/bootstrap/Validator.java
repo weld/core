@@ -44,6 +44,8 @@ import org.jboss.weld.exceptions.NullableDependencyException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.literal.DecoratedLiteral;
+import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
@@ -58,6 +60,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
@@ -235,12 +238,6 @@ public class Validator implements Service {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
             throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
         }
-        if (ij.getType().equals(InjectionPoint.class) && bean == null) {
-            throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
-        }
-        if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
-            throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
-        }
         if (ij.getType() instanceof TypeVariable<?>) {
             throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, ij);
         }
@@ -272,6 +269,30 @@ public class Validator implements Service {
             }
             if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
                 validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+            }
+        }
+        // metadata injection points
+        if (ij.getType().equals(InjectionPoint.class) && bean == null) {
+            throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
+        }
+        if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
+            throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
+        }
+        Class<?> rawType = Reflections.getRawType(ij.getType());
+        if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
+            // TODO: check that the generic type of Bean matches the type of the injecting bean
+            if (bean == null) {
+                throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
+            }
+            if (rawType.equals(Interceptor.class) && !(bean instanceof Interceptor<?>)) {
+                throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Interceptor.class.getSimpleName(), ij);
+            }
+            if (rawType.equals(Decorator.class) && !(bean instanceof Decorator<?>)) {
+                throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Decorator.class.getSimpleName(), ij);
+            }
+            if (rawType.equals(Bean.class) && (ij.getQualifiers().contains(InterceptedLiteral.INSTANCE) && !(bean instanceof Interceptor<?>))
+                    || (rawType.equals(Bean.class) && ij.getQualifiers().contains(DecoratedLiteral.INSTANCE) && !(bean instanceof Decorator<?>))) {
+                throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Bean.class.getSimpleName(), ij);
             }
         }
     }

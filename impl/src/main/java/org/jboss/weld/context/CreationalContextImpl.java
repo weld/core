@@ -22,6 +22,8 @@ import org.jboss.weld.util.reflection.Reflections;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,15 +44,26 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private final List<ContextualInstance<?>> parentDependentInstances;
 
+    private final WeldCreationalContext<?> parentCreationalContext;
+
+    /*
+     * A disposer method may define a metadata injection point. If that's the case, we need to preserve the metadata associated
+     * with a given instance.
+     */
+    private Contextual<T> persistentContextual;
+    private InjectionPoint persistentInjectionPoint;
+
     public CreationalContextImpl(Contextual<T> contextual) {
-        this(contextual, new HashMap<Contextual<?>, Object>(), Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()));
+        this(contextual, new HashMap<Contextual<?>, Object>(), Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
     }
 
-    private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances, List<ContextualInstance<?>> parentDependentInstancesStore) {
+    private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances,
+            List<ContextualInstance<?>> parentDependentInstancesStore, WeldCreationalContext<?> parentCreationalContext) {
         this.incompleteInstances = incompleteInstances;
         this.contextual = contextual;
         this.dependentInstances = Collections.synchronizedList(new ArrayList<ContextualInstance<?>>());
         this.parentDependentInstances = parentDependentInstancesStore;
+        this.parentCreationalContext = parentCreationalContext;
     }
 
     public void push(T incompleteInstance) {
@@ -58,7 +71,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual) {
-        return new CreationalContextImpl<S>(contextual, incompleteInstances == null ? new HashMap<Contextual<?>, Object>() : new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstances);
+        return new CreationalContextImpl<S>(contextual, incompleteInstances == null ? new HashMap<Contextual<?>, Object>() : new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstances, this);
     }
 
     public <S> S getIncompleteInstance(Contextual<S> bean) {
@@ -86,4 +99,26 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
     }
 
+    public WeldCreationalContext<?> getParentCreationalContext() {
+        return parentCreationalContext;
+    }
+
+    public Contextual<T> getContextual() {
+        if (persistentContextual != null) {
+            return persistentContextual;
+        }
+        return contextual;
+    }
+
+    public void storeContextual() {
+        persistentContextual = contextual;
+    }
+
+    public InjectionPoint loadInjectionPoint() {
+        return persistentInjectionPoint;
+    }
+
+    public void storeInjectionPoint(InjectionPoint ip) {
+        persistentInjectionPoint = ip;
+    }
 }

@@ -29,9 +29,12 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Named;
 import javax.inject.Provider;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -46,6 +49,9 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFI
 import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
 
 public class ResolvableBuilder {
+
+    private static final Class<?>[] FACADE_TYPES = new Class<?>[] { Event.class, Instance.class, Provider.class };
+    private static final Class<?>[] METADATA_TYPES = new Class<?>[] { Interceptor.class, Decorator.class, Bean.class };
 
     protected Class<?> rawType;
     protected final Set<Type> types;
@@ -105,19 +111,27 @@ public class ResolvableBuilder {
         if (qualifiers.size() == 0) {
             this.qualifiers.add(DefaultLiteral.INSTANCE);
         }
-        if (Reflections.isAssignableFrom(Event.class, types)) {
-            return createFacade(Event.class);
-        } else if (Reflections.isAssignableFrom(Instance.class, types)) {
-            return createFacade(Instance.class);
-        } else if (Reflections.isAssignableFrom(Provider.class, types)) {
-            return createFacade(Provider.class);
-        } else {
-            return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
+        for (Class<?> facadeType : FACADE_TYPES) {
+            if (Reflections.isAssignableFrom(facadeType, types)) {
+                return createFacade(facadeType);
+            }
         }
+        for (Class<?> metadataType : METADATA_TYPES) {
+            if (Reflections.isAssignableFrom(metadataType, types)) {
+                return createMetadataProvider(metadataType);
+            }
+        }
+        return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
     }
 
     private Resolvable createFacade(Class<?> rawType) {
         Set<Annotation> qualifiers = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
+        Set<Type> types = Collections.<Type>singleton(rawType);
+        return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
+    }
+
+    // just as facade but we keep the qualifiers so that we can recognize Bean from @Intercepted Bean.
+    private Resolvable createMetadataProvider(Class<?> rawType) {
         Set<Type> types = Collections.<Type>singleton(rawType);
         return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
     }

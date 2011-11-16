@@ -21,6 +21,7 @@ import com.google.common.collect.MapMaker;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
@@ -105,6 +106,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     private DisposalMethod<X, ?> disposalMethodBean;
 
+    private CurrentInjectionPoint currentInjectionPoint;
+
     /**
      * Constructor
      *
@@ -180,6 +183,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         checkProducerReturnType();
         initPassivationCapable();
         initDisposalMethod(environment);
+        currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
     }
 
     private void initPassivationCapable() {
@@ -226,7 +230,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (passivating && !instanceSerializable) {
                 throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
             }
-            InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
+            InjectionPoint injectionPoint = currentInjectionPoint.peek();
             if (injectionPoint != null && injectionPoint.getBean() != null) {
                 if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
                     if (injectionPoint.getMember() instanceof Field) {
@@ -300,6 +304,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * @returns The instance
      */
     public T create(final CreationalContext<T> creationalContext) {
+        storeMetadata(creationalContext);
+
         try {
             T instance = getProducer().produce(creationalContext);
             checkReturnValue(instance);
@@ -313,11 +319,45 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         try {
-            getProducer().dispose(instance);
+            if (disposalMethodBean != null) {
+                disposalMethodBean.invokeDisposeMethod(instance, creationalContext);
+            }
         } finally {
             if (getDeclaringBean().isDependent()) {
                 creationalContext.release();
             }
+        }
+    }
+
+    /**
+     * If metadata is required by the disposer method, store it within the CreationalContext.
+     */
+    private void storeMetadata(CreationalContext<T> creationalContext) {
+        if (disposalMethodBean != null) {
+            if (disposalMethodBean.hasBeanMetadataParameter()) {
+                WeldCreationalContext<T> ctx = getWeldCreationalContext(creationalContext);
+                checkValue(ctx.getContextual());
+                ctx.storeContextual();
+            }
+            if (disposalMethodBean.hasInjectionPointMetadataParameter()) {
+                InjectionPoint ip = currentInjectionPoint.peek();
+                checkValue(ip);
+                getWeldCreationalContext(creationalContext).storeInjectionPoint(ip);
+            }
+        }
+    }
+
+    private <A> WeldCreationalContext<A> getWeldCreationalContext(CreationalContext<A> ctx) {
+        if (ctx instanceof WeldCreationalContext<?>) {
+            return Reflections.cast(ctx);
+        }
+        throw new IllegalArgumentException("Unable to store values in " + ctx);
+    }
+
+    private void checkValue(Object object) {
+        InjectionPoint ip = currentInjectionPoint.peek();
+        if (ip != null && Beans.isPassivatingScope(ip.getBean(), beanManager) && !(isTypeSerializable(object.getClass()))) {
+            throw new IllegalArgumentException("Unable to store non-serializable " + object + " as a dependency of " + this);
         }
     }
 
@@ -350,9 +390,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      */
     protected abstract class AbstractProducer<I> implements Producer<I> {
         public void dispose(I instance) {
-            if (disposalMethodBean != null) {
-                disposalMethodBean.invokeDisposeMethod(instance);
-            }
+            // noop, the disposer method is called within the destroy() method
         }
 
         public Set<InjectionPoint> getInjectionPoints() {

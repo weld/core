@@ -20,11 +20,16 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.builtin.BeanMetadataBean;
 import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.builtin.ConversationBean;
+import org.jboss.weld.bean.builtin.DecoratedBeanMetadataBean;
+import org.jboss.weld.bean.builtin.DecoratorMetadataBean;
 import org.jboss.weld.bean.builtin.EventBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.InstanceBean;
+import org.jboss.weld.bean.builtin.InterceptedBeanMetadataBean;
+import org.jboss.weld.bean.builtin.InterceptorMetadataBean;
 import org.jboss.weld.bean.builtin.ee.DefaultValidatorBean;
 import org.jboss.weld.bean.builtin.ee.DefaultValidatorFactoryBean;
 import org.jboss.weld.bean.builtin.ee.PrincipalBean;
@@ -170,6 +175,11 @@ public class BeanDeployment {
         beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
         beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));
         beanDeployer.getEnvironment().addBuiltInBean(new ConversationBean(beanManager));
+        beanDeployer.getEnvironment().addBuiltInBean(new BeanMetadataBean(beanManager));
+        beanDeployer.getEnvironment().addBuiltInBean(new InterceptedBeanMetadataBean(beanManager));
+        beanDeployer.getEnvironment().addBuiltInBean(new DecoratedBeanMetadataBean(beanManager));
+        beanDeployer.getEnvironment().addBuiltInBean(new InterceptorMetadataBean(beanManager));
+        beanDeployer.getEnvironment().addBuiltInBean(new DecoratorMetadataBean(beanManager));
         if (beanManager.getServices().contains(TransactionServices.class)) {
             beanDeployer.getEnvironment().addBuiltInBean(new UserTransactionBean(beanManager));
         }

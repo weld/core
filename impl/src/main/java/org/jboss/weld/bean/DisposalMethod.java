@@ -24,12 +24,15 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -48,6 +51,9 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     protected MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
     private WeldParameter<?, ? super X> disposesParameter;
+    // indicates whether a given type of metadata is required by the disposal method
+    private boolean injectionPointMetadataParameter = false;
+    private boolean beanMetadataParameter = false;
 
     public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, ServiceRegistry services) {
         return new DisposalMethod<X, T>(manager, method, declaringBean, services);
@@ -67,6 +73,17 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         this.disposesParameter = getWeldAnnotated().getWeldParameters(Disposes.class).get(0);
     }
 
+    private void initMetadataParameters() {
+        for (Class<?> type : getWeldAnnotated().getParameterTypesAsArray()) {
+            if (InjectionPoint.class.equals(type)) {
+                injectionPointMetadataParameter = true;
+            }
+            if (Bean.class.equals(Reflections.getRawType(type))) {
+                beanMetadataParameter = true;
+            }
+        }
+    }
+
     public WeldParameter<?, ? super X> getDisposesParameter() {
         return disposesParameter;
     }
@@ -76,6 +93,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         super.initialize(environment);
         checkDisposalMethod();
         initDisposesParameter();
+        initMetadataParameters();
     }
 
     protected void initType() {
@@ -149,15 +167,13 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         return null;
     }
 
-    public void invokeDisposeMethod(Object instance) {
-        CreationalContext<T> creationalContext = beanManager.createCreationalContext(this);
+    public void invokeDisposeMethod(Object instance, CreationalContext<?> creationalContext) {
         Object receiverInstance = getReceiver(creationalContext);
         if (receiverInstance == null) {
             disposalMethodInjectionPoint.invokeWithSpecialValue(null, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
         } else {
             disposalMethodInjectionPoint.invokeOnInstanceWithSpecialValue(receiverInstance, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
         }
-        creationalContext.release();
     }
 
     private void checkDisposalMethod() {
@@ -227,6 +243,14 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     @Override
     public Set<Class<? extends Annotation>> getStereotypes() {
         return Collections.emptySet();
+    }
+
+    public boolean hasInjectionPointMetadataParameter() {
+        return injectionPointMetadataParameter;
+    }
+
+    public boolean hasBeanMetadataParameter() {
+        return beanMetadataParameter;
     }
 
     @Override
