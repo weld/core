@@ -116,9 +116,9 @@ public class BuiltinMetadataBeanTest {
         assertNull(getReference(Decorator.class));
     }
 
-    private <T> T getReference(Class<T> type) {
+    private Object getReference(Class<?> type) {
         Bean<?> bean = manager.resolve(manager.getBeans(type));
         CreationalContext<?> ctx = manager.createCreationalContext(bean);
-        return cast(manager.getReference(bean, type, ctx));
+        return manager.getReference(bean, type, ctx);
     }
 }
