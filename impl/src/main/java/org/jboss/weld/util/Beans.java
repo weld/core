@@ -60,6 +60,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.decorator.Decorator;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
@@ -558,18 +559,37 @@ public class Beans {
     /**
      * Check if bean is specialized by any of beans
      *
-     * @param bean
-     * @param beans
-     * @param allSpecializedBeans
-     * @return
+     * @param bean the bean to check
+     * @param beanManager bean manager
+     * @return true if bean is specialized by some bean in all beans
+     */
+    public static <T extends Bean<?>> boolean isSpecialized(T bean, BeanManagerImpl beanManager) {
+        for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
+            for (BeanManagerImpl accessibleBeanManager : beanManagers) {
+                if (accessibleBeanManager.getSpecializedBeans().containsKey(bean)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if bean is specialized by any of beans
+     *
+     * @param bean the bean to check
+     * @param beans the possible specialized beans
+     * @param beanManager bean manager
+     * @return true if bean is specialized by some bean in beans
      */
     public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, BeanManagerImpl beanManager) {
         for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
             for (BeanManagerImpl accessibleBeanManager : beanManagers) {
-                if (accessibleBeanManager.getSpecializedBeans().containsKey(bean)) {
-                    if (beans.contains(accessibleBeanManager.getSpecializedBeans().get(bean))) {
-                        return true;
-                    }
+                Map<Contextual<?>, Contextual<?>> specializedBeans = accessibleBeanManager.getSpecializedBeans();
+                Contextual<?> specializedBean = specializedBeans.get(bean);
+                //noinspection SuspiciousMethodCalls
+                if (specializedBean != null && beans.contains(specializedBean)) {
+                    return true;
                 }
             }
         }
