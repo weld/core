@@ -22,6 +22,7 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
+import javax.enterprise.inject.spi.Bean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -132,18 +133,30 @@ public class Proxies {
         return getUnproxyableTypeException(type) == null;
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypeException(Type type) {
+    private static UnproxyableResolutionException getUnproxyableTypeException(Type type,Bean<?> declaringBean) {
         if (type instanceof Class<?>) {
-            return getUnproxyableClassException((Class<?>) type);
+            return getUnproxyableClassException((Class<?>) type,declaringBean);
         } else if (type instanceof ParameterizedType) {
             Type rawType = ((ParameterizedType) type).getRawType();
             if (rawType instanceof Class<?>) {
-                return getUnproxyableClassException((Class<?>) rawType);
+                return getUnproxyableClassException((Class<?>) rawType,declaringBean);
             }
         }
         return new UnproxyableResolutionException(NOT_PROXYABLE_UNKNOWN, type);
     }
+    public static UnproxyableResolutionException getUnproxyableTypeException(Type type) {
+        return getUnproxyableTypeException(type,null);
+    }
 
+    /**
+     * Indicates if a set of types are all proxyable
+     *
+     * @param declaringBean with types to test
+     * @return True if proxyable, false otherwise
+     */
+    public static boolean isTypesProxyable(Bean<?> declaringBean) {
+        return getUnproxyableTypesException(declaringBean) == null;
+    }
     /**
      * Indicates if a set of types are all proxyable
      *
@@ -153,13 +166,16 @@ public class Proxies {
     public static boolean isTypesProxyable(Iterable<? extends Type> types) {
         return getUnproxyableTypesException(types) == null;
     }
+    public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean) {
+        return getUnproxyableTypesExceptionInt(declaringBean.getTypes(),declaringBean);
+    }
 
-    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types) {
+    private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types,Bean<?> declaringBean) {
         for (Type apiType : types) {
             if (Object.class.equals(apiType)) {
                 continue;
             }
-            UnproxyableResolutionException e = getUnproxyableTypeException(apiType);
+            UnproxyableResolutionException e = getUnproxyableTypeException(apiType,declaringBean);
             if (e != null) {
                 return e;
             }
@@ -167,7 +183,11 @@ public class Proxies {
         return null;
     }
 
-    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz) {
+    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types) {
+        return getUnproxyableTypesExceptionInt(types,null);
+    }
+
+    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz,Bean<?> declaringBean) {
         if (clazz.isInterface()) {
             return null;
         }
@@ -176,25 +196,25 @@ public class Proxies {
             constructor = SecureReflections.getDeclaredConstructor(clazz);
         } catch (NoSuchMethodException e) {
             if (!InstantiatorFactory.useInstantiators()) {
-                return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz);
+                return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz,declaringBean);
             } else {
                 return null;
             }
         }
         if (constructor == null) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz);
+            return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz,declaringBean);
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
             if (!InstantiatorFactory.useInstantiators()) {
-                return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor);
+                return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor,declaringBean);
             } else {
                 return null;
             }
         } else if (Reflections.isTypeOrAnyMethodFinal(clazz)) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getNonPrivateFinalMethodOrType(clazz));
+            return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getNonPrivateFinalMethodOrType(clazz),declaringBean);
         } else if (clazz.isPrimitive()) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz);
+            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz,declaringBean);
         } else if (Reflections.isArrayType(clazz)) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz);
+            return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz,declaringBean);
         } else {
             return null;
         }
