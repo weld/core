@@ -31,6 +31,7 @@ import org.jboss.weld.environment.servlet.deployment.URLScanner;
 import org.jboss.weld.environment.servlet.deployment.VFSURLScanner;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.Reflections;
+import org.jboss.weld.environment.servlet.util.ServiceLoader;
 import org.jboss.weld.environment.tomcat.Tomcat6Container;
 import org.jboss.weld.environment.tomcat7.Tomcat7Container;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
@@ -47,7 +48,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 import java.util.Arrays;
-import java.util.ServiceLoader;
 
 /**
  * @author Pete Muir
@@ -196,7 +196,7 @@ public class Listener extends ForwardingServletListener {
      * @return valid container or null
      */
     protected Container findContainer(ContainerContext cc, StringBuilder dump) {
-        ServiceLoader<Container> extContainers = ServiceLoader.load(Container.class, getClass().getClassLoader());
+        Iterable<Container> extContainers = ServiceLoader.load(Container.class, getClass().getClassLoader());
         Container container = checkContainers(cc, dump, extContainers);
         if (container == null)
             container = checkContainers(cc, dump, Arrays.asList(
