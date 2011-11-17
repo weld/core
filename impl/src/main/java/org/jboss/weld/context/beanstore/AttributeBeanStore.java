@@ -126,11 +126,11 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     }
 
     public <T> void put(String id, ContextualInstance<T> instance) {
+        beanStore.put(id, instance); // moved due to WELD-892
         if (isAttached()) {
             String prefixedId = namingScheme.prefix(id);
             setAttribute(prefixedId, instance);
         }
-        beanStore.put(id, instance);
         log.trace(CONTEXTUAL_INSTANCE_ADDED, instance.getContextual(), id, this);
     }
 
