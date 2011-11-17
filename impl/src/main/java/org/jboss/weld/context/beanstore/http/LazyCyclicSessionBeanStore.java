@@ -45,9 +45,10 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
     protected HttpSession getSession(boolean create) {
         HttpSession session = null;
 
-        Map<String, Object> map = null;
+        Map<String, Object> map = temp.get();
         // only put temp if we're to create new session
-        if (create) {
+        final boolean newTemp = (create && map == null);
+        if (newTemp) {
             map = new HashMap<String, Object>();
             temp.set(map);
         }
@@ -57,7 +58,8 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
             return session;
         } finally {
             if (create) {
-                temp.remove();
+                if (newTemp)
+                    temp.remove();
 
                 if (session != null && map.isEmpty() == false) {
                     for (Map.Entry<String, Object> entry : map.entrySet())
@@ -99,10 +101,19 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
     @Override
     protected void setAttribute(String key, Object instance) {
         Map<String, Object> map = temp.get();
-        if (map != null) {
-            map.put(key, instance);
-        } else {
-            super.setAttribute(key, instance);
+        final boolean created = (map == null);
+        try {
+            if (map == null) {
+                map = new HashMap<String, Object>();
+                map.put(key, instance);
+                temp.set(map);
+                super.setAttribute(key, instance); // call super
+            } else {
+                map.put(key, instance);
+            }
+        } finally {
+            if (created)
+                temp.remove();
         }
     }
 

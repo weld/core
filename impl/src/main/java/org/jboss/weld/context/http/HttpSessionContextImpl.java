@@ -6,7 +6,7 @@ import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
-import org.jboss.weld.context.beanstore.http.LazyCyclicSessionBeanStore;
+import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
 
 import javax.enterprise.context.SessionScoped;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
         if (request.getAttribute(IDENTIFIER) == null) {
             // Don't reassociate
             request.setAttribute(IDENTIFIER, IDENTIFIER);
-            setBeanStore(new LazyCyclicSessionBeanStore(request, namingScheme));
+            setBeanStore(new LazySessionBeanStore(request, namingScheme));
             return true;
         } else {
             return false;
