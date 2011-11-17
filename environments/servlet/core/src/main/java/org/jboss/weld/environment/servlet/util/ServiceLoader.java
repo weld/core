@@ -63,7 +63,7 @@ public class ServiceLoader {
         try {
             loadMethod = clazz.getDeclaredMethod("load", Class.class, ClassLoader.class);
         } catch (Exception e) {
-            throw new IllegalArgumentException("No load class available on ServiceLoader.", e);
+            throw new IllegalArgumentException("No load method available on ServiceLoader - " + clazz, e);
         }
     }
 
