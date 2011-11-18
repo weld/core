@@ -26,6 +26,8 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -193,11 +195,13 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     @Override
     protected void specialize(BeanDeployerEnvironment environment) {
+        BeansClosure closure = Beans.getClosure(beanManager);
         WeldMethod<?, ?> superClassMethod = getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getWeldMethod(getWeldAnnotated().getJavaMember());
-        if (environment.getProducerMethod(superClassMethod) == null) {
+        ProducerMethod<?, ?> check = closure.getProducerMethod(superClassMethod);
+        if (check == null) {
             throw new IllegalStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
         }
-        this.specializedBean = environment.getProducerMethod(superClassMethod);
+        this.specializedBean = check;
     }
 
     @Override

@@ -36,6 +36,7 @@ import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -64,6 +65,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.slf4j.cal10n.LocLogger;
@@ -391,17 +393,19 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     protected void preSpecialize(BeanDeployerEnvironment environment) {
         super.preSpecialize(environment);
-        if (environment.getEjbDescriptors().contains(getWeldAnnotated().getWeldSuperclass().getJavaClass())) {
+        BeansClosure closure = Beans.getClosure(beanManager);
+        if (closure.isEJB(getWeldAnnotated().getWeldSuperclass())) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
     }
 
     @Override
     protected void specialize(BeanDeployerEnvironment environment) {
-        if (environment.getClassBean(getWeldAnnotated().getWeldSuperclass()) == null) {
+        BeansClosure closure = Beans.getClosure(beanManager);
+        Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
+        if (specializedBean == null) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
-        AbstractClassBean<?> specializedBean = environment.getClassBean(getWeldAnnotated().getWeldSuperclass());
         if (!(specializedBean instanceof ManagedBean<?>)) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         } else {

@@ -68,6 +68,7 @@ import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
@@ -167,9 +168,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     // TODO review this structure
     private final transient Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans;
-
-    // TODO This isn't right, specialization should follow accessibility rules, but I think we can enforce these in resolve()
-    private final transient Map<Contextual<?>, Contextual<?>> specializedBeans;
 
     /*
     * Archive scoped data structures
@@ -318,7 +316,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 parentManager.getClientProxyProvider(),
                 parentManager.getContexts(),
                 parentManager.getCurrentActivities(),
-                parentManager.getSpecializedBeans(),
                 parentManager.getEnabled(),
                 new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
                 parentManager.getChildIds());
@@ -336,7 +333,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             ClientProxyProvider clientProxyProvider,
             Map<Class<? extends Annotation>, List<Context>> contexts,
             Set<CurrentActivity> currentActivities,
-            Map<Contextual<?>, Contextual<?>> specializedBeans,
             Enabled enabled,
             String id,
             AtomicInteger childIds) {
@@ -349,7 +345,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.clientProxyProvider = clientProxyProvider;
         this.contexts = contexts;
         this.currentActivities = currentActivities;
-        this.specializedBeans = specializedBeans;
         this.observers = observers;
         this.enabled = enabled;
         this.namespaces = namespaces;
@@ -871,12 +866,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return services;
     }
 
-    /**
-     * @return
-     */
+    @SuppressWarnings({"deprecation", "unchecked"})
+    @Deprecated // should nto be used anymore
     public Map<Contextual<?>, Contextual<?>> getSpecializedBeans() {
-        // TODO make this unmodifiable after deploy!
-        return specializedBeans;
+        BeansClosure closure = Beans.getClosure(this);
+        return closure.getSpecialized();
     }
 
     // Serialization
@@ -953,11 +947,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {
-        Contextual<?> key = bean;
-        while (specializedBeans.containsKey(key)) {
-            key = specializedBeans.get(key);
-        }
-        return cast(key);
+        BeansClosure closure = Beans.getClosure(this);
+        //noinspection unchecked
+        return (Bean<? extends X>) closure.mostSpecialized(bean);
     }
 
     public void validate(InjectionPoint ij) {
