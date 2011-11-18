@@ -65,7 +65,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
                 Set<Bean<?>> disambiguatedBeans = new HashSet<Bean<?>>();
 
                 for (Bean<?> bean : from) {
-                    if (alternativePresent ? bean.isAlternative() : true) {
+                    if (alternativePresent == false || bean.isAlternative()) {
                         disambiguatedBeans.add(bean);
                     }
                 }

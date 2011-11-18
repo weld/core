@@ -3,11 +3,9 @@ package org.jboss.weld.tests.specialization;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,8 +19,8 @@ public class AS7SpecializationTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(WebArchive.class)
-                .addAsLibrary(ShrinkWrap.create(BeanArchive.class, "test.jar")
-                        .addClass(User.class))
+                .addAsLibrary(ShrinkWrap.create(BeanArchive.class, "test.jar").addClass(User.class))
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClass(User2.class);
     }
 
