@@ -25,6 +25,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Observers;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
@@ -36,6 +37,7 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
@@ -53,6 +55,7 @@ import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
 import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 
 /**
@@ -149,9 +152,14 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         if (this.observerMethod.isAnnotationPresent(Inject.class)) {
             throw new DefinitionException(INVALID_INITIALIZER, this);
         }
+        boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
         for (WeldParameter<?, ?> parameter : getMethod().getWeldParameters()) {
             if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals("")) {
                 throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
+            }
+            // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
+            if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !BeanManager.class.equals(parameter.getBaseType())) {
+                throw new DefinitionException(INVALID_INJECTION_POINT, this);
             }
         }
 
