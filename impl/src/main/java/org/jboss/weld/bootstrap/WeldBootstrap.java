@@ -391,7 +391,6 @@ public class WeldBootstrap implements Bootstrap {
                 }
                 BeansClosure closure = Beans.getClosure(beanManager);
                 closure.clear();
-                closure.seal();
             }
         }
         return this;
