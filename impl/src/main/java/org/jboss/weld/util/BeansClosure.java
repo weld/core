@@ -43,20 +43,12 @@ public final class BeansClosure {
 
     private final Map<Bean<?>, Bean<?>> specialized = new HashMap<Bean<?>, Bean<?>>();
     private final Set<BeanDeployerEnvironment> envs = new HashSet<BeanDeployerEnvironment>();
-    private boolean sealed;
-
-    private void checkSealed() {
-        if (sealed)
-            throw new IllegalArgumentException("BeansClosure is sealed!");
-    }
 
     public void addSpecialized(Bean<?> target, Bean<?> override) {
-        checkSealed();
         specialized.put(target, override);
     }
 
     public void addEnvironment(BeanDeployerEnvironment environment) {
-        checkSealed();
         envs.add(environment);
     }
 
@@ -64,8 +56,8 @@ public final class BeansClosure {
         envs.clear();
     }
 
-    public void seal() {
-        sealed = true;
+    void destroy() {
+        specialized.clear();
     }
 
     // -- querys

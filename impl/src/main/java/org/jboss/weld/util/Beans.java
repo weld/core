@@ -59,7 +59,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.decorator.Decorator;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
@@ -610,7 +609,9 @@ public class Beans {
      * @param beanManager the bean manager
      */
     public static void removeClosure(BeanManagerImpl beanManager) {
-        closureMap.remove(beanManager);
+        BeansClosure closure = closureMap.remove(beanManager);
+        if (closure != null)
+            closure.destroy();
     }
 
     /**
@@ -621,7 +622,7 @@ public class Beans {
     public static void removeAccessibleClosure(BeanManagerImpl beanManager) {
         for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
             for (BeanManagerImpl accessibleBeanManager : beanManagers) {
-                closureMap.remove(accessibleBeanManager);
+                removeClosure(accessibleBeanManager);
             }
         }
     }
