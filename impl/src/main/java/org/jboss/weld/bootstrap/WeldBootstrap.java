@@ -445,11 +445,6 @@ public class WeldBootstrap implements Bootstrap {
                 ApplicationContext applicationContext = deploymentManager.instance().select(ApplicationContext.class).get();
                 try {
                     BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
-
-                    for (BeanDeployment bd : beanDeployments.values()) {
-                        // we should cleanup all BCs this way, no need for accessible BM closure
-                        Beans.removeClosure(bd.getBeanManager());
-                    }
                 } finally {
                     applicationContext.invalidate();
                 }
