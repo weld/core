@@ -81,6 +81,8 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -377,15 +379,19 @@ public class WeldBootstrap implements Bootstrap {
             deploymentManager.getObserverResolver().clear();
             deploymentManager.getDecoratorResolver().clear();
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-                entry.getValue().getBeanManager().getBeanResolver().clear();
-                entry.getValue().getBeanManager().getObserverResolver().clear();
-                entry.getValue().getBeanManager().getDecoratorResolver().clear();
-                for (Bean<?> bean : entry.getValue().getBeanManager().getBeans()) {
+                BeanManagerImpl beanManager = entry.getValue().getBeanManager();
+                beanManager.getBeanResolver().clear();
+                beanManager.getObserverResolver().clear();
+                beanManager.getDecoratorResolver().clear();
+                for (Bean<?> bean : beanManager.getBeans()) {
                     if (bean instanceof RIBean<?>) {
                         RIBean<?> riBean = (RIBean<?>) bean;
                         riBean.cleanupAfterBoot();
                     }
                 }
+                BeansClosure closure = Beans.getClosure(beanManager);
+                closure.clear();
+                closure.seal();
             }
         }
         return this;
@@ -439,6 +445,11 @@ public class WeldBootstrap implements Bootstrap {
                 ApplicationContext applicationContext = deploymentManager.instance().select(ApplicationContext.class).get();
                 try {
                     BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
+
+                    for (BeanDeployment bd : beanDeployments.values()) {
+                        // we should cleanup all BCs this way, no need for accessible BM closure
+                        Beans.removeClosure(bd.getBeanManager());
+                    }
                 } finally {
                     applicationContext.invalidate();
                 }

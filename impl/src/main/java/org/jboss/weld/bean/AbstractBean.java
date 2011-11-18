@@ -29,6 +29,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -286,7 +287,8 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         if (isSpecializing() && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
             this.name = getSpecializedBean().getName();
         }
-        beanManager.getSpecializedBeans().put(getSpecializedBean(), this);
+        BeansClosure closure = Beans.getClosure(beanManager);
+        closure.addSpecialized(getSpecializedBean(), this);
     }
 
     protected void preSpecialize(BeanDeployerEnvironment environment) {

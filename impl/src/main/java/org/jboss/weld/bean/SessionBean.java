@@ -48,6 +48,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -57,6 +58,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.interceptor.Interceptor;
@@ -104,7 +106,6 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * Creates a simple, annotation defined Enterprise Web Bean
      *
      * @param <T>         The type
-     * @param clazz       The class
      * @param beanManager the current manager
      * @return An Enterprise Web Bean
      */
@@ -117,7 +118,6 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * Creates a simple, annotation defined Enterprise Web Bean using the annotations specified on type
      *
      * @param <T>         The type
-     * @param clazz       The class
      * @param beanManager the current manager
      * @param type        the AnnotatedType to use
      * @return An Enterprise Web Bean
@@ -263,17 +263,19 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     protected void preSpecialize(BeanDeployerEnvironment environment) {
         super.preSpecialize(environment);
         // We appear to check this twice?
-        if (!environment.getEjbDescriptors().contains(getWeldAnnotated().getWeldSuperclass().getJavaClass())) {
+        BeansClosure closure = Beans.getClosure(beanManager);
+        if (closure.isEJB(getWeldAnnotated().getWeldSuperclass()) == false) {
             throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
         }
     }
 
     @Override
     protected void specialize(BeanDeployerEnvironment environment) {
-        if (environment.getClassBean(getWeldAnnotated().getWeldSuperclass()) == null) {
+        BeansClosure closure = Beans.getClosure(beanManager);
+        Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
+        if (specializedBean == null) {
             throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
         }
-        AbstractClassBean<?> specializedBean = environment.getClassBean(getWeldAnnotated().getWeldSuperclass());
         if (!(specializedBean instanceof SessionBean<?>)) {
             throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
         } else {

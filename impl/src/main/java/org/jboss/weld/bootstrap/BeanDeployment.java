@@ -49,6 +49,8 @@ import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -186,6 +188,9 @@ public class BeanDeployment {
         }
         // TODO Register the context beans
         beanDeployer.createBeans();
+
+        BeansClosure closure = Beans.getClosure(beanManager);
+        closure.addEnvironment(beanDeployer.getEnvironment());
     }
 
     public void deploySpecialized(Environment environment) {
