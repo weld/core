@@ -106,7 +106,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -262,7 +261,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new ClientProxyProvider(),
                 contexts,
                 new CopyOnWriteArraySet<CurrentActivity>(),
-                new HashMap<Contextual<?>, Contextual<?>>(),
                 enabled,
                 id,
                 new AtomicInteger());
@@ -281,7 +279,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 rootManager.getClientProxyProvider(),
                 rootManager.getContexts(),
                 new CopyOnWriteArraySet<CurrentActivity>(),
-                new HashMap<Contextual<?>, Contextual<?>>(),
                 enabled,
                 id,
                 new AtomicInteger());
@@ -811,7 +808,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         buffer.append("Enabled alternatives: " + getEnabled().getAlternativeClasses() + " " + getEnabled().getAlternativeStereotypes() + "\n");
         buffer.append("Registered contexts: " + contexts.keySet() + "\n");
         buffer.append("Registered beans: " + getBeans().size() + "\n");
-        buffer.append("Specialized beans: " + specializedBeans.size() + "\n");
         return buffer.toString();
     }
 
@@ -1059,7 +1055,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.namespaces.clear();
         this.observerResolver.clear();
         this.observers.clear();
-        this.specializedBeans.clear();
+        Beans.removeClosure(this);
     }
 
     public Map<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> getInterceptorModelRegistry() {
