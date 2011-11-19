@@ -530,8 +530,8 @@ public class Beans {
     /**
      * Check if any of the beans is an alternative
      *
-     * @param beans
-     * @return
+     * @param beans the beans to check
+     * @return true if any bean is an alternative
      */
     public static boolean isAlternativePresent(Set<Bean<?>> beans) {
         for (Bean<?> bean : beans) {
@@ -542,12 +542,15 @@ public class Beans {
         return false;
     }
 
+    /**
+     * Is alternative.
+     *
+     * @param annotated the annotated
+     * @param mergedStereotypes merged stereotypes
+     * @return true if alternative, false otherwise
+     */
     public static boolean isAlternative(WeldAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
-        if (annotated.isAnnotationPresent(Alternative.class)) {
-            return true;
-        } else {
-            return mergedStereotypes.isAlternative();
-        }
+        return annotated.isAnnotationPresent(Alternative.class) || mergedStereotypes.isAlternative();
     }
 
     /**
