@@ -44,7 +44,6 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.BeanManagers;
 import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
@@ -116,8 +115,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 public class Beans {
     // TODO Convert messages
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
-
-    private static final Map<BeanManagerImpl, BeansClosure> closureMap = new HashMap<BeanManagerImpl, BeansClosure>();
 
     /**
      * Indicates if a bean's scope type is passivating
@@ -561,7 +558,7 @@ public class Beans {
      * @return true if bean is specialized by some bean in all beans
      */
     public static <T extends Bean<?>> boolean isSpecialized(T bean, BeanManagerImpl beanManager) {
-        BeansClosure closure = getClosure(beanManager);
+        BeansClosure closure = BeansClosure.getClosure(beanManager);
         return closure.isSpecialized(bean);
     }
 
@@ -574,57 +571,10 @@ public class Beans {
      * @return true if bean is specialized by some bean in beans
      */
     public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, BeanManagerImpl beanManager) {
-        BeansClosure closure = getClosure(beanManager);
+        BeansClosure closure = BeansClosure.getClosure(beanManager);
         Bean<?> specializedBean = closure.getSpecialized(bean);
         //noinspection SuspiciousMethodCalls
         return (specializedBean != null && beans.contains(specializedBean));
-    }
-
-    /**
-     * Get beans closure.
-     *
-     * @param beanManager the bean manager
-     * @return beans closure
-     */
-    public static BeansClosure getClosure(BeanManagerImpl beanManager) {
-        BeansClosure closure = closureMap.get(beanManager);
-        if (closure == null) {
-            synchronized (closureMap) {
-                if (closureMap.containsKey(beanManager) == false) {
-                    closure = new BeansClosure();
-                    for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
-                        for (BeanManagerImpl accessibleBeanManager : beanManagers) {
-                            closureMap.put(accessibleBeanManager, closure);
-                        }
-                    }
-                }
-            }
-        }
-        return closure;
-    }
-
-    /**
-     * Remove beans closure.
-     *
-     * @param beanManager the bean manager
-     */
-    public static void removeClosure(BeanManagerImpl beanManager) {
-        BeansClosure closure = closureMap.remove(beanManager);
-        if (closure != null)
-            closure.destroy();
-    }
-
-    /**
-     * Remove accesible beans closure.
-     *
-     * @param beanManager the bean manager
-     */
-    public static void removeAccessibleClosure(BeanManagerImpl beanManager) {
-        for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
-            for (BeanManagerImpl accessibleBeanManager : beanManagers) {
-                removeClosure(accessibleBeanManager);
-            }
-        }
     }
 
     public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type) {

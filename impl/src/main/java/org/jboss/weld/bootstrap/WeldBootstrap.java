@@ -81,7 +81,6 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
@@ -389,8 +388,7 @@ public class WeldBootstrap implements Bootstrap {
                         riBean.cleanupAfterBoot();
                     }
                 }
-                BeansClosure closure = Beans.getClosure(beanManager);
-                closure.clear();
+                BeansClosure.getClosure(beanManager).clear();
             }
         }
         return this;

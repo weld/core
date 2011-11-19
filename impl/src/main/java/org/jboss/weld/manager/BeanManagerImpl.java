@@ -864,7 +864,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @SuppressWarnings({"deprecation", "unchecked"})
     @Deprecated // should nto be used anymore
     public Map<Contextual<?>, Contextual<?>> getSpecializedBeans() {
-        BeansClosure closure = Beans.getClosure(this);
+        BeansClosure closure = BeansClosure.getClosure(this);
         return closure.getSpecialized();
     }
 
@@ -942,7 +942,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {
-        BeansClosure closure = Beans.getClosure(this);
+        BeansClosure closure = BeansClosure.getClosure(this);
         //noinspection unchecked
         return (Bean<? extends X>) closure.mostSpecialized(bean);
     }
@@ -1054,7 +1054,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.namespaces.clear();
         this.observerResolver.clear();
         this.observers.clear();
-        Beans.removeClosure(this);
+        BeansClosure.removeClosure(this);
     }
 
     public Map<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> getInterceptorModelRegistry() {

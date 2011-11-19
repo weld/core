@@ -393,7 +393,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     protected void preSpecialize(BeanDeployerEnvironment environment) {
         super.preSpecialize(environment);
-        BeansClosure closure = Beans.getClosure(beanManager);
+        BeansClosure closure = BeansClosure.getClosure(beanManager);
         if (closure.isEJB(getWeldAnnotated().getWeldSuperclass())) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
@@ -401,7 +401,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     @Override
     protected void specialize(BeanDeployerEnvironment environment) {
-        BeansClosure closure = Beans.getClosure(beanManager);
+        BeansClosure closure = BeansClosure.getClosure(beanManager);
         Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
         if (specializedBean == null) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
