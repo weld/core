@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,6 +59,7 @@ public class AccessibleAlternativesTest {
     private BeanManager beanManager;
 
     @Test
+    @Ignore
     public void testAlternatives() {
         Assert.assertEquals(BUser.class, beanManager.resolve(beanManager.getBeans(IUser.class)).getBeanClass());
     }
