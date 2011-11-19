@@ -46,6 +46,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * @author pmuir
+ * @author alesj
  */
 public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Resolvable, T> {
 
@@ -61,15 +62,19 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
 
         public Set<Bean<?>> apply(Set<Bean<?>> from) {
             if (from.size() > 1) {
-                boolean alternativePresent = Beans.isAlternativePresent(from);
-                Set<Bean<?>> disambiguatedBeans = new HashSet<Bean<?>>();
+                Set<Bean<?>> allBeans = new HashSet<Bean<?>>();
+                Set<Bean<?>> alternativeBeans = new HashSet<Bean<?>>();
 
                 for (Bean<?> bean : from) {
-                    if (alternativePresent == false || bean.isAlternative()) {
-                        disambiguatedBeans.add(bean);
+                    if (bean.isAlternative()) {
+                        alternativeBeans.add(bean);
                     }
+                    allBeans.add(bean);
                 }
-                return ImmutableSet.copyOf(disambiguatedBeans);
+                if (alternativeBeans.isEmpty())
+                    return ImmutableSet.copyOf(allBeans);
+                else
+                    return ImmutableSet.copyOf(alternativeBeans);
             } else {
                 return ImmutableSet.copyOf(from);
             }
@@ -196,6 +201,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
         * the user in which case this algorithm will have thread safety issues
         */
         beans = ImmutableSet.copyOf(beans);
+        //noinspection SuspiciousMethodCalls
         return cast(disambiguatedBeans.get(beans));
     }
 
