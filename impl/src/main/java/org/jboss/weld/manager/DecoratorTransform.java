@@ -19,6 +19,7 @@ package org.jboss.weld.manager;
 import javax.enterprise.inject.spi.Decorator;
 
 class DecoratorTransform implements Transform<Decorator<?>> {
+    static final DecoratorTransform INSTANCE = new DecoratorTransform();
 
     public Iterable<Decorator<?>> transform(BeanManagerImpl beanManager) {
         return beanManager.getDecorators();

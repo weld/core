@@ -19,6 +19,7 @@ package org.jboss.weld.manager;
 import javax.enterprise.inject.spi.Interceptor;
 
 class InterceptorTransform implements Transform<Interceptor<?>> {
+    static final InterceptorTransform INSTANCE = new InterceptorTransform();
 
     public Iterable<Interceptor<?>> transform(BeanManagerImpl beanManager) {
         return beanManager.getInterceptors();

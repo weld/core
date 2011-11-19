@@ -19,6 +19,7 @@ package org.jboss.weld.manager;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 class ObserverMethodTransform implements Transform<ObserverMethod<?>> {
+    static final ObserverMethodTransform INSTANCE = new ObserverMethodTransform();
 
     public Iterable<ObserverMethod<?>> transform(BeanManagerImpl beanManager) {
         return beanManager.getObservers();
