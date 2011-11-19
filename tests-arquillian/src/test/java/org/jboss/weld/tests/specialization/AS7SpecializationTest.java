@@ -14,6 +14,10 @@ import org.junit.runner.RunWith;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
+/**
+ * @author mmazi
+ * @author alesj
+ */
 @RunWith(Arquillian.class)
 public class AS7SpecializationTest {
     @Deployment
