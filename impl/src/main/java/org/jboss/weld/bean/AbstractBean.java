@@ -287,7 +287,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         if (isSpecializing() && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
             this.name = getSpecializedBean().getName();
         }
-        BeansClosure closure = Beans.getClosure(beanManager);
+        BeansClosure closure = BeansClosure.getClosure(beanManager);
         closure.addSpecialized(getSpecializedBean(), this);
     }
 

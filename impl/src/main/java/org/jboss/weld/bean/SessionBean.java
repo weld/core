@@ -263,7 +263,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     protected void preSpecialize(BeanDeployerEnvironment environment) {
         super.preSpecialize(environment);
         // We appear to check this twice?
-        BeansClosure closure = Beans.getClosure(beanManager);
+        BeansClosure closure = BeansClosure.getClosure(beanManager);
         if (closure.isEJB(getWeldAnnotated().getWeldSuperclass()) == false) {
             throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
         }
@@ -271,7 +271,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     @Override
     protected void specialize(BeanDeployerEnvironment environment) {
-        BeansClosure closure = Beans.getClosure(beanManager);
+        BeansClosure closure = BeansClosure.getClosure(beanManager);
         Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
         if (specializedBean == null) {
             throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);

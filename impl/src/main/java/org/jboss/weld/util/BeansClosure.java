@@ -28,35 +28,89 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagers;
 
 import javax.enterprise.inject.spi.Bean;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Keeps the BDA closure information.
+ *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public final class BeansClosure {
 
-    private final Map<Bean<?>, Bean<?>> specialized = new HashMap<Bean<?>, Bean<?>>();
-    private final Set<BeanDeployerEnvironment> envs = new HashSet<BeanDeployerEnvironment>();
+    private static final Map<BeanManagerImpl, BeansClosure> closureMap = new HashMap<BeanManagerImpl, BeansClosure>();
+
+    private final Map<Bean<?>, Bean<?>> specialized = new ConcurrentHashMap<Bean<?>, Bean<?>>();
+    private final Map<BeanDeployerEnvironment, Object> envs = new ConcurrentHashMap<BeanDeployerEnvironment, Object>();
+
+    /**
+     * Get beans closure.
+     *
+     * @param beanManager the bean manager
+     * @return beans closure
+     */
+    public static BeansClosure getClosure(BeanManagerImpl beanManager) {
+        BeansClosure closure = closureMap.get(beanManager);
+        if (closure == null) {
+            synchronized (closureMap) {
+                if (closureMap.containsKey(beanManager) == false) {
+                    closure = new BeansClosure();
+                    for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
+                        for (BeanManagerImpl accessibleBeanManager : beanManagers) {
+                            closureMap.put(accessibleBeanManager, closure);
+                        }
+                    }
+                }
+            }
+        }
+        return closure;
+    }
+
+    /**
+     * Remove beans closure.
+     *
+     * @param beanManager the bean manager
+     */
+    public static void removeClosure(BeanManagerImpl beanManager) {
+        BeansClosure closure = closureMap.remove(beanManager);
+        if (closure != null)
+            closure.destroy();
+    }
+
+    /**
+     * Remove accesible beans closure.
+     *
+     * @param beanManager the bean manager
+     */
+    public static void removeAccessibleClosure(BeanManagerImpl beanManager) {
+        for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
+            for (BeanManagerImpl accessibleBeanManager : beanManagers) {
+                removeClosure(accessibleBeanManager);
+            }
+        }
+    }
+
+    // --- modification methods
 
     public void addSpecialized(Bean<?> target, Bean<?> override) {
         specialized.put(target, override);
     }
 
     public void addEnvironment(BeanDeployerEnvironment environment) {
-        envs.add(environment);
+        envs.put(environment, Object.class);
     }
 
     public void clear() {
         envs.clear();
     }
 
-    void destroy() {
+    private void destroy() {
         specialized.clear();
     }
 
@@ -84,7 +138,7 @@ public final class BeansClosure {
     }
 
     public boolean isEJB(WeldClass clazz) {
-        for (BeanDeployerEnvironment bde : envs) {
+        for (BeanDeployerEnvironment bde : envs.keySet()) {
             EjbDescriptors ed = bde.getEjbDescriptors();
             if (ed.contains(clazz.getJavaClass()))
                 return true;
@@ -93,7 +147,7 @@ public final class BeansClosure {
     }
 
     public Bean<?> getClassBean(WeldClass clazz) {
-        for (BeanDeployerEnvironment bde : envs) {
+        for (BeanDeployerEnvironment bde : envs.keySet()) {
             AbstractClassBean<?> classBean = bde.getClassBean(clazz);
             if (classBean != null)
                 return classBean;
@@ -102,7 +156,7 @@ public final class BeansClosure {
     }
 
     public ProducerMethod<?, ?> getProducerMethod(WeldMethod<?, ?> superClassMethod) {
-        for (BeanDeployerEnvironment bde : envs) {
+        for (BeanDeployerEnvironment bde : envs.keySet()) {
             ProducerMethod<?, ?> pm = bde.getProducerMethod(superClassMethod);
             if (pm != null)
                 return pm;
