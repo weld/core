@@ -129,15 +129,17 @@ public final class BeansClosure {
         return getSpecialized(bean) != null;
     }
 
-    public Bean<?> mostSpecialized(Bean bean) {
+    public Bean<?> mostSpecialized(Bean<?> bean) {
         Bean most = bean;
-        while(specialized.containsKey(most)) {
-            most = specialized.get(most);
+        while(most != null) {
+            Bean<?> temp = most;
+            most = specialized.get(bean);
+            bean = temp;
         }
-        return most;
+        return bean;
     }
 
-    public boolean isEJB(WeldClass clazz) {
+    public boolean isEJB(WeldClass<?> clazz) {
         for (BeanDeployerEnvironment bde : envs.keySet()) {
             EjbDescriptors ed = bde.getEjbDescriptors();
             if (ed.contains(clazz.getJavaClass()))
@@ -146,7 +148,7 @@ public final class BeansClosure {
         return false;
     }
 
-    public Bean<?> getClassBean(WeldClass clazz) {
+    public Bean<?> getClassBean(WeldClass<?> clazz) {
         for (BeanDeployerEnvironment bde : envs.keySet()) {
             AbstractClassBean<?> classBean = bde.getClassBean(clazz);
             if (classBean != null)

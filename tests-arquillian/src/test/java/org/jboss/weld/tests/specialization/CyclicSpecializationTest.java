@@ -15,27 +15,27 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 /**
- * @author mmazi
  * @author alesj
  */
 @RunWith(Arquillian.class)
-public class AS7SpecializationTest {
+public class CyclicSpecializationTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(WebArchive.class)
-                .addAsLibrary(ShrinkWrap.create(BeanArchive.class, "test.jar").addClass(User.class))
+                .addAsLibrary(ShrinkWrap.create(BeanArchive.class, "test.jar").addClasses(User2.class, Account.class))
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addClass(User2.class);
+                .addClasses(User.class, Account2.class);
     }
 
     @Inject
     private BeanManager beanManager;
 
     /**
-     * WELD-321, WELD-912
+     * WELD-912
      */
     @Test
     public void testSpecialization() {
         Assert.assertEquals(User2.class, beanManager.resolve(beanManager.getBeans(User.class)).getBeanClass());
+        Assert.assertEquals(Account2.class, beanManager.resolve(beanManager.getBeans(Account.class)).getBeanClass());
     }
 }
