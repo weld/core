@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ComputationException;
 import com.google.common.collect.MapMaker;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.introspector.InternalWeldClass;
 import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldAnnotationImpl;
@@ -122,9 +123,6 @@ public class ClassTransformer implements Service {
     private final ConcurrentMap<Class<? extends Annotation>, WeldAnnotation<?>> annotations;
     private final TypeStore typeStore;
 
-    /**
-     *
-     */
     public ClassTransformer(TypeStore typeStore) {
         MapMaker maker = new MapMaker();
         this.classes = maker.makeComputingMap(new TransformTypeToWeldClass(this));
@@ -164,6 +162,10 @@ public class ClassTransformer implements Service {
 
     @SuppressWarnings("unchecked")
     public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz) {
+        if (clazz instanceof InternalWeldClass) {
+            InternalWeldClass iwc = (InternalWeldClass) clazz;
+            return iwc.delegate();
+        }
         return (WeldClass<T>) annotatedTypes.get(clazz);
     }
 

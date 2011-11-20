@@ -16,14 +16,38 @@
  */
 package org.jboss.weld.introspector;
 
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Set;
 
 public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, Class<T>> implements WeldClass<T> {
 
     @Override
     protected abstract WeldClass<T> delegate();
+
+    public Collection<WeldMethod<?, ? super T>> getDeclaredWeldMethods() {
+        return delegate().getDeclaredWeldMethods();
+    }
+
+    public <M> WeldMethod<M, ?> getDeclaredWeldMethod(MethodSignature signature) {
+        return delegate().getDeclaredWeldMethod(signature);
+    }
+
+    public Set<AnnotatedConstructor<T>> getConstructors() {
+        return delegate().getConstructors();
+    }
+
+    public Set<AnnotatedMethod<? super T>> getMethods() {
+        return delegate().getMethods();
+    }
+
+    public Set<AnnotatedField<? super T>> getFields() {
+        return delegate().getFields();
+    }
 
     public Collection<WeldConstructor<T>> getWeldConstructors(Class<? extends Annotation> annotationType) {
         return delegate().getWeldConstructors(annotationType);
