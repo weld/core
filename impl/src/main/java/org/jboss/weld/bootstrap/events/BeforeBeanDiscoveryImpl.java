@@ -16,14 +16,12 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bootstrap.BeanDeployer;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.introspector.ExternalAnnotatedType;
-import org.jboss.weld.introspector.InternalWeldClass;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.QualifierLiteral;
@@ -88,13 +86,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
     }
 
     public void addAnnotatedType(AnnotatedType<?> type) {
-        BeanDeployer beanDeployer = getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer();
-        // do not double wrap
-        if (type instanceof InternalWeldClass) {
-            beanDeployer.addClass(type);
-        } else {
-            beanDeployer.addClass(ExternalAnnotatedType.of(type));
-        }
+        getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(ExternalAnnotatedType.of(type));
     }
 
 }
