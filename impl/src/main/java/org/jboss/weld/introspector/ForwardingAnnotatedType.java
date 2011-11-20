@@ -26,11 +26,12 @@ import java.util.Set;
  * Forwarding implementation of AnnotatedType
  *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
+ * @author Ales Justin
  */
 public abstract class ForwardingAnnotatedType<X> extends ForwardingAnnotated implements AnnotatedType<X> {
 
     @Override
-    protected abstract AnnotatedType<X> delegate();
+    public abstract AnnotatedType<X> delegate();
 
     public Set<AnnotatedConstructor<X>> getConstructors() {
         return delegate().getConstructors();

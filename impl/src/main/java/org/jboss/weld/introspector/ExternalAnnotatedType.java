@@ -31,7 +31,7 @@ public class ExternalAnnotatedType<X> extends ForwardingAnnotatedType<X> {
     }
 
     @Override
-    protected AnnotatedType<X> delegate() {
+    public AnnotatedType<X> delegate() {
         return delegate;
     }
 
