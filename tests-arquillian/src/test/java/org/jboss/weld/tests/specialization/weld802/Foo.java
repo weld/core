@@ -24,10 +24,8 @@ package org.jboss.weld.tests.specialization.weld802;
 import javax.enterprise.context.RequestScoped;
 
 @RequestScoped
-public class Foo
-{
-   public String ping()
-   {
-      return "foo";
-   }
+public class Foo {
+    public String ping() {
+        return "foo";
+    }
 }

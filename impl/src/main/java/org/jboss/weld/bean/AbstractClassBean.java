@@ -419,8 +419,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      */
     @Override
     protected String getDefaultName() {
-        String name = Introspector.decapitalize(getWeldAnnotated().getSimpleName());
-        return name;
+        return Introspector.decapitalize(getWeldAnnotated().getSimpleName());
     }
 
     /**

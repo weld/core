@@ -100,23 +100,19 @@ public class BeanDeployerEnvironment {
 
     public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method) {
         WeldMethodKey<X, T> key = new WeldMethodKey<X, T>(method);
-        if (!producerMethodBeanMap.containsKey(key)) {
-            return null;
-        } else {
-            ProducerMethod<?, ?> bean = producerMethodBeanMap.get(key);
+        ProducerMethod<?, ?> bean = producerMethodBeanMap.get(key);
+        if (bean != null) {
             bean.initialize(this);
-            return cast(bean);
         }
+        return cast(bean);
     }
 
     public AbstractClassBean<?> getClassBean(WeldClass<?> clazz) {
-        if (!classBeanMap.containsKey(clazz)) {
-            return null;
-        } else {
-            AbstractClassBean<?> bean = classBeanMap.get(clazz);
+        AbstractClassBean<?> bean = classBeanMap.get(clazz);
+        if (bean != null) {
             bean.initialize(this);
-            return bean;
         }
+        return bean;
     }
 
     public void addProducerMethod(ProducerMethod<?, ?> bean) {
@@ -242,8 +238,9 @@ public class BeanDeployerEnvironment {
      * beans will be marked as such for the purpose of validating that all
      * disposal methods are used. For internal use.
      *
-     * @param apiType    The API type to match
+     * @param types the types
      * @param qualifiers The binding types to match
+     * @param declaringBean declaring bean
      * @return The set of matching disposal methods
      */
     public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean) {

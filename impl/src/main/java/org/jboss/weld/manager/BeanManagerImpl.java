@@ -49,6 +49,8 @@ import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.introspector.InternalWeldClass;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
@@ -988,7 +990,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> AnnotatedType<T> createAnnotatedType(Class<T> type) {
-        return getServices().get(ClassTransformer.class).loadClass(type);
+        WeldClass<T> weldClass = getServices().get(ClassTransformer.class).loadClass(type);
+        return InternalWeldClass.of(weldClass); // wrap it, so we know
     }
 
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {

@@ -26,11 +26,9 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-public class SimpleExtension implements Extension
-{
-   public void registerBeans(@Observes BeforeBeanDiscovery event, BeanManager manager)
-   {
-      event.addAnnotatedType(manager.createAnnotatedType(Foo.class));
-      event.addAnnotatedType(manager.createAnnotatedType(Bar.class));
-   }
+public class SimpleExtension implements Extension {
+    public void registerBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
+        event.addAnnotatedType(manager.createAnnotatedType(Foo.class));
+        event.addAnnotatedType(manager.createAnnotatedType(Bar.class));
+    }
 }

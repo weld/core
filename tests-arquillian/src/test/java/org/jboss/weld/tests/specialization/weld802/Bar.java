@@ -24,11 +24,9 @@ package org.jboss.weld.tests.specialization.weld802;
 import javax.enterprise.inject.Specializes;
 
 @Specializes
-public class Bar extends Foo
-{
-   @Override
-   public String ping()
-   {
-      return "bar";
-   }
+public class Bar extends Foo {
+    @Override
+    public String ping() {
+        return "bar";
+    }
 }

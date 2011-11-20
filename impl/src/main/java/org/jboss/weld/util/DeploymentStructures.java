@@ -39,13 +39,12 @@ public class DeploymentStructures {
         if (beanDeploymentArchive == null) {
             throw new IllegalStateException(UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE, clazz);
         } else {
-            if (beanDeployments.containsKey(beanDeploymentArchive)) {
-                return beanDeployments.get(beanDeploymentArchive);
-            } else {
-                BeanDeployment beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
+            BeanDeployment beanDeployment = beanDeployments.get(beanDeploymentArchive);
+            if (beanDeployment == null) {
+                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
                 beanDeployments.put(beanDeploymentArchive, beanDeployment);
-                return beanDeployment;
             }
+            return beanDeployment;
         }
     }
 
