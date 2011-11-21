@@ -86,9 +86,7 @@ public class ContextualStoreImpl implements ContextualStore {
         if (contextual instanceof PassivationCapable) {
             PassivationCapable passivationCapable = (PassivationCapable) contextual;
             String id = passivationCapable.getId();
-            if (!passivationCapableContextuals.containsKey(id)) {
-                passivationCapableContextuals.putIfAbsent(id, contextual);
-            }
+            passivationCapableContextuals.putIfAbsent(id, contextual);
             return id;
         } else {
             String id = contextuals.get(contextual);

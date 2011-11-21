@@ -83,8 +83,9 @@ public class Decorators {
     public static <T> WeldMethod<?, ?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods, Method method) {
         // try the signature first, might be simpler
         MethodSignature key = new MethodSignatureImpl(method);
-        if (decoratorMethods.containsKey(key)) {
-            return decoratorMethods.get(key);
+        WeldMethod<?, ?> weldMethod = decoratorMethods.get(key);
+        if (weldMethod != null) {
+            return weldMethod;
         }
         // try all methods
         for (WeldMethod<?, ?> decoratorMethod : decoratorMethods.values()) {

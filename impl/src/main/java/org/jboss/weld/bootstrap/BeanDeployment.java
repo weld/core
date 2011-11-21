@@ -85,18 +85,20 @@ public class BeanDeployment {
         this.beanDeploymentArchive = beanDeploymentArchive;
         EjbDescriptors ejbDescriptors = new EjbDescriptors();
         beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
-        if (beanDeploymentArchive.getServices().get(ResourceLoader.class) == null) {
-            beanDeploymentArchive.getServices().add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
+        ResourceLoader resourceLoader = beanDeploymentArchive.getServices().get(ResourceLoader.class);
+        if (resourceLoader == null) {
+            resourceLoader = DefaultResourceLoader.INSTANCE;
+            beanDeploymentArchive.getServices().add(ResourceLoader.class, resourceLoader);
         }
         ServiceRegistry services = new SimpleServiceRegistry();
         services.addAll(deploymentServices.entrySet());
         services.addAll(beanDeploymentArchive.getServices().entrySet());
 
-        services.add(EJBApiAbstraction.class, new EJBApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
-        services.add(JsfApiAbstraction.class, new JsfApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
-        services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
-        services.add(WSApiAbstraction.class, new WSApiAbstraction(beanDeploymentArchive.getServices().get(ResourceLoader.class)));
-        this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, Enabled.of(beanDeploymentArchive.getBeansXml(), beanDeploymentArchive.getServices().get(ResourceLoader.class)));
+        services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
+        services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
+        services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
+        services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
+        this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, Enabled.of(beanDeploymentArchive.getBeansXml(), resourceLoader));
         services.add(InjectionTargetValidator.class, new InjectionTargetValidator(beanManager));
         log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternativeClasses(), beanManager.getEnabled().getAlternativeStereotypes());
         log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());

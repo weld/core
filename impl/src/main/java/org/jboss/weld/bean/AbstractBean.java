@@ -188,10 +188,11 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     protected static Set<Type> getTypedTypes(Map<Class<?>, Type> typeClosure, Class<?> rawType, Typed typed) {
         Set<Type> types = new HashSet<Type>();
         for (Class<?> specifiedClass : typed.value()) {
-            if (!typeClosure.containsKey(specifiedClass)) {
-                throw new DefinitionException(TYPED_CLASS_NOT_IN_HIERARCHY, specifiedClass.getName(), rawType);
+            Type tmp = typeClosure.get(specifiedClass);
+            if (tmp != null) {
+                types.add(tmp);
             } else {
-                types.add(typeClosure.get(specifiedClass));
+                throw new DefinitionException(TYPED_CLASS_NOT_IN_HIERARCHY, specifiedClass.getName(), rawType);
             }
         }
         types.add(Object.class);

@@ -29,6 +29,7 @@ import org.jboss.weld.literal.ScopeLiteral;
 import org.jboss.weld.literal.StereotypeLiteral;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 
@@ -56,9 +57,10 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
     }
 
     public void addInterceptorBinding(Class<? extends Annotation> bindingType, Annotation... bindingTypeDef) {
-        getTypeStore().add(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
+        TypeStore typeStore = getTypeStore();
+        typeStore.add(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
         for (Annotation a : bindingTypeDef) {
-            getTypeStore().add(bindingType, a);
+            typeStore.add(bindingType, a);
         }
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
@@ -77,9 +79,10 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
     }
 
     public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef) {
-        getTypeStore().add(stereotype, StereotypeLiteral.INSTANCE);
+        TypeStore typeStore = getTypeStore();
+        typeStore.add(stereotype, StereotypeLiteral.INSTANCE);
         for (Annotation a : stereotypeDef) {
-            getTypeStore().add(stereotype, a);
+            typeStore.add(stereotype, a);
         }
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(stereotype);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(stereotype);
