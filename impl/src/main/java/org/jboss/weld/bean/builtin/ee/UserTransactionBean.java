@@ -38,8 +38,9 @@ public class UserTransactionBean extends AbstractEEBean<UserTransaction> {
         }
 
         public UserTransaction call() throws Exception {
-            if (getBeanManager().getServices().contains(TransactionServices.class)) {
-                return getBeanManager().getServices().get(TransactionServices.class).getUserTransaction();
+            final TransactionServices transactionServices = getBeanManager().getServices().get(TransactionServices.class);
+            if (transactionServices != null) {
+                return transactionServices.getUserTransaction();
             } else {
                 throw new IllegalStateException(TRANSACTION_SERVICES_NOT_AVAILABLE);
             }

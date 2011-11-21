@@ -82,13 +82,14 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
         } else {
             creationalContext = currentCreationalContext.get().getCreationalContext(bean);
         }
+        final CurrentInjectionPoint currentInjectionPoint = container.services().get(CurrentInjectionPoint.class);
         currentCreationalContext.set(creationalContext);
         try {
             // Ensure that there is no injection point associated
-            container.services().get(CurrentInjectionPoint.class).push(EmptyInjectionPoint.INSTANCE);
+            currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
             return context.get(bean, creationalContext);
         } finally {
-            container.services().get(CurrentInjectionPoint.class).pop();
+            currentInjectionPoint.pop();
             if (previousCreationalContext == null) {
                 currentCreationalContext.remove();
             } else {

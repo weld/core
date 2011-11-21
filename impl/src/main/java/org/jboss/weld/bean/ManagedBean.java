@@ -119,8 +119,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
         private void cleanup() {
             if (bean.hasDecorators()) {
-                Container.instance().services().get(CurrentInjectionPoint.class).pop();
-                Container.instance().services().get(CurrentInjectionPoint.class).push(originalInjectionPoint);
+                final CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+                currentInjectionPoint.pop();
+                currentInjectionPoint.push(originalInjectionPoint);
             }
         }
 

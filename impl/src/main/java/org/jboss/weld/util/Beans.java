@@ -657,12 +657,14 @@ public class Beans {
         }
 
         if (jpaServices != null) {
-            Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
+            final PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
+
+            Class<? extends Annotation> persistenceUnitAnnotationType = persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS;
             if (injectionPoint.isAnnotationPresent(persistenceUnitAnnotationType)) {
                 return jpaServices.resolvePersistenceUnit(injectionPoint);
             }
 
-            Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+            Class<? extends Annotation> persistenceContextAnnotationType = persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
             if (injectionPoint.isAnnotationPresent(persistenceContextAnnotationType)) {
                 return jpaServices.resolvePersistenceContext(injectionPoint);
             }
@@ -745,9 +747,10 @@ public class Beans {
             result.addAll(qualifiers);
 
         if (newQualifiers != null && newQualifiers.length > 0) {
+            final MetaAnnotationStore store = Container.instance().services().get(MetaAnnotationStore.class);
             Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
             for (Annotation qualifier : newQualifiers) {
-                if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid()) {
+                if (!store.getBindingTypeModel(qualifier.annotationType()).isValid()) {
                     throw new IllegalArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
                 }
                 if (checkedNewQualifiers.contains(qualifier)) {

@@ -52,8 +52,10 @@ import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
+import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.InterceptorResolvableBuilder;
 import org.jboss.weld.resolution.NameBasedResolver;
@@ -451,15 +453,19 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Set<Bean<?>> getBeans(InjectionPoint injectionPoint) {
         boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
+        CurrentInjectionPoint currentInjectionPoint = null;
+        if (registerInjectionPoint) {
+            currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+        }
         try {
             if (registerInjectionPoint) {
-                Container.instance().services().get(CurrentInjectionPoint.class).push(injectionPoint);
+                currentInjectionPoint.push(injectionPoint);
             }
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
             return beanResolver.resolve(new ResolvableBuilder(injectionPoint).create(), true);
         } finally {
             if (registerInjectionPoint) {
-                Container.instance().services().get(CurrentInjectionPoint.class).pop();
+                currentInjectionPoint.pop();
             }
         }
     }
@@ -655,9 +661,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
         boolean registerInjectionPoint = (injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class));
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
+        CurrentInjectionPoint currentInjectionPoint = null;
+        if (registerInjectionPoint) {
+            currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+        }
         try {
             if (registerInjectionPoint) {
-                Container.instance().services().get(CurrentInjectionPoint.class).push(injectionPoint);
+                currentInjectionPoint.push(injectionPoint);
             }
             if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType())) {
                 throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
@@ -675,7 +685,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             }
         } finally {
             if (registerInjectionPoint) {
-                Container.instance().services().get(CurrentInjectionPoint.class).pop();
+                currentInjectionPoint.pop();
             }
         }
     }
@@ -930,8 +940,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
-        if (getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).isValid()) {
-            return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType).getMetaAnnotations();
+        InterceptorBindingModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType);
+        if (model.isValid()) {
+            return model.getMetaAnnotations();
         } else {
             throw new IllegalArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, bindingType);
         }
@@ -942,8 +953,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
-        if (getServices().get(MetaAnnotationStore.class).getStereotype(stereotype).isValid()) {
-            return getServices().get(MetaAnnotationStore.class).getStereotype(stereotype).getMetaAnnotations();
+        final StereotypeModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getStereotype(stereotype);
+        if (model.isValid()) {
+            return model.getMetaAnnotations();
         } else {
             throw new IllegalArgumentException(NOT_STEREOTYPE, stereotype);
         }
