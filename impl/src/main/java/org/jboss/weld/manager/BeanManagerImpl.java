@@ -132,6 +132,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_EXTENSION;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
@@ -1160,8 +1161,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T extends Extension> T getExtension(Class<T> extensionClass) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+        Bean<?> bean = resolve(getBeans(extensionClass));
+        if (bean == null) {
+            throw new IllegalArgumentException(NO_INSTANCE_OF_EXTENSION, extensionClass);
+        }
+        // We intentionally do not return a contextual instance, since it is not available at bootstrap.
+        return cast(bean.create(null));
     }
 
 }
