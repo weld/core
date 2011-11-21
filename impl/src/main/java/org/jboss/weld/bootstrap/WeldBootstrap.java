@@ -278,10 +278,12 @@ public class WeldBootstrap implements Bootstrap {
         // TODO expose AnnotatedClass on SPI and allow container to provide impl
         // of this via ResourceLoader
         services.add(Validator.class, new Validator());
-        services.add(TypeStore.class, new TypeStore());
-        services.add(ClassTransformer.class, new ClassTransformer(services.get(TypeStore.class)));
+        TypeStore typeStore = new TypeStore();
+        services.add(TypeStore.class, typeStore);
+        ClassTransformer classTransformer = new ClassTransformer(typeStore);
+        services.add(ClassTransformer.class, classTransformer);
         services.add(SharedObjectCache.class, new SharedObjectCache());
-        services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
+        services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         return services;
@@ -289,8 +291,9 @@ public class WeldBootstrap implements Bootstrap {
 
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
         synchronized (this) {
-            if (beanDeployments.containsKey(beanDeploymentArchive)) {
-                return beanDeployments.get(beanDeploymentArchive).getBeanManager().getCurrent();
+            BeanDeployment beanDeployment = beanDeployments.get(beanDeploymentArchive);
+            if (beanDeployment != null) {
+                return beanDeployment.getBeanManager().getCurrent();
             } else {
                 return null;
             }
