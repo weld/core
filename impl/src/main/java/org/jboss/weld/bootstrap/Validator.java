@@ -261,8 +261,13 @@ public class Validator implements Service {
         // Account for the case this is disabled decorator
         if (!resolvedBeans.isEmpty()) {
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-            if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(ij.getType())) {
-                throw new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
+            if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal()) {
+                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType());
+                if (ue != null) {
+                    UnproxyableResolutionException exception = new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
+                    exception.initCause(ue);
+                    throw exception;
+                }
             }
             if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {
                 throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);

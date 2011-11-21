@@ -154,9 +154,10 @@ public class WeldBootstrap implements Bootstrap {
 
         private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives, boolean validate) {
             // for certain services we can fall back to deployment-level settings or defaults
-            if (!beanDeploymentArchive.getServices().contains(ResourceLoader.class)
-                    && deployment.getServices().contains(ResourceLoader.class)) {
-                beanDeploymentArchive.getServices().add(ResourceLoader.class, deployment.getServices().get(ResourceLoader.class));
+            if (!beanDeploymentArchive.getServices().contains(ResourceLoader.class)) {
+                ResourceLoader loader = deployment.getServices().get(ResourceLoader.class);
+                if (loader != null)
+                    beanDeploymentArchive.getServices().add(ResourceLoader.class, loader);
             }
             // Check that the required services are specified
             if (validate) {

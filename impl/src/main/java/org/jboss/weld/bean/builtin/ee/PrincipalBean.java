@@ -38,8 +38,9 @@ public class PrincipalBean extends AbstractEEBean<Principal> {
         }
 
         public Principal call() throws Exception {
-            if (getBeanManager().getServices().contains(SecurityServices.class)) {
-                return getBeanManager().getServices().get(SecurityServices.class).getPrincipal();
+            final SecurityServices securityServices = getBeanManager().getServices().get(SecurityServices.class);
+            if (securityServices != null) {
+                return securityServices.getPrincipal();
             } else {
                 throw new IllegalStateException(SECURITY_SERVICES_NOT_AVAILABLE);
             }

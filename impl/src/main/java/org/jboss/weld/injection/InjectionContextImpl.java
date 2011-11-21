@@ -41,8 +41,9 @@ public abstract class InjectionContextImpl<T> implements InjectionContext<T> {
     }
 
     public void run() {
-        if (beanManager.getServices().contains(InjectionServices.class)) {
-            beanManager.getServices().get(InjectionServices.class).aroundInject(this);
+        final InjectionServices injectionServices = beanManager.getServices().get(InjectionServices.class);
+        if (injectionServices != null) {
+            injectionServices.aroundInject(this);
         } else {
             proceed();
         }

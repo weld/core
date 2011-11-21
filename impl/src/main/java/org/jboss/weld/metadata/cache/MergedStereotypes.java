@@ -62,9 +62,10 @@ public class MergedStereotypes<T, E> {
      * @param stereotypeAnnotations The stereotype annotations
      */
     protected void merge(Set<Annotation> stereotypeAnnotations) {
+        final MetaAnnotationStore store = manager.getServices().get(MetaAnnotationStore.class);
         for (Annotation stereotypeAnnotation : stereotypeAnnotations) {
             // Retrieve and merge all metadata from stereotypes
-            StereotypeModel<?> stereotype = manager.getServices().get(MetaAnnotationStore.class).getStereotype(stereotypeAnnotation.annotationType());
+            StereotypeModel<?> stereotype = store.getStereotype(stereotypeAnnotation.annotationType());
             if (stereotype == null) {
                 throw new IllegalStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
             }

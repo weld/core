@@ -38,8 +38,9 @@ public class DefaultValidatorFactoryBean extends AbstractEEBean<ValidatorFactory
         }
 
         public ValidatorFactory call() throws Exception {
-            if (getBeanManager().getServices().contains(ValidationServices.class)) {
-                return getBeanManager().getServices().get(ValidationServices.class).getDefaultValidatorFactory();
+            final ValidationServices validationServices = getBeanManager().getServices().get(ValidationServices.class);
+            if (validationServices != null) {
+                return validationServices.getDefaultValidatorFactory();
             } else {
                 throw new IllegalStateException(VALIDATION_SERVICE_NOT_AVAILABLE);
             }
