@@ -16,20 +16,6 @@
  */
 package org.jboss.weld.tests.ejb.mdb;
 
-import junit.framework.Assert;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.tests.category.Broken;
-import org.jboss.weld.tests.category.Integration;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
@@ -37,6 +23,20 @@ import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.naming.InitialContext;
+
+import junit.framework.Assert;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.weld.tests.category.Broken;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -47,15 +47,15 @@ public class EJBTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
                 .addAsModule(
-                        ShrinkWrap.create(JavaArchive.class)
+                        ShrinkWrap.create(BeanArchive.class)
                                 .addPackage(EJBTest.class.getPackage())
-                                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                         //.addAsManifestResource(EJBTest.class.getPackage(), "test-destinations-service.xml", "test-destinations-service.xml")
                 );
     }
 
     @Category(Broken.class)
     @Test
+    @Ignore
     // TODO Need a way to deploy test-destinations-service.xml to JBoss AS
     public void testMdbUsable(Control control) throws Exception {
         InitialContext ctx = new InitialContext();
