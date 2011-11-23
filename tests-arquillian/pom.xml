@@ -374,6 +374,9 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.10</version>
                         <configuration>
+                            <systemPropertyVariables>
+                                <jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name>
+                            </systemPropertyVariables>
                             <systemProperties>
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
                             </systemProperties>

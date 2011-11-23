@@ -16,6 +16,15 @@
  */
 package org.jboss.weld.tests.observers.transactional;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import javax.inject.Inject;
+import javax.transaction.UserTransaction;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -23,19 +32,9 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import javax.transaction.UserTransaction;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * WELD-936 Tests that transaction observer notifications on EJB's work correctly when no request scope is active
@@ -57,7 +56,6 @@ public class TransactionObserverOnEjbTest {
 
 
     @Test
-    @Ignore // TODO -- enable with new JBossAS7 release!
     public void testTransactionalObserver() throws ExecutionException, TimeoutException, InterruptedException {
         final UserTransaction userTransaction = this.userTransaction;
         final Ostrich ostrich = this.ostrich;
