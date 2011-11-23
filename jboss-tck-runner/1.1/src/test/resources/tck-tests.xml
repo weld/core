@@ -41,66 +41,6 @@
                     <exclude name="testInterceptorBindingsWithConflictingAnnotationMembersNotOk" />
                 </methods>
             </class>
-            <!-- CDITCK-141 -->
-            <!-- TestNG does not let us exclude a list of packages :-( -->
-            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingBeanConstructor.DecoratorWithNonPassivatingBeanConstructorTest">
-                <methods>
-                    <exclude name="testPassivationCapableBeanWithNonPassivatingDecoratorBeanConstructorFails" />
-                </methods>
-            </class>
-            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.decoratorWithNonPassivatingInitializerMethod.DecoratorWithNonPassivatingInitializerMethodTest">
-                <methods>
-                    <exclude name="testPassivationCapableBeanWithNonPassivatingInitializerInDecoratorFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingBeanConstructorParameterInInterceptor.EnterpriseBeanWithNonPassivatingBeanConstructorParameterInInterceptorTest">
-                <methods>
-                    <exclude name="testSessionBeanWithNonPassivatingBeanConstructorParamInInterceptorFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingConstructorFieldInDecorator.EnterpriseBeanWithNonPassivatingFieldInDecoratorTest">
-                <methods>
-                    <exclude name="testSessionBeanWithNonPassivatingConstructorFieldInDecoratorFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingInitializerInDecorator.EnterpriseBeanWithNonPassivatingInitializerInDecoratorTest">
-                <methods>
-                    <exclude name="testSessionBeanWithNonPassivatingInitializerFieldInDecoratorFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingInitializerParameterInInterceptor.EnterpriseBeanWithNonPassivatingInitializerParameterInInterceptorTest">
-                <methods>
-                    <exclude name="testSessionBeanWithNonPassivatingInitializerParamInInterceptorFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.interceptorWithNonPassivatingBeanConstructorParameter.PassivationCapableBeanWithNonPassivatingInterceptorTest">
-                <methods>
-                    <exclude name="testPassivationCapableBeanWithNonPassivatingInterceptorFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.passivatingManagedBeanWithNonPassivatingBeanConstructor.PassivatingManagedBeanWithNonPassivatingBeanConstructorTest">
-                <methods>
-                    <exclude name="testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoConstructorParameterOfWebBeanWithPassivatingScopeFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.passivatingManagedBeanWithNonPassivatingInitializerMethod.PassivatingManagedBeanWithNonPassivatingInitializerMethodTest">
-                <methods>
-                    <exclude name="testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoInitializerParameterOfWebBeanWithPassivatingScopeFails" />
-                </methods>
-            </class>
-            <class
-                name="org.jboss.jsr299.tck.tests.context.passivating.broken.passivatingProducerMethodWithNonPassivatingParameter.PassivatingProducerMethodWithNonPassivatingParameterTest">
-                <methods>
-                    <exclude name="testSimpleDependentWebBeanWithNonSerializableImplementationInjectedIntoProducerMethodParameterWithPassivatingScopeFails" />
-                </methods>
-            </class>
             <!-- CDI-136 -->
             <class name="org.jboss.jsr299.tck.tests.context.passivating.PassivatingContextTest">
                 <methods>
@@ -122,6 +62,7 @@
                     <exclude name=".*" />
                 </methods>
             </class>
+            <!-- Test fixed, corresponding assertion not yet -->
             <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.enterpriseBeanWithNonPassivatingDecorator.EnterpriseBeanWithNonPassivatingDecoratorTest">
                 <methods>
                     <exclude name="testEnterpriseBeanWithNonPassivatingDecoratorFails" />
@@ -223,6 +164,18 @@
             <class name="org.jboss.jsr299.tck.tests.decorators.invocation.DecoratorInvocationTest">
                 <methods>
                     <exclude name="testDecoratorInvokesDelegateMethodOutsideOfBusinessMethodInterception" />
+                </methods>
+            </class>
+            <!-- WELD-997 -->
+            <class name="org.jboss.jsr299.tck.tests.extensions.interceptors.custom.CustomInterceptorInvocationTest">
+                <methods>
+                    <exclude name="testCustomInterceptorInvocation" />
+                </methods>
+            </class>
+            <!-- WELD-977 -->
+            <class name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.ProducerMethodDefinitionTest">
+                <methods>
+                    <exclude name="testNonStaticProducerMethodNotInheritedBySpecializingSubclass" />
                 </methods>
             </class>
 
