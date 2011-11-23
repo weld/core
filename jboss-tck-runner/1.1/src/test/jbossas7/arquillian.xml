@@ -9,7 +9,6 @@
 
     <container qualifier="jboss-as-7" default="true">
         <configuration>
-            <property name="serverConfig">standalone-preview.xml</property>
             <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m -ea</property>
         </configuration>
         <protocol type="Servlet 3.0">
