@@ -16,11 +16,8 @@
  */
 package org.jboss.weld.util;
 
-import org.jboss.weld.bean.builtin.ExtensionBean;
-import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
-import org.jboss.weld.util.reflection.Reflections;
+import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -29,8 +26,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -47,8 +46,11 @@ import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 
-import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
+import org.jboss.weld.event.ContainerLifecycleObserverMethodImpl;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir
@@ -102,10 +104,16 @@ public class Observers {
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {
-        if (!(method instanceof ObserverMethodImpl<?, ?>)) {
-            return false;
+        return method instanceof ContainerLifecycleObserverMethodImpl<?, ?>;
+    }
+
+    public static boolean isContainerLifecycleObserverMethod(WeldMethod<?, ?> method) {
+        for (AnnotatedParameter<?> parameter : method.getParameters()) {
+            if (parameter.isAnnotationPresent(Observes.class)) {
+                Class<?> type = Reflections.getRawType(parameter.getBaseType());
+                return CONTAINER_LIFECYCLE_EVENT_TYPES.contains(type);
+            }
         }
-        return (((ObserverMethodImpl<?, ?>) method).getDeclaringBean() instanceof ExtensionBean)
-                && CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(method.getObservedType()));
+        return false;
     }
 }

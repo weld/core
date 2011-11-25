@@ -68,6 +68,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTI
  * </p>
  *
  * @author David Allen
+ * @author Jozef Hartinger
  */
 public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
@@ -245,6 +246,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     private void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
         try {
+            preNotify(event, receiver);
             if (receiver == null) {
                 observerMethod.invokeWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
             } else {
@@ -253,10 +255,20 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
                 observerMethod.invokeOnInstanceWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
             }
         } finally {
+            postNotify(event, receiver);
             if (creationalContext != null && Dependent.class.equals(declaringBean.getScope())) {
                 creationalContext.release();
             }
         }
+    }
+
+    /**
+     * Hooks allowing subclasses to perform additional logic just before and just after an event is delivered to an observer method.
+     */
+    protected void preNotify(T event, Object receiver) {
+    }
+
+    protected void postNotify(T event, Object receiver) {
     }
 
     private Object getReceiverIfExists() {

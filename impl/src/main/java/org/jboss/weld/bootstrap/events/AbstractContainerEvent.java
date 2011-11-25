@@ -36,6 +36,14 @@ public abstract class AbstractContainerEvent {
     private final Type[] actualTypeArguments;
     private final Type rawType;
 
+    /*
+     * The receiver object and the observer method being used for event dispatch at a given time. This information is required
+     * for implementing ProcessSyntheticAnnotatedType and ProcessModule properly. The information must be set by an
+     * ObserverMethod implementation before invoking the target observer method and unset once the notification is complete.
+     */
+    private Object receiver;
+    private ObserverMethod<?> observerMethod;
+
     protected AbstractContainerEvent(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments) {
         this.errors = new ArrayList<Throwable>();
         this.beanManager = beanManager;
@@ -87,4 +95,19 @@ public abstract class AbstractContainerEvent {
         return actualTypeArguments;
     }
 
+    public Object getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(Object receiver) {
+        this.receiver = receiver;
+    }
+
+    public ObserverMethod<?> getObserverMethod() {
+        return observerMethod;
+    }
+
+    public void setObserverMethod(ObserverMethod<?> observerMethod) {
+        this.observerMethod = observerMethod;
+    }
 }

@@ -44,6 +44,7 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
 
     private AnnotatedType<X> annotatedType;
     private boolean veto;
+    private boolean dirty;
 
     public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType) {
         super(beanManager, ProcessAnnotatedType.class, new Type[]{annotatedType.getBaseType()});
@@ -59,6 +60,7 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
             throw new IllegalArgumentException(ANNOTATION_TYPE_NULL, this);
         }
         this.annotatedType = type;
+        this.dirty = true;
     }
 
     public void veto() {
@@ -67,6 +69,10 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
 
     public boolean isVeto() {
         return veto;
+    }
+
+    public boolean isDirty() {
+        return dirty;
     }
 
     @Override

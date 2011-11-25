@@ -146,6 +146,7 @@ import static org.jboss.weld.util.reflection.Reflections.isCacheable;
  * @author Pete Muir
  * @author Marius Bogoevici
  * @author Ales Justin
+ * @author Jozef Hartinger
  */
 public class BeanManagerImpl implements WeldManager, Serializable {
 
@@ -180,7 +181,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     * archive accessibility, and the configuration for this bean deployment
     * archive
     */
-    private final transient Enabled enabled;
+    private transient volatile Enabled enabled;
     private final transient Set<CurrentActivity> currentActivities;
 
 
@@ -269,7 +270,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new AtomicInteger());
     }
 
-    public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services, Enabled enabled) {
+    public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services) {
         return new BeanManagerImpl(
                 services,
                 new CopyOnWriteArrayList<Bean<?>>(),
@@ -282,7 +283,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 rootManager.getClientProxyProvider(),
                 rootManager.getContexts(),
                 new CopyOnWriteArraySet<CurrentActivity>(),
-                enabled,
+                Enabled.EMPTY_ENABLED,
                 id,
                 new AtomicInteger());
     }
@@ -446,6 +447,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     public Enabled getEnabled() {
         return enabled;
+    }
+
+    public void setEnabled(Enabled enabled) {
+        this.enabled = enabled;
     }
 
     public boolean isBeanEnabled(Bean<?> bean) {

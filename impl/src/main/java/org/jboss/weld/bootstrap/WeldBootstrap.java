@@ -32,6 +32,7 @@ import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.AfterDeploymentValidationImpl;
 import org.jboss.weld.bootstrap.events.BeforeBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
+import org.jboss.weld.bootstrap.events.ProcessModuleImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -326,6 +327,19 @@ public class WeldBootstrap implements Bootstrap {
             // outside the physical BDA
             beanDeployments = deploymentVisitor.visit();
 
+            // for each BDA transform its classes into WeldClass instances
+            for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
+                entry.getValue().createClasses();
+            }
+
+            for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
+                BeanDeployment beanDeployment = entry.getValue();
+                if (deployment.getBeanDeploymentArchives().contains(entry.getKey())) {
+                    // only fire for physical BDAs
+                    ProcessModuleImpl.fire(beanDeployment);
+                }
+                beanDeployment.createEnabled();
+            }
         }
         return this;
     }

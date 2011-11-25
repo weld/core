@@ -21,6 +21,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.Observers;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -42,7 +43,9 @@ public class ObserverFactory {
     public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager) {
         ObserverMethodImpl<T, X> result = null;
         TransactionPhase transactionPhase = getTransactionalPhase(method);
-        if (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS)) {
+        if (Observers.isContainerLifecycleObserverMethod(method)) {
+            result = new ContainerLifecycleObserverMethodImpl<T, X>(method, declaringBean, manager);
+        } else if  (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS)) {
             result = new TransactionalObserverMethodImpl<T, X>(method, declaringBean, transactionPhase, manager);
         } else {
             result = new ObserverMethodImpl<T, X>(method, declaringBean, manager);

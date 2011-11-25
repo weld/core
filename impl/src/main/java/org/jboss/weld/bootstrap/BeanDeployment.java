@@ -16,8 +16,22 @@
  */
 package org.jboss.weld.bootstrap;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.BeanMetadataBean;
@@ -45,7 +59,6 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.manager.InjectionTargetValidator;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
@@ -59,20 +72,8 @@ import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Bean;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
-import static java.util.Collections.emptyList;
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 /**
  * @author pmuir
@@ -85,6 +86,7 @@ public class BeanDeployment {
     private final BeanManagerImpl beanManager;
     private final BeanDeployer beanDeployer;
     private final Collection<ContextHolder<? extends Context>> contexts;
+    private final EnabledBuilder enabledBuilder;
 
     public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts) {
         this.beanDeploymentArchive = beanDeploymentArchive;
@@ -103,11 +105,9 @@ public class BeanDeployment {
         services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
         services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
-        this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services, Enabled.of(beanDeploymentArchive.getBeansXml(), resourceLoader));
+        this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
+        this.enabledBuilder = EnabledBuilder.of(beanDeploymentArchive.getBeansXml(), resourceLoader);
         services.add(InjectionTargetValidator.class, new InjectionTargetValidator(beanManager));
-        log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternativeClasses(), beanManager.getEnabled().getAlternativeStereotypes());
-        log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
-        log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
         if (beanManager.getServices().contains(EjbServices.class)) {
             // Must populate EJB cache first, as we need it to detect whether a
             // bean is an EJB!
@@ -171,9 +171,24 @@ public class BeanDeployment {
         return classNames;
     }
 
+    public void createClasses() {
+        beanDeployer.addClasses(loadClasses());
+    }
+
+    /**
+     * Initializes Enabled after ProcessModule is fired.
+     */
+    public void createEnabled() {
+        beanManager.setEnabled(enabledBuilder.create());
+        enabledBuilder.clear(); // not needed anymore
+        log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternativeClasses(), beanManager.getEnabled().getAlternativeStereotypes());
+        log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
+        log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
+    }
+
     // TODO -- OK?
     public void createBeans(Environment environment) {
-        beanDeployer.addClasses(loadClasses());
+        beanDeployer.processAnnotatedTypes();
         beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
         beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
         beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));
@@ -226,5 +241,9 @@ public class BeanDeployment {
                 ((RIBean<?>) bean).initializeAfterBeanDiscovery();
             }
         }
+    }
+
+    public EnabledBuilder getEnabledBuilder() {
+        return enabledBuilder;
     }
 }

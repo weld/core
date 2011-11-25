@@ -16,26 +16,6 @@
  */
 package org.jboss.weld.manager;
 
-import com.google.common.base.Function;
-import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.messages.ValidatorMessage;
-import org.jboss.weld.metadata.MetadataImpl;
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Interceptor;
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static com.google.common.collect.Lists.transform;
 import static java.util.Collections.unmodifiableCollection;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
@@ -43,44 +23,33 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STERE
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Interceptor;
+
+import org.jboss.weld.bootstrap.EnabledBuilder;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.logging.messages.ValidatorMessage;
+
 /**
  * @author Nicklas Karlsson
  * @author Ales Justin
+ * @author Jozef Hartinger
+ *
+ * @see EnabledBuilder
  */
 public class Enabled {
 
-    private static class ClassLoader<T> implements Function<Metadata<String>, Metadata<Class<? extends T>>> {
-
-        private final ResourceLoader resourceLoader;
-
-        public ClassLoader(ResourceLoader resourceLoader) {
-            this.resourceLoader = resourceLoader;
-        }
-
-        public Metadata<Class<? extends T>> apply(Metadata<String> from) {
-            String location = from.getLocation();
-            try {
-                return new MetadataImpl<Class<? extends T>>(Reflections.<Class<? extends T>>cast(resourceLoader.classForName(from.getValue())), location);
-            } catch (ResourceLoadingException e) {
-                throw new ResourceLoadingException(e.getMessage() + "; location: " + location, e.getCause());
-            } catch (Exception e) {
-                throw new ResourceLoadingException(e.getMessage() + "; location: " + location, e);
-            }
-        }
-
-    }
-
-    public static Enabled of(BeansXml beansXml, ResourceLoader resourceLoader) {
-        if (beansXml == null) {
-            return EMPTY_ENABLED;
-        } else {
-            ClassLoader<Object> classLoader = new ClassLoader<Object>(resourceLoader);
-            ClassLoader<Annotation> annotationLoader = new ClassLoader<Annotation>(resourceLoader);
-            return new Enabled(transform(beansXml.getEnabledAlternativeStereotypes(), annotationLoader), transform(beansXml.getEnabledAlternativeClasses(), classLoader), transform(beansXml.getEnabledDecorators(), classLoader), transform(beansXml.getEnabledInterceptors(), classLoader));
-        }
-    }
-
-    public static final Enabled EMPTY_ENABLED = new Enabled(Collections.<Metadata<Class<? extends Annotation>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList());
+    public static final Enabled EMPTY_ENABLED = new Enabled(Collections.<Metadata<Class<? extends Annotation>>>emptySet(), Collections.<Metadata<Class<?>>>emptySet(), Collections.<Metadata<Class<?>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList());
 
     private final Map<Class<? extends Annotation>, Metadata<Class<? extends Annotation>>> alternativeStereotypes;
     private final Map<Class<?>, Metadata<Class<?>>> alternativeClasses;
@@ -89,7 +58,7 @@ public class Enabled {
     private final Comparator<Decorator<?>> decoratorComparator;
     private final Comparator<Interceptor<?>> interceptorComparator;
 
-    private Enabled(List<Metadata<Class<? extends Annotation>>> alternativeStereotypes, List<Metadata<Class<?>>> alternativeClasses, List<Metadata<Class<?>>> decorators, List<Metadata<Class<?>>> interceptors) {
+    public Enabled(Set<Metadata<Class<? extends Annotation>>> alternativeStereotypes, Set<Metadata<Class<?>>> alternativeClasses, List<Metadata<Class<?>>> decorators, List<Metadata<Class<?>>> interceptors) {
         this.alternativeStereotypes = createMetadataMap(alternativeStereotypes, ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
         this.alternativeClasses = createMetadataMap(alternativeClasses, ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES);
         this.decorators = createMetadataMap(decorators, DECORATOR_SPECIFIED_TWICE);
@@ -116,7 +85,7 @@ public class Enabled {
         };
     }
 
-    private static <T> Map<T, Metadata<T>> createMetadataMap(List<Metadata<T>> metadata, ValidatorMessage specifiedTwiceMessage) {
+    private static <T> Map<T, Metadata<T>> createMetadataMap(Collection<Metadata<T>> metadata, ValidatorMessage specifiedTwiceMessage) {
         Map<T, Metadata<T>> result = new HashMap<T, Metadata<T>>();
         for (Metadata<T> value : metadata) {
             if (result.containsKey(value.getValue())) {
