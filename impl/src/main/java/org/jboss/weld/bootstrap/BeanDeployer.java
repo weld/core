@@ -20,11 +20,13 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeFactory;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.introspector.DiscoveredExternalAnnotatedType;
+import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -37,11 +39,14 @@ import org.slf4j.ext.XLogger;
 
 import javax.decorator.Decorator;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
 import javax.interceptor.Interceptor;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -59,6 +64,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private transient XLogger xlog = loggerFactory().getXLogger(Category.CLASS_LOADING);
 
     private final Set<WeldClass<?>> classes;
+    private final Map<WeldClass<?>, Extension> classSource;
     private final Set<Class<?>> vetoedClasses;
     private final ResourceLoader resourceLoader;
     private final ClassTransformer classTransformer;
@@ -70,6 +76,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         super(manager, services, new BeanDeployerEnvironment(ejbDescriptors, manager));
         this.classes = new HashSet<WeldClass<?>>();
+        this.classSource = new HashMap<WeldClass<?>, Extension>();
         this.vetoedClasses = new HashSet<Class<?>>();
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.classTransformer = Container.instance().services().get(ClassTransformer.class);
@@ -99,8 +106,10 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         return this;
     }
 
-    public BeanDeployer addClass(AnnotatedType<?> clazz) {
-        classes.add(classTransformer.loadClass(clazz));
+    public BeanDeployer addSyntheticClass(AnnotatedType<?> clazz, Extension extension) {
+        WeldClass<?> weldClass = classTransformer.loadClass(clazz);
+        classes.add(weldClass);
+        classSource.put(weldClass, extension);
         return this;
     }
 
@@ -113,9 +122,18 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void processAnnotatedTypes() {
         Set<WeldClass<?>> processedClasses = new HashSet<WeldClass<?>>();
-        for (Iterator<WeldClass<?>> iterator = classes.iterator(); iterator.hasNext(); ) {
+        for (Iterator<WeldClass<?>> iterator = classes.iterator(); iterator.hasNext();) {
             WeldClass<?> weldClass = iterator.next();
-            ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), weldClass);
+            // fire event
+            boolean synthetic = classSource.containsKey(weldClass);
+            ProcessAnnotatedTypeImpl<?> event;
+            if (synthetic) {
+                event = ProcessAnnotatedTypeFactory.create(getManager(), weldClass, classSource.get(weldClass));
+            } else {
+                event = ProcessAnnotatedTypeFactory.create(getManager(), weldClass);
+            }
+            event.fire();
+            // process the result
             if (event.isVeto()) {
                 iterator.remove();
                 if (weldClass.isDiscovered()) {
@@ -124,7 +142,14 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             } else {
                 if (event.isDirty()) {
                     iterator.remove();
-                    processedClasses.add(classTransformer.loadClass(DiscoveredExternalAnnotatedType.of(event.getAnnotatedType())));
+                    AnnotatedType<?> modifiedType;
+                    if (synthetic) {
+                        modifiedType = ExternalAnnotatedType.of(event.getAnnotatedType());
+                    } else {
+                        modifiedType = DiscoveredExternalAnnotatedType.of(event.getAnnotatedType());
+                    }
+                    WeldClass<?> modifiedClass = classTransformer.loadClass(modifiedType);
+                    processedClasses.add(modifiedClass);
                 }
             }
         }
@@ -193,6 +218,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void cleanup() {
         classes.clear();
+        classSource.clear();
         vetoedClasses.clear();
     }
 }

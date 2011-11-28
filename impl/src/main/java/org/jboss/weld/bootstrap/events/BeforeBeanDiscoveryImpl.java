@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import org.jboss.weld.bootstrap.BeanDeployer;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -36,6 +37,8 @@ import org.jboss.weld.resources.ClassTransformer;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
@@ -89,7 +92,12 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
     }
 
     public void addAnnotatedType(AnnotatedType<?> type) {
-        getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer().addClass(ExternalAnnotatedType.of(type));
+        Object receiver = getReceiver();
+        if (!(receiver instanceof Extension)) {
+            throw new IllegalStateException("BeforeBeanDiscovery receiver is not an extension");
+        }
+        BeanDeployer deployer = getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer();
+        deployer.addSyntheticClass(ExternalAnnotatedType.of(type), (Extension) receiver);
     }
 
 }

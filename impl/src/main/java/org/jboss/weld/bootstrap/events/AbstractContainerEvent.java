@@ -62,7 +62,7 @@ public abstract class AbstractContainerEvent {
         return beanManager;
     }
 
-    protected void fire() {
+    public void fire() {
         Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
         try {
             beanManager.fireEvent(eventType, this);
@@ -71,7 +71,7 @@ public abstract class AbstractContainerEvent {
         }
     }
 
-    protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+    public void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
         try {
             // Collect all observers to remove dupes
             Set<ObserverMethod<Object>> observers = new HashSet<ObserverMethod<Object>>();

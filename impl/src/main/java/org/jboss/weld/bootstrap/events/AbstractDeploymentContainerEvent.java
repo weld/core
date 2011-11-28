@@ -34,7 +34,7 @@ public abstract class AbstractDeploymentContainerEvent extends AbstractContainer
     }
 
     @Override
-    protected void fire() {
+    public void fire() {
         super.fire();
         if (!getErrors().isEmpty()) {
             throw new DeploymentException(getErrors());
@@ -42,7 +42,7 @@ public abstract class AbstractDeploymentContainerEvent extends AbstractContainer
     }
 
     @Override
-    protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+    public void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
         super.fire(beanDeployments);
         if (!getErrors().isEmpty()) {
             throw new DeploymentException(getErrors());

@@ -35,19 +35,16 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_N
  */
 public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEvent implements ProcessAnnotatedType<X> {
 
-    public static <X> ProcessAnnotatedTypeImpl<X> fire(BeanManagerImpl beanManager, WeldClass<X> clazz) {
-        ProcessAnnotatedTypeImpl<X> payload = new ProcessAnnotatedTypeImpl<X>(beanManager, clazz) {
-        };
-        payload.fire();
-        return payload;
-    }
-
     private AnnotatedType<X> annotatedType;
     private boolean veto;
     private boolean dirty;
 
     public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType) {
-        super(beanManager, ProcessAnnotatedType.class, new Type[]{annotatedType.getBaseType()});
+        this(beanManager, annotatedType, ProcessAnnotatedType.class, new Type[]{annotatedType.getBaseType()});
+    }
+
+    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, Type rawType, Type[] actualTypeArguments) {
+        super(beanManager, rawType, actualTypeArguments);
         this.annotatedType = annotatedType;
     }
 

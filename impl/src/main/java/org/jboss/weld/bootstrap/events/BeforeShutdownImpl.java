@@ -49,7 +49,7 @@ public class BeforeShutdownImpl extends AbstractContainerEvent implements Before
     }
 
     @Override
-    protected void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+    public void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
         super.fire(beanDeployments);
         if (!getErrors().isEmpty()) {
             log.error("Exception(s) thrown during observer of BeforeShutdown");
