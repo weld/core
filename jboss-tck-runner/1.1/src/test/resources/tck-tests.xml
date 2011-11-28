@@ -124,6 +124,21 @@
                     <exclude name="testNonStaticProducerMethodNotInheritedBySpecializingSubclass" />
                 </methods>
             </class>
+            <class name="org.jboss.jsr299.tck.tests.implementation.producer.field.lifecycle.ProducerFieldLifecycleTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.event.EventTest">
+                <methods>
+                    <exclude name="testObserverNotCalled" />
+                </methods>
+            </class>
+             <class name="org.jboss.jsr299.tck.tests.inheritance.specialization.simple.SimpleBeanSpecializationTest">
+                <methods>
+                    <exclude name="testProducerMethodOnSpecializedBeanNotCalled" />
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
 

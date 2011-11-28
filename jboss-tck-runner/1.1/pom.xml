@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
@@ -125,7 +126,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                 <version>2.10</version>
+                <version>2.10</version>
                 <configuration>
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
@@ -235,6 +236,16 @@
                     <artifactId>jboss-as-arquillian-container-managed</artifactId>
                     <version>${jboss.as7.version}</version>
                     <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-spi</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-api</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
                 <dependency>
                     <groupId>org.jboss.arquillian.protocol</groupId>
@@ -268,9 +279,10 @@
                                 <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                             </suiteXmlFiles>
                             <systemPropertyVariables>
-                                <!-- Silencing the broken code in getActiveConfiguration(), see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
+                                <!-- Silencing the broken code in getActiveConfiguration(), 
+                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
-                                <!-- -DforkMode=never http://stackoverflow.com/questions/824019/maven-2-1-0-not-passing-on-system-properties-to-java-virtual-machine-->
+                                <!-- -DforkMode=never http://stackoverflow.com/questions/824019/maven-2-1-0-not-passing-on-system-properties-to-java-virtual-machine -->
                                 <jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name>
                                 <org.jboss.jsr299.tck.libraryDirectory>target/dependency/lib</org.jboss.jsr299.tck.libraryDirectory>
                                 <org.jboss.jsr299.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.jsr299.tck.testDataSource>

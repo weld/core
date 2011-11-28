@@ -26,7 +26,7 @@
     <properties>
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER-->
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.0.0.CR5</arquillian.version>
+        <arquillian.version>1.0.0.CR6</arquillian.version>
         <arquillian.jboss.version>1.0.0.CR5</arquillian.jboss.version>
         <arquillian.weld.version>1.0.0.CR2</arquillian.weld.version>
         <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
