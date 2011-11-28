@@ -44,9 +44,9 @@ public class ServicePublishingTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("1.1.3-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle2").version("1.1.3-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle3").version("1.1.3-SNAPSHOT")
+                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("1.1.4-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle2").version("1.1.4-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle3").version("1.1.4-SNAPSHOT")
                 )
         );
     }
