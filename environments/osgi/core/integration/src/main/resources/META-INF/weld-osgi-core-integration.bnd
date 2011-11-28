@@ -189,6 +189,6 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.se.discovery; \
                org.jboss.weld.environment.se.discovery.url; \
                org.jboss.weld.environment.se.contexts; \
-               org.jboss.weld.messages; version=1.1.4
+               org.jboss.weld.messages; version=1.1.5
 
 DynamicImport-Package *
