@@ -228,7 +228,6 @@
                             <suiteXmlFiles>
                                 <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                             </suiteXmlFiles>
-                            <groups>.*</groups>
                             <excludedGroups>integration,javaee-full</excludedGroups>
                             <systemPropertyVariables>
                                 <arquillian.launch>weld</arquillian.launch>
