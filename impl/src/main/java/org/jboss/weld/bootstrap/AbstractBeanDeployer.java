@@ -16,6 +16,22 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
+
+import java.lang.reflect.Member;
+import java.util.Set;
+
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
+
+import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -29,8 +45,11 @@ import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.attributes.BeanAttributesFactory;
+import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.events.ProcessBeanAttributesImpl;
 import org.jboss.weld.bootstrap.events.ProcessBeanImpl;
 import org.jboss.weld.bootstrap.events.ProcessBeanInjectionTarget;
 import org.jboss.weld.bootstrap.events.ProcessManagedBeanImpl;
@@ -48,29 +67,16 @@ import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-import java.lang.reflect.Member;
-import java.util.Set;
-
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
-
 /**
  * @author Pete Muir
  * @author Ales Justin
+ * @author Jozef Hartinger
  */
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
@@ -136,7 +142,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
         // TODO -- why do observers have to be the last?
         for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers()) {
-            Bean ob = observer.getDeclaringBean();
+            Bean<?> ob = observer.getDeclaringBean();
             // make sure we're not specialized
             if (Beans.isSpecialized(ob, manager) == false) {
                 log.debug(FOUND_OBSERVER_METHOD, observer);
@@ -154,17 +160,20 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
      * @param bean The class bean
      */
     protected <T> void createObserversProducersDisposers(AbstractClassBean<T> bean) {
-        createProducerMethods(bean, bean.getWeldAnnotated());
-        createProducerFields(bean, bean.getWeldAnnotated());
-        if (manager.isBeanEnabled(bean)) {
-            createObserverMethods(bean, bean.getWeldAnnotated());
+        if (bean instanceof ManagedBean<?> || bean instanceof SessionBean<?>) {
+            createProducerMethods(bean, bean.getWeldAnnotated());
+            createProducerFields(bean, bean.getWeldAnnotated());
+            if (manager.isBeanEnabled(bean)) {
+                createObserverMethods(bean, bean.getWeldAnnotated());
+            }
+            createDisposalMethods(bean, bean.getWeldAnnotated());
         }
-        createDisposalMethods(bean, bean.getWeldAnnotated());
-
     }
 
     protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
         for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethods(Produces.class)) {
+            // create method for now
+            // specialization and PBA processing is handled later
             createProducerMethod(declaringBean, method);
         }
     }
@@ -178,18 +187,23 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, ? super X> annotatedMethod) {
-        ProducerMethod<? super X, T> bean = ProducerMethod.of(annotatedMethod, declaringBean, manager, services);
+        BeanAttributes<T> attributes = BeanAttributesFactory.forProducerBean(annotatedMethod, declaringBean, getManager());
+        ProducerMethod<? super X, T> bean = ProducerMethod.of(attributes, annotatedMethod, declaringBean, manager, services);
         getEnvironment().addProducerMethod(bean);
     }
 
     protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, ? super X> field) {
+        BeanAttributes<T> attributes = BeanAttributesFactory.forProducerBean(field, declaringBean, getManager());
         ProducerField<X, T> bean;
         if (isEEResourceProducerField(field)) {
-            bean = EEResourceProducerField.of(field, declaringBean, manager, services);
+            bean = EEResourceProducerField.of(attributes, field, declaringBean, manager, services);
         } else {
-            bean = ProducerField.of(field, declaringBean, manager, services);
+            bean = ProducerField.of(attributes, field, declaringBean, manager, services);
         }
-        getEnvironment().addProducerField(bean);
+        boolean vetoed = fireProcessBeanAttributes(bean);
+        if (!vetoed) {
+            getEnvironment().addProducerField(bean);
+        }
     }
 
     protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
@@ -209,59 +223,44 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         getEnvironment().addObserverMethod(observer);
     }
 
-    protected <T> ManagedBean<T> createManagedBean(WeldClass<T> annotatedClass) {
-        ManagedBean<T> bean = ManagedBean.of(annotatedClass, manager, services);
+    protected <T> ManagedBean<T> createManagedBean(WeldClass<T> weldClass) {
+        BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
+        ManagedBean<T> bean = ManagedBean.of(attributes, weldClass, manager, services);
         getEnvironment().addManagedBean(bean);
-        createObserversProducersDisposers(bean);
         return bean;
     }
 
     protected <T> void createNewManagedBean(WeldClass<T> annotatedClass) {
-        getEnvironment().addManagedBean(NewManagedBean.of(annotatedClass, manager, services));
+        // TODO resolve existing beans first
+        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass), annotatedClass, manager, services));
     }
 
-    protected <T> void createDecorator(WeldClass<T> annotatedClass) {
-        DecoratorImpl<T> bean = DecoratorImpl.of(annotatedClass, manager, services);
+    protected <T> void createDecorator(WeldClass<T> weldClass) {
+        BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
+        DecoratorImpl<T> bean = DecoratorImpl.of(attributes, weldClass, manager, services);
         getEnvironment().addDecorator(bean);
     }
 
-    protected <T> void createInterceptor(WeldClass<T> annotatedClass) {
-        InterceptorImpl<T> bean = InterceptorImpl.of(annotatedClass, manager, services);
+    protected <T> void createInterceptor(WeldClass<T> weldClass) {
+        BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
+        InterceptorImpl<T> bean = InterceptorImpl.of(attributes, weldClass, manager, services);
         getEnvironment().addInterceptor(bean);
     }
 
-    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> ejbDescriptor) {
+    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor) {
+        return createSessionBean(descriptor, services.get(ClassTransformer.class).loadClass(descriptor.getBeanClass()));
+    }
+    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, WeldClass<T> weldClass) {
         // TODO Don't create enterprise bean if it has no local interfaces!
-        SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager, services);
+        BeanAttributes<T> attributes = BeanAttributesFactory.forSessionBean(weldClass, descriptor, getManager());
+        SessionBean<T> bean = SessionBean.of(attributes, descriptor, manager, weldClass, services);
         getEnvironment().addSessionBean(bean);
-        createObserversProducersDisposers(bean);
         return bean;
     }
 
-    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> ejbDescriptor, WeldClass<T> weldClass) {
-        // TODO Don't create enterprise bean if it has no local interfaces!
-        SessionBean<T> bean = SessionBean.of(ejbDescriptor, manager, weldClass, services);
-        getEnvironment().addSessionBean(bean);
-        createObserversProducersDisposers(bean);
-        return bean;
-    }
-
-    protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor) {
-        getEnvironment().addSessionBean(NewSessionBean.of(ejbDescriptor, manager, services));
-    }
-
-    /**
-     * Indicates if the type is a simple Web Bean
-     *
-     * @param clazz The type to inspect
-     * @return True if simple Web Bean, false otherwise
-     */
-    protected boolean isTypeManagedBeanOrDecoratorOrInterceptor(WeldClass<?> clazz) {
-        Class<?> javaClass = clazz.getJavaClass();
-        return !Extension.class.isAssignableFrom(clazz.getJavaClass()) &&
-                !(clazz.isAnonymousClass() || (clazz.isMemberClass() && !clazz.isStatic())) &&
-                !Reflections.isParamerterizedTypeWithWildcard(javaClass) &&
-                hasSimpleWebBeanConstructor(clazz);
+    protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor, BeanAttributes<?> originalAttributes) {
+        BeanAttributes<T> attributes = Reflections.cast(BeanAttributesFactory.forNewSessionBean(originalAttributes));
+        getEnvironment().addSessionBean(NewSessionBean.of(attributes, ejbDescriptor, manager, services));
     }
 
     protected boolean isEEResourceProducerField(WeldField<?, ?> field) {
@@ -271,12 +270,23 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS);
     }
 
-    private static boolean hasSimpleWebBeanConstructor(WeldClass<?> type) {
-        return type.getNoArgsWeldConstructor() != null || type.getWeldConstructors(Inject.class).size() > 0;
-    }
-
     public E getEnvironment() {
         return environment;
     }
 
+    protected <T, S> boolean fireProcessBeanAttributes(AbstractBean<T, S> bean) {
+        if (!getManager().isBeanEnabled(bean)) {
+            return false;
+        }
+
+        ProcessBeanAttributesImpl<T> event = ProcessBeanAttributesImpl.fire(getManager(), bean, bean.getWeldAnnotated(), bean.getBeanClass());
+        if (event.isVeto()) {
+            return true;
+        }
+        if (event.isDirty()) {
+            bean.setAttributes(ExternalBeanAttributesFactory.<T>of(event.getBeanAttributes(), manager));
+            bean.setDirty();
+        }
+        return false;
+    }
 }

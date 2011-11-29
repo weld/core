@@ -16,52 +16,42 @@
  */
 package org.jboss.weld.bean;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldAnnotated;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.literal.NamedLiteral;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MergedStereotypes;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.BeansClosure;
-import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.*;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.decorator.Delegate;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.inject.Named;
-import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES;
-import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
-import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
-import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
+import org.jboss.weld.Container;
+import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
+import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.util.BeansClosure;
+import org.jboss.weld.util.collections.ArraySet;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * An abstract bean representation common for all beans
@@ -70,23 +60,21 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STERE
  * @param <S> the Class<?> of the bean type
  * @author Pete Muir
  * @author Ales Justin
+ * @author Jozef Hartinger
  */
 public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
-    protected Set<Annotation> qualifiers;
-    protected String name;
-    protected Class<? extends Annotation> scope;
-    private MergedStereotypes<T, S> mergedStereotypes;
-    protected boolean alternative;
     protected Class<T> type;
-    protected Set<Type> types;
+    protected BeanAttributes<T> attributes;
+
     private ArraySet<WeldInjectionPoint<?, ?>> injectionPoints;
     private ArraySet<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
     private ArraySet<WeldInjectionPoint<?, ?>> newInjectionPoints;
     protected BeanManagerImpl beanManager;
     private final ServiceRegistry services;
     private boolean initialized;
+    private boolean dirty = true;
     private boolean proxyRequired;
 
     /**
@@ -94,8 +82,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      *
      * @param beanManager The Bean manager
      */
-    public AbstractBean(String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public AbstractBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(idSuffix, beanManager);
+        this.attributes = attributes;
         this.beanManager = beanManager;
         this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
         this.delegateInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
@@ -111,31 +100,39 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     /**
+     * Initializes specialization. This method is called before {@link ProcessBeanAttributes} is fired and also after the event
+     * if the {@link BeanAttributes} have been altered.
+     */
+    @Override
+    public void preInitialize() {
+        if (isSpecializing() && isDirty()) {
+            preSpecialize();
+            specialize();
+            postSpecialize();
+            dirty = false;
+        }
+    }
+
+    /**
      * Initializes the bean and its metadata
      */
     @Override
     public void initialize(BeanDeployerEnvironment environment) {
+        preInitialize();
         initialized = true;
         if (isSpecializing()) {
-            preSpecialize(environment);
-            specialize(environment);
-            postSpecialize();
+            finishSpecialization();
         }
-        initDefaultQualifiers();
         log.trace(CREATING_BEAN, getType());
-        initName();
-        initScope();
         checkDelegateInjectionPoints();
         if (getScope() != null) {
             proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
         } else {
             proxyRequired = false;
         }
-        this.qualifiers = Collections.unmodifiableSet(new ArraySet<Annotation>(qualifiers));
-    }
-
-    protected void initStereotypes() {
-        mergedStereotypes = new MergedStereotypes<T, S>(getWeldAnnotated().getMetaAnnotations(Stereotype.class), beanManager);
+        log.trace(QUALIFIERS_USED, getQualifiers(), this);
+        log.trace(USING_NAME, getName(), this);
+        log.trace(USING_SCOPE, getScope(), this);
     }
 
     protected void checkDelegateInjectionPoints() {
@@ -171,20 +168,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return delegateInjectionPoints;
     }
 
-    protected void initTypes() {
-        if (getWeldAnnotated().isAnnotationPresent(Typed.class)) {
-            this.types = Collections.unmodifiableSet(new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(getWeldAnnotated().getTypeClosure()), getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class))));
-        } else {
-            if (getType().isInterface()) {
-                this.types = new ArraySet<Type>(getWeldAnnotated().getTypeClosure());
-                this.types.add(Object.class);
-                this.types = Collections.unmodifiableSet(this.types);
-            } else {
-                this.types = getWeldAnnotated().getTypeClosure();
-            }
-        }
-    }
-
     protected static Set<Type> getTypedTypes(Map<Class<?>, Type> typeClosure, Class<?> rawType, Typed typed) {
         Set<Type> types = new HashSet<Type>();
         for (Class<?> specifiedClass : typed.value()) {
@@ -199,104 +182,40 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return types;
     }
 
-    protected void initQualifiers() {
-        this.qualifiers = new HashSet<Annotation>();
-        qualifiers.addAll(getWeldAnnotated().getMetaAnnotations(Qualifier.class));
-        initDefaultQualifiers();
-        log.trace(QUALIFIERS_USED, qualifiers, this);
-    }
-
-    protected void initDefaultQualifiers() {
-        if (qualifiers.size() == 0) {
-            log.trace(USING_DEFAULT_QUALIFIER, this);
-            this.qualifiers.add(DefaultLiteral.INSTANCE);
+    protected void postSpecialize() {
+        if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
+            throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
         }
-        if (qualifiers.size() == 1) {
-            if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
-                log.trace(USING_DEFAULT_QUALIFIER, this);
-                this.qualifiers.add(DefaultLiteral.INSTANCE);
+        for (Type type : getSpecializedBean().getTypes()) {
+            if (!getTypes().contains(type)) {
+                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, getSpecializedBean());
             }
         }
-        this.qualifiers.add(AnyLiteral.INSTANCE);
-
-        // fix found Named, to have full name binding value
-        boolean foundRemoved = false;
-        Iterator<Annotation> qIter = qualifiers.iterator();
-        while (qIter.hasNext()) {
-            Annotation next = qIter.next();
-            if (next.annotationType().equals(Named.class)) {
-                Named named = (Named) next;
-                if (named.value().length() == 0) {
-                    qIter.remove();
-                    foundRemoved = true;
-                }
-                break;
-            }
+        // override qualifiers
+        Set<Annotation> qualifiers = new HashSet<Annotation>();
+        qualifiers.addAll(attributes.getQualifiers());
+        qualifiers.addAll(getSpecializedBean().getQualifiers());
+        // override name
+        String name = attributes.getName();
+        if (isSpecializing() && getSpecializedBean().getName() != null) {
+            name = getSpecializedBean().getName();
         }
-        if (foundRemoved) {
-            Named named = new NamedLiteral(getDefaultName());
-            qualifiers.add(named);
-        }
-    }
-
-    protected void initAlternative() {
-        this.alternative = Beans.isAlternative(getWeldAnnotated(), getMergedStereotypes());
+        this.attributes = new ImmutableBeanAttributes<T>(qualifiers, name, attributes);
     }
 
     /**
-     * Initializes the name
+     * Saves the result of specialization in {@link BeansClosure}.
      */
-    protected void initName() {
-        boolean beanNameDefaulted = false;
-        if (getWeldAnnotated().isAnnotationPresent(Named.class)) {
-            String javaName = getWeldAnnotated().getAnnotation(Named.class).value();
-            if ("".equals(javaName)) {
-                beanNameDefaulted = true;
-            } else {
-                log.trace(USING_NAME, javaName, this);
-                this.name = javaName;
-                return;
-            }
-        }
-
-        if (beanNameDefaulted || getMergedStereotypes().isBeanNameDefaulted()) {
-            this.name = getDefaultName();
-            log.trace(USING_DEFAULT_NAME, name, this);
-        }
-    }
-
-    protected abstract void initScope();
-
-    protected boolean initScopeFromStereotype() {
-        Set<Annotation> possibleScopes = getMergedStereotypes().getPossibleScopes();
-        if (possibleScopes.size() == 1) {
-            this.scope = possibleScopes.iterator().next().annotationType();
-            log.trace(USING_SCOPE_FROM_STEREOTYPE, scope, this, getMergedStereotypes());
-            return true;
-        } else if (possibleScopes.size() > 1) {
-            throw new DefinitionException(MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES, getWeldAnnotated());
-        } else {
-            return false;
-        }
-    }
-
-    protected void postSpecialize() {
-        if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
-            throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
-        }
-        this.qualifiers.addAll(getSpecializedBean().getQualifiers());
-        if (isSpecializing() && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
-            this.name = getSpecializedBean().getName();
-        }
+    protected void finishSpecialization() {
         BeansClosure closure = BeansClosure.getClosure(beanManager);
         closure.addSpecialized(getSpecializedBean(), this);
     }
 
-    protected void preSpecialize(BeanDeployerEnvironment environment) {
+    protected void preSpecialize() {
 
     }
 
-    protected void specialize(BeanDeployerEnvironment environment) {
+    protected void specialize() {
 
     }
 
@@ -314,15 +233,8 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @see org.jboss.weld.bean.RIBean#getQualifiers()
      */
     public Set<Annotation> getQualifiers() {
-        return qualifiers;
+        return attributes.getQualifiers();
     }
-
-    /**
-     * Gets the default name of the bean
-     *
-     * @return The default name
-     */
-    protected abstract String getDefaultName();
 
     @Override
     public abstract AbstractBean<?, ?> getSpecializedBean();
@@ -337,22 +249,13 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     /**
-     * Gets the merged stereotypes of the bean
-     *
-     * @return The set of merged stereotypes
-     */
-    protected MergedStereotypes<T, S> getMergedStereotypes() {
-        return mergedStereotypes;
-    }
-
-    /**
      * Gets the name of the bean
      *
      * @return The name
      * @see org.jboss.weld.bean.RIBean#getName()
      */
     public String getName() {
-        return name;
+        return attributes.getName();
     }
 
     /**
@@ -362,7 +265,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @see org.jboss.weld.bean.RIBean#getScope()
      */
     public Class<? extends Annotation> getScope() {
-        return scope;
+        return attributes.getScope();
     }
 
     /**
@@ -382,7 +285,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @see org.jboss.weld.bean.RIBean#getTypes()
      */
     public Set<Type> getTypes() {
-        return types;
+        return attributes.getTypes();
     }
 
     /**
@@ -392,17 +295,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @see org.jboss.weld.bean.RIBean#isNullable()
      */
     public boolean isNullable() {
-        return !isPrimitive();
-    }
-
-    /**
-     * Indicates if bean type is a primitive
-     *
-     * @return True if primitive, false otherwise
-     */
-    @Override
-    public boolean isPrimitive() {
-        return getWeldAnnotated().isPrimitive();
+        return attributes.isNullable();
     }
 
     @Override
@@ -415,7 +308,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     public boolean isAlternative() {
-        return alternative;
+        return attributes.isAlternative();
     }
 
     @Override
@@ -424,7 +317,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     public Set<Class<? extends Annotation>> getStereotypes() {
-        return mergedStereotypes.getStereotypes();
+        return attributes.getStereotypes();
     }
 
     protected boolean isInitialized() {
@@ -440,4 +333,31 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return services;
     }
 
+    public BeanAttributes<T> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(BeanAttributes<T> attributes) {
+        this.attributes = attributes;
+    }
+
+    /**
+     * Mark this bean to be reinitialized.
+     */
+    public void setDirty() {
+        dirty = true;
+    }
+
+    /**
+     * Used during bootstrap to indicate specialization of the bean should be reinitialized after {@link ProcessBeanAttributes}
+     * has been fired.
+     */
+    public boolean isDirty() {
+        for (AbstractBean<?, ?> bean = this; bean != null; bean = bean.getSpecializedBean()) {
+            if (bean.dirty) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

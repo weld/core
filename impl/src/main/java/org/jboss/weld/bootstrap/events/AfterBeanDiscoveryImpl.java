@@ -17,15 +17,21 @@
 package org.jboss.weld.bootstrap.events;
 
 import org.jboss.weld.bean.CustomDecoratorWrapper;
+import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.bean.WrappedBeanHolder;
+import org.jboss.weld.util.bean.IsolatedForwardingBean;
+import org.jboss.weld.util.bean.IsolatedForwardingDecorator;
+import org.jboss.weld.util.bean.IsolatedForwardingInterceptor;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -53,7 +59,23 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     public void addBean(Bean<?> bean) {
+        processBean(bean);
+    }
+
+    protected <T> void processBean(Bean<T> b) {
+        Bean<T> bean = b;
         BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
+        ExternalBeanAttributesFactory.validateBeanAttributes(bean, beanManager);
+
+        // ProcessBeanAttributes for the Bean
+        ProcessBeanAttributesImpl<T> event = ProcessBeanAttributesImpl.fire(beanManager, bean, null, bean.getBeanClass());
+        if (event.isVeto()) {
+            return;
+        }
+        if (event.isDirty()) {
+            bean = setBeanAttributes(bean, ExternalBeanAttributesFactory.of(event.getBeanAttributes(), getBeanManager()));
+        }
+
         if (bean instanceof Interceptor<?>) {
             beanManager.addInterceptor((Interceptor<?>) bean);
         } else if (bean instanceof Decorator<?>) {
@@ -72,4 +94,13 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
     }
 
+    private <T> Bean<T> setBeanAttributes(final Bean<T> bean, final BeanAttributes<T> attributes) {
+        if (bean instanceof Interceptor<?>) {
+            return new IsolatedForwardingInterceptor.Impl<T>(WrappedBeanHolder.of(attributes, (Interceptor<T>) bean));
+        }
+        if (bean instanceof Decorator<?>) {
+            return new IsolatedForwardingDecorator.Impl<T>(WrappedBeanHolder.of(attributes, (Decorator<T>) bean));
+        }
+        return new IsolatedForwardingBean.Impl<T>(WrappedBeanHolder.of(attributes, bean));
+    }
 }

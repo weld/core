@@ -16,17 +16,19 @@
  */
 package org.jboss.weld.bean;
 
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.spi.BeanAttributes;
+
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-
-import javax.enterprise.context.Dependent;
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Represents a @New enterprise bean
@@ -42,9 +44,9 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean {
      * @param beanManager The Bean manager
      * @return a new NewEnterpriseBean instance
      */
-    public static <T> NewSessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> NewSessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, ServiceRegistry services) {
         WeldClass<T> type = beanManager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-        return new NewSessionBean<T>(type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager, services);
+        return new NewSessionBean<T>(attributes, type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager, services);
     }
 
     private Set<Annotation> bindings;
@@ -55,8 +57,8 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean {
      * @param type        An annotated class
      * @param beanManager The Bean manager
      */
-    protected NewSessionBean(final WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(type, ejbDescriptor, idSuffix, beanManager, services);
+    protected NewSessionBean(BeanAttributes<T> attributes, final WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, type, ejbDescriptor, idSuffix, beanManager, services);
         this.bindings = new HashSet<Annotation>();
         this.bindings.add(new NewLiteral() {
 

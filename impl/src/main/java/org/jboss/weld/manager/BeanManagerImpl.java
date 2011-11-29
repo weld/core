@@ -25,6 +25,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.builtin.InstanceImpl;
@@ -50,6 +51,8 @@ import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.introspector.ExternalAnnotatedType;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
@@ -1136,12 +1139,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+        WeldClass<T> clazz = services.get(ClassTransformer.class).loadClass(ExternalAnnotatedType.of(type));
+        if (services.get(EjbDescriptors.class).contains(type.getJavaClass())) {
+            return BeanAttributesFactory.forSessionBean(clazz, services.get(EjbDescriptors.class).getUnique(clazz.getJavaClass()), this);
+        }
+        return BeanAttributesFactory.forManagedBean(clazz, this);
     }
 
     public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> type) {
-        // TODO
         throw new UnsupportedOperationException("Not implemented");
     }
 

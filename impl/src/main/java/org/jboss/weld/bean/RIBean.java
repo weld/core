@@ -61,6 +61,8 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
         return getType();
     }
 
+    public abstract void preInitialize();
+
     public abstract void initialize(BeanDeployerEnvironment environment);
 
     /**
@@ -92,8 +94,6 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
     public abstract boolean isPassivationCapableDependency();
 
     public abstract boolean isProxyRequired();
-
-    public abstract boolean isPrimitive();
 
     public abstract Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints();
 

@@ -23,6 +23,7 @@ import javax.inject.Named;
  * Annotation literal for {@link Named}
  *
  * @author Pete Muir
+ * @author Jozef Hartinger
  */
 @SuppressWarnings("all")
 public class NamedLiteral extends AnnotationLiteral<Named> implements Named {
@@ -38,5 +39,7 @@ public class NamedLiteral extends AnnotationLiteral<Named> implements Named {
     public NamedLiteral(String value) {
         this.value = value;
     }
+
+    public static final Named DEFAULT = new NamedLiteral("");
 
 }

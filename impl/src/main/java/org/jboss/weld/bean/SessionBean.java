@@ -16,6 +16,39 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED;
+import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_NULL_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.BeanMessage.EJB_NOT_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT;
+import static org.jboss.weld.logging.messages.BeanMessage.MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED;
+import static org.jboss.weld.logging.messages.BeanMessage.OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.decorator.Decorator;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.interceptor.Interceptor;
+
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
@@ -45,49 +78,12 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
-
-import javax.decorator.Decorator;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.interceptor.Interceptor;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED;
-import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_NULL_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.EJB_NOT_FOUND;
-import static org.jboss.weld.logging.messages.BeanMessage.GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED;
-import static org.jboss.weld.logging.messages.BeanMessage.OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * An enterprise bean representation
@@ -95,26 +91,14 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @param <T> The type (class) of the bean
  * @author Pete Muir
  */
-public class SessionBean<T> extends AbstractClassBean<T> {
 
+public class SessionBean<T> extends AbstractClassBean<T> {
     // The EJB descriptor
     private InternalEjbDescriptor<T> ejbDescriptor;
 
     private Class<T> proxyClass;
 
     private SessionBean<?> specializedBean;
-
-    /**
-     * Creates a simple, annotation defined Enterprise Web Bean
-     *
-     * @param <T>         The type
-     * @param beanManager the current manager
-     * @return An Enterprise Web Bean
-     */
-    public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, ServiceRegistry services) {
-        WeldClass<T> type = beanManager.getServices().get(ClassTransformer.class).loadClass(ejbDescriptor.getBeanClass());
-        return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager, services);
-    }
 
     /**
      * Creates a simple, annotation defined Enterprise Web Bean using the annotations specified on type
@@ -124,8 +108,8 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * @param type        the AnnotatedType to use
      * @return An Enterprise Web Bean
      */
-    public static <T> SessionBean<T> of(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, WeldClass<T> type, ServiceRegistry services) {
-        return new SessionBean<T>(type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager, services);
+    public static <T> SessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, WeldClass<T> type, ServiceRegistry services) {
+        return new SessionBean<T>(attributes, type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager, services);
     }
 
     protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor) {
@@ -146,12 +130,10 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * @param type    The type of the bean
      * @param manager The Bean manager
      */
-    protected SessionBean(WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager, ServiceRegistry services) {
-        super(type, idSuffix, manager, services);
+    protected SessionBean(BeanAttributes<T> attributes, WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager, ServiceRegistry services) {
+        super(attributes, type, idSuffix, manager, services);
         initType();
         this.ejbDescriptor = ejbDescriptor;
-        initTypes();
-        initQualifiers();
         initConstructor();
     }
 
@@ -214,21 +196,6 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         return getConstructor().newInstance(beanManager, ctx);
     }
 
-    @Override
-    protected void initTypes() {
-        Map<Class<?>, Type> types = new LinkedHashMap<Class<?>, Type>();
-
-        for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
-            types.putAll(new HierarchyDiscovery(businessInterfaceDescriptor.getInterface()).getTypeMap());
-        }
-        if (getWeldAnnotated().isAnnotationPresent(Typed.class)) {
-            super.types = getTypedTypes(types, getWeldAnnotated().getJavaClass(), getWeldAnnotated().getAnnotation(Typed.class));
-        } else {
-            types.put(Object.class, Object.class);
-            super.types = new HashSet<Type>(types.values());
-        }
-    }
-
     protected void initProxyClass() {
         this.proxyClass = new EnterpriseProxyFactory<T>(getWeldAnnotated().getJavaClass(), this).getProxyClass();
     }
@@ -262,8 +229,8 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * Validates specialization
      */
     @Override
-    protected void preSpecialize(BeanDeployerEnvironment environment) {
-        super.preSpecialize(environment);
+    protected void preSpecialize() {
+        super.preSpecialize();
         // We appear to check this twice?
         BeansClosure closure = BeansClosure.getClosure(beanManager);
         if (closure.isEJB(getWeldAnnotated().getWeldSuperclass()) == false) {
@@ -272,7 +239,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     @Override
-    protected void specialize(BeanDeployerEnvironment environment) {
+    protected void specialize() {
         BeansClosure closure = BeansClosure.getClosure(beanManager);
         Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
         if (specializedBean == null) {
@@ -353,7 +320,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         if (!getScope().equals(Dependent.class) && getWeldAnnotated().isGeneric()) {
             throw new DefinitionException(GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT, this);
         }
-        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(scope).isPassivating();
+        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
         if (passivating && !isPassivationCapableBean()) {
             throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
         }

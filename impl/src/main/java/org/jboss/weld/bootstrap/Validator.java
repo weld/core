@@ -17,16 +17,18 @@
 package org.jboss.weld.bootstrap;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
+import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
@@ -48,7 +50,6 @@ import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
@@ -60,7 +61,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
@@ -478,13 +478,23 @@ public class Validator implements Service {
                 throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, stereotype);
             }
         }
-        for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternativeClasses()) {
-            if (clazz.getValue().isAnnotation() || clazz.getValue().isInterface()) {
-                throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
+        if (beanManager.getEnabled().getAlternativeClasses().size() > 0) {
+            // lookup structure for validation of alternatives
+            Multimap<Class<?>, Bean<?>> beansByClass = HashMultimap.create();
+            for (Bean<?> bean : beanManager.getBeans()) {
+                if (!(bean instanceof NewBean)) {
+                    beansByClass.put(bean.getBeanClass(), bean);
+                }
             }
-            WeldClass<?> weldClass = Container.instance().services().get(ClassTransformer.class).loadClass(clazz.getValue());
-            if (!weldClass.isAnnotationPresent(Alternative.class)) {
-                throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
+            for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternativeClasses()) {
+                if (clazz.getValue().isAnnotation() || clazz.getValue().isInterface()) {
+                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
+                }
+                for (Bean<?> bean : beansByClass.get(clazz.getValue())) {
+                    if (!bean.isAlternative()) {
+                        throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
+                    }
+                }
             }
         }
     }

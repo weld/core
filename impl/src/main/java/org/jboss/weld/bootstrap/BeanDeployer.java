@@ -16,9 +16,31 @@
  */
 package org.jboss.weld.bootstrap;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
+import static org.slf4j.ext.XLogger.Level.INFO;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.decorator.Decorator;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import javax.interceptor.Interceptor;
+
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.bean.ProducerMethod;
+import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.attributes.BeanAttributesFactory;
+import org.jboss.weld.bootstrap.BeanDeployerEnvironment.WeldMethodKey;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeFactory;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
@@ -33,29 +55,17 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 
-import javax.decorator.Decorator;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Extension;
-import javax.interceptor.Interceptor;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
-import static org.slf4j.ext.XLogger.Level.INFO;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
- * @author pmuir
+ * @author Pete Muir
  * @author Jozef Hartinger
  */
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> {
@@ -156,10 +166,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         classes.addAll(processedClasses);
     }
 
-    public BeanDeployer createBeans() {
+    public void createClassBeans() {
         Multimap<Class<?>, WeldClass<?>> otherWeldClasses = HashMultimap.create();
+
         for (WeldClass<?> clazz : classes) {
-            boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && isTypeManagedBeanOrDecoratorOrInterceptor(clazz);
+            boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(clazz);
             if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class)) {
                 validateDecorator(clazz);
                 createDecorator(clazz);
@@ -186,29 +197,81 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 }
             }
         }
+    }
 
-        // Now create the new beans
+    /**
+     * Fires {@link ProcessBeanAttributes} for each enabled bean and updates the environment based on the events.
+     */
+    public void processBeans() {
+        Map<WeldClass<?>, AbstractClassBean<?>> vetoedClasses = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
+        for (Entry<WeldClass<?>, AbstractClassBean<?>> entry : getEnvironment().getClassBeanMap().entrySet()) {
+            // process specialization
+            entry.getValue().preInitialize();
+            // fire ProcessBeanAttributes for class beans
+            boolean vetoed = fireProcessBeanAttributes(entry.getValue());
+            if (vetoed) {
+                vetoedClasses.put(entry.getKey(), entry.getValue());
+            } else {
+                 // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
+                getEnvironment().addNewBeansFromInjectionPoints(entry.getValue());
+            }
+        }
+
+        // remove vetoed class beans
+        for (Entry<WeldClass<?>, AbstractClassBean<?>> entry : vetoedClasses.entrySet()) {
+            getEnvironment().removeClass(entry.getKey());
+            entry.getValue().setDirty();
+        }
+    }
+
+    public void createProducersAndObservers() {
+        for (AbstractClassBean<?> bean : getEnvironment().getClassBeanMap().values()) {
+            createObserversProducersDisposers(bean);
+        }
+    }
+
+    public void processProducerMethods() {
+        // process BeanAttributes for producer methods
+        Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> vetoedProducerMethods = new HashMap<WeldMethodKey<?,?>, ProducerMethod<?, ?>>();
+        for (Entry<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> entry : getEnvironment().getProducerMethodBeanMap().entrySet()) {
+            // process specialization
+            entry.getValue().preInitialize();
+            // fire ProcessBeanAttributes for ProducerMethods
+            boolean vetoed = fireProcessBeanAttributes(entry.getValue());
+            if (vetoed) {
+                vetoedProducerMethods.put(entry.getKey(), entry.getValue());
+            } else {
+                // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
+                getEnvironment().addNewBeansFromInjectionPoints(entry.getValue());
+            }
+        }
+
+        // remove vetoed producer methods
+        for (Entry<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> entry : vetoedProducerMethods.entrySet()) {
+            getEnvironment().removeProducerMethod(entry.getKey());
+            entry.getValue().setDirty();
+        }
+    }
+
+    public void createNewBeans() {
         for (WeldClass<?> clazz : getEnvironment().getNewManagedBeanClasses()) {
             createNewManagedBean(clazz);
         }
-        for (InternalEjbDescriptor<?> descriptor : getEnvironment().getNewSessionBeanDescriptors()) {
-            createNewSessionBean(descriptor);
-        }
-
-        cleanup();
-
-        return this;
-    }
-
-    private void validateInterceptor(WeldClass<?> clazz) {
-        if (clazz.isAnnotationPresent(Decorator.class)) {
-            throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, clazz.getName());
+        for (Entry<InternalEjbDescriptor<?>, WeldClass<?>> entry : getEnvironment().getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
+            InternalEjbDescriptor<?> descriptor = entry.getKey();
+            createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()));
         }
     }
 
-    private void validateDecorator(WeldClass<?> clazz) {
-        if (clazz.isAnnotationPresent(Interceptor.class)) {
-            throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, clazz.getName());
+    private void validateInterceptor(WeldClass<?> weldClass) {
+        if (weldClass.isAnnotationPresent(Decorator.class)) {
+            throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
+        }
+    }
+
+    private void validateDecorator(WeldClass<?> weldClass) {
+        if (weldClass.isAnnotationPresent(Interceptor.class)) {
+            throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
         }
     }
 

@@ -16,20 +16,21 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
+
+import java.lang.reflect.Member;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.BeanAttributes;
+
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.spi.CreationalContext;
-import java.lang.reflect.Member;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
 
 /**
  * @author pmuir
@@ -40,15 +41,14 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
 
     private AbstractClassBean<X> declaringBean;
 
-    public AbstractReceiverBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(idSuffix, beanManager, services);
+    public AbstractReceiverBean(BeanAttributes<T> attributes, String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, idSuffix, beanManager, services);
         this.declaringBean = declaringBean;
     }
 
     @Override
     public void initialize(BeanDeployerEnvironment environment) {
         super.initialize(environment);
-        initAlternative();
     }
 
     /**
@@ -82,11 +82,6 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
      */
     public AbstractClassBean<X> getDeclaringBean() {
         return declaringBean;
-    }
-
-    @Override
-    protected void initAlternative() {
-        super.alternative = Beans.isAlternative(getWeldAnnotated(), getMergedStereotypes()) || getDeclaringBean().isAlternative();
     }
 
     @Override

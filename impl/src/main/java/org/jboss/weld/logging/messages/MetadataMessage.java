@@ -40,5 +40,13 @@ public enum MetadataMessage {
     @MessageId("001102")STEREOTYPE_NOT_REGISTERED,
     @MessageId("001103")QUALIFIER_ON_STEREOTYPE,
     @MessageId("001104")VALUE_ON_NAMED_STEREOTYPE,
-    @MessageId("001105")MULTIPLE_SCOPES;
+    @MessageId("001105")MULTIPLE_SCOPES,
+    @MessageId("001106")STEREOTYPES_NULL,
+    @MessageId("001107")QUALIFIERS_NULL,
+    @MessageId("001108")TYPES_NULL,
+    @MessageId("001109")SCOPE_NULL,
+    @MessageId("001110")NOT_A_STEREOTYPE,
+    @MessageId("001111")NOT_A_QUALIFIER,
+    @MessageId("001112")TYPES_EMPTY,
+    @MessageId("001113")NOT_A_SCOPE,
 }

@@ -16,8 +16,38 @@
  */
 package org.jboss.weld.bean;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_FIELD_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCT_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.NULL_NOT_ALLOWED_FROM_PRODUCER;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_CAST_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
+import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Producer;
+import javax.inject.Inject;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -31,46 +61,9 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import javax.inject.Inject;
-import javax.inject.Scope;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_FIELD_INJECTION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCT_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NULL_NOT_ALLOWED_FROM_PRODUCER;
-import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_CAST_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * The implicit producer bean
@@ -92,9 +85,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     };
 
-    // Logger for messages
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
-
     // Underlying Producer represented by this bean
     private Producer<T> producer;
 
@@ -115,8 +105,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * @param declaringBean The declaring bean
      * @param beanManager   The Bean manager
      */
-    public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(idSuffix, declaringBean, beanManager, services);
+    public AbstractProducerBean(BeanAttributes<T> attributes, String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, idSuffix, declaringBean, beanManager, services);
         serializationCheckCache = new MapMaker().makeComputingMap(SERIALIZABLE_CHECK);
     }
 
@@ -128,21 +118,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     // method/field
     public Class<?> getBeanClass() {
         return getDeclaringBean().getBeanClass();
-    }
-
-    /**
-     * Initializes the API types
-     */
-    @Override
-    protected void initTypes() {
-        if (getType().isArray() || getType().isPrimitive()) {
-            Set<Type> types = new HashSet<Type>();
-            types.add(getType());
-            types.add(Object.class);
-            super.types = types;
-        } else {
-            super.initTypes();
-        }
     }
 
     /**
@@ -261,28 +236,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     protected boolean isTypeSerializable(final Class<?> clazz) {
         return serializationCheckCache.get(clazz);
-    }
-
-    @Override
-    protected void initScope() {
-        Set<Annotation> scopes = new HashSet<Annotation>();
-        scopes.addAll(getWeldAnnotated().getMetaAnnotations(Scope.class));
-        scopes.addAll(getWeldAnnotated().getMetaAnnotations(NormalScope.class));
-        if (scopes.size() > 1) {
-            throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getProducer());
-        }
-        if (scopes.size() == 1) {
-            this.scope = scopes.iterator().next().annotationType();
-            log.trace(USING_SCOPE, scope, this);
-            return;
-        }
-
-        initScopeFromStereotype();
-
-        if (this.scope == null) {
-            this.scope = Dependent.class;
-            log.trace(USING_DEFAULT_SCOPE, this);
-        }
     }
 
     /**

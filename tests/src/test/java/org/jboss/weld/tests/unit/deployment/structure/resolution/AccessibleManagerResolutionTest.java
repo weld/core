@@ -19,6 +19,7 @@ package org.jboss.weld.tests.unit.deployment.structure.resolution;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -54,9 +55,9 @@ public class AccessibleManagerResolutionTest {
         this.services.add(ClassTransformer.class, classTransformer);
     }
 
-    private void addBean(BeanManagerImpl manager, Class<?> c) {
-        WeldClass<?> clazz = WeldClassImpl.of(c, classTransformer);
-        RIBean<?> bean = ManagedBean.of(clazz, manager, services);
+    private <T> void addBean(BeanManagerImpl manager, Class<T> c) {
+        WeldClass<T> clazz = WeldClassImpl.of(c, classTransformer);
+        RIBean<?> bean = ManagedBean.of(BeanAttributesFactory.forManagedBean(clazz, manager), clazz, manager, services);
         manager.addBean(bean);
         manager.getBeanResolver().clear();
         BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptors(), manager);

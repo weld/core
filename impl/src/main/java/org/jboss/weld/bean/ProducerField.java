@@ -16,6 +16,15 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
+
+import java.lang.reflect.Field;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.inject.Inject;
+
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -26,13 +35,6 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.inject.Inject;
-import java.lang.reflect.Field;
-
-import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
 
 /**
  * Represents a producer field
@@ -54,8 +56,8 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
      * @param beanManager   the current manager
      * @return A producer field
      */
-    public static <X, T> ProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        return new ProducerField<X, T>(field, declaringBean, beanManager, services);
+    public static <X, T> ProducerField<X, T> of(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        return new ProducerField<X, T>(attributes, field, declaringBean, beanManager, services);
     }
 
 
@@ -66,13 +68,10 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
      * @param declaringBean The declaring bean
      * @param manager       The Bean manager
      */
-    protected ProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
-        super(createId(field, declaringBean), declaringBean, manager, services);
+    protected ProducerField(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
+        super(attributes, createId(field, declaringBean), declaringBean, manager, services);
         this.field = field;
         initType();
-        initTypes();
-        initQualifiers();
-        initStereotypes();
         this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure());
     }
 
@@ -139,16 +138,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     @Override
     public WeldField<T, ? super X> getWeldAnnotated() {
         return field;
-    }
-
-    /**
-     * Returns the default name
-     *
-     * @return The default name
-     */
-    @Override
-    protected String getDefaultName() {
-        return field.getPropertyName();
     }
 
     @Override

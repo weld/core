@@ -16,6 +16,27 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.DISPOSE_NOT_FIRST_PARAM;
+import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSE_PARAMS;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
+import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -26,26 +47,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.jboss.weld.logging.messages.BeanMessage.DISPOSE_NOT_FIRST_PARAM;
-import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSE_PARAMS;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
@@ -60,12 +61,9 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean, ServiceRegistry services) {
-        super(new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, services);
+        super(BeanAttributesFactory.forDisposerMethod(disposalMethod, declaringBean, beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, services);
         this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
-        initQualifiers();
         initType();
-        initTypes();
-        initStereotypes();
         addInjectionPoints(Beans.getParameterInjectionPoints(this, disposalMethodInjectionPoint));
     }
 
@@ -103,46 +101,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     @Override
     public WeldMethod<T, ? super X> getWeldAnnotated() {
         return disposalMethodInjectionPoint;
-    }
-
-    @Override
-    protected void initQualifiers() {
-        // At least 1 parameter exists, already checked in constructor
-        this.qualifiers = new HashSet<Annotation>();
-        this.qualifiers.addAll(disposalMethodInjectionPoint.getWeldParameters().get(0).getQualifiers());
-        initDefaultQualifiers();
-    }
-
-    /**
-     * Initializes the API types
-     */
-    @Override
-    protected void initTypes() {
-        Set<Type> types = new HashSet<Type>();
-        types.addAll(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getTypeClosure());
-        types.add(Object.class);
-        super.types = types;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public Class<? extends Annotation> getScope() {
-        return null;
-    }
-
-    @Override
-    public Set<Type> getTypes() {
-        return types;
-    }
-
-    @Override
-    public boolean isNullable() {
-        // Not relevant
-        return false;
     }
 
     @Override
@@ -220,11 +178,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         return type;
     }
 
-    @Override
-    protected String getDefaultName() {
-        return disposalMethodInjectionPoint.getPropertyName();
-    }
-
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         // No-op. Producer method dependent objects are destroyed in producer method bean
     }
@@ -233,11 +186,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     public AbstractBean<?, ?> getSpecializedBean() {
         // Doesn't support specialization
         return null;
-    }
-
-    @Override
-    protected void initScope() {
-        // Disposal methods aren't scoped
     }
 
     @Override

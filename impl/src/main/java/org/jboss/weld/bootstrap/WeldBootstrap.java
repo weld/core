@@ -346,9 +346,20 @@ public class WeldBootstrap implements Bootstrap {
 
     public Bootstrap deployBeans() {
         synchronized (this) {
-            for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-                entry.getValue().createBeans(environment);
+            for (BeanDeployment deployment : beanDeployments.values()) {
+                deployment.createBeans(environment);
             }
+            // we must use separate loops, otherwise cyclic specialization would not work
+            for (BeanDeployment deployment : beanDeployments.values()) {
+                deployment.getBeanDeployer().processBeans();
+                deployment.getBeanDeployer().createProducersAndObservers();
+            }
+            for (BeanDeployment deployment : beanDeployments.values()) {
+                deployment.getBeanDeployer().processProducerMethods();
+                deployment.getBeanDeployer().createNewBeans();
+                deployment.getBeanDeployer().cleanup();
+            }
+
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 entry.getValue().deploySpecialized(environment);
             }

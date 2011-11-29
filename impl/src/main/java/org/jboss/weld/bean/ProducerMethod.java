@@ -16,6 +16,19 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.BeanAttributes;
+
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -30,17 +43,6 @@ import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.SecureReflections;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.CreationException;
-import javax.enterprise.inject.Disposes;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-
-import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
 
 /**
  * Represents a producer method bean
@@ -63,18 +65,15 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      * @param beanManager   the current manager
      * @return A producer Web Bean
      */
-    public static <X, T> ProducerMethod<X, T> of(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        return new ProducerMethod<X, T>(method, declaringBean, beanManager, services);
+    public static <X, T> ProducerMethod<X, T> of(BeanAttributes<T> attributes, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        return new ProducerMethod<X, T>(attributes, method, declaringBean, beanManager, services);
     }
 
-    protected ProducerMethod(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
+    protected ProducerMethod(BeanAttributes<T> attributes, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
         this.method = MethodInjectionPoint.of(this, method);
         initType();
-        initTypes();
-        initQualifiers();
         this.id = createId(method, declaringBean);
-        initStereotypes();
         initProducerMethodInjectableParameters();
         this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
     }
@@ -170,30 +169,20 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         return method;
     }
 
-    /**
-     * Returns the default name
-     *
-     * @return The default name
-     */
-    @Override
-    protected String getDefaultName() {
-        return method.getPropertyName();
-    }
-
     @Override
     public AbstractBean<?, ?> getSpecializedBean() {
         return specializedBean;
     }
 
     @Override
-    protected void preSpecialize(BeanDeployerEnvironment environment) {
+    protected void preSpecialize() {
         if (getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getDeclaredWeldMethod(getWeldAnnotated().getJavaMember()) == null) {
             throw new DefinitionException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
         }
     }
 
     @Override
-    protected void specialize(BeanDeployerEnvironment environment) {
+    protected void specialize() {
         BeansClosure closure = BeansClosure.getClosure(beanManager);
         WeldMethod<?, ?> superClassMethod = getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getWeldMethod(getWeldAnnotated().getJavaMember());
         ProducerMethod<?, ?> check = closure.getProducerMethod(superClassMethod);

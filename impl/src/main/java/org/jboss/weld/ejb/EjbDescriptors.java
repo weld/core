@@ -103,7 +103,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
         return ejbByClass.containsKey(beanClass);
     }
 
-    public InternalEjbDescriptor<?> getUnique(Class<?> beanClass) {
+    public <T> InternalEjbDescriptor<T> getUnique(Class<T> beanClass) {
         Set<String> ejbs = ejbByClass.get(beanClass);
         if (ejbs.size() > 1) {
             throw new IllegalStateException(TOO_MANY_EJBS_FOR_CLASS, beanClass, ejbs);

@@ -42,6 +42,10 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
     }
 
     @Override
+    public void preInitialize() {
+    }
+
+    @Override
     public void initialize(BeanDeployerEnvironment environment) {
         if (getScope() != null) {
             proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
@@ -88,11 +92,6 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
     public boolean isNullable() {
         return true;
-    }
-
-    @Override
-    public boolean isPrimitive() {
-        return false;
     }
 
     @Override

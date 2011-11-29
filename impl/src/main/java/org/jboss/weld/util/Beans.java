@@ -26,6 +26,8 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
+import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
@@ -51,6 +53,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -64,7 +67,9 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
@@ -75,6 +80,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,6 +95,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_POST_CONSTRU
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_PRE_DESTROY_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_PRE_DESTROY_METHODS;
+import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.UtilMessage.AMBIGUOUS_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_NOT_QUALIFIER;
@@ -111,6 +118,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @author David Allen
  * @author Marius Bogoevici
  * @author Ales Justin
+ * @author Jozef Hartinger
  */
 public class Beans {
     // TODO Convert messages
@@ -554,6 +562,15 @@ public class Beans {
     }
 
     /**
+     * Is nullable.
+     *
+     * @return true if nullable, false otherwise
+     */
+    public static boolean isNullable(WeldAnnotated<?, ?> annotated) {
+        return !annotated.isPrimitive();
+    }
+
+    /**
      * Check if bean is specialized by any of beans
      *
      * @param bean the bean to check
@@ -771,5 +788,82 @@ public class Beans {
             }
         }
         return null;
+    }
+
+    /**
+     * Bean types from an annotated element
+     */
+    public static Set<Type> getTypes(WeldAnnotated<?, ?> annotated) {
+        Set<Type> types = new HashSet<Type>();
+        // array and primitive types require special treatment
+        if (annotated.getJavaClass().isArray() || annotated.getJavaClass().isPrimitive()) {
+            types.add(annotated.getJavaClass());
+            types.add(Object.class);
+            return types;
+        } else {
+            if (annotated.isAnnotationPresent(Typed.class)) {
+                types = new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()), annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
+            } else {
+                if (annotated.getJavaClass().isInterface()) {
+                    types.add(Object.class);
+                }
+                types.addAll(annotated.getTypeClosure());
+            }
+        }
+        return types;
+    }
+
+    /**
+     * Bean types of a session bean.
+     */
+    public static <T> Set<Type> getTypes(WeldAnnotated<T, ?> annotated, EjbDescriptor<T> ejbDescriptor) {
+        Set<Type> types = new HashSet<Type>();
+        // session beans
+        Map<Class<?>, Type> typeMap = new LinkedHashMap<Class<?>, Type>();
+        for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
+            typeMap.putAll(new HierarchyDiscovery(businessInterfaceDescriptor.getInterface()).getTypeMap());
+        }
+        if (annotated.isAnnotationPresent(Typed.class)) {
+            types.addAll(getTypedTypes(typeMap, annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
+        } else {
+            typeMap.put(Object.class, Object.class);
+            types.addAll(typeMap.values());
+        }
+        return types;
+    }
+
+    /**
+     * Bean types of a bean that uses the {@link Typed} annotation.
+     */
+    public static Set<Type> getTypedTypes(Map<Class<?>, Type> typeClosure, Class<?> rawType, Typed typed) {
+        Set<Type> types = new HashSet<Type>();
+        for (Class<?> specifiedClass : typed.value()) {
+            Type tmp = typeClosure.get(specifiedClass);
+            if (tmp != null) {
+                types.add(tmp);
+            } else {
+                throw new DefinitionException(TYPED_CLASS_NOT_IN_HIERARCHY, specifiedClass.getName(), rawType);
+            }
+        }
+        types.add(Object.class);
+        return types;
+    }
+
+    /**
+     * Indicates if the type is a simple Web Bean
+     *
+     * @param clazz The type to inspect
+     * @return True if simple Web Bean, false otherwise
+     */
+    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(WeldClass<?> clazz) {
+        Class<?> javaClass = clazz.getJavaClass();
+        return !Extension.class.isAssignableFrom(clazz.getJavaClass()) &&
+                !(clazz.isAnonymousClass() || (clazz.isMemberClass() && !clazz.isStatic())) &&
+                !Reflections.isParamerterizedTypeWithWildcard(javaClass) &&
+                hasSimpleCdiConstructor(clazz);
+    }
+
+    public static boolean hasSimpleCdiConstructor(WeldClass<?> type) {
+        return type.getNoArgsWeldConstructor() != null || type.getWeldConstructors(Inject.class).size() > 0;
     }
 }

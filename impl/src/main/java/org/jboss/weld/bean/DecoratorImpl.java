@@ -16,6 +16,29 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_TYPE_PARAMETER_MISMATCH;
+import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.Decorator;
+import javax.inject.Inject;
+
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -30,27 +53,6 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Decorator;
-import javax.inject.Inject;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.jboss.weld.logging.messages.BeanMessage.ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_TYPE_PARAMETER_MISMATCH;
-import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
 
 public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T> {
 
@@ -84,8 +86,8 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
      * @param beanManager the current manager
      * @return a Bean
      */
-    public static <T> DecoratorImpl<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
-        return new DecoratorImpl<T>(clazz, beanManager, services);
+    public static <T> DecoratorImpl<T> of(BeanAttributes<T> attributes, WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
+        return new DecoratorImpl<T>(attributes, clazz, beanManager, services);
     }
 
     private WeldClass<?> annotatedDelegateItem;
@@ -96,8 +98,8 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     private Set<Type> delegateTypes;
     private Set<Type> decoratedTypes;
 
-    protected DecoratorImpl(WeldClass<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
+    protected DecoratorImpl(BeanAttributes<T> attributes, WeldClass<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
     }
 
     @Override

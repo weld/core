@@ -76,7 +76,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
 /**
- * @author pmuir
+ * @author Pete Muir
+ * @author Jozef Hartinger
  */
 public class BeanDeployment {
 
@@ -212,11 +213,13 @@ public class BeanDeployment {
         for (ContextHolder<? extends Context> context : contexts) {
             beanDeployer.getEnvironment().addBuiltInBean(ContextBean.of(context, beanManager));
         }
-        // TODO Register the context beans
-        beanDeployer.createBeans();
 
         BeansClosure closure = BeansClosure.getClosure(beanManager);
         closure.addEnvironment(beanDeployer.getEnvironment());
+
+        // TODO Register the context beans
+        beanDeployer.createClassBeans();
+
     }
 
     public void deploySpecialized(Environment environment) {

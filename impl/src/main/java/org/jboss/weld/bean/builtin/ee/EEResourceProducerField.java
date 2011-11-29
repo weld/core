@@ -16,6 +16,17 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
+
+import java.io.Serializable;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.BeanAttributes;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
@@ -37,15 +48,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import java.io.Serializable;
-
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
 
 /**
  * @author pmuir
@@ -93,14 +95,14 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
      * @param manager       the current manager
      * @return A producer field
      */
-    public static <X, T> EEResourceProducerField<X, T> of(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
-        return new EEResourceProducerField<X, T>(field, declaringBean, manager, services);
+    public static <X, T> EEResourceProducerField<X, T> of(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
+        return new EEResourceProducerField<X, T>(attributes, field, declaringBean, manager, services);
     }
 
     private final WeldInjectionPoint<?, ?> injectionPoint;
 
-    protected EEResourceProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
-        super(field, declaringBean, manager, services);
+    protected EEResourceProducerField(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
+        super(attributes, field, declaringBean, manager, services);
         this.injectionPoint = FieldInjectionPoint.of(declaringBean, field);
     }
 

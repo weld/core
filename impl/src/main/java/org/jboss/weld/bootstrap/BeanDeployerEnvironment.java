@@ -46,6 +46,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class BeanDeployerEnvironment {
     private final TypeSafeDisposerResolver disposalMethodResolver;
     private final ClassTransformer classTransformer;
     private final Set<WeldClass<?>> newManagedBeanClasses;
-    private final Set<InternalEjbDescriptor<?>> newSessionBeanDescriptors;
+    private final Map<InternalEjbDescriptor<?>, WeldClass<?>> newSessionBeanDescriptorsFromInjectionPoint;
 
     public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         this.classBeanMap = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
@@ -87,15 +88,15 @@ public class BeanDeployerEnvironment {
         this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
         this.classTransformer = manager.getServices().get(ClassTransformer.class);
         this.newManagedBeanClasses = new HashSet<WeldClass<?>>();
-        this.newSessionBeanDescriptors = new HashSet<InternalEjbDescriptor<?>>();
+        this.newSessionBeanDescriptorsFromInjectionPoint = new HashMap<InternalEjbDescriptor<?>, WeldClass<?>>();
     }
 
     public Set<WeldClass<?>> getNewManagedBeanClasses() {
         return newManagedBeanClasses;
     }
 
-    public Set<InternalEjbDescriptor<?>> getNewSessionBeanDescriptors() {
-        return newSessionBeanDescriptors;
+    public Map<InternalEjbDescriptor<?>, WeldClass<?>> getNewSessionBeanDescriptorsFromInjectionPoint() {
+        return newSessionBeanDescriptorsFromInjectionPoint;
     }
 
     public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method) {
@@ -110,7 +111,7 @@ public class BeanDeployerEnvironment {
     public AbstractClassBean<?> getClassBean(WeldClass<?> clazz) {
         AbstractClassBean<?> bean = classBeanMap.get(clazz);
         if (bean != null) {
-            bean.initialize(this);
+            bean.preInitialize();
         }
         return bean;
     }
@@ -144,7 +145,6 @@ public class BeanDeployerEnvironment {
     }
 
     public void addSessionBean(SessionBean<?> bean) {
-        newSessionBeanDescriptors.add(bean.getEjbDescriptor());
         addAbstractClassBean(bean);
     }
 
@@ -157,7 +157,6 @@ public class BeanDeployerEnvironment {
     }
 
     protected void addAbstractBean(AbstractBean<?, ?> bean) {
-        addNewBeansFromInjectionPoints(bean);
         beans.add(bean);
     }
 
@@ -179,7 +178,7 @@ public class BeanDeployerEnvironment {
         addNewBeansFromInjectionPoints(observer.getNewInjectionPoints());
     }
 
-    private void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean) {
+    public void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean) {
         addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
     }
 
@@ -201,7 +200,8 @@ public class BeanDeployerEnvironment {
 
     private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType) {
         if (getEjbDescriptors().contains(rawType)) {
-            newSessionBeanDescriptors.add(getEjbDescriptors().getUnique(rawType));
+            InternalEjbDescriptor<?> descriptor = getEjbDescriptors().getUnique(rawType);
+            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.loadClass(rawType, baseType));
         } else {
             newManagedBeanClasses.add(classTransformer.loadClass(rawType, baseType));
         }
@@ -250,7 +250,7 @@ public class BeanDeployerEnvironment {
         return Collections.unmodifiableSet(beans);
     }
 
-    private static class WeldMethodKey<T, X> {
+    protected static class WeldMethodKey<T, X> {
 
         static <T, X> WeldMethodKey<T, X> of(WeldMethod<T, X> method) {
             return new WeldMethodKey<T, X>(method);
@@ -275,6 +275,30 @@ public class BeanDeployerEnvironment {
         public int hashCode() {
             return method.getJavaMember().hashCode();
         }
+    }
+
+    public void removeClass(WeldClass<?> weldClass) {
+        AbstractClassBean<?> bean = classBeanMap.remove(weldClass);
+        beans.remove(bean);
+        if (bean instanceof InterceptorImpl<?>) {
+            interceptors.remove(bean);
+        }
+        if (bean instanceof DecoratorImpl<?>) {
+            decorators.remove(bean);
+        }
+    }
+
+    public void removeProducerMethod(WeldMethodKey<?, ?> method) {
+        beans.remove(method);
+        producerMethodBeanMap.remove(method);
+    }
+
+    public Map<WeldClass<?>, AbstractClassBean<?>> getClassBeanMap() {
+        return Collections.unmodifiableMap(classBeanMap);
+    }
+
+    public Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> getProducerMethodBeanMap() {
+        return Collections.unmodifiableMap(producerMethodBeanMap);
     }
 
 }

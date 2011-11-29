@@ -37,6 +37,7 @@ import javassist.util.proxy.ProxyObject;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -241,11 +242,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @param beanManager the current manager
      * @return A Web Bean
      */
-    public static <T> ManagedBean<T> of(WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
         if (clazz.isDiscovered()) {
-            return new ManagedBean<T>(clazz, createSimpleId(ManagedBean.class.getSimpleName(), clazz), beanManager, services);
+            return new ManagedBean<T>(attributes, clazz, createSimpleId(ManagedBean.class.getSimpleName(), clazz), beanManager, services);
         } else {
-            return new ManagedBean<T>(clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager, services);
+            return new ManagedBean<T>(attributes, clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager, services);
         }
     }
 
@@ -267,11 +268,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @param type        The type of the bean
      * @param beanManager The Bean manager
      */
-    protected ManagedBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(type, idSuffix, beanManager, services);
+    protected ManagedBean(BeanAttributes<T> attributes, WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, type, idSuffix, beanManager, services);
         initType();
-        initTypes();
-        initQualifiers();
         initConstructor();
         this.proxiable = Proxies.isTypesProxyable(type.getTypeClosure());
     }
@@ -350,7 +349,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         if (!isDependent() && getWeldAnnotated().isParameterizedType()) {
             throw new DefinitionException(BEAN_MUST_BE_DEPENDENT, type);
         }
-        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(scope).isPassivating();
+        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
         if (passivating && !isPassivationCapableBean()) {
             throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
         }
@@ -392,8 +391,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     @Override
-    protected void preSpecialize(BeanDeployerEnvironment environment) {
-        super.preSpecialize(environment);
+    protected void preSpecialize() {
+        super.preSpecialize();
         BeansClosure closure = BeansClosure.getClosure(beanManager);
         if (closure.isEJB(getWeldAnnotated().getWeldSuperclass())) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
@@ -401,7 +400,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     @Override
-    protected void specialize(BeanDeployerEnvironment environment) {
+    protected void specialize() {
         BeansClosure closure = BeansClosure.getClosure(beanManager);
         Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
         if (specializedBean == null) {

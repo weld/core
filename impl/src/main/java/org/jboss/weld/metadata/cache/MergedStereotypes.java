@@ -19,8 +19,11 @@ package org.jboss.weld.metadata.cache;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.Reflections;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
@@ -38,7 +41,7 @@ public class MergedStereotypes<T, E> {
     // Are any of the sterotypes alternatives
     private boolean alternative;
 
-    private ArraySet<Class<? extends Annotation>> stereotypes;
+    private Set<Class<? extends Annotation>> stereotypes;
 
     private final BeanManagerImpl manager;
 
@@ -53,7 +56,8 @@ public class MergedStereotypes<T, E> {
         this.manager = manager;
         merge(stereotypeAnnotations);
         this.possibleScopeTypes.trimToSize();
-        this.stereotypes.trimToSize();
+        Reflections.<ArraySet<?>>cast(this.stereotypes).trimToSize();
+        this.stereotypes = Collections.unmodifiableSet(stereotypes);
     }
 
     /**

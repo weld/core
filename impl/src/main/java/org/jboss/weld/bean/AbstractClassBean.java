@@ -16,7 +16,40 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javassist.util.proxy.ProxyObject;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.PassivationCapable;
+
 import org.jboss.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
@@ -54,45 +87,6 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.inject.Scope;
-import java.beans.Introspector;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -100,6 +94,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @param <T> the type of class for the bean
  * @author Pete Muir
  * @author David Allen
+ * @author Jozef Hartinger
  */
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
@@ -226,9 +221,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
     }
 
-    // Logger
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
-
     // The item representation
     protected WeldClass<T> annotatedItem;
 
@@ -268,11 +260,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * @param type        The type
      * @param beanManager The Bean manager
      */
-    protected AbstractClassBean(WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(idSuffix, beanManager, services);
+    protected AbstractClassBean(BeanAttributes<T> attributes, WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, idSuffix, beanManager, services);
         this.annotatedItem = type;
-        initStereotypes();
-        initAlternative();
         initInitializerMethods();
         initInjectableFields();
     }
@@ -473,33 +463,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         addInjectionPoints(Beans.getParameterInjectionPoints(this, initializerMethods));
     }
 
-    @Override
-    protected void initScope() {
-        for (WeldClass<?> clazz = getWeldAnnotated(); clazz != null; clazz = clazz.getWeldSuperclass()) {
-            Set<Annotation> scopes = new HashSet<Annotation>();
-            scopes.addAll(clazz.getDeclaredMetaAnnotations(Scope.class));
-            scopes.addAll(clazz.getDeclaredMetaAnnotations(NormalScope.class));
-            if (scopes.size() == 1) {
-                if (getWeldAnnotated().isAnnotationPresent(scopes.iterator().next().annotationType())) {
-                    this.scope = scopes.iterator().next().annotationType();
-                    log.trace(USING_SCOPE, scope, this);
-                }
-                break;
-            } else if (scopes.size() > 1) {
-                throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, getWeldAnnotated());
-            }
-        }
-
-        if (this.scope == null) {
-            initScopeFromStereotype();
-        }
-
-        if (this.scope == null) {
-            this.scope = Dependent.class;
-            log.trace(USING_DEFAULT_SCOPE, this);
-        }
-    }
-
     /**
      * Validates the bean implementation
      */
@@ -507,8 +470,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     @Override
-    protected void preSpecialize(BeanDeployerEnvironment environment) {
-        super.preSpecialize(environment);
+    protected void preSpecialize() {
+        super.preSpecialize();
         if (getWeldAnnotated().getWeldSuperclass() == null || getWeldAnnotated().getWeldSuperclass().getJavaClass().equals(Object.class)) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
@@ -522,16 +485,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     @Override
     public WeldClass<T> getWeldAnnotated() {
         return annotatedItem;
-    }
-
-    /**
-     * Gets the default name
-     *
-     * @return The default name
-     */
-    @Override
-    protected String getDefaultName() {
-        return Introspector.decapitalize(getWeldAnnotated().getSimpleName());
     }
 
     /**
