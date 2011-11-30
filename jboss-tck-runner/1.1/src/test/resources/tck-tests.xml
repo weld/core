@@ -33,14 +33,7 @@
                     <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
                 </methods>
             </class>
-
             <!-- TCK tests no longer valid for CDI 1.1 -->
-            <!-- CDITCK-237 -->
-            <class name="org.jboss.jsr299.tck.tests.interceptors.definition.broken.invalidBindingAnnotations.InvalidInterceptorBindingAnnotationsTest">
-                <methods>
-                    <exclude name="testInterceptorBindingsWithConflictingAnnotationMembersNotOk" />
-                </methods>
-            </class>
             <!-- CDI-88/CDITCK-174 -->
             <class name="org.jboss.jsr299.tck.tests.extensions.afterBeanDiscovery.AfterBeanDiscoveryTest">
                 <methods>
