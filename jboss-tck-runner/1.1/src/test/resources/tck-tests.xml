@@ -94,6 +94,11 @@
                     <exclude name="testInterceptorWithObserverMethodNotOk" />
                 </methods>
             </class>
+            <class name="org.jboss.jsr299.tck.tests.decorators.definition.broken.observer.DecoratorWithObserverMethodTest">
+                <methods>
+                    <exclude name="testDecoratorWithObserverMethodNotOk" />
+                </methods>
+            </class>
             <!-- WELD-998 -->
             <class name="org.jboss.jsr299.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
                 <methods>
