@@ -69,12 +69,6 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
-            <!-- WELD-966 -->
-            <class name="org.jboss.jsr299.tck.tests.lookup.byname.ResolutionByNameTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
             <!-- WELD-458 -->
             <class name="org.jboss.jsr299.tck.tests.interceptors.definition.broken.interceptorForLifecycleTargetMethod.InterceptorForLifecycleTargetMethodTest">
                 <methods>
@@ -132,6 +126,13 @@
                     <exclude name="testProducerMethodOnSpecializedBeanNotCalled" />
                 </methods>
             </class>
+            <!-- WELD-993 --> 
+            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
+                <methods>
+                    <exclude name="testInjectionIntoWebServiceEndpoint" />
+                    <exclude name="testResourceBeanTypes"/>
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
 
@@ -147,22 +148,6 @@
             <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
                 <methods>
                     <exclude name="testSerializeSFSB" />
-                </methods>
-            </class>
-            
-            <!-- AS7-1903 --> 
-            <!-- Remove exclusion when AS7 suports WS endpoint injection -->
-            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
-                <methods>
-                    <exclude name="testInjectionIntoWebServiceEndpoint" />
-                    <exclude name="testResourceBeanTypes"/>
-                </methods>
-            </class>
-            
-            <!-- AS7-2125 -->
-            <class name="org.jboss.jsr299.tck.tests.event.observer.transactional.TransactionalObserverTest">
-                 <methods>
-                    <exclude name=".*" />
                 </methods>
             </class>
 
