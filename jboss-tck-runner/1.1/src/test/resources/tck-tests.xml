@@ -133,6 +133,12 @@
                     <exclude name="testResourceBeanTypes"/>
                 </methods>
             </class>
+            <!-- WELD-1021 -->
+            <class name="org.jboss.jsr299.tck.tests.decorators.definition.DecoratorDefinitionTest">
+                <methods>
+                    <exclude name="testAbstractDecoratorNotImplementingMethodOfDecoratedType" />
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
 
