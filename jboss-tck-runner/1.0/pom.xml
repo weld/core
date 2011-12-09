@@ -56,6 +56,20 @@
             <artifactId>arquillian-container-spi</artifactId>
             <scope>test</scope>
         </dependency>
+        
+         <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-impl-base</artifactId>
+            <version>${arquillian.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-impl-base</artifactId>
+            <version>${arquillian.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.as</groupId>
@@ -75,6 +89,14 @@
                 <exclusion>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-common</artifactId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>arquillian-core-impl-base</artifactId>
+                	<groupId>org.jboss.arquillian.core</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>arquillian-container-impl-base</artifactId>
+                	<groupId>org.jboss.arquillian.container</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
