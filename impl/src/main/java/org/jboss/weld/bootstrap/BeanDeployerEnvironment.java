@@ -144,7 +144,6 @@ public class BeanDeployerEnvironment {
     }
 
     public void addSessionBean(SessionBean<?> bean) {
-        newSessionBeanDescriptors.add(bean.getEjbDescriptor());
         addAbstractClassBean(bean);
     }
 
