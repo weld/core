@@ -62,6 +62,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
 
 /**
  * An abstract bean representation common for all beans
@@ -283,6 +284,11 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     protected void postSpecialize() {
         if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
             throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
+        }
+        for (Type type : getSpecializedBean().getTypes()) {
+            if (!getTypes().contains(type)) {
+                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, getSpecializedBean());
+            }
         }
         this.qualifiers.addAll(getSpecializedBean().getQualifiers());
         if (isSpecializing() && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
