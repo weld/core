@@ -28,8 +28,8 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.FixedProcessSyntheticAnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 public class VerifyingExtension implements Extension {
 
@@ -38,14 +38,14 @@ public class VerifyingExtension implements Extension {
     private Map<Class<?>, Extension> sources = new HashMap<Class<?>, Extension>();
 
     <T> void verify(@Observes ProcessAnnotatedType<T> event) {
-        if (event instanceof FixedProcessSyntheticAnnotatedType<?>) {
+        if (event instanceof ProcessSyntheticAnnotatedType<?>) {
             psatClasses.add(event.getAnnotatedType().getJavaClass());
         } else {
             patClasses.add(event.getAnnotatedType().getJavaClass());
         }
     }
 
-    <T> void verifySource(@Observes FixedProcessSyntheticAnnotatedType<T> event) {
+    <T> void verifySource(@Observes ProcessSyntheticAnnotatedType<T> event) {
         sources.put(event.getAnnotatedType().getJavaClass(), event.getSource());
     }
 

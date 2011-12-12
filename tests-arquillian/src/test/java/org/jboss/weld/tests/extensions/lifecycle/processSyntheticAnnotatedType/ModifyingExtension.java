@@ -23,11 +23,11 @@ package org.jboss.weld.tests.extensions.lifecycle.processSyntheticAnnotatedType;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.FixedProcessSyntheticAnnotatedType;
+import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 public class ModifyingExtension implements Extension {
 
-    <T> void modify(@Observes FixedProcessSyntheticAnnotatedType<T> event) {
+    <T> void modify(@Observes ProcessSyntheticAnnotatedType<T> event) {
         Class<T> clazz = event.getAnnotatedType().getJavaClass();
         if (Orange.class.equals(clazz)) {
             event.veto();

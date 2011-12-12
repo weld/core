@@ -23,7 +23,6 @@ package org.jboss.weld.bootstrap.events;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.FixedProcessSyntheticAnnotatedType;
 
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;

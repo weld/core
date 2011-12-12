@@ -16,15 +16,15 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.manager.BeanManagerImpl;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_NULL;
+
+import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import java.lang.reflect.Type;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_NULL;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Container lifecycle event for each Java class or interface discovered by

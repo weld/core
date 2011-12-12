@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.FixedProcessSyntheticAnnotatedType;
+import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -34,12 +34,12 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Jozef Hartinger
  *
  */
-public class ProcessSyntheticAnnotatedTypeImpl<T> extends ProcessAnnotatedTypeImpl<T> implements FixedProcessSyntheticAnnotatedType<T> {
+public class ProcessSyntheticAnnotatedTypeImpl<T> extends ProcessAnnotatedTypeImpl<T> implements ProcessSyntheticAnnotatedType<T> {
 
     private Extension source;
 
     public ProcessSyntheticAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType, Extension source) {
-        super(beanManager, annotatedType, FixedProcessSyntheticAnnotatedType.class, new Type[] { annotatedType.getBaseType() });
+        super(beanManager, annotatedType, ProcessSyntheticAnnotatedType.class, new Type[] { annotatedType.getBaseType() });
         this.source = source;
     }
 
