@@ -16,20 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES;
-import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
-import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -66,6 +52,20 @@ import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
+
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES;
+import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
+import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
 
 /**
  * An abstract bean representation common for all beans
