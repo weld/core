@@ -17,14 +17,16 @@
 package org.jboss.weld.metadata.cache;
 
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
+
+import javax.enterprise.inject.Stereotype;
 
 import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
 
@@ -45,12 +47,20 @@ public class MergedStereotypes<T, E> {
 
     private final BeanManagerImpl manager;
 
+    public static <T, E> MergedStereotypes<T, E> of(WeldAnnotated<T, E> annotated, BeanManagerImpl manager) {
+        return of(annotated.getMetaAnnotations(Stereotype.class), manager);
+    }
+
+    public static <T, E> MergedStereotypes<T, E> of(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager) {
+        return new MergedStereotypes<T, E>(stereotypeAnnotations, manager);
+    }
+
     /**
      * Constructor
      *
      * @param stereotypeAnnotations The stereotypes to merge
      */
-    public MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager) {
+    protected MergedStereotypes(Set<Annotation> stereotypeAnnotations, BeanManagerImpl manager) {
         this.possibleScopeTypes = new ArraySet<Annotation>();
         this.stereotypes = new ArraySet<Class<? extends Annotation>>();
         this.manager = manager;

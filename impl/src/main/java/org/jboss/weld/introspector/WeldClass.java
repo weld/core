@@ -33,7 +33,7 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      *
      * @return A set of abstracted fields
      */
-    Collection<WeldField<?, ?>> getWeldFields();
+    Collection<WeldField<?, ? super T>> getWeldFields();
 
     /**
      * Gets all fields on the type
@@ -69,6 +69,14 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
     Collection<WeldField<?, ?>> getWeldFields(Class<? extends Annotation> annotationType);
 
     /**
+     * Gets all fields declared on this class only.
+     *
+     * @return A set of abstracted fields. Returns an
+     *         empty set if there are no matches
+     */
+    Collection<WeldField<?, ? super T>> getDeclaredWeldFields();
+
+    /**
      * Gets all fields which are annotated with the given annotation type on this
      * class only.
      *
@@ -77,6 +85,11 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      *         empty set if there are no matches
      */
     Collection<WeldField<?, ? super T>> getDeclaredWeldFields(Class<? extends Annotation> annotationType);
+
+    /**
+     * Gets all constructors
+     */
+    Collection<WeldConstructor<T>> getWeldConstructors();
 
     /**
      * Gets all constructors which are annotated with annotationType

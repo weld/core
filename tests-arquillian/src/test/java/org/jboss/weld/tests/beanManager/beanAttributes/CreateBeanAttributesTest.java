@@ -26,12 +26,17 @@ import static org.jboss.weld.tests.util.BeanUtilities.verifyStereotypes;
 import static org.jboss.weld.tests.util.BeanUtilities.verifyTypes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
@@ -85,7 +90,7 @@ public class CreateBeanAttributesTest {
         assertFalse(attributes.isAlternative());
         assertTrue(attributes.isNullable());
     }
-    
+
     @Test
     public void testBeanAttributesForSessionBean() {
         AnnotatedType<Lake> type = manager.createAnnotatedType(Lake.class);
@@ -97,5 +102,97 @@ public class CreateBeanAttributesTest {
         assertEquals("lake", attributes.getName());
         assertTrue(attributes.isAlternative());
         assertTrue(attributes.isNullable());
+    }
+
+    @Test
+    public void testBeanAttributesForMethod() {
+        AnnotatedType<Dam> type = manager.createAnnotatedType(Dam.class);
+
+        AnnotatedMethod<?> lakeFishMethod = null;
+        AnnotatedMethod<?> damFishMethod = null;
+        AnnotatedMethod<?> volumeMethod = null;
+
+        for (AnnotatedMethod<?> method : type.getMethods()) {
+            if (method.getJavaMember().getName().equals("getFish") && method.getJavaMember().getDeclaringClass().equals(Dam.class)) {
+                damFishMethod = method;
+            }
+            if (method.getJavaMember().getName().equals("getFish") && method.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+                lakeFishMethod = method;
+            }
+            if (method.getJavaMember().getName().equals("getVolume") && method.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+                volumeMethod = method;
+            }
+        }
+        assertNotNull(lakeFishMethod);
+        assertNotNull(damFishMethod);
+        assertNotNull(volumeMethod);
+
+        verifyLakeFish(manager.createBeanAttributes(lakeFishMethod));
+        verifyDamFish(manager.createBeanAttributes(damFishMethod));
+        verifyVolume(manager.createBeanAttributes(volumeMethod));
+    }
+
+    @Test
+    public void testBeanAttributesForField() {
+        AnnotatedType<Dam> type = manager.createAnnotatedType(Dam.class);
+
+        AnnotatedField<?> lakeFishField = null;
+        AnnotatedField<?> damFishField = null;
+        AnnotatedField<?> volumeField = null;
+
+        for (AnnotatedField<?> field : type.getFields()) {
+            if (field.getJavaMember().getName().equals("fish") && field.getJavaMember().getDeclaringClass().equals(Dam.class)) {
+                damFishField = field;
+            }
+            if (field.getJavaMember().getName().equals("fish") && field.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+                lakeFishField = field;
+            }
+            if (field.getJavaMember().getName().equals("volume") && field.getJavaMember().getDeclaringClass().equals(Lake.class)) {
+                volumeField = field;
+            }
+        }
+        assertNotNull(lakeFishField);
+        assertNotNull(damFishField);
+        assertNotNull(volumeField);
+
+        verifyLakeFish(manager.createBeanAttributes(lakeFishField));
+        verifyDamFish(manager.createBeanAttributes(damFishField));
+        verifyVolume(manager.createBeanAttributes(volumeField));
+    }
+
+    private void verifyLakeFish(BeanAttributes<?> attributes) {
+        verifyTypes(attributes, Fish.class, Object.class);
+        verifyStereotypes(attributes, TundraStereotype.class);
+        verifyQualifierTypes(attributes, Natural.class, Any.class, Named.class);
+        assertEquals(ApplicationScoped.class, attributes.getScope());
+        assertEquals("fish", attributes.getName());
+        assertTrue(attributes.isAlternative());
+        assertTrue(attributes.isNullable());
+    }
+
+    private void verifyDamFish(BeanAttributes<?> attributes) {
+        verifyTypes(attributes, Fish.class, Animal.class, Object.class);
+        assertTrue(attributes.getStereotypes().isEmpty());
+        verifyQualifierTypes(attributes, Wild.class, Any.class);
+        assertEquals(Dependent.class, attributes.getScope());
+        assertNull(attributes.getName());
+        assertFalse(attributes.isAlternative());
+        assertTrue(attributes.isNullable());
+    }
+
+    private void verifyVolume(BeanAttributes<?> attributes) {
+        verifyTypes(attributes, long.class, Object.class);
+        assertTrue(attributes.getStereotypes().isEmpty());
+        verifyQualifierTypes(attributes, Any.class, Default.class, Named.class);
+        assertEquals(Dependent.class, attributes.getScope());
+        assertEquals("volume", attributes.getName());
+        assertTrue(attributes.isAlternative());
+        assertFalse(attributes.isNullable());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidMember() {
+        AnnotatedConstructor<?> constructor = manager.createAnnotatedType(WrappedAnnotatedType.class).getConstructors().iterator().next();
+        manager.createBeanAttributes(constructor);
     }
 }

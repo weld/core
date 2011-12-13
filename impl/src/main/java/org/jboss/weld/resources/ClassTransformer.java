@@ -165,8 +165,8 @@ public class ClassTransformer implements Service {
         // don't wrap existing weld class, dup instances!
        if (clazz instanceof WeldClass) {
             return (WeldClass<T>) clazz;
-        } else if (clazz instanceof ForwardingAnnotatedType && ((ForwardingAnnotatedType) clazz).delegate() instanceof WeldClass) {
-            ForwardingAnnotatedType fat = (ForwardingAnnotatedType) clazz;
+        } else if (clazz instanceof ForwardingAnnotatedType && ((ForwardingAnnotatedType<?>) clazz).delegate() instanceof WeldClass) {
+            ForwardingAnnotatedType<?> fat = (ForwardingAnnotatedType<?>) clazz;
             return (WeldClass<T>) fat.delegate();
         } else {
             return (WeldClass<T>) annotatedTypes.get(clazz);

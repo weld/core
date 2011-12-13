@@ -21,38 +21,20 @@
  */
 package org.jboss.weld.tests.beanManager.beanAttributes;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Stateless
-@TundraStereotype
-@Natural
-public class Lake implements LakeLocal {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    @SuppressWarnings("unused")
-    @ApplicationScoped
-    @Natural
-    @TundraStereotype
-    @Typed(Fish.class)
-    @Named
-    private Fish fish;
+import javax.inject.Qualifier;
 
-    @Named
-    protected long volume;
+@Qualifier
+@Target({ TYPE, METHOD, PARAMETER, FIELD })
+@Retention(RUNTIME)
+public @interface Wild {
 
-    @ApplicationScoped
-    @Natural
-    @TundraStereotype
-    @Typed(Fish.class)
-    @Named
-    public Fish getFish() {
-        return null;
-    }
-
-    @Named
-    public long getVolume() {
-        return 100;
-    }
 }

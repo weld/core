@@ -21,38 +21,16 @@
  */
 package org.jboss.weld.tests.beanManager.beanAttributes;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
-
-@Stateless
-@TundraStereotype
-@Natural
-public class Lake implements LakeLocal {
+public class Dam extends Lake {
 
     @SuppressWarnings("unused")
-    @ApplicationScoped
-    @Natural
-    @TundraStereotype
-    @Typed(Fish.class)
-    @Named
+    @Wild
     private Fish fish;
 
-    @Named
-    protected long volume;
-
-    @ApplicationScoped
-    @Natural
-    @TundraStereotype
-    @Typed(Fish.class)
-    @Named
+    @Wild
+    @Override
     public Fish getFish() {
         return null;
     }
 
-    @Named
-    public long getVolume() {
-        return 100;
-    }
 }

@@ -53,10 +53,12 @@ import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
+import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
@@ -71,6 +73,7 @@ import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
@@ -86,10 +89,12 @@ import javax.el.ExpressionFactory;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -136,6 +141,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVI
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_EXTENSION;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INCORRECT_PRODUCER_MEMBER;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
@@ -1146,8 +1152,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return BeanAttributesFactory.forManagedBean(clazz, this);
     }
 
-    public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> type) {
-        throw new UnsupportedOperationException("Not implemented");
+    public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> member) {
+        if (!(member instanceof AnnotatedField<?>) && !(member instanceof AnnotatedMethod<?>)) {
+            throw new IllegalArgumentException(INCORRECT_PRODUCER_MEMBER, member);
+        }
+        WeldMember<?, ?, ? extends Member> weldMember = services.get(MemberTransformer.class).load(member);
+        WeldClass<?> declaringClass = weldMember.getDeclaringType();
+        // TODO this depends on CDI-202
+        boolean declaringBeanIsAlternative = declaringClass.isAnnotationPresent(Alternative.class) || MergedStereotypes.of(declaringClass, this).isAlternative();
+        return BeanAttributesFactory.forProducerBean(weldMember, declaringBeanIsAlternative, this);
     }
 
     public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, InjectionTarget<?> injectionTarget) {

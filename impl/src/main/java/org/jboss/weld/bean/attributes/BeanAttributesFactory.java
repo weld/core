@@ -35,7 +35,6 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.inject.Named;
 import javax.inject.Qualifier;
@@ -75,21 +74,27 @@ public class BeanAttributesFactory {
      * Creates new {@link BeanAttributes} to represent a session bean.
      */
     public static <T> BeanAttributes<T> forSessionBean(WeldClass<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
-        return new BeanAttributesBuilder<T>(annotated, null, Reflections.<InternalEjbDescriptor<T>> cast(descriptor), manager).build();
+        return new BeanAttributesBuilder<T>(annotated, false, Reflections.<InternalEjbDescriptor<T>> cast(descriptor), manager).build();
     }
 
     /**
      * Creates new {@link BeanAttributes} to represent a producer bean.
      */
-    public static <T, X, S extends Member> BeanAttributes<T> forProducerBean(WeldMember<T, ? super X, S> annotated, BeanAttributes<X> declaringBeanAttributes,
-            BeanManagerImpl manager) {
-        return new BeanAttributesBuilder<T>(annotated, declaringBeanAttributes, null, manager).build();
+    public static <T, X, S extends Member> BeanAttributes<T> forProducerBean(WeldMember<T, ? super X, S> annotated, BeanAttributes<X> declaringBeanAttributes, BeanManagerImpl manager) {
+        return forProducerBean(annotated, declaringBeanAttributes.isAlternative(), manager);
+    }
+
+    /**
+     * Creates new {@link BeanAttributes} to represent a producer bean.
+     */
+    public static <T, X, S extends Member> BeanAttributes<T> forProducerBean(WeldMember<T, ?, S> annotated, boolean declaringBeanIsAlternative, BeanManagerImpl manager) {
+        return new BeanAttributesBuilder<T>(annotated, declaringBeanIsAlternative, null, manager).build();
     }
 
     /**
      * Creates new {@link BeanAttributes} to represent a disposer method.
      */
-    public static <T, X> BeanAttributes<T> forDisposerMethod(WeldMethod<T, ? super X> annotated, BeanAttributes<X> declaringBeanAttributes, BeanManagerImpl manager) {
+    public static <T, X> BeanAttributes<T> forDisposerMethod(WeldMethod<T, ? super X> annotated, boolean declaringBeanIsAlternative, BeanManagerImpl manager) {
         BeanAttributesBuilder<T> builder = new BeanAttributesBuilder<T>();
         WeldParameter<?, ?> disposerParameter = null;
         if (annotated.getWeldParameters(Disposes.class).isEmpty()) {
@@ -98,7 +103,7 @@ public class BeanAttributesFactory {
         disposerParameter = annotated.getWeldParameters().get(0);
         builder.nullable = false; // not relevant
         builder.initStereotypes(annotated, manager);
-        builder.initAlternative(annotated, declaringBeanAttributes);
+        builder.initAlternative(annotated, declaringBeanIsAlternative);
         builder.name = null; // not relevant
         builder.qualifiers = disposerParameter.getMetaAnnotations(Qualifier.class);
         builder.scope = null;
@@ -132,10 +137,10 @@ public class BeanAttributesFactory {
         private BeanAttributesBuilder() {
         }
 
-        private BeanAttributesBuilder(WeldAnnotated<T, ?> annotated, BeanAttributes<?> declaringBeanAttributes, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
+        private BeanAttributesBuilder(WeldAnnotated<T, ?> annotated, boolean declaringBeanIsAlternative, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
             initNullable(annotated);
             initStereotypes(annotated, manager);
-            initAlternative(annotated, declaringBeanAttributes);
+            initAlternative(annotated, declaringBeanIsAlternative);
             initName(annotated);
             initQualifiers(annotated);
             initScope(annotated);
@@ -151,11 +156,11 @@ public class BeanAttributesFactory {
         }
 
         protected <S> void initStereotypes(WeldAnnotated<T, S> annotated, BeanManagerImpl manager) {
-            this.mergedStereotypes = new MergedStereotypes<T, S>(annotated.getMetaAnnotations(Stereotype.class), manager);
+            this.mergedStereotypes = MergedStereotypes.of(annotated, manager);
         }
 
-        protected void initAlternative(WeldAnnotated<T, ?> annotated, BeanAttributes<?> declaringBeanAttributes) {
-            this.alternative = Beans.isAlternative(annotated, mergedStereotypes) || (declaringBeanAttributes != null && declaringBeanAttributes.isAlternative());
+        protected void initAlternative(WeldAnnotated<T, ?> annotated, boolean declaringBeanIsAlternative) {
+            this.alternative = Beans.isAlternative(annotated, mergedStereotypes) || declaringBeanIsAlternative;
         }
 
         /**
