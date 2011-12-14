@@ -85,6 +85,16 @@ public class DatasourceManager implements ITestListener {
                         throw new RuntimeException("DataSource java:/DefaultDS was not found and could not be created automatically: " + result);
                     }
 
+		    // As of AS7 7.1 we have to enable DS
+	            ModelNode enableRequest = new ModelNode();
+	            enableRequest.get("operation").set("enable");
+        	    enableRequest.get("address").get("subsystem").set("datasources");
+        	    enableRequest.get("address").get("data-source").set(JNDI_NAME);
+		    ModelNode enableResult = client.execute(new OperationBuilder(enableRequest).build());
+		    if (!enableResult.get("outcome").asString().equals("success")) {
+                        throw new RuntimeException("DataSource java:/DefaultDS could not be enabled automatically: " + enableResult);
+                    }
+
                 } else {
                     if (test != null && !(test.length() == 0)) {
                         //we do not worry about this if we are only running one test
