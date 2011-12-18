@@ -94,6 +94,7 @@ public class ProxyFactory<T> {
     private final ClassLoader classLoader;
     private final String baseProxyName;
     private final Bean<?> bean;
+    private final Class<?> proxiedBeanType;
 
     public static final String CONSTRUCTED_FLAG_NAME = "constructed";
 
@@ -117,6 +118,7 @@ public class ProxyFactory<T> {
      */
     public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
         this.bean = bean;
+        this.proxiedBeanType = proxiedBeanType;
         for (Type type : typeClosure) {
             Class<?> c = Reflections.getRawType(type);
             // Ignore no-interface views, they are dealt with proxiedBeanType
@@ -366,11 +368,12 @@ public class ProxyFactory<T> {
         }
         // TODO: change the ProxyServices SPI to allow the container to figure out
         // which PD to use
-        ProtectionDomain domain = beanType.getProtectionDomain();
-        if (beanType.isInterface() || beanType.equals(Object.class)) {
+
+
+        ProtectionDomain domain = proxiedBeanType.getProtectionDomain();
+        if(proxiedBeanType.getPackage() == null || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
         }
-
         Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
         log.trace("Created Proxy class of type " + proxyClass + " supporting interfaces " + Arrays.toString(proxyClass.getInterfaces()));
         return proxyClass;
