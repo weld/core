@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
@@ -35,8 +37,6 @@ import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertEquals;
 
@@ -63,7 +63,7 @@ public class EnterpriseBeanLifecycleRemoteTest {
                 .addClass(RemoteClient.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
         );
-        ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test.jar")
+        ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test-archive.jar")
                 .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
                 .addClasses(Utils.class, Assert.class, Description.class, SelfDescribing.class, ComparisonFailure.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
