@@ -14,7 +14,7 @@
         <configuration>
             <!-- ARQ-649 workaround -->
             <property name="outputToConsole">false</property>
-            <property name="allowConnectToRunningInstance">true</property>
+            <property name="allowConnectingToRunningServer">true</property>
         </configuration>
 	</container>
 
