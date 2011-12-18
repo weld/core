@@ -84,7 +84,6 @@ public class DatasourceManager implements ITestListener {
                     if (!result.get("outcome").asString().equals("success")) {
                         throw new RuntimeException("DataSource java:/DefaultDS was not found and could not be created automatically: " + result);
                     }
-
 		    // As of AS7 7.1 we have to enable DS
 	            ModelNode enableRequest = new ModelNode();
 	            enableRequest.get("operation").set("enable");
