@@ -73,45 +73,32 @@ public class DatasourceManager implements ITestListener {
             ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9999);
             ModelNode request = new ModelNode();
             request.get("operation").set("read-resource");
-            request.get("address").get("subsystem").set("datasources");
+            request.get("address").get("subsystem").set("naming");
             // request.get("address").set("subsystem", "threads");
             request.get("recursive").set(false);
             ModelNode r = client.execute(new OperationBuilder(request).build());
             boolean found = false;
-            for (ModelNode dataSource : r.get("result").get("data-source").asList()) {
-                if (dataSource.asProperty().getName().equals(JNDI_NAME)) {
-                    found = true;
+
+            ModelNode resultNode = r.get("result");
+            if (resultNode.hasDefined("binding")) {
+                for (ModelNode dataSource : resultNode.get("binding").asList()) {
+                    if (dataSource.asProperty().getName().equals(JNDI_NAME)) {
+                        found = true;
+                    }
                 }
             }
             if (!found) {
                 if (create) {
                     request = new ModelNode();
-                    request.get("address").add("subsystem", "datasources");
-                    request.get("address").add("data-source", JNDI_NAME);
+                    request.get("address").add("subsystem", "naming");
+                    request.get("address").add("binding", JNDI_NAME);
                     request.get("operation").set("add");
-                    request.get("jndi-name").set(JNDI_NAME);
-                    request.get("enabled").set("true");
-                    request.get("connection-url").set("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-                    request.get("driver-class").set("org.h2.Driver");
-                    request.get("driver-name").set("h2");
-                    request.get("security").get("user-name").set("sa");
-                    request.get("security").get("password").set("sa");
-                    request.get("pool-name").set("DefaultDS");
+                    request.get("lookup").set("java:jboss/datasources/ExampleDS");
+                    request.get("binding-type").set("lookup");
                     ModelNode result = client.execute(new OperationBuilder(request).build());
                     if (!result.get("outcome").asString().equals("success")) {
                         throw new RuntimeException("DataSource java:/DefaultDS was not found and could not be created automatically: " + result);
                     }
-                    
-                    // As of AS7 7.1 we have to enable DS
-    	            ModelNode enableRequest = new ModelNode();
-    	            enableRequest.get("operation").set("enable");
-            	    enableRequest.get("address").get("subsystem").set("datasources");
-            	    enableRequest.get("address").get("data-source").set(JNDI_NAME);
-            	    ModelNode enableResult = client.execute(new OperationBuilder(enableRequest).build());
-            	    if (!enableResult.get("outcome").asString().equals("success")) {
-                            throw new RuntimeException("DataSource java:/DefaultDS could not be enabled automatically: " + enableResult);
-                    }
-                    
                 } else {
                     if (test != null && !(test.length() == 0)) {
                         //we do not worry about this if we are only running one test
