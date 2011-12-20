@@ -271,7 +271,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     protected ManagedBean(BeanAttributes<T> attributes, WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, type, idSuffix, beanManager, services);
         initType();
-        initConstructor();
+        initConstructor(beanManager);
+        initInitializerMethods(beanManager);
+        initInjectableFields(beanManager);
         this.proxiable = Proxies.isTypesProxyable(type.getTypeClosure());
     }
 
@@ -326,7 +328,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         if (!isSubclassed()) {
             return getConstructor().newInstance(beanManager, ctx);
         } else {
-            ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, constructorForEnhancedSubclass, getConstructor());
+            ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, constructorForEnhancedSubclass, getConstructor(), beanManager);
             return constructorInjectionPointWrapper.newInstance(beanManager, ctx);
         }
     }

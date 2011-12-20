@@ -17,8 +17,11 @@
 package org.jboss.weld.introspector;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * AnnotatedType provides a uniform access to the annotations on an annotated
@@ -68,5 +71,10 @@ public interface WeldMethod<T, X> extends WeldCallable<T, X, Method>, AnnotatedM
     boolean isEquivalent(Method method);
 
     MethodSignature getSignature();
+
+    /**
+     * Get the parameters annotated with a given annotation type.
+     */
+    List<WeldParameter<?, X>> getWeldParameters(Class<? extends Annotation> annotationType);
 
 }

@@ -139,7 +139,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     @Override
     protected void checkDelegateInjectionPoints() {
         for (WeldInjectionPoint<?, ?> injectionPoint : getDelegateInjectionPoints()) {
-            if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.isAnnotationPresent(Inject.class)) {
+            if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.getAnnotated().isAnnotationPresent(Inject.class)) {
                 throw new DefinitionException(DELEGATE_ON_NON_INITIALIZER_METHOD, injectionPoint);
             }
         }
@@ -156,7 +156,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     }
 
     protected void initDelegateType() {
-        this.delegateType = this.delegateInjectionPoint.getBaseType();
+        this.delegateType = this.delegateInjectionPoint.getType();
         this.delegateTypes = new HashSet<Type>();
         delegateTypes.add(delegateType);
     }
@@ -166,24 +166,24 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         mostSpecificDecoratedTypes.remove(Serializable.class);
         for (Type decoratedType : mostSpecificDecoratedTypes) {
             if (decoratedType instanceof Class<?>) {
-                if (!((Class<?>) decoratedType).isAssignableFrom(delegateInjectionPoint.getJavaClass())) {
+                if (!((Class<?>) decoratedType).isAssignableFrom(Reflections.getRawType(delegateInjectionPoint.getType()))) {
                     throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this);
                 }
             } else if (decoratedType instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) decoratedType;
-                if (!delegateInjectionPoint.isParameterizedType()) {
+                if (!(delegateInjectionPoint.getType() instanceof ParameterizedType)) {
                     throw new DefinitionException(DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT, delegateType, this);
                 }
-                if (!Arrays.equals(delegateInjectionPoint.getActualTypeArguments(), parameterizedType.getActualTypeArguments())) {
+                if (!Arrays.equals(Reflections.getActualTypeArguments(delegateInjectionPoint.getType()), parameterizedType.getActualTypeArguments())) {
                     throw new DefinitionException(DELEGATE_TYPE_PARAMETER_MISMATCH, decoratedType, this);
                 }
                 Type rawType = ((ParameterizedType) decoratedType).getRawType();
-                if (rawType instanceof Class<?> && !((Class<?>) rawType).isAssignableFrom(delegateInjectionPoint.getJavaClass())) {
+                if (rawType instanceof Class<?> && !((Class<?>) rawType).isAssignableFrom(Reflections.getRawType(delegateInjectionPoint.getType()))) {
                     throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this);
                 }
             }
         }
-        annotatedDelegateItem = beanManager.getServices().get(ClassTransformer.class).loadClass(delegateInjectionPoint.getJavaClass());
+        annotatedDelegateItem = beanManager.getServices().get(ClassTransformer.class).loadClass(Reflections.getRawType(delegateInjectionPoint.getType()));
     }
 
     private void checkAbstractMethods() {

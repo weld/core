@@ -149,10 +149,10 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     protected abstract void checkType();
 
     protected void addInjectionPoint(WeldInjectionPoint<?, ?> injectionPoint) {
-        if (injectionPoint.isAnnotationPresent(Delegate.class)) {
+        if (injectionPoint.isDelegate()) {
             this.delegateInjectionPoints.add(injectionPoint);
         }
-        if (injectionPoint.isAnnotationPresent(New.class)) {
+        if (injectionPoint.getQualifier(New.class) != null) {
             this.newInjectionPoints.add(injectionPoint);
         }
         injectionPoints.add(injectionPoint);

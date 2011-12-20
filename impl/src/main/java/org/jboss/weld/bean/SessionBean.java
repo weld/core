@@ -134,7 +134,9 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         super(attributes, type, idSuffix, manager, services);
         initType();
         this.ejbDescriptor = ejbDescriptor;
-        initConstructor();
+        initInitializerMethods(beanManager);
+        initInjectableFields(beanManager);
+        initConstructor(beanManager);
     }
 
     /**

@@ -34,9 +34,8 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.ParameterInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeansClosure;
@@ -71,9 +70,9 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     protected ProducerMethod(BeanAttributes<T> attributes, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
-        this.method = MethodInjectionPoint.of(this, method);
-        initType();
         this.id = createId(method, declaringBean);
+        this.method = MethodInjectionPoint.of(method, this, beanManager);
+        initType();
         initProducerMethodInjectableParameters();
         this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
     }
@@ -85,7 +84,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             sb.append(ProducerMethod.class.getSimpleName());
             sb.append(BEAN_ID_SEPARATOR);
             sb.append(declaringBean.getWeldAnnotated().getName());
-            sb.append(getWeldAnnotated().getSignature().toString());
+            sb.append(method.getSignature().toString());
             return sb.toString();
         } else {
             StringBuilder sb = new StringBuilder();
@@ -129,8 +128,8 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      * Initializes the injection points
      */
     protected void initProducerMethodInjectableParameters() {
-        for (WeldParameter<?, ?> parameter : method.getWeldParameters()) {
-            addInjectionPoint(ParameterInjectionPoint.of(this, parameter));
+        for (WeldInjectionPoint<?, ?> ip : method.getParameterInjectionPoints()) {
+            addInjectionPoint(ip);
         }
     }
 
@@ -166,7 +165,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      */
     @Override
     public WeldMethod<T, ? super X> getWeldAnnotated() {
-        return method;
+        return method.getAnnotated();
     }
 
     @Override

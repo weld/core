@@ -383,6 +383,13 @@ public class AnnotatedTypes {
         return true;
     }
 
+    /**
+     * Compares two annotated paramerets and returns true if they are equal
+     */
+    public static boolean compareAnnotatedParameters(AnnotatedParameter<?> p1, AnnotatedParameter<?> p2) {
+        return compareAnnotatedCallable(p1.getDeclaringCallable(), p2.getDeclaringCallable()) && p1.getPosition() == p2.getPosition() && compareAnnotated(p1, p2);
+    }
+
     public static boolean compareAnnotatedField(AnnotatedField<?> f1, AnnotatedField<?> f2) {
         if (!f1.getJavaMember().equals(f2.getJavaMember())) {
             return false;

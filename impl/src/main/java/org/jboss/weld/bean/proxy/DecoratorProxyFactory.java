@@ -41,7 +41,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -63,7 +62,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         super(proxyType, Collections.<Type>emptySet(), bean);
         this.delegateInjectionPoint = delegateInjectionPoint;
         if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
-            delegateField = ((FieldInjectionPoint<?, ?>) delegateInjectionPoint).getJavaMember();
+            delegateField = (Field) ((FieldInjectionPoint<?, ?>) delegateInjectionPoint).getMember();
         } else {
             delegateField = null;
         }
@@ -103,7 +102,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
             ParameterInjectionPoint<?, ?> parameterIP = (ParameterInjectionPoint<?, ?>) delegateInjectionPoint;
             if (parameterIP.getMember() instanceof Method) {
                 initializerMethod = ((Method) parameterIP.getMember());
-                delegateParameterPosition = parameterIP.getPosition();
+                delegateParameterPosition = parameterIP.getAnnotated().getPosition();
             }
         }
         try {

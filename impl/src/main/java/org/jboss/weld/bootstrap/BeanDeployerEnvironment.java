@@ -16,6 +16,22 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -42,22 +58,7 @@ import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class BeanDeployerEnvironment {
 
@@ -185,12 +186,13 @@ public class BeanDeployerEnvironment {
     private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints) {
         for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints) {
             // FIXME: better check
-            if (injectionPoint.getJavaClass() == Instance.class || injectionPoint.getJavaClass() == Event.class) {
+            Class<?> rawType = Reflections.getRawType(injectionPoint.getType());
+            if (Instance.class.equals(rawType) || Event.class.equals(rawType)) {
                 continue;
             }
-            New _new = injectionPoint.getAnnotation(New.class);
+            New _new = injectionPoint.getQualifier(New.class);
             if (_new.value().equals(New.class)) {
-                addNewBeanFromInjecitonPoint(injectionPoint.getJavaClass(), injectionPoint.getBaseType());
+                addNewBeanFromInjecitonPoint(rawType, injectionPoint.getType());
             } else {
                 addNewBeanFromInjecitonPoint(_new.value(), _new.value());
             }

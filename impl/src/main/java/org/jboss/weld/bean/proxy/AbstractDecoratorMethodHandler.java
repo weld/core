@@ -54,10 +54,10 @@ public class AbstractDecoratorMethodHandler implements MethodHandler {
         // TODO: replace this way of initializing field-injected delegates (move out) - MBG
         if (delegate == null) {
             if (injectionPoint instanceof FieldInjectionPoint) {
-                this.delegate = Reflections.<FieldInjectionPoint<?, ?>>cast(injectionPoint).get(self);
+                this.delegate = Reflections.<FieldInjectionPoint<?, ?>>cast(injectionPoint).getAnnotated().get(self);
             } else if (injectionPoint.getMember() instanceof Method && injectionPoint instanceof ParameterInjectionPoint<?, ?>) {
                 if (thisMethod.equals(injectionPoint.getMember())) {
-                    int position = ((ParameterInjectionPoint<?, ?>) injectionPoint).getPosition();
+                    int position = ((ParameterInjectionPoint<?, ?>) injectionPoint).getAnnotated().getPosition();
                     delegate = args[position];
                 }
             }

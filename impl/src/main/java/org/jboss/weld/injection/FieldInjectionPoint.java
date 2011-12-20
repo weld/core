@@ -16,87 +16,42 @@
  */
 package org.jboss.weld.injection;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.bean.proxy.DecoratorProxy;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.introspector.ForwardingWeldField;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.logging.messages.ReflectionMessage;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.AnnotatedTypes;
-import org.jboss.weld.util.reflection.Reflections;
+import static org.jboss.weld.injection.Exceptions.rethrowException;
 
-import javax.decorator.Delegate;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Set;
 
-import static org.jboss.weld.injection.Exceptions.rethrowException;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.bean.proxy.DecoratorProxy;
+import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
+import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
-public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> implements WeldInjectionPoint<T, Field>, Serializable {
+public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPoint<T, Field>, Serializable {
 
-    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "If the bean is not serializable, we won't ever try to serialize the injection point")
-    private final Bean<?> declaringBean;
-    private final WeldField<T, X> field;
-    private final boolean delegate;
+    private static final long serialVersionUID = 6645272914499045953L;
+
     private final boolean cacheable;
-    private Bean<?> cachedBean;
+    private transient Bean<?> cachedBean;
 
+    private final FieldInjectionPointAttributes<T, X> attributes;
 
-    public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldField<T, X> field) {
-        return new FieldInjectionPoint<T, X>(declaringBean, field);
+    public static <T, X> FieldInjectionPoint<T, X> of(FieldInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
+        return new FieldInjectionPoint<T, X>(ProcessInjectionPointImpl.fire(attributes, manager));
     }
 
-    protected FieldInjectionPoint(Bean<?> declaringBean, WeldField<T, X> field) {
-        this.declaringBean = declaringBean;
-        this.field = field;
-        this.delegate = isAnnotationPresent(Inject.class) && isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
-        this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(field.getJavaMember().getType()) && !Instance.class.isAssignableFrom(field.getJavaMember().getType());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof FieldInjectionPoint<?, ?>) {
-            FieldInjectionPoint<?, ?> ip = (FieldInjectionPoint<?, ?>) obj;
-            if (AnnotatedTypes.compareAnnotatedField(field, ip.field)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return field.hashCode();
-    }
-
-    @Override
-    protected WeldField<T, X> delegate() {
-        return field;
-    }
-
-    public Bean<?> getBean() {
-        return declaringBean;
-    }
-
-    @Override
-    public Set<Annotation> getQualifiers() {
-        return delegate().getQualifiers();
+    protected FieldInjectionPoint(FieldInjectionPointAttributes<T, X> attributes) {
+        this.attributes = attributes;
+        this.cacheable = !attributes.isDelegate() && !InjectionPoint.class.isAssignableFrom(getAnnotated().getJavaClass())
+                && !Instance.class.isAssignableFrom(getAnnotated().getJavaClass());
     }
 
     public void inject(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
@@ -105,7 +60,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
             if (!(instanceToInject instanceof DecoratorProxy)) {
                 // if declaringInstance is a proxy, unwrap it
                 if (declaringInstance instanceof TargetInstanceProxy) {
-                    instanceToInject = Reflections.<TargetInstanceProxy<T>>cast(declaringInstance).getTargetInstance();
+                    instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
                 }
             }
             Object objectToInject;
@@ -117,7 +72,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
                 }
                 objectToInject = manager.getReference(this, cachedBean, creationalContext);
             }
-            delegate().set(instanceToInject, objectToInject);
+            getAnnotated().set(instanceToInject, objectToInject);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {
@@ -131,9 +86,9 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
             if (!(instanceToInject instanceof DecoratorProxy)) {
                 // if declaringInstance is a proxy, unwrap it
                 if (instanceToInject instanceof TargetInstanceProxy)
-                    instanceToInject = Reflections.<TargetInstanceProxy<T>>cast(declaringInstance).getTargetInstance();
+                    instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
             }
-            delegate().set(instanceToInject, value);
+            getAnnotated().set(instanceToInject, value);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {
@@ -141,57 +96,13 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
         }
     }
 
-    public Annotated getAnnotated() {
-        return delegate();
+    @Override
+    protected FieldInjectionPointAttributes<T, X> delegate() {
+        return attributes;
     }
 
-    public boolean isDelegate() {
-        return delegate;
+    @Override
+    public WeldField<T, X> getAnnotated() {
+        return attributes.getAnnotated();
     }
-
-    public Type getType() {
-        return getBaseType();
-    }
-
-    public Member getMember() {
-        return getJavaMember();
-    }
-
-    // Serialization
-
-    private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<T>(this);
-    }
-
-    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException(PROXY_REQUIRED);
-    }
-
-    private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Field> {
-
-        private static final long serialVersionUID = -3491482804822264969L;
-
-        private final String fieldName;
-
-        public SerializationProxy(FieldInjectionPoint<T, ?> injectionPoint) {
-            super(injectionPoint);
-            this.fieldName = injectionPoint.getName();
-        }
-
-        private Object readResolve() {
-            WeldField<T, ?> field = getWeldField();
-            Bean<T> bean = getDeclaringBean();
-            if (field == null || (bean == null && getDeclaringBeanId() != null)) {
-                throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), fieldName);
-            }
-            return FieldInjectionPoint.of(getDeclaringBean(), getWeldField());
-        }
-
-        protected WeldField<T, ?> getWeldField() {
-            return getDeclaringWeldClass().getDeclaredWeldField(fieldName);
-        }
-
-    }
-
-
 }

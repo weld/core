@@ -29,6 +29,8 @@ import org.junit.runner.RunWith;
 import javax.enterprise.inject.IllegalProductException;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
+
+import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 
 import static org.junit.Assert.assertNotNull;
@@ -60,13 +62,27 @@ public class InjectionPointTest {
     * description = "WELD-316"
     */
     @Test
-    public void testFieldInjectionPointSerializability(StringConsumer consumer) throws Throwable {
+    public void testFieldInjectionPointSerializability(Consumer consumer) throws Throwable {
         consumer.ping();
         InjectionPoint ip = StringGenerator.getInjectionPoint();
         Assert.assertNotNull(ip);
         Assert.assertEquals("str", ip.getMember().getName());
         InjectionPoint ip1 = Utils.deserialize(Utils.serialize(ip));
         Assert.assertEquals("str", ip1.getMember().getName());
+    }
+    
+    @Test
+    public void testConstructorInjectionPointSerializability(Consumer consumer) throws Throwable {
+        InjectionPoint ip = consumer.getSheep().getIp();
+        assertNotNull(ip);
+        Utils.deserialize(Utils.serialize(ip));
+    }
+    
+    @Test
+    public void testMethodInjectionPointSerializability(Consumer consumer) throws Throwable {
+        InjectionPoint ip = consumer.getInitializerSheep().getIp();
+        assertNotNull(ip);
+        Utils.deserialize(Utils.serialize(ip));
     }
 
     /*

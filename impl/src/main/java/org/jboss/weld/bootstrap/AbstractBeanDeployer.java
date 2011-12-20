@@ -180,7 +180,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
         for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class)) {
-            DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean, services);
+            DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
             disposalBean.initialize(getEnvironment());
             getEnvironment().addDisposesMethod(disposalBean);
         }

@@ -16,16 +16,20 @@
  */
 package org.jboss.weld.event;
 
-import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Observers;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_INJECTION_POINT;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
+import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
@@ -43,20 +47,18 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
-import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INJECTION_POINT;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
+import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.ParameterInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Observers;
 
 /**
  * <p>
@@ -99,23 +101,24 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
-        this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
-        this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
+        this.observerMethod = MethodInjectionPoint.ofObserverOrDisposerMethod(observer, declaringBean, manager);
+        this.eventType = observerMethod.getAnnotated().getWeldParameters(Observes.class).get(0).getBaseType();
         this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
-        this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
-        Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
+        this.bindings = new HashSet<Annotation>(observerMethod.getAnnotated().getWeldParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
+        Observes observesAnnotation = observerMethod.getAnnotated().getWeldParameters(Observes.class).get(0).getAnnotation(Observes.class);
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = TransactionPhase.IN_PROGRESS;
 
         this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
         this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-        for (WeldInjectionPoint<?, ?> injectionPoint : Beans.getParameterInjectionPoints(null, observerMethod)) {
-            if (injectionPoint.isAnnotationPresent(Observes.class) == false) {
-                if (injectionPoint.isAnnotationPresent(New.class)) {
-                    this.newInjectionPoints.add(injectionPoint);
-                }
-                injectionPoints.add(injectionPoint);
+        for (ParameterInjectionPoint<?, ?> injectionPoint : observerMethod.getParameterInjectionPoints()) {
+            if (injectionPoint instanceof SpecialParameterInjectionPoint) {
+                continue;
             }
+            if (injectionPoint.getQualifier(New.class) != null) {
+                this.newInjectionPoints.add(injectionPoint);
+            }
+            injectionPoints.add(injectionPoint);
         }
     }
 
@@ -133,7 +136,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      */
     private void checkObserverMethod() {
         // Make sure exactly one and only one parameter is annotated with Observes
-        List<?> eventObjects = this.observerMethod.getAnnotatedParameters(Observes.class);
+        List<?> eventObjects = this.observerMethod.getAnnotated().getWeldParameters(Observes.class);
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
             throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
         }
@@ -141,20 +144,20 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
         }
         // Check for parameters annotated with @Disposes
-        List<?> disposeParams = this.observerMethod.getAnnotatedParameters(Disposes.class);
+        List<?> disposeParams = this.observerMethod.getAnnotated().getWeldParameters(Disposes.class);
         if (disposeParams.size() > 0) {
             throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
         }
         // Check annotations on the method to make sure this is not a producer
         // method, initializer method, or destructor method.
-        if (this.observerMethod.isAnnotationPresent(Produces.class)) {
+        if (this.observerMethod.getAnnotated().isAnnotationPresent(Produces.class)) {
             throw new DefinitionException(INVALID_PRODUCER, this);
         }
-        if (this.observerMethod.isAnnotationPresent(Inject.class)) {
+        if (this.observerMethod.getAnnotated().isAnnotationPresent(Inject.class)) {
             throw new DefinitionException(INVALID_INITIALIZER, this);
         }
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
-        for (WeldParameter<?, ?> parameter : getMethod().getWeldParameters()) {
+        for (WeldParameter<?, ?> parameter : getMethod().getAnnotated().getWeldParameters()) {
             if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals("")) {
                 throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
             }
@@ -226,7 +229,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      * @param event The event to notify observer with
      */
     protected void sendEvent(final T event) {
-        if (observerMethod.isStatic()) {
+        if (observerMethod.getAnnotated().isStatic()) {
             sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
         } else if (reception.equals(Reception.IF_EXISTS)) {
             Object receiver = getReceiverIfExists();

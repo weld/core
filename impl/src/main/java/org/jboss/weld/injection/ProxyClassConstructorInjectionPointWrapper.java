@@ -50,25 +50,25 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     private boolean decorator;
     private final Bean<?> bean;
 
-    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
-        super(declaringBean, weldConstructor);
+    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
+        super(weldConstructor, declaringBean, manager);
         this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
         this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;
         this.bean = declaringBean;
     }
 
     @Override
-    public List<ParameterInjectionPoint<?, T>> getWeldParameters() {
-        return originalConstructorInjectionPoint.getWeldParameters();
+    public List<ParameterInjectionPoint<?, T>> getParameterInjectionPoints() {
+        return originalConstructorInjectionPoint.getParameterInjectionPoints();
     }
 
     @Override
     protected Object[] getParameterValues(List<ParameterInjectionPoint<?, T>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
         Object[] parameterValues = super.getParameterValues(parameters, specialVal, specialParam, manager, creationalContext);
         // Check if any of the injections are for a delegate
-        for (ParameterInjectionPoint<?, T> parameter : getWeldParameters()) {
+        for (ParameterInjectionPoint<?, T> parameter : getParameterInjectionPoints()) {
             if (parameter.isDelegate()) {
-                decoratorDelegate = parameterValues[parameter.getPosition()];
+                decoratorDelegate = parameterValues[parameter.getAnnotated().getPosition()];
             }
         }
         return parameterValues;
@@ -90,7 +90,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
                     beanInstance = new OnDemandBeanInstance(new OnDemandBeanInstance.InstanceProvider() {
                         public Object provideInstance() {
                             FieldInjectionPoint fip = (FieldInjectionPoint) ip;
-                            return fip.delegate().get(instance);
+                            return fip.getAnnotated().get(instance);
                         }
                     });
                 } else if (ip instanceof MethodInjectionPoint) {
@@ -98,7 +98,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
                         public Object provideInstance() {
                             MethodInjectionPoint mip = (MethodInjectionPoint) ip;
                             try {
-                                return mip.delegate().invokeOnInstance(instance);
+                                return mip.getAnnotated().invokeOnInstance(instance);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }

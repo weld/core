@@ -18,12 +18,32 @@ package org.jboss.weld.tests.injectionPoint;
 
 import javax.inject.Inject;
 
-public class StringConsumer {
+public class Consumer {
 
     @Inject
     String str;
 
+    private Sheep sheep;
+    private Sheep initializerSheep;
+
+    @Inject
+    public Consumer(Sheep sheep) {
+        this.sheep = sheep;
+    }
+
+    @Inject
+    public void init(Sheep sheep) {
+        this.initializerSheep = sheep;
+    }
+
     public void ping() {
     }
 
+    public Sheep getSheep() {
+        return sheep;
+    }
+
+    public Sheep getInitializerSheep() {
+        return initializerSheep;
+    }
 }

@@ -38,7 +38,6 @@ import javax.inject.Inject;
 
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.introspector.WeldMethod;
@@ -56,15 +55,15 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     private boolean injectionPointMetadataParameter = false;
     private boolean beanMetadataParameter = false;
 
-    public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, ServiceRegistry services) {
-        return new DisposalMethod<X, T>(manager, method, declaringBean, services);
+    public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
+        return new DisposalMethod<X, T>(manager, method, declaringBean);
     }
 
-    protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean, ServiceRegistry services) {
-        super(BeanAttributesFactory.forDisposerMethod(disposalMethod, declaringBean.isAlternative(), beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, services);
-        this.disposalMethodInjectionPoint = MethodInjectionPoint.of(this, disposalMethod);
+    protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean) {
+        super(BeanAttributesFactory.forDisposerMethod(disposalMethod, declaringBean.isAlternative(), beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, beanManager.getServices());
+        this.disposalMethodInjectionPoint = MethodInjectionPoint.ofObserverOrDisposerMethod(disposalMethod, this, beanManager);
         initType();
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, disposalMethodInjectionPoint));
+        addInjectionPoints(Beans.filterOutSpecialParameterInjectionPoints(disposalMethodInjectionPoint.getParameterInjectionPoints()));
     }
 
     private void initDisposesParameter() {
@@ -95,12 +94,12 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     protected void initType() {
-        this.type = cast(disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).get(0).getJavaClass());
+        this.type = cast(disposalMethodInjectionPoint.getAnnotated().getWeldParameters(Disposes.class).get(0).getJavaClass());
     }
 
     @Override
     public WeldMethod<T, ? super X> getWeldAnnotated() {
-        return disposalMethodInjectionPoint;
+        return disposalMethodInjectionPoint.getAnnotated();
     }
 
     @Override
@@ -135,19 +134,19 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     private void checkDisposalMethod() {
-        if (!disposalMethodInjectionPoint.getWeldParameters().get(0).isAnnotationPresent(Disposes.class)) {
+        if (!disposalMethodInjectionPoint.getAnnotated().getWeldParameters().get(0).isAnnotationPresent(Disposes.class)) {
             throw new DefinitionException(DISPOSE_NOT_FIRST_PARAM, disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getAnnotatedParameters(Disposes.class).size() > 1) {
+        if (disposalMethodInjectionPoint.getAnnotated().getWeldParameters(Disposes.class).size() > 1) {
             throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getAnnotatedParameters(Observes.class).size() > 0) {
+        if (disposalMethodInjectionPoint.getAnnotated().getWeldParameters(Observes.class).size() > 0) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getAnnotation(Inject.class) != null) {
+        if (disposalMethodInjectionPoint.getAnnotated().getAnnotation(Inject.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Intitializer", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getAnnotation(Produces.class) != null) {
+        if (disposalMethodInjectionPoint.getAnnotated().getAnnotation(Produces.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes", disposalMethodInjectionPoint);
         }
         if (getDeclaringBean() instanceof SessionBean<?>) {
@@ -156,7 +155,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
             for (Type type : getDeclaringBean().getTypes()) {
                 if (type instanceof Class<?>) {
                     Class<?> clazz = (Class<?>) type;
-                    if (SecureReflections.isMethodExists(clazz, disposalMethodInjectionPoint.getName(), disposalMethodInjectionPoint.getParameterTypesAsArray())) {
+                    if (SecureReflections.isMethodExists(clazz, disposalMethodInjectionPoint.getAnnotated().getName(), disposalMethodInjectionPoint.getAnnotated().getParameterTypesAsArray())) {
                         methodDeclaredOnTypes = true;
                         continue;
                     }

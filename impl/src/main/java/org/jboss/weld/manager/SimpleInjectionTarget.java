@@ -66,18 +66,18 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
         }
         ConstructorInjectionPoint<T> constructor = null;
         try {
-            constructor = Beans.getBeanConstructor(null, type);
-            this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, constructor));
+            constructor = Beans.getBeanConstructor(null, type, beanManager);
+            this.injectionPoints.addAll(constructor.getParameterInjectionPoints());
         } catch (Exception e) {
             // this means the bean of a type that cannot be produce()d, but that is
             // non-fatal
             // unless someone calls produce()
         }
         this.constructor = constructor;
-        this.injectableFields = Beans.getFieldInjectionPoints(null, type);
+        this.injectableFields = Beans.getFieldInjectionPoints(null, type, beanManager);
         this.injectionPoints.addAll(Beans.getFieldInjectionPoints(null, this.injectableFields));
-        this.initializerMethods = Beans.getInitializerMethods(null, type);
-        this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, initializerMethods));
+        this.initializerMethods = Beans.getInitializerMethods(null, type, beanManager);
+        this.injectionPoints.addAll(Beans.getParameterInjectionPoints(initializerMethods));
         this.postConstructMethods = Beans.getPostConstructMethods(type);
         this.preDestroyMethods = Beans.getPreDestroyMethods(type);
         this.ejbInjectionPoints = Beans.getEjbInjectionPoints(null, type, beanManager);
@@ -91,7 +91,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             // this means we couldn't find a constructor on instantiation, which
             // means there isn't one that's spec-compliant
             // try again so the correct DefinitionException is thrown
-            Beans.getBeanConstructor(null, type);
+            Beans.getBeanConstructor(null, type, beanManager);
             // should not be reached
             throw new IllegalStateException(MISSING_BEAN_CONSTRUCTOR_FOUND);
         }

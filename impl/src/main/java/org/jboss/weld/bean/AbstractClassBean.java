@@ -263,8 +263,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     protected AbstractClassBean(BeanAttributes<T> attributes, WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, idSuffix, beanManager, services);
         this.annotatedItem = type;
-        initInitializerMethods();
-        initInjectableFields();
     }
 
     /**
@@ -450,17 +448,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     /**
      * Initializes the injection points
      */
-    protected void initInjectableFields() {
-        injectableFields = Beans.getFieldInjectionPoints(this, annotatedItem);
+    protected void initInjectableFields(BeanManagerImpl manager) {
+        injectableFields = Beans.getFieldInjectionPoints(this, annotatedItem, manager);
         addInjectionPoints(Beans.getFieldInjectionPoints(this, injectableFields));
     }
 
     /**
      * Initializes the initializer methods
      */
-    protected void initInitializerMethods() {
-        initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated());
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, initializerMethods));
+    protected void initInitializerMethods(BeanManagerImpl manager) {
+        initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated(), manager);
+        addInjectionPoints(Beans.getParameterInjectionPoints(initializerMethods));
     }
 
     /**
@@ -592,10 +590,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected void checkConstructor() {
-        if (!constructor.getWeldParameters(Disposes.class).isEmpty()) {
+        if (!constructor.getAnnotated().getWeldParameters(Disposes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
         }
-        if (!constructor.getWeldParameters(Observes.class).isEmpty()) {
+        if (!constructor.getAnnotated().getWeldParameters(Observes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
         }
     }
@@ -603,9 +601,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     /**
      * Initializes the constructor
      */
-    protected void initConstructor() {
-        this.constructor = Beans.getBeanConstructor(this, getWeldAnnotated());
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor));
+    protected void initConstructor(BeanManagerImpl manager) {
+        this.constructor = Beans.getBeanConstructor(this, getWeldAnnotated(), manager);
+        addInjectionPoints(constructor.getParameterInjectionPoints());
     }
 
     /**
@@ -625,7 +623,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         final ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
         enhancedSubclass = transformer.loadClass(createEnhancedSubclass());
         constructorForEnhancedSubclass = WeldConstructorImpl.of(
-                enhancedSubclass.getDeclaredWeldConstructor(getConstructor().getSignature()),
+                enhancedSubclass.getDeclaredWeldConstructor(getConstructor().getAnnotated().getSignature()),
                 enhancedSubclass,
                 transformer);
     }

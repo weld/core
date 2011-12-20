@@ -103,7 +103,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     protected EEResourceProducerField(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, field, declaringBean, manager, services);
-        this.injectionPoint = FieldInjectionPoint.of(declaringBean, field);
+        this.injectionPoint = FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager);
     }
 
     @Override

@@ -16,7 +16,69 @@
  */
 package org.jboss.weld.manager;
 
-import com.google.common.collect.Iterators;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INCORRECT_PRODUCER_MEMBER;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_EXTENSION;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+import static org.jboss.weld.util.reflection.Reflections.isCacheable;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.el.ELResolver;
+import javax.el.ExpressionFactory;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.inject.spi.Producer;
+import javax.enterprise.util.TypeLiteral;
+
 import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
@@ -51,9 +113,15 @@ import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.InferingFieldInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMember;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
@@ -84,67 +152,7 @@ import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.Producer;
-import javax.enterprise.util.TypeLiteral;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_EXTENSION;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INCORRECT_PRODUCER_MEMBER;
-import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-import static org.jboss.weld.util.reflection.Reflections.isCacheable;
+import com.google.common.collect.Iterators;
 
 /**
  * Implementation of the Bean Manager.
@@ -1153,10 +1161,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> member) {
-        if (!(member instanceof AnnotatedField<?>) && !(member instanceof AnnotatedMethod<?>)) {
+        WeldMember<?, ?, ? extends Member> weldMember = null;
+        if (member instanceof AnnotatedField<?>) {
+            weldMember = services.get(MemberTransformer.class).load((AnnotatedField<?>) member);
+        } else if (member instanceof AnnotatedMethod<?>) {
+            weldMember = services.get(MemberTransformer.class).load((AnnotatedMethod<?>) member);
+        } else {
             throw new IllegalArgumentException(INCORRECT_PRODUCER_MEMBER, member);
         }
-        WeldMember<?, ?, ? extends Member> weldMember = services.get(MemberTransformer.class).load(member);
         WeldClass<?> declaringClass = weldMember.getDeclaringType();
         // TODO this depends on CDI-202
         boolean declaringBeanIsAlternative = declaringClass.isAnnotationPresent(Alternative.class) || MergedStereotypes.of(declaringClass, this).isAlternative();
@@ -1173,14 +1185,24 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         throw new UnsupportedOperationException("Not implemented");
     }
 
-    public InjectionPoint createInjectionPoint(AnnotatedField<?> field) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+    public FieldInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedField<?> field, Bean<?> bean) {
+        WeldField<?, ?> weldField = services.get(MemberTransformer.class).load(field);
+        return InferingFieldInjectionPointAttributes.of(weldField, bean);
     }
 
-    public InjectionPoint createInjectionPoint(AnnotatedParameter<?> parameter) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+    @Override
+    public FieldInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedField<?> field) {
+        return createInjectionPoint(field, null);
+    }
+
+    public <X> ParameterInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedParameter<X> parameter, Bean<?> bean) {
+        WeldParameter<?, X> weldParameter = services.get(MemberTransformer.class).load(parameter);
+        return InferingParameterInjectionPointAttributes.of(weldParameter, bean);
+    }
+
+    @Override
+    public ParameterInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedParameter<?> parameter) {
+        return createInjectionPoint(parameter, null);
     }
 
     public <T extends Extension> T getExtension(Class<T> extensionClass) {

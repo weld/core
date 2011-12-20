@@ -21,6 +21,10 @@
  */
 package org.jboss.weld.resources;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_CALLABLE;
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_MEMBER;
+import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
@@ -28,12 +32,16 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -62,11 +70,38 @@ public class MemberTransformer implements Service {
         this.memberCache = new MapMaker().makeComputingMap(new TransformationFunction());
     }
 
-    public <X> WeldMember<?, X, ?> load(AnnotatedMember<X> source) {
-        if (source instanceof WeldMember<?, ?, ?>) {
-            return Reflections.cast(source);
+    public <T, X> WeldField<T, X> load(AnnotatedField<X> field) {
+        if (field instanceof WeldField<?, ?>) {
+            return Reflections.cast(field);
         }
-        return Reflections.cast(memberCache.get(source));
+        return Reflections.cast(memberCache.get(field));
+    }
+
+    public <T, X> WeldMethod<T, X> load(AnnotatedMethod<X> method) {
+        if (method instanceof WeldMethod<?, ?>) {
+            return Reflections.cast(method);
+        }
+        return Reflections.cast(memberCache.get(method));
+    }
+
+    public <T> WeldConstructor<T> load(AnnotatedConstructor<T> constructor) {
+        if (constructor instanceof WeldConstructor<?>) {
+            return Reflections.cast(constructor);
+        }
+        return Reflections.cast(memberCache.get(constructor));
+    }
+
+    public <T, X> WeldParameter<T, X> load(AnnotatedParameter<X> parameter) {
+        if (parameter instanceof WeldParameter<?, ?>) {
+            return Reflections.cast(parameter);
+        }
+        if (parameter.getDeclaringCallable() instanceof AnnotatedMethod<?>) {
+            return Reflections.cast(load((AnnotatedMethod<?>) parameter.getDeclaringCallable()).getWeldParameters().get(parameter.getPosition()));
+        } else if (parameter.getDeclaringCallable() instanceof AnnotatedConstructor<?>) {
+            return Reflections.cast(load((AnnotatedConstructor<?>) parameter.getDeclaringCallable()).getWeldParameters().get(parameter.getPosition()));
+        } else {
+            throw new IllegalArgumentException(INVALID_ANNOTATED_CALLABLE, parameter.getDeclaringCallable());
+        }
     }
 
     private class TransformationFunction implements Function<AnnotatedMember<?>, WeldMember<?, ?, ?>> {
@@ -81,7 +116,7 @@ public class MemberTransformer implements Service {
             if (from instanceof AnnotatedConstructor<?>) {
                 return constructorLoader.load(Reflections.<AnnotatedConstructor<?>> cast(from));
             }
-            throw new IllegalStateException("The member must either be a field, method or constructor " + from);
+            throw new IllegalArgumentException(INVALID_ANNOTATED_MEMBER, from);
         }
     }
 
@@ -97,7 +132,7 @@ public class MemberTransformer implements Service {
                     return member;
                 }
             }
-            throw new IllegalStateException("Unable to load WeldMember for " + source);
+            throw new IllegalStateException(UNABLE_TO_LOAD_MEMBER, source);
         }
 
         public abstract boolean equals(W member1, A member2);

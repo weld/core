@@ -76,13 +76,17 @@ public class BeanUtilities {
      * Verifies that the set of qualifiers of a given {@link BeanAttributes} matches the given set of annotation types.
      */
     public static void verifyQualifierTypes(BeanAttributes<?> attributes, Class<?>... expectedTypes) {
+        verifyQualifierTypes(attributes.getQualifiers(), expectedTypes);
+    }
+
+    public static void verifyQualifierTypes(Set<Annotation> annotations, Class<?>... expectedTypes) {
         Set<Class<?>> expectedQualifierTypes = new HashSet<Class<?>>(Arrays.asList(expectedTypes));
-        for (Annotation qualifier : attributes.getQualifiers()) {
+        for (Annotation qualifier : annotations) {
             if (!expectedQualifierTypes.remove(qualifier.annotationType())) {
                 fail("Unexpected qualifier type " + qualifier.annotationType());
             }
         }
-        assertTrue("Expected qualifier types " + expectedQualifierTypes + " not found on " + attributes, expectedQualifierTypes.isEmpty());
+        assertTrue("Expected qualifier types " + expectedQualifierTypes + " not found", expectedQualifierTypes.isEmpty());
     }
 
     /**

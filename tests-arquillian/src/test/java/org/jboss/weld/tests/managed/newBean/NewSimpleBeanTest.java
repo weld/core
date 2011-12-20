@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewManagedBean;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.util.AnnotatedTypes;
@@ -80,7 +81,7 @@ public class NewSimpleBeanTest {
     @Test
     public void testNewBeanHasSameConstructorAsWrappedBean() {
         initNewBean();
-        Assert.assertTrue(AnnotatedTypes.compareAnnotatedCallable(wrappedSimpleBean.getConstructor(), newSimpleBean.getConstructor()));
+        Assert.assertTrue(AnnotatedTypes.compareAnnotatedCallable(wrappedSimpleBean.getConstructor().getAnnotated(), newSimpleBean.getConstructor().getAnnotated()));
     }
 
     // groups = { "new" }
@@ -94,8 +95,8 @@ public class NewSimpleBeanTest {
     @Test
     public void testNewBeanHasSameInjectedFieldsAsWrappedBean() {
         initNewBean();
-        Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getWeldInjectionPoints();
-        Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newSimpleBean.getWeldInjectionPoints();
+        Set<? extends WeldInjectionPoint<?, ?>> wrappedBeanInjectionPoints = wrappedSimpleBean.getWeldInjectionPoints();
+        Set<? extends WeldInjectionPoint<?, ?>> newBeanInjectionPoints = newSimpleBean.getWeldInjectionPoints();
         Assert.assertEquals(wrappedBeanInjectionPoints, newBeanInjectionPoints);
     }
 

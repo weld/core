@@ -16,105 +16,45 @@
  */
 package org.jboss.weld.injection;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.jboss.weld.introspector.ConstructorSignature;
-import org.jboss.weld.introspector.ForwardingWeldConstructor;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.logging.messages.ReflectionMessage;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.AnnotatedTypes;
+import static org.jboss.weld.injection.Exceptions.rethrowException;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import static org.jboss.weld.injection.Exceptions.rethrowException;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
-public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> implements WeldInjectionPoint<T, Constructor<T>>, Serializable {
+import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.manager.BeanManagerImpl;
 
-    private abstract static class ForwardingParameterInjectionPointList<T, X> extends AbstractList<ParameterInjectionPoint<T, X>> {
+/**
+ * High-level representation of an injected constructor. This class does not need to be serializable because it is never injected.
+ *
+ * @author Pete Muir
+ * @author Jozef Hartinger
+ *
+ * @param <T>
+ */
+public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint<T, T, Constructor<T>> {
 
-        protected abstract List<? extends WeldParameter<T, X>> delegate();
-
-        protected abstract Bean<X> declaringBean();
-
-        @Override
-        public ParameterInjectionPoint<T, X> get(int index) {
-            return ParameterInjectionPoint.of(declaringBean(), delegate().get(index));
-        }
-
-        @Override
-        public int size() {
-            return delegate().size();
-        }
-
-    }
-
-    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "If the bean is not serializable, we won't ever try to serialize the injection point")
-    private final Bean<T> declaringBean;
     private final WeldConstructor<T> constructor;
 
-    public static <T> ConstructorInjectionPoint<T> of(Bean<T> declaringBean, WeldConstructor<T> constructor) {
-        return new ConstructorInjectionPoint<T>(declaringBean, constructor);
+    public static <T> ConstructorInjectionPoint<T> of(WeldConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
+        return new ConstructorInjectionPoint<T>(constructor, declaringBean, manager);
     }
 
-    protected ConstructorInjectionPoint(Bean<T> declaringBean, WeldConstructor<T> constructor) {
-        this.declaringBean = declaringBean;
+    protected ConstructorInjectionPoint(WeldConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
+        super(constructor, declaringBean, false, manager);
         this.constructor = constructor;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ConstructorInjectionPoint<?>) {
-            ConstructorInjectionPoint<?> ip = (ConstructorInjectionPoint<?>) obj;
-            if (AnnotatedTypes.compareAnnotatedCallable(constructor, ip.constructor)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return constructor.hashCode();
-    }
-
-    @Override
-    protected WeldConstructor<T> delegate() {
-        return constructor;
-    }
-
-    public Bean<?> getBean() {
-        return declaringBean;
-    }
-
-    @Override
-    public Set<Annotation> getQualifiers() {
-        return delegate().getQualifiers();
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
         try {
-            return delegate().newInstance(getParameterValues(getWeldParameters(), null, null, manager, creationalContext));
+            return getAnnotated().newInstance(getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (InstantiationException e) {
@@ -127,44 +67,24 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
         return null;
     }
 
-    @Override
-    public List<ParameterInjectionPoint<?, T>> getWeldParameters() {
-        final List<? extends WeldParameter<?, T>> delegate = super.getWeldParameters();
-        return new ForwardingParameterInjectionPointList() {
-
-            @Override
-            protected Bean<T> declaringBean() {
-                return declaringBean;
-            }
-
-            @Override
-            protected List<? extends WeldParameter<?, T>> delegate() {
-                return delegate;
-            }
-
-        };
-    }
-
     public void inject(Object declaringInstance, Object value) {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * Helper method for getting the current parameter values from a list of
-     * annotated parameters.
+     * Helper method for getting the current parameter values from a list of annotated parameters.
      *
      * @param parameters The list of annotated parameter to look up
-     * @param manager    The Bean manager
+     * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    protected Object[] getParameterValues(List<ParameterInjectionPoint<?, T>> parameters,
-                                          Object specialVal, Class<? extends Annotation> specialParam,
-                                          BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+    protected Object[] getParameterValues(List<ParameterInjectionPoint<?, T>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager,
+            CreationalContext<?> creationalContext) {
         Object[] parameterValues = new Object[parameters.size()];
         Iterator<ParameterInjectionPoint<?, T>> iterator = parameters.iterator();
         for (int i = 0; i < parameterValues.length; i++) {
             ParameterInjectionPoint<?, ?> param = iterator.next();
-            if (specialParam != null && param.isAnnotationPresent(specialParam)) {
+            if (specialParam != null && param.getAnnotated().isAnnotationPresent(specialParam)) {
                 parameterValues[i] = specialVal;
             } else {
                 parameterValues[i] = param.getValueToInject(manager, creationalContext);
@@ -173,67 +93,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
         return parameterValues;
     }
 
-    public Type getType() {
-        return getJavaClass();
+    public WeldConstructor<T> getAnnotated() {
+        return constructor;
     }
-
-    public Member getMember() {
-        return getJavaMember();
-    }
-
-    public Annotated getAnnotated() {
-        return delegate();
-    }
-
-    public boolean isDelegate() {
-        return false;
-    }
-
-    public boolean isTransient() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    // Serialization
-
-    private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<T>(this);
-    }
-
-    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException(PROXY_REQUIRED);
-    }
-
-    private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Constructor<T>> {
-
-        private static final long serialVersionUID = 9181171328831559650L;
-
-        private final ConstructorSignature signature;
-
-        public SerializationProxy(ConstructorInjectionPoint<T> injectionPoint) {
-            super(injectionPoint);
-            this.signature = injectionPoint.getSignature();
-        }
-
-        private Object readResolve() {
-            WeldConstructor<T> constructor = getWeldConstructor();
-            Bean<T> bean = getDeclaringBean();
-            if (constructor == null || (bean == null && getDeclaringBeanId() != null)) {
-                throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
-            }
-            return ConstructorInjectionPoint.of(getDeclaringBean(), getWeldConstructor());
-        }
-
-        protected WeldConstructor<T> getWeldConstructor() {
-            return getDeclaringWeldClass().getDeclaredWeldConstructor(signature);
-        }
-
-        @Override
-        protected WeldClass<T> getDeclaringWeldClass() {
-            return cast(super.getDeclaringWeldClass());
-        }
-
-    }
-
-
 }

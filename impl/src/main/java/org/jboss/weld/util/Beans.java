@@ -16,75 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import org.jboss.interceptor.spi.model.InterceptionType;
-import org.jboss.interceptor.util.InterceptionTypeRegistry;
-import org.jboss.weld.Container;
-import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.bean.InterceptorImpl;
-import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
-import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.injection.ConstructorInjectionPoint;
-import org.jboss.weld.injection.FieldInjectionPoint;
-import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.ParameterInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.injection.spi.EjbInjectionServices;
-import org.jboss.weld.injection.spi.JpaInjectionServices;
-import org.jboss.weld.injection.spi.ResourceInjectionServices;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldAnnotated;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.Enabled;
-import org.jboss.weld.metadata.cache.InterceptorBindingModel;
-import org.jboss.weld.metadata.cache.MergedStereotypes;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.metadata.cache.QualifierModel;
-import org.jboss.weld.persistence.PersistenceApiAbstraction;
-import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.decorator.Decorator;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.CreationException;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import static java.util.Arrays.asList;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -110,6 +41,80 @@ import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_M
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.decorator.Decorator;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
+import org.jboss.interceptor.spi.model.InterceptionType;
+import org.jboss.interceptor.util.InterceptionTypeRegistry;
+import org.jboss.weld.Container;
+import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.InterceptorImpl;
+import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.ejb.EJBApiAbstraction;
+import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.injection.ConstructorInjectionPoint;
+import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.ParameterInjectionPoint;
+import org.jboss.weld.injection.ParameterInjectionPointImpl;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
+import org.jboss.weld.injection.spi.EjbInjectionServices;
+import org.jboss.weld.injection.spi.JpaInjectionServices;
+import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.introspector.MethodSignature;
+import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.introspector.WeldCallable;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldConstructor;
+import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.Enabled;
+import org.jboss.weld.metadata.cache.InterceptorBindingModel;
+import org.jboss.weld.metadata.cache.MergedStereotypes;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.metadata.cache.QualifierModel;
+import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * Helper class for bean inspection
@@ -188,7 +193,7 @@ public class Beans {
         }
     }
 
-    public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WeldClass<?> type) {
+    public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
         List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
         WeldClass<?> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
@@ -196,7 +201,7 @@ public class Beans {
             injectableFieldsList.add(0, fields);
             for (WeldField<?, ?> annotatedField : t.getDeclaredWeldFields(Inject.class)) {
                 if (!annotatedField.isStatic()) {
-                    addFieldInjectionPoint(annotatedField, fields, declaringBean);
+                    addFieldInjectionPoint(annotatedField, fields, declaringBean, manager);
                 }
             }
             fields.trimToSize();
@@ -297,7 +302,7 @@ public class Beans {
             Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
             ArraySet<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
             for (WeldField<?, ?> field : type.getWeldFields(ejbAnnotationType)) {
-                ejbInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+                ejbInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return ejbInjectionPoints.trimToSize();
         } else {
@@ -310,7 +315,7 @@ public class Beans {
             ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
             Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
             for (WeldField<?, ?> field : type.getWeldFields(persistenceContextAnnotationType)) {
-                jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+                jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return jpaInjectionPoints.trimToSize();
         } else {
@@ -323,7 +328,7 @@ public class Beans {
             ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
             Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
             for (WeldField<?, ?> field : type.getWeldFields(persistenceUnitAnnotationType)) {
-                jpaInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+                jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return jpaInjectionPoints.trimToSize();
         } else {
@@ -336,7 +341,7 @@ public class Beans {
             Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
             ArraySet<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
             for (WeldField<?, ?> field : type.getWeldFields(resourceAnnotationType)) {
-                resourceInjectionPoints.add(FieldInjectionPoint.of(declaringBean, field));
+                resourceInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return resourceInjectionPoints.trimToSize();
         } else {
@@ -344,7 +349,7 @@ public class Beans {
         }
     }
 
-    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WeldClass<?> type) {
+    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
         List<Set<MethodInjectionPoint<?, ?>>> initializerMethodsList = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
         // Keep track of all seen methods so we can ignore overridden methods
         Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>() {
@@ -370,7 +375,7 @@ public class Beans {
                         throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
                     } else {
                         if (!isOverridden(method, seenMethods)) {
-                            MethodInjectionPoint<?, ?> initializerMethod = MethodInjectionPoint.of(declaringBean, method);
+                            MethodInjectionPoint<?, ?> initializerMethod = MethodInjectionPoint.of(method, declaringBean, manager);
                             initializerMethods.add(initializerMethod);
                         }
                     }
@@ -393,43 +398,51 @@ public class Beans {
         }
     }
 
-    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WeldConstructor<?> constructor) {
-        ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
-        for (WeldParameter<?, ?> parameter : constructor.getWeldParameters()) {
-            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
-        }
-        return injectionPoints.trimToSize();
-    }
-
-    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, MethodInjectionPoint<?, ?> method) {
-        ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
-        for (WeldParameter<?, ?> parameter : method.getWeldParameters()) {
-            if (parameter.isAnnotationPresent(Disposes.class)) {
-                continue; // disposes parameter is not an injection point
+    public static <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(WeldCallable<?, X, ?> callable, Bean<?> declaringBean, BeanManagerImpl manager) {
+        List<ParameterInjectionPoint<?, X>> parameters = new ArrayList<ParameterInjectionPoint<?, X>>();
+        for (WeldParameter<?, X> parameter : callable.getWeldParameters()) {
+            if (isSpecialParameter(parameter)) {
+                parameters.add(SpecialParameterInjectionPoint.of(parameter, declaringBean));
+            } else {
+                parameters.add(ParameterInjectionPointImpl.of(manager.createInjectionPoint(parameter, declaringBean), manager));
             }
-            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
         }
-        return injectionPoints.trimToSize();
+        return parameters;
     }
 
-    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
+    public static <X> Set<ParameterInjectionPoint<?, X>> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {
+        ArraySet<ParameterInjectionPoint<?, X>> filtered = new ArraySet<ParameterInjectionPoint<?, X>>();
+        for (ParameterInjectionPoint<?, X> parameter : injectionPoints) {
+            if (parameter instanceof SpecialParameterInjectionPoint) {
+                continue;
+            }
+            filtered.add(parameter);
+        }
+        return filtered.trimToSize();
+    }
+
+    public static boolean isSpecialParameter(WeldParameter<?, ?> parameter) {
+        return parameter.isAnnotationPresent(Disposes.class) || parameter.isAnnotationPresent(Observes.class);
+    }
+
+    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
         ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
         for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
             for (MethodInjectionPoint<?, ?> method : i) {
-                for (WeldParameter<?, ?> parameter : method.getWeldParameters()) {
-                    injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+                for (ParameterInjectionPoint<?, ?> parameter : method.getParameterInjectionPoints()) {
+                    injectionPoints.add(parameter);
                 }
             }
         }
         return injectionPoints.trimToSize();
     }
 
-    private static void addFieldInjectionPoint(WeldField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean) {
+    private static void addFieldInjectionPoint(WeldField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, BeanManagerImpl manager) {
         if (!annotatedField.isAnnotationPresent(Produces.class)) {
             if (annotatedField.isFinal()) {
                 throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
             }
-            FieldInjectionPoint<?, ?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
+            FieldInjectionPoint<?, ?> fieldInjectionPoint = FieldInjectionPoint.of(manager.createInjectionPoint(annotatedField, declaringBean), manager);
             injectableFields.add(fieldInjectionPoint);
         }
     }
@@ -597,7 +610,7 @@ public class Beans {
         return (specializedBean != null && beans.contains(specializedBean));
     }
 
-    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type) {
+    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type, BeanManagerImpl manager) {
         ConstructorInjectionPoint<T> constructor = null;
         Collection<WeldConstructor<T>> initializerAnnotatedConstructors = type.getWeldConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
@@ -606,11 +619,11 @@ public class Beans {
                 throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type, initializerAnnotatedConstructors);
             }
         } else if (initializerAnnotatedConstructors.size() == 1) {
-            constructor = ConstructorInjectionPoint.of(declaringBean, initializerAnnotatedConstructors.iterator().next());
+            constructor = ConstructorInjectionPoint.of(initializerAnnotatedConstructors.iterator().next(), declaringBean, manager);
             log.trace(FOUND_ONE_INJECTABLE_CONSTRUCTOR, constructor, type);
         } else if (type.getNoArgsWeldConstructor() != null) {
 
-            constructor = ConstructorInjectionPoint.of(declaringBean, type.getNoArgsWeldConstructor());
+            constructor = ConstructorInjectionPoint.of(type.getNoArgsWeldConstructor(), declaringBean, manager);
             log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
         }
 
@@ -665,7 +678,7 @@ public class Beans {
 
         if (ejbServices != null) {
             Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-            if (injectionPoint.isAnnotationPresent(ejbAnnotationType)) {
+            if (injectionPoint.getAnnotated().isAnnotationPresent(ejbAnnotationType)) {
                 return ejbServices.resolveEjb(injectionPoint);
             }
         }
@@ -674,19 +687,19 @@ public class Beans {
             final PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
 
             Class<? extends Annotation> persistenceUnitAnnotationType = persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS;
-            if (injectionPoint.isAnnotationPresent(persistenceUnitAnnotationType)) {
+            if (injectionPoint.getAnnotated().isAnnotationPresent(persistenceUnitAnnotationType)) {
                 return jpaServices.resolvePersistenceUnit(injectionPoint);
             }
 
             Class<? extends Annotation> persistenceContextAnnotationType = persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-            if (injectionPoint.isAnnotationPresent(persistenceContextAnnotationType)) {
+            if (injectionPoint.getAnnotated().isAnnotationPresent(persistenceContextAnnotationType)) {
                 return jpaServices.resolvePersistenceContext(injectionPoint);
             }
         }
 
         if (resourceServices != null) {
             Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-            if (injectionPoint.isAnnotationPresent(resourceAnnotationType)) {
+            if (injectionPoint.getAnnotated().isAnnotationPresent(resourceAnnotationType)) {
                 return resourceServices.resolveResource(injectionPoint);
             }
         }

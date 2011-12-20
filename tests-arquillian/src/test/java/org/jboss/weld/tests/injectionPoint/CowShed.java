@@ -27,7 +27,7 @@ public class CowShed {
     public Cow get(InjectionPoint ip) {
         assert ip instanceof FieldInjectionPoint<?, ?>;
         FieldInjectionPoint<?, ?> fip = (FieldInjectionPoint<?, ?>) ip;
-        assert fip.getDeclaringType().getJavaClass().equals(Field.class);
+        assert fip.getAnnotated().getDeclaringType().getJavaClass().equals(Field.class);
         return new Cow("daisy");
     }
 

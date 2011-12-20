@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.tests.session.newBean;
 
+import java.util.Set;
+
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -24,19 +31,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.tests.category.Broken;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import java.util.Set;
 
 @RunWith(Arquillian.class)
 public class NewEnterpriseBeanTest {
@@ -88,8 +89,8 @@ public class NewEnterpriseBeanTest {
     @Test
     public void testNewBeanHasSameInjectedFieldsAsWrappedBean() {
         initNewBean();
-        Set<? extends WeldAnnotated<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getWeldInjectionPoints();
-        Set<? extends WeldAnnotated<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getWeldInjectionPoints();
+        Set<? extends WeldInjectionPoint<?, ?>> wrappedBeanInjectionPoints = wrappedEnterpriseBean.getWeldInjectionPoints();
+        Set<? extends WeldInjectionPoint<?, ?>> newBeanInjectionPoints = newEnterpriseBean.getWeldInjectionPoints();
         Assert.assertEquals(wrappedBeanInjectionPoints, newBeanInjectionPoints);
     }
 

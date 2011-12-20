@@ -16,7 +16,7 @@ public class EmptyInjectionPoint implements InjectionPoint, Serializable {
 
     public static final InjectionPoint INSTANCE = new EmptyInjectionPoint();
 
-    private EmptyInjectionPoint() {
+    protected EmptyInjectionPoint() {
     }
 
     public Type getType() {

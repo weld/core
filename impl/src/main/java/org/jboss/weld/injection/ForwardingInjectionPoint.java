@@ -3,6 +3,9 @@ package org.jboss.weld.injection;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.jboss.weld.util.reflection.Reflections;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
@@ -37,5 +40,23 @@ public abstract class ForwardingInjectionPoint implements InjectionPoint {
 
     public boolean isTransient() {
         return delegate().isTransient();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ForwardingInjectionPoint) {
+            return delegate().equals(Reflections.<ForwardingInjectionPoint> cast(obj).delegate());
+        }
+        return delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
     }
 }
