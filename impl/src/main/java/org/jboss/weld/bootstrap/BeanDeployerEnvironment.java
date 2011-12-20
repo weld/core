@@ -183,7 +183,7 @@ public class BeanDeployerEnvironment {
         addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
     }
 
-    private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints) {
+    public void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints) {
         for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints) {
             // FIXME: better check
             Class<?> rawType = Reflections.getRawType(injectionPoint.getType());

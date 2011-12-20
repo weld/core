@@ -210,9 +210,9 @@ public class Beans {
         return injectableFieldsList;
     }
 
-    public static Set<FieldInjectionPoint<?, ?>> getFieldInjectionPoints(Bean<?> declaringBean, List<? extends Set<? extends FieldInjectionPoint<?, ?>>> fieldInjectionPoints) {
-        ArraySet<FieldInjectionPoint<?, ?>> injectionPoints = new ArraySet<FieldInjectionPoint<?, ?>>();
-        for (Set<? extends FieldInjectionPoint<?, ?>> i : fieldInjectionPoints) {
+    public static <T extends WeldInjectionPoint<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
+        ArraySet<T> injectionPoints = new ArraySet<T>();
+        for (Set<T> i : fieldInjectionPoints) {
             injectionPoints.addAll(i);
         }
         return injectionPoints.trimToSize();
@@ -425,7 +425,7 @@ public class Beans {
         return parameter.isAnnotationPresent(Disposes.class) || parameter.isAnnotationPresent(Observes.class);
     }
 
-    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
+    public static Set<ParameterInjectionPoint<?, ?>> flattenParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
         ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
         for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
             for (MethodInjectionPoint<?, ?> method : i) {
@@ -870,10 +870,9 @@ public class Beans {
      */
     public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(WeldClass<?> clazz) {
         Class<?> javaClass = clazz.getJavaClass();
-        return !Extension.class.isAssignableFrom(clazz.getJavaClass()) &&
-                !(clazz.isAnonymousClass() || (clazz.isMemberClass() && !clazz.isStatic())) &&
-                !Reflections.isParamerterizedTypeWithWildcard(javaClass) &&
-                hasSimpleCdiConstructor(clazz);
+        return !javaClass.isEnum() && !Extension.class.isAssignableFrom(clazz.getJavaClass())
+                && !(clazz.isAnonymousClass() || (clazz.isMemberClass() && !clazz.isStatic())) && !Reflections.isParamerterizedTypeWithWildcard(javaClass)
+                && hasSimpleCdiConstructor(clazz);
     }
 
     public static boolean hasSimpleCdiConstructor(WeldClass<?> type) {

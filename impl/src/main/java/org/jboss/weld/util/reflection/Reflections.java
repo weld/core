@@ -588,4 +588,8 @@ public class Reflections {
         }
     }
 
+    public static boolean isEnum(Class<?> clazz) {
+        return clazz.isEnum() || (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum());
+    }
+
 }

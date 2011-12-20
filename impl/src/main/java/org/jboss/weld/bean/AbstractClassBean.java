@@ -450,7 +450,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      */
     protected void initInjectableFields(BeanManagerImpl manager) {
         injectableFields = Beans.getFieldInjectionPoints(this, annotatedItem, manager);
-        addInjectionPoints(Beans.getFieldInjectionPoints(this, injectableFields));
+        addInjectionPoints(Beans.flattenInjectionPoints(injectableFields));
     }
 
     /**
@@ -458,7 +458,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      */
     protected void initInitializerMethods(BeanManagerImpl manager) {
         initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated(), manager);
-        addInjectionPoints(Beans.getParameterInjectionPoints(initializerMethods));
+        addInjectionPoints(Beans.flattenParameterInjectionPoints(initializerMethods));
     }
 
     /**

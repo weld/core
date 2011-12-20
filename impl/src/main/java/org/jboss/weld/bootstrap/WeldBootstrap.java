@@ -64,6 +64,7 @@ import org.jboss.weld.context.unbound.RequestContextImpl;
 import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.ejb.spi.EjbServices;
+import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
@@ -422,6 +423,9 @@ public class WeldBootstrap implements Bootstrap {
                 BeansClosure.getClosure(beanManager).clear();
             }
         }
+        for (BeanDeployment deployment : beanDeployments.values()) {
+            deployment.getBeanManager().getServices().get(EnumService.class).inject();
+        }
         return this;
     }
 
@@ -470,11 +474,19 @@ public class WeldBootstrap implements Bootstrap {
     public void shutdown() {
         synchronized (this) {
             try {
-                ApplicationContext applicationContext = deploymentManager.instance().select(ApplicationContext.class).get();
                 try {
-                    BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
+                    ApplicationContext applicationContext = deploymentManager.instance().select(ApplicationContext.class).get();
+                    try {
+                        BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
+                    } finally {
+                        applicationContext.invalidate();
+                    }
                 } finally {
-                    applicationContext.invalidate();
+                    if (beanDeployments != null) {
+                        for (BeanDeployment deployment : beanDeployments.values()) {
+                            deployment.getBeanManager().getServices().get(EnumService.class).disinject();
+                        }
+                    }
                 }
             } finally {
                 Container.instance().setState(ContainerState.SHUTDOWN);

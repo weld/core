@@ -38,7 +38,6 @@ import javax.interceptor.Interceptor;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerMethod;
-import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment.WeldMethodKey;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -46,6 +45,8 @@ import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeFactory;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.enums.EnumInjectionTarget;
+import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.introspector.DiscoveredExternalAnnotatedType;
 import org.jboss.weld.introspector.ExternalAnnotatedType;
@@ -56,7 +57,6 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -101,7 +101,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             xlog.catching(INFO, e);
         }
 
-        if (clazz != null && !clazz.isAnnotation() && !clazz.isEnum()) {
+        if (clazz != null && !clazz.isAnnotation()) {
             WeldClass<?> weldClass = null;
             try {
                 weldClass = classTransformer.loadClass(clazz);
@@ -168,8 +168,12 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void createClassBeans() {
         Multimap<Class<?>, WeldClass<?>> otherWeldClasses = HashMultimap.create();
+        EnumService enumService = getManager().getServices().get(EnumService.class);
 
         for (WeldClass<?> clazz : classes) {
+            if (Reflections.isEnum(clazz.getJavaClass())) {
+                enumService.addEnumClass(Reflections.<WeldClass<Enum<?>>>cast(clazz));
+            }
             boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(clazz);
             if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class)) {
                 validateDecorator(clazz);
@@ -183,6 +187,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 otherWeldClasses.put(clazz.getJavaClass(), clazz);
             }
         }
+        // add @New injection points from enums
+        for (EnumInjectionTarget<?> enumInjectionTarget : enumService.getEnumInjectionTargets()) {
+            getEnvironment().addNewBeansFromInjectionPoints(enumInjectionTarget.getNewInjectionPoints());
+        }
+        // create session beans
         for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors()) {
             if (vetoedClasses.contains(ejbDescriptor.getBeanClass())) {
                 continue;
