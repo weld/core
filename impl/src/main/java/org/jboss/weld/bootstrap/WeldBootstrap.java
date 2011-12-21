@@ -474,23 +474,25 @@ public class WeldBootstrap implements Bootstrap {
     public void shutdown() {
         synchronized (this) {
             try {
+                // First, the container must destroy all contexts.
+                deploymentManager.instance().select(ApplicationContext.class).get().invalidate();
+            } finally {
                 try {
-                    ApplicationContext applicationContext = deploymentManager.instance().select(ApplicationContext.class).get();
-                    try {
-                        BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
-                    } finally {
-                        applicationContext.invalidate();
-                    }
-                } finally {
+                    // Next, the container must destroy dependent objects injected into enums.
                     if (beanDeployments != null) {
                         for (BeanDeployment deployment : beanDeployments.values()) {
                             deployment.getBeanManager().getServices().get(EnumService.class).disinject();
                         }
                     }
+                } finally {
+                    try {
+                        // Finally, the container must fire an event of type BeforeShutdown.
+                        BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
+                    } finally {
+                        Container.instance().setState(ContainerState.SHUTDOWN);
+                        Container.instance().cleanup();
+                    }
                 }
-            } finally {
-                Container.instance().setState(ContainerState.SHUTDOWN);
-                Container.instance().cleanup();
             }
         }
     }

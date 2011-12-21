@@ -34,7 +34,7 @@ import javax.enterprise.inject.spi.ProcessModule;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.event.ContainerLifecycleObserverMethodImpl;
+import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.util.collections.ViewProvider;
@@ -132,8 +132,8 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
             StringBuilder location = new StringBuilder();
             location.append(to.getName());
             location.append(" registered by ");
-            if (getObserverMethod() instanceof ContainerLifecycleObserverMethodImpl<?, ?>) {
-                location.append(((ContainerLifecycleObserverMethodImpl<?, ?>) getObserverMethod()).getBeanClass().getName());
+            if (getObserverMethod() instanceof ExtensionObserverMethodImpl<?, ?>) {
+                location.append(((ExtensionObserverMethodImpl<?, ?>) getObserverMethod()).getBeanClass().getName());
             } else {
                 location.append("an extension.");
             }

@@ -111,4 +111,9 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
     public int hashCode() {
         return getAnnotated().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return getAnnotated().toString();
+    }
 }

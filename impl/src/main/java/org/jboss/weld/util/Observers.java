@@ -45,8 +45,9 @@ import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.ProcessSessionBean;
+import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
-import org.jboss.weld.event.ContainerLifecycleObserverMethodImpl;
+import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -67,7 +68,7 @@ public class Observers {
         types.add(BeforeShutdown.class);
         types.add(ProcessModule.class);
         types.add(ProcessAnnotatedType.class);
-        // types.add(ProcessSyntheticAnnotatedType.class); // TODO: re-enable once CDI-191 is fixed
+        types.add(ProcessSyntheticAnnotatedType.class);
         types.add(ProcessInjectionPoint.class);
         types.add(ProcessInjectionTarget.class);
         types.add(ProcessProducer.class);
@@ -104,16 +105,7 @@ public class Observers {
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {
-        return method instanceof ContainerLifecycleObserverMethodImpl<?, ?>;
-    }
-
-    public static boolean isContainerLifecycleObserverMethod(WeldMethod<?, ?> method) {
-        for (AnnotatedParameter<?> parameter : method.getParameters()) {
-            if (parameter.isAnnotationPresent(Observes.class)) {
-                Class<?> type = Reflections.getRawType(parameter.getBaseType());
-                return CONTAINER_LIFECYCLE_EVENT_TYPES.contains(type);
-            }
-        }
-        return false;
+        return CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(method.getObservedType()))
+                || (Object.class.equals(method.getObservedType()) && method instanceof ExtensionObserverMethodImpl<?, ?>);
     }
 }

@@ -241,8 +241,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             }
         } else {
             CreationalContext<?> creationalContext = beanManager.createCreationalContext(declaringBean);
-            Object receiver = beanManager.getReference(declaringBean, creationalContext, false);
-            sendEvent(event, receiver, creationalContext);
+            sendEvent(event, getReceiver(creationalContext), creationalContext);
         }
 
     }
@@ -274,12 +273,16 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected void postNotify(T event, Object receiver) {
     }
 
-    private Object getReceiverIfExists() {
+    protected Object getReceiverIfExists() {
         try {
             return beanManager.getReference(declaringBean, null, false);
         } catch (ContextNotActiveException e) {
             return null;
         }
+    }
+
+    protected Object getReceiver(CreationalContext<?> ctx) {
+        return beanManager.getReference(declaringBean, ctx, false);
     }
 
     protected boolean ignore(T event) {

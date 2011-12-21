@@ -21,6 +21,7 @@
  */
 package org.jboss.weld.event;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bean.RIBean;
@@ -29,17 +30,16 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * An implementation of {@link ObserverMethod} used for container lifecycle events. An event can obtain an information about the
+ * An implementation of {@link ObserverMethod} used for events delivered to extensions. An event can obtain an information about the
  * observer method and receiver used for event delivery using {@link AbstractContainerEvent#getObserverMethod()} or
- * {@link AbstractContainerEvent#getReceiver()}, respectively.
+ * {@link AbstractContainerEvent#getReceiver()}, respectively. The observer method does not require contexts to be active.
  *
  * @author Jozef Hartinger
  *
  */
-public class ContainerLifecycleObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
+public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
 
-    protected ContainerLifecycleObserverMethodImpl(WeldMethod<T, ? super X> observer, RIBean<X> declaringBean,
-            BeanManagerImpl manager) {
+    protected ExtensionObserverMethodImpl(WeldMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         super(observer, declaringBean, manager);
     }
 
@@ -60,5 +60,19 @@ public class ContainerLifecycleObserverMethodImpl<T, X> extends ObserverMethodIm
     private void setNotificationContext(AbstractContainerEvent event, ObserverMethod<?> observer, Object receiver) {
         event.setObserverMethod(observer);
         event.setReceiver(receiver);
+    }
+
+    @Override
+    protected Object getReceiverIfExists() {
+        return getReceiver(null);
+    }
+
+    /*
+     * Contexts may not be active during notification of container lifecycle events. Therefore, we invoke the methods direcly on
+     * an extension instance.
+     */
+    @Override
+    protected Object getReceiver(CreationalContext<?> ctx) {
+        return getDeclaringBean().create(null);
     }
 }
