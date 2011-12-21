@@ -147,6 +147,12 @@
             </class>
 
             <!-- Issues in JBoss AS -->
+            <!-- AS7-3107 -->
+            <class name="org.jboss.jsr299.tck.tests.context.jms.MessageListenerContextTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
 
             <!-- JBAS-8306 -->
             <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
