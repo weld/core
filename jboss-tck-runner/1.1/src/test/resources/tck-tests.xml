@@ -145,6 +145,12 @@
                     <exclude name="testBeansXml" />
                 </methods>
             </class>
+            <!-- WELD-1034 -->
+            <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.InjectionPointTest">
+                <methods>
+                    <exclude name="testIsDelegate" />
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
