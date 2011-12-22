@@ -19,7 +19,6 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
 import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
@@ -83,59 +82,6 @@ import org.slf4j.ext.XLogger.Level;
  */
 public class ManagedBean<T> extends AbstractClassBean<T> {
 
-    private abstract static class FixInjectionPoint<T> {
-
-        private final AbstractClassBean<T> bean;
-
-        private InjectionPoint originalInjectionPoint;
-
-        private FixInjectionPoint(AbstractClassBean<T> bean) {
-            this.bean = bean;
-        }
-
-        protected abstract T work();
-
-        private void setup() {
-            if (bean.hasDecorators()) {
-                Decorator<?> decorator = bean.getDecorators().get(bean.getDecorators().size() - 1);
-                InjectionPoint outerDelegateInjectionPoint = Beans.getDelegateInjectionPoint(decorator);
-                if (outerDelegateInjectionPoint == null) {
-                    throw new IllegalStateException(DELEGATE_INJECTION_POINT_NOT_FOUND, decorator);
-                }
-                CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
-                if (currentInjectionPoint.peek() != null) {
-                    this.originalInjectionPoint = currentInjectionPoint.pop();
-                    currentInjectionPoint.push(outerDelegateInjectionPoint);
-                } else {
-                    currentInjectionPoint.push(outerDelegateInjectionPoint);
-                }
-            }
-        }
-
-        public InjectionPoint getOriginalInjectionPoint() {
-            return originalInjectionPoint;
-        }
-
-        private void cleanup() {
-            if (bean.hasDecorators()) {
-                final CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
-                currentInjectionPoint.pop();
-                currentInjectionPoint.push(originalInjectionPoint);
-            }
-        }
-
-        public T run() {
-            try {
-                setup();
-                return work();
-            } finally {
-                cleanup();
-            }
-
-        }
-
-    }
-
     private static class ManagedBeanInjectionTarget<T> implements InjectionTarget<T> {
 
         private final ManagedBean<T> bean;
@@ -149,19 +95,10 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
 
         public void inject(final T instance, final CreationalContext<T> ctx) {
-            new FixInjectionPoint<T>(bean) {
-
-                @Override
-                protected T work() {
-                    new InjectionContextImpl<T>(bean.getBeanManager(), ManagedBeanInjectionTarget.this, getBean().getWeldAnnotated(), instance) {
-
-                        public void proceed() {
-                            Beans.injectEEFields(instance, bean.getBeanManager(), bean.ejbInjectionPoints, bean.persistenceContextInjectionPoints, bean.persistenceUnitInjectionPoints, bean.resourceInjectionPoints);
-                            Beans.injectFieldsAndInitializers(instance, ctx, bean.getBeanManager(), bean.getInjectableFields(), bean.getInitializerMethods());
-                        }
-
-                    }.run();
-                    return null;
+            new InjectionContextImpl<T>(bean.getBeanManager(), ManagedBeanInjectionTarget.this, getBean().getWeldAnnotated(), instance) {
+                public void proceed() {
+                    Beans.injectEEFields(instance, bean.getBeanManager(), bean.ejbInjectionPoints, bean.persistenceContextInjectionPoints, bean.persistenceUnitInjectionPoints, bean.resourceInjectionPoints);
+                    Beans.injectFieldsAndInitializers(instance, ctx, bean.getBeanManager(), bean.getInjectableFields(), bean.getInitializerMethods());
                 }
             }.run();
         }
@@ -199,16 +136,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 instance = bean.createInstance(ctx);
                 ctx.push(instance);
             } else {
-                instance = new FixInjectionPoint<T>(bean) {
-                    @Override
-                    protected T work() {
-                        // for decorated beans, creation should use the fixed injection point
-                        // thus ensuring that the innermost decorator is provided as InjectionPoint
-                        T undecoratedInstance = bean.createInstance(ctx);
-                        return bean.applyDecorators(undecoratedInstance, ctx, getOriginalInjectionPoint());
-                    }
-
-                }.run();
+                T undecoratedInstance = bean.createInstance(ctx);
+                instance = bean.applyDecorators(undecoratedInstance, ctx, Container.instance().services().get(CurrentInjectionPoint.class).peek());
             }
             if (bean.hasInterceptors()) {
                 return bean.applyInterceptors(instance, ctx);

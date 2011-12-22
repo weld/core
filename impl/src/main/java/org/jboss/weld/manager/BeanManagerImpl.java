@@ -483,7 +483,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Bean<?>> getBeans(InjectionPoint injectionPoint) {
-        boolean registerInjectionPoint = !injectionPoint.getType().equals(InjectionPoint.class);
+        boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
             currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
@@ -708,7 +708,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (creationalContext == null) {
             throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
         }
-        boolean registerInjectionPoint = (injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class));
+        boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
@@ -1211,7 +1211,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             throw new IllegalArgumentException(NO_INSTANCE_OF_EXTENSION, extensionClass);
         }
         // We intentionally do not return a contextual instance, since it is not available at bootstrap.
-        return cast(bean.create(null));
+        return extensionClass.cast(bean.create(null));
+    }
+
+    private boolean isRegisterableInjectionPoint(InjectionPoint ip) {
+        // a delegate injection point is never registered (see CDI-78 for details)
+        return ip != null && !ip.getType().equals(InjectionPoint.class) && !ip.isDelegate();
     }
 
 }
