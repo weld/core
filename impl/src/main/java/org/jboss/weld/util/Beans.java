@@ -65,7 +65,10 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Requires;
 import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -107,6 +110,8 @@ import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.resources.ClassLoaderResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
@@ -877,5 +882,44 @@ public class Beans {
 
     public static boolean hasSimpleCdiConstructor(WeldClass<?> type) {
         return type.getNoArgsWeldConstructor() != null || type.getWeldConstructors(Inject.class).size() > 0;
+    }
+
+    /**
+     * Determines if this {@link AnnotatedType} should be vetoed as a result of presence of {@link Veto} and {@link Requires}
+     * annotations.
+     */
+    public static boolean isVetoed(AnnotatedType<?> type) {
+        Class<?> javaClass = type.getJavaClass();
+        if (type.isAnnotationPresent(Veto.class)) {
+            return true;
+        }
+        if (isRequirementMissing(type.getAnnotation(Requires.class), javaClass.getClassLoader())) {
+            return true;
+        }
+        if (javaClass.getPackage() != null) {
+            if (javaClass.getPackage().isAnnotationPresent(Veto.class)) {
+                return true;
+            }
+            if (isRequirementMissing(javaClass.getPackage().getAnnotation(Requires.class), javaClass.getClassLoader())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines if any of the requirements cannot be fulfilled.
+     */
+    public static boolean isRequirementMissing(Requires requires, ClassLoader classLoader) {
+        if (requires == null) {
+            return false;
+        }
+        ResourceLoader loader = new ClassLoaderResourceLoader(classLoader);
+        for (String className : requires.value()) {
+            if (!Reflections.isClassLoadable(className, loader)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

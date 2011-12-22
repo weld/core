@@ -150,7 +150,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     vetoedClasses.add(weldClass.getJavaClass());
                 }
             } else {
-                if (event.isDirty()) {
+                boolean dirty = event.isDirty();
+                if (dirty) {
                     iterator.remove();
                     AnnotatedType<?> modifiedType;
                     if (synthetic) {
@@ -158,8 +159,17 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     } else {
                         modifiedType = DiscoveredExternalAnnotatedType.of(event.getAnnotatedType());
                     }
-                    WeldClass<?> modifiedClass = classTransformer.loadClass(modifiedType);
-                    processedClasses.add(modifiedClass);
+                    weldClass = classTransformer.loadClass(modifiedType);
+                }
+
+                // vetoed due to @Veto or @Requires
+                boolean vetoed = Beans.isVetoed(weldClass);
+
+                if (dirty && !vetoed) {
+                    processedClasses.add(weldClass);
+                }
+                if (!dirty && vetoed) {
+                    iterator.remove();
                 }
             }
         }
