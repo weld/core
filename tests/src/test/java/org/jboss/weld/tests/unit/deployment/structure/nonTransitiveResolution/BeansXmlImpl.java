@@ -6,6 +6,7 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
 import org.jboss.weld.metadata.MetadataImpl;
 
+import java.net.URL;
 import java.util.List;
 
 import static com.google.common.collect.Lists.transform;
@@ -71,6 +72,11 @@ public class BeansXmlImpl implements BeansXml {
 
     public Scanning getScanning() {
         return scanning;
+    }
+
+    @Override
+    public URL getUrl() {
+        return null;
     }
 
 }

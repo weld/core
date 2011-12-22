@@ -300,7 +300,7 @@ public class BeansXmlHandler extends DefaultHandler {
     }
 
     public BeansXml createBeansXml() {
-        return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes));
+        return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), file);
     }
 
     @Override

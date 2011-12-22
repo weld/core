@@ -24,6 +24,7 @@ package org.jboss.weld.bootstrap.events;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,8 @@ import javax.enterprise.inject.spi.ProcessModule;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.util.collections.ViewProvider;
@@ -117,7 +120,11 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     @Override
     public InputStream getBeansXml() {
-        throw new UnsupportedOperationException("not yet implemented");
+        try {
+            return deployment.getBeanDeploymentArchive().getBeansXml().getUrl().openStream();
+        } catch (IOException e) {
+            throw new WeldException(XmlMessage.EXCEPTION_OPENING_INPUT_STREAM, e, deployment.getBeanDeploymentArchive().getBeansXml().getUrl());
+        }
     }
 
     private class ClassMetadaViewProvider implements ViewProvider<Metadata<Class<?>>, Class<?>> {

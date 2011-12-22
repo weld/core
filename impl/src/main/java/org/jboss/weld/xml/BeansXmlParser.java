@@ -129,6 +129,7 @@ public class BeansXmlParser {
         List<Metadata<String>> interceptors = new ArrayList<Metadata<String>>();
         List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
         List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
+        URL beansXmlUrl = null;
         for (URL url : urls) {
             BeansXml beansXml = parse(url);
             alternativeStereotypes.addAll(beansXml.getEnabledAlternativeStereotypes());
@@ -137,8 +138,13 @@ public class BeansXmlParser {
             interceptors.addAll(beansXml.getEnabledInterceptors());
             includes.addAll(beansXml.getScanning().getIncludes());
             excludes.addAll(beansXml.getScanning().getExcludes());
+            /*
+             * provided we are merging the content of multiple XML files, getBeansXml() returns an
+             * InputStream representing the last one
+             */
+            beansXmlUrl = url;
         }
-        return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes));
+        return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
     }
 
     private static InputSource[] loadXsds() {

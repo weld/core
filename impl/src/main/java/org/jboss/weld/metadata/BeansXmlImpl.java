@@ -1,10 +1,11 @@
 package org.jboss.weld.metadata;
 
+import java.net.URL;
+import java.util.List;
+
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
-
-import java.util.List;
 
 public class BeansXmlImpl implements BeansXml {
 
@@ -13,13 +14,15 @@ public class BeansXmlImpl implements BeansXml {
     private final List<Metadata<String>> enabledDecorators;
     private final List<Metadata<String>> enabledInterceptors;
     private final Scanning scanning;
+    private final URL url;
 
-    public BeansXmlImpl(List<Metadata<String>> enabledAlternativeClasses, List<Metadata<String>> enabledAlternativeStereotypes, List<Metadata<String>> enabledDecorators, List<Metadata<String>> enabledInterceptors, Scanning scanning) {
+    public BeansXmlImpl(List<Metadata<String>> enabledAlternativeClasses, List<Metadata<String>> enabledAlternativeStereotypes, List<Metadata<String>> enabledDecorators, List<Metadata<String>> enabledInterceptors, Scanning scanning, URL url) {
         this.enabledAlternativeClasses = enabledAlternativeClasses;
         this.enabledAlternativeStereotypes = enabledAlternativeStereotypes;
         this.enabledDecorators = enabledDecorators;
         this.enabledInterceptors = enabledInterceptors;
         this.scanning = scanning;
+        this.url = url;
     }
 
     public List<Metadata<String>> getEnabledAlternativeClasses() {
@@ -40,6 +43,11 @@ public class BeansXmlImpl implements BeansXml {
 
     public Scanning getScanning() {
         return scanning;
+    }
+
+    @Override
+    public URL getUrl() {
+        return url;
     }
 
 }
