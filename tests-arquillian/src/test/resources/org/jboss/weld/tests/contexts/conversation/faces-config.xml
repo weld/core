@@ -67,6 +67,15 @@
          <redirect/>
       </navigation-case>
    </navigation-rule>
+
+   <navigation-rule>
+      <from-view-id>/cloud.xhtml</from-view-id>
+      <navigation-case>
+         <from-action>#{cloud.cumulus}</from-action>
+         <to-view-id>/cloud.xhtml</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
    
       <navigation-rule>
       <from-view-id>/cloud.xhtml</from-view-id>

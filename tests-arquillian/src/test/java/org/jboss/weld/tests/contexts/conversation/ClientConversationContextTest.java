@@ -42,6 +42,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -51,6 +52,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,6 +61,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Nicklas Karlsson
  * @author Dan Allen
+ * @author Jozef Hartinger
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -69,6 +72,9 @@ public class ClientConversationContextTest {
     public static final String CID_HEADER_NAME = "org.jboss.jsr299.tck.cid";
 
     public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
+
+    @ArquillianResource
+    private URL url;
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
@@ -250,14 +256,46 @@ public class ClientConversationContextTest {
         assertEquals("gavin", cloudName);
     }
 
+    @Test
+    public void testSuppressedConversationPropagation() throws Exception {
+        WebClient client = new WebClient();
+
+        // Access the start page
+        HtmlPage cloud = client.getPage(getPath("/cloud.jsf"));
+        assertEquals(Cloud.NAME, getFirstMatchingElement(cloud, HtmlSpan.class, "cloudName").getTextContent());
+
+        // Now start a conversation and check the cloud name changes
+        HtmlPage page1 = getFirstMatchingElement(cloud, HtmlSubmitInput.class, Cloud.CUMULUS).click();
+        assertEquals(Cloud.CUMULUS, getFirstMatchingElement(page1, HtmlSpan.class, "cloudName").getTextContent());
+        String cid = getCid(page1);
+
+        // Activate the conversation from a GET request
+        HtmlPage page2 = client.getPage(getPath("/cloud.jsf", cid));
+        assertEquals(Cloud.CUMULUS, getFirstMatchingElement(page2, HtmlSpan.class, "cloudName").getTextContent());
+        
+        // Send a GET request with the "cid" parameter and suppressed conversation propagation (using conversationPropagation=none)
+        HtmlPage page3 = client.getPage(getPath("/cloud.jsf", cid) + "&conversationPropagation=none");
+        assertEquals(Cloud.NAME, getFirstMatchingElement(page3, HtmlSpan.class, "cloudName").getTextContent());
+
+        // Test again using the proprietary "nocid" parameter (kept for backwards compatibility)
+        HtmlPage page4 = client.getPage(getPath("/cloud.jsf", cid) + "&nocid=true");
+        assertEquals(Cloud.NAME, getFirstMatchingElement(page4, HtmlSpan.class, "cloudName").getTextContent());
+    }
+
     protected String getPath(String viewId, String cid) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
+        StringBuilder builder = new StringBuilder(url.toString());
+        builder.append(viewId);
+        if (cid != null) {
+            builder.append("?");
+            builder.append(CID_REQUEST_PARAMETER_NAME);
+            builder.append("=");
+            builder.append(cid);
+        }
+        return builder.toString();
     }
 
     protected String getPath(String viewId) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test" + viewId;
+        return getPath(viewId, null);
     }
 
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {

@@ -69,6 +69,7 @@ import org.slf4j.cal10n.LocLogger;
  * @author Dan Allen
  * @author Ales Justin
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
+ * @author Jozef Hartinger
  */
 public class WeldPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
@@ -76,6 +77,9 @@ public class WeldPhaseListener implements PhaseListener {
     private static final LocLogger log = loggerFactory().getLogger(JSF);
 
     public static final String NO_CID = "nocid";
+
+    public static final String CONVERSATION_PROPAGATION = "conversationPropagation";
+    public static final String CONVERSATION_PROPAGATION_NONE = "none";
 
     private static final String CONTEXT_ACTIVATED_IN_REQUEST = WeldPhaseListener.class.getName()
             + "CONTEXT_ACTIVATED_IN_REQUEST";
@@ -168,8 +172,15 @@ public class WeldPhaseListener implements PhaseListener {
      */
     public static String getConversationId(FacesContext facesContext, ConversationContext conversationContext) {
         Map<String, String> map = facesContext.getExternalContext().getRequestParameterMap();
-        if (map.containsKey(NO_CID))
+        if (map.containsKey(NO_CID)) {
             return null; // ignore cid; WELD-919
+        }
+
+        if (map.containsKey(CONVERSATION_PROPAGATION)) {
+            if (CONVERSATION_PROPAGATION_NONE.equals(map.get(CONVERSATION_PROPAGATION))) {
+                return null; // conversationPropagation=none (CDI-135)
+            }
+        }
 
         String cidName = conversationContext.getParameterName();
         String cid = map.get(cidName);

@@ -36,6 +36,8 @@ public class Cloud implements Serializable {
 
     public static final String RAINED_HEADER_NAME = Cloud.class.getName() + ".rained";
 
+    public static final String CUMULUS = "cumulus";
+
     private boolean rained;
 
     private String name = NAME;
@@ -104,4 +106,9 @@ public class Cloud implements Serializable {
         return "blizzard";
     }
 
+    public String cumulus() {
+        this.name = CUMULUS;
+        conversation.begin();
+        return "cumulus";
+    }
 }
