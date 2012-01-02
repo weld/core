@@ -145,6 +145,18 @@
                     <exclude name="testIsDelegate" />
                 </methods>
             </class>
+            <!-- WELD-1038 -->
+            <class name="org.jboss.jsr299.tck.tests.extensions.annotated.AlternativeMetaDataTest">
+                <methods>
+                    <exclude name="testGetAnnotations" />
+                </methods>
+            </class>
+            <!-- WELD-1039 -->
+            <class name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
+                <methods>
+                    <exclude name="testMessageDrivenBeanMethodIntercepted" />
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
