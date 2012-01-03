@@ -27,11 +27,10 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
-            <classifier>jdk15</classifier>
-        </dependency>
+        </dependency>        
 
         <dependency>
             <groupId>javax.enterprise</groupId>
@@ -48,7 +47,19 @@
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.jboss.arquillian.ajocado</groupId>
+            <artifactId>arquillian-ajocado-junit</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -594,117 +605,80 @@
 
         <!-- functional tests -->
         <profile>
-            <id>ftest-jboss-remote-6</id>
+            <id>ftest</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                    </plugin>
-                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
+                        <artifactId>maven-surefire-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+                
+        <profile>
+            <id>arquillian-jbossas-managed-7</id>
         </profile>
 
         <profile>
-            <id>ftest-jboss-remote-7</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
+            <id>arquillian-jbossas-remote-7</id>
+        </profile>
+       
+        <profile>
+            <id>arquillian-jbossas-managed-6</id>
+        </profile>
+
+         <profile>
+            <id>arquillian-jbossas-remote-6</id>
         </profile>
 
         <profile>
-            <id>ftest-jboss-cluster-6</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
+            <id>arquillian-tomcat-embdedded-6</id>
         </profile>
 
         <profile>
-            <id>ftest-tomcat-6</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+            <id>arquillian-jetty-embedded-6.1</id>
+        </profile>       
 
         <profile>
-            <id>ftest-jetty-6</id>
+            <id>arquillian-jbossas-cluster-7</id>
+            <activation>
+                <property>
+                    <name>arquillian</name>
+                    <value>jbossas-cluster-7</value>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>maven-jetty-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                </plugins>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                  </plugin>
+               </plugins>
             </build>
         </profile>
-
+        
+        <profile>
+            <id>arquillian-jbossas-cluster-6</id>
+            <activation>
+                <property>
+                    <name>arquillian</name>
+                    <value>jbossas-cluster-6</value>
+                </property>
+            </activation>
+            <build>
+               <plugins>
+                  <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                  </plugin>
+               </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <build>
@@ -785,6 +759,14 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -794,6 +776,9 @@
         <tomcat.http.port>8080</tomcat.http.port>
         <embedded-tomcat.http.port>9090</embedded-tomcat.http.port>
         <embedded-tomcat.debug.port>9190</embedded-tomcat.debug.port>
+
+        <node1.contextPath>http://127.0.1.1:8080/weld-numberguess</node1.contextPath>
+        <node2.contextPath>http://127.0.2.1:8080/weld-numberguess</node2.contextPath>
     </properties>
 
 </project>

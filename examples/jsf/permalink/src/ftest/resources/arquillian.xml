@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://www.jboss.org/arquillian-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.jboss.org/arquillian-1.0 http://jboss.org/schema/arquillian/arquillian-1.0.xsd">
+
+    <container qualifier="jbossas-managed-6">
+    </container>
+    
+    <container qualifier="jbossas-remote-6">
+    </container>
+
+    <container qualifier="jbossas-managed-7">
+    </container>
+    
+    <container qualifier="jbossas-remote-7">
+    </container>
+    
+    <container qualifier="tomcat-embedded-6">
+        <configuration>
+            <property name="unpackArchive">true</property>
+        </configuration>
+    </container>
+    
+    <container qualifier="tomcat-embedded-7">
+        <configuration>
+            <property name="unpackArchive">true</property>
+        </configuration>
+    </container>
+    
+    <container qualifier="jetty-embedded-6.1">
+    </container>
+    
+</arquillian>
