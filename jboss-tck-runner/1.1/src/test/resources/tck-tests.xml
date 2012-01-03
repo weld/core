@@ -157,6 +157,12 @@
                     <exclude name="testMessageDrivenBeanMethodIntercepted" />
                 </methods>
             </class>
+            <!-- WELD-1035 -->
+            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.jms.ContainerEventTest">
+                <methods>
+                    <exclude name="testProcessInjectionTargetEventFiredForMessageDrivenBean" />
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
