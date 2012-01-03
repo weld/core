@@ -314,6 +314,9 @@ public class ClientConversationContextTest {
 
     protected String getCid(Page page) {
         String url = page.getWebResponse().getRequestUrl().toString();
+        if (url.indexOf("cid=") != url.lastIndexOf("cid=")) {
+            throw new IllegalArgumentException("Invalid URL " + url);
+        }
         return url.substring(url.indexOf("cid=") + 4);
     }
 
