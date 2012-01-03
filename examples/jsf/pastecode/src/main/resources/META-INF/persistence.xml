@@ -5,7 +5,7 @@
              version="2.0">
    <persistence-unit name="pastecodeDatabase">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <jta-data-source>java:/pastecodeDatasource</jta-data-source>
+      <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
       <properties>
          <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
          <property name="hibernate.show_sql" value="false"/>
