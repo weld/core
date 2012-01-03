@@ -37,65 +37,7 @@
             <type>war</type>
         </dependency>
 
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-            <classifier>jdk15</classifier>
-        </dependency>
-
-        <!-- <dependency>
-           <groupId>org.jboss.el</groupId>
-           <artifactId>jboss-el</artifactId>
-           <exclusions>
-              <exclusion>
-                 <groupId>javax.el</groupId>
-                 <artifactId>el-api</artifactId>
-              </exclusion>
-           </exclusions>
-        </dependency>-->
-
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>ftest-jboss-remote-6</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>compile-functional-tests</id>
-                                <phase>test-compile</phase>
-                                <goals>
-                                    <goal>testCompile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 
     <build>
         <finalName>weld-translator</finalName>

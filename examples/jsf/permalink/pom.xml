@@ -38,13 +38,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-            <classifier>jdk15</classifier>
-        </dependency>
-
-        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
             <scope>provided</scope>
@@ -79,6 +72,25 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.ajocado</groupId>
+            <artifactId>arquillian-ajocado-junit</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -118,6 +130,14 @@
                        ${webapp.directory} by war:inplace
                     -->
                     <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
 
@@ -259,8 +279,6 @@
             <id>jetty</id>
 
             <dependencies>
-                <!-- (same dependencies as tomcat except for javax.servlet:jstl) -->
-
                 <dependency>
                     <groupId>javax.annotation</groupId>
                     <artifactId>jsr250-api</artifactId>
@@ -274,6 +292,12 @@
                 <dependency>
                     <groupId>javax.faces</groupId>
                     <artifactId>jsf-impl</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+                
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
                     <scope>runtime</scope>
                 </dependency>
 
@@ -363,103 +387,22 @@
                             <jettyEnvXml>src/main/webapp-jetty/WEB-INF/jetty-env.xml</jettyEnvXml>
                         </configuration>
                     </plugin>
-                </plugins>
-            </build>
-
-        </profile>
-        <profile>
-            <id>ftest-jboss-remote-6</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
+                    
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>ftest-jboss-remote-7</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>ftest-tomcat-6</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>ftest-jetty-6</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>maven-jetty-plugin</artifactId>
+                        <artifactId>maven-war-plugin</artifactId>
                         <configuration>
-                            <overrideWebXml>src/main/webapp-jetty/WEB-INF/override-web.xml</overrideWebXml>
+                            <webResources>
+                                <resource>
+                                    <directory>src/main/webapp-jetty</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </webResources>
                         </configuration>
                     </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>failsafe-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                    </plugin>
                 </plugins>
             </build>
+
         </profile>
 
         <profile>
@@ -470,7 +413,7 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <configuration>
                             <tasks>
-                                <touch file="${webapp.directory}/WEB-INF/web.xml"/>
+                                <touch file="${webapp.directory}/WEB-INF/web.xml" />
                             </tasks>
                         </configuration>
                         <!-- Hooking an execution to a phase is more correct, but slower -->
@@ -484,6 +427,47 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        
+        <!-- functional tests -->
+        <profile>
+            <id>ftest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+                
+        <profile>
+            <id>arquillian-jbossas-managed-7</id>
+        </profile>
+
+        <profile>
+            <id>arquillian-jbossas-remote-7</id>
+        </profile>
+       
+        <profile>
+            <id>arquillian-jbossas-managed-6</id>
+        </profile>
+
+         <profile>
+            <id>arquillian-jbossas-remote-6</id>
+        </profile>
+
+        <profile>
+            <id>arquillian-tomcat-embdedded-6</id>
+        </profile>
+
+        <profile>
+            <id>arquillian-jetty-embedded-6.1</id>
         </profile>
     </profiles>
 

@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+        <artifactId>weld-jsf-translator-parent</artifactId>
+        <version>1.1.5-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+    <artifactId>weld-jsf-translator-ftest</artifactId>
+    <packaging>jar</packaging>
+    <name>Weld Examples: Translator [ftest] (JSF)</name>
+
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.weld.examples.jsf.translator</groupId>
+            <artifactId>weld-jsf-translator-ear</artifactId>
+            <type>ear</type>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.ajocado</groupId>
+            <artifactId>arquillian-ajocado-junit</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>ftest</id> 
+        </profile>
+                
+        <profile>
+            <id>arquillian-jbossas-managed-7</id>
+        </profile>
+
+        <profile>
+            <id>arquillian-jbossas-remote-7</id>
+        </profile>
+       
+        <profile>
+            <id>arquillian-jbossas-managed-6</id>
+        </profile>
+
+         <profile>
+            <id>arquillian-jbossas-remote-6</id>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>weld-translator</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+

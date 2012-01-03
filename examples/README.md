@@ -26,59 +26,51 @@ Running the functional tests for the JSF examples
 Weld's JSF examples come with "functional tests", which use Selenium to each flow a user can take
 through the GUI of the example.
 
-The functional tests can be run on an individual JSF examples or on all examples. JBoss AS 6 
-must to be installed and running to run the functional tests. 
+The functional tests can be run on an individual JSF examples or on all examples. JBoss AS 7
+must to be installed to run the functional tests. 
 
-Make sure you have set the `JBOSS_HOME` environment property to point to your JBoss AS distribution.
+Make sure you have set the `JBOSS_HOME` environment property to point to your JBoss AS 7 distribution.
 
 To run the functional tests:
 
-    mvn -Pftest-jboss-remote-6,jboss6 clean verify
+    mvn -Darquillian=jbossas-managed-7 -Pjboss6 clean verify
 
 You can run the functional tests against all examples (from the `examples` directory`) or against
 an individual example (from it's sub-directory).
 
-The jsf/numberguess example can be also tested in a cluster. Prior to executing this test
-it is needed to start both JBoss AS instances manually.  Follow these steps:
+The jsf/numberguess example can be also tested in a cluster. Follow these steps for a default configuration:
 
-1. Create a second all profile in your JBoss AS distribution
+1. Create two JBoss AS 7 distributions, so you have, e.g.
 
-        cp -r server/all server/all2
+        /home/foo/testing/node1/jboss-as-7.1.0.Final/
 
-2. Make sure you have set the `JBOSS_HOME` environment property to point to your JBoss AS
-   distribution
-    
-3. Start both servers. The "all" profile is the *master* jboss instance (and is bound to
-   default ports); the application is deployed to this profile.
-     
-        $JBOSS_HOME/bin/run.sh -c all -g DocsPartition -u 239.255.101.101 -b localhost \
-           -Djboss.messaging.ServerPeerID=1 -Djboss.service.binding.set=ports-default
-    
-        $JBOSS_HOME/bin/run.sh -c all2 -g DocsPartition -u 239.255.101.101 -b localhost \
-           -Djboss.messaging.ServerPeerID=2 -Djboss.service.binding.set=ports-01 
+    and    
+
+        /home/foo/testing/node2/jboss-as-7.1.0.Final/
+
+2. Configure each of the installations standalone/configuration/standalone/standalone-ha.xml files
+
+    Edit the <interfaces/> element to bind each instance to a different loopback IP address, e.g.
+
+        <loopback-address value="127.0.1.1"/>
+
+    and
+
+        <loopback-address value="127.0.2.1"/>
        
-4. Run the test suite
+3. Run the test suite, modify the node{1,2}.jbossHome properties to match your configuration
 
-        mvn -Pjboss6cluster,ftest-jboss-cluster-6 clean verify
+        mvn clean verify -Pjboss6cluster -Darquillian=jbossas-cluster-7 -Dnode1.jbossHome=/home/foo/testing/node1/jboss-as-7.1.0.Final/ -Dnode2.jbossHome=/home/foo/testing/node2/jboss-as-7.1.0.Final/
 
-The `jsf/numberguess` and `jsf/permalink` examples can be also tested with Tomcat and Jetty containers.
+   If you have set up a different addresses in the previous step, you also need to add the following system properties:
 
-Before running the functional tests with Tomcat container, the Tomcat 6 container has to be installed
-and running. 
+        -Dnode1.contextPath=http://127.0.1.1:8080/weld-numberguess -Dnode2.contextPath=http://127.0.2.1:8080/weld-numberguess
 
-1. Before starting Tomcat, add the following line to `conf/tomcat-users.xml`
+The `jsf/numberguess` and `jsf/permalink` examples can be also tested with Tomcat and Jetty embedded containers. The following command will execute functional tests with embedded Tomcat container:
 
-        <user username="admin" password="" roles="manager"/> 
+    mvn -Ptomcat -Darquillian=tomcat-embedded-6 clean verify 
 
-2. Start Tomcat
-    
-        $TOMCAT_HOME/bin/startup.sh
-  
-3. Run the testsuite
-
-        mvn -Ptomcat,ftest-tomcat-6 clean verify 
-
-An embedded Jetty 6 container is used when running the functional tests with Jetty container. 
 The following command will execute functional tests with embedded Jetty container:
 
-    mvn -Pjetty,ftest-jetty-6 clean verify
+    mvn -Pjetty -Darquillian=jetty-embedded-6.1 clean verify
+

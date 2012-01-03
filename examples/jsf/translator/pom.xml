@@ -29,6 +29,7 @@
         <module>war</module>
         <module>ejb</module>
         <module>ear</module>
+        <module>ftest</module>
     </modules>
 
     <dependencyManagement>
@@ -43,6 +44,7 @@
                 <groupId>org.jboss.weld.examples.jsf.translator</groupId>
                 <artifactId>weld-jsf-translator-ear</artifactId>
                 <version>${project.version}</version>
+                <type>ear</type>
             </dependency>
             <dependency>
                 <groupId>org.jboss.weld.examples.jsf.translator</groupId>
@@ -52,14 +54,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-
-            </plugins>
-        </pluginManagement>
-    </build>
 
 </project>
 
