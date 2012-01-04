@@ -39,22 +39,7 @@ public class DatasourceManager implements ITestListener {
 
     private volatile boolean dataSourceChecked = false;
 
-    public void onTestStart(ITestResult result) {
-    }
-
-    public void onTestSuccess(ITestResult result) {
-    }
-
-    public void onTestFailure(ITestResult result) {
-    }
-
-    public void onTestSkipped(ITestResult result) {
-    }
-
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-    }
-
-    public void onStart(ITestContext context) {
+    public void onTestStart(ITestResult testResult) {
         if (dataSourceChecked) {
             return;
         }
@@ -110,6 +95,22 @@ public class DatasourceManager implements ITestListener {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void onTestSuccess(ITestResult result) {
+    }
+
+    public void onTestFailure(ITestResult result) {
+    }
+
+    public void onTestSkipped(ITestResult result) {
+    }
+
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+    }
+
+    public void onStart(ITestContext context) {
+
     }
 
     public void onFinish(ITestContext context) {

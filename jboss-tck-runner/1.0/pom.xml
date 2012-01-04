@@ -108,6 +108,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-spi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
@@ -187,7 +193,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                    <argLine>-Xmx256m</argLine>
+                    <argLine>-Xmx2512m</argLine>
                     <forkMode>once</forkMode>
                 </configuration>
             </plugin>
