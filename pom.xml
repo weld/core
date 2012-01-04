@@ -25,9 +25,9 @@
     <properties>
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER-->
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.0.0.CR4</arquillian.version>
+        <arquillian.version>1.0.0.CR7</arquillian.version>
         <arquillian.jboss.version>1.0.0.CR4</arquillian.jboss.version>
-        <arquillian.weld.version>1.0.0.CR2</arquillian.weld.version>
+        <arquillian.weld.version>1.0.0.CR3</arquillian.weld.version>
         <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
         <arquillian.tomcat7.version>1.0.0.CR2</arquillian.tomcat7.version>
         <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
@@ -49,8 +49,8 @@
         <javassist.version>3.14.0-GA</javassist.version>
         <jbossas.client.version>6.1.0.Final</jbossas.client.version>
         <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
-        <jboss.as7.tck-runner.version>1.0.0.CR1</jboss.as7.tck-runner.version>
-        <jboss.as7.version>7.1.0.Beta1b</jboss.as7.version>
+        <jboss.as7.tck-runner.version>1.0.0.CR2</jboss.as7.tck-runner.version>
+        <jboss.as7.version>7.1.0.CR1b</jboss.as7.version>
         <jboss.ejb3.ext-api.version>1.1.1</jboss.ejb3.ext-api.version>
         <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
         <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
@@ -186,6 +186,12 @@
             <dependency>
                 <groupId>org.jboss.arquillian.junit</groupId>
                 <artifactId>arquillian-junit-container</artifactId>
+                <version>${arquillian.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-test-spi</artifactId>
                 <version>${arquillian.version}</version>
             </dependency>
 
