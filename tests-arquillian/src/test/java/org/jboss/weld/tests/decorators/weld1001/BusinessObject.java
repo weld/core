@@ -39,8 +39,8 @@ public class BusinessObject {
         System.out.println("msg = " + msg);
     }
 
-    public void witdraw(Double amount) {
-        account.witdraw(amount);
+    public void withdraw(Double amount) {
+        account.withdraw(amount);
     }
 
     public void deposit(Double amount) {
