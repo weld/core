@@ -57,8 +57,8 @@
         <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
         <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
         <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
-        <jboss.shrinkwrap.api.version>1.0.0-beta-3</jboss.shrinkwrap.api.version>
-        <jboss.shrinkwrap.descriptors.version>1.1.0-alpha-2</jboss.shrinkwrap.descriptors.version>
+        <jboss.shrinkwrap.api.version>1.0.0-cr-1</jboss.shrinkwrap.api.version>
+        <jboss.shrinkwrap.descriptors.version>1.1.0-beta-1</jboss.shrinkwrap.descriptors.version>
         <jboss.spec.ejb.version>1.0.0.CR2</jboss.spec.ejb.version>
         <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
         <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
