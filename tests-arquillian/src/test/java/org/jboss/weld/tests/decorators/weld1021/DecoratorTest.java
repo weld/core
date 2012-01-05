@@ -48,7 +48,7 @@ public class DecoratorTest {
     @OperateOnDeployment("decorator")
     public void testDecorators(BusinessObject bo) throws Exception {
         System.out.println("state = " + bo.getState());
-        // bo.deposit(2012); // TODO -- fix it!
+        bo.deposit(2012);
         bo.withdraw(501);
         System.out.println("sum = " + bo.getState());
     }
