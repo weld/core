@@ -163,6 +163,12 @@
                     <exclude name="testProcessInjectionTargetEventFiredForMessageDrivenBean" />
                 </methods>
             </class>
+            <!-- CDI-102 - not yet implemented -->
+             <class name="org.jboss.jsr299.tck.tests.implementation.builtin.servlet.ServletContainerBuiltinBeanTest">
+                <methods>
+                    <exclude name="testBuiltinBeans" />
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
