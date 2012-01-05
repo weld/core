@@ -27,12 +27,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.bytecode.DescriptorUtils;
-import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.MethodUtils;
-import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.bytecode.StaticMethodInformation;
+import org.jboss.weld.util.bytecode.*;
 
 import javax.enterprise.inject.spi.Bean;
 import java.lang.reflect.Field;
@@ -266,7 +261,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     protected static class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
         public void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes) {
             // get the correct class type to use to resolve the method
-            MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", parameterTypes, "Ljava/lang/Class;", TargetInstanceProxy.class.getName());
+            MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", new String[0], "Ljava/lang/Class;", TargetInstanceProxy.class.getName());
             invokeMethodHandler(file, code, methodInfo, false, DEFAULT_METHOD_RESOLVER);
             code.addCheckcast("java/lang/Class");
             // now we have the class on the stack
