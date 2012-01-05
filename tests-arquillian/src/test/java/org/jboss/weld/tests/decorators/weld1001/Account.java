@@ -27,7 +27,7 @@ package org.jboss.weld.tests.decorators.weld1001;
  */
 public interface Account<T extends Number> {
 
-    void witdraw(T amount);
+    void withdraw(T amount);
 
     void deposit(T amount);
 

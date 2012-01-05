@@ -20,37 +20,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.weld.tests.decorators.weld1001;
+package org.jboss.weld.tests.decorators.weld1021;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-@RunWith(Arquillian.class)
-public class DecoratorTest {
+@ApplicationScoped
+public class BusinessObject {
 
-    @Deployment(name = "decorator")
-    public static Archive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .decorate(LargeAmountAccount.class)
-                .addPackage(LargeAmountAccount.class.getPackage());
+    @Inject
+    Account account;
+
+    public void print(String msg) {
+        System.out.println("msg = " + msg);
     }
 
-    @Test
-    @OperateOnDeployment("decorator")
-    public void testDecorators(BusinessObject bo) throws Exception {
-        System.out.println("a_state = " + bo.getState());
-        bo.deposit(2011.0);
-        bo.withdraw(1509.0);
-        System.out.println("a_sum = " + bo.getState());
+    public void withdraw(int amount) {
+        account.withdraw(amount);
     }
 
+    public void deposit(int amount) {
+        account.deposit(amount);
+    }
+
+    public int getState() {
+        return account.getState();
+    }
 }

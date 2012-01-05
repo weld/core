@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.weld.tests.decorators.weld1001;
+package org.jboss.weld.tests.decorators.weld1021;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
@@ -40,17 +40,17 @@ public class DecoratorTest {
     @Deployment(name = "decorator")
     public static Archive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
-                .decorate(LargeAmountAccount.class)
-                .addPackage(LargeAmountAccount.class.getPackage());
+                .decorate(ChargeAccount.class)
+                .addPackage(ChargeAccount.class.getPackage());
     }
 
     @Test
     @OperateOnDeployment("decorator")
     public void testDecorators(BusinessObject bo) throws Exception {
-        System.out.println("a_state = " + bo.getState());
-        bo.deposit(2011.0);
-        bo.withdraw(1509.0);
-        System.out.println("a_sum = " + bo.getState());
+        System.out.println("state = " + bo.getState());
+        // bo.deposit(2012); // TODO -- fix it!
+        bo.withdraw(501);
+        System.out.println("sum = " + bo.getState());
     }
 
 }

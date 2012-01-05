@@ -36,9 +36,9 @@ public abstract class LargeAmountAccount extends AbstractAccount {
     @Large @Delegate
     private Account<Double> delegate;
 
-    public void witdraw(Double amount) {
+    public void withdraw(Double amount) {
         System.out.println("Before [" + getState() + "], withdrawing amount = " + amount);
-        delegate.witdraw(amount);
+        delegate.withdraw(amount);
         System.out.println("After [" + getState() + "], withdrawn amount = " + amount);
     }
 
