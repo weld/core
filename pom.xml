@@ -68,7 +68,7 @@
         <junit.version>4.8.1</junit.version>
         <log4j.version>1.2.14</log4j.version>
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
-        <slf4j.version>1.5.10</slf4j.version>
+        <slf4j.version>1.6.1</slf4j.version>
         <testng.version>5.10</testng.version>
         <weld.api.version>2.0-SNAPSHOT</weld.api.version>
     </properties>
