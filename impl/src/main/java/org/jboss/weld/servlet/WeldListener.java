@@ -34,6 +34,9 @@ import org.slf4j.cal10n.LocLogger;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
@@ -74,6 +77,9 @@ public class WeldListener extends AbstractServletListener {
     private transient HttpRequestContext requestContextCache;
     private transient HttpConversationContext conversationContextCache;
 
+    @Inject
+    private BeanManager beanManager;
+
     private HttpSessionContext sessionContext() {
         if (sessionContextCache == null) {
             this.sessionContextCache = Container.instance().deploymentManager().instance().select(HttpSessionContext.class).get();
@@ -93,6 +99,11 @@ public class WeldListener extends AbstractServletListener {
             this.conversationContextCache = Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
         }
         return conversationContextCache;
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        sce.getServletContext().setAttribute(BeanManager.class.getName(), beanManager);
     }
 
     @Override

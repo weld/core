@@ -8,15 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class BeansXml implements Asset {
+public class BeansXml implements Asset {
     private List<Class<?>> alternatives = new ArrayList<Class<?>>();
     private List<Class<?>> interceptors = new ArrayList<Class<?>>();
     private List<Class<?>> decorators = new ArrayList<Class<?>>();
     private List<Class<?>> stereotypes = new ArrayList<Class<?>>();
-
-    BeansXml() {
-
-    }
 
     public BeansXml alternatives(Class<?>... alternatives) {
         this.alternatives.addAll(Arrays.asList(alternatives));
