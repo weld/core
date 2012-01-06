@@ -27,7 +27,12 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.util.bytecode.*;
+import org.jboss.weld.util.bytecode.BytecodeUtils;
+import org.jboss.weld.util.bytecode.DescriptorUtils;
+import org.jboss.weld.util.bytecode.MethodInformation;
+import org.jboss.weld.util.bytecode.MethodUtils;
+import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+import org.jboss.weld.util.bytecode.StaticMethodInformation;
 
 import javax.enterprise.inject.spi.Bean;
 import java.lang.reflect.Field;
