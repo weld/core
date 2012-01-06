@@ -31,7 +31,7 @@
 
     <groupId>org.jboss.weld</groupId>
     <artifactId>weld-build-config</artifactId>
-    <version>1.1.5.Final</version>
+    <version>1.1.6-SNAPSHOT</version>
     <name>Weld: Build Configuration</name>
 
     <build>

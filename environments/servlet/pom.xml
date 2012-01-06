@@ -4,13 +4,13 @@
     <artifactId>weld-servlet-parent</artifactId>
     <name>Weld Servlet Parent</name>
     <packaging>pom</packaging>
-    <version>1.1.5.Final</version>
+    <version>1.1.6-SNAPSHOT</version>
 
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>1.1.5.Final</version>
+        <version>1.1.6-SNAPSHOT</version>
     </parent>
 
     <modules>
