@@ -38,20 +38,20 @@ import org.testng.ITestContext;
  * @author Stuart Douglas
  */
 public class SingleTestMethodInterceptor implements IMethodInterceptor {
-    
-	public static final String TEST_CLASS_PROPERTY = "tckTest";
+
+    public static final String TEST_CLASS_PROPERTY = "tckTest";
 
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
         String test = System.getProperty(TEST_CLASS_PROPERTY);
         if (test == null || test.isEmpty()) {
-        	
-        	// Group test methods by class 
+
+            // Group test methods by class
             Collections.sort(methods, new Comparator<IMethodInstance>() {
-            	public int compare(IMethodInstance o1, IMethodInstance o2) {
-                    int result= o1.getMethod().getTestClass().getName()
-                      .compareTo(o2.getMethod().getTestClass().getName());
+                public int compare(IMethodInstance o1, IMethodInstance o2) {
+                    int result = o1.getMethod().getTestClass().getName().compareTo(o2.getMethod().getTestClass().getName());
                     return result;
-			}});
+                }
+            });
             return methods;
         }
         List<IMethodInstance> ret = new ArrayList<IMethodInstance>();
@@ -70,5 +70,5 @@ public class SingleTestMethodInterceptor implements IMethodInterceptor {
         }
         return ret;
     }
-    
+
 }
