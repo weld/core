@@ -34,11 +34,11 @@ import java.util.Collection;
 
 /**
  * Weld container used for bean bundles by
- * {@link org.jboss.weld.environment.osgi.WeldCDIContainer}.
+ * {@link org.jboss.weld.environment.osgi.impl.WeldCDIContainer}.
  * <p/>
  * It is responsible for initialization of a Weld container requested by
  * Weld-OSGi using the {@link
- * org.jboss.weld.environment.osgi.WeldCDIContainerFactory}.
+ * org.jboss.weld.environment.osgi.impl.WeldCDIContainerFactory}.
  *
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)

@@ -2,250 +2,250 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi.tests</groupId>
-      <artifactId>weld-osgi-tests</artifactId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi.tests</groupId>
-   <artifactId>weld-osgi-tester</artifactId>
-   <packaging>jar</packaging>
-   <name>Weld OSGi (Tester)</name>
+    <parent>
+        <groupId>org.jboss.weld.osgi.tests</groupId>
+        <artifactId>weld-osgi-tests</artifactId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.tests</groupId>
+    <artifactId>weld-osgi-tester</artifactId>
+    <packaging>jar</packaging>
+    <name>Weld OSGi (Tester)</name>
 
-   <description>Integration tests launcher for Weld-OSGi</description>
+    <description>Integration tests launcher for Weld-OSGi</description>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
 
-   <dependencies>
+    <dependencies>
 
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>org.ops4j.pax.exam</groupId>
-         <artifactId>pax-exam-junit4</artifactId>
-         <version>2.0.0-RC3</version>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit4</artifactId>
+            <version>2.0.0-RC3</version>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>org.ops4j.pax.exam</groupId>
-         <artifactId>pax-exam-container-native</artifactId>
-         <version>2.0.0-RC3</version>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-native</artifactId>
+            <version>2.0.0-RC3</version>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>org.ops4j.pax.exam</groupId>
-         <artifactId>pax-exam-link-mvn</artifactId>
-         <version>2.0.0-RC3</version>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-mvn</artifactId>
+            <version>2.0.0-RC3</version>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>org.apache.felix.framework</artifactId>
-         <version>3.2.0</version>
-         <scope>test</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>3.2.0</version>
+            <scope>test</scope>
+        </dependency>
 
-      <dependency>
-         <groupId>org.osgi</groupId>
-         <artifactId>org.osgi.core</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.osgi</groupId>
-         <artifactId>org.osgi.compendium</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-api</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-extension</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-extension</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-spi</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-integration</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.se</groupId>
-         <artifactId>weld-se-core</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-spi</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-spi</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.el</groupId>
-         <artifactId>el-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.annotation</groupId>
-         <artifactId>jsr250-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-simple</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.javassist</groupId>
-         <artifactId>javassist</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>com.google.guava</groupId>
-         <artifactId>guava</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-spi</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-spi</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-core</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-core</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.inject</groupId>
-         <artifactId>javax.inject</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-jdk14</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-ext</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-ext</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>ch.qos.cal10n</groupId>
-         <artifactId>cal10n-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>ch.qos.cal10n</groupId>
+            <artifactId>cal10n-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-bundle1</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-bundle1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-bundle2</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-bundle2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-bundle3</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-bundle3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-importing</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-importing</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-scanner</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-scanner</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-innerscanner</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-innerscanner</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-cdi-spi</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-cdi-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-life-cycle</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-life-cycle</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-   </dependencies>
+    </dependencies>
 
 </project>

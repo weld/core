@@ -2,73 +2,73 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi.examples</groupId>
-      <artifactId>weld-osgi-calculator</artifactId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi.examples</groupId>
-   <artifactId>weld-osgi-calculator-core</artifactId>
-   <packaging>bundle</packaging>
-   <name>Weld OSGi (Examples Calculator Core)</name>
+    <parent>
+        <groupId>org.jboss.weld.osgi.examples</groupId>
+        <artifactId>weld-osgi-calculator</artifactId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.examples</groupId>
+    <artifactId>weld-osgi-calculator-core</artifactId>
+    <packaging>bundle</packaging>
+    <name>Weld OSGi (Examples Calculator Core)</name>
 
-   <description>Calculator example for Weld-OSGi core bundle</description>
+    <description>Calculator example for Weld-OSGi core bundle</description>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
-    
-   <dependencies>
-       
-      <dependency>
-         <groupId>org.jboss.weld.osgi.examples</groupId>
-         <artifactId>weld-osgi-calculator-api</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-api</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>javax.inject</groupId>
-         <artifactId>javax.inject</artifactId>
-      </dependency>
-        
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-      </dependency>
-        
-   </dependencies>
-    
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-         </plugin>
-      </plugins>
-   </build>
-    
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-calculator-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

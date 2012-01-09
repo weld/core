@@ -2,142 +2,142 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi</groupId>
-      <artifactId>weld-osgi-core</artifactId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi</groupId>
-   <artifactId>weld-osgi-core-integration</artifactId>
-   <packaging>bundle</packaging>
-   <name>Weld OSGi (Integration bundle)</name>
-   <description>Weld OSGi integration bundle</description>
+    <parent>
+        <groupId>org.jboss.weld.osgi</groupId>
+        <artifactId>weld-osgi-core</artifactId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi</groupId>
+    <artifactId>weld-osgi-core-integration</artifactId>
+    <packaging>bundle</packaging>
+    <name>Weld OSGi (Integration bundle)</name>
+    <description>Weld OSGi integration bundle</description>
 
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
-   <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+    <url>http://www.seamframework.org/Weld</url>
 
-   <dependencies>
+    <dependencies>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-spi</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-api</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-extension</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-extension</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld.se</groupId>
-         <artifactId>weld-se-core</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-spi</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-spi</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.inject</groupId>
-         <artifactId>javax.inject</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.enterprise</groupId>
-         <artifactId>cdi-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.el</groupId>
-         <artifactId>el-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>javax.annotation</groupId>
-         <artifactId>jsr250-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-spi</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-spi</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-core</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-core</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.interceptor</groupId>
-         <artifactId>jboss-interceptor-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>com.google.guava</groupId>
-         <artifactId>guava</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>ch.qos.cal10n</groupId>
-         <artifactId>cal10n-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>ch.qos.cal10n</groupId>
+            <artifactId>cal10n-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-ext</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-ext</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-core</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
 
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-      </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
 
-   </dependencies>
+    </dependencies>
 
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-         </plugin>
-      </plugins>
-   </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

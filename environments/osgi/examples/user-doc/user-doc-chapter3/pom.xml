@@ -2,41 +2,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi.examples</groupId>
-      <artifactId>weld-osgi-userdoc</artifactId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi.examples.userdoc</groupId>
-   <artifactId>weld-osgi-chapter3</artifactId>
-   <packaging>pom</packaging>
-   <name>Weld OSGi (Examples User Doc Chapter 3)</name>
+    <parent>
+        <groupId>org.jboss.weld.osgi.examples</groupId>
+        <artifactId>weld-osgi-userdoc</artifactId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.examples.userdoc</groupId>
+    <artifactId>weld-osgi-chapter3</artifactId>
+    <packaging>pom</packaging>
+    <name>Weld OSGi (Examples User Doc Chapter 3)</name>
 
-   <description>User doc examples for Weld-OSGi chapter 3</description>
+    <description>User doc examples for Weld-OSGi chapter 3</description>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
 
-   <modules>
+    <modules>
         <module>welcoming-tom</module>
         <module>welcoming-dick</module>
         <module>welcoming-harry</module>

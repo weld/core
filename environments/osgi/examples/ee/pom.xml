@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.weld.osgi.examples</groupId>
         <artifactId>weld-osgi-examples</artifactId>
-        <version>1.1.5-SNAPSHOT</version>
+        <version>1.1.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -72,7 +72,7 @@
                 <exclusion>
                     <groupId>javax.enterprise</groupId>
                     <artifactId>cdi-api</artifactId>
-                </exclusion>    
+                </exclusion>
                 <exclusion>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-build-config</artifactId>
@@ -103,7 +103,7 @@
                 <exclusion>
                     <groupId>javax.enterprise</groupId>
                     <artifactId>cdi-api</artifactId>
-                </exclusion>    
+                </exclusion>
                 <exclusion>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-build-config</artifactId>
@@ -134,7 +134,7 @@
                 <exclusion>
                     <groupId>javax.enterprise</groupId>
                     <artifactId>cdi-api</artifactId>
-                </exclusion> 
+                </exclusion>
                 <exclusion>
                     <groupId>org.javassist</groupId>
                     <artifactId>javassist</artifactId>
@@ -171,7 +171,9 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <archive>
                         <manifestEntries>
-                            <Dependencies>org.osgi.core,org.jboss.osgi.framework,deployment.org.jboss.weld.osgi.examples.weld-osgi-web-api:1.1.5.SNAPSHOT</Dependencies>
+                            <Dependencies>
+                                org.osgi.core,org.jboss.osgi.framework,deployment.org.jboss.weld.osgi.examples.weld-osgi-web-api:1.1.5.SNAPSHOT
+                            </Dependencies>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -184,7 +186,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            
+
         </plugins>
         <finalName>ee</finalName>
     </build>

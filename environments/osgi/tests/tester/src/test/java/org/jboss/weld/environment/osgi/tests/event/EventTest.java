@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.event;
 
-import org.junit.Ignore;
+import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.api.MovingService;
 import org.jboss.weld.osgi.tests.bundle1.util.EventListener;
 import org.junit.Assert;
@@ -26,8 +26,12 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.jboss.weld.environment.osgi.tests.util.Environment;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -39,9 +43,9 @@ public class EventTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle2").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle3").version("1.1.5-SNAPSHOT")
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle2").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle3").version("1.1.6-SNAPSHOT")
                 )
         );
     }
@@ -52,35 +56,33 @@ public class EventTest {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundle2 = null, bundle3 = null;
-        for(Bundle b : context.getBundles()) {
+        for (Bundle b : context.getBundles()) {
             Assert.assertEquals("Bundle" + b.getSymbolicName() + " is not ACTIVE", Bundle.ACTIVE, b.getState());
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
-                bundle1=b;
-            }
-            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle2")) {
-                bundle2=b;
-            }
-            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle3")) {
-                bundle3=b;
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
+                bundle1 = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle2")) {
+                bundle2 = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle3")) {
+                bundle3 = b;
             }
         }
-        Assert.assertNotNull("The bundle1 was not retrieved",bundle1);
-        Assert.assertNotNull("The bundle2 was not retrieved",bundle2);
-        Assert.assertNotNull("The bundle3 was not retrieved",bundle3);
+        Assert.assertNotNull("The bundle1 was not retrieved", bundle1);
+        Assert.assertNotNull("The bundle2 was not retrieved", bundle2);
+        Assert.assertNotNull("The bundle3 was not retrieved", bundle3);
 
-        ServiceReference[] eventListenerReferences = context.getServiceReferences(EventListener.class.getName(),null);
-        Assert.assertNotNull("The event listener reference array was null",eventListenerReferences);
-        Assert.assertEquals("The number of event listener implementations was wrong", 1,eventListenerReferences.length);
-        EventListener eventListener = (EventListener)context.getService(eventListenerReferences[0]);
-        Assert.assertNotNull("The event listener was null",eventListener);
+        ServiceReference[] eventListenerReferences = context.getServiceReferences(EventListener.class.getName(), null);
+        Assert.assertNotNull("The event listener reference array was null", eventListenerReferences);
+        Assert.assertEquals("The number of event listener implementations was wrong", 1, eventListenerReferences.length);
+        EventListener eventListener = (EventListener) context.getService(eventListenerReferences[0]);
+        Assert.assertNotNull("The event listener was null", eventListener);
 
-        Assert.assertEquals("The number of listened BundleContainerInitialized event was wrong",1,eventListener.getStart());
-        Assert.assertEquals("The number of listened BundleContainerShutdown event was wrong",0,eventListener.getStop());
+        Assert.assertEquals("The number of listened BundleContainerInitialized event was wrong", 1, eventListener.getStart());
+        Assert.assertEquals("The number of listened BundleContainerShutdown event was wrong", 0, eventListener.getStop());
 
         int serviceArrival = eventListener.getServiceArrival();
         int serviceChanged = eventListener.getServiceChanged();
         int serviceDeparture = eventListener.getServiceDeparture();
-        Assert.assertTrue("The number of listened ServiceArrival event was wrong",serviceArrival > 0);
+        Assert.assertTrue("The number of listened ServiceArrival event was wrong", serviceArrival > 0);
         Assert.assertEquals("The number of listened ServiceChanged event was wrong", 0, serviceChanged);
         Assert.assertEquals("The number of listened ServiceDeparture event was wrong", 0, serviceDeparture);
 
@@ -123,7 +125,7 @@ public class EventTest {
         Assert.assertEquals("The number of listened BundleLazyActivation event was wrong", 0, bundleLazyActivation);
 
         bundle3.stop();
-        Environment.waitForState(bundle3,Bundle.RESOLVED);
+        Environment.waitForState(bundle3, Bundle.RESOLVED);
         Assert.assertEquals("The second number of listened BundleInstalled event was wrong", bundleInstalled, eventListener.getBundleInstalled());
         Assert.assertEquals("The second number of listened BundleUninstalled event was wrong", bundleUninstalled, eventListener.getBundleUninstalled());
         Assert.assertEquals("The second number of listened BundleResolved event was wrong", bundleResolved, eventListener.getBundleResolved());
@@ -136,7 +138,7 @@ public class EventTest {
         Assert.assertEquals("The second number of listened BundleLazyActivation event was wrong", bundleLazyActivation, eventListener.getBundleLazyActivation());
 
         bundle3.start();
-        Environment.waitForState(bundle3,Bundle.ACTIVE);
+        Environment.waitForState(bundle3, Bundle.ACTIVE);
         Assert.assertEquals("The third number of listened BundleInstalled event was wrong", bundleInstalled, eventListener.getBundleInstalled());
         Assert.assertEquals("The third number of listened BundleUninstalled event was wrong", bundleUninstalled, eventListener.getBundleUninstalled());
         Assert.assertEquals("The third number of listened BundleResolved event was wrong", bundleResolved, eventListener.getBundleResolved());
@@ -149,7 +151,7 @@ public class EventTest {
         Assert.assertEquals("The third number of listened BundleLazyActivation event was wrong", bundleLazyActivation, eventListener.getBundleLazyActivation());
 
         bundle3.update();
-        Environment.waitForState(bundle3,Bundle.ACTIVE);
+        Environment.waitForState(bundle3, Bundle.ACTIVE);
         // unresolved -> stopping -> stopped -> starting -> resolved -> started
         Assert.assertEquals("The forth number of listened BundleInstalled event was wrong", bundleInstalled, eventListener.getBundleInstalled());
         Assert.assertEquals("The forth number of listened BundleUninstalled event was wrong", bundleUninstalled, eventListener.getBundleUninstalled());
@@ -164,7 +166,7 @@ public class EventTest {
 
         String location = bundle3.getLocation();
         bundle3.uninstall();
-        Environment.waitForState(bundle3,Bundle.UNINSTALLED);
+        Environment.waitForState(bundle3, Bundle.UNINSTALLED);
         // unresolved -> stopping -> stopped -> uninstalled
         Assert.assertEquals("The fifth number of listened BundleInstalled event was wrong", bundleInstalled, eventListener.getBundleInstalled());
         Assert.assertEquals("The fifth number of listened BundleUninstalled event was wrong", bundleUninstalled + 1, eventListener.getBundleUninstalled());
@@ -178,7 +180,7 @@ public class EventTest {
         Assert.assertEquals("The fifth number of listened BundleLazyActivation event was wrong", bundleLazyActivation, eventListener.getBundleLazyActivation());
 
         context.installBundle(location);
-        Environment.waitForState(context,bundle3.getSymbolicName(),Bundle.INSTALLED);
+        Environment.waitForState(context, bundle3.getSymbolicName(), Bundle.INSTALLED);
         Assert.assertEquals("The sixth number of listened BundleInstalled event was wrong", bundleInstalled + 1, eventListener.getBundleInstalled());
         Assert.assertEquals("The sixth number of listened BundleUninstalled event was wrong", bundleUninstalled + 1, eventListener.getBundleUninstalled());
         Assert.assertEquals("The sixth number of listened BundleResolved event was wrong", bundleResolved + 1, eventListener.getBundleResolved());

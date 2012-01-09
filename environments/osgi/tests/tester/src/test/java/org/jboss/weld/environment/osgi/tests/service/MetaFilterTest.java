@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
-import org.junit.Ignore;
+import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.api.PropertyService;
 import org.jboss.weld.osgi.tests.bundle1.api.TestPublished;
 import org.junit.Assert;
@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
@@ -42,9 +41,9 @@ public class MetaFilterTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle2").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle3").version("1.1.5-SNAPSHOT")
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle2").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle3").version("1.1.6-SNAPSHOT")
                 )
         );
     }

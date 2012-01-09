@@ -17,18 +17,17 @@
 
 package org.jboss.weld.environment.osgi.tests.framework;
 
-import org.junit.Ignore;
+import junit.framework.Assert;
 import org.jboss.weld.environment.osgi.api.BundleState;
 import org.jboss.weld.environment.osgi.api.annotation.BundleDataFile;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleContainerEvent;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
-import junit.framework.Assert;
+import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -43,8 +42,8 @@ public class InfrastructureTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-importing").version("1.1.5-SNAPSHOT")
-                                              )
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-importing").version("1.1.6-SNAPSHOT")
+                )
         );
     }
 
@@ -54,24 +53,24 @@ public class InfrastructureTest {
         Environment.waitForEnvironment(context);
 
         Bundle extAPI = null, intAPI = null, extImpl = null, intImpl = null, mand = null;
-        for(Bundle b : context.getBundles()) {
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-api")) {
-                extAPI=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-spi")) {
-                intAPI=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
-                extImpl=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-integration")) {
-                intImpl=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-mandatory")) {
-                mand=b;
+        for (Bundle b : context.getBundles()) {
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-api")) {
+                extAPI = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-spi")) {
+                intAPI = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
+                extImpl = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-integration")) {
+                intImpl = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-mandatory")) {
+                mand = b;
             }
         }
         Assert.assertNotNull("Extension API bundle is not present", extAPI);
-        Assert.assertNotNull("Integration API bundle is not present",intAPI);
-        Assert.assertNotNull("Extension Impl bundle is not present",extImpl);
-        Assert.assertNotNull("Integration Impl bundle is not present",intImpl);
-        Assert.assertNotNull("Mandatory bundle is not present",mand);
+        Assert.assertNotNull("Integration API bundle is not present", intAPI);
+        Assert.assertNotNull("Extension Impl bundle is not present", extImpl);
+        Assert.assertNotNull("Integration Impl bundle is not present", intImpl);
+        Assert.assertNotNull("Mandatory bundle is not present", mand);
     }
 
     @Test
@@ -80,9 +79,9 @@ public class InfrastructureTest {
         Environment.waitForEnvironment(context);
 
         Bundle importingBundle = null;
-        for(Bundle b : context.getBundles()) {
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-importing")) {
-                importingBundle=b;
+        for (Bundle b : context.getBundles()) {
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-importing")) {
+                importingBundle = b;
             }
         }
         Assert.assertNotNull("Importing bundle is not present", importingBundle);

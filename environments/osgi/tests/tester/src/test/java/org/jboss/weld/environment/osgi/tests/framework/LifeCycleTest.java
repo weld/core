@@ -1,19 +1,19 @@
 package org.jboss.weld.environment.osgi.tests.framework;
 
-import java.lang.reflect.Field;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.ops4j.pax.exam.junit.Configuration;
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+
+import java.lang.reflect.Field;
 
 import static org.ops4j.pax.exam.CoreOptions.options;
-import org.osgi.framework.BundleException;
 
 @RunWith(JUnit4TestRunner.class)
 public class LifeCycleTest {
@@ -27,7 +27,7 @@ public class LifeCycleTest {
     public void bundleLifeCycleTest(BundleContext context) throws InterruptedException, BundleException, ClassNotFoundException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         Environment.waitForEnvironment(context);
 
-        Bundle bundle = context.installBundle("mvn:org.jboss.weld.osgi.tests/weld-osgi-life-cycle/1.1.5-SNAPSHOT");
+        Bundle bundle = context.installBundle("mvn:org.jboss.weld.osgi.tests/weld-osgi-life-cycle/1.1.6-SNAPSHOT");
         Environment.waitForState(bundle, Bundle.INSTALLED);
 
         Class flagFarm = bundle.loadClass("org.jboss.weld.osgi.tests.lifecycle.FlagFarm");

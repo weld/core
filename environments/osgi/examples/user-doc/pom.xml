@@ -2,44 +2,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi.examples</groupId>
-      <artifactId>weld-osgi-examples</artifactId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi.examples</groupId>
-   <artifactId>weld-osgi-userdoc</artifactId>
-   <packaging>pom</packaging>
-   <name>Weld OSGi (Examples User Doc)</name>
+    <parent>
+        <groupId>org.jboss.weld.osgi.examples</groupId>
+        <artifactId>weld-osgi-examples</artifactId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.examples</groupId>
+    <artifactId>weld-osgi-userdoc</artifactId>
+    <packaging>pom</packaging>
+    <name>Weld OSGi (Examples User Doc)</name>
 
-   <description>User doc examples for Weld-OSGi</description>
+    <description>User doc examples for Weld-OSGi</description>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
 
-   <modules>
-      <module>user-doc-chapter1</module>
-      <module>user-doc-chapter2</module>
-      <module>user-doc-chapter3</module>
-   </modules>
+    <modules>
+        <module>user-doc-chapter1</module>
+        <module>user-doc-chapter2</module>
+        <module>user-doc-chapter3</module>
+    </modules>
 
 </project>

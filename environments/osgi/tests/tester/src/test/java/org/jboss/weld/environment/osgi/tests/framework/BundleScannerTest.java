@@ -17,17 +17,20 @@
 
 package org.jboss.weld.environment.osgi.tests.framework;
 
-import org.junit.Ignore;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
+import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.jboss.weld.environment.osgi.tests.util.Environment;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Collection;
 
@@ -35,15 +38,15 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(JUnit4TestRunner.class)
-public class BundleScannerTest  {
+public class BundleScannerTest {
 
     @Configuration
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-scanner").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-innerscanner").version("1.1.5-SNAPSHOT")
-                                              )
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-scanner").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-innerscanner").version("1.1.6-SNAPSHOT")
+                )
         );
     }
 
@@ -53,38 +56,37 @@ public class BundleScannerTest  {
         Environment.waitForEnvironment(context);
 
         Bundle bundleScanner = null, bundleScannerInner = null;
-        for(Bundle b : context.getBundles()) {
+        for (Bundle b : context.getBundles()) {
             Assert.assertEquals("Bundle" + b.getSymbolicName() + " is not ACTIVE", Bundle.ACTIVE, b.getState());
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-scanner")) {
-                bundleScanner=b;
-            }
-            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-innerscanner")) {
-                bundleScannerInner=b;
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-scanner")) {
+                bundleScanner = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-innerscanner")) {
+                bundleScannerInner = b;
             }
         }
-        Assert.assertNotNull("The bundleScanner was not retrieved",bundleScanner);
-        Assert.assertNotNull("The bundleScannerInner was not retrieved",bundleScannerInner);
+        Assert.assertNotNull("The bundleScanner was not retrieved", bundleScanner);
+        Assert.assertNotNull("The bundleScannerInner was not retrieved", bundleScannerInner);
         ServiceReference factoryReference = context.getServiceReference(CDIContainerFactory.class.getName());
         CDIContainerFactory factory = (CDIContainerFactory) context.getService(factoryReference);
         Collection<CDIContainer> containers = factory.containers();
 
-        Assert.assertEquals("The container collection had the wrong number of containers",2,containers.size());
+        Assert.assertEquals("The container collection had the wrong number of containers", 2, containers.size());
 
         CDIContainer container1 = factory.container(bundleScanner);
         CDIContainer container2 = factory.container(bundleScannerInner);
-        Assert.assertNotNull("The container for bundleScanner was null",container1);
+        Assert.assertNotNull("The container for bundleScanner was null", container1);
         Assert.assertNotNull("The container for bundleScannerInner was null", container2);
-        Assert.assertTrue("The container for bundleScanner was not started",container1.isStarted());
-        Assert.assertTrue("The container for bundleScannerInner was not started",container2.isStarted());
+        Assert.assertTrue("The container for bundleScanner was not started", container1.isStarted());
+        Assert.assertTrue("The container for bundleScannerInner was not started", container2.isStarted());
 
         Collection<String> classScanner = container1.getBeanClasses();
         Collection<String> classScannerInner = container2.getBeanClasses();
-        Assert.assertNotNull("The bean class collection for bundleScanner was null",classScanner);
+        Assert.assertNotNull("The bean class collection for bundleScanner was null", classScanner);
         Assert.assertNotNull("The bean class collection for bundleScannerInner was null", classScannerInner);
-        Assert.assertEquals("The bean class collection size for bundleScanner was wrong",2,classScanner.size());
-        Assert.assertEquals("The bean class collection size for bundleScannerInner was wrong",1,classScannerInner.size());
+        Assert.assertEquals("The bean class collection size for bundleScanner was wrong", 2, classScanner.size());
+        Assert.assertEquals("The bean class collection size for bundleScannerInner was wrong", 1, classScannerInner.size());
         Assert.assertTrue("The class com.sample.ScannerClass was not registered for bundleScanner", classScanner.contains("org.jboss.weld.osgi.tests.ScannerClass"));
         Assert.assertTrue("The class com.sample.ScannerInnerClass was not registered for bundleScanner", classScanner.contains("org.jboss.weld.osgi.tests.ScannerInnerClass"));
-        Assert.assertTrue("The class com.sample.ScannerInnerClass was not registered for bundleScanner",classScannerInner.contains("org.jboss.weld.osgi.tests.ScannerInnerClass"));
+        Assert.assertTrue("The class com.sample.ScannerInnerClass was not registered for bundleScanner", classScannerInner.contains("org.jboss.weld.osgi.tests.ScannerInnerClass"));
     }
 }

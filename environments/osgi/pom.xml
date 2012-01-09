@@ -1,5 +1,5 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.osgi</groupId>
     <artifactId>weld-osgi-parent</artifactId>
@@ -9,8 +9,8 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <relativePath>../../parent/pom.xml</relativePath>
-        <version>1.1.5-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+        <version>1.1.6-SNAPSHOT</version>
     </parent>
 
     <licenses>
@@ -55,7 +55,7 @@
     </profiles>
 
     <description>
-      Support for Weld in OSGi Containers
+        Support for Weld in OSGi Containers
     </description>
 
     <properties>
@@ -64,11 +64,9 @@
         <javax.el.version>2.2</javax.el.version>
         <jsr250.api>1.0</jsr250.api>
         <jboss.interceptors.api.version>1.1</jboss.interceptors.api.version>
-        <weld.api.version>1.2-SNAPSHOT</weld.api.version>
-        <slf4j.version>1.6.1</slf4j.version>
         <logback.version>0.9.29</logback.version>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
 

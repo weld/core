@@ -2,81 +2,81 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <artifactId>weld-osgi-parent</artifactId>
-      <groupId>org.jboss.weld.osgi</groupId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi.tests</groupId>
-   <artifactId>weld-osgi-tests</artifactId>
-   <packaging>pom</packaging>
-   <name>Weld OSGi (Tests)</name>
+    <parent>
+        <artifactId>weld-osgi-parent</artifactId>
+        <groupId>org.jboss.weld.osgi</groupId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.tests</groupId>
+    <artifactId>weld-osgi-tests</artifactId>
+    <packaging>pom</packaging>
+    <name>Weld OSGi (Tests)</name>
 
-   <description>Integration tests for Weld-OSGi</description>
+    <description>Integration tests for Weld-OSGi</description>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
 
-   <modules>
-      <module>tester</module>
-      <module>bundles/bundle1</module>
-      <module>bundles/bundle2</module>
-      <module>bundles/bundle3</module>
-      <module>bundles/importing-bundle</module>
-      <module>bundles/scanner</module>
-      <module>bundles/scanner-inner</module>
-      <module>bundles/cdi-spi</module>
-      <module>bundles/life-cycle</module>
-   </modules>
+    <modules>
+        <module>tester</module>
+        <module>bundles/bundle1</module>
+        <module>bundles/bundle2</module>
+        <module>bundles/bundle3</module>
+        <module>bundles/importing-bundle</module>
+        <module>bundles/scanner</module>
+        <module>bundles/scanner-inner</module>
+        <module>bundles/cdi-spi</module>
+        <module>bundles/life-cycle</module>
+    </modules>
 
-   <build>
-      <pluginManagement>
-         <plugins>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>2.1.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <_include>
+                                -target/classes/META-INF/${project.artifactId}.bnd
+                            </_include>
+                        </instructions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
             <plugin>
-               <groupId>org.apache.felix</groupId>
-               <artifactId>maven-bundle-plugin</artifactId>
-               <version>2.1.0</version>
-               <extensions>true</extensions>
-               <configuration>
-                  <instructions>
-                     <_include>
-                        -target/classes/META-INF/${project.artifactId}.bnd
-                     </_include>
-                  </instructions>
-               </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
             </plugin>
-         </plugins>
-      </pluginManagement>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
-            <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>
+        </plugins>
+    </build>
 
 </project>

@@ -3,173 +3,174 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi.examples</groupId>
-   <artifactId>weld-osgi-container-lite</artifactId>
-   <version>1.1.5-SNAPSHOT</version>
-   <name>Weld OSGi (Examples Container PojoSR)</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.examples</groupId>
+    <artifactId>weld-osgi-container-lite</artifactId>
+    <version>1.1.6-SNAPSHOT</version>
+    <name>Weld OSGi (Examples Container PojoSR)</name>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
 
-   <dependencies>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi.examples</groupId>
-         <artifactId>weld-osgi-paint-api</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi.examples</groupId>
-         <artifactId>weld-osgi-paint-core</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi.examples</groupId>
-         <artifactId>weld-osgi-paint-square</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi.examples</groupId>
-         <artifactId>weld-osgi-paint-triangle</artifactId>
-         <version>${project.version}</version>
-      </dependency>
+    <dependencies>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-api</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-spi</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-extension</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-mandatory</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-integration</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.osgi</groupId>
-         <artifactId>org.osgi.core</artifactId>
-         <version>4.2.0</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-	  <dependency>
-         <groupId>com.googlecode.pojosr</groupId>
-         <artifactId>de.kalpatec.pojosr.framework</artifactId>
-         <version>0.1.4</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.apache.felix.gogo</groupId>
-         <artifactId>org.apache.felix.gogo.commands</artifactId>
-         <version>0.4.0</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>org.apache.felix.shell.tui</artifactId>
-         <version>1.0.2</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>org.apache.felix.shell</artifactId>
-         <version>1.0.2</version>
-      </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-square</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-      <dependency>
-         <groupId>org.jboss.weld</groupId>
-         <artifactId>weld-core</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.jboss.weld.se</groupId>
-         <artifactId>weld-se-core</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-   </dependencies>
+        <dependency>
+            <groupId>org.jboss.weld.osgi.examples</groupId>
+            <artifactId>weld-osgi-paint-triangle</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>compile</id>
-                  <phase>package</phase>
-                  <goals>
-                     <goal>run</goal>
-                  </goals>
-                  <configuration>
-                     <tasks>
-                        <copy file="${maven.dependency.com.googlecode.pojosr.de.kalpatec.pojosr.framework.jar.path}" tofile="${project.build.directory}/pojosr.jar"/>
-                     </tasks>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>create-executable-jar</id>
-                  <phase>package</phase>
-                  <goals>
-                     <goal>single</goal>
-                  </goals>
-                  <configuration>
-                     <descriptors>
-                        <descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
-                     </descriptors>
-                     <finalName>${project.artifactId}-${project.version}</finalName>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
-      </plugins>
-   </build>
-    
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-spi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-extension</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-mandatory</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.pojosr</groupId>
+            <artifactId>de.kalpatec.pojosr.framework</artifactId>
+            <version>0.1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix.gogo</groupId>
+            <artifactId>org.apache.felix.gogo.commands</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell.tui</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <copy file="${maven.dependency.com.googlecode.pojosr.de.kalpatec.pojosr.framework.jar.path}"
+                                      tofile="${project.build.directory}/pojosr.jar"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-executable-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/src/main/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

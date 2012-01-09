@@ -2,63 +2,63 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi.tests</groupId>
-      <artifactId>weld-osgi-tests</artifactId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi.tests</groupId>
-   <artifactId>weld-osgi-bundle2</artifactId>
-   <packaging>bundle</packaging>
-   <name>Weld OSGi (Test bundle 2)</name>
+    <parent>
+        <groupId>org.jboss.weld.osgi.tests</groupId>
+        <artifactId>weld-osgi-tests</artifactId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi.tests</groupId>
+    <artifactId>weld-osgi-bundle2</artifactId>
+    <packaging>bundle</packaging>
+    <name>Weld OSGi (Test bundle 2)</name>
 
-   <description>Integration tests for Weld-OSGi Bundle 2</description>
+    <description>Integration tests for Weld-OSGi Bundle 2</description>
 
-   <url>http://www.seamframework.org/Weld</url>
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
-   <developers>
-      <developer>
-         <name>Mathieu Ancelin</name>
-         <email>mathieu.ancelin@serli.com</email>
-      </developer>
-      <developer>
-         <name>Matthieu Clochard</name>
-         <email>matthieu.clochard@serli.com</email>
-      </developer>
-   </developers>
-   
-   <dependencies>
-       
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-api</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-      <dependency>
-         <groupId>org.jboss.weld.osgi.tests</groupId>
-         <artifactId>weld-osgi-bundle1</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-        
-   </dependencies>
+    <developers>
+        <developer>
+            <name>Mathieu Ancelin</name>
+            <email>mathieu.ancelin@serli.com</email>
+        </developer>
+        <developer>
+            <name>Matthieu Clochard</name>
+            <email>matthieu.clochard@serli.com</email>
+        </developer>
+    </developers>
 
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-         </plugin>
-      </plugins>
-   </build>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.osgi.tests</groupId>
+            <artifactId>weld-osgi-bundle1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

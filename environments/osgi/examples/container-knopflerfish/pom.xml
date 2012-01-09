@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.osgi.examples</groupId>
     <artifactId>weld-osgi-container-knopflerfish</artifactId>
-    <version>1.1.5-SNAPSHOT</version>
+    <version>1.1.6-SNAPSHOT</version>
     <name>Weld OSGi (Examples Container Knopflerfish)</name>
 
     <description>Standalone example for Weld-OSGi</description>
@@ -289,8 +289,10 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <copy file="target/classes/config.xargs" tofile="${project.build.directory}/config.xargs"/>
-                                <copy file="${maven.dependency.org.knopflerfish.framework.jar.path}" tofile="${project.build.directory}/knopflerfish.jar"/>
+                                <copy file="target/classes/config.xargs"
+                                      tofile="${project.build.directory}/config.xargs"/>
+                                <copy file="${maven.dependency.org.knopflerfish.framework.jar.path}"
+                                      tofile="${project.build.directory}/knopflerfish.jar"/>
                             </tasks>
                         </configuration>
                     </execution>

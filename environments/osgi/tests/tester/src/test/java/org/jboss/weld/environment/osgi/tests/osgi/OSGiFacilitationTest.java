@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.osgi;
 
-import java.io.File;
+import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.util.BundleProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,12 +25,12 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
+import java.io.File;
 import java.util.Dictionary;
 import java.util.Map;
 
@@ -44,11 +44,11 @@ public class OSGiFacilitationTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle2").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle3").version("1.1.5-SNAPSHOT")
-                                              )
-                      );
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle2").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle3").version("1.1.6-SNAPSHOT")
+                )
+        );
     }
 
     @Test
@@ -57,41 +57,41 @@ public class OSGiFacilitationTest {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundle2 = null;
-        for(Bundle b : context.getBundles()) {
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
-                bundle1=b;
+        for (Bundle b : context.getBundles()) {
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
+                bundle1 = b;
                 break;
             }
         }
 
-        ServiceReference[] bundleProviderServiceReferences = context.getServiceReferences(BundleProvider.class.getName(),null);
+        ServiceReference[] bundleProviderServiceReferences = context.getServiceReferences(BundleProvider.class.getName(), null);
         Assert.assertNotNull("The bundle provider reference array was null", bundleProviderServiceReferences);
-        Assert.assertEquals("The number of bundle provider implementations was wrong", 1,bundleProviderServiceReferences.length);
-        BundleProvider bundleProvider = (BundleProvider)context.getService(bundleProviderServiceReferences[0]);
-        Assert.assertNotNull("The bundle provider was null",bundleProvider);
+        Assert.assertEquals("The number of bundle provider implementations was wrong", 1, bundleProviderServiceReferences.length);
+        BundleProvider bundleProvider = (BundleProvider) context.getService(bundleProviderServiceReferences[0]);
+        Assert.assertNotNull("The bundle provider was null", bundleProvider);
 
         Bundle injectedBundle = bundleProvider.getBundle();
-        Assert.assertNotNull("The injected bundle was null",injectedBundle);
-        Assert.assertEquals("The injected bundle was not the bundle1",bundle1,injectedBundle);
+        Assert.assertNotNull("The injected bundle was null", injectedBundle);
+        Assert.assertEquals("The injected bundle was not the bundle1", bundle1, injectedBundle);
 
         BundleContext injectedContext = bundleProvider.getBundleContext();
         Assert.assertNotNull("The injected bundle context was null", injectedBundle);
-        Assert.assertEquals("The injected bundle context was not the bundle1 bundle context",bundle1,injectedContext.getBundle());
+        Assert.assertEquals("The injected bundle context was not the bundle1 bundle context", bundle1, injectedContext.getBundle());
 
-        Map<String,String> metadata = bundleProvider.getMetadata();
+        Map<String, String> metadata = bundleProvider.getMetadata();
         Dictionary headers = bundle1.getHeaders();
         Assert.assertNotNull("The injected bundle metadata was null", metadata);
-        Assert.assertEquals("The injected bundle metadata had the wrong size",headers.size(),metadata.size());
-        for(String s : metadata.keySet()) {
-            Assert.assertEquals("The injected metadata header was not the bundle1 header",headers.get(s),metadata.get(s));
+        Assert.assertEquals("The injected bundle metadata had the wrong size", headers.size(), metadata.size());
+        for (String s : metadata.keySet()) {
+            Assert.assertEquals("The injected metadata header was not the bundle1 header", headers.get(s), metadata.get(s));
         }
 
         String symbolicName = bundleProvider.getSymbolicName();
-        Assert.assertNotNull("The injected bundle symbolic name was null",symbolicName);
-        Assert.assertEquals("The injected symbolic name was not the bundle1 symbolic name",bundle1.getSymbolicName(),symbolicName);
+        Assert.assertNotNull("The injected bundle symbolic name was null", symbolicName);
+        Assert.assertEquals("The injected symbolic name was not the bundle1 symbolic name", bundle1.getSymbolicName(), symbolicName);
 
         File file = bundleProvider.getFile();
-        Assert.assertNotNull("The injected bundle file was null",file);
-        Assert.assertEquals("The injected bundle file was not the bundle1 file",injectedContext.getDataFile("test.txt"),file);
+        Assert.assertNotNull("The injected bundle file was null", file);
+        Assert.assertEquals("The injected bundle file was not the bundle1 file", injectedContext.getDataFile("test.txt"), file);
     }
 }

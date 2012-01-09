@@ -2,48 +2,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi</groupId>
-      <artifactId>weld-osgi-core</artifactId>
-      <version>1.1.5-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi</groupId>
-   <artifactId>weld-osgi-ee-integration</artifactId>
-   <packaging>jar</packaging>
-   <name>Weld OSGi (EE Integration)</name>
-   <description>Weld OSGi EE bundle</description>
+    <parent>
+        <groupId>org.jboss.weld.osgi</groupId>
+        <artifactId>weld-osgi-core</artifactId>
+        <version>1.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi</groupId>
+    <artifactId>weld-osgi-ee-integration</artifactId>
+    <packaging>jar</packaging>
+    <name>Weld OSGi (EE Integration)</name>
+    <description>Weld OSGi EE bundle</description>
 
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
-   <url>http://www.seamframework.org/Weld</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+    <url>http://www.seamframework.org/Weld</url>
 
-   <dependencies>
+    <dependencies>
 
-      <dependency>
-         <groupId>org.jboss.weld.osgi</groupId>
-         <artifactId>weld-osgi-core-extension</artifactId>
-         <version>${project.version}</version>
-      </dependency>
-	<dependency>
-	            <groupId>javax</groupId>
-	            <artifactId>javaee-web-api</artifactId>
-	            <version>6.0</version>
-	            <scope>provided</scope>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.osgi</groupId>
-	            <artifactId>org.osgi.core</artifactId>
-	            <version>4.2.0</version>
-	            <scope>provided</scope>
-	        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-extension</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>4.2.0</version>
+            <scope>provided</scope>
+        </dependency>
 
-   </dependencies>
+    </dependencies>
 
 </project>

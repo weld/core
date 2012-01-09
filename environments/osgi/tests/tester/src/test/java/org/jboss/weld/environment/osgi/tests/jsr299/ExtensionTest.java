@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.osgi.tests.jsr299;
 
-import org.junit.Ignore;
+import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.cdispi.ServiceExtensionProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +25,11 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.jboss.weld.environment.osgi.tests.util.Environment;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -38,9 +41,9 @@ public class ExtensionTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("1.1.5-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-cdi-spi").version("1.1.5-SNAPSHOT")
-                                              )
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1").version("1.1.6-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-cdi-spi").version("1.1.6-SNAPSHOT")
+                )
         );
     }
 
@@ -50,23 +53,22 @@ public class ExtensionTest {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundleExtension = null;
-        for(Bundle b : context.getBundles()) {
+        for (Bundle b : context.getBundles()) {
             Assert.assertEquals("Bundle" + b.getSymbolicName() + " is not ACTIVE", Bundle.ACTIVE, b.getState());
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
-                bundle1=b;
-            }
-            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
-                bundleExtension=b;
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
+                bundle1 = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
+                bundleExtension = b;
             }
         }
         Assert.assertNotNull("The bundle1 was not retrieved", bundle1);
-        Assert.assertNotNull("The bundleExtension was not retrieved",bundleExtension);
+        Assert.assertNotNull("The bundleExtension was not retrieved", bundleExtension);
 
-        ServiceReference[] serviceExtensionProviderReferences = context.getServiceReferences(ServiceExtensionProvider.class.getName(),null);
-        Assert.assertNotNull("The extension service provider reference array was null",serviceExtensionProviderReferences);
-        Assert.assertEquals("The number of extension service provider implementations was wrong", 1,serviceExtensionProviderReferences.length);
-        ServiceExtensionProvider provider = (ServiceExtensionProvider)context.getService(serviceExtensionProviderReferences[0]);
-        Assert.assertNotNull("The extension service provider was null",provider);
+        ServiceReference[] serviceExtensionProviderReferences = context.getServiceReferences(ServiceExtensionProvider.class.getName(), null);
+        Assert.assertNotNull("The extension service provider reference array was null", serviceExtensionProviderReferences);
+        Assert.assertEquals("The number of extension service provider implementations was wrong", 1, serviceExtensionProviderReferences.length);
+        ServiceExtensionProvider provider = (ServiceExtensionProvider) context.getService(serviceExtensionProviderReferences[0]);
+        Assert.assertNotNull("The extension service provider was null", provider);
 
 //        PropertyService serviceExtension = provider.getServiceExtension();
 //        Assert.assertNotNull("The extension service was null",serviceExtension);

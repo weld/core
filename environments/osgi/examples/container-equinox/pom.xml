@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.osgi.examples</groupId>
     <artifactId>weld-osgi-container-equinox</artifactId>
-    <version>1.1.5-SNAPSHOT</version>
+    <version>1.1.6-SNAPSHOT</version>
     <name>Weld OSGi (Examples Container Equinox)</name>
 
     <description>Standalone example for Weld-OSGi</description>
@@ -290,7 +290,8 @@
                         <configuration>
                             <tasks>
                                 <copy file="target/classes/config.ini" tofile="${project.build.directory}/config.ini"/>
-                                <copy file="${maven.dependency.org.eclipse.equinox.org.eclipse.osgi.jar.path}" tofile="${project.build.directory}/equinox.jar"/>
+                                <copy file="${maven.dependency.org.eclipse.equinox.org.eclipse.osgi.jar.path}"
+                                      tofile="${project.build.directory}/equinox.jar"/>
                             </tasks>
                         </configuration>
                     </execution>
