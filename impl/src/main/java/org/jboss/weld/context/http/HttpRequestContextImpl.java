@@ -22,17 +22,19 @@
  */
 package org.jboss.weld.context.http;
 
+import java.lang.annotation.Annotation;
+
+import javax.enterprise.context.RequestScoped;
+import javax.servlet.http.HttpServletRequest;
+
 import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.RequestBeanStore;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.util.reflection.Reflections;
 
-import javax.enterprise.context.RequestScoped;
-import javax.servlet.ServletRequest;
-import java.lang.annotation.Annotation;
-
-public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest> implements HttpRequestContext {
+public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpRequestContext {
 
     private static final String IDENTIFIER = HttpRequestContextImpl.class.getName();
 
@@ -46,7 +48,7 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
         this.namingScheme = new SimpleNamingScheme(HttpRequestContext.class.getName());
     }
 
-    public boolean associate(ServletRequest request) {
+    public boolean associate(HttpServletRequest request) {
         if (request.getAttribute(IDENTIFIER) == null) {
             request.setAttribute(IDENTIFIER, IDENTIFIER);
             setBeanStore(new RequestBeanStore(request, namingScheme));
@@ -57,7 +59,7 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
         }
     }
 
-    public boolean dissociate(ServletRequest request) {
+    public boolean dissociate(HttpServletRequest request) {
         if (request.getAttribute(IDENTIFIER) != null) {
             try {
                 setBeanStore(null);
@@ -91,4 +93,10 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
         return RequestScoped.class;
     }
 
+    public HttpServletRequest getHttpServletRequest() {
+        if (getBeanStore() instanceof RequestBeanStore) {
+            return Reflections.<RequestBeanStore>cast(getBeanStore()).getRequest();
+        }
+        return null;
+    }
 }

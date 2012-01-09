@@ -6,6 +6,8 @@ import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import java.util.Collection;
 import java.util.Enumeration;
 
@@ -24,9 +26,9 @@ import java.util.Enumeration;
  */
 public class RequestBeanStore extends AttributeBeanStore {
 
-    private final ServletRequest request;
+    private final HttpServletRequest request;
 
-    public RequestBeanStore(ServletRequest request, NamingScheme namingScheme) {
+    public RequestBeanStore(HttpServletRequest request, NamingScheme namingScheme) {
         super(namingScheme);
         this.request = request;
     }
@@ -68,4 +70,7 @@ public class RequestBeanStore extends AttributeBeanStore {
         return true;
     }
 
+    public HttpServletRequest getRequest() {
+        return request;
+    }
 }
