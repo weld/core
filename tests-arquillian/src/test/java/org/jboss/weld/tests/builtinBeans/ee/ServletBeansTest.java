@@ -19,39 +19,51 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.weld.tests.contexts.application.event;
+package org.jboss.weld.tests.builtinBeans.ee;
 
-import javax.servlet.ServletContext;
+import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-/**
- * Verifies that an observer is not notified of a non-visible {@link ServletContext}.
- * 
- * @author Jozef Hartinger
- * 
- */
-@RunWith(Arquillian.class)
-@Ignore("WELD-1042")
-public class MultiWarTest {
+import com.gargoylesoftware.htmlunit.WebClient;
 
+@RunWith(Arquillian.class)
+@Category(Integration.class)
+public class ServletBeansTest {
+
+    @ArquillianResource(Servlet.class)
+    private URL url;
+    
     @Deployment(testable = false)
-    public static EnterpriseArchive getDeployment() {
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war").addClasses(Observer2.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war").addClasses(Observer3.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(war1, war2).addAsManifestResource(MultiWarTest.class.getPackage(), "application.xml", "application.xml");
+    public static WebArchive getDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "servletBuiltinBeanTest.war").addClasses(Servlet.class, ServletBuiltinBeanInjectingBean.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test
-    public void test() {
-        // noop - the deployment either fails or not
+    public void testHttpServletRequest() throws Exception {
+        WebClient client = new WebClient();
+        client.getPage(url + "/request?foo=bar");
+    }
+
+    @Test
+    public void testHttpSession() throws Exception {
+        WebClient client = new WebClient();
+        client.getPage(url + "/session");
+    }
+    
+    @Test
+    public void testServletContext() throws Exception {
+        WebClient client = new WebClient();
+        client.getPage(url + "/context");
     }
 }

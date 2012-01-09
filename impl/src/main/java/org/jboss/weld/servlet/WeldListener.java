@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.builtin.ee.ServletContextBean;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.context.http.HttpConversationContext;
@@ -169,6 +170,7 @@ public class WeldListener extends AbstractServletListener {
                     requestContext().dissociate(request);
                     sessionContext().dissociate(request);
                     conversationContext().dissociate(request);
+                    ServletContextBean.cleanup();
                 }
             } else {
                 throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
@@ -206,6 +208,8 @@ public class WeldListener extends AbstractServletListener {
         if (Container.available()) {
             if (event.getServletRequest() instanceof HttpServletRequest) {
                 HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
+
+                ServletContextBean.setServletContext(event.getServletContext());
 
                 requestContext().associate(request);
                 sessionContext().associate(request);

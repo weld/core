@@ -46,7 +46,10 @@ import org.jboss.weld.bean.builtin.InterceptedBeanMetadataBean;
 import org.jboss.weld.bean.builtin.InterceptorMetadataBean;
 import org.jboss.weld.bean.builtin.ee.DefaultValidatorBean;
 import org.jboss.weld.bean.builtin.ee.DefaultValidatorFactoryBean;
+import org.jboss.weld.bean.builtin.ee.HttpServletRequestBean;
+import org.jboss.weld.bean.builtin.ee.HttpSessionBean;
 import org.jboss.weld.bean.builtin.ee.PrincipalBean;
+import org.jboss.weld.bean.builtin.ee.ServletContextBean;
 import org.jboss.weld.bean.builtin.ee.UserTransactionBean;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -69,6 +72,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.BeansClosure;
+import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -201,6 +205,12 @@ public class BeanDeployment {
         beanDeployer.getEnvironment().addBuiltInBean(new DecoratedBeanMetadataBean(beanManager));
         beanDeployer.getEnvironment().addBuiltInBean(new InterceptorMetadataBean(beanManager));
         beanDeployer.getEnvironment().addBuiltInBean(new DecoratorMetadataBean(beanManager));
+        if (Reflections.isClassLoadable("javax.servlet.ServletContext", beanDeploymentArchive.getServices().get(ResourceLoader.class))) {
+            HttpServletRequestBean httpServletRequestBean = new HttpServletRequestBean(beanManager);
+            beanDeployer.getEnvironment().addBuiltInBean(httpServletRequestBean);
+            beanDeployer.getEnvironment().addBuiltInBean(new HttpSessionBean(httpServletRequestBean, beanManager));
+            beanDeployer.getEnvironment().addBuiltInBean(new ServletContextBean(beanManager));
+        }
         if (beanManager.getServices().contains(TransactionServices.class)) {
             beanDeployer.getEnvironment().addBuiltInBean(new UserTransactionBean(beanManager));
         }
