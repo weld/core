@@ -22,9 +22,12 @@ import java.util.List;
  * Thrown if the definition of a bean is incorrect
  *
  * @author Pete Muir
+ * @author Jozef Hartinger
  */
-public class DefinitionException extends WeldException {
+public class DefinitionException extends javax.enterprise.inject.spi.DefinitionException {
     private static final long serialVersionUID = 8014646336322875707L;
+
+    private WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given localized message key and optional
@@ -35,7 +38,8 @@ public class DefinitionException extends WeldException {
      * @param args Optional arguments to insert into the message
      */
     public <E extends Enum<?>> DefinitionException(E key, Object... args) {
-        super(key, args);
+        super(DefinitionException.class.getName()); // the no-args constructor is missing
+        this.message = new WeldExceptionKeyMessage(key, args);
     }
 
     /**
@@ -49,6 +53,7 @@ public class DefinitionException extends WeldException {
      */
     public <E extends Enum<?>> DefinitionException(E key, Throwable throwable, Object... args) {
         super(throwable);
+        this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
     }
 
     /**
@@ -58,6 +63,7 @@ public class DefinitionException extends WeldException {
      */
     public DefinitionException(Throwable throwable) {
         super(throwable);
+        this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
     }
 
     /**
@@ -68,7 +74,17 @@ public class DefinitionException extends WeldException {
      * @param errors A list of throwables to use in the message
      */
     public DefinitionException(List<Throwable> errors) {
-        super(errors);
+        super(DefinitionException.class.getName()); // the no-args constructor is missing
+        this.message = new WeldExceptionListMessage(errors);
     }
 
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public String getMessage() {
+        return message.getAsString();
+    }
 }

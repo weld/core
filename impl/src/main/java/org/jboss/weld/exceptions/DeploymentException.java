@@ -22,9 +22,12 @@ import java.util.List;
  * Thrown if an deployment exception occurs.
  *
  * @author Pete Muir
+ * @author Jozef Hartinger
  */
-public class DeploymentException extends WeldException {
+public class DeploymentException extends javax.enterprise.inject.spi.DeploymentException {
     private static final long serialVersionUID = 8014646336322875707L;
+
+    private WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given localized message key and optional
@@ -35,7 +38,8 @@ public class DeploymentException extends WeldException {
      * @param args Optional arguments to insert into the message
      */
     public <E extends Enum<?>> DeploymentException(E key, Object... args) {
-        super(key, args);
+        super(DeploymentException.class.getName()); // the no-args constructor is missing
+        this.message = new WeldExceptionKeyMessage(key, args);
     }
 
     /**
@@ -48,7 +52,8 @@ public class DeploymentException extends WeldException {
      * @param args      Optional arguments to insert into the message
      */
     public <E extends Enum<?>> DeploymentException(E key, Throwable throwable, Object... args) {
-        super(key, throwable, args);
+        super(throwable);
+        this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
     }
 
     /**
@@ -58,6 +63,7 @@ public class DeploymentException extends WeldException {
      */
     public DeploymentException(Throwable throwable) {
         super(throwable);
+        this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
     }
 
     /**
@@ -68,6 +74,17 @@ public class DeploymentException extends WeldException {
      * @param errors A list of throwables to use in the message
      */
     public DeploymentException(List<Throwable> errors) {
-        super(errors);
+        super(DeploymentException.class.getName()); // the no-args constructor is missing
+        this.message = new WeldExceptionListMessage(errors);
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return getMessage();
+    }
+
+    @Override
+    public String getMessage() {
+        return message.getAsString();
     }
 }
