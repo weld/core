@@ -69,11 +69,15 @@ public class ConversationPropagationFilter implements Filter {
         return new HttpServletResponseWrapper(response) {
             @Override
             public void sendRedirect(String path) throws IOException {
-                ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
-                if (conversationContext.isActive()) {
-                    Conversation conversation = conversationContext.getCurrentConversation();
-                    if (!conversation.isTransient()) {
-                        path = new FacesUrlTransformer(path, FacesContext.getCurrentInstance()).toRedirectViewId().toActionUrl().appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).encode();
+                FacesContext context = FacesContext.getCurrentInstance();
+                if (context != null) { // this is a JSF request
+                    ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
+                    if (conversationContext.isActive()) {
+                        Conversation conversation = conversationContext.getCurrentConversation();
+                        if (!conversation.isTransient()) {
+                            path = new FacesUrlTransformer(path, context).toRedirectViewId().toActionUrl()
+                                    .appendConversationIdIfNecessary(conversationContext.getParameterName(), conversation.getId()).encode();
+                        }
                     }
                 }
                 super.sendRedirect(path);
