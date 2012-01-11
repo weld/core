@@ -65,6 +65,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.jsr299.tck</groupId>
+            <artifactId>jsr299-tck-impl</artifactId>
+            <version>${cdi.tck-1-1.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
             <scope>test</scope>
@@ -200,12 +207,6 @@
                         </exclusion>
                     </exclusions>
                 </dependency>
-                <dependency>
-                    <groupId>org.jboss.jsr299.tck</groupId>
-                    <artifactId>jsr299-tck-impl</artifactId>
-                    <version>${cdi.tck-1-1.version}</version>
-                    <scope>test</scope>
-                </dependency>
             </dependencies>
             <build>
                 <resources>
@@ -268,10 +269,68 @@
                     <version>${arquillian.version}</version>
                     <scope>test</scope>
                 </dependency>
+            </dependencies>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/test/jbossas7</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.10</version>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <systemPropertyVariables>
+                                <!-- Silencing the broken code in getActiveConfiguration(), 
+                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
+                                <arquillian.launch>jboss-as-7</arquillian.launch>
+                                <!-- -DforkMode=never http://stackoverflow.com/questions/824019/maven-2-1-0-not-passing-on-system-properties-to-java-virtual-machine -->
+                                <!-- jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name-->
+                                <org.jboss.jsr299.tck.libraryDirectory>target/dependency/lib</org.jboss.jsr299.tck.libraryDirectory>
+                                <org.jboss.jsr299.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.jsr299.tck.testDataSource>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>incontainer-remote</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>incontainer-remote</name>
+                </property>
+            </activation>
+            <dependencies>
                 <dependency>
-                    <groupId>org.jboss.jsr299.tck</groupId>
-                    <artifactId>jsr299-tck-impl</artifactId>
-                    <version>${cdi.tck-1-1.version}</version>
+                    <groupId>org.jboss.as</groupId>
+                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
+                    <version>${jboss.as7.version}</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-spi</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-servlet</artifactId>
+                    <version>${arquillian.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
