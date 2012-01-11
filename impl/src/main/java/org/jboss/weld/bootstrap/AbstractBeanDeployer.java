@@ -238,13 +238,21 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     protected <T> void createDecorator(WeldClass<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
         DecoratorImpl<T> bean = DecoratorImpl.of(attributes, weldClass, manager, services);
-        getEnvironment().addDecorator(bean);
+        // fire ProcessBeanAttributes for decorator
+        boolean vetoed = fireProcessBeanAttributes(bean);
+        if (!vetoed) {
+            getEnvironment().addDecorator(bean);
+        }
     }
 
     protected <T> void createInterceptor(WeldClass<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
         InterceptorImpl<T> bean = InterceptorImpl.of(attributes, weldClass, manager, services);
-        getEnvironment().addInterceptor(bean);
+        // fire ProcessBeanAttributes for decorator
+        boolean vetoed = fireProcessBeanAttributes(bean);
+        if (!vetoed) {
+            getEnvironment().addInterceptor(bean);
+        }
     }
 
     protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor) {

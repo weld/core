@@ -163,13 +163,6 @@
                     <exclude name="testProcessInjectionTargetEventFiredForMessageDrivenBean" />
                 </methods>
             </class>
-            <!-- WELD-1045 -->
-             <class name="org.jboss.jsr299.tck.tests.extensions.lifecycle.processBeanAttributes.VerifyValuesTest">
-                <methods>
-                    <exclude name="testInterceptorBeanAttributes" />
-                    <exclude name="testDecoratorBeanAttributes" />
-                </methods>
-            </class>
             <!-- WELD-1046 -->
             <class name="org.jboss.jsr299.tck.tests.extensions.lifecycle.processBeanAttributes.VerifyValuesTest">
                 <methods>
