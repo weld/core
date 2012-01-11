@@ -11,13 +11,13 @@ mkdir -p $draft_dir
 
 echo "Pulling latest translations from Zanata server"
 # write PO files to a different directory under target
-mvn zanata:publican-pull -e -Dzanata.dstDir=$draft_dir
+mvn zanata:pull -e -Dzanata.transDir=$draft_dir -B
 
 # draft build the translated documents
 # (alternative: run Ant from weld/build/dist)
 
 # copy en-US source to draft dir for use by jDocBook
-cp -a src/main/docbook/en-US $draft_dir/en-US
+cp -a src/main/docbook/en-US $draft_dir/
 
 echo "Building translated documentation with jDocBook"
 

@@ -9,7 +9,7 @@ echo "Updating POT files"
 
 # push updated pot files to zanata for translation
 echo "Pushing updated POT files to Zanata for translation"
-mvn zanata:publican-push -e -B
+mvn zanata:push -e -B
 
 # optional: push pot files back to VCS (probably best avoided for nightly jobs)
 echo "Finished!  You may want to check src/main/docbook into version control to track the updated POT files"
