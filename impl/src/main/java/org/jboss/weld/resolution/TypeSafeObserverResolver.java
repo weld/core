@@ -16,15 +16,20 @@
  */
 package org.jboss.weld.resolution;
 
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ObserverMethod;
+
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.inject.spi.ObserverMethod;
-import java.util.Set;
 
 /**
  * @author pmuir
+ * @author Jozef Hartinger
  */
 public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>> {
 
@@ -37,7 +42,19 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
 
     @Override
     protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer) {
-        return Reflections.matches(observer.getObservedType(), resolvable.getTypes()) && Beans.containsAllQualifiers(observer.getObservedQualifiers(), resolvable.getQualifiers(), manager);
+        return Reflections.matches(observer.getObservedType(), resolvable.getTypes())
+                && Beans.containsAllQualifiers(observer.getObservedQualifiers(), resolvable.getQualifiers(), manager)
+                // container lifecycle events are fired into Extensions only
+                && (!isContainerLifecycleEvent(resolvable) || Extension.class.isAssignableFrom(observer.getBeanClass()));
+    }
+
+    protected boolean isContainerLifecycleEvent(Resolvable resolvable) {
+        for (Type type : resolvable.getTypes()) {
+            if (Observers.CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(type))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

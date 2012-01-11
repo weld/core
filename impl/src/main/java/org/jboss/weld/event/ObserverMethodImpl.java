@@ -42,14 +42,12 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -213,9 +211,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     }
 
     public void notify(final T event) {
-        if (ignore(event)) {
-            return;
-        }
         sendEvent(event);
     }
 
@@ -283,16 +278,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     protected Object getReceiver(CreationalContext<?> ctx) {
         return beanManager.getReference(declaringBean, ctx, false);
-    }
-
-    protected boolean ignore(T event) {
-        Class<?> eventType = event.getClass();
-        // This is a container lifeycle event, ensure we are firing to an extension
-        if (AbstractContainerEvent.class.isAssignableFrom(eventType) && !Extension.class.isAssignableFrom(getBeanClass())) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     @Override
