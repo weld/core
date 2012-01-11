@@ -18,6 +18,7 @@ package org.jboss.weld.bootstrap;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
+import org.jboss.weld.Weld;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.ContextBean;
@@ -93,6 +94,7 @@ import org.slf4j.cal10n.LocLogger;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
 import java.net.URL;
 import java.util.ArrayList;
@@ -491,6 +493,14 @@ public class WeldBootstrap implements Bootstrap {
                     } finally {
                         Container.instance().setState(ContainerState.SHUTDOWN);
                         Container.instance().cleanup();
+                        // remove BeanManager references
+                        try {
+                            CDI<?> cdi = CDI.current();
+                            if (cdi instanceof Weld<?>) {
+                                ((Weld<?>) cdi).cleanup();
+                            }
+                        } catch (java.lang.IllegalStateException ignored) {
+                        }
                     }
                 }
             }
