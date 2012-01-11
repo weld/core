@@ -27,9 +27,16 @@
         <pdf.name>weld-reference.pdf</pdf.name>
         <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
         <jdocbookSourceDirectory>src/main/docbook</jdocbookSourceDirectory>
-        <zanata.plugin.version>1.3</zanata.plugin.version>
-        <zanata.srcDir>src/main/docbook</zanata.srcDir>
-        <zanata.dstDir>src/main/docbook</zanata.dstDir>
+        <zanata.plugin.version>1.6.0</zanata.plugin.version>
+        <!--
+            The properties zanata.srcDir and zanata.transDir are
+            recognized by zanata-maven-plugin when executing
+            mvn zanata:push or zanata:pull.
+        -->
+        <!-- source language directory, for POT files -->
+        <zanata.srcDir>src/main/docbook/pot</zanata.srcDir>
+        <!-- target languages directory, for PO files -->
+        <zanata.transDir>src/main/docbook</zanata.transDir>
     </properties>
 
     <build>

@@ -5,6 +5,6 @@ set -eu
 
 # pull latest translations into po files
 echo "Pulling latest translations from Zanata server"
-mvn zanata:publican-pull -e
+mvn zanata:pull -e
 
 echo "Finished! Don't forget to check src/main/docbook into version control to record the updated PO files"
