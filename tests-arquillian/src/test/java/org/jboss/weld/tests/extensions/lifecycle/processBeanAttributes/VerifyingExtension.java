@@ -30,19 +30,19 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 public class VerifyingExtension implements Extension {
 
     private BeanAttributes<Alpha> alpha;
-    private BeanAttributes<BravoProducer> bravo;
-    private BeanAttributes<CharlieProducer> charlie;
+    private BeanAttributes<Bravo> bravo;
+    private BeanAttributes<Charlie> charlie;
     private BeanAttributes<Mike> mike;
 
     void observeAlpha(@Observes ProcessBeanAttributes<Alpha> event) {
         alpha = event.getBeanAttributes();
     }
 
-    void observeBravo(@Observes ProcessBeanAttributes<BravoProducer> event) {
+    void observeBravo(@Observes ProcessBeanAttributes<Bravo> event) {
         bravo = event.getBeanAttributes();
     }
 
-    void observeCharlie(@Observes ProcessBeanAttributes<CharlieProducer> event) {
+    void observeCharlie(@Observes ProcessBeanAttributes<Charlie> event) {
         charlie = event.getBeanAttributes();
     }
 
@@ -54,11 +54,11 @@ public class VerifyingExtension implements Extension {
         return alpha;
     }
 
-    protected BeanAttributes<BravoProducer> getBravo() {
+    protected BeanAttributes<Bravo> getBravo() {
         return bravo;
     }
 
-    protected BeanAttributes<CharlieProducer> getCharlie() {
+    protected BeanAttributes<Charlie> getCharlie() {
         return charlie;
     }
 

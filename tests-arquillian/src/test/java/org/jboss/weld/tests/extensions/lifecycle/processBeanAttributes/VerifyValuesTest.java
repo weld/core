@@ -78,7 +78,7 @@ public class VerifyValuesTest {
 
     @Test
     public void testProducerMethod() {
-        BeanAttributes<BravoProducer> attributes = extension.getBravo();
+        BeanAttributes<Bravo> attributes = extension.getBravo();
         assertNotNull(attributes);
         // scope
         assertEquals(RequestScoped.class, attributes.getScope());
@@ -93,7 +93,7 @@ public class VerifyValuesTest {
 
     @Test
     public void testProducerField() {
-        BeanAttributes<CharlieProducer> attributes = extension.getCharlie();
+        BeanAttributes<Charlie> attributes = extension.getCharlie();
         assertNotNull(attributes);
         // scope
         assertEquals(ApplicationScoped.class, attributes.getScope());

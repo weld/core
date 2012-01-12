@@ -287,7 +287,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             return false;
         }
 
-        ProcessBeanAttributesImpl<T> event = ProcessBeanAttributesImpl.fire(getManager(), bean, bean.getWeldAnnotated(), bean.getBeanClass());
+        ProcessBeanAttributesImpl<T> event = ProcessBeanAttributesImpl.fire(getManager(), bean, bean.getWeldAnnotated(), bean.getType());
         if (event.isVeto()) {
             return true;
         }
