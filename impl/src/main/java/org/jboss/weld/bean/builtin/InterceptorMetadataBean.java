@@ -21,12 +21,17 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.weld.bean.ForwardingInterceptor;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -46,8 +51,28 @@ public class InterceptorMetadataBean extends AbstractBuiltInMetadataBean<Interce
     protected Interceptor<?> newInstance(InjectionPoint ip, CreationalContext<Interceptor<?>> creationalContext) {
         Contextual<?> bean = getParentCreationalContext(creationalContext).getContextual();
         if (bean instanceof Interceptor<?>) {
-            return Reflections.cast(bean);
+            return SerializableProxy.of((Interceptor<?>) bean);
         }
         throw new IllegalArgumentException("Unable to inject " + bean + " into " + ip);
+    }
+
+    private static class SerializableProxy<T> extends ForwardingInterceptor<T> implements Serializable {
+
+        private static final long serialVersionUID = 8482112157695944011L;
+
+        public static <T> SerializableProxy<T> of(Bean<T> bean) {
+            return new SerializableProxy<T>(bean);
+        }
+
+        private BeanHolder<T> holder;
+
+        protected SerializableProxy(Bean<T> bean) {
+            this.holder = new BeanHolder<T>(bean);
+        }
+
+        @Override
+        protected Interceptor<T> delegate() {
+            return (Interceptor<T>) holder.get();
+        }
     }
 }

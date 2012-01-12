@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
@@ -103,10 +104,24 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
 
     public abstract RIBean<?> getSpecializedBean();
 
+    protected Object unwrap(Object object) {
+        if (object instanceof ForwardingBean<?>) {
+            return Reflections.<ForwardingBean<?>>cast(object).delegate();
+        }
+        if (object instanceof ForwardingInterceptor<?>) {
+            return Reflections.<ForwardingInterceptor<?>>cast(object).delegate();
+        }
+        if (object instanceof ForwardingDecorator<?>) {
+            return Reflections.<ForwardingDecorator<?>>cast(object).delegate();
+        }
+        return object;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof RIBean<?>) {
-            RIBean<?> that = (RIBean<?>) obj;
+        Object object = unwrap(obj);
+        if (object instanceof RIBean<?>) {
+            RIBean<?> that = (RIBean<?>) object;
             return this.getId().equals(that.getId());
         } else {
             return false;

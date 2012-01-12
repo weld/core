@@ -36,7 +36,6 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Allows an interceptor to obtain information about the bean it intercepts.
@@ -64,7 +63,7 @@ public class InterceptedBeanMetadataBean extends BeanMetadataBean {
         Contextual<?> interceptedContextual = interceptedBeanContext.getContextual();
 
         if (interceptedContextual instanceof Bean<?>) {
-            return Reflections.cast(interceptedContextual);
+            return SerializableProxy.of((Bean<?>) interceptedContextual);
         } else {
             throw new IllegalArgumentException("Unable to determine @Intercepted Bean<?> for this interceptor.");
         }

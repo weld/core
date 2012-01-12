@@ -21,12 +21,17 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.bean.ForwardingDecorator;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -46,8 +51,28 @@ public class DecoratorMetadataBean extends AbstractBuiltInMetadataBean<Decorator
     protected Decorator<?> newInstance(InjectionPoint ip, CreationalContext<Decorator<?>> creationalContext) {
         Contextual<?> bean = getParentCreationalContext(creationalContext).getContextual();
         if (bean instanceof Decorator<?>) {
-            return Reflections.cast(bean);
+            return SerializableProxy.of((Decorator<?>) bean);
         }
         throw new IllegalArgumentException("Unable to inject " + bean + " into " + ip);
+    }
+
+    private static class SerializableProxy<T> extends ForwardingDecorator<T> implements Serializable {
+
+        private static final long serialVersionUID = 398927939412634913L;
+
+        public static <T> SerializableProxy<T> of(Bean<T> bean) {
+            return new SerializableProxy<T>(bean);
+        }
+
+        private BeanHolder<T> holder;
+
+        protected SerializableProxy(Bean<T> bean) {
+            this.holder = new BeanHolder<T>(bean);
+        }
+
+        @Override
+        protected Decorator<T> delegate() {
+            return (Decorator<T>) holder.get();
+        }
     }
 }

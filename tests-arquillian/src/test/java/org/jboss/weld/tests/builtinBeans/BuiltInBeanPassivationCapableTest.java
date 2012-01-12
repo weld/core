@@ -52,7 +52,7 @@ import static org.jboss.weld.tests.builtinBeans.Checker.checkValidatorFactory;
 public class BuiltInBeanPassivationCapableTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class).intercept(FooInterceptor.class).decorate(AnimalDecorator.class)
                 .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
                 .addClass(Utils.class);
     }
@@ -142,4 +142,8 @@ public class BuiltInBeanPassivationCapableTest {
         consumer1.check();
     }
 
+    @Test
+    public void testInjectedBeanMetadata(Sheep sheep) throws Throwable {
+        Utils.deserialize(Utils.serialize(sheep));
+    }
 }

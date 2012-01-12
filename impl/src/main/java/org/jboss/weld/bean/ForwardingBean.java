@@ -29,6 +29,8 @@ import org.jboss.weld.util.bean.IsolatedForwardingBean;
  */
 public abstract class ForwardingBean<T> extends IsolatedForwardingBean<T> implements Bean<T> {
 
+    protected abstract Bean<T> delegate();
+
     @Override
     public String toString() {
         return "ForwardingBean " + getName() + " for " + delegate().toString();
