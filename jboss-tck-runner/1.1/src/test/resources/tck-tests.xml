@@ -40,29 +40,14 @@
                     <exclude name="testProcessObserverMethodFiredWhileAddingObserverMethod" />
                 </methods>
             </class>
-            <!-- JAVASERVERFACES_SPEC_PUBLIC-763 -->
+            <!-- CDI-206 -->
             <class name="org.jboss.jsr299.tck.tests.context.conversation.ClientConversationContextTest">
                 <methods>
-                    <exclude name=".*" />
+                    <exclude name="testNonexistentConversationExceptionThrown" />
                 </methods>
             </class>
-            <class name="org.jboss.jsr299.tck.tests.context.conversation.LongRunningConversationPropagatedByFacesContextTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
-            <class name="org.jboss.jsr299.tck.tests.context.conversation.InvalidatingSessionDestroysConversationTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
-            <class name="org.jboss.jsr299.tck.tests.context.conversation.ManualCidPropagationTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
-            <!-- ARQ handling multiple EARs -->
-            <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+            <!-- CDI-180 -->
+             <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
                 <methods>
                     <exclude name=".*" />
                 </methods>
@@ -176,6 +161,12 @@
             <class name="org.jboss.jsr299.tck.tests.extensions.lifecycle.processBeanAttributes.specialization.SpecializationTest">
                 <methods>
                     <exclude name="testProcessBeanAttributesFiredProperlyForSpecializedBean" />
+                </methods>
+            </class>
+            <!-- WELD-1041  -->
+            <class name="org.jboss.jsr299.tck.tests.context.conversation.InvalidatingSessionDestroysConversationTest">
+                <methods>
+                    <exclude name="testInvalidatingSessionDestroysConversation" />
                 </methods>
             </class>
             
