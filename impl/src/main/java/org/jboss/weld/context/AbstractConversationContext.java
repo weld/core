@@ -51,6 +51,7 @@ import org.jboss.weld.logging.messages.ConversationMessage;
  * forms
  *
  * @author Pete Muir
+ * @author Jozef Hartinger
  * @author George Sapountzis
  */
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext {
@@ -291,24 +292,51 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     public boolean destroy(S session) {
+        // the context may be active
+        // if it is, we need to re-attach the bean store once the other conversations are destroyed
+        BoundBeanStore beanStore = getBeanStore();
+        if (beanStore != null) {
+            beanStore.detach();
+        }
+
         try {
-            // We are outside of request, destroy now
             if (getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>) {
-                // There are no conversations to destroy
+                // if there are conversations to destroy
                 Map<String, ManagedConversation> conversations = cast(getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME));
-                // Set the context active
+                // if the context is not active, let's activate it
                 setActive(true);
+
                 for (ManagedConversation conversation : conversations.values()) {
                     String id = conversation.getId();
-                    conversation.end();
-                    destroyConversation(session, id);
+                    if (isCurrentConversation(id)) {
+                        // the currently associated conversation will be destroyed at the end of the current request
+                        if (!conversation.isTransient()) {
+                            conversation.end();
+                        }
+                    } else {
+                        // a conversation that is not currently associated is destroyed immediately
+                        conversation.end();
+                        destroyConversation(session, id);
+                    }
                 }
-                setActive(false);
             }
             return true;
         } finally {
-            cleanup();
+            setBeanStore(beanStore);
+            setActive(beanStore != null);
+            if (isActive()) {
+                getBeanStore().attach();
+            } else {
+                cleanup();
+            }
         }
+    }
+
+    private boolean isCurrentConversation(String id) {
+        if (!isAssociated()) {
+            return false;
+        }
+        return id !=null && id.equals(getCurrentConversation().getId());
     }
 
     protected void destroyConversation(S session, String id) {

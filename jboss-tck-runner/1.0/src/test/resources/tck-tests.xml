@@ -169,13 +169,6 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
-            <!-- WELD-1041 -->
-            <class name="org.jboss.jsr299.tck.tests.context.conversation.InvalidatingSessionDestroysConversationTest">
-                <methods>
-                    <exclude name="testInvalidatingSessionDestroysConversation"></exclude>
-                </methods>
-            </class>
-
             <!-- Issues in JBoss AS -->
 
 
