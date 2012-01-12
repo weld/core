@@ -260,6 +260,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             if (bean instanceof AbstractClassBean<?>) {
                 getEnvironment().removeClass((WeldClass<?>) bean.getWeldAnnotated());
             }
+            if (bean instanceof ProducerMethod<?, ?>) {
+                getEnvironment().removeProducerMethod((ProducerMethod<?, ?>) bean);
+            }
         }
         // if a specializing bean was vetoed, let's process the specializing bean now
         processBeanAttributes(previouslySpecializedBeans);

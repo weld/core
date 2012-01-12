@@ -27,7 +27,11 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 
 public class VetoingExtension implements Extension {
 
-    void veto(@Observes ProcessBeanAttributes<Field> event) {
+    void vetoField(@Observes ProcessBeanAttributes<Field> event) {
+        event.veto();
+    }
+
+    void vetoCar(@Observes ProcessBeanAttributes<Car> event) {
         event.veto();
     }
 }

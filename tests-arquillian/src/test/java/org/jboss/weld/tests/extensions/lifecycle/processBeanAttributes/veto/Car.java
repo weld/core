@@ -19,31 +19,10 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.weld.serialization;
+package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.veto;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import javax.enterprise.inject.Veto;
 
-public abstract class AbstractSerializableHolder<V> implements SerializableHolder<V> {
-
-    private static final long serialVersionUID = -5217996922004189423L;
-
-    private transient V value;
-
-    public AbstractSerializableHolder() {
-        this.value = initialize();
-    }
-
-    protected abstract V initialize();
-
-    // Deserialization
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        stream.defaultReadObject();
-        this.value = initialize();
-    }
-
-    @Override
-    public V get() {
-        return value;
-    }
+@Veto
+public class Car {
 }

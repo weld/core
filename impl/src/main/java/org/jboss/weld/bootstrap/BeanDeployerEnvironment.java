@@ -290,9 +290,9 @@ public class BeanDeployerEnvironment {
         }
     }
 
-    public void removeProducerMethod(WeldMethodKey<?, ?> method) {
+    public void removeProducerMethod(ProducerMethod<?, ?> method) {
         beans.remove(method);
-        producerMethodBeanMap.remove(method);
+        producerMethodBeanMap.remove(WeldMethodKey.of(method.getWeldAnnotated()));
     }
 
     public Map<WeldClass<?>, AbstractClassBean<?>> getClassBeanMap() {

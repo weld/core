@@ -47,5 +47,7 @@ public class VetoTest {
         assertEquals(0, manager.getBeans(Field.class).size());
         assertEquals(0, manager.getBeans(Wheat.class).size());
         assertEquals(1, manager.getBeans(Flower.class).size());
+        assertEquals(1, manager.getBeans(Factory.class).size());
+        assertEquals(0, manager.getBeans(Car.class).size());
     }
 }
