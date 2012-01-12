@@ -157,12 +157,6 @@
                     <exclude name="testProducerFieldBeanAttributes" />
                 </methods>
             </class>           
-            <!-- WELD-1047 -->
-            <class name="org.jboss.jsr299.tck.tests.extensions.lifecycle.processBeanAttributes.specialization.SpecializationTest">
-                <methods>
-                    <exclude name="testProcessBeanAttributesFiredProperlyForSpecializedBean" />
-                </methods>
-            </class>
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
             <class name="org.jboss.jsr299.tck.tests.context.jms.MessageListenerContextTest">

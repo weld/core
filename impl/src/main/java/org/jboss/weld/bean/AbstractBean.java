@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.decorator.Delegate;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
@@ -74,7 +73,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     protected BeanManagerImpl beanManager;
     private final ServiceRegistry services;
     private boolean initialized;
-    private boolean dirty = true;
+    private boolean preInitialized;
     private boolean proxyRequired;
 
     /**
@@ -105,11 +104,13 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      */
     @Override
     public void preInitialize() {
-        if (isSpecializing() && isDirty()) {
+        if (isSpecializing() && !preInitialized) {
+            preInitialized = true;
             preSpecialize();
             specialize();
+            checkSpecialization();
             postSpecialize();
-            dirty = false;
+            finishSpecialization();
         }
     }
 
@@ -120,9 +121,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     public void initialize(BeanDeployerEnvironment environment) {
         preInitialize();
         initialized = true;
-        if (isSpecializing()) {
-            finishSpecialization();
-        }
         log.trace(CREATING_BEAN, getType());
         checkDelegateInjectionPoints();
         if (getScope() != null) {
@@ -182,15 +180,23 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return types;
     }
 
-    protected void postSpecialize() {
-        if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
-            throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
-        }
-        for (Type type : getSpecializedBean().getTypes()) {
-            if (!getTypes().contains(type)) {
-                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, getSpecializedBean());
+    /**
+     * Validates specialization if this bean specializes another bean.
+     */
+    public void checkSpecialization() {
+        if (isSpecializing()) {
+            if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
+                throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
+            }
+            for (Type type : getSpecializedBean().getTypes()) {
+                if (!getTypes().contains(type)) {
+                    throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, getSpecializedBean());
+                }
             }
         }
+    }
+
+    protected void postSpecialize() {
         // override qualifiers
         Set<Annotation> qualifiers = new HashSet<Annotation>();
         qualifiers.addAll(attributes.getQualifiers());
@@ -339,25 +345,5 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     public void setAttributes(BeanAttributes<T> attributes) {
         this.attributes = attributes;
-    }
-
-    /**
-     * Mark this bean to be reinitialized.
-     */
-    public void setDirty() {
-        dirty = true;
-    }
-
-    /**
-     * Used during bootstrap to indicate specialization of the bean should be reinitialized after {@link ProcessBeanAttributes}
-     * has been fired.
-     */
-    public boolean isDirty() {
-        for (AbstractBean<?, ?> bean = this; bean != null; bean = bean.getSpecializedBean()) {
-            if (bean.dirty) {
-                return true;
-            }
-        }
-        return false;
     }
 }

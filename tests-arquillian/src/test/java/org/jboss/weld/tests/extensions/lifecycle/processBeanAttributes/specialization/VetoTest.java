@@ -24,6 +24,7 @@ package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.speciali
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.jboss.weld.tests.util.BeanUtilities.verifyQualifiers;
 
@@ -48,12 +49,13 @@ public class VetoTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Foo.class, Bar.class, Baz.class, Alpha.class, Bravo.class, Charlie.class, VetoingExtension.class)
-                .addClass(BeanUtilities.class).addAsServiceProvider(Extension.class, VetoingExtension.class);
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClasses(Foo.class, Bar.class, Baz.class, Alpha.class, Bravo.class, Charlie.class, VetoingExtension.class, VerifyingExtension.class)
+                .addClass(BeanUtilities.class).addAsServiceProvider(Extension.class, VetoingExtension.class, VerifyingExtension.class);
     }
 
     @Test
-    public void testSpecializedBeanAvailableAfterSpecializingBeanVetoed(BeanManager manager, @Any Alpha alpha) {
+    public void testSpecializedBeanAvailableAfterSpecializingBeanVetoed(BeanManager manager, @Any Alpha alpha, VerifyingExtension extension) {
         Bean<?> bean = manager.resolve(manager.getBeans(Alpha.class, AnyLiteral.INSTANCE));
         assertNotNull(bean);
         assertEquals(Bravo.class, bean.getBeanClass());
@@ -63,5 +65,8 @@ public class VetoTest {
         assertNotNull(alpha);
         assertTrue(alpha instanceof Bravo);
         assertFalse(alpha instanceof Charlie);
+        assertNull(extension.getAlpha());
+        assertNotNull(extension.getBravo());
+        assertNotNull(extension.getCharlie());
     }
 }

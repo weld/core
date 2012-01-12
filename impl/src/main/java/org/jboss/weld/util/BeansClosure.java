@@ -102,6 +102,10 @@ public final class BeansClosure {
         specialized.put(target, override);
     }
 
+    public void removeSpecialized(Bean<?> target) {
+        specialized.remove(target);
+    }
+
     public void addEnvironment(BeanDeployerEnvironment environment) {
         envs.put(environment, Object.class);
     }

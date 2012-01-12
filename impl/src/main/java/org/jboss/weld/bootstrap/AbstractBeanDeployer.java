@@ -283,7 +283,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T, S> boolean fireProcessBeanAttributes(AbstractBean<T, S> bean) {
-        if (!getManager().isBeanEnabled(bean)) {
+        if (!getManager().isBeanEnabled(bean) || Beans.isSpecialized(bean, getManager())) {
             return false;
         }
 
@@ -293,7 +293,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
         if (event.isDirty()) {
             bean.setAttributes(ExternalBeanAttributesFactory.<T>of(event.getBeanAttributes(), manager));
-            bean.setDirty();
+            bean.checkSpecialization();
         }
         return false;
     }

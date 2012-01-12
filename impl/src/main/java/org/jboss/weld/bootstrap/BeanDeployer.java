@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTE
 import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
 import static org.slf4j.ext.XLogger.Level.INFO;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.interceptor.Interceptor;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
@@ -57,6 +59,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -182,7 +185,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
         for (WeldClass<?> clazz : classes) {
             if (Reflections.isEnum(clazz.getJavaClass())) {
-                enumService.addEnumClass(Reflections.<WeldClass<Enum<?>>>cast(clazz));
+                enumService.addEnumClass(Reflections.<WeldClass<Enum<?>>> cast(clazz));
             }
             boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(clazz.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(clazz);
             if (managedBeanOrDecorator && clazz.isAnnotationPresent(Decorator.class)) {
@@ -209,7 +212,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {
                 if (otherWeldClasses.containsKey(ejbDescriptor.getBeanClass())) {
                     for (WeldClass<?> c : otherWeldClasses.get(ejbDescriptor.getBeanClass())) {
-                        createSessionBean(ejbDescriptor, Reflections.<WeldClass>cast(c));
+                        createSessionBean(ejbDescriptor, Reflections.<WeldClass> cast(c));
                     }
                 } else {
                     createSessionBean(ejbDescriptor);
@@ -222,25 +225,44 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
      * Fires {@link ProcessBeanAttributes} for each enabled bean and updates the environment based on the events.
      */
     public void processBeans() {
-        Map<WeldClass<?>, AbstractClassBean<?>> vetoedClasses = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
         for (Entry<WeldClass<?>, AbstractClassBean<?>> entry : getEnvironment().getClassBeanMap().entrySet()) {
             // process specialization
             entry.getValue().preInitialize();
+        }
+
+        processBeanAttributes(getEnvironment().getClassBeanMap().values());
+    }
+
+    private void processBeanAttributes(Collection<? extends AbstractBean<?, ?>> beans) {
+        if (beans.isEmpty()) {
+            return; // exit recursion
+        }
+
+        Collection<AbstractBean<?, ?>> vetoedBeans = new HashSet<AbstractBean<?, ?>>();
+        Collection<AbstractBean<?, ?>> previouslySpecializedBeans = new HashSet<AbstractBean<?, ?>>();
+        for (AbstractBean<?, ?> bean : beans) {
             // fire ProcessBeanAttributes for class beans
-            boolean vetoed = fireProcessBeanAttributes(entry.getValue());
+            boolean vetoed = fireProcessBeanAttributes(bean);
             if (vetoed) {
-                vetoedClasses.put(entry.getKey(), entry.getValue());
+                vetoedBeans.add(bean);
             } else {
-                 // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
-                getEnvironment().addNewBeansFromInjectionPoints(entry.getValue());
+                // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
+                getEnvironment().addNewBeansFromInjectionPoints(bean);
             }
         }
 
         // remove vetoed class beans
-        for (Entry<WeldClass<?>, AbstractClassBean<?>> entry : vetoedClasses.entrySet()) {
-            getEnvironment().removeClass(entry.getKey());
-            entry.getValue().setDirty();
+        for (AbstractBean<?, ?> bean : vetoedBeans) {
+            if (bean.isSpecializing()) {
+                BeansClosure.getClosure(getManager()).removeSpecialized(bean.getSpecializedBean());
+                previouslySpecializedBeans.add(bean.getSpecializedBean());
+            }
+            if (bean instanceof AbstractClassBean<?>) {
+                getEnvironment().removeClass((WeldClass<?>) bean.getWeldAnnotated());
+            }
         }
+        // if a specializing bean was vetoed, let's process the specializing bean now
+        processBeanAttributes(previouslySpecializedBeans);
     }
 
     public void createProducersAndObservers() {
@@ -251,25 +273,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void processProducerMethods() {
         // process BeanAttributes for producer methods
-        Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> vetoedProducerMethods = new HashMap<WeldMethodKey<?,?>, ProducerMethod<?, ?>>();
         for (Entry<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> entry : getEnvironment().getProducerMethodBeanMap().entrySet()) {
             // process specialization
             entry.getValue().preInitialize();
-            // fire ProcessBeanAttributes for ProducerMethods
-            boolean vetoed = fireProcessBeanAttributes(entry.getValue());
-            if (vetoed) {
-                vetoedProducerMethods.put(entry.getKey(), entry.getValue());
-            } else {
-                // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
-                getEnvironment().addNewBeansFromInjectionPoints(entry.getValue());
-            }
         }
-
-        // remove vetoed producer methods
-        for (Entry<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> entry : vetoedProducerMethods.entrySet()) {
-            getEnvironment().removeProducerMethod(entry.getKey());
-            entry.getValue().setDirty();
-        }
+        processBeanAttributes(getEnvironment().getProducerMethodBeanMap().values());
     }
 
     public void createNewBeans() {

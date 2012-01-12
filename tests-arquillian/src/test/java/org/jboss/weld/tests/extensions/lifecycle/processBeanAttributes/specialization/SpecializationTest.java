@@ -23,6 +23,7 @@ package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.speciali
 
 import static org.jboss.weld.tests.util.BeanUtilities.verifyQualifiers;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
@@ -54,15 +55,10 @@ public class SpecializationTest {
 
     @Test
     public void testProcessBeanAttributesFiredProperlyForSpecializedBean(BeanManager manager) {
-        validateBravo(extension.getBravo());
+        assertNull(extension.getAlpha());
+        assertNull(extension.getBravo());
         validateCharlie(extension.getCharlie());
         validateCharlie(manager.resolve(manager.getBeans(Alpha.class, AnyLiteral.INSTANCE)));
-    }
-
-    private void validateBravo(BeanAttributes<Bravo> attributes) {
-
-        verifyQualifiers(attributes, Foo.Literal.INSTANCE, Bar.Literal.INSTANCE, AnyLiteral.INSTANCE, new NamedLiteral("alpha"));
-        assertEquals("alpha", attributes.getName());
     }
 
     private void validateCharlie(BeanAttributes<?> attributes) {
