@@ -52,7 +52,9 @@ import static org.jboss.weld.tests.builtinBeans.Checker.checkValidatorFactory;
 public class BuiltInBeanPassivationCapableTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(FooInterceptor.class).decorate(AnimalDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class).intercept(FooInterceptor.class)
+                // WELD-1048
+                // .decorate(AnimalDecorator.class)
                 .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
                 .addClass(Utils.class);
     }
