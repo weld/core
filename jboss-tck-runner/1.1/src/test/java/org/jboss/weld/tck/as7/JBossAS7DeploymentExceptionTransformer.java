@@ -27,15 +27,18 @@ import org.jboss.as.arquillian.container.ExceptionTransformer;
 
 /**
  * Temporary replacement for NOOP {@link ExceptionTransformer} used by JBoss AS7 arquillian container.
- *
+ * 
  * @see JBossAS7DeploymentExceptionTransformerExtension
  * @author Martin Kouba
  */
 public class JBossAS7DeploymentExceptionTransformer implements DeploymentExceptionTransformer {
 
-    private static final String DEPLOYMENT_EXCEPTION_FRAGMENT = "org.jboss.weld.exceptions.DeploymentException";
+    private static final String[] DEPLOYMENT_EXCEPTION_FRAGMENTS = new String[] {
+            "org.jboss.weld.exceptions.DeploymentException", "org.jboss.weld.exceptions.UnserializableDependencyException",
+            "org.jboss.weld.exceptions.InconsistentSpecializationException",
+            "org.jboss.weld.exceptions.NullableDependencyException" };
 
-    private static final String DEFINITION_EXCEPTION_FRAGMENT = "org.jboss.weld.exceptions.DefinitionException";
+    private static final String[] DEFINITION_EXCEPTION_FRAGMENTS = new String[] { "org.jboss.weld.exceptions.DefinitionException" };
 
     public Throwable transform(Throwable throwable) {
 
@@ -54,15 +57,25 @@ public class JBossAS7DeploymentExceptionTransformer implements DeploymentExcepti
             root = ExceptionUtils.getRootCause(throwable);
         }
 
-        if (root instanceof DeploymentException || root instanceof org.jboss.weld.exceptions.DeploymentException
-                || root.getMessage().contains(DEPLOYMENT_EXCEPTION_FRAGMENT)) {
+        if (root instanceof DeploymentException || root instanceof DefinitionException) {
+            return root;
+        }
+        if (isFragmentFound(DEPLOYMENT_EXCEPTION_FRAGMENTS, root)) {
             return new DeploymentException(root);
         }
-        if (root instanceof DefinitionException || root instanceof org.jboss.weld.exceptions.DefinitionException
-                || root.getMessage().contains(DEFINITION_EXCEPTION_FRAGMENT)) {
+        if (isFragmentFound(DEFINITION_EXCEPTION_FRAGMENTS, root)) {
             return new DefinitionException(root);
         }
         return throwable;
+    }
+
+    private boolean isFragmentFound(String[] fragments, Throwable rootException) {
+        for (String fragment : fragments) {
+            if (rootException.getMessage().contains(fragment)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

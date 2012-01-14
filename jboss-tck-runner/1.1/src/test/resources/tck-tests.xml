@@ -33,6 +33,12 @@
                     <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
                 </methods>
             </class>
+            <!-- CDITCK-263 -->
+            <class name="org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
+                <methods>
+                    <exclude name="testNormalScopedUnproxyableBeanThrowsException" />
+                </methods>
+            </class>
             <!-- TCK tests no longer valid for CDI 1.1 -->
             <!-- CDI-88/CDITCK-174 -->
             <class name="org.jboss.jsr299.tck.tests.extensions.afterBeanDiscovery.AfterBeanDiscoveryTest">
