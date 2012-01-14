@@ -16,40 +16,31 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.PassivationCapable;
+
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.PassivationCapable;
-import java.util.Set;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Abstract base class with functions specific to RI built-in beans
  *
  * @author Pete Muir
  */
-public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
-
-    public static final String BEAN_ID_PREFIX = RIBean.class.getPackage().getName();
-
-    public static final String BEAN_ID_SEPARATOR = "-";
+public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapable {
 
     private final BeanManagerImpl beanManager;
 
-    private final String id;
-
-    private final int hashCode;
-
-    protected RIBean(String idSuffix, BeanManagerImpl beanManager) {
+    protected RIBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager) {
+        super(attributes, idSuffix, beanManager);
         this.beanManager = beanManager;
-        this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(BEAN_ID_SEPARATOR).append(beanManager.getId()).append(BEAN_ID_SEPARATOR).append(idSuffix).toString();
-        this.hashCode = this.id.hashCode();
     }
 
     protected BeanManagerImpl getBeanManager() {
@@ -103,43 +94,5 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
     }
 
     public abstract RIBean<?> getSpecializedBean();
-
-    protected Object unwrap(Object object) {
-        if (object instanceof ForwardingBean<?>) {
-            return Reflections.<ForwardingBean<?>>cast(object).delegate();
-        }
-        if (object instanceof ForwardingInterceptor<?>) {
-            return Reflections.<ForwardingInterceptor<?>>cast(object).delegate();
-        }
-        if (object instanceof ForwardingDecorator<?>) {
-            return Reflections.<ForwardingDecorator<?>>cast(object).delegate();
-        }
-        return object;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        Object object = unwrap(obj);
-        if (object instanceof RIBean<?>) {
-            RIBean<?> that = (RIBean<?>) object;
-            return this.getId().equals(that.getId());
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return hashCode;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return id;
-    }
 
 }

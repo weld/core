@@ -41,16 +41,11 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
     private final boolean proxiable;
 
     public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Metadata<Extension> instance) {
-        super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
+        super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager, clazz.getJavaClass());
         this.clazz = clazz;
         this.instance = instance;
         this.passivationCapable = clazz.isSerializable();
         this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType());
-    }
-
-    @Override
-    public Class<Extension> getType() {
-        return clazz.getJavaClass();
     }
 
     public Set<Type> getTypes() {
@@ -84,5 +79,4 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
     public String toString() {
         return "Extension [" + getType().toString() + "] with qualifiers [@Default]; " + instance.getLocation();
     }
-
 }

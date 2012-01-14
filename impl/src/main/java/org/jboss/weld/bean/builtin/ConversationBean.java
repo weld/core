@@ -16,22 +16,16 @@ import java.util.Set;
 
 public class ConversationBean extends AbstractBuiltInBean<Conversation> {
 
-    private static final Set<Type> TYPES = Arrays2.<Type>asSet(Conversation.class, Object.class);
-
     private Instance<ConversationContext> conversationContexts;
 
     public ConversationBean(BeanManagerImpl beanManager) {
-        super(Conversation.class.getName(), beanManager);
+        super(Conversation.class.getName(), beanManager, Conversation.class);
     }
 
     @Override
     public void initialize(BeanDeployerEnvironment environment) {
         super.initialize(environment);
         this.conversationContexts = getBeanManager().instance().select(ConversationContext.class);
-    }
-
-    public Set<Type> getTypes() {
-        return TYPES;
     }
 
     public Conversation create(CreationalContext<Conversation> creationalContext) {
@@ -50,11 +44,6 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation> {
 
     public void destroy(Conversation instance, CreationalContext<Conversation> creationalContext) {
 
-    }
-
-    @Override
-    public Class<Conversation> getType() {
-        return Conversation.class;
     }
 
     @Override

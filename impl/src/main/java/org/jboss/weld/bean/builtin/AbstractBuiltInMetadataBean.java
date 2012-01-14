@@ -21,10 +21,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
-
 import javax.decorator.Decorator;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -32,7 +28,6 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Common superclass for {@link Bean}, {@link Interceptor} and {@link Decorator} builtin beans.
@@ -42,28 +37,13 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public abstract class AbstractBuiltInMetadataBean<T> extends AbstractFacadeBean<T> {
 
-    private final Class<T> type;
-    private final Set<Type> types;
-
     public AbstractBuiltInMetadataBean(String idSuffix, Class<T> type, BeanManagerImpl beanManager) {
-        super(idSuffix, beanManager);
-        this.type = type;
-        this.types = Collections.<Type> singleton(type);
+        super(idSuffix, beanManager, type);
     }
 
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         // noop
-    }
-
-    @Override
-    public Set<Type> getTypes() {
-        return types;
-    }
-
-    @Override
-    public Class<T> getType() {
-        return Reflections.cast(type);
     }
 
     protected WeldCreationalContext<?> getParentCreationalContext(CreationalContext<?> ctx) {
@@ -78,6 +58,6 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractFacadeBean<
 
     @Override
     public String toString() {
-        return "Implicit Bean [" + type.getName() + "] with qualifiers [@Default]";
+        return "Implicit Bean [" + getType().getName() + "] with qualifiers [@Default]";
     }
 }

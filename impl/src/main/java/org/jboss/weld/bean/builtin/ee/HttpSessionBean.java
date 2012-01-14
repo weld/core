@@ -46,7 +46,7 @@ public class HttpSessionBean extends AbstractBuiltInBean<HttpSession> {
     private final HttpServletRequestBean requestBean;
 
     public HttpSessionBean(HttpServletRequestBean requestBean, BeanManagerImpl manager) {
-        super(HttpSessionBean.class.getName(), manager);
+        super(HttpSessionBean.class.getName(), manager, HttpSession.class);
         this.requestBean = requestBean;
     }
 
@@ -62,16 +62,6 @@ public class HttpSessionBean extends AbstractBuiltInBean<HttpSession> {
     @Override
     public void destroy(HttpSession instance, CreationalContext<HttpSession> creationalContext) {
         // noop
-    }
-
-    @Override
-    public Set<Type> getTypes() {
-        return Collections.<Type> singleton(HttpSession.class);
-    }
-
-    @Override
-    public Class<HttpSession> getType() {
-        return HttpSession.class;
     }
 
     @Override

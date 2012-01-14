@@ -87,6 +87,8 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.SyntheticBeanFactory;
+import org.jboss.weld.bean.SyntheticClassBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
@@ -1176,13 +1178,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, InjectionTarget<?> injectionTarget) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+        return SyntheticBeanFactory.create(attributes, beanClass, injectionTarget, this);
     }
 
     public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, Producer<?> producer) {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
+        return SyntheticBeanFactory.create(attributes, beanClass, producer, this);
     }
 
     public FieldInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedField<?> field, Bean<?> bean) {

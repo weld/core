@@ -16,8 +16,16 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
@@ -26,19 +34,17 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.collections.Arrays2;
 
-import javax.enterprise.context.Dependent;
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.Set;
+import com.google.common.collect.Sets;
 
 public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
     private static final String ID_PREFIX = "Built-in";
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
     private boolean proxyRequired;
+    private final Class<T> type;
 
-    protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl beanManager) {
-        super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), beanManager);
+    protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl beanManager, Class<T> type) {
+        super(new BuiltInBeanAttributes<T>(type), new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), beanManager);
+        this.type = type;
     }
 
     @Override
@@ -64,25 +70,9 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
         // No-op
     }
 
-    public Set<Annotation> getQualifiers() {
-        return DEFAULT_QUALIFIERS;
-    }
-
-    public Class<? extends Annotation> getScope() {
-        return Dependent.class;
-    }
-
     @Override
     public RIBean<?> getSpecializedBean() {
         return null;
-    }
-
-    public String getName() {
-        return null;
-    }
-
-    public Set<Class<? extends Annotation>> getStereotypes() {
-        return Collections.emptySet();
     }
 
     @Override
@@ -90,16 +80,8 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
         return Collections.emptySet();
     }
 
-    public boolean isNullable() {
-        return true;
-    }
-
     @Override
     public boolean isSpecializing() {
-        return false;
-    }
-
-    public boolean isAlternative() {
         return false;
     }
 
@@ -121,6 +103,20 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
     @Override
     public boolean isProxyRequired() {
         return proxyRequired;
+    }
+
+    @Override
+    public Class<T> getType() {
+        return type;
+    }
+
+    protected static class BuiltInBeanAttributes<T> extends ImmutableBeanAttributes<T> {
+
+        private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
+
+        public BuiltInBeanAttributes(Class<T> type) {
+            super(true, Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, Sets.<Type> newHashSet(type, Object.class), Dependent.class);
+        }
     }
 
 }

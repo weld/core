@@ -48,7 +48,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public class HttpServletRequestBean extends AbstractBuiltInBean<HttpServletRequest> {
 
     public HttpServletRequestBean(BeanManagerImpl beanManager) {
-        super(HttpServletRequestBean.class.getName(), beanManager);
+        super(HttpServletRequestBean.class.getName(), beanManager, HttpServletRequest.class);
     }
 
     @Override
@@ -67,16 +67,6 @@ public class HttpServletRequestBean extends AbstractBuiltInBean<HttpServletReque
     @Override
     public void destroy(HttpServletRequest instance, CreationalContext<HttpServletRequest> creationalContext) {
         // noop
-    }
-
-    @Override
-    public Set<Type> getTypes() {
-        return Collections.<Type> singleton(HttpServletRequest.class);
-    }
-
-    @Override
-    public Class<HttpServletRequest> getType() {
-        return HttpServletRequest.class;
     }
 
     @Override

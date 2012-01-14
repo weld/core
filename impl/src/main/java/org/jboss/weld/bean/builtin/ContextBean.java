@@ -18,14 +18,12 @@ public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
     }
 
     private final T context;
-    private final Class<T> type;
     private final Set<Type> types;
     private final Set<Annotation> qualifiers;
 
     public ContextBean(ContextHolder<T> contextHolder, BeanManagerImpl beanManager) {
-        super(contextHolder.getType().getName(), beanManager);
+        super(contextHolder.getType().getName(), beanManager, contextHolder.getType());
         this.context = contextHolder.getContext();
-        this.type = contextHolder.getType();
         this.types = new HierarchyDiscovery(contextHolder.getType()).getTypeClosure();
         this.qualifiers = contextHolder.getQualifiers();
     }
@@ -40,11 +38,6 @@ public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         // No-op, this bean is just exposing stuff
-    }
-
-    @Override
-    public Class<T> getType() {
-        return type;
     }
 
     @Override

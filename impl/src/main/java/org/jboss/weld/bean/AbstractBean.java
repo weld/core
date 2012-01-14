@@ -65,7 +65,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
     protected Class<T> type;
-    protected BeanAttributes<T> attributes;
 
     private ArraySet<WeldInjectionPoint<?, ?>> injectionPoints;
     private ArraySet<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
@@ -82,8 +81,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @param beanManager The Bean manager
      */
     public AbstractBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(idSuffix, beanManager);
-        this.attributes = attributes;
+        super(attributes, idSuffix, beanManager);
         this.beanManager = beanManager;
         this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
         this.delegateInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
@@ -199,14 +197,14 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     protected void postSpecialize() {
         // override qualifiers
         Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.addAll(attributes.getQualifiers());
+        qualifiers.addAll(attributes().getQualifiers());
         qualifiers.addAll(getSpecializedBean().getQualifiers());
         // override name
-        String name = attributes.getName();
+        String name = attributes().getName();
         if (isSpecializing() && getSpecializedBean().getName() != null) {
             name = getSpecializedBean().getName();
         }
-        this.attributes = new ImmutableBeanAttributes<T>(qualifiers, name, attributes);
+        setAttributes(new ImmutableBeanAttributes<T>(qualifiers, name, attributes()));
     }
 
     /**
@@ -232,16 +230,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      */
     public abstract WeldAnnotated<T, S> getWeldAnnotated();
 
-    /**
-     * Gets the binding types
-     *
-     * @return The set of binding types
-     * @see org.jboss.weld.bean.RIBean#getQualifiers()
-     */
-    public Set<Annotation> getQualifiers() {
-        return attributes.getQualifiers();
-    }
-
     @Override
     public abstract AbstractBean<?, ?> getSpecializedBean();
 
@@ -255,26 +243,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     /**
-     * Gets the name of the bean
-     *
-     * @return The name
-     * @see org.jboss.weld.bean.RIBean#getName()
-     */
-    public String getName() {
-        return attributes.getName();
-    }
-
-    /**
-     * Gets the scope type of the bean
-     *
-     * @return The scope type
-     * @see org.jboss.weld.bean.RIBean#getScope()
-     */
-    public Class<? extends Annotation> getScope() {
-        return attributes.getScope();
-    }
-
-    /**
      * Gets the type of the bean
      *
      * @return The type
@@ -282,26 +250,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     @Override
     public Class<T> getType() {
         return type;
-    }
-
-    /**
-     * Gets the API types of the bean
-     *
-     * @return The set of API types
-     * @see org.jboss.weld.bean.RIBean#getTypes()
-     */
-    public Set<Type> getTypes() {
-        return attributes.getTypes();
-    }
-
-    /**
-     * Indicates if bean is nullable
-     *
-     * @return True if nullable, false otherwise
-     * @see org.jboss.weld.bean.RIBean#isNullable()
-     */
-    public boolean isNullable() {
-        return attributes.isNullable();
     }
 
     @Override
@@ -313,17 +261,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
     }
 
-    public boolean isAlternative() {
-        return attributes.isAlternative();
-    }
-
     @Override
     public boolean isSpecializing() {
         return getWeldAnnotated().isAnnotationPresent(Specializes.class);
-    }
-
-    public Set<Class<? extends Annotation>> getStereotypes() {
-        return attributes.getStereotypes();
     }
 
     protected boolean isInitialized() {
@@ -337,13 +277,5 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     protected ServiceRegistry getServices() {
         return services;
-    }
-
-    public BeanAttributes<T> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(BeanAttributes<T> attributes) {
-        this.attributes = attributes;
     }
 }

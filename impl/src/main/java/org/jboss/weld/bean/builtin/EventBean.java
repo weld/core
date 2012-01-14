@@ -16,19 +16,13 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.event.EventImpl;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.Arrays2;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
+
+import org.jboss.weld.event.EventImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class EventBean extends AbstractFacadeBean<Event<?>> {
 
@@ -36,31 +30,14 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
 
         private static final long serialVersionUID = -5563106290838705515L;
     }.getRawType();
-    private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(TYPE, Object.class);
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
-
 
     public EventBean(BeanManagerImpl manager) {
-        super(Event.class.getSimpleName(), manager);
-    }
-
-    @Override
-    public Class<Event<?>> getType() {
-        return TYPE;
+        super(Event.class.getSimpleName(), manager, TYPE);
     }
 
     @Override
     public Class<?> getBeanClass() {
         return EventImpl.class;
-    }
-
-    public Set<Type> getTypes() {
-        return DEFAULT_TYPES;
-    }
-
-    @Override
-    public Set<Annotation> getQualifiers() {
-        return DEFAULT_QUALIFIERS;
     }
 
     @Override

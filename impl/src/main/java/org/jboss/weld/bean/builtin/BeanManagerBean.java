@@ -29,7 +29,7 @@ public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerImpl> {
     private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class, BeanManager.class);
 
     public BeanManagerBean(BeanManagerImpl manager) {
-        super(BeanManager.class.getSimpleName(), manager);
+        super(BeanManager.class.getSimpleName(), manager, BeanManagerImpl.class);
     }
 
     public BeanManagerImpl create(CreationalContext<BeanManagerImpl> creationalContext) {
@@ -53,6 +53,4 @@ public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerImpl> {
     public String toString() {
         return "Built-in Bean [javax.enterprise.inject.spi.BeanManager] with qualifiers [@Default]";
     }
-
-
 }

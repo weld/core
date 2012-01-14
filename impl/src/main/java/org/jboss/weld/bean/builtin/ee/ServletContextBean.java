@@ -21,10 +21,9 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
+import java.lang.annotation.Annotation;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.servlet.ServletContext;
 
@@ -44,7 +43,7 @@ public class ServletContextBean extends AbstractBuiltInBean<ServletContext> {
     private static ThreadLocal<ServletContext> servletContext = new ThreadLocal<ServletContext>();
 
     public ServletContextBean(BeanManagerImpl beanManager) {
-        super(ServletContextBean.class.getName(), beanManager);
+        super(ServletContextBean.class.getName(), beanManager, ServletContext.class);
     }
 
     @Override
@@ -61,13 +60,8 @@ public class ServletContextBean extends AbstractBuiltInBean<ServletContext> {
     }
 
     @Override
-    public Set<Type> getTypes() {
-        return Collections.<Type> singleton(ServletContext.class);
-    }
-
-    @Override
-    public Class<ServletContext> getType() {
-        return ServletContext.class;
+    public Class<? extends Annotation> getScope() {
+        return RequestScoped.class;
     }
 
     public static void setServletContext(ServletContext ctx) {

@@ -33,8 +33,6 @@ import java.util.Set;
  */
 public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
 
-    private static final Set<Type> TYPES = Arrays2.<Type>asSet(InjectionPoint.class, Object.class);
-
     /**
      * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
      * the field, constructor or method for the annotated item
@@ -45,7 +43,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
      * @param manager The RI manager implementation
      */
     public InjectionPointBean(BeanManagerImpl manager) {
-        super(InjectionPoint.class.getSimpleName(), manager);
+        super(InjectionPoint.class.getSimpleName(), manager, InjectionPoint.class);
     }
 
     public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext) {
@@ -54,15 +52,6 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
 
     public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {
 
-    }
-
-    @Override
-    public Class<InjectionPoint> getType() {
-        return InjectionPoint.class;
-    }
-
-    public Set<Type> getTypes() {
-        return TYPES;
     }
 
     @Override

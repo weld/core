@@ -16,19 +16,17 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.Arrays2;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Provider;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
+
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.Arrays2;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
     private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {
@@ -38,15 +36,9 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
         private static final long serialVersionUID = -5256050387550468441L;
     }.getRawType();
     private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
 
     public InstanceBean(BeanManagerImpl manager) {
-        super(Instance.class.getSimpleName(), manager);
-    }
-
-    @Override
-    public Class<Instance<?>> getType() {
-        return INSTANCE_TYPE;
+        super(Instance.class.getSimpleName(), manager, INSTANCE_TYPE);
     }
 
     @Override
@@ -56,11 +48,6 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
 
     public Set<Type> getTypes() {
         return DEFAULT_TYPES;
-    }
-
-    @Override
-    public Set<Annotation> getQualifiers() {
-        return DEFAULT_QUALIFIERS;
     }
 
     @Override

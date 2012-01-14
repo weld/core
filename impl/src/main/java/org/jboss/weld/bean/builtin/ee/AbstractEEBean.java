@@ -16,31 +16,23 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import java.util.concurrent.Callable;
+
+import javax.enterprise.context.spi.CreationalContext;
+
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-import javax.enterprise.context.spi.CreationalContext;
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
 public abstract class AbstractEEBean<T> extends AbstractBuiltInBean<T> {
 
     private final T proxy;
-    private final Class<T> type;
-    private final Set<Type> types;
 
     protected AbstractEEBean(Class<T> type, Callable<T> callable, BeanManagerImpl beanManager) {
-        super(type.getSimpleName(), beanManager);
-        this.type = type;
-        this.types = new HashSet<Type>();
-        this.types.add(Object.class);
-        this.types.add(type);
-        this.proxy = new ProxyFactory<T>(type, types, this).create(new EnterpriseTargetBeanInstance(type, new CallableMethodHandler(callable)));
+        super(type.getSimpleName(), beanManager, type);
+        this.proxy = new ProxyFactory<T>(type, getTypes(), this).create(new EnterpriseTargetBeanInstance(type, new CallableMethodHandler(callable)));
     }
 
     public T create(CreationalContext<T> creationalContext) {
@@ -50,14 +42,4 @@ public abstract class AbstractEEBean<T> extends AbstractBuiltInBean<T> {
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         // no-op
     }
-
-    @Override
-    public Class<T> getType() {
-        return type;
-    }
-
-    public Set<Type> getTypes() {
-        return types;
-    }
-
 }

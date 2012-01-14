@@ -32,8 +32,8 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T> {
 
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-    protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager) {
-        super(idSuffix, manager);
+    protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager, Class<T> type) {
+        super(idSuffix, manager, type);
     }
 
     public T create(CreationalContext<T> creationalContext) {

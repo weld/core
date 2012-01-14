@@ -235,7 +235,7 @@ public class AnnotatedTypes {
         return false;
     }
 
-    private static String createAnnotationCollectionId(Collection<Annotation> annotations) {
+    protected static String createAnnotationCollectionId(Collection<Annotation> annotations) {
         if (annotations.isEmpty()) {
             return "";
         }

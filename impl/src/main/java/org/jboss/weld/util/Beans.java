@@ -43,13 +43,18 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +75,7 @@ import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.Veto;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
@@ -921,5 +927,79 @@ public class Beans {
             }
         }
         return false;
+    }
+
+    /**
+     * Generates a unique signature for {@link BeanAttributes}.
+     */
+    public static String createBeanAttributesId(BeanAttributes<?> attributes) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(attributes.getName());
+        builder.append(",");
+        builder.append(attributes.getScope().getName());
+        builder.append(",");
+        builder.append(attributes.isAlternative());
+        builder.append(",");
+        builder.append(attributes.isNullable());
+        builder.append(AnnotatedTypes.createAnnotationCollectionId(attributes.getQualifiers()));
+        builder.append(createTypeCollectionId(attributes.getStereotypes()));
+        builder.append(createTypeCollectionId(attributes.getTypes()));
+        return builder.toString();
+    }
+
+    /**
+     * Generates a unique signature of a collection of types.
+     */
+    public static String createTypeCollectionId(Collection<? extends Type> types) {
+        StringBuilder builder = new StringBuilder();
+        List<? extends Type> sortedTypes = new ArrayList<Type>(types);
+        Collections.sort(sortedTypes, TypeComparator.INSTANCE);
+        builder.append("[");
+        for (Iterator<? extends Type> iterator = sortedTypes.iterator(); iterator.hasNext();) {
+            builder.append(createTypeId(iterator.next()));
+            if (iterator.hasNext()) {
+                builder.append(",");
+            }
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+
+    /**
+     * Creates a unique signature for a {@link Type}.
+     */
+    private static String createTypeId(Type type) {
+        if (type instanceof Class<?>) {
+            return Reflections.<Class<?>> cast(type).getName();
+        }
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            StringBuilder builder = new StringBuilder();
+            builder.append(createTypeId(parameterizedType.getRawType()));
+            builder.append("<");
+            for (int i = 0; i < parameterizedType.getActualTypeArguments().length; i++) {
+                builder.append(createTypeId(parameterizedType.getActualTypeArguments()[i]));
+                if (i != parameterizedType.getActualTypeArguments().length - 1) {
+                    builder.append(",");
+                }
+            }
+            builder.append(">");
+            return builder.toString();
+        }
+        if (type instanceof TypeVariable<?>) {
+            return Reflections.<TypeVariable<?>> cast(type).getName();
+        }
+        if (type instanceof GenericArrayType) {
+            return createTypeId(Reflections.<GenericArrayType> cast(type).getGenericComponentType());
+        }
+        throw new java.lang.IllegalArgumentException("Unknown type " + type);
+    }
+
+    private static class TypeComparator implements Comparator<Type> {
+        private static final TypeComparator INSTANCE = new TypeComparator();
+        @Override
+        public int compare(Type o1, Type o2) {
+            return createTypeId(o1).compareTo(createTypeId(o2));
+        }
     }
 }
