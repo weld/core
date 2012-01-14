@@ -22,6 +22,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.util.el.EL;
 import org.jboss.weld.util.collections.EnumerationList;
+import org.jboss.weld.util.reflection.Reflections;
 
 import javax.el.ELContext;
 import javax.enterprise.context.ContextNotActiveException;
@@ -34,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -93,8 +95,18 @@ public class Utils {
     }
 
     public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-        return (T) in.readObject();
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes)) {
+            @Override
+            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+                try {
+                    return super.resolveClass(desc);
+                } catch (ClassNotFoundException e) {
+                    // if a weld-internal class is not available (JBoss AS 7) let's use the weld classloader to load them
+                    return BeanManagerImpl.class.getClassLoader().loadClass(desc.getName());
+                }
+            }
+        };
+        return Reflections.<T>cast(in.readObject());
     }
 
     public static boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException) {
