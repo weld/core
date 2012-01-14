@@ -143,7 +143,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         try {
             return mergeBeanInterceptorBindings(beanManager, classBindingAnnotations, inheritedBindingAnnotations);
         } catch (DeploymentException e) {
-            throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, clazz.getJavaClass());
+            throw new DefinitionException(CONFLICTING_INTERCEPTOR_BINDINGS, clazz.getJavaClass());
         }
     }
 

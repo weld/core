@@ -282,11 +282,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
         boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
         if (passivating && !isPassivationCapableBean()) {
-            throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+            throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
         }
         if (hasDecorators()) {
             if (getWeldAnnotated().isFinal()) {
-                throw new DefinitionException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
+                throw new DeploymentException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
             }
             for (Decorator<?> decorator : getDecorators()) {
                 WeldClass<?> decoratorClass;
@@ -302,7 +302,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 for (WeldMethod<?, ?> decoratorMethod : decoratorClass.getWeldMethods()) {
                     WeldMethod<?, ?> method = getWeldAnnotated().getWeldMethod(decoratorMethod.getSignature());
                     if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal()) {
-                        throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);
+                        throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);
                     }
                 }
             }

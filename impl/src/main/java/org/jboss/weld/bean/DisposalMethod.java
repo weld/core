@@ -162,7 +162,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
                 }
             }
             if (!methodDeclaredOnTypes) {
-                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, this, getDeclaringBean());
+                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, getWeldAnnotated(), getDeclaringBean());
             }
         }
     }

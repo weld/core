@@ -33,6 +33,7 @@ import javax.enterprise.inject.spi.ProcessModule;
 
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -70,9 +71,9 @@ public class EnabledBuilder {
                 return new MetadataImpl<Class<? extends T>>(Reflections.<Class<? extends T>> cast(resourceLoader
                         .classForName(from.getValue())), location);
             } catch (ResourceLoadingException e) {
-                throw new ResourceLoadingException(e.getMessage() + "; location: " + location, e.getCause());
+                throw new DeploymentException(ERROR_LOADING_BEANS_XML_ENTRY, e.getCause(), from.getValue(), from.getLocation());
             } catch (Exception e) {
-                throw new ResourceLoadingException(e.getMessage() + "; location: " + location, e);
+                throw new DeploymentException(ERROR_LOADING_BEANS_XML_ENTRY, e, from.getValue(), from.getLocation());
             }
         }
     }

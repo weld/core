@@ -109,7 +109,7 @@ public class ExternalBeanAttributesFactory {
 
     public static <E extends Enum<?>> void checkNull(Object object, E key, Object... objects) {
         if (object == null) {
-            throw new IllegalArgumentException(key, objects);
+            throw new DefinitionException(key, objects);
         }
     }
 }

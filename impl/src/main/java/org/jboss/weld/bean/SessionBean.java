@@ -68,6 +68,7 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
@@ -324,7 +325,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         }
         boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
         if (passivating && !isPassivationCapableBean()) {
-            throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+            throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
         }
     }
 

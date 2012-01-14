@@ -49,6 +49,7 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.enums.EnumInjectionTarget;
 import org.jboss.weld.enums.EnumService;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.introspector.DiscoveredExternalAnnotatedType;
 import org.jboss.weld.introspector.ExternalAnnotatedType;
@@ -301,7 +302,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     private void validateDecorator(WeldClass<?> weldClass) {
         if (weldClass.isAnnotationPresent(Interceptor.class)) {
-            throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
+            throw new DefinitionException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
         }
     }
 
