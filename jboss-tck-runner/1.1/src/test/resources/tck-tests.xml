@@ -162,7 +162,24 @@
                     <exclude name="testProducerFieldAnnotated" />
                     <exclude name="testProducerFieldBeanAttributes" />
                 </methods>
-            </class>           
+            </class>
+            <!-- WELD-1051 -->
+            <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.broken.not.bean.InjectionPointTest">
+                <methods>
+                    <exclude name="testDefinitionErrorDetected"></exclude>
+                </methods>
+            </class>
+            <!-- WELD-1052 -->
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.nonPassivationCapableProducerField.NonPassivationCapableProducerFieldTest">
+                <methods>
+                    <exclude name="testNonPassivationCapableProducerFieldNotOk"/>
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.nonPassivationCapableProducerMethod.NonPassivationCapableProducerMethodTest">
+                <methods>
+                    <exclude name="testNonPassivationCapableProducerMethodNotOk"/>
+                </methods>
+            </class>
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
             <class name="org.jboss.jsr299.tck.tests.context.jms.MessageListenerContextTest">

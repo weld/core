@@ -16,18 +16,7 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner.Runnable;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.messages.XmlMessage;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.Enabled;
-import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.junit.Assert;
-import org.testng.annotations.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,7 +24,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner.Runnable;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.messages.XmlMessage;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.Enabled;
+import org.jboss.weld.manager.api.WeldManager;
+import org.junit.Assert;
+import org.testng.annotations.Test;
 
 @SuppressWarnings("unchecked")
 public class BeansXmlTest {
@@ -178,7 +178,7 @@ public class BeansXmlTest {
 
     @Test
     public void testCannotLoadClass() {
-        createRunner("unloadable.xml").runAndExpect(new ResourceLoadingException());
+        createRunner("unloadable.xml").runAndExpect(new DeploymentException(new Exception()));
     }
 
 }
