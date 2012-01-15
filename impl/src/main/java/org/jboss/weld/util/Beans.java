@@ -22,6 +22,7 @@ import com.google.common.collect.Multimaps;
 import org.jboss.interceptor.spi.model.InterceptionType;
 import org.jboss.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
@@ -501,7 +502,7 @@ public class Beans {
         } else {
             Set<T> result = new HashSet<T>();
             for (T bean : beans) {
-                if (isBeanEnabled(bean, beanManager.getEnabled()) && !isSpecialized(bean, beans, beanManager)) {
+                if (isBeanEnabled(bean, beanManager.getEnabled()) && !isSpecialized(bean, beans, beanManager) && !isSuppressedBySpecialization(bean, beanManager)) {
                     result.add(bean);
                 }
             }
@@ -581,6 +582,20 @@ public class Beans {
         Bean<?> specializedBean = closure.getSpecialized(bean);
         //noinspection SuspiciousMethodCalls
         return (specializedBean != null && beans.contains(specializedBean));
+    }
+
+    /**
+     * Check if the given producer/disposer method of producer field is defined on a specialized bean and is therefore disabled.
+     */
+    public static boolean isSuppressedBySpecialization(Bean<?> bean, BeanManagerImpl manager) {
+        if (bean instanceof AbstractReceiverBean<?, ?, ?>) {
+            BeansClosure closure = BeansClosure.getClosure(manager);
+            if (closure.isSpecialized(Reflections.<AbstractReceiverBean<?, ?, ?>>cast(bean).getDeclaringBean())) {
+                // if a bean is specialized, its producer methods are not enabled (WELD-977)
+                return true;
+            }
+        }
+        return false;
     }
 
     public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type) {
