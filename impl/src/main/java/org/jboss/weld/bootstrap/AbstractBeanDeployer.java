@@ -16,6 +16,21 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
+
+import java.lang.reflect.Member;
+import java.util.Set;
+
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -49,24 +64,10 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-import java.lang.reflect.Member;
-import java.util.Set;
-
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
 
 /**
  * @author Pete Muir
@@ -136,9 +137,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
         // TODO -- why do observers have to be the last?
         for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers()) {
-            Bean ob = observer.getDeclaringBean();
-            // make sure we're not specialized
-            if (Beans.isSpecialized(ob, manager) == false) {
+            if (Observers.isObserverMethodEnabled(observer, manager)) {
                 log.debug(FOUND_OBSERVER_METHOD, observer);
                 observer.initialize();
                 ProcessObserverMethodImpl.fire(manager, observer);
