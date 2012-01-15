@@ -124,25 +124,13 @@
                     <exclude name="testResourceBeanTypes"/>
                 </methods>
             </class>
-            <!-- WELD-1021 -->
-            <class name="org.jboss.jsr299.tck.tests.decorators.definition.DecoratorDefinitionTest">
-                <methods>
-                    <exclude name="testAbstractDecoratorNotImplementingMethodOfDecoratedType" />
-                </methods>
-            </class>
-            <!-- WELD-1034 -->
-            <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.InjectionPointTest">
-                <methods>
-                    <exclude name="testIsDelegate" />
-                </methods>
-            </class>
-            <!-- WELD-1038 -->
+            <!-- WELD-1039 -->
             <class name="org.jboss.jsr299.tck.tests.extensions.annotated.AlternativeMetaDataTest">
                 <methods>
                     <exclude name="testGetAnnotations" />
                 </methods>
             </class>
-            <!-- WELD-1039 -->
+            <!-- WELD-1038 -->
             <class name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
                 <methods>
                     <exclude name="testMessageDrivenBeanMethodIntercepted" />
@@ -152,15 +140,6 @@
             <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.jms.ContainerEventTest">
                 <methods>
                     <exclude name="testProcessInjectionTargetEventFiredForMessageDrivenBean" />
-                </methods>
-            </class>
-            <!-- WELD-1046 -->
-            <class name="org.jboss.jsr299.tck.tests.extensions.lifecycle.processBeanAttributes.VerifyValuesTest">
-                <methods>
-                    <exclude name="testProducerMethodAnnotated" />
-                    <exclude name="testProducerMethodBeanAttributes" />
-                    <exclude name="testProducerFieldAnnotated" />
-                    <exclude name="testProducerFieldBeanAttributes" />
                 </methods>
             </class>
             <!-- WELD-1051 -->
