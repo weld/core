@@ -59,6 +59,7 @@ import org.slf4j.cal10n.LocLogger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
@@ -375,6 +376,9 @@ public class Validator implements Service {
                     if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
                         throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
                     }
+                    if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
+                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
+                    }
                     annotated = annotated.getWeldSuperclass();
                 }
             }
@@ -397,6 +401,9 @@ public class Validator implements Service {
                         }
                         if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
                             throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
+                        }
+                        if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
+                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_OBSERVER_METHODS, bean);
                         }
                         annotatated = annotatated.getWeldSuperclass();
                     }
