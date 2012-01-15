@@ -69,6 +69,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -142,9 +143,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
         // TODO -- why do observers have to be the last?
         for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers()) {
-            Bean<?> ob = observer.getDeclaringBean();
-            // make sure we're not specialized
-            if (Beans.isSpecialized(ob, manager) == false) {
+            if (Observers.isObserverMethodEnabled(observer, manager)) {
                 log.debug(FOUND_OBSERVER_METHOD, observer);
                 observer.initialize();
                 ProcessObserverMethodImpl.fire(manager, observer);
@@ -283,7 +282,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T, S> boolean fireProcessBeanAttributes(AbstractBean<T, S> bean) {
-        if (!getManager().isBeanEnabled(bean) || Beans.isSpecialized(bean, getManager())) {
+        if (!getManager().isBeanEnabled(bean) || Beans.isSpecialized(bean, getManager()) || Beans.isSuppressedBySpecialization(bean, getManager())) {
             return false;
         }
 
