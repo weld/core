@@ -205,21 +205,6 @@
                     <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod"/>
                 </methods>
             </class>
-
-
-            <!-- Remove exclusion when AS7 suports SFSB serialization properly-->
-            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
-                <methods>
-                    <exclude name="testSerializeSFSB"/>
-                </methods>
-            </class>
-            <!-- Remove exclusion when AS7 suports WS endpoint injection-->
-            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
-                <methods>
-                    <exclude name="testInjectionIntoWebServiceEndpoint"/>
-                </methods>
-            </class>
-            
         </classes>
     </test>
 

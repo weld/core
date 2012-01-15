@@ -159,14 +159,6 @@
                     <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
                 </methods>
             </class>
-
-            <!-- Remove exclusion when AS7 suports SFSB serialization properly -->
-            <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
-                <methods>
-                    <exclude name="testSerializeSFSB" />
-                </methods>
-            </class>
-
         </classes>
     </test>
 
