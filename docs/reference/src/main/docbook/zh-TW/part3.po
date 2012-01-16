@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-14 16:07+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We&#39;ve already seen three means of achieving loose coupling:"
+msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
 msgstr ""
 
 #. Tag: para
@@ -74,7 +74,7 @@ msgstr "Web Bean 的第二個重點就是 <emphasis>strong typing（強類型）
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "You don&#39;t see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called &#34;configuration by convention&#34;—but because there are simply no strings there to begin with!"
+msgid "You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules&mdash;so-called \"configuration by convention\"&mdash;but because there are simply no strings there to begin with!"
 msgstr "您在 Web Bean 的程式碼中不會看見基於字串的識別符號，這不是因為 framework 透過使用預設的規則來將它隱藏起來 &#151; 又稱為「configuration by convention」 &#151; 而是因為一開始根本就沒有任何字串！"
 
 #. Tag: para
@@ -144,7 +144,7 @@ msgstr "Web Bean <emphasis>stereotype</emphasis> 將這個概念帶領到了另�
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We&#39;re now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don&#39;t ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you&#39;ll come to appreciate their power."
+msgid "We're now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
 msgstr "我們現在已準備好談到一些更為進階的 Web Bean 功能。請記得，這些功能是為了使我們的程式碼變得易於驗證和較容易理解。實際上大部分的時候您都不會真的<emphasis>需要</emphasis>使用到這些功能，不過若您可有效地利用這些功能的話，您將可體會到這些功能的強大。"
 
 #~ msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."

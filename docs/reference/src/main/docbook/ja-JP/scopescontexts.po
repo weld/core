@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:18\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-06-04 00:47+0900\n"
 "Last-Translator: Daisuke Sano <d-sano@nri.co.jp>\n"
 "Language-Team: none\n"
@@ -21,7 +21,7 @@ msgstr "スコープとコンテキスト"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "So far, we&#39;ve seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a bean determines the lifecycle of instances of the bean. The scope also determines which clients refer to which instances of the bean. According to the CDI specification, a scope determines:"
+msgid "So far, we've seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a bean determines the lifecycle of instances of the bean. The scope also determines which clients refer to which instances of the bean. According to the CDI specification, a scope determines:"
 msgstr "これまでも<emphasis>スコープタイプアノテーション</emphasis>に関するいくつかの例を見てきました。Web Beanのスコープは、Web Beanインスタンスのライフサイクルを定めるものです。また、どのクライアントがどのWeb Beanインスタンスを参照するかを定めるものでもあります。Web Beansの仕様では、スコープは以下のことを定めます。"
 
 #. Tag: para
@@ -46,7 +46,7 @@ msgstr "例えば、セッションスコープを持ったWeb Beanである<lit
 
 #. Tag: para
 #, no-c-format
-msgid "JPA entities aren&#39;t a great fit for this model. Entities have their whole own lifecycle and identity model which just doesn&#39;t map naturally to the model used in CDI. Therefore, we recommend against treating entities as CDI beans. You&#39;re certainly going to run into problems if you try to give an entity a scope other than the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass an injected instance to the JPA <literal>EntityManager</literal>."
+msgid "JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass an injected instance to the JPA <literal>EntityManager</literal>."
 msgstr ""
 
 #. Tag: title
@@ -56,7 +56,7 @@ msgstr "スコープタイプ"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI features an <emphasis>extensible context model</emphasis>. It&#39;s possible to define new scopes by creating a new scope type annotation:"
+msgid "CDI features an <emphasis>extensible context model</emphasis>. It's possible to define new scopes by creating a new scope type annotation:"
 msgstr "Web Beansでは、<emphasis>拡張コンテキストモデル</emphasis>という特徴をもっており、新たなスコープタイプアノテーションを作成することによって、新たなスコープを定義することが可能になっています。"
 
 #. Tag: programlisting
@@ -74,7 +74,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Of course, that&#39;s the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only. You can expect an implementation of the business scope, for instance, in a future version of Seam."
+msgid "Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only. You can expect an implementation of the business scope, for instance, in a future version of Seam."
 msgstr "もちろんこれは、新たなスコープを定義する作業の内のごく簡単な一部分であり、スコープタイプを使うためには、さらにそのスコープを実装するコンテキストオブジェクトを定義する必要があります。コンテキストを実装するのは通常とても技術のいる作業であり、フレームワークを開発する目的でのみ行われます。"
 
 #. Tag: para
@@ -93,7 +93,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Usually, you&#39;ll use one of CDI&#39;s built-in scopes."
+msgid "Usually, you'll use one of CDI's built-in scopes."
 msgstr "通常、Web Beansの組み込みスコープの中の一つを使います。"
 
 #. Tag: title
@@ -193,7 +193,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let&#39;s not waste time discussing them here. One of the scopes, however, is new."
+msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let's not waste time discussing them here. One of the scopes, however, is new."
 msgstr "四つの組み込みスコープの内の三つはJava EE開発者にとっては極めて身近なものであるはずですので、ここではそれらの議論を行う時間を省くことにします。しかしながら、残りの一つは新たなスコープです。"
 
 #. Tag: title
@@ -218,7 +218,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A conversation represents a task—a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
+msgid "A conversation represents a task&mdash;a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
 msgstr "一つの対話は、一つのタスク、ユーザー視点での作業の単位を表現します。対話コンテキストは、ユーザーが今行っている作業に関連する状態を保持します。もし、ユーザーが複数の作業を同時に行っている場合は、対話も複数になります。"
 
 #. Tag: para
@@ -341,25 +341,25 @@ msgstr "ゆえに、次のリンクは対話を伝播します。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "&#60;a href=&#34;/addProduct.jsp?cid=#{conversation.id}&#34;&#62;Add Product&#60;/a&#62;"
+msgid "&lt;a href=\"/addProduct.jsp?cid=#{conversation.id}\"&gt;Add Product&lt;/a&gt;"
 msgstr "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "It&#39;s probably better to use one of the link components in JSF 2:"
+msgid "It's probably better to use one of the link components in JSF 2:"
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;h:link outcome=&#34;/addProduct.xhtml&#34; value=&#34;Add Product&#34;&#62;\n"
-"   &#60;f:param name=&#34;cid&#34; value=&#34;#{javax.enterprise.context.conversation.id}&#34;/&#62;\n"
-"&#60;/h:link&#62;"
+"&lt;h:link outcome=\"/addProduct.xhtml\" value=\"Add Product\"&gt;\n"
+"   &lt;f:param name=\"cid\" value=\"#{javax.enterprise.context.conversation.id}\"/&gt;\n"
+"&lt;/h:link&gt;"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The conversation context propagates across redirects, making it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a &#34;flash&#34; object. The container automatically adds the conversation id to the redirect URL as a request parameter."
+msgid "The conversation context propagates across redirects, making it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a \"flash\" object. The container automatically adds the conversation id to the redirect URL as a request parameter."
 msgstr "またWeb Beanマネージャは、対話が長期対話として導入されていないとしても、あらゆるリダイレクトをまたがって対話を伝播させる必要があります。これは、よくあるPOST-then-redirectパターンの実装をとても簡単なものにし、Ruby on Railsの\"flash\"オブジェクトのような貧弱なアーキテクチャに頼る必要がありません。このようなケースで、Web Beanマネージャは自動的にリダイレクトURLにリクエストパラメタを付加します。"
 
 #. Tag: title
@@ -369,7 +369,7 @@ msgstr "対話のタイムアウト"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The container is permitted to destroy a conversation and all state held in its context at any time in order to conserve resources. A CDI implementation will normally do this on the basis of some kind of timeout—though this is not required by the specification. The timeout is the period of inactivity before the conversation is destroyed (as opposed to the amount of time the conversation is active)."
+msgid "The container is permitted to destroy a conversation and all state held in its context at any time in order to conserve resources. A CDI implementation will normally do this on the basis of some kind of timeout&mdash;though this is not required by the specification. The timeout is the period of inactivity before the conversation is destroyed (as opposed to the amount of time the conversation is active)."
 msgstr "Web Beanマネージャは、対話とそこに保持されたすべての状態を、リソースを保つ目的で破棄することを許されています。Web Beansの仕様で必須というわけではありませんが、Web Beanマネージャの通常の実装では、これをある種のタイムアウトに基づいて行うようになっています。タイムアウトは、対話が破棄されるまでに使用されない期間となります。"
 
 #. Tag: para
@@ -399,12 +399,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You can guess what &#34;singleton&#34; means here. It means a bean that is instantiated once. Unfortunately, there&#39;s a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don&#39;t have a proxy object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, or any stateful session bean."
+msgid "You can guess what \"singleton\" means here. It means a bean that is instantiated once. Unfortunately, there's a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don't have a proxy object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, or any stateful session bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, we probably don&#39;t mind too much if it gets duplicated via serialization. However, that makes it no stop being a true singleton, and we may as well have just declared it with the default scope."
+msgid "Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, we probably don't mind too much if it gets duplicated via serialization. However, that makes it no stop being a true singleton, and we may as well have just declared it with the default scope."
 msgstr ""
 
 #. Tag: para
@@ -424,7 +424,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "give the client a reference of type <literal>Instance&#60;X&#62;</literal> where <literal>X</literal> is the bean type of the singleton bean."
+msgid "give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is the bean type of the singleton bean."
 msgstr ""
 
 #. Tag: para
@@ -464,12 +464,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be lost immediately. That&#39;s why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page, inject it into a different bean, and expose it to EL via a getter method."
+msgid "If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be lost immediately. That's why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page, inject it into a different bean, and expose it to EL via a getter method."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Beans with scope <literal>@Dependent</literal> don&#39;t need a proxy object. The client holds a direct reference to its instance."
+msgid "Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference to its instance."
 msgstr ""
 
 #. Tag: para
@@ -538,7 +538,7 @@ msgstr "<literal>calculator</literal>フィールドには対話スコープを�
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This feature is particularly useful with producer methods, as we&#39;ll see in the next chapter."
+msgid "This feature is particularly useful with producer methods, as we'll see in <xref linkend=\"producermethods\" />."
 msgstr "この機能は、特に次章で説明するプロデューサメソッドにおいて効果を発揮します。"
 
 #~ msgid "@RequestScoped"

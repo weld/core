@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: events\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-15 12:08+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -39,7 +39,7 @@ msgstr "不只是事件產生器由觀察器被 decouple；觀察器也完全地
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "observers can specify a combination of &#34;selectors&#34; to narrow the set of event notifications they will receive, and"
+msgid "observers can specify a combination of \"selectors\" to narrow the set of event notifications they will receive, and"
 msgstr "觀察器可指定一組「選擇器（selectors）」的組合來過濾並減少它們所將會收到的事件通知數量，並且"
 
 #. Tag: para
@@ -49,7 +49,7 @@ msgstr "觀察器可即刻地被通知，或是您亦可指定將事件的傳送
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI event notification facility uses more or less the same typesafe approach that we&#39;ve already seen with the dependency injection service."
+msgid "The CDI event notification facility uses more or less the same typesafe approach that we've already seen with the dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -64,7 +64,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here&#39;s an example:"
+msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here's an example:"
 msgstr ""
 
 #. Tag: programlisting
@@ -107,7 +107,7 @@ msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document doc
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "An observer method need not specify any event qualifiers—in this case it is interested in <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it&#39;s only interested in events which have those qualifiers."
+msgid "An observer method need not specify any event qualifiers&mdash;in this case it is interested in <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it's only interested in events which have those qualifiers."
 msgstr "一個 observer method 不需要指定任何的事件綁定 &#151; 在此情況下它會專注於特定 type 的<emphasis>所有</emphasis>事件。若它指定了事件綁定的話，它就只會專注於也具有這些事件綁定的事件。"
 
 #. Tag: para
@@ -132,7 +132,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Any Event&#60;Document&#62; documentEvent;"
+msgid "@Inject @Any Event&lt;Document&gt; documentEvent;"
 msgstr "<![CDATA[@Observable Event<Document> documentEvent]]>"
 
 #. Tag: para
@@ -187,7 +187,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Updated Event&#60;Document&#62; documentUpdatedEvent;"
+msgid "@Inject @Updated Event&lt;Document&gt; documentUpdatedEvent;"
 msgstr "<![CDATA[@Observable @Updated Event<Document> documentUpdatedEvent]]>"
 
 #. Tag: para
@@ -207,12 +207,12 @@ msgstr "不會指定任何的事件綁定，<emphasis>除了</emphasis>傳送給
 
 #. Tag: para
 #, no-c-format
-msgid "The downside of annotating the injection point is that we can&#39;t specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
+msgid "The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "documentEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
+msgid "documentEvent.select(new AnnotationLiteral&lt;Updated&gt;(){}).fire(document);"
 msgstr "<![CDATA[documentEvent.fire( document, new AnnotationLiteral<Updated>(){} );]]>"
 
 #. Tag: para
@@ -227,7 +227,7 @@ msgstr "交易觀察器（Transactional observers）"
 
 #. Tag: para
 #, no-c-format
-msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn&#39;t always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
+msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn't always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
 msgstr ""
 
 #. Tag: para
@@ -289,7 +289,7 @@ msgstr "事件綁定類型的成員可由事件產生器在事件通知器的注
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Role(ADMIN) Event&#60;LoggedIn&#62; loggedInEvent;"
+msgid "@Inject @Role(ADMIN) Event&lt;LoggedIn&gt; loggedInEvent;"
 msgstr "<![CDATA[@Observable @Role(ADMIN) Event<LoggedIn> LoggedInEvent;}}]]>"
 
 #. Tag: para
@@ -301,7 +301,7 @@ msgstr "另外，事件綁定類型成員的值亦可藉由事件產生器來動
 #, fuzzy, no-c-format
 msgid ""
 "abstract class RoleBinding \n"
-"   extends AnnotationLiteral&#60;Role&#62; \n"
+"   extends AnnotationLiteral&lt;Role&gt; \n"
 "   implements Role {}"
 msgstr ""
 "<![CDATA[abstract class RoleBinding \n"
@@ -334,9 +334,9 @@ msgstr "事件綁定類型可被合併，例如："
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Inject @Blog Event&#60;Document&#62; blogEvent;\n"
+"@Inject @Blog Event&lt;Document&gt; blogEvent;\n"
 "...\n"
-"if (document.isBlog()) blogEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
+"if (document.isBlog()) blogEvent.select(new AnnotationLiteral&lt;Updated&gt;(){}).fire(document);"
 msgstr ""
 "<![CDATA[@Observable @Blog Event<Document> blogEvent;\n"
 "...\n"
@@ -445,12 +445,12 @@ msgid ""
 "\n"
 "   @PersistenceContext EntityManager em;\n"
 "    \n"
-"   List&#60;Product&#62; products;\n"
+"   List&lt;Product&gt; products;\n"
 "\n"
 "   @Produces @Catalog \n"
-"   List&#60;Product&#62; getCatalog() {\n"
+"   List&lt;Product&gt; getCatalog() {\n"
 "      if (products==null) {\n"
-"         products = em.createQuery(&#34;select p from Product p where p.deleted = false&#34;)\n"
+"         products = em.createQuery(\"select p from Product p where p.deleted = false\")\n"
 "            .getResultList();\n"
 "      }\n"
 "      return products;\n"
@@ -492,16 +492,16 @@ msgid ""
 "@Stateless\n"
 "public class ProductManager {\n"
 "   @PersistenceContext EntityManager em;\n"
-"   @Inject @Any Event&#60;Product&#62; productEvent;\n"
+"   @Inject @Any Event&lt;Product&gt; productEvent;\n"
 "\n"
 "   public void delete(Product product) {\n"
 "      em.delete(product);\n"
-"      productEvent.select(new AnnotationLiteral&#60;Deleted&#62;(){}).fire(product);\n"
+"      productEvent.select(new AnnotationLiteral&lt;Deleted&gt;(){}).fire(product);\n"
 "   }\n"
 "    \n"
 "   public void persist(Product product) {\n"
 "      em.persist(product);\n"
-"      productEvent.select(new AnnotationLiteral&#60;Created&#62;(){}).fire(product);\n"
+"      productEvent.select(new AnnotationLiteral&lt;Created&gt;(){}).fire(product);\n"
 "   }\n"
 "   ...\n"
 "}"

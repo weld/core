@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-12-14T13:35:16\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2010-10-19T02:13:49\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
@@ -25,17 +25,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld allows you to easiy manage the built in contexts by injecting them and calling lifecycle methods. Weld defines two types of context, <emphasis>managed</emphasis> and <emphasis>unmanaged</emphasis>. Managed contexts can be activated (allowing bean instances to be retrieved from the context), invalidated (scheduling bean instances for destruction) and deactivaed (stopping bean instances from being retrieved, and if the context has been invalidated, causing the bean instances to destroyed). Unmanaged contexts are always active; some may offer the ability to destroy instances."
+msgid "Weld allows you to easily manage the built in contexts by injecting them and calling lifecycle methods. Weld defines two types of context, <emphasis>managed</emphasis> and <emphasis>unmanaged</emphasis>. Managed contexts can be activated (allowing bean instances to be retrieved from the context), invalidated (scheduling bean instances for destruction) and deactivated (stopping bean instances from being retrieved, and if the context has been invalidated, causing the bean instances to destroyed). Unmanaged contexts are always active; some may offer the ability to destroy instances."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Managed contexts can either be <emphasis>bound</emphasis> or <emphasis>unbound</emphasis>. An unbound context is scoped to the thread in which it is activated (instances placed in the context in one thread are not visible in other threads), and is destroyed upon invalidation and deactivation. Bound contexts are attached to some external data store (such as the Http Session or a manually propagated map) by <emphasis>associating</emphasis> the data store with the context before calling activate, and discociating the data store after calling activate."
+msgid "Managed contexts can either be <emphasis>bound</emphasis> or <emphasis>unbound</emphasis>. An unbound context is scoped to the thread in which it is activated (instances placed in the context in one thread are not visible in other threads), and is destroyed upon invalidation and deactivation. Bound contexts are attached to some external data store (such as the Http Session or a manually propagated map) by <emphasis>associating</emphasis> the data store with the context before calling activate, and dissociating the data store after calling activate."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld automatically controls context lifecycle in many scenarios such as Http Requests, EJB remote invocations, and MDB invocations. Many of the extensions for CDI offer context lifecycle for other environments, it&#39;s worth checking to see if there is a suitable extension before deciding to manage the context yourself."
+msgid "Weld automatically controls context lifecycle in many scenarios such as HTTP requests, EJB remote invocations, and MDB invocations. Many of the extensions for CDI offer context lifecycle for other environments, it's worth checking to see if there is a suitable extension before deciding to manage the context yourself."
 msgstr ""
 
 #. Tag: para
@@ -145,7 +145,7 @@ msgstr ""
 
 #. Tag: entry
 #, no-c-format
-msgid "A request context bound to a an interceptor&#39;s invocation context, used for EJB invocations outside of Servlet requests"
+msgid "A request context bound to a an interceptor's invocation context, used for EJB invocations outside of Servlet requests"
 msgstr ""
 
 #. Tag: entry
@@ -245,12 +245,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Unmanaged contexts offer little of interest in a discussion about managing context lifecycles, so from here on in we will concentrate on the managed contexts (unmanaged contexts of course play a vital role in the functioning of your application and Weld!). As you can see from the table above, the managed contexts offer a number of different implmentations for the same scope; in general, each flavor of context for a scope has the same API. We&#39;ll walk through a number of common lifecycle management scenarios below; armed with this knowledge, and the Javadoc, you should be able to work with any of the context implementations Weld offers."
+msgid "Unmanaged contexts offer little of interest in a discussion about managing context lifecycles, so from here on in we will concentrate on the managed contexts (unmanaged contexts of course play a vital role in the functioning of your application and Weld!). As you can see from the table above, the managed contexts offer a number of different implementations for the same scope; in general, each flavor of context for a scope has the same API. We'll walk through a number of common lifecycle management scenarios below; armed with this knowledge, and the Javadoc, you should be able to work with any of the context implementations Weld offers."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We&#39;ll start simple with the <code>BoundRequestContext</code>, which you might use to provide the request scope outside of a Servlet request or EJB Invocation."
+msgid "We'll start simple with the <code>BoundRequestContext</code>, which you might use to provide the request scope outside of a Servlet request or EJB Invocation."
 msgstr ""
 
 #. Tag: programlisting
@@ -263,14 +263,14 @@ msgid ""
 "   ...\n"
 "   \n"
 "   /* Start the request, providing a data store which will last the lifetime of the request */\n"
-"   public void startRequest(Map&#60;String, Object&#62; requestDataStore) {\n"
+"   public void startRequest(Map&lt;String, Object&gt; requestDataStore) {\n"
 "      // Associate the store with the context and acticate the context\n"
 "      requestContext.associate(requestDataStore);\n"
 "      requestContext.activate();\n"
 "   }\n"
 "   \n"
 "   /* End the request, providing the same data store as was used to start the request */\n"
-"   public void endRequest(Map&#60;String, Object&#62; requestDataStore) {\n"
+"   public void endRequest(Map&lt;String, Object&gt; requestDataStore) {\n"
 "      try {\n"
 "         /* Invalidate the request (all bean instances will be scheduled for destruction) */\n"
 "         requestContext.invalidate();\n"
@@ -290,7 +290,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld&#39;s session contexts are &#34;lazy&#34; and don&#39;t require a session to actually exist until a bean instance must be written."
+msgid "Weld's session contexts are \"lazy\" and don't require a session to actually exist until a bean instance must be written."
 msgstr ""
 
 #. Tag: para
@@ -308,16 +308,16 @@ msgid ""
 "   /* Start a transient conversation */\n"
 "   /* Provide a data store which will last the lifetime of the request */\n"
 "   /* and one that will last the lifetime of the session */\n"
-"   public void startTransientConversation(Map&#60;String, Object&#62; requestDataStore, \n"
-"                                          Map&#60;String, Object&#62; sessionDataStore) {\n"
+"   public void startTransientConversation(Map&lt;String, Object&gt; requestDataStore, \n"
+"                                          Map&lt;String, Object&gt; sessionDataStore) {\n"
 "      resumeOrStartConversation(requestDataStore, sessionDataStore, null);\n"
 "   }\n"
 "\n"
 "   /* Start a transient conversation (if cid is null) or resume a non-transient */\n"
 "   /* conversation. Provide a data store which will last the lifetime of the request */\n"
 "   /* and one that will last the lifetime of the session */      \n"
-"   public void resumeOrStartConversation(Map&#60;String, Object&#62; requestDataStore, \n"
-"                                         Map&#60;String, Object&#62; sessionDataStore, \n"
+"   public void resumeOrStartConversation(Map&lt;String, Object&gt; requestDataStore, \n"
+"                                         Map&lt;String, Object&gt; sessionDataStore, \n"
 "                                         String cid) {\n"
 "      /* Associate the stores with the context and acticate the context */\n"
 "      * BoundRequest just wraps the two datastores */\n"
@@ -329,8 +329,8 @@ msgid ""
 "   /* End the conversations, providing the same data store as was used to start */\n"
 "   /* the request. Any transient conversations will be destroyed, any newly-promoted */\n"
 "   /* conversations will be placed into the session */\n"
-"   public void endOrPassivateConversation(Map&#60;String, Object&#62; requestDataStore, \n"
-"                                          Map&#60;String, Object&#62; sessionDataStore) {\n"
+"   public void endOrPassivateConversation(Map&lt;String, Object&gt; requestDataStore, \n"
+"                                          Map&lt;String, Object&gt; sessionDataStore) {\n"
 "      try {\n"
 "         /* Invalidate the conversation (all transient conversations will be scheduled for destruction) */\n"
 "         conversationContext.invalidate();\n"
@@ -345,15 +345,15 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The conversation context also offers a number of properties which control the behavior of conversation expiration (after this period of inactivity the conversation will be ended and destroyed by the containber), and the duration of lock timeouts (the conversation context ensures that a single thread is accessing any bean instances by locking access, if a lock can&#39;t be obtained after a certain time Weld will error rather than continue to wait for the lock). Additionally, you can alter the name of the parameter used to transfer the conversation id (by default, <code>cid</code>)."
+msgid "The conversation context also offers a number of properties which control the behavior of conversation expiration (after this period of inactivity the conversation will be ended and destroyed by the container), and the duration of lock timeouts (the conversation context ensures that a single thread is accessing any bean instances by locking access, if a lock can't be obtained after a certain time Weld will error rather than continue to wait for the lock). Additionally, you can alter the name of the parameter used to transfer the conversation id (by default, <code>cid</code>)."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld also introduces the notion of a <code>ManagedConversation</code>, which extends the <code>Conversation</code> interface with the abilty to lock, unlock and touch (update the last used timestamp) a conversation. Finally, all non-transient conversations in a session can be obtained from the conversation context, as can the current conversation."
+msgid "Weld also introduces the notion of a <code>ManagedConversation</code>, which extends the <code>Conversation</code> interface with the ability to lock, unlock and touch (update the last used timestamp) a conversation. Finally, all non-transient conversations in a session can be obtained from the conversation context, as can the current conversation."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld&#39;s conversations are not assigned ids until they become non-transient."
+msgid "Weld's conversations are not assigned ids until they become non-transient."
 msgstr ""

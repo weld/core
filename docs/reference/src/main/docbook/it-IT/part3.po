@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-15 20:46+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We&#39;ve already seen three means of achieving loose coupling:"
+msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
 msgstr ""
 
 #. Tag: para
@@ -72,7 +72,7 @@ msgstr "Il secondo tema saliente di Web Beans è lo <emphasis>tipizzazione forte
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "You don&#39;t see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called &#34;configuration by convention&#34;—but because there are simply no strings there to begin with!"
+msgid "You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules&mdash;so-called \"configuration by convention\"&mdash;but because there are simply no strings there to begin with!"
 msgstr "Non si vedono identificatori di tipo stringa nel codice basato su Web Beans, non perché il framework li nasconde usando regole intelligenti nell'assegnamento dei valori di default &#151; la cosiddetta \"configurazione per convenzione (configuration by convention)\" &#151; ma semplicemente perché non ci sono stringhe, tanto per cominciare!"
 
 # senza che sia necessario realizzare dei tools appositi
@@ -144,7 +144,7 @@ msgstr "Gli <emphasis>stereotipi (stereotypes)</emphasis> di Web Beans fanno far
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We&#39;re now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don&#39;t ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you&#39;ll come to appreciate their power."
+msgid "We're now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
 msgstr "Ora siamo pronti ad incontrare alcune caratteristiche più avanzate di Web Beans. Tenete a mente che tali caratteristiche esistono sia per rendere il nostro codice più facile da validare che per renderlo più comprensibile. La maggior parte delle volte non è necessario usare tali carattestiche, ma, se usate con accortezza, si arriverà ad apprezzerne l'efficacia."
 
 # literate=elegante (come in altri contesti)? oppure = letterato/informato/cosciente. Qui scelgo informato... nel senso di cosciente di se stesso.

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:18\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-11-23 21:23+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It&#39;s time to pull the covers back and dive into the internals of Weld example applications. Let&#39;s start with the simpler of the two examples, <literal>weld-numberguess</literal>."
+msgid "It's time to pull the covers back and dive into the internals of Weld example applications. Let's start with the simpler of the two examples, <literal>weld-numberguess</literal>."
 msgstr ""
 
 #. Tag: title
@@ -31,29 +31,29 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In the numberguess application you get 10 attempts to guess a number between 1 and 100. After each attempt, you&#39;re told whether your guess was too high or too low."
+msgid "In the numberguess application you get 10 attempts to guess a number between 1 and 100. After each attempt, you're told whether your guess was too high or too low."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The numberguess example is comprised of a number of beans, configuration files and Facelets (JSF) views, packaged as a war module. Let&#39;s start by examining the configuration files."
+msgid "The numberguess example is comprised of a number of beans, configuration files and Facelets (JSF) views, packaged as a war module. Let's start by examining the configuration files."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF 2.0, so there&#39;s really nothing that we have to configure. Thus, the configuration consists of only the root element."
+msgid "All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF 2.0, so there's really nothing that we have to configure. Thus, the configuration consists of only the root element."
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;faces-config version=&#34;2.0&#34;\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;faces-config version=\"2.0\"\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd&#34;&#62;\n"
-"&#60;/faces-config&#62;"
+"      http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd\"&gt;\n"
+"&lt;/faces-config&gt;"
 msgstr ""
 "<![CDATA[<faces-config version=\"2.0\"\n"
 "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
@@ -65,48 +65,48 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There&#39;s also an empty <literal>beans.xml</literal> file, which tells the container to look for beans in this application and to activate the CDI services."
+msgid "There's also an empty <literal>beans.xml</literal> file, which tells the container to look for beans in this application and to activate the CDI services."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Finally, there&#39;s the familiar <literal>web.xml</literal>:"
+msgid "Finally, there's the familiar <literal>web.xml</literal>:"
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;web-app version=&#34;2.5&#34;\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;web-app version=\"2.5\"\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&#34;&#62;\n"
+"      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\"&gt;\n"
 "   \n"
-"   &#60;display-name&#62;weld-jsf-numberguess-war&#60;/display-name&#62;\n"
-"   &#60;description&#62;Weld JSF numberguess example (war)&#60;/description&#62;\n"
+"   &lt;display-name&gt;weld-jsf-numberguess-war&lt;/display-name&gt;\n"
+"   &lt;description&gt;Weld JSF numberguess example (war)&lt;/description&gt;\n"
 "\n"
-"   &#60;servlet&#62;\n"
-"      &#60;servlet-name&#62;Faces Servlet&#60;/servlet-name&#62;\n"
-"      &#60;servlet-class&#62;javax.faces.webapp.FacesServlet&#60;/servlet-class&#62;\n"
-"      &#60;load-on-startup&#62;1&#60;/load-on-startup&#62;\n"
-"   &#60;/servlet&#62;\n"
+"   &lt;servlet&gt;\n"
+"      &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;\n"
+"      &lt;servlet-class&gt;javax.faces.webapp.FacesServlet&lt;/servlet-class&gt;\n"
+"      &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;\n"
+"   &lt;/servlet&gt;\n"
 "\n"
-"   &#60;servlet-mapping&#62;\n"
-"      &#60;servlet-name&#62;Faces Servlet&#60;/servlet-name&#62;\n"
-"      &#60;url-pattern&#62;*.jsf&#60;/url-pattern&#62;\n"
-"   &#60;/servlet-mapping&#62;\n"
+"   &lt;servlet-mapping&gt;\n"
+"      &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;\n"
+"      &lt;url-pattern&gt;*.jsf&lt;/url-pattern&gt;\n"
+"   &lt;/servlet-mapping&gt;\n"
 "   \n"
-"   &#60;context-param&#62;\n"
-"      &#60;param-name&#62;javax.faces.DEFAULT_SUFFIX&#60;/param-name&#62;\n"
-"      &#60;param-value&#62;.xhtml&#60;/param-value&#62;\n"
-"   &#60;/context-param&#62;\n"
+"   &lt;context-param&gt;\n"
+"      &lt;param-name&gt;javax.faces.DEFAULT_SUFFIX&lt;/param-name&gt;\n"
+"      &lt;param-value&gt;.xhtml&lt;/param-value&gt;\n"
+"   &lt;/context-param&gt;\n"
 "\n"
-"   &#60;session-config&#62;\n"
-"      &#60;session-timeout&#62;10&#60;/session-timeout&#62;\n"
-"   &#60;/session-config&#62;\n"
+"   &lt;session-config&gt;\n"
+"      &lt;session-timeout&gt;10&lt;/session-timeout&gt;\n"
+"   &lt;/session-config&gt;\n"
 "\n"
-"&#60;/web-app&#62;"
+"&lt;/web-app&gt;"
 msgstr ""
 
 #. Tag: para
@@ -136,51 +136,51 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let&#39;s take a look at the main JSF view, <literal>src/main/webapp/home.xhtml</literal>."
+msgid "Let's take a look at the main JSF view, <literal>src/main/webapp/home.xhtml</literal>."
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;!DOCTYPE html PUBLIC &#34;-//W3C//DTD XHTML 1.0 Transitional//EN&#34;\n"
-"   &#34;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&#34;&#62;\n"
-"&#60;html xmlns=&#34;http://www.w3.org/1999/xhtml&#34;\n"
-"   xmlns:ui=&#34;http://java.sun.com/jsf/facelets&#34;\n"
-"   xmlns:h=&#34;http://java.sun.com/jsf/html&#34;\n"
-"   xmlns:f=&#34;http://java.sun.com/jsf/core&#34;&#62;\n"
+"&lt;!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+"   \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"&gt;\n"
+"&lt;html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
+"   xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
+"   xmlns:h=\"http://java.sun.com/jsf/html\"\n"
+"   xmlns:f=\"http://java.sun.com/jsf/core\"&gt;\n"
 "\n"
-"   &#60;ui:composition template=&#34;/template.xhtml&#34;&#62;\n"
-"      &#60;ui:define name=&#34;content&#34;&#62;\n"
-"         &#60;h1&#62;Guess a number...&#60;/h1&#62;\n"
-"         &#60;h:form id=&#34;numberGuess&#34;&#62;\n"
-"            &#60;div style=&#34;color: red&#34;&#62;\n"
-"               &#60;h:messages id=&#34;messages&#34; globalOnly=&#34;false&#34;/&#62;\n"
-"               &#60;h:outputText id=&#34;Higher&#34; value=&#34;Higher!&#34;\n"
-"                  rendered=&#34;#{game.number gt game.guess and game.guess ne 0}&#34;/&#62;\n"
-"               &#60;h:outputText id=&#34;Lower&#34; value=&#34;Lower!&#34;\n"
-"                  rendered=&#34;#{game.number lt game.guess and game.guess ne 0}&#34;/&#62;\n"
-"            &#60;/div&#62;\n"
+"   &lt;ui:composition template=\"/template.xhtml\"&gt;\n"
+"      &lt;ui:define name=\"content\"&gt;\n"
+"         &lt;h1&gt;Guess a number...&lt;/h1&gt;\n"
+"         &lt;h:form id=\"numberGuess\"&gt;\n"
+"            &lt;div style=\"color: red\"&gt;\n"
+"               &lt;h:messages id=\"messages\" globalOnly=\"false\"/&gt;\n"
+"               &lt;h:outputText id=\"Higher\" value=\"Higher!\"\n"
+"                  rendered=\"#{game.number gt game.guess and game.guess ne 0}\"/&gt;\n"
+"               &lt;h:outputText id=\"Lower\" value=\"Lower!\"\n"
+"                  rendered=\"#{game.number lt game.guess and game.guess ne 0}\"/&gt;\n"
+"            &lt;/div&gt;\n"
 "    \n"
-"            &#60;div&#62;\n"
-"               I&#39;m thinking of a number between #{game.smallest} and #{game.biggest}.\n"
+"            &lt;div&gt;\n"
+"               I'm thinking of a number between #{game.smallest} and #{game.biggest}.\n"
 "               You have #{game.remainingGuesses} guesses remaining.\n"
-"            &#60;/div&#62;\n"
+"            &lt;/div&gt;\n"
 "       \n"
-"            &#60;div&#62;\n"
+"            &lt;div&gt;\n"
 "               Your guess: \n"
-"               &#60;h:inputText id=&#34;inputGuess&#34; value=&#34;#{game.guess}&#34;\n"
-"                  size=&#34;3&#34; required=&#34;true&#34; disabled=&#34;#{game.number eq game.guess}&#34;\n"
-"                  validator=&#34;#{game.validateNumberRange}&#34;/&#62;\n"
-"               &#60;h:commandButton id=&#34;guessButton&#34; value=&#34;Guess&#34; \n"
-"                  action=&#34;#{game.check}&#34; disabled=&#34;#{game.number eq game.guess}&#34;/&#62;\n"
-"            &#60;/div&#62;\n"
-"            &#60;div&#62;\n"
-"              &#60;h:commandButton id=&#34;restartButton&#34; value=&#34;Reset&#34; action=&#34;#{game.reset}&#34; immediate=&#34;true&#34;/&#62;\n"
-"            &#60;/div&#62;\n"
-"         &#60;/h:form&#62;\n"
-"      &#60;/ui:define&#62;\n"
-"   &#60;/ui:composition&#62;\n"
-"&#60;/html&#62;"
+"               &lt;h:inputText id=\"inputGuess\" value=\"#{game.guess}\"\n"
+"                  size=\"3\" required=\"true\" disabled=\"#{game.number eq game.guess}\"\n"
+"                  validator=\"#{game.validateNumberRange}\"/&gt;\n"
+"               &lt;h:commandButton id=\"guessButton\" value=\"Guess\" \n"
+"                  action=\"#{game.check}\" disabled=\"#{game.number eq game.guess}\"/&gt;\n"
+"            &lt;/div&gt;\n"
+"            &lt;div&gt;\n"
+"              &lt;h:commandButton id=\"restartButton\" value=\"Reset\" action=\"#{game.reset}\" immediate=\"true\"/&gt;\n"
+"            &lt;/div&gt;\n"
+"         &lt;/h:form&gt;\n"
+"      &lt;/ui:define&gt;\n"
+"   &lt;/ui:composition&gt;\n"
+"&lt;/html&gt;"
 msgstr ""
 
 #. Tag: para
@@ -190,7 +190,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There are a number of messages which can be sent to the user, &#34;Higher!&#34;, &#34;Lower!&#34; and &#34;Correct!&#34;"
+msgid "There are a number of messages which can be sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\""
 msgstr ""
 
 #. Tag: para
@@ -205,7 +205,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A validator binding is used to make sure the user doesn&#39;t accidentally input a number outside of the range in which they can guess - if the validator wasn&#39;t here, the user might use up a guess on an out of bounds number."
+msgid "A validator binding is used to make sure the user doesn't accidentally input a number outside of the range in which they can guess - if the validator wasn't here, the user might use up a guess on an out of bounds number."
 msgstr ""
 
 #. Tag: para
@@ -301,7 +301,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>Generator</literal> is application scoped, so we don&#39;t get a different random each time."
+msgid "The <literal>Generator</literal> is application scoped, so we don't get a different random each time."
 msgstr ""
 
 #. Tag: para
@@ -311,12 +311,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary entry point of the application. It&#39;s responsible for setting up or resetting the game, capturing and validating the user&#39;s guess and providing feedback to the user with a <literal>FacesMessage</literal>. We&#39;ve used the post-construct lifecycle method to initialize the game by retrieving a random number from the <literal>@Random Instance&#60;Integer&#62;</literal> bean."
+msgid "The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary entry point of the application. It's responsible for setting up or resetting the game, capturing and validating the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used the post-construct lifecycle method to initialize the game by retrieving a random number from the <literal>@Random Instance&lt;Integer&gt;</literal> bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You&#39;ll notice that we&#39;ve also added the <literal>@Named</literal> annotation to this class. This annotation is only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game})."
+msgid "You'll notice that we've also added the <literal>@Named</literal> annotation to this class. This annotation is only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game})."
 msgstr ""
 
 #. Tag: programlisting
@@ -333,19 +333,19 @@ msgid ""
 "   private int remainingGuesses;\n"
 "\n"
 "   @Inject @MaxNumber private int maxNumber;\n"
-"   @Inject @Random Instance&#60;Integer&#62; randomNumber;\n"
+"   @Inject @Random Instance&lt;Integer&gt; randomNumber;\n"
 "   \n"
 "   public Game() {}\n"
 "   \n"
 "   public void check() {\n"
-"      if (guess &#62; number) {\n"
+"      if (guess &gt; number) {\n"
 "         biggest = guess - 1;\n"
 "      }\n"
-"      else if (guess &#60; number) {\n"
+"      else if (guess &lt; number) {\n"
 "         smallest = guess + 1;\n"
 "      }\n"
 "      else if (guess == number) {\n"
-"         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(&#34;Correct!&#34;));\n"
+"         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(\"Correct!\"));\n"
 "      }\n"
 "      remainingGuesses--;\n"
 "   }\n"
@@ -360,18 +360,18 @@ msgid ""
 "   }\n"
 "   \n"
 "   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value) {\n"
-"      if (remainingGuesses &#60;= 0) {\n"
-"         FacesMessage message = new FacesMessage(&#34;No guesses left!&#34;);\n"
+"      if (remainingGuesses &lt;= 0) {\n"
+"         FacesMessage message = new FacesMessage(\"No guesses left!\");\n"
 "         context.addMessage(toValidate.getClientId(context), message);\n"
 "         ((UIInput) toValidate).setValid(false);\n"
 "         return;\n"
 "      }\n"
 "      int input = (Integer) value;\n"
 "\n"
-"      if (input &#60; smallest || input &#62; biggest) {\n"
+"      if (input &lt; smallest || input &gt; biggest) {\n"
 "         ((UIInput) toValidate).setValid(false);\n"
 "\n"
-"         FacesMessage message = new FacesMessage(&#34;Invalid guess&#34;);\n"
+"         FacesMessage message = new FacesMessage(\"Invalid guess\");\n"
 "         context.addMessage(toValidate.getClientId(context), message);\n"
 "      }\n"
 "   }\n"
@@ -499,15 +499,15 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the container isn&#39;t doing this stuff for you. The servlet listener boots Weld and controls it&#39;s interaction with requests."
+msgid "Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the container isn't doing this stuff for you. The servlet listener boots Weld and controls it's interaction with requests."
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;listener&#62;\n"
-"   &#60;listener-class&#62;org.jboss.weld.environment.servlet.Listener&#60;/listener-class&#62;\n"
-"&#60;/listener&#62;"
+"&lt;listener&gt;\n"
+"   &lt;listener-class&gt;org.jboss.weld.environment.servlet.Listener&lt;/listener-class&gt;\n"
+"&lt;/listener&gt;"
 msgstr ""
 "<![CDATA[<listener>\n"
 "   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>\n"
@@ -515,7 +515,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified interface name. You generally don&#39;t need to access this interface, but Weld makes use of it."
+msgid "When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified interface name. You generally don't need to access this interface, but Weld makes use of it."
 msgstr ""
 
 #. Tag: title
@@ -535,17 +535,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To use the Weld SE numberguess example in Eclipse, you can open the example natively using the <ulink url=\"http://m2eclipse.sonatype.org/\">m2eclipse plugin</ulink> ."
+msgid "To use the Weld SE numberguess example in Eclipse, you can open the example natively using the <ulink url=\"http://m2eclipse.sonatype.org/\">m2eclipse plugin</ulink>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select <emphasis>File -&#62; Import... -&#62; Maven Projects</emphasis> . Then, browse to the location of the Weld SE numberguess example. You should see that Eclipse recognizes the existence of a Maven project."
+msgid "If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select <emphasis>File -&gt; Import... -&gt; Maven Projects</emphasis>. Then, browse to the location of the Weld SE numberguess example. You should see that Eclipse recognizes the existence of a Maven project."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This will create a project in your workspace called <literal>weld-se-numberguess</literal> ."
+msgid "This will create a project in your workspace called <literal>weld-se-numberguess</literal>."
 msgstr ""
 
 #. Tag: para
@@ -555,7 +555,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It&#39;s time to get the example running!"
+msgid "It's time to get the example running!"
 msgstr ""
 
 #. Tag: title
@@ -565,12 +565,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Disable m2eclipse&#39;s <emphasis>Workspace Resolution</emphasis>, to make sure that Eclipse can find <literal>StartMain</literal>. Right click on the project, and choose <emphasis>Properties -&#62; Maven</emphasis>, and uncheck <emphasis>Resolve dependencies from Workspace projects</emphasis>:"
+msgid "Disable m2eclipse's <emphasis>Workspace Resolution</emphasis>, to make sure that Eclipse can find <literal>StartMain</literal>. Right click on the project, and choose <emphasis>Properties -&gt; Maven</emphasis>, and uncheck <emphasis>Resolve dependencies from Workspace projects</emphasis>:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Right click on the project, and choose <emphasis>Run As -&#62; Run As Application</emphasis>:"
+msgid "Right click on the project, and choose <emphasis>Run As -&gt; Run As Application</emphasis>:"
 msgstr ""
 
 #. Tag: para
@@ -620,7 +620,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let&#39;s have a look at the significant code and configuration files that make up this example."
+msgid "Let's have a look at the significant code and configuration files that make up this example."
 msgstr ""
 
 #. Tag: para
@@ -630,7 +630,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The game&#39;s main logic is located in <literal>Game.java</literal>. Here is the code for that class, highlighting the ways in which this differs from the web application version:"
+msgid "The game's main logic is located in <literal>Game.java</literal>. Here is the code for that class, highlighting the ways in which this differs from the web application version:"
 msgstr ""
 
 #. Tag: programlisting
@@ -675,7 +675,7 @@ msgid ""
 "\n"
 "   public boolean isGameLost()\n"
 "   {\n"
-"      return guess != number &amp;&amp; remainingGuesses &#60;= 0;\n"
+"      return guess != number &amp;&amp; remainingGuesses &lt;= 0;\n"
 "   }\n"
 "\n"
 "   public boolean check()\n"
@@ -684,12 +684,12 @@ msgid ""
 "\n"
 "      if (checkNewNumberRangeIsValid())\n"
 "      {\n"
-"         if (guess &#62; number)\n"
+"         if (guess &gt; number)\n"
 "         {\n"
 "            biggest = guess - 1;\n"
 "         }\n"
 "\n"
-"         if (guess &#60; number)\n"
+"         if (guess &lt; number)\n"
 "         {\n"
 "            smallest = guess + 1;\n"
 "         }\n"
@@ -707,7 +707,7 @@ msgid ""
 "\n"
 "   private boolean checkNewNumberRangeIsValid()\n"
 "   {\n"
-"      return validNumberRange = ((guess &#62;= smallest) &amp;&amp; (guess &#60;= biggest));\n"
+"      return validNumberRange = ((guess &gt;= smallest) &amp;&amp; (guess &lt;= biggest));\n"
 "   }\n"
 "\n"
 "   @PostConstruct\n"
@@ -724,12 +724,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The bean is application scoped rather than session scoped, since an instance of a Swing application typically represents a single &#39;session&#39;."
+msgid "The bean is application scoped rather than session scoped, since an instance of a Swing application typically represents a single 'session'."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Notice that the bean is not named, since it doesn&#39;t need to be accessed via EL."
+msgid "Notice that the bean is not named, since it doesn't need to be accessed via EL."
 msgstr ""
 
 #. Tag: para
@@ -759,12 +759,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>reset()</literal> method makes a call to the injected <literal>rndGenerator</literal> in order to get the random number at the start of each game. Note that it can&#39;t use <literal>Instance.get()</literal> like the JSF example does because there will not be any active contexts like there are during a JSF request."
+msgid "The <literal>reset()</literal> method makes a call to the injected <literal>rndGenerator</literal> in order to get the random number at the start of each game. Note that it can't use <literal>Instance.get()</literal> like the JSF example does because there will not be any active contexts like there are during a JSF request."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>MessageGenerator</literal> class depends on the current instance of <literal>Game</literal> and queries its state in order to determine the appropriate messages to provide as the prompt for the user&#39;s next guess and the response to the previous guess. The code for <literal>MessageGenerator</literal> is as follows:"
+msgid "The <literal>MessageGenerator</literal> class depends on the current instance of <literal>Game</literal> and queries its state in order to determine the appropriate messages to provide as the prompt for the user's next guess and the response to the previous guess. The code for <literal>MessageGenerator</literal> is as follows:"
 msgstr ""
 
 #. Tag: programlisting
@@ -777,11 +777,11 @@ msgid ""
 "\n"
 "   public String getChallengeMessage()\n"
 "   {\n"
-"      StringBuilder challengeMsg = new StringBuilder(&#34;I&#39;m thinking of a number between &#34;);\n"
+"      StringBuilder challengeMsg = new StringBuilder(\"I'm thinking of a number between \");\n"
 "      challengeMsg.append(game.getSmallest());\n"
-"      challengeMsg.append(&#34; and &#34;);\n"
+"      challengeMsg.append(\" and \");\n"
 "      challengeMsg.append(game.getBiggest());\n"
-"      challengeMsg.append(&#34;. Can you guess what it is?&#34;);\n"
+"      challengeMsg.append(\". Can you guess what it is?\");\n"
 "\n"
 "      return challengeMsg.toString();\n"
 "   }\n"
@@ -790,34 +790,34 @@ msgid ""
 "   {\n"
 "      if (game.isGameWon())\n"
 "      {\n"
-"         return &#34;You guessed it! The number was &#34; + game.getNumber();\n"
+"         return \"You guessed it! The number was \" + game.getNumber();\n"
 "      }\n"
 "      else if (game.isGameLost())\n"
 "      {\n"
-"         return &#34;You are fail! The number was &#34; + game.getNumber();\n"
+"         return \"You are fail! The number was \" + game.getNumber();\n"
 "      }\n"
 "      else if (!game.isValidNumberRange())\n"
 "      {\n"
-"         return &#34;Invalid number range!&#34;;\n"
+"         return \"Invalid number range!\";\n"
 "      }\n"
 "      else if (game.getRemainingGuesses() == Game.MAX_NUM_GUESSES)\n"
 "      {\n"
-"         return &#34;What is your first guess?&#34;;\n"
+"         return \"What is your first guess?\";\n"
 "      }\n"
 "      else\n"
 "      {\n"
 "         String direction = null;\n"
 "\n"
-"         if (game.getGuess() &#60; game.getNumber())\n"
+"         if (game.getGuess() &lt; game.getNumber())\n"
 "         {\n"
-"            direction = &#34;Higher&#34;;\n"
+"            direction = \"Higher\";\n"
 "         }\n"
 "         else\n"
 "         {\n"
-"            direction = &#34;Lower&#34;;\n"
+"            direction = \"Lower\";\n"
 "         }\n"
 "\n"
-"         return direction + &#34;! You have &#34; + game.getRemainingGuesses() + &#34; guesses left.&#34;;\n"
+"         return direction + \"! You have \" + game.getRemainingGuesses() + \" guesses left.\";\n"
 "      }\n"
 "   }\n"
 "}"
@@ -830,7 +830,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>Game</literal>&#39;s state is interrogated to determine the appropriate challenge message ..."
+msgid "The <literal>Game</literal>'s state is interrogated to determine the appropriate challenge message ..."
 msgstr ""
 
 #. Tag: para
@@ -900,7 +900,7 @@ msgid ""
 "   private void refreshUI() {\n"
 "      mainLabel.setText( msgGenerator.getChallengeMessage() );\n"
 "      messageLabel.setText( msgGenerator.getResultMessage() );\n"
-"      guessText.setText( &#34;&#34; );\n"
+"      guessText.setText( \"\" );\n"
 "      guessesLeftBar.setValue( game.getRemainingGuesses() );\n"
 "      guessText.requestFocus();\n"
 "   }\n"
@@ -935,7 +935,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>guessButtonActionPerformed</literal> is called when the &#39;Guess&#39; button is clicked, and it does the following:"
+msgid "<literal>guessButtonActionPerformed</literal> is called when the 'Guess' button is clicked, and it does the following:"
 msgstr ""
 
 #. Tag: para
@@ -945,7 +945,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Calls <literal>game.check()</literal> to validate and perform one &#39;turn&#39; of the game"
+msgid "Calls <literal>game.check()</literal> to validate and perform one 'turn' of the game"
 msgstr ""
 
 #. Tag: para
@@ -970,7 +970,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The translator example is built as an ear and contains EJBs. As a result, it&#39;s structure is more complex than the numberguess example."
+msgid "The translator example is built as an ear and contains EJBs. As a result, it's structure is more complex than the numberguess example."
 msgstr ""
 
 #. Tag: para
@@ -980,25 +980,25 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "First, let&#39;s take a look at the ear aggregator, which is located in the example&#39;s <literal>ear</literal> directory. Maven automatically generates the <literal>application.xml</literal> for us from this plugin configuration:"
+msgid "First, let's take a look at the ear aggregator, which is located in the example's <literal>ear</literal> directory. Maven automatically generates the <literal>application.xml</literal> for us from this plugin configuration:"
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;plugin&#62;\n"
-"   &#60;groupId&#62;org.apache.maven.plugins&#60;/groupId&#62;\n"
-"   &#60;artifactId&#62;maven-ear-plugin&#60;/artifactId&#62;\n"
-"   &#60;configuration&#62;\n"
-"      &#60;modules&#62;\n"
-"         &#60;webModule&#62;\n"
-"            &#60;groupId&#62;org.jboss.weld.examples.jsf.translator&#60;/groupId&#62;\n"
-"            &#60;artifactId&#62;weld-jsf-translator-war&#60;/artifactId&#62;\n"
-"            &#60;contextRoot&#62;/weld-translator&#60;/contextRoot&#62;\n"
-"         &#60;/webModule&#62;\n"
-"      &#60;/modules&#62;\n"
-"   &#60;/configuration&#62;\n"
-"&#60;/plugin&#62;"
+"&lt;plugin&gt;\n"
+"   &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;\n"
+"   &lt;artifactId&gt;maven-ear-plugin&lt;/artifactId&gt;\n"
+"   &lt;configuration&gt;\n"
+"      &lt;modules&gt;\n"
+"         &lt;webModule&gt;\n"
+"            &lt;groupId&gt;org.jboss.weld.examples.jsf.translator&lt;/groupId&gt;\n"
+"            &lt;artifactId&gt;weld-jsf-translator-war&lt;/artifactId&gt;\n"
+"            &lt;contextRoot&gt;/weld-translator&lt;/contextRoot&gt;\n"
+"         &lt;/webModule&gt;\n"
+"      &lt;/modules&gt;\n"
+"   &lt;/configuration&gt;\n"
+"&lt;/plugin&gt;"
 msgstr ""
 "<![CDATA[<plugin>\n"
 "   <groupId>org.apache.maven.plugins</groupId>\n"
@@ -1021,32 +1021,32 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you weren&#39;t using Maven to generate these files, you would need <literal>META-INF/application.xml</literal>:"
+msgid "If you weren't using Maven to generate these files, you would need <literal>META-INF/application.xml</literal>:"
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;application version=&#34;5&#34;\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34; \n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;application version=\"5\"\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\" \n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/application_5.xsd&#34;&#62;\n"
+"      http://java.sun.com/xml/ns/javaee/application_5.xsd\"&gt;\n"
 "\n"
-"  &#60;display-name&#62;weld-jsf-translator-ear&#60;/display-name&#62;\n"
-"  &#60;description&#62;The Weld JSF translator example (ear)&#60;/description&#62;\n"
+"  &lt;display-name&gt;weld-jsf-translator-ear&lt;/display-name&gt;\n"
+"  &lt;description&gt;The Weld JSF translator example (ear)&lt;/description&gt;\n"
 "  \n"
-"  &#60;module&#62;\n"
-"    &#60;web&#62;\n"
-"      &#60;web-uri&#62;weld-translator.war&#60;/web-uri&#62;\n"
-"      &#60;context-root&#62;/weld-translator&#60;/context-root&#62;\n"
-"    &#60;/web&#62;\n"
-"  &#60;/module&#62;\n"
-"  &#60;module&#62;\n"
-"    &#60;ejb&#62;weld-translator.jar&#60;/ejb&#62;\n"
-"  &#60;/module&#62;\n"
-"&#60;/application&#62;"
+"  &lt;module&gt;\n"
+"    &lt;web&gt;\n"
+"      &lt;web-uri&gt;weld-translator.war&lt;/web-uri&gt;\n"
+"      &lt;context-root&gt;/weld-translator&lt;/context-root&gt;\n"
+"    &lt;/web&gt;\n"
+"  &lt;/module&gt;\n"
+"  &lt;module&gt;\n"
+"    &lt;ejb&gt;weld-translator.jar&lt;/ejb&gt;\n"
+"  &lt;/module&gt;\n"
+"&lt;/application&gt;"
 msgstr ""
 "<![CDATA[<application version=\"5\"\n"
 "   xmlns=\"http://java.sun.com/xml/ns/javaee\" \n"
@@ -1071,42 +1071,42 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Next, lets look at the war, which is located in the example&#39;s <literal>war</literal> directory. Just as in the numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal> (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>."
+msgid "Next, lets look at the war, which is located in the example's <literal>war</literal> directory. Just as in the numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal> (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template, which surrounds the form (ommitted here for brevity):"
+msgid "More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template, which surrounds the form (omitted here for brevity):"
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;h:form id=&#34;translator&#34;&#62;\n"
+"&lt;h:form id=\"translator\"&gt;\n"
 "\n"
-"   &#60;table&#62;\n"
-"      &#60;tr align=&#34;center&#34; style=&#34;font-weight: bold&#34;&#62;\n"
-"         &#60;td&#62;\n"
+"   &lt;table&gt;\n"
+"      &lt;tr align=\"center\" style=\"font-weight: bold\"&gt;\n"
+"         &lt;td&gt;\n"
 "            Your text\n"
-"         &#60;/td&#62;\n"
-"         &#60;td&#62;\n"
+"         &lt;/td&gt;\n"
+"         &lt;td&gt;\n"
 "            Translation\n"
-"         &#60;/td&#62;\n"
-"      &#60;/tr&#62;\n"
-"      &#60;tr&#62;\n"
-"         &#60;td&#62;\n"
-"            &#60;h:inputTextarea id=&#34;text&#34; value=&#34;#{translator.text}&#34; required=&#34;true&#34; rows=&#34;5&#34; cols=&#34;80&#34;/&#62;\n"
-"         &#60;/td&#62;\n"
-"         &#60;td&#62;\n"
-"            &#60;h:outputText value=&#34;#{translator.translatedText}&#34;/&#62;\n"
-"         &#60;/td&#62;\n"
-"      &#60;/tr&#62;\n"
-"   &#60;/table&#62;\n"
-"   &#60;div&#62;\n"
-"      &#60;h:commandButton id=&#34;button&#34; value=&#34;Translate&#34; action=&#34;#{translator.translate}&#34;/&#62;\n"
-"   &#60;/div&#62;\n"
+"         &lt;/td&gt;\n"
+"      &lt;/tr&gt;\n"
+"      &lt;tr&gt;\n"
+"         &lt;td&gt;\n"
+"            &lt;h:inputTextarea id=\"text\" value=\"#{translator.text}\" required=\"true\" rows=\"5\" cols=\"80\"/&gt;\n"
+"         &lt;/td&gt;\n"
+"         &lt;td&gt;\n"
+"            &lt;h:outputText value=\"#{translator.translatedText}\"/&gt;\n"
+"         &lt;/td&gt;\n"
+"      &lt;/tr&gt;\n"
+"   &lt;/table&gt;\n"
+"   &lt;div&gt;\n"
+"      &lt;h:commandButton id=\"button\" value=\"Translate\" action=\"#{translator.translate}\"/&gt;\n"
+"   &lt;/div&gt;\n"
 "   \n"
-"&#60;/h:form&#62;"
+"&lt;/h:form&gt;"
 msgstr ""
 "<![CDATA[<h:form id=\"translator\">\n"
 "\n"
@@ -1141,12 +1141,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Finally, let&#39;s look at the EJB module, which is located in the example&#39;s <literal>ejb</literal> directory. In <literal>src/main/resources/META-INF</literal> there is just an empty <literal>beans.xml</literal>, used to mark the archive as containing beans."
+msgid "Finally, let's look at the EJB module, which is located in the example's <literal>ejb</literal> directory. In <literal>src/main/resources/META-INF</literal> there is just an empty <literal>beans.xml</literal>, used to mark the archive as containing beans."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We&#39;ve saved the most interesting bit to last, the code! The project has two simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two session beans, <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting quite familiar with what a bean looks like by now, so we&#39;ll just highlight the most interesting bits here."
+msgid "We've saved the most interesting bit to last, the code! The project has two simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two session beans, <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting quite familiar with what a bean looks like by now, so we'll just highlight the most interesting bits here."
 msgstr ""
 
 #. Tag: para
@@ -1170,7 +1170,7 @@ msgid ""
 "   public String translate(String text) { \n"
 "      StringBuilder sb = new StringBuilder(); \n"
 "      for (String sentence: sentenceParser.parse(text)) { \n"
-"         sb.append(translator.translate(sentence)).append(&#34;. &#34;); \n"
+"         sb.append(translator.translate(sentence)).append(\". \"); \n"
 "      } \n"
 "      return sb.toString().trim(); \n"
 "   }\n"
@@ -1199,7 +1199,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>TextTranslator</literal> uses the simple bean (really just a plain Java class!) <literal>SentenceParser</literal> to parse the sentence and then calls on the stateless bean with the local business interface <literal>Translator</literal> to perform the translation. That&#39;s where the magic happens. Of course, we couldn&#39;t develop a full translator, but it&#39;s convincing enough to anyone who doesn&#39;t understand Latin!"
+msgid "<literal>TextTranslator</literal> uses the simple bean (really just a plain Java class!) <literal>SentenceParser</literal> to parse the sentence and then calls on the stateless bean with the local business interface <literal>Translator</literal> to perform the translation. That's where the magic happens. Of course, we couldn't develop a full translator, but it's convincing enough to anyone who doesn't understand Latin!"
 msgstr ""
 
 #. Tag: programlisting
@@ -1209,7 +1209,7 @@ msgid ""
 "public class SentenceTranslator implements Translator { \n"
 "\n"
 "   public String translate(String sentence) { \n"
-"      return &#34;Lorem ipsum dolor sit amet&#34;; \n"
+"      return \"Lorem ipsum dolor sit amet\"; \n"
 "   }\n"
 "\n"
 "}"
@@ -1233,7 +1233,7 @@ msgstr ""
 msgid ""
 "@Stateful\n"
 "@RequestScoped\n"
-"@Named(&#34;translator&#34;)\n"
+"@Named(\"translator\")\n"
 "public class TranslatorControllerBean implements TranslatorController {\n"
 "\n"
 "   @Inject private TextTranslator translator;\n"

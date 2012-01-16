@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
-"PO-Revision-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
+"PO-Revision-Date: 2012-01-16T16:07:16\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a nonportable &#34;mapped name&#34;). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
+msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a non-portable \"mapped name\"). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
 msgstr ""
 
 #. Tag: para
@@ -69,31 +69,31 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "@Produces @WebServiceRef(lookup=&#34;java:app/service/Catalog&#34;)\n"
+msgid "@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
 "Catalog catalog;"
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "@Produces @Resource(lookup=&#34;java:global/env/jdbc/CustomerDatasource&#34;) \n"
+msgid "@Produces @Resource(lookup=\"java:global/env/jdbc/CustomerDatasource\") \n"
 "@CustomerDatabase Datasource customerDatabase;"
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "@Produces @PersistenceContext(unitName=&#34;CustomerDatabase&#34;)\n"
+msgid "@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
 "@CustomerDatabase EntityManager customerDatabasePersistenceContext;"
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "@Produces @PersistenceUnit(unitName=&#34;CustomerDatabase&#34;) \n"
+msgid "@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
 "@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;"
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "@Produces @EJB(ejbLink=&#34;../their.jar#PaymentService&#34;) \n"
+msgid "@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
 "PaymentService paymentService;"
 msgstr ""
 
@@ -119,7 +119,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It might feel strange to be declaring resources in Java code. Isn&#39;t this stuff that might be deployment-specific? Certainly, and that&#39;s why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
+msgid "It might feel strange to be declaring resources in Java code. Isn't this stuff that might be deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
 msgstr ""
 
 #. Tag: title
@@ -164,7 +164,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you&#39;re going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn&#39;t it nicer and more typesafe to write"
+msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you're going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn't it nicer and more typesafe to write"
 msgstr ""
 
 #. Tag: programlisting
@@ -179,7 +179,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "@PersistenceContext(unitName=&#34;CustomerDatabase&#34;) EntityManager"
+msgid "@PersistenceContext(unitName=\"CustomerDatabase\") EntityManager"
 msgstr ""
 
 #. Tag: para

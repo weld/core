@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-03-30 09:39+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with a number of examples. We recommend you start with <literal>examples/jsf/numberguess</literal> and <literal>examples/jsf/translator</literal>. Numberguess is a web (war) example containing only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. Translator is an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 6.0, Glassfish 3.0 or any compliant Java EE 6 container."
+msgid "Weld comes with a number of examples. We recommend you start with <literal>examples/jsf/numberguess</literal> and <literal>examples/jsf/translator</literal>. Numberguess is a web (war) example containing only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. Translator is an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 6.0, GlassFish 3.0 or any compliant Java EE 6 container."
 msgstr ""
 
 #. Tag: para
@@ -36,7 +36,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To run the examples with the provided build scripts, you&#39;ll need the following:"
+msgid "To run the examples with the provided build scripts, you'll need the following:"
 msgstr ""
 
 #. Tag: para
@@ -81,12 +81,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You&#39;ll need a full install of Ant 1.7.0. Some linux distributions only supply a partial installation of Ant which cause the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath."
+msgid "You'll need a full install of Ant 1.7.0. Some linux distributions only supply a partial installation of Ant which cause the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In the next few sections, you&#39;ll be using the Ant command (<literal>ant</literal>) to invoke the Ant build script in each example to compile, assemble and deploy the example to JBoss AS and, for the war example, Apache Tomcat. You can also deploy the generated artifact (war or ear) to any other container that supports Java EE 6, such as GlassFish 3."
+msgid "In the next few sections, you'll be using the Ant command (<literal>ant</literal>) to invoke the Ant build script in each example to compile, assemble and deploy the example to JBoss AS and, for the war example, Apache Tomcat. You can also deploy the generated artifact (war or ear) to any other container that supports Java EE 6, such as GlassFish 3."
 msgstr ""
 
 #. Tag: para
@@ -96,7 +96,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The sections below cover the steps for deploying with both Ant and Maven in detail. Let&#39;s start with JBoss AS."
+msgid "The sections below cover the steps for deploying with both Ant and Maven in detail. Let's start with JBoss AS."
 msgstr ""
 
 #. Tag: title
@@ -106,19 +106,19 @@ msgstr "使用JBoss AS 5"
 
 #. Tag: para
 #, no-c-format
-msgid "To deploy the examples to JBoss AS, you&#39;ll need <ulink url=\"http://jboss.org/jbossas/\">JBoss AS 6.0.0</ulink> or above. If a release of the JBoss AS 6.0 line isn&#39;t yet available, you can download a <ulink url=\"http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-6.0.x/\">nightly snapshot</ulink>. The reason JBoss AS 6.0.0 or above is required is because it&#39;s the first release that has both CDI and Bean Validation support built-in, making it close enough to Java EE 6 to run the examples. The good news is that there are no additional modifications you have to make to the server. It&#39;s ready to go!"
+msgid "To deploy the examples to JBoss AS, you'll need <ulink url=\"http://jboss.org/jbossas/\">JBoss AS 6.0.0</ulink> or above. If a release of the JBoss AS 6.0 line isn't yet available, you can download a <ulink url=\"http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-6.0.x/\">nightly snapshot</ulink>. The reason JBoss AS 6.0.0 or above is required is because it's the first release that has both CDI and Bean Validation support built-in, making it close enough to Java EE 6 to run the examples. The good news is that there are no additional modifications you have to make to the server. It's ready to go!"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "After you have downloaded JBoss AS, extract it. (We recommended renaming the folder to include the <literal>as</literal> qualifier so it&#39;s clear that it&#39;s the application server). You can move the extracted folder anywhere you like. Wherever it lays to rest, that&#39;s what we&#39;ll call the JBoss AS installation directory, or <literal>JBOSS_HOME</literal>."
+msgid "After you have downloaded JBoss AS, extract it. (We recommended renaming the folder to include the <literal>as</literal> qualifier so it's clear that it's the application server). You can move the extracted folder anywhere you like. Wherever it lays to rest, that's what we'll call the JBoss AS installation directory, or <literal>JBOSS_HOME</literal>."
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"$&#62; unzip jboss-6.0.*.zip\n"
-"$&#62; mv jboss-6.0.*/ jboss-as-6.0"
+"$&gt; unzip jboss-6.0.*.zip\n"
+"$&gt; mv jboss-6.0.*/ jboss-as-6.0"
 msgstr ""
 
 #. Tag: para
@@ -133,7 +133,7 @@ msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "You&#39;re now ready to deploy your first example!"
+msgid "You're now ready to deploy your first example!"
 msgstr "现在，你可以部署你的第一个例子了！"
 
 #. Tag: para
@@ -144,22 +144,22 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"$&#62; cd examples/jsf/numberguess\n"
-"$&#62; ant deploy"
+"$&gt; cd examples/jsf/numberguess\n"
+"$&gt; ant deploy"
 msgstr ""
 "$ cd examples/numberguess\n"
 "ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "If you haven&#39;t already, start JBoss AS. You can either start JBoss AS from a Linux shell:"
+msgid "If you haven't already, start JBoss AS. You can either start JBoss AS from a Linux shell:"
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"$&#62; cd /path/to/jboss-as-6.0\n"
-"$&#62; ./bin/run.sh"
+"$&gt; cd /path/to/jboss-as-6.0\n"
+"$&gt; ./bin/run.sh"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
@@ -168,11 +168,11 @@ msgid "a Windows command window:"
 msgstr ""
 
 #. Tag: programlisting
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"$&#62; cd c:\\path\\to\\jboss-as-6.0\\bin\n"
-"$&#62; run"
-msgstr ""
+"$&gt; cd c:\\path\\to\\jboss-as-6.0\\bin\n"
+"$&gt; run"
+msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
 #, no-c-format
@@ -227,20 +227,20 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"$&#62; cd examples/jsf/translator\n"
-"$&#62; ant deploy"
+"$&gt; cd examples/jsf/translator\n"
+"$&gt; ant deploy"
 msgstr ""
 "$ cd examples/traslator\n"
 "ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "The translator uses session beans, which are packaged in an EJB module within an ear. Java EE 6 will allow session beans to be deployed in war modules, but that&#39;s a topic for a later chapter."
+msgid "The translator uses session beans, which are packaged in an EJB module within an ear. Java EE 6 will allow session beans to be deployed in war modules, but that's a topic for a later chapter."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Again, wait a few seconds for the application to deploy (if you&#39;re really bored, read the log messages), and visit <ulink url=\"http://localhost:8080/weld-translator\">http://localhost:8080/weld-translator</ulink> to begin pseudo-translating."
+msgid "Again, wait a few seconds for the application to deploy (if you're really bored, read the log messages), and visit <ulink url=\"http://localhost:8080/weld-translator\">http://localhost:8080/weld-translator</ulink> to begin pseudo-translating."
 msgstr "我们需要在这里做些事情-首先我们需要设置上下文路径为一个不错的URL(<ulink url=\"http://localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-translator</ulink>)，我们还需要将JBoss AS的类加载器隔离配置激活。"
 
 #. Tag: title
@@ -250,41 +250,43 @@ msgstr "使用Glassfish"
 
 #. Tag: para
 #, no-c-format
-msgid "Deploying to GlassFish should be easy and familiar, right? After all, it&#39;s the Java EE 6 reference implementation and Weld is the JSR-299 reference implementation, meaning Weld gets bundled with GlassFish. So yes, it&#39;s all quite easy and familiar."
+msgid "Deploying to GlassFish should be easy and familiar, right? After all, it's the Java EE 6 reference implementation and Weld is the JSR-299 reference implementation, meaning Weld gets bundled with GlassFish. So yes, it's all quite easy and familiar."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To deploy the examples to GlassFish, you&#39;ll need the final <ulink url=\"https://glassfish.dev.java.net/downloads/v3-final.html\">GlassFish V3</ulink> release. Select the release that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform. After the download is complete, execute the installer. On Linux/Unix, you&#39;ll need to first make the script executable."
+msgid "To deploy the examples to GlassFish, you'll need the final <ulink url=\"https://glassfish.dev.java.net/downloads/v3-final.html\">GlassFish V3</ulink> release. Select the release that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform. After the download is complete, execute the installer. On Linux/Unix, you'll need to first make the script executable."
 msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"$&#62; chmod 755 glassfish-v3-unix.sh\n"
-"$&#62; ./glassfish-v3-unix.sh"
+"$&gt; chmod 755 glassfish-v3-unix.sh\n"
+"$&gt; ./glassfish-v3-unix.sh"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "On Windows you can just click on the executable. Follow the instructions in the installer. It will create a single domain named <literal>domain1</literal>. You&#39;ll use that domain to deploy the example. We recommend that you choose <literal>7070</literal> as the main HTTP port to avoid conflicts with a running instance of JBoss AS (or Apache Tomcat)."
+msgid "On Windows you can just click on the executable. Follow the instructions in the installer. It will create a single domain named <literal>domain1</literal>. You'll use that domain to deploy the example. We recommend that you choose <literal>7070</literal> as the main HTTP port to avoid conflicts with a running instance of JBoss AS (or Apache Tomcat)."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you&#39;ve deployed either of the starter examples, <literal>weld-numberguess</literal> or <literal>weld-translator</literal>, to JBoss AS, then you already have the deployable artifact you need. If not, switch to either of the two directories and build it."
+msgid "If you've deployed either of the starter examples, <literal>weld-numberguess</literal> or <literal>weld-translator</literal>, to JBoss AS, then you already have the deployable artifact you need. If not, switch to either of the two directories and build it."
 msgstr ""
 
 #. Tag: programlisting
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"$&#62; cd examples/jsf/numberguess (or examples/jsf/translator)\n"
-"$&#62; ant package"
+"$&gt; cd examples/jsf/numberguess (or examples/jsf/translator)\n"
+"$&gt; ant package"
 msgstr ""
+"$ cd examples/numberguess\n"
+"ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "The deployable archive for the <literal>weld-numberguess</literal>, named <literal>weld-numberguess.war</literal>, ends up in the example&#39;s <literal>target</literal> directory. The archive for the <literal>weld-translator</literal> example, named <literal>weld-translator.ear</literal>, ends up in the example&#39;s <literal>ear/target</literal> directory. All you need to do now is deploy them to GlassFish."
+msgid "The deployable archive for the <literal>weld-numberguess</literal>, named <literal>weld-numberguess.war</literal>, ends up in the example's <literal>target</literal> directory. The archive for the <literal>weld-translator</literal> example, named <literal>weld-translator.ear</literal>, ends up in the example's <literal>ear/target</literal> directory. All you need to do now is deploy them to GlassFish."
 msgstr ""
 
 #. Tag: para
@@ -294,12 +296,12 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; asadmin start-domain domain1"
+msgid "$&gt; asadmin start-domain domain1"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "After a few seconds you can visit the Admin Console in the browser at the URL <ulink url=\"http://localhost:4848\">http://localhost:4848</ulink>. In the tree on the left-hand side of the page, click on &#34;Applications&#34;, then click on the &#34;Deploy...&#34; button under the heading &#34;Applications&#34; and select the deployable artifact for either of the two examples. The deployer should recognize that you have selected a Java EE artifact and allow you to start it. You can see the examples running at either <ulink url=\"http://localhost:7070/weld-numberguess\">http://localhost:7070/weld-numberguess</ulink> or <ulink url=\"http://localhost:7070/weld-translator\">http://localhost:7070/weld-translator</ulink>, depending on which example you deployed."
+msgid "After a few seconds you can visit the Admin Console in the browser at the URL <ulink url=\"http://localhost:4848\">http://localhost:4848</ulink>. In the tree on the left-hand side of the page, click on \"Applications\", then click on the \"Deploy...\" button under the heading \"Applications\" and select the deployable artifact for either of the two examples. The deployer should recognize that you have selected a Java EE artifact and allow you to start it. You can see the examples running at either <ulink url=\"http://localhost:7070/weld-numberguess\">http://localhost:7070/weld-numberguess</ulink> or <ulink url=\"http://localhost:7070/weld-translator\">http://localhost:7070/weld-translator</ulink>, depending on which example you deployed."
 msgstr ""
 
 #. Tag: para
@@ -309,7 +311,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; asadmin deploy target/weld-numberguess.war"
+msgid "$&gt; asadmin deploy target/weld-numberguess.war"
 msgstr ""
 
 #. Tag: para
@@ -329,24 +331,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with a servlet listener which bootstraps the CDI environment, registers the <literal>BeanManager</literal> in JNDI and provides injection into servlets. Basically, it emulates some of the work done by the Java EE container. (But you don&#39;t get enterprise features such as session beans and container-managed transactions.)"
+msgid "Weld comes with a servlet listener which bootstraps the CDI environment, registers the <literal>BeanManager</literal> in JNDI and provides injection into servlets. Basically, it emulates some of the work done by the Java EE container. (But you don't get enterprise features such as session beans and container-managed transactions.)"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Let&#39;s give the Weld servlet extension a spin on Apache Tomcat. First, you&#39;ll need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink> and extract it."
+msgid "Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink> and extract it."
 msgstr "然后从<ulink url=\"http://seamframework.org/WebBeans\">seamframework.org</ulink>下载Web Beans的参考实现，然后解压。例如："
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "$&#62; unzip apache-tomcat-6.0.18.zip"
+msgid "$&gt; unzip apache-tomcat-6.0.18.zip"
 msgstr ""
 "<![CDATA[$ cd /Applications\n"
 "$ unzip ~/jboss-5.0.0.GA.zip]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "You have two choices for how you can deploy the application to Tomcat. You can deploy it by pushing the artifact to the hot deploy directory using Ant or you can deploy to the server across HTTP using a Maven plugin. The Ant approach doesn&#39;t require that you have Maven installed, so we&#39;ll start there. If you want to use Maven, you can just skip ahead."
+msgid "You have two choices for how you can deploy the application to Tomcat. You can deploy it by pushing the artifact to the hot deploy directory using Ant or you can deploy to the server across HTTP using a Maven plugin. The Ant approach doesn't require that you have Maven installed, so we'll start there. If you want to use Maven, you can just skip ahead."
 msgstr ""
 
 #. Tag: title
@@ -356,7 +358,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In order for Ant to push the artifact to the Tomcat hot deploy directory, it needs to know where the Tomcat installation is located. Again, we need to set a property in the <literal>local.build.properties</literal> file in the examples directory of the Weld distribution. If you haven&#39;t yet created this file, do so now. Then assign the path of your Tomcat installation to the property key <literal>tomcat.home</literal>."
+msgid "In order for Ant to push the artifact to the Tomcat hot deploy directory, it needs to know where the Tomcat installation is located. Again, we need to set a property in the <literal>local.build.properties</literal> file in the examples directory of the Weld distribution. If you haven't yet created this file, do so now. Then assign the path of your Tomcat installation to the property key <literal>tomcat.home</literal>."
 msgstr ""
 
 #. Tag: programlisting
@@ -366,7 +368,7 @@ msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now you&#39;re ready to deploy the numberguess example to Tomcat!"
+msgid "Now you're ready to deploy the numberguess example to Tomcat!"
 msgstr "部署猜数字(numberguess)例子："
 
 #. Tag: para
@@ -377,15 +379,15 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"$&#62; cd examples/jsf/numberguess\n"
-"$&#62; ant tomcat.deploy"
+"$&gt; cd examples/jsf/numberguess\n"
+"$&gt; ant tomcat.deploy"
 msgstr ""
 "$ cd examples/numberguess\n"
 "ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "The Ant build script includes additional targets for Tomcat to deploy and undeploy the archive in either exploded or packaged format. They are the same target names used for JBoss AS, prefixed with &#34;tomcat.&#34;."
+msgid "The Ant build script includes additional targets for Tomcat to deploy and undeploy the archive in either exploded or packaged format. They are the same target names used for JBoss AS, prefixed with \"tomcat.\"."
 msgstr ""
 
 #. Tag: para
@@ -410,22 +412,22 @@ msgstr "<literal>ant undeploy</literal> - 将例子从服务器中移除"
 
 #. Tag: para
 #, no-c-format
-msgid "If you haven&#39;t already, start Tomcat. You can either start Tomcat from a Linux shell:"
+msgid "If you haven't already, start Tomcat. You can either start Tomcat from a Linux shell:"
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"$&#62; cd /path/to/apache-tomcat-6\n"
-"$&#62; ./bin/start.sh"
+"$&gt; cd /path/to/apache-tomcat-6\n"
+"$&gt; ./bin/start.sh"
 msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: programlisting
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"$&#62; cd c:\\path\\to\\apache-tomcat-6\\bin\n"
-"$&#62; start"
-msgstr ""
+"$&gt; cd c:\\path\\to\\apache-tomcat-6\\bin\n"
+"$&gt; start"
+msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
 
 #. Tag: para
 #, no-c-format
@@ -439,12 +441,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You can also deploy the application to Tomcat using Maven. This section is a bit more advanced, so skip it unless you&#39;re itching to use Maven natively. Of course, you&#39;ll first need to make sure that you have Maven installed on your path, similar to how you setup Ant."
+msgid "You can also deploy the application to Tomcat using Maven. This section is a bit more advanced, so skip it unless you're itching to use Maven natively. Of course, you'll first need to make sure that you have Maven installed on your path, similar to how you setup Ant."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The Maven plugin communicates with Tomcat over HTTP, so it doesn&#39;t care where you have installed Tomcat. However, the plugin configuration assumes you are running Tomcat in its default configuration, with a hostname of localhost and port <literal>8080</literal>. The <literal>readme.txt</literal> file in the example directory has information about how to modify the Maven settings to accommodate a different setup."
+msgid "The Maven plugin communicates with Tomcat over HTTP, so it doesn't care where you have installed Tomcat. However, the plugin configuration assumes you are running Tomcat in its default configuration, with a hostname of localhost and port <literal>8080</literal>. The <literal>readme.txt</literal> file in the example directory has information about how to modify the Maven settings to accommodate a different setup."
 msgstr ""
 
 #. Tag: para
@@ -454,7 +456,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "&#60;user username=&#34;admin&#34; password=&#34;&#34; roles=&#34;manager&#34;/&#62;"
+msgid "&lt;user username=\"admin\" password=\"\" roles=\"manager\"/&gt;"
 msgstr ""
 
 #. Tag: para
@@ -464,7 +466,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; mvn compile war:exploded tomcat:exploded -Ptomcat"
+msgid "$&gt; mvn compile war:exploded tomcat:exploded -Ptomcat"
 msgstr ""
 
 #. Tag: para
@@ -474,7 +476,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; mvn tomcat:redeploy -Ptomcat"
+msgid "$&gt; mvn tomcat:redeploy -Ptomcat"
 msgstr ""
 
 #. Tag: para
@@ -489,7 +491,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; mvn war:inplace tomcat:run -Ptomcat"
+msgid "$&gt; mvn war:inplace tomcat:run -Ptomcat"
 msgstr ""
 
 #. Tag: para
@@ -499,12 +501,12 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; mvn compile war:inplace -Ptomcat"
+msgid "$&gt; mvn compile war:inplace -Ptomcat"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There are several other Maven goals that you can use if you are hacking on the example, which are documented in the example&#39;s <literal>readme.txt</literal> file."
+msgid "There are several other Maven goals that you can use if you are hacking on the example, which are documented in the example's <literal>readme.txt</literal> file."
 msgstr ""
 
 #. Tag: title
@@ -519,12 +521,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you&#39;ve read through the entire Tomcat section, then you&#39;re all ready to go. The Maven build parallels the embedded Tomcat deployment. If not, don&#39;t worry. We&#39;ll still go over everything that you need to know again in this section."
+msgid "If you've read through the entire Tomcat section, then you're all ready to go. The Maven build parallels the embedded Tomcat deployment. If not, don't worry. We'll still go over everything that you need to know again in this section."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The Maven POM (<literal>pom.xml</literal>) includes a profile named <literal>jetty</literal> that activates the Maven Jetty plugin, which you can use to start Jetty in embedded mode and deploy the application in place. You don&#39;t need anything else installed except to have the Maven command (<literal>mvn</literal>) on your path. The rest will be downloaded from the internet when the build is run."
+msgid "The Maven POM (<literal>pom.xml</literal>) includes a profile named <literal>jetty</literal> that activates the Maven Jetty plugin, which you can use to start Jetty in embedded mode and deploy the application in place. You don't need anything else installed except to have the Maven command (<literal>mvn</literal>) on your path. The rest will be downloaded from the internet when the build is run."
 msgstr ""
 
 #. Tag: para
@@ -533,11 +535,13 @@ msgid "To run the <literal>weld-numberguess</literal> example on Jetty, switch t
 msgstr ""
 
 #. Tag: programlisting
-#, no-c-format
+#, fuzzy, no-c-format
 msgid ""
-"$&#62; cd examples/jsf/numberguess\n"
-"$&#62; mvn war:inplace jetty:run -Pjetty"
+"$&gt; cd examples/jsf/numberguess\n"
+"$&gt; mvn war:inplace jetty:run -Pjetty"
 msgstr ""
+"$ cd examples/numberguess\n"
+"ant deploy"
 
 #. Tag: para
 #, no-c-format
@@ -551,7 +555,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; mvn compile war:inplace -Pjetty"
+msgid "$&gt; mvn compile war:inplace -Pjetty"
 msgstr ""
 
 #. Tag: para
@@ -561,7 +565,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You have two options if you want to run the example on Jetty from the IDE. You can either install the m2eclispe[link] plugin and run the goals as described above. Your other option is to start the Jetty container from a Java application."
+msgid "You have two options if you want to run the example on Jetty from the IDE. You can either install the m2eclipse[link] plugin and run the goals as described above. Your other option is to start the Jetty container from a Java application."
 msgstr ""
 
 #. Tag: para
@@ -571,7 +575,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide"
+msgid "$&gt; mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide"
 msgstr ""
 
 #. Tag: para
@@ -581,12 +585,12 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "$&#62; mvn war:inplace -Pjetty-ide"
+msgid "$&gt; mvn war:inplace -Pjetty-ide"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, you are ready to run the server in Eclipse. Import the project into your Eclipse workspace using &#34;Import Existing Project into Workspace. Then, find the start class in <literal>src/jetty/java</literal> and run its main method as a Java Application. Jetty will launch. You can view the application at the following local URL: <ulink url=\"http://localhost:8080\">http://localhost:8080</ulink>. Pay particular attention to the port in the URL and the lack of a trailing context path."
+msgid "Now, you are ready to run the server in Eclipse. Import the project into your Eclipse workspace using \"Import Existing Project into Workspace. Then, find the start class in <literal>src/jetty/java</literal> and run its main method as a Java Application. Jetty will launch. You can view the application at the following local URL: <ulink url=\"http://localhost:8080\">http://localhost:8080</ulink>. Pay particular attention to the port in the URL and the lack of a trailing context path."
 msgstr ""
 
 #. Tag: para

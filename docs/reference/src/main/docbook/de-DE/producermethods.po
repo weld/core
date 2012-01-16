@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-23 08:08+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -23,7 +23,7 @@ msgstr "Producer-Methoden"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They&#39;re also the easiest way to integrate objects which are not beans into the CDI environment."
+msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into the CDI environment."
 msgstr "Producer-Methoden gestatten es uns, bestimmte Beschränkungen zu umgehen, die auftreten, wenn der Web Bean Manager statt die Anwendung für die Instantiierung von Objekten verantwortlich ist. Sie sind auch die einfachste Art der Integration von Objekten in die Web Beans Umgebung, die keine Web Beans sind. (In <xref linkend=\"xml\"/> lernen wir eine zweite Weise kennen.)"
 
 #. Tag: para
@@ -78,7 +78,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we&#39;ve seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
+msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we've seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
 msgstr ""
 
 #. Tag: programlisting
@@ -160,7 +160,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won&#39;t be called again in the same session."
+msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won't be called again in the same session."
 msgstr "Wird jetzt die Producer-Methode aufgerufen, so wird die wiedergegebene <literal>PaymentStrategy</literal> an den Session-Kontext gebunden. Die Producer-Methode wird in drselben Session nicht mehr aufgerufen."
 
 #. Tag: para
@@ -175,12 +175,12 @@ msgstr "Einspeisung in Producer-Methoden"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can&#39;t take advantage of dependency injection and don&#39;t have interceptors."
+msgid "There's one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can't take advantage of dependency injection and don't have interceptors."
 msgstr "Es gibt ein potenzielles Problem mit dem Code oben. Die Implementierungen von <literal>CreditCardPaymentStrategy</literal> werden unter Verwendung des Java <literal>new</literal> Operators instantiiert. Direkt durch die Anwendung instantiierte Objekte können die Dependency-Einspeisung nicht nutzen und besitzen keine Interzeptoren."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If this isn&#39;t what we want, we can use dependency injection into the producer method to obtain bean instances:"
+msgid "If this isn't what we want, we can use dependency injection into the producer method to obtain bean instances:"
 msgstr "Falls dies nicht das ist was wir wünschen, so können wir Dependency-Einspeisung in die Producer-Methode verwenden, um Web Bean Instanzen zu erhalten: "
 
 #. Tag: programlisting
@@ -212,12 +212,12 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of &#34;promoting&#34; the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left &#34;hanging&#34; in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
+msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of \"promoting\" the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left \"hanging\" in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
 msgstr "Aber Moment mal, was wenn <literal>CreditCardPaymentStrategy</literal> ein anfragenbegrenztes Web Bean ist? Dann hat die Producer-Methode die Wirkung, dass Sie die aktuelle anfragenbegrenzte Instanz in den Geltungsbereich der Session \"befördert\". Das ist mit ziemlicher Sicherheit ein Fehler! Das anfragenbegrenzte Objekt wird vom Web Bean Manager gelöscht ehe die Session endet, aber der Verweis auf das Objekt bleibt im Geltungsbereich der Session \"hängen\" in the session scope. Dieser Fehler wird <emphasis>nicht</emphasis> vom Web Bean Manager aufgespürt, daher seien Sie besonders vorsichtig wenn Sie Web Bean Instanzen von Producer-Methoden wiedergeben!"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgid "There's at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr "Es existieren mindestens drei Arten, wie dieser Fehler behoben werden kann. Wir könnten den Geltungsbereich der <literal>CreditCardPaymentStrategy</literal>-Implementierung ändern, aber das würde auch andere Clients dieses Web Beans betreffen. Eine bessere Option wäre es, den Geltungsbereich der Producer-Methode auf <literal>@Dependent</literal> oder <literal>@RequestScoped</literal> zu ändern."
 
 #. Tag: para
@@ -264,7 +264,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won&#39;t be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
+msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
 msgstr "Dann wird eine neue <emphasis>abhängige</emphasis> Instanz von <literal>CreditCardPaymentStrategy</literal> erstellt, an die Producer-Methode weitergegeben, von der Producer-Methode wiedergegeben und schließlich an den Session-Kontext gebunden. Das abhängige Objekt wird nicht gelöscht bis das <literal>Preferences</literal>-Objekt gelöscht wird, meist am Ende der Session."
 
 #. Tag: title

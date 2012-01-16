@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-07 15:15+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We&#39;ve already seen three means of achieving loose coupling:"
+msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
 msgstr ""
 
 #. Tag: para
@@ -71,7 +71,7 @@ msgstr "Le second thème majeur des Web Beans est <emphasis>le typage fort</emph
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "You don&#39;t see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called &#34;configuration by convention&#34;—but because there are simply no strings there to begin with!"
+msgid "You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules&mdash;so-called \"configuration by convention\"&mdash;but because there are simply no strings there to begin with!"
 msgstr "Vous ne voyez pas d'identifiants basés sur des chaînes de caractères dans un code Web Bean, pas parce que le framework vous les cache en utilisant des règles par défaut intelligentes &#151; les soit-disant \"configuration par convention\" &#151; mais parce qu'il n'y a même pas de chaînes de caractères pour commencer!"
 
 #. Tag: para
@@ -141,7 +141,7 @@ msgstr "Les <emphasis>stéréotypes</emphasis> Web Beans poussent cette idée d'
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We&#39;re now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don&#39;t ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you&#39;ll come to appreciate their power."
+msgid "We're now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
 msgstr "Nous commes maintenant prêts à découvrir quelques fonctionnalités plus avancées des Web Beans. Gardez à l'esprit que ces fonctionnalités existent pour rendre notre code à la fois plus facile à valider et plus compréhensible. La plupart du temps nous n'avons pas réellement <emphasis>besoin</emphaiss> d'utiliser ces fonctionnalités, mais si vous les utilisez sagement, vous en viendrez à apprécier leur pouvoir."
 
 #~ msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."

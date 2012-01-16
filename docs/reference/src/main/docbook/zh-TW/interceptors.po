@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-15 12:13+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -110,7 +110,7 @@ msgstr "攔截器綁定"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we&#39;re interested in:"
+msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:"
 msgstr "假設我們希望宣告我們有些 Web Bean 屬於交易性的 Web Bean。我們首先需要的就是一個 <emphasis>攔截器綁定標記（interceptor binding annotation）</emphasis>來明確指定我們要專注的 Web Bean 是哪個："
 
 #. Tag: programlisting
@@ -163,7 +163,7 @@ msgstr "實做攔截器"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "That&#39;s great, but somewhere along the line we&#39;re going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgid "That's great, but somewhere along the line we're going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
 msgstr "我們必須在某個階段實際地實做提供此交易管理功能的攔截器。我們只需要建立一個標準的 EJB 攔截器並將它標記為 <literal>@Interceptor</literal> 和 <literal>@Transactional</literal>。"
 
 #. Tag: programlisting
@@ -225,16 +225,16 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
@@ -265,17 +265,17 @@ msgstr "比方說，我們能夠指定我們的安全性攔截器能比我們的
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.SecurityInterceptor&#60;/class&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.SecurityInterceptor&lt;/class&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
@@ -378,7 +378,7 @@ msgstr "通常，我們會使用不同攔截器綁定類型的組合來將多重
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Secure(rolesAllowed=&#34;admin&#34;) @Transactional\n"
+"@Secure(rolesAllowed=\"admin\") @Transactional\n"
 "public class ShoppingCart { ... }"
 msgstr ""
 "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
@@ -470,7 +470,7 @@ msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive — any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
+msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive &mdash; any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
 msgstr "幸運的是，Web Bean 有方法來解決 Java 所缺少的這項功能上的問題。我們可利用其它攔截器綁定類型來標記某個攔截器綁定類型。攔截器綁定為可轉變的 &#151; 任何含有第一個攔截器綁定的 Web Bean 都會繼承宣告為 meta-annotation 的攔截器綁定。"
 
 #. Tag: programlisting
@@ -533,7 +533,7 @@ msgstr "攔截器無法在進行建置時輕易地被停用，以及"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "the interceptor ordering is non-global — it is determined by the order in which interceptors are listed at the class level."
+msgid "the interceptor ordering is non-global &mdash; it is determined by the order in which interceptors are listed at the class level."
 msgstr "攔截器的順序會是非全域性的 &#151; 會由攔截器被列於 class 層級的順序來取決。"
 
 #. Tag: para

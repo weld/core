@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
-"PO-Revision-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
+"PO-Revision-Date: 2012-01-16T16:07:16\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide CDI services for Java Enterprise Edition (Java EE) applications. Weld also goes beyond the environments and APIs defined by the JSR-299 specification by providing support for a number of other environments (such as a servlet container such as Tomcat, or Java SE)."
+msgid "Weld is the reference implementation of JSR-299, and is used by JBoss AS and GlassFish to provide CDI services for Java Enterprise Edition (Java EE) applications. Weld also goes beyond the environments and APIs defined by the JSR-299 specification by providing support for a number of other environments (such as a servlet container such as Tomcat, or Java SE)."
 msgstr ""
 
 #. Tag: para

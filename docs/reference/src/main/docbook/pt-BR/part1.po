@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2010-04-14 14:13-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -126,7 +126,7 @@ msgstr "Eu preciso explicitamente destruí-lo?"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Where should I keep the reference to it when I&#39;m not currently using it?"
+msgid "Where should I keep the reference to it when I'm not currently using it?"
 msgstr "Onde devo manter referência a ele quando não estiver usando-o diretamente?"
 
 #. Tag: para
@@ -141,7 +141,7 @@ msgstr "Como devo proceder no compartilhamento deste objeto com outros objetos?"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI is more than a framework. It&#39;s a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong typing</emphasis>. Let&#39;s study what that phrase means."
+msgid "CDI is more than a framework. It's a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong typing</emphasis>. Let's study what that phrase means."
 msgstr "CDI é mais do que um framework. É um completo e rico modelo de programação. O <emphasis>tema</emphasis> de CDI é <emphasis>baixo acoplamento com tipagem forte</emphasis>. Vamos estudar o que esta frase significa."
 
 #. Tag: para
@@ -171,12 +171,12 @@ msgstr "<emphasis>decoradores</emphasis> permitem que questões de negócios sej
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "What&#39;s even more powerful (and comforting) is that CDI provides all these facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating objects fit together. Instead, CDI uses the typing information that is already available in the Java object model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of XML descriptors is minimized to truly deployment-specific information."
+msgid "What's even more powerful (and comforting) is that CDI provides all these facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating objects fit together. Instead, CDI uses the typing information that is already available in the Java object model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of XML descriptors is minimized to truly deployment-specific information."
 msgstr "O que é ainda mais poderoso (e confortável) é que CDI oferece todas essas facilidades de uma maneira <emphasis>typesafe</emphasis>. CDI nunca confia em identificadores baseados em strings para determinar como os objetos se relacionam. Em vez disso, CDI utiliza a informação de tipagem que já está disponível no modelo de objeto Java, aumentada com um novo padrão de programação, chamada de <emphasis>anotações qualificadoras</emphasis>, para unir os beans, suas dependências, seus interceptadores e decoradores, e seus consumidores de eventos. A utilização de descritores XML é minimizada para simplesmente informação específica de implantação."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "But CDI isn&#39;t a restrictive programming model. It doesn&#39;t tell you how you should to structure your application into layers, how you should handle persistence, or what web framework you have to use. You&#39;ll have to decide those kinds of things for yourself."
+msgid "But CDI isn't a restrictive programming model. It doesn't tell you how you should to structure your application into layers, how you should handle persistence, or what web framework you have to use. You'll have to decide those kinds of things for yourself."
 msgstr "Mas CDI não é um modelo de programação restritivo. Ele não diz como você deve estruturar sua aplicação em camadas, como você deve lidar com a persistência, ou qual framework web você tem que usar. Você terá que decidir esses tipos de coisas por conta própria."
 
 #. Tag: para
@@ -186,7 +186,7 @@ msgstr "CDI ainda provê um SPI abrangente, permitindo que outros tipos de objet
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice. But it couldn&#39;t have been any of these without inspiration from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group (EG)."
+msgid "CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group (EG)."
 msgstr "A CDI foi influenciada por inúmeros frameworks Java existentes, incluindo Seam, Guice e Spring. Entretanto, CDI tem suas próprias e bem distintas características: mais typesafe que o Seam, mais stateful e menos centrada em XML que o Spring, mais hábil em aplicações web e corporativas que o Guice. Mas poderia ter sido nada disso sem a inspiração vinda dos frameworks mencionados e a <emphasis>grande quantidade</emphasis> de colaboração e trabalho duro do JSR-299 Expert Group (EG)."
 
 #. Tag: para
