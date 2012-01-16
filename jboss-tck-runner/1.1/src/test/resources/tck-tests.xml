@@ -58,18 +58,6 @@
                     <exclude name=".*" />
                 </methods>
             </class>
-            <!-- CDITCK-264 -->
-            <class name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.enterprise.EnterpriseProducerMethodDefinitionTest">
-                <methods>
-                    <exclude name="testNonStaticProducerMethodInheritedBySpecializingSubclass" />
-                </methods>
-            </class>
-            <!-- CDITCK-265 -->
-            <class name="org.jboss.jsr299.tck.tests.implementation.producer.field.lifecycle.ProducerFieldLifecycleTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-458 -->
