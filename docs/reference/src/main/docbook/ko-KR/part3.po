@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part3\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-23 11:11+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We&#39;ve already seen three means of achieving loose coupling:"
+msgid "The first major theme of CDI is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
 msgstr ""
 
 #. Tag: para
@@ -76,7 +76,7 @@ msgstr "Web Beans의 두번째 주요 기능은 <emphasis>강한 타이핑 (stro
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "You don&#39;t see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules—so-called &#34;configuration by convention&#34;—but because there are simply no strings there to begin with!"
+msgid "You don't see string-based identifiers in CDI code, not because the framework is hiding them from you using clever defaulting rules&mdash;so-called \"configuration by convention\"&mdash;but because there are simply no strings there to begin with!"
 msgstr "Web Beans 코드에서 문자열 기반 식별자를 보실 수 없습니다. 그 이유는 프레임워크가  &#151; \"관례에 의한 설정\"이라고 부르는 &#151;  기본값 규칙을 사용하여 이를 숨기려하기 때문이 아니라 시작할 수 있는 문자열이 없기 때문입니다! "
 
 #. Tag: para
@@ -146,7 +146,7 @@ msgstr "Web Beans의 <emphasis>전형적인 역할</emphasis>은 이러한 기�
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We&#39;re now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don&#39;t ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you&#39;ll come to appreciate their power."
+msgid "We're now ready to meet some more advanced features of CDI. Bear in mind that these features exist to make our code both easier to validate and more understandable. Most of the time you don't ever really <emphasis>need</emphasis> to use these features, but if you use them wisely, you'll come to appreciate their power."
 msgstr "이제 Web Beans의 보다 고급 기능에 대해 알아볼 준비가 되었습니다. 이러한 기능은 코드를 보다 쉽게 유효화하고 이해 가능하게 하기 위해 존재하는 것임을 명심하시기 바랍니다. 대부분 이러한 기능을 사용할 <emphasis>필요가</emphasis> 없지만 이를 보다 효과적으로 사용할 경우, 이러한 기능에 감사하게 될 것입니다. "
 
 #~ msgid "Even Web Beans XML metadata is strongly typed! There's no compiler for XML, so Web Beans takes advantage of XML schemas to validate the Java types and attributes that appear in XML. This approach turns out to make the XML more literate, just like annotations made our Java code more literate."

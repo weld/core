@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: producermethods\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-16 12:31+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "Producer method"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They&#39;re also the easiest way to integrate objects which are not beans into the CDI environment."
+msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into the CDI environment."
 msgstr "Producer method 讓我們在當 Web Bean 管理員（而不是應用程式）負責舉例說明（instantiating）物件時能夠解決一些特定發生的問題。它們同時也是將非 Web Bean 物件整合入 Web Bean 環境中最簡單的方式。（我們將在 <xref linkend=\"xml\"/> 中提及第二個方式。）"
 
 #. Tag: para
@@ -79,7 +79,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we&#39;ve seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
+msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we've seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
 msgstr ""
 
 #. Tag: programlisting
@@ -161,7 +161,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won&#39;t be called again in the same session."
+msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won't be called again in the same session."
 msgstr "現在，當 producer method 被調用時，回傳的 <literal>PaymentStrategy</literal> 將會被綁定至 session context。Producer method 將不會在相同的 session 中再次被調用。"
 
 #. Tag: para
@@ -176,12 +176,12 @@ msgstr "注入 producer method"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can&#39;t take advantage of dependency injection and don&#39;t have interceptors."
+msgid "There's one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can't take advantage of dependency injection and don't have interceptors."
 msgstr "上述程式碼有個潛在的問題。<literal>CreditCardPaymentStrategy</literal> 的實做是透過使用 Java 的 <literal>new</literal> operator 來例示（instantiate）的。被應用程式直接例示的物件無法有效利用依賴注入（dependency injection）並且沒有攔截器。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If this isn&#39;t what we want, we can use dependency injection into the producer method to obtain bean instances:"
+msgid "If this isn't what we want, we can use dependency injection into the producer method to obtain bean instances:"
 msgstr "若這不是我們所想要的，我們可使用依賴注入至 producer method 之中來取得 Web Bean 的 instance："
 
 #. Tag: programlisting
@@ -213,12 +213,12 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of &#34;promoting&#34; the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left &#34;hanging&#34; in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
+msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of \"promoting\" the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left \"hanging\" in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
 msgstr "請稍等，若 <literal>CreditCardPaymentStrategy</literal> 是個請求 scope 的 Web Bean 的話要怎麼辦？若是如此那麼 producer method 便有將現有的 request scope 的 instance「推入」session scope 中的效應。這幾乎能被確定是個 bug！request scope 物件會在 session 結束前被 Web Bean 管理員毀掉，不過該物件的參照會被「保留」在 session scope 中。這項錯誤將<emphasis>不會</emphasis>被 Web Bean 管理員偵測到，所以當由 producer method 回傳 Web Bean 的 instance 時請格外小心！"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgid "There's at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr "我們有三種可修正這項錯誤的方法。我們可更改 <literal>CreditCardPaymentStrategy</literal> 實做的 scope，不過這將會影響該 Web Bean 的其它客戶端。較好的方式就是將 producer method 的 scope 更改為 <literal>@Dependent</literal> 或 <literal>@RequestScoped</literal>。"
 
 #. Tag: para
@@ -265,7 +265,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won&#39;t be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
+msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
 msgstr "接著有個新的 <literal>CreditCardPaymentStrategy</literal> 的 <emphasis>dependent</emphasis> instance 將會被建立、傳送至 producer method、被 producer method 回傳然後最後被綁定至 session context。在 <literal>Preferences</literal> 物件於 session 結束時被毀掉之前，dependent 物件不會被毀掉。"
 
 #. Tag: title

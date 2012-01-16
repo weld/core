@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2010-11-18 23:31-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -110,7 +110,7 @@ msgstr "Bindings de interceptadores"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we&#39;re interested in:"
+msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:"
 msgstr "Suponha que queremos declarar que algum de nossos beans são transacionais. A primeira coisa de que precisamos é um <emphasis>tipo vinculador de interceptador</emphasis> para especificar exatamente em quais beans estamos interessados:"
 
 #. Tag: programlisting
@@ -163,7 +163,7 @@ msgstr "Implementando interceptadores (interceptors)"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "That&#39;s great, but somewhere along the line we&#39;re going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgid "That's great, but somewhere along the line we're going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
 msgstr "Isto é ótimo, mas em algum momento teremos que implementar o interceptador que fornece este aspecto de gerenciamento transacional. Tudo que precisamos fazer é criar um interceptador normal, e anotá-lo com <literal>@Interceptor</literal> e <literal>@Transactional</literal>."
 
 #. Tag: programlisting
@@ -227,16 +227,16 @@ msgstr "Por padrão, todos os interceptadores estão desabilitados. Nós precisa
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 "<![CDATA[<beans\n"
 "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
@@ -277,17 +277,17 @@ msgstr "Por exemplo, poderíamos especificar que nosso interceptador de seguran�
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.SecurityInterceptor&#60;/class&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.SecurityInterceptor&lt;/class&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 "<![CDATA[<beans\n"
 "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
@@ -402,7 +402,7 @@ msgstr "Usualmente usamos combinações de tipos vinculadores de interceptadores
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Secure(rolesAllowed=&#34;admin&#34;) @Transactional\n"
+"@Secure(rolesAllowed=\"admin\") @Transactional\n"
 "public class ShoppingCart { ... }"
 msgstr ""
 "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
@@ -494,7 +494,7 @@ msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive — any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
+msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive &mdash; any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
 msgstr "Bem, felizmente, CDI contorna a falta desta funcionalidade em Java. Podemos anotar um tipo vinculador com outros tipos vinculadores de interceptadores (denominado como uma <emphasis>meta-anotação</emphasis>). As vinculações de interceptadores são transitivos &#8212; qualquer bean com o primeiro vínculo a um interceptador herda os vínculos a interceptadores declarados como meta-anotações."
 
 #. Tag: programlisting
@@ -557,7 +557,7 @@ msgstr "os interceptadores podem não ser facilmente disabilitados em tempo de i
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "the interceptor ordering is non-global — it is determined by the order in which interceptors are listed at the class level."
+msgid "the interceptor ordering is non-global &mdash; it is determined by the order in which interceptors are listed at the class level."
 msgstr "a ordem dos interceptadores não é global &#8212; ela é determinada pela ordem em que os interceptadores são listados a nível de classe."
 
 #. Tag: para

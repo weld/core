@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2010-11-11 23:43-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -21,7 +21,7 @@ msgstr "Métodos produtores"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They&#39;re also the easiest way to integrate objects which are not beans into the CDI environment."
+msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into the CDI environment."
 msgstr "Métodos produtores permitem superarmos certas limitações que surgem quando um contêiner, em vez da aplicação, é responsável por instanciar objetos. Eles são também a forma mais fácil de integrar os objetos que não são beans ao ambiente CDI."
 
 #. Tag: para
@@ -76,7 +76,7 @@ msgstr "varia a implementação de um tipo de bean em tempo de execução."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we&#39;ve seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
+msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we've seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
 msgstr "Em particular, métodos produtores permitem-nos utilizar polimorfismo em tempo de execução com CDI. Como vimos, os beans alternativos são uma solução para o problema do polimorfismo em tempo de implantação. Mas, uma vez que o sistema está implantado, a implementação do CDI é imutável. Um método produtor não tem essa limitação:"
 
 #. Tag: programlisting
@@ -157,7 +157,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won&#39;t be called again in the same session."
+msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won't be called again in the same session."
 msgstr "Agora, quando o método produtor é chamado, o <literal>PaymentStrategy</literal> retornado será associado ao contexto de sessão. O método produtor não será invocado novamente na mesma sessão."
 
 #. Tag: para
@@ -172,12 +172,12 @@ msgstr "Injeção em métodos produtores"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can&#39;t take advantage of dependency injection and don&#39;t have interceptors."
+msgid "There's one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can't take advantage of dependency injection and don't have interceptors."
 msgstr "Existe um problema potencial com o código acima. As implementações de <literal>CreditCardPaymentStrategy</literal> são instanciadas utilizando o operador <literal>new</literal> de Java. Objetos instanciados diretamente pela aplicação não usufruem da injeção de dependência e não possuem interceptadores."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If this isn&#39;t what we want, we can use dependency injection into the producer method to obtain bean instances:"
+msgid "If this isn't what we want, we can use dependency injection into the producer method to obtain bean instances:"
 msgstr "Se não é isso o que queremos, podemos utilizar a injeção de dependência no método produtor para obter instâncias do bean:"
 
 #. Tag: programlisting
@@ -209,12 +209,12 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of &#34;promoting&#34; the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left &#34;hanging&#34; in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
+msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of \"promoting\" the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left \"hanging\" in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
 msgstr "Espere, o que ocorre se <literal>CreditCardPaymentStrategy</literal> for um bean com escopo de requisição? Assim o método produtor tem o efeito de \"promover\" a instância atual com escopo de requisição para escopo de sessão. Isso certamente é um erro! O objeto com escopo de requisição será destruído pelo contêiner antes de terminar a sessão, mas a referência ao objeto será deixada \"presa\" ao escopo de sessão. Esse erro <emphasis>não</emphasis> será detectado pelo contêiner. Por isso, tome cuidado adicional ao retornar instâncias de bean em métodos produtores!"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgid "There's at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr "Existem pelo menos três maneiras de corrigirmos esse problema. Podemos alterar o escopo da implementação de <literal>CreditCardPaymentStrategy</literal>, mas isso poderia afetar outros clientes desse bean. A mehor opção seria alterar o escopo do método produtor para <literal>@Dependent</literal> ou <literal>@RequestScoped</literal>."
 
 #. Tag: para
@@ -261,7 +261,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won&#39;t be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
+msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
 msgstr "Assim a nova instância <emphasis>dependente</emphasis> de <literal>CreditCardPaymentStrategy</literal> será criada, passada para o método produtor, retornada pelo método produtor e, finalmente, associada ao contexto de sessão. O objeto dependente não será destruído até que o objeto <literal>Preferences</literal> seja destruído, ao término da sessão."
 
 #. Tag: title

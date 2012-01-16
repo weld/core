@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-04-10 20:34-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The third theme of CDI is <emphasis>integration</emphasis>. We&#39;ve already seen how CDI helps integrate EJB and JSF, allowing EJBs to be bound directly to JSF pages. That&#39;s just the beginning. The CDI services are integrated into the very core of the Java EE platform. Even EJB session beans can take advantage of the dependency injection, event bus, and contextual lifecycle management that CDI provides."
+msgid "The third theme of CDI is <emphasis>integration</emphasis>. We've already seen how CDI helps integrate EJB and JSF, allowing EJBs to be bound directly to JSF pages. That's just the beginning. The CDI services are integrated into the very core of the Java EE platform. Even EJB session beans can take advantage of the dependency injection, event bus, and contextual lifecycle management that CDI provides."
 msgstr ""
 
 #. Tag: para
@@ -26,7 +26,7 @@ msgstr "Nós já vimos como Web Beans ajuda a integrar EJB e JSF, permitindo que
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We&#39;re about to see how to take full advantage of the Java EE platform in an application that uses CDI. We&#39;ll also briefly meet a set of SPIs that are provided to support portable extensions to CDI. You might not ever need to use these SPIs directly, but don&#39;t take them for granted. You will likely be using them indirectly, every time you use a third-party extension, such as Seam."
+msgid "We're about to see how to take full advantage of the Java EE platform in an application that uses CDI. We'll also briefly meet a set of SPIs that are provided to support portable extensions to CDI. You might not ever need to use these SPIs directly, but don't take them for granted. You will likely be using them indirectly, every time you use a third-party extension, such as Seam."
 msgstr "Estamos prestes a ver como tirar o máximo proveito da plataforma Java EE em uma aplicação que utiliza Web Beans. Reuniremos, brevemente, um conjunto de SPIs que são fornecidas para suportar extensões portáveis para Web Beans. Talvez você nunca precisará usar essas SPIs diretamente, mas é bom saber que estão lá se você precisar delas. Mais importante: você tirará proveito delas indiretamente, toda vez que você utilizar uma extensão de terceiros."
 
 #~ msgid "The third theme of Web Beans is <emphasis>integration</emphasis>. Web Beans was designed to work in concert with other technologies, helping the application developer fit the other technologies together. Web Beans is an open technology. It forms a part of the Java EE ecosystem, and is itself the foundation for a new ecosystem of portable extensions and integration with existing frameworks and technologies."

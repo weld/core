@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-12-19 18:11-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -36,7 +36,7 @@ msgstr "não só os produtores são desacoplados dos observadores; os observador
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "observers can specify a combination of &#34;selectors&#34; to narrow the set of event notifications they will receive, and"
+msgid "observers can specify a combination of \"selectors\" to narrow the set of event notifications they will receive, and"
 msgstr "os observadores podem especificar uma combinação de \"seletores\" para reduzir o conjunto de eventos que irão receber notificações, e"
 
 #. Tag: para
@@ -46,7 +46,7 @@ msgstr "os observadores podem ser notificados imediatamente ou podem especificar
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI event notification facility uses more or less the same typesafe approach that we&#39;ve already seen with the dependency injection service."
+msgid "The CDI event notification facility uses more or less the same typesafe approach that we've already seen with the dependency injection service."
 msgstr ""
 
 #. Tag: title
@@ -61,7 +61,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here&#39;s an example:"
+msgid "An event qualifier is just a normal qualifier, defined using <literal>@Qualifier</literal>. Here's an example:"
 msgstr ""
 
 #. Tag: programlisting
@@ -104,7 +104,7 @@ msgstr "<![CDATA[public void afterDocumentUpdate(@Observes @Updated Document doc
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "An observer method need not specify any event qualifiers—in this case it is interested in <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it&#39;s only interested in events which have those qualifiers."
+msgid "An observer method need not specify any event qualifiers&mdash;in this case it is interested in <emphasis>only unqualified</emphasis> events of a particular type. If it does specify qualifiers, it's only interested in events which have those qualifiers."
 msgstr "Um método observador não necessita especificar nenhum binding de evento &#151; nesse caso, ele está interessado em <emphasis>todos</emphasis> os eventos de um determinado tipo. Se ele especificar o bindings de evento, ele estará apenas interessado em eventos que também têm esses bindings de evento."
 
 #. Tag: para
@@ -129,7 +129,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Any Event&#60;Document&#62; documentEvent;"
+msgid "@Inject @Any Event&lt;Document&gt; documentEvent;"
 msgstr "<![CDATA[@Inject @Any Event<Document> documentEvent;]]>"
 
 #. Tag: para
@@ -184,7 +184,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Updated Event&#60;Document&#62; documentUpdatedEvent;"
+msgid "@Inject @Updated Event&lt;Document&gt; documentUpdatedEvent;"
 msgstr "<![CDATA[@Inject @Updated Event<Document> documentUpdatedEvent;]]>"
 
 #. Tag: para
@@ -204,12 +204,12 @@ msgstr "não especifique nenhum binding de evento <emphasis>exceto</emphasis> pa
 
 #. Tag: para
 #, no-c-format
-msgid "The downside of annotating the injection point is that we can&#39;t specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
+msgid "The downside of annotating the injection point is that we can't specify the qualifier dynamically. CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>. That way, we can pass the qualifier to the <literal>select()</literal> method of <literal>Event</literal>."
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "documentEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
+msgid "documentEvent.select(new AnnotationLiteral&lt;Updated&gt;(){}).fire(document);"
 msgstr "<![CDATA[documentEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]>"
 
 #. Tag: para
@@ -224,7 +224,7 @@ msgstr "Observadores transacionais"
 
 #. Tag: para
 #, no-c-format
-msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn&#39;t always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
+msgid "By default, if there is no instance of an observer in the current context, the container will instantiate the observer in order to deliver an event to it. This behavior isn't always desirable. We may want to deliver events only to instances of the observer that already exist in the current contexts."
 msgstr ""
 
 #. Tag: para
@@ -286,7 +286,7 @@ msgstr "Membros de tipo de binding de evento podem ser especificados estaticamen
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Role(ADMIN) Event&#60;LoggedIn&#62; loggedInEvent;"
+msgid "@Inject @Role(ADMIN) Event&lt;LoggedIn&gt; loggedInEvent;"
 msgstr "<![CDATA[@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;]]>"
 
 #. Tag: para
@@ -298,7 +298,7 @@ msgstr "Alternativamente, o valor do membro do tipo de binding de evento pode se
 #, fuzzy, no-c-format
 msgid ""
 "abstract class RoleBinding \n"
-"   extends AnnotationLiteral&#60;Role&#62; \n"
+"   extends AnnotationLiteral&lt;Role&gt; \n"
 "   implements Role {}"
 msgstr ""
 "<![CDATA[abstract class RoleBinding \n"
@@ -334,9 +334,9 @@ msgstr "Tipos de  binding de evento podem ser combinados, por exemplo:"
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Inject @Blog Event&#60;Document&#62; blogEvent;\n"
+"@Inject @Blog Event&lt;Document&gt; blogEvent;\n"
 "...\n"
-"if (document.isBlog()) blogEvent.select(new AnnotationLiteral&#60;Updated&#62;(){}).fire(document);"
+"if (document.isBlog()) blogEvent.select(new AnnotationLiteral&lt;Updated&gt;(){}).fire(document);"
 msgstr ""
 "<![CDATA[@Inject @Blog Event<Document> blogEvent;\n"
 "...\n"
@@ -445,12 +445,12 @@ msgid ""
 "\n"
 "   @PersistenceContext EntityManager em;\n"
 "    \n"
-"   List&#60;Product&#62; products;\n"
+"   List&lt;Product&gt; products;\n"
 "\n"
 "   @Produces @Catalog \n"
-"   List&#60;Product&#62; getCatalog() {\n"
+"   List&lt;Product&gt; getCatalog() {\n"
 "      if (products==null) {\n"
-"         products = em.createQuery(&#34;select p from Product p where p.deleted = false&#34;)\n"
+"         products = em.createQuery(\"select p from Product p where p.deleted = false\")\n"
 "            .getResultList();\n"
 "      }\n"
 "      return products;\n"
@@ -492,16 +492,16 @@ msgid ""
 "@Stateless\n"
 "public class ProductManager {\n"
 "   @PersistenceContext EntityManager em;\n"
-"   @Inject @Any Event&#60;Product&#62; productEvent;\n"
+"   @Inject @Any Event&lt;Product&gt; productEvent;\n"
 "\n"
 "   public void delete(Product product) {\n"
 "      em.delete(product);\n"
-"      productEvent.select(new AnnotationLiteral&#60;Deleted&#62;(){}).fire(product);\n"
+"      productEvent.select(new AnnotationLiteral&lt;Deleted&gt;(){}).fire(product);\n"
 "   }\n"
 "    \n"
 "   public void persist(Product product) {\n"
 "      em.persist(product);\n"
-"      productEvent.select(new AnnotationLiteral&#60;Created&#62;(){}).fire(product);\n"
+"      productEvent.select(new AnnotationLiteral&lt;Created&gt;(){}).fire(product);\n"
 "   }\n"
 "   ...\n"
 "}"

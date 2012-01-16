@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: decorators\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:16\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-23 11:19+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -32,12 +32,12 @@ msgstr "데코레이터 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the application (and type system). Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management, security and call logging. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren&#39;t an appropriate tool for separating business-related concerns."
+msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the application (and type system). Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management, security and call logging. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren't an appropriate tool for separating business-related concerns."
 msgstr "인터셉터는 유형 시스템에 <emphasis>직교</emphasis> 되어 있는 문제를 분리하고 캡쳐하는 강력한 방법입니다. 인터셉터는 모든 Java 유형 호출을 차단할 수 있습니다. 이는 트랜젝션 관리 및 보안과 같은 기술적 문제를 해결하는데 유용합니다. 하지만, 본래 인터셉터는 차단한 이벤트의 실제적 시멘틱을 인식하지 않습니다. 따라서, 인터셉터는 비지니스 관련 문제를 분리하기 위한 도구로는 적합하지 않습니다.  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business concerns. It also means that a decorator doesn&#39;t have the generality of an interceptor. Decorators aren&#39;t able to solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many ways, are complementary. Let&#39;s look at some cases where decorators fit the bill."
+msgid "The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business concerns. It also means that a decorator doesn't have the generality of an interceptor. Decorators aren't able to solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many ways, are complementary. Let's look at some cases where decorators fit the bill."
 msgstr "역으로 기능하는 것이 <emphasis>데코레이터</emphasis>입니다. 데코레이터는 특정 Java 인터페이스에 대해서만 호출을 차단하며, 인터페이스에 부착된 모든 시멘틱을 인식합니다. 이는 일부 비지니스 문제를 모델화하기 위해 데코레이터를 완벽한 도구로 만듭니다. 또한 데코레이터는 인터셉터의 일반적 기능을 갖지 않습니다. 데코레이터는 여러 이질적 유형을 초월하는 기술적 문제를 해결할 수 없습니다. "
 
 #. Tag: para
@@ -135,7 +135,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Unlike other beans, a decorator may be an abstract class. Therefore, if there&#39;s nothing special the decorator needs to do for a particular method of the decorated interface, you don&#39;t need to implement that method."
+msgid "Unlike other beans, a decorator may be an abstract class. Therefore, if there's nothing special the decorator needs to do for a particular method of the decorated interface, you don't need to implement that method."
 msgstr "기타 다른 심플 Web Beans와 다르게, 데코레이터는 추상클래스일 수 도 있습니다. 데코레이터된 인터페이스의 특정 방식에 대해 데코레이터가 특별히 해야할 것이 없을 경우, 이 방식을 구현하실 필요가 없습니다.     "
 
 #. Tag: para
@@ -219,14 +219,14 @@ msgid ""
 "    \n"
 "   public void withdraw(BigDecimal amount) {\n"
 "      account.withdraw(amount);\n"
-"      if ( amount.compareTo(LARGE_AMOUNT)&#62;0 ) {\n"
+"      if ( amount.compareTo(LARGE_AMOUNT)&gt;0 ) {\n"
 "         em.persist( new LoggedWithdrawl(amount) );\n"
 "      }\n"
 "   }\n"
 "    \n"
 "   public void deposit(BigDecimal amount);\n"
 "      account.deposit(amount);\n"
-"      if ( amount.compareTo(LARGE_AMOUNT)&#62;0 ) {\n"
+"      if ( amount.compareTo(LARGE_AMOUNT)&gt;0 ) {\n"
 "         em.persist( new LoggedDeposit(amount) );\n"
 "      }\n"
 "   }\n"
@@ -269,21 +269,21 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;decorators&#62;\n"
-"         &#60;class&#62;org.mycompany.myapp.LargeTransactionDecorator&#60;/class&#62;\n"
-"   &#60;/decorators&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;decorators&gt;\n"
+"         &lt;class&gt;org.mycompany.myapp.LargeTransactionDecorator&lt;/class&gt;\n"
+"   &lt;/decorators&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This declaration serves the same purpose for decorators that the <literal>&#60;interceptors&#62;</literal> declaration serves for interceptors:"
+msgid "This declaration serves the same purpose for decorators that the <literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
 msgstr "이러한 명시 사항은 데코레이터에 대해 <literal>&lt;Interceptors&gt;</literal> 명시가 인터셉터에 대해 실행하는 것과 동일한 목적을 실행합니다:  "
 
 #. Tag: para

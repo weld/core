@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:16\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-11-23 21:16+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -56,7 +56,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>, <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If you really want to be able to inject these objects, it&#39;s easy to create a portable extension to expose them as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec. The <literal>FacesContext</literal> is also not injectable. You can get at it by calling <literal>FacesContext.getCurrentInstance()</literal>."
+msgid "The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>, <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If you really want to be able to inject these objects, it's easy to create a portable extension to expose them as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec. The <literal>FacesContext</literal> is also not injectable. You can get at it by calling <literal>FacesContext.getCurrentInstance()</literal>."
 msgstr ""
 
 #. Tag: para
@@ -81,7 +81,7 @@ msgstr "Iniettare risorse Java EE in un Web Bean"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and <literal>@WebServiceRef</literal>. We&#39;ve already seen a couple of examples of this, though we didn&#39;t pay much attention at the time:"
+msgid "All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay much attention at the time:"
 msgstr "Tutti i Web Beans sia semplici che enterprise si avvantaggiano della dependency injection di Java EE usando <literal>@Resource</literal>, <literal>@EJB</literal> e <literal>@PersistenceContext</literal>. Abbiamo già visto un paio di esempi a riguardo, sebbene non ci siamo soffermati molto a suo tempo."
 
 #. Tag: programlisting
@@ -135,7 +135,7 @@ msgstr "Chiamare un Web Bean da un servlet"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "It&#39;s easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method injection."
+msgid "It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method injection."
 msgstr "E' facile utilizzare i Web Beans da un Servlet in Java EE 6. Semplicemente si inietti il Web Bean utilizzando l'injection del campo Web Bean o del metodo inizializzatore."
 
 #. Tag: programlisting
@@ -148,14 +148,14 @@ msgid ""
 "   @Override\n"
 "   public void service(HttpServletRequest request, HttpServletResponse response)\n"
 "      throws ServletException, IOException {\n"
-"      credentials.setUsername(request.getParameter(&#34;username&#34;)):\n"
-"      credentials.setPassword(request.getParameter(&#34;password&#34;)):\n"
+"      credentials.setUsername(request.getParameter(\"username\")):\n"
+"      credentials.setPassword(request.getParameter(\"password\")):\n"
 "      login.login();\n"
 "      if ( login.isLoggedIn() ) {\n"
-"         response.sendRedirect(&#34;/home.jsp&#34;);\n"
+"         response.sendRedirect(\"/home.jsp\");\n"
 "      }\n"
 "      else {\n"
-"         response.sendRedirect(&#34;/loginError.jsp&#34;);\n"
+"         response.sendRedirect(\"/loginError.jsp\");\n"
 "      }\n"
 "   }\n"
 "            \n"
@@ -193,7 +193,7 @@ msgstr "Chiamare un Web Bean da un Message-Driven Bean"
 
 #. Tag: para
 #, no-c-format
-msgid "CDI injection applies to all EJBs, even when they aren&#39;t managed beans. In particular, you can use CDI injection in message-driven beans, which are by nature not contextual objects."
+msgid "CDI injection applies to all EJBs, even when they aren't managed beans. In particular, you can use CDI injection in message-driven beans, which are by nature not contextual objects."
 msgstr ""
 
 # Web Beans interceptor bindings =?
@@ -254,10 +254,10 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "public class OrderResources {\n"
-"   @Resource(name=&#34;jms/ConnectionFactory&#34;)\n"
+"   @Resource(name=\"jms/ConnectionFactory\")\n"
 "   private ConnectionFactory connectionFactory;\n"
 "  \n"
-"   @Resource(name=&#34;jms/OrderQueue&#34;)\n"
+"   @Resource(name=\"jms/OrderQueue\")\n"
 "   private Queue orderQueue;\n"
 "  \n"
 "   @Produces @OrderConnection\n"
@@ -347,7 +347,7 @@ msgid ""
 "\n"
 "public void sendMessage() {\n"
 "   MapMessage msg = orderSession.createMapMessage();\n"
-"   msg.setLong(&#34;orderId&#34;, order.getId());\n"
+"   msg.setLong(\"orderId\", order.getId());\n"
 "   ...\n"
 "   producer.send(msg);\n"
 "}"
@@ -375,7 +375,7 @@ msgstr "Packaging and deployment"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI doesn&#39;t define any special deployment archive. You can package beans in jars, ejb jars or wars—any deployment location in the application classpath. However, the archive must be a &#34;bean archive&#34;. That means each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web root (for war archives). The file may be empty. Beans deployed in archives that do not have a <literal>beans.xml</literal> file will not be available for use in the application."
+msgid "CDI doesn't define any special deployment archive. You can package beans in jars, ejb jars or wars&mdash;any deployment location in the application classpath. However, the archive must be a \"bean archive\". That means each archive that contains beans <emphasis>must</emphasis> include a file named <literal>beans.xml</literal> in the <literal>META-INF</literal> directory of the classpath or <literal>WEB-INF</literal> directory of the web root (for war archives). The file may be empty. Beans deployed in archives that do not have a <literal>beans.xml</literal> file will not be available for use in the application."
 msgstr "Web Beans non definisce nessuno archivio speciale per il deploy. Si può impacchettare i Web Beans in JAR, EJB-JAR o WAR &#151; qualsiasi locazione di deploy nel classpath dell'applicazione. Comunque ciascun archivio che contiene Web Beans devi includere un file chiamato <literal>web-beans.xml</literal> nella directory <literal>META-INF</literal> o <literal>WEB-INF</literal>. Il file può essere vuoto. I Web Beans collocati negli archivi che non hanno un file <literal>web-beans.xml</literal> non saranno disponibili per l'uso nell'applicazione."
 
 #. Tag: para
