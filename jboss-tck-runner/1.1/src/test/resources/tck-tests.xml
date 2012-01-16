@@ -53,9 +53,15 @@
                 </methods>
             </class>
             <!-- CDI-180 -->
-             <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+            <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
                 <methods>
                     <exclude name=".*" />
+                </methods>
+            </class>
+            <!-- CDI-83 -->
+            <class name="org.jboss.jsr299.tck.tests.extensions.beanManager.BeanManagerTest">
+                <methods>
+                    <exclude name="testObtainingWrappedAnnotatedType" />
                 </methods>
             </class>
 
@@ -132,6 +138,19 @@
                     <exclude name="testNonPassivationCapableProducerMethodNotOk"/>
                 </methods>
             </class>
+            <!-- WELD-1042 -->
+            <class name="org.jboss.jsr299.tck.tests.context.application.event.ApplicationScopeEventMultiWarTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
+            <!-- WELD-1049 -->
+            <class name="org.jboss.jsr299.tck.tests.extensions.beanManager.bean.SyntheticBeanTest">
+                <methods>
+                    <exclude name="testSyntheticBeanIntercepted"/>
+                </methods>
+            </class>
+            
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
             <class name="org.jboss.jsr299.tck.tests.context.jms.MessageListenerContextTest">
