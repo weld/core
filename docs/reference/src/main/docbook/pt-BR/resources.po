@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-12-19 18:06-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a nonportable &#34;mapped name&#34;). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
+msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a non-portable \"mapped name\"). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
 msgstr ""
 
 #. Tag: para
@@ -72,7 +72,7 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Produces @WebServiceRef(lookup=&#34;java:app/service/Catalog&#34;)\n"
+"@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
 "Catalog catalog;"
 msgstr ""
 "<![CDATA[@Produces @WebServiceRef(lookup=\"java:app/service/Catalog\")\n"
@@ -81,7 +81,7 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Produces @Resource(lookup=&#34;java:global/env/jdbc/CustomerDatasource&#34;) \n"
+"@Produces @Resource(lookup=\"java:global/env/jdbc/CustomerDatasource\") \n"
 "@CustomerDatabase Datasource customerDatabase;"
 msgstr ""
 "<![CDATA[@Produces @Resource(lookup=\"java:global/env/jdbc/CustomerDatasource\") \n"
@@ -90,7 +90,7 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Produces @PersistenceContext(unitName=&#34;CustomerDatabase&#34;)\n"
+"@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
 "@CustomerDatabase EntityManager customerDatabasePersistenceContext;"
 msgstr ""
 "<![CDATA[@Produces @PersistenceContext(unitName=\"CustomerDatabase\")\n"
@@ -99,7 +99,7 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Produces @PersistenceUnit(unitName=&#34;CustomerDatabase&#34;) \n"
+"@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
 "@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;"
 msgstr ""
 "<![CDATA[@Produces @PersistenceUnit(unitName=\"CustomerDatabase\") \n"
@@ -108,7 +108,7 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Produces @EJB(ejbLink=&#34;../their.jar#PaymentService&#34;) \n"
+"@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
 "PaymentService paymentService;"
 msgstr ""
 "<![CDATA[@Produces @EJB(ejbLink=\"../their.jar#PaymentService\") \n"
@@ -136,7 +136,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It might feel strange to be declaring resources in Java code. Isn&#39;t this stuff that might be deployment-specific? Certainly, and that&#39;s why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
+msgid "It might feel strange to be declaring resources in Java code. Isn't this stuff that might be deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
 msgstr ""
 
 #. Tag: title
@@ -181,7 +181,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you&#39;re going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn&#39;t it nicer and more typesafe to write"
+msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you're going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn't it nicer and more typesafe to write"
 msgstr ""
 
 #. Tag: programlisting
@@ -195,9 +195,9 @@ msgid "instead of"
 msgstr ""
 
 #. Tag: programlisting
-#, no-c-format
-msgid "@PersistenceContext(unitName=&#34;CustomerDatabase&#34;) EntityManager"
-msgstr ""
+#, fuzzy, no-c-format
+msgid "@PersistenceContext(unitName=\"CustomerDatabase\") EntityManager"
+msgstr "<![CDATA[@Inject @CustomerDatabase EntityManager customerDatabaseEntityManager;]]>"
 
 #. Tag: para
 #, no-c-format

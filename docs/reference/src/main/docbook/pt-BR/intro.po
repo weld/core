@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2010-04-14 14:18-0300\n"
 "Last-Translator: Bruno Leonardo Gonçalves <brunolmfg@gmail.com>\n"
 "Language-Team: none\n"
@@ -21,7 +21,7 @@ msgstr "Introdução"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "So you&#39;re keen to get started writing your first bean? Or perhaps you&#39;re skeptical, wondering what kinds of hoops the CDI specification will make you jump through! The good news is that you&#39;ve probably already written and used hundreds, perhaps thousands of beans. CDI just makes it easier to actually use them to build an application!"
+msgid "So you're keen to get started writing your first bean? Or perhaps you're skeptical, wondering what kinds of hoops the CDI specification will make you jump through! The good news is that you've probably already written and used hundreds, perhaps thousands of beans. CDI just makes it easier to actually use them to build an application!"
 msgstr "Então você está interessado em começar a escrever seu primeiro bean? Ou talvez você seja cético, imaginando que tipos de argolas a especificação CDI fará com que você atravesse! A boa notícia é que você provavelmente já escreveu e utilizou centenas, talvez milhares de beans. CDI apenas facilita a realmente utilizá-los para construir uma aplicação!"
 
 #. Tag: title
@@ -36,27 +36,27 @@ msgstr "Um bean é exatamente o que você pensa que é. Só que agora ele tem um
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Prior to Java EE 6, there was no clear definition of the term &#34;bean&#34; in the Java EE platform. Of course, we&#39;ve been calling Java classes used in web and enterprise applications &#34;beans&#34; for years. There were even a couple of different kinds of things called &#34;beans&#34; in EE specifications, including EJB beans and JSF managed beans. Meanwhile, other third-party frameworks such as Spring and Seam introduced their own ideas of what it meant to be a &#34;bean&#34;. What we&#39;ve been missing is a common definition."
+msgid "Prior to Java EE 6, there was no clear definition of the term \"bean\" in the Java EE platform. Of course, we've been calling Java classes used in web and enterprise applications \"beans\" for years. There were even a couple of different kinds of things called \"beans\" in EE specifications, including EJB beans and JSF managed beans. Meanwhile, other third-party frameworks such as Spring and Seam introduced their own ideas of what it meant to be a \"bean\". What we've been missing is a common definition."
 msgstr "Antes do Java EE 6, não havia uma definição clara do termo \"bean\" na plataforma Java EE. Claro, nós fomos chamando as classes Java usadas em aplicações web e corporativas de \"beans\" por anos. Houveram até um tanto de diferentes tipos de coisas chamados de \"bean\" em especificações EE, incluindo os beans do EJB e os managed beans do JSF. Entretanto, outros frameworks de terceiros como Spring e Seam introduziram suas próprias ideias do que significava ser um \"bean\". O que está faltando é uma definição comum."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Java EE 6 finally lays down that common definition in the Managed Beans specification. Managed Beans are defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle callbacks and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, <emphasis>at last</emphasis>, there&#39;s a uniform concept of a bean and a lightweight component model that&#39;s aligned across the Java EE platform."
+msgid "Java EE 6 finally lays down that common definition in the Managed Beans specification. Managed Beans are defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle callbacks and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, <emphasis>at last</emphasis>, there's a uniform concept of a bean and a lightweight component model that's aligned across the Java EE platform."
 msgstr "Java EE 6, finalmente, estabelece que a definição comum está na especificação de Managed Beans. Managed Beans são definidos como objetos gerenciados pelo contêiner com mínimas restrições de programação, também conhecidos pelo acrônimo POJO (Plain Old Java Object). Eles suportam um pequeno conjunto de serviços básicos, como injeção de recurso, callbacks e interceptadores do ciclo de vida. Especificações complementares, tais como EJB e CDI, se estabelecem sobre este modelo básico. Porém, <emphasis>afinal</emphasis>, existe um conceito uniforme de um bean e um modelo de componente enxuto que está alinhado através da plataforma Java EE."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "With very few exceptions, almost every concrete Java class that has a constructor with no parameters (or a constructor designated with the annotation <literal>@Inject</literal>) is a bean. This includes every JavaBean and every EJB session bean. If you&#39;ve already got some JavaBeans or session beans lying around, they&#39;re already beans—you won&#39;t need any additional special metadata. There&#39;s just little one thing you need to do before you can start injecting them into stuff: you need to put them in an archive (a jar, or a Java EE module such as a war or EJB jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>."
+msgid "With very few exceptions, almost every concrete Java class that has a constructor with no parameters (or a constructor designated with the annotation <literal>@Inject</literal>) is a bean. This includes every JavaBean and every EJB session bean. If you've already got some JavaBeans or session beans lying around, they're already beans&mdash;you won't need any additional special metadata. There's just little one thing you need to do before you can start injecting them into stuff: you need to put them in an archive (a jar, or a Java EE module such as a war or EJB jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>."
 msgstr "Com pouquíssimas exceções, quase toda classe Java concreta que possui um construtor com nenhum parâmetro (ou um construtor designado com a anotação <literal>@Inject</literal>) é um bean. Isso inclui qualquer JavaBean e qualquer EJB session bean. Se você já possui alguns JavaBeans ou session beans, eles já são beans—você não vai precisar de qualquer metadado especial adicional. Há apenas uma pequena coisa que você precisa fazer antes de começar a injetá-los dentro das coisas: você precisa colocá-los em um arquivo (um jar ou um módulo Java EE, como um war ou um jar EJB) que contém um arquivo indicador especial: <literal>META-INF/beans.xml</literal>."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The JavaBeans and EJBs you&#39;ve been writing every day, up until now, have not been able to take advantage of the new services defined by the CDI specification. But you&#39;ll be able to use every one of them with CDI—allowing the container to create and destroy instances of your beans and associate them with a designated context, injecting them into other beans, using them in EL expressions, specializing them with qualifier annotations, even adding interceptors and decorators to them—without modifying your existing code. At most, you&#39;ll need to add some annotations."
+msgid "The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage of the new services defined by the CDI specification. But you'll be able to use every one of them with CDI&mdash;allowing the container to create and destroy instances of your beans and associate them with a designated context, injecting them into other beans, using them in EL expressions, specializing them with qualifier annotations, even adding interceptors and decorators to them&mdash;without modifying your existing code. At most, you'll need to add some annotations."
 msgstr "Os JavaBeans e EJBs que você tem escrito todo dia, até agora, não foram capazes de tirar proveito dos novos serviços definidos pela especificação CDI. Mas você será capaz de usar cada um deles com CDI—permitindo que o contêiner crie e destrua instâncias de seus beans e associando-os a um contexto designado, injetando-os dentro de outros beans, usando-os em expressões EL, especializando-os com anotações qualificadoras, até adicionando interceptadores e decoradores para eles—sem modificar seu código existente. No máximo, você precisará adicionar algumas anotações."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now let&#39;s see how to create your first bean that actually uses CDI."
+msgid "Now let's see how to create your first bean that actually uses CDI."
 msgstr "Agora vamos ver como criar seu primeiro bean que realmente utiliza CDI."
 
 #. Tag: title
@@ -66,14 +66,14 @@ msgstr "Arregaçando as mangas"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Suppose that we have two existing Java classes that we&#39;ve been using for years in various applications. The first class parses a string into a list of sentences:"
+msgid "Suppose that we have two existing Java classes that we've been using for years in various applications. The first class parses a string into a list of sentences:"
 msgstr "Suponha que temos duas classes Java existentes, que estamos utilizando durante anos em várias aplicações. A primeira classe divide uma string em uma lista de sentenças:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
 "public class SentenceParser {\n"
-"   public List&#60;String&#62; parse(String text) { ... }\n"
+"   public List&lt;String&gt; parse(String text) { ... }\n"
 "}"
 msgstr ""
 "<![CDATA[public class SentenceParser {\n"
@@ -118,7 +118,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Unfortunately, we don&#39;t have a class that translates whole text documents. So let&#39;s write a bean for this job:"
+msgid "Unfortunately, we don't have a class that translates whole text documents. So let's write a bean for this job:"
 msgstr "Infelizmente, não temos uma classe pré-existente que traduz todo o texto de documentos. Então vamos escrever um bean que faz este trabalho:"
 
 #. Tag: programlisting
@@ -169,7 +169,7 @@ msgstr "Mas espere! <literal>TextTranslator</literal> não tem um construtor sem
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "As you&#39;ve guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection! <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to call that constructor or method when instantiating the bean. The container will inject other beans into the parameters of the constructor or method."
+msgid "As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection! <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to call that constructor or method when instantiating the bean. The container will inject other beans into the parameters of the constructor or method."
 msgstr "Como você imaginou, a anotação <literal>@Inject</literal> tem algo a ver com injeção de dependencia! <literal>@Inject</literal> pode ser aplicada a um construtor ou a um método de um bean, e diz ao contêiner para chamar este construtor ou este método ao instanciar o bean. O contêiner injetará outros beans nos parâmetros do construtor ou do método."
 
 #. Tag: para
@@ -179,7 +179,7 @@ msgstr "Podemos obter uma instância de <literal>TextTranslator</literal> injeta
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Let&#39;s create a UI controller bean that uses field injection to obtain an instance of the <literal>TextTranslator</literal>, translating the text entered by a user:"
+msgid "Let's create a UI controller bean that uses field injection to obtain an instance of the <literal>TextTranslator</literal>, translating the text entered by a user:"
 msgstr "Vamos criar um bean controlador de UI que utiliza injeção em campo para obter uma instância de <literal>TextTranslator</literal>, traduzindo o texto digitado por um usuário:"
 
 #. Tag: programlisting
@@ -242,7 +242,7 @@ msgstr "Injeção de uma instância de <literal>TextTranslator</literal> em um c
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Notice the controller bean is request-scoped and named. Since this combination is so common in web applications, there&#39;s a built-in annotation for it in CDI that we could have used as a shorthand. When the (stereotype) annotation <literal>@Model</literal> is declared on a class, it creates a request-scoped and named bean."
+msgid "Notice the controller bean is request-scoped and named. Since this combination is so common in web applications, there's a built-in annotation for it in CDI that we could have used as a shorthand. When the (stereotype) annotation <literal>@Model</literal> is declared on a class, it creates a request-scoped and named bean."
 msgstr "Observe que o bean controlador tem escopo de solicitação e é nomeado. Uma vez que esta combinação é tão comum em aplicações web uma anotação embutida para isto em CDI, que poderíamos ter utilizada como um atalho. Quando a anotação (estereótipo) <literal>@Model</literal> é declarada sobre uma classe, cria-se um bean com escopo de solicitação e nomeado."
 
 #. Tag: para
@@ -253,7 +253,7 @@ msgstr "Alternativamente, podemos obter e injetar uma instância de <literal>Tex
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Inject Instance&#60;TextTranslator&#62; textTranslatorInstance;\n"
+"@Inject Instance&lt;TextTranslator&gt; textTranslatorInstance;\n"
 "...\n"
 "public void translate() {\n"
 "   textTranslatorInstance.get().translate(inputText);\n"
@@ -267,15 +267,15 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Notice that it isn&#39;t necessary to create a getter or setter method to inject one bean into another. CDI can access an injected field directly (even if it&#39;s private!), which sometimes helps eliminate some wasteful code. The name of the field is arbitrary. It&#39;s the field&#39;s type that determines what is injected."
+msgid "Notice that it isn't necessary to create a getter or setter method to inject one bean into another. CDI can access an injected field directly (even if it's private!), which sometimes helps eliminate some wasteful code. The name of the field is arbitrary. It's the field's type that determines what is injected."
 msgstr "Repare que não é necessário criar um método getter ou setter para injetar um bean dentro de outro. CDI pode acessar um campo injetado diretamente (mesmo se ele for privado!), que algumas vezes ajuda a eliminar algum código supérfluo. O nome do campo é arbitrário. É o tipo do campo que determina o que é injetado."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "At system initialization time, the container must validate that exactly one bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> is available—if the <literal>SentenceTranslator</literal> EJB was not deployed—the container would inform us of an <emphasis>unsatisfied dependency</emphasis>. If more than one implementation of <literal>Translator</literal> were available, the container would inform us of the <emphasis>ambiguous dependency</emphasis>."
+msgid "At system initialization time, the container must validate that exactly one bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> is available&mdash;if the <literal>SentenceTranslator</literal> EJB was not deployed&mdash;the container would inform us of an <emphasis>unsatisfied dependency</emphasis>. If more than one implementation of <literal>Translator</literal> were available, the container would inform us of the <emphasis>ambiguous dependency</emphasis>."
 msgstr "Durante a inicialização do sistema, o contêiner deve validar que existe exatamente um bean que satisfaça cada ponto de injeção. Em nosso exemplo, se nenhuma implementação de <literal>Translator</literal> está disponível—se o EJB <literal>SentenceTranslator</literal> não foi implantado—o contêiner iria nos informar sobre uma <emphasis>dependência não satisfeita</emphasis>. Se mais de uma implementação de <literal>Translator</literal> estivessem disponíveis, o contêiner iria nos informar sobre a <emphasis>dependência ambígua</emphasis>."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Before we get too deep in the details, let&#39;s pause and examine a bean&#39;s anatomy. What aspects of the bean are significant, and what gives it its identity? Instead of just giving examples of beans, we&#39;re going to define what <emphasis>makes</emphasis> something a bean."
+msgid "Before we get too deep in the details, let's pause and examine a bean's anatomy. What aspects of the bean are significant, and what gives it its identity? Instead of just giving examples of beans, we're going to define what <emphasis>makes</emphasis> something a bean."
 msgstr "Antes de aprofundarmos nos detalhes, vamos fazer uma pausa e examinar a anatomia de um bean. Que aspectos do bean são significantes e o que lhe confere sua identidade? Em vez de apenas dar exemplos de beans, vamos definir o que <emphasis>torna</emphasis> algo um bean."

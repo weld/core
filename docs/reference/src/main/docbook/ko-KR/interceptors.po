@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-23 11:10+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -116,7 +116,7 @@ msgstr "인터셉터 바인딩 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we&#39;re interested in:"
+msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:"
 msgstr "Web Beans의 일부는 트랜젝션할 수 있음을 명시하고자 한다고 가정합니다. 처음으로 해야할 것은 어떤 Web Beans에 관심이 있는 지를 지정하기 위해 <emphasis>인터셉터 바인딩 어노테이션</emphasis>을 합니다:  "
 
 #. Tag: programlisting
@@ -169,7 +169,7 @@ msgstr "인터셉터 구현 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "That&#39;s great, but somewhere along the line we&#39;re going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgid "That's great, but somewhere along the line we're going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
 msgstr "행을 따라 어딘가에 이러한 트랜젝션 관리 측면을 제공하기 위해 실제적으로 인터셉터를 구현해야 합니다. 해야 할 작업은 표준 EJB 인터셉터를 생성하고 이를 <literal>@Interceptor</literal> 및 <literal>@Transactional</literal>로 어노테이션하는 것입니다.  "
 
 #. Tag: programlisting
@@ -231,16 +231,16 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
@@ -271,17 +271,17 @@ msgstr "예를 들어, <literal>TransactionInterceptor</literal> 이전에 보�
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.SecurityInterceptor&#60;/class&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.SecurityInterceptor&lt;/class&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
@@ -384,7 +384,7 @@ msgstr "일반적으로 여러개의 인터셉터를 Web Bean에 바인딩하기
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Secure(rolesAllowed=&#34;admin&#34;) @Transactional\n"
+"@Secure(rolesAllowed=\"admin\") @Transactional\n"
 "public class ShoppingCart { ... }"
 msgstr ""
 "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
@@ -476,7 +476,7 @@ msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive — any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
+msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive &mdash; any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
 msgstr "다행히도 Web Beans는 이러한 생략된 Java의 기능을 해결하여 하나의 인터셉터 바인딩 유형을 다른 인터셉터 바인딩 유형과 어노테이션할 수 있습니다. 인터셉터 바인딩은 트렌젝션 가능하여  &#151;  첫번째 인터셉터 바인딩이 있는 Web Bean은 메타 어노테이션으로 명시된 인터셉터 바인딩을 상속할 수 있습니다. "
 
 #. Tag: programlisting
@@ -539,7 +539,7 @@ msgstr "인터셉터는 배치시 쉽게 비활성화할 수 없습니다, "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "the interceptor ordering is non-global — it is determined by the order in which interceptors are listed at the class level."
+msgid "the interceptor ordering is non-global &mdash; it is determined by the order in which interceptors are listed at the class level."
 msgstr "인터셉터 순서는 비전역적입니다 &#151; 이는 클래스 레벨로 열거된 인터셉터 순서에 의해 결정됩니다. "
 
 #. Tag: para

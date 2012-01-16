@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-03-31 10:42+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Weld is the reference implementation of JSR-299, and is used by JBoss AS and Glassfish to provide CDI services for Java Enterprise Edition (Java EE) applications. Weld also goes beyond the environments and APIs defined by the JSR-299 specification by providing support for a number of other environments (such as a servlet container such as Tomcat, or Java SE)."
+msgid "Weld is the reference implementation of JSR-299, and is used by JBoss AS and GlassFish to provide CDI services for Java Enterprise Edition (Java EE) applications. Weld also goes beyond the environments and APIs defined by the JSR-299 specification by providing support for a number of other environments (such as a servlet container such as Tomcat, or Java SE)."
 msgstr "Web Beans è la reference implementatio di JSR-299, ed è usata da JBoss AS e Glassfish per fornire i servizi JSR-299 per le applicazioni Java Enterprise Edition. Web Beans va oltre gli ambienti e le API definite dalla specifica JSR-299 e fornisce supporto ad un numero di altri ambienti (quali servlet container quali Tomcat o Java SE) ed API e moduli addizionali (quali il logging la generazione XSD per i descrittori di deploy XML JSR-299)."
 
 #. Tag: para

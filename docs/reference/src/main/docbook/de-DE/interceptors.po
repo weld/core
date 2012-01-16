@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: interceptors\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-15 19:11+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -109,7 +109,7 @@ msgstr "Interzeptor-Bindings"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we&#39;re interested in:"
+msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:"
 msgstr "Nehmen wir an, wir wollten deklarieren, dass einige unserer Web Beans transaktional sind. Das erste, was wir benötigen ist eine <emphasis>Interzeptor bindende Annotation</emphasis>, um festzulegen, für welches Web Bean wir uns interessieren:"
 
 #. Tag: programlisting
@@ -162,7 +162,7 @@ msgstr "Implementierung von Interzeptoren"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "That&#39;s great, but somewhere along the line we&#39;re going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgid "That's great, but somewhere along the line we're going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
 msgstr "Das ist toll, aber irgendwann müssen wir den den Managementaspekt dieser Transaktion liefert, implementieren. Wir müssen nur einen standardmäßigen EJB-Interzeptor erstellen und ihn mit <literal>@Interceptor</literal> und <literal>@Transactional</literal> annotieren."
 
 #. Tag: programlisting
@@ -224,16 +224,16 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
@@ -264,17 +264,17 @@ msgstr "Zum Beispiel könnten wir festlegen, dass unser Sicherheitsinterzeptor v
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;interceptors&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.SecurityInterceptor&#60;/class&#62;\n"
-"      &#60;class&#62;org.mycompany.myapp.TransactionInterceptor&#60;/class&#62;\n"
-"   &#60;/interceptors&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;interceptors&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.SecurityInterceptor&lt;/class&gt;\n"
+"      &lt;class&gt;org.mycompany.myapp.TransactionInterceptor&lt;/class&gt;\n"
+"   &lt;/interceptors&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
@@ -377,7 +377,7 @@ msgstr "In der Regel verwenden wir Kombinationen von Interzeptor-Binding-Typen, 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@Secure(rolesAllowed=&#34;admin&#34;) @Transactional\n"
+"@Secure(rolesAllowed=\"admin\") @Transactional\n"
 "public class ShoppingCart { ... }"
 msgstr ""
 "<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
@@ -469,7 +469,7 @@ msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive — any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
+msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive &mdash; any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
 msgstr "Nun, zum Glück umgeht Web Beans dieses fehlende Feature von Java. Wir können einen Interzeptor Binding-Typ mit anderen Interzeptor Binding-Typen annotieren. Die Interzeptor-Bindings sind transitive &#151; jedes Web Bean mit demselben Interzeptor-Binding erbt die als Meta-Annotationen deklarierten Interzeptor-Bindings."
 
 #. Tag: programlisting
@@ -532,7 +532,7 @@ msgstr "Interzeptoren können zum Deployment-Zeitpunkt nicht einfach deaktiviert
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "the interceptor ordering is non-global — it is determined by the order in which interceptors are listed at the class level."
+msgid "the interceptor ordering is non-global &mdash; it is determined by the order in which interceptors are listed at the class level."
 msgstr "Die Interzeptorreihenfolge ist nicht allgemeingültig &#151; sie wird durch die Reihenfolge, in der Interzeptoren auf Klassenebene aufgeführt sind, festgelegt."
 
 #. Tag: para

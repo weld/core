@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: specialization\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:18\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-23 11:14+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -33,7 +33,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When you first start developing with CDI, you&#39;ll likely be dealing only with a single bean implementation for each bean type. In this case, it&#39;s easy to understand how beans get selected for injection. As the complexity of your application grows, multiple occurrences of the same bean type start appearing, either because you have multiple implementations or two beans share a common (Java) inheritance. That&#39;s when you have to begin studying the specialization, inheritance and alternative rules to work through unsatisfied or ambiguous dependencies or to avoid certain beans from being called."
+msgid "When you first start developing with CDI, you'll likely be dealing only with a single bean implementation for each bean type. In this case, it's easy to understand how beans get selected for injection. As the complexity of your application grows, multiple occurrences of the same bean type start appearing, either because you have multiple implementations or two beans share a common (Java) inheritance. That's when you have to begin studying the specialization, inheritance and alternative rules to work through unsatisfied or ambiguous dependencies or to avoid certain beans from being called."
 msgstr ""
 
 #. Tag: para
@@ -53,12 +53,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The second case is the default assumed by CDI. It&#39;s possible to have two beans in the system with the same part bean type (interface or parent class). As you&#39;ve learned, you select between the two implementations using qualifiers."
+msgid "The second case is the default assumed by CDI. It's possible to have two beans in the system with the same part bean type (interface or parent class). As you've learned, you select between the two implementations using qualifiers."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The first case is the exception, and also requires more care. In any given deployment, only one bean can fulfill a given role at a time. That means one bean needs to be enabled and the other disabled. There are a two modifiers involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We&#39;ll start by looking at alternatives and then show the guarantees that specialization adds."
+msgid "The first case is the exception, and also requires more care. In any given deployment, only one bean can fulfill a given role at a time. That means one bean needs to be enabled and the other disabled. There are a two modifiers involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We'll start by looking at alternatives and then show the guarantees that specialization adds."
 msgstr ""
 
 #. Tag: title
@@ -87,7 +87,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "But in our staging environment, we don&#39;t really want to submit payments to the external system, so we override that implementation of <literal>PaymentProcessor</literal> with a different bean:"
+msgid "But in our staging environment, we don't really want to submit payments to the external system, so we override that implementation of <literal>PaymentProcessor</literal> with a different bean:"
 msgstr "staging 환경에서, 다른 Web Bean을 사용하여 <literal>PaymentProcessor</literal> 구현을 덮어쓰기 합니다:  "
 
 #. Tag: programlisting
@@ -127,12 +127,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We&#39;ve already seen how we can enable this alternative by listing its class in the <literal>beans.xml</literal> descriptor."
+msgid "We've already seen how we can enable this alternative by listing its class in the <literal>beans.xml</literal> descriptor."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But suppose we have many alternatives in the staging environment. It would be much more convenient to be able to enable them all at once. So let&#39;s make <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype and annotate the staging beans with this stereotype instead. You&#39;ll see how this level of indirection pays off. First, we create the stereotype:"
+msgid "But suppose we have many alternatives in the staging environment. It would be much more convenient to be able to enable them all at once. So let's make <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype and annotate the staging beans with this stereotype instead. You'll see how this level of indirection pays off. First, we create the stereotype:"
 msgstr ""
 
 #. Tag: programlisting
@@ -173,16 +173,16 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;alternatives&#62;\n"
-"         &#60;stereotype&#62;org.mycompany.myapp.Staging&#60;/stereotype&#62;\n"
-"   &#60;/alternatives&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;alternatives&gt;\n"
+"         &lt;stereotype&gt;org.mycompany.myapp.Staging&lt;/stereotype&gt;\n"
+"   &lt;/alternatives&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
@@ -207,7 +207,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "So we haven&#39;t completely replaced the default implementation in this deployment of the system. The only way one bean can completely override a second bean at all injection points is if it implements all the bean types and declares all the qualifiers of the second bean. However, if the second bean declares a producer method or observer method, then even this is not enough to ensure that the second bean is never called! We need something extra."
+msgid "So we haven't completely replaced the default implementation in this deployment of the system. The only way one bean can completely override a second bean at all injection points is if it implements all the bean types and declares all the qualifiers of the second bean. However, if the second bean declares a producer method or observer method, then even this is not enough to ensure that the second bean is never called! We need something extra."
 msgstr ""
 
 #. Tag: para
@@ -267,7 +267,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Since we&#39;re informing the container that our alternative bean is meant to stand in as a replacement for the default implementation, the alternative implementation automatically inherits all qualifiers of the default implementation. Thus, in our example, <literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers <literal>@Default</literal> and <literal>@CreditCard</literal>."
+msgid "Since we're informing the container that our alternative bean is meant to stand in as a replacement for the default implementation, the alternative implementation automatically inherits all qualifiers of the default implementation. Thus, in our example, <literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers <literal>@Default</literal> and <literal>@CreditCard</literal>."
 msgstr ""
 
 #. Tag: para

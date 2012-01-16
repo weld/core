@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: injection\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-15 15:56+1100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -23,7 +23,7 @@ msgstr "Dependency-Einspeisung"
 
 #. Tag: para
 #, no-c-format
-msgid "One of the most significant features of CDI—certainly the most recognized—is dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency injection."
+msgid "One of the most significant features of CDI&mdash;certainly the most recognized&mdash;is dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency injection."
 msgstr ""
 
 #. Tag: title
@@ -148,7 +148,7 @@ msgstr "Als nächstes initialisiert der Web Bean Manager die Werte aller eingesp
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Next, the container calls all initializer methods of bean (the call order is not portable, don&#39;t rely on it)."
+msgid "Next, the container calls all initializer methods of bean (the call order is not portable, don't rely on it)."
 msgstr "Anschließend ruft der Web Bean Manager alle Initialisierermethoden des Web Beans auf."
 
 #. Tag: para
@@ -184,7 +184,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the injection point. The same is true for observer methods (which we&#39;ll meet in <xref linkend=\"events\" />) and disposer methods."
+msgid "This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the injection point. The same is true for observer methods (which we'll meet in <xref linkend=\"events\" />) and disposer methods."
 msgstr ""
 
 #. Tag: title
@@ -194,7 +194,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the container follows when identifying the bean to inject to an injection point. This algorithm looks complex at first, but once you understand it, it&#39;s really quite intuitive. Typesafe resolution is performed at system initialization time, which means that the container will inform the developer immediately if a bean&#39;s dependencies cannot be satisfied."
+msgid "The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the container follows when identifying the bean to inject to an injection point. This algorithm looks complex at first, but once you understand it, it's really quite intuitive. Typesafe resolution is performed at system initialization time, which means that the container will inform the developer immediately if a bean's dependencies cannot be satisfied."
 msgstr "Die Web Beans Spezifikation definiert eine Prozedur namens <emphasis>typesicherer Auflösungsalgorithmus</emphasis> (sog. typesafe resolution algorithm), den der Web Bean Manager bei der Identifizierung des an einem Einspeisungspunkt einzuspeisenden Web Beans folgt. Dieser  Algorithmus sieht auf den ersten Blick recht komplex aus, ist es aber nach kurzer Eingewöhnung nicht. Typensichere Auflösung wird zum Initialisierungszeitpunkt des Systems durchgeführt, was bedeutet, dass der Manager den Benutzer sofort darüber informiert, falls die Abhängigkeiten eines Web Beans nicht erfüllt werden können - dies erfolgt durch Meldung von <literal>UnsatisfiedDependencyException</literal> oder <literal>AmbiguousDependencyException</literal>."
 
 #. Tag: para
@@ -219,12 +219,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then bean A is going to go into slot A. That&#39;s the simplest possible scenario. When you first start your application, you&#39;ll likely have lots of those."
+msgid "Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then bean A is going to go into slot A. That's the simplest possible scenario. When you first start your application, you'll likely have lots of those."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But then, things start to get complicated. Let&#39;s explore how the container determines which bean to inject in more advanced cases. We&#39;ll start by taking a closer look at qualifiers."
+msgid "But then, things start to get complicated. Let's explore how the container determines which bean to inject in more advanced cases. We'll start by taking a closer look at qualifiers."
 msgstr ""
 
 #. Tag: title
@@ -385,7 +385,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, you may be thinking, <emphasis>&#34;What&#39;s the different between using a qualifier and just specifying the exact implementation class you want?&#34;</emphasis> It&#39;s important to understand that a qualifier is like an extension of the interface. It does not create a direct dependency to any particular implementation. There may be multiple alterative implementations of <literal>@Asynchronous PaymentProcessor</literal>!"
+msgid "Now, you may be thinking, <emphasis>\"What's the different between using a qualifier and just specifying the exact implementation class you want?\"</emphasis> It's important to understand that a qualifier is like an extension of the interface. It does not create a direct dependency to any particular implementation. There may be multiple alternative implementations of <literal>@Asynchronous PaymentProcessor</literal>!"
 msgstr ""
 
 #. Tag: title
@@ -395,7 +395,7 @@ msgstr "Einfache Web Beans unterstützen nur die <literal>@PostConstruct</litera
 
 #. Tag: para
 #, no-c-format
-msgid "Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the qualifier <literal>@Default</literal>. From time to time, you&#39;ll need to decare an injection point without specifying a qualifier. There&#39;s a qualifier for that too. All beans have the qualifier <literal>@Any</literal>. Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default qualifier, without otherwise restricting the beans that are eligible for injection."
+msgid "Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the qualifier <literal>@Default</literal>. From time to time, you'll need to declare an injection point without specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>. Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default qualifier, without otherwise restricting the beans that are eligible for injection."
 msgstr ""
 
 #. Tag: para
@@ -407,7 +407,7 @@ msgstr ""
 #, no-c-format
 msgid ""
 "@Inject \n"
-"void initServices(@Any Instance&#60;Service&#62; services) { \n"
+"void initServices(@Any Instance&lt;Service&gt; services) { \n"
 "   for (Service service: services) {\n"
 "      service.init();\n"
 "   }\n"
@@ -443,7 +443,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Then we select one of the possible member values when appling the qualifier:"
+msgid "Then we select one of the possible member values when applying the qualifier:"
 msgstr ""
 
 #. Tag: programlisting
@@ -464,7 +464,7 @@ msgid ""
 "@Target({METHOD, FIELD, PARAMETER, TYPE})\n"
 "public @interface PayBy {\n"
 "   PaymentMethod value();\n"
-"   @Nonbinding String comment() default &#34;&#34;;\n"
+"   @Nonbinding String comment() default \"\";\n"
 "}"
 msgstr ""
 "<![CDATA[@BindingType\n"
@@ -538,21 +538,21 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;alternatives&#62;\n"
-"         &#60;class&#62;org.mycompany.mock.MockPaymentProcessor&#60;/class&#62;\n"
-"   &#60;/alternatives&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;alternatives&gt;\n"
+"         &lt;class&gt;org.mycompany.mock.MockPaymentProcessor&lt;/class&gt;\n"
+"   &lt;/alternatives&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity by looking for an enabled alternative among the beans that could be injected. If there is exactly one enabled alternative, that&#39;s the bean that will be injected."
+msgid "When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity by looking for an enabled alternative among the beans that could be injected. If there is exactly one enabled alternative, that's the bean that will be injected."
 msgstr ""
 
 #. Tag: title
@@ -567,7 +567,7 @@ msgstr "Der typensichere Auflösungsalgorithmus schlägt fehl, wenn - nach Betra
 
 #. Tag: para
 #, no-c-format
-msgid "During the course of your development, you&#39;re going to encounter this situation. Let&#39;s learn how to resolve it."
+msgid "During the course of your development, you're going to encounter this situation. Let's learn how to resolve it."
 msgstr ""
 
 #. Tag: para
@@ -617,22 +617,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "See <ulink url=\"http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType\">this FAQ</ulink> for step-by-step instructions for how to resolve an ambigous resolution exception between a raw bean type and a producer method that returns the same bean type."
+msgid "See <ulink url=\"http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType\">this FAQ</ulink> for step-by-step instructions for how to resolve an ambiguous resolution exception between a raw bean type and a producer method that returns the same bean type."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Just remember: &#34;There can be only one.&#34;"
+msgid "Just remember: \"There can be only one.\""
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "On the other hand, if you really do have an optional or multivalued injection point, you should change the type of your injection point to <literal>Instance</literal>, as we&#39;ll see in <xref linkend=\"lookup\" />."
+msgid "On the other hand, if you really do have an optional or multivalued injection point, you should change the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\" />."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now there&#39;s one more issue you need to be aware of when using the dependency injection service."
+msgid "Now there's one more issue you need to be aware of when using the dependency injection service."
 msgstr "Es gibt eine weitere Sache, derer man sich bei der Verwendung von \"Dependency\"-Einspeisung in Web Beans gewahr sein sollte."
 
 #. Tag: title
@@ -647,7 +647,7 @@ msgstr "Clients eines eingespeisten Web Beans enthalten in der Regel keinen dire
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request scope. The application-scoped bean is shared between many different requests. However, each request should see a different instance of the request scoped bean—the current one!"
+msgid "Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request scope. The application-scoped bean is shared between many different requests. However, each request should see a different instance of the request scoped bean&mdash;the current one!"
 msgstr "Stellen wir uns vor, ein an den Geltungsbereich der Anwendung gebundenes Web Bean hielte einen direkten Verweis auf ein an den Geltungsbereich der Anfrage gebundenes Web Bean. Das an den Geltungsbereich der Anwendung gebundene Web Bean wird von vielen verschiedenen Anfragen geteilt. Jedoch sollte jede Anfrage eine andere Instanz des an den Geltungsbereich der Anfrage gebundenen Web Beans sehen!"
 
 #. Tag: para
@@ -672,7 +672,7 @@ msgstr "Die folgenden Java-Typen können nicht durch den Web Bean Manager geprox
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "classes which don&#39;t have a non-private constructor with no parameters, and"
+msgid "classes which don't have a non-private constructor with no parameters, and"
 msgstr "Klassen, die keinen nicht-privaten Konstruktor ohne Parameter besitzen sowie "
 
 #. Tag: para
@@ -687,7 +687,7 @@ msgstr "Arrays und primitive Typen."
 
 #. Tag: para
 #, no-c-format
-msgid "It&#39;s usually very easy to fix an unproxyable dependency problem. If an injection point of type <literal>X</literal> results in an unproxyable dependency, simply:"
+msgid "It's usually very easy to fix an unproxyable dependency problem. If an injection point of type <literal>X</literal> results in an unproxyable dependency, simply:"
 msgstr ""
 
 #. Tag: para
@@ -697,7 +697,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "change the type of the injection point to <literal>Instance&#60;X&#62;</literal>,"
+msgid "change the type of the injection point to <literal>Instance&lt;X&gt;</literal>,"
 msgstr ""
 
 #. Tag: para
@@ -727,7 +727,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But we didn&#39;t get around to implementing this yet."
+msgid "But we didn't get around to implementing this yet."
 msgstr ""
 
 #. Tag: title
@@ -762,7 +762,7 @@ msgstr "Die Anwendung kann durch Einspeisung eine Instanz des Interface <literal
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject Instance&#60;PaymentProcessor&#62; paymentProcessorSource;"
+msgid "@Inject Instance&lt;PaymentProcessor&gt; paymentProcessorSource;"
 msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
@@ -797,7 +797,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Asynchronous Instance&#60;PaymentProcessor&#62; paymentProcessorSource;"
+msgid "@Inject @Asynchronous Instance&lt;PaymentProcessor&gt; paymentProcessorSource;"
 msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
@@ -812,19 +812,19 @@ msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
-msgid "@Inject @Any Instance&#60;PaymentProcessor&#62; paymentProcessorSource;"
+msgid "@Inject @Any Instance&lt;PaymentProcessor&gt; paymentProcessorSource;"
 msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "Next, we need to obtain an instance of our qualifier type. Since annotatons are interfaces, we can&#39;t just write <literal>new Asynchronous()</literal>. It&#39;s also quite tedious to create a concrete implementation of an annotation type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>."
+msgid "Next, we need to obtain an instance of our qualifier type. Since annotations are interfaces, we can't just write <literal>new Asynchronous()</literal>. It's also quite tedious to create a concrete implementation of an annotation type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>."
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
 "abstract class AsynchronousQualifier\n"
-"extends AnnotationLiteral&#60;Asynchronous&#62; implements Asynchronous {}"
+"extends AnnotationLiteral&lt;Asynchronous&gt; implements Asynchronous {}"
 msgstr ""
 "<![CDATA[abstract class CreditCardBinding \n"
 "    extends AnnotationLiteral<CreditCard> \n"
@@ -839,14 +839,14 @@ msgstr ""
 #, fuzzy, no-c-format
 msgid ""
 "PaymentProcessor p = paymentProcessorSource\n"
-"   .select(new AnnotationLiteral&#60;Asynchronous&#62;() {});"
+"   .select(new AnnotationLiteral&lt;Asynchronous&gt;() {});"
 msgstr ""
 "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, \n"
 "                                               new AnnotationLiteral<CreditCard>(){});]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "We can&#39;t use an anonymous class to implement a qualifier type with members."
+msgid "However, we can't use an anonymous class to implement a qualifier type with members."
 msgstr ""
 
 #. Tag: para
@@ -894,7 +894,7 @@ msgstr "Ein Web Bean mit Geltungsbereich <literal>@Dependent</literal> kann eine
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Let&#39;s look at an example. The following code is verbose, and vulnerable to refactoring problems:"
+msgid "Let's look at an example. The following code is verbose, and vulnerable to refactoring problems:"
 msgstr "Sehen wir uns ein Beispiel an. Der folgende Code ist umfangreich und empfänglich für Refaktorierungsprobleme:"
 
 #. Tag: programlisting
@@ -938,7 +938,7 @@ msgstr "<![CDATA[@Current Logger log;]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Not convinced? Then here&#39;s a second example. To inject HTTP parameters, we need to define a qualifier type:"
+msgid "Not convinced? Then here's a second example. To inject HTTP parameters, we need to define a qualifier type:"
 msgstr "Sie sind noch nicht ganz überzeugt? Dann sehen Sie sich ein weiteres Beispiel an. Zur Einspeisung von HTTP-Parametern müssen wir einen Binding-Typ festlegen:"
 
 #. Tag: programlisting
@@ -966,8 +966,8 @@ msgstr "Wir würden diesen Binding-Typ an Einspeisungspunkten wie folgt verwende
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"@HttpParam(&#34;username&#34;) String username;\n"
-"@HttpParam(&#34;password&#34;) String password;"
+"@HttpParam(\"username\") String username;\n"
+"@HttpParam(\"password\") String password;"
 msgstr ""
 "<![CDATA[@HttpParam(\"username\") String username;\n"
 "@HttpParam(\"password\") String password;]]>"
@@ -982,7 +982,7 @@ msgstr "Die folgende Producer-Methode erledigt die Arbeit:"
 msgid ""
 "class HttpParams\n"
 "\n"
-"   @Produces @HttpParam(&#34;&#34;)\n"
+"   @Produces @HttpParam(\"\")\n"
 "   String getParamValue(InjectionPoint ip) {\n"
 "      ServletRequest request = (ServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();\n"
 "      return request.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());\n"
@@ -1001,7 +1001,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Note that acquiring of the request in this example is JSF-centric. For a more generic solution you could write your own prodcuer for the request and have it injected as a method parameter."
+msgid "Note that acquiring of the request in this example is JSF-centric. For a more generic solution you could write your own producer for the request and have it injected as a method parameter."
 msgstr ""
 
 #. Tag: para
@@ -1019,8 +1019,8 @@ msgstr "Der Web Bean Manager liefert ein eingebautes Web Bean, das das <literal>
 msgid ""
 "public interface InjectionPoint { \n"
 "   public Type getType();\n"
-"   public Set&#60;Annotation&#62; getQualifiers();\n"
-"   public Bean&#60;?&#62; getBean();\n"
+"   public Set&lt;Annotation&gt; getQualifiers();\n"
+"   public Bean&lt;?&gt; getBean();\n"
 "   public Member getMember();\n"
 "   public Annotated getAnnotated();\n"
 "   public boolean isDelegate();\n"

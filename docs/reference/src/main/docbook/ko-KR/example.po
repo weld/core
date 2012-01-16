@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: example\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-14 15:00+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -30,7 +30,7 @@ msgstr "JSF 웹 애플리케이션 예 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Let&#39;s illustrate these ideas with a full example. We&#39;re going to implement user login/logout for an application that uses JSF. First, we&#39;ll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
+msgid "Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
 msgstr "이러한 웹 애플리케이션의 예를 살펴봅시다. JSF를 사용하는 애플리케이션의 사용자 로그인/로그아웃을 구현할 것입니다. 먼저, 로그인시 입력한 사용자 이름 및 암호를 보유하기 위해 Web Bean을 정의합니다: "
 
 #. Tag: programlisting
@@ -72,18 +72,18 @@ msgstr "Web Bean은 다음과 같은 JSF 형식에서 로그인 프롬프트로 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"&#60;h:form&#62;\n"
-"   &#60;h:panelGrid columns=&#34;2&#34; rendered=&#34;#{!login.loggedIn}&#34;&#62;\n"
-"      &#60;f:validateBean&#62;\n"
-"         &#60;h:outputLabel for=&#34;username&#34;&#62;Username:&#60;/h:outputLabel&#62;\n"
-"         &#60;h:inputText id=&#34;username&#34; value=&#34;#{credentials.username}&#34;/&#62;\n"
-"         &#60;h:outputLabel for=&#34;password&#34;&#62;Password:&#60;/h:outputLabel&#62;\n"
-"         &#60;h:inputSecret id=&#34;password&#34; value=&#34;#{credentials.password}&#34;/&#62;\n"
-"      &#60;/f:validateBean&#62;\n"
-"   &#60;/h:panelGrid&#62;\n"
-"   &#60;h:commandButton value=&#34;Login&#34; action=&#34;#{login.login}&#34; rendered=&#34;#{!login.loggedIn}&#34;/&#62;\n"
-"   &#60;h:commandButton value=&#34;Logout&#34; action=&#34;#{login.logout}&#34; rendered=&#34;#{login.loggedIn}&#34;/&#62;\n"
-"&#60;/h:form&#62;"
+"&lt;h:form&gt;\n"
+"   &lt;h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\"&gt;\n"
+"      &lt;f:validateBean&gt;\n"
+"         &lt;h:outputLabel for=\"username\"&gt;Username:&lt;/h:outputLabel&gt;\n"
+"         &lt;h:inputText id=\"username\" value=\"#{credentials.username}\"/&gt;\n"
+"         &lt;h:outputLabel for=\"password\"&gt;Password:&lt;/h:outputLabel&gt;\n"
+"         &lt;h:inputSecret id=\"password\" value=\"#{credentials.password}\"/&gt;\n"
+"      &lt;/f:validateBean&gt;\n"
+"   &lt;/h:panelGrid&gt;\n"
+"   &lt;h:commandButton value=\"Login\" action=\"#{login.login}\" rendered=\"#{!login.loggedIn}\"/&gt;\n"
+"   &lt;h:commandButton value=\"Logout\" action=\"#{login.logout}\" rendered=\"#{login.loggedIn}\"/&gt;\n"
+"&lt;/h:form&gt;"
 msgstr ""
 "<![CDATA[<h:form>\n"
 "    <h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\">\n"
@@ -130,7 +130,7 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "(Note that we&#39;re also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
+msgid "(Note that we're also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
 msgstr ""
 
 #. Tag: para
@@ -150,10 +150,10 @@ msgid ""
 "   private User user;\n"
 "    \n"
 "   public void login() {\n"
-"      List&#60;User&#62; results = userDatabase.createQuery(\n"
-"         &#34;select u from User u where u.username = :username and u.password = :password&#34;)\n"
-"         .setParameter(&#34;username&#34;, credentials.getUsername())\n"
-"         .setParameter(&#34;password&#34;, credentials.getPassword())\n"
+"      List&lt;User&gt; results = userDatabase.createQuery(\n"
+"         \"select u from User u where u.username = :username and u.password = :password\")\n"
+"         .setParameter(\"username\", credentials.getUsername())\n"
+"         .setParameter(\"password\", credentials.getPassword())\n"
 "         .getResultList();\n"
 "        \n"
 "      if (!results.isEmpty()) {\n"
@@ -299,14 +299,14 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;h:panelGroup rendered=&#34;#{login.loggedIn}&#34;&#62;\n"
+"&lt;h:panelGroup rendered=\"#{login.loggedIn}\"&gt;\n"
 "   signed in as #{currentUser.username}\n"
-"&#60;/h:panelGroup&#62;"
+"&lt;/h:panelGroup&gt;"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we&#39;ll explore dependency injection in greater depth."
+msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we'll explore dependency injection in greater depth."
 msgstr "이러한 예가 Web Bean 프로그래밍 모델의 맛을 보는 계기가 되었으면 합니다. 다음 부분에서는 Web Beans 의존성 삽입에 대해 자세히 살펴보겠습니다. "
 
 #~ msgid "Of course, <literal>@LoggedIn</literal> is a binding annotation:"

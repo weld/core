@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:16\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-02 22:25+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
@@ -21,12 +21,12 @@ msgstr "Décorateurs"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the application (and type system). Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management, security and call logging. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren&#39;t an appropriate tool for separating business-related concerns."
+msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the application (and type system). Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management, security and call logging. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren't an appropriate tool for separating business-related concerns."
 msgstr "Les intercepteurs sont une manière puissante de capter et de séparer les problèmes qui sont <emphasis>orthogonaux</emphasis> au type de système. Tout intercepteur est capable d'intercepter les invocations à tout type Java. Cela les rend parfait pour résoudre des problèmes techniques tels que la gestion transactionnelle et la sécurité.Cependant, par nature, les intercepteurs ne sont pas conscients de la sémantique réelle des évênements qu'ils interceptent. En conséquence, les intercepteurs ne sont pas un outil approprié pour séparer problèmes <emphasis>métiers<emphasis>."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business concerns. It also means that a decorator doesn&#39;t have the generality of an interceptor. Decorators aren&#39;t able to solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many ways, are complementary. Let&#39;s look at some cases where decorators fit the bill."
+msgid "The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business concerns. It also means that a decorator doesn't have the generality of an interceptor. Decorators aren't able to solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many ways, are complementary. Let's look at some cases where decorators fit the bill."
 msgstr "L'inverse est vrai pour les <emphasis>décorateurs</emphasis>. Un décorateur intercepte les invocations uniquement pour une certain interface Java, et est donc conscient de toute la sémantique rattachée à cette interface. Cela fait des décorateurs un outil parfait pour modéliser certains concepts métiers. Cela veut aussi dire qu'un décorateur n'est pas aussi générique qu'un intercepteur. Les décorateurs ne sont pas capables de résoudres des problèmes techniques qui peuvent toucher des types très disparates."
 
 #. Tag: para
@@ -124,7 +124,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Unlike other beans, a decorator may be an abstract class. Therefore, if there&#39;s nothing special the decorator needs to do for a particular method of the decorated interface, you don&#39;t need to implement that method."
+msgid "Unlike other beans, a decorator may be an abstract class. Therefore, if there's nothing special the decorator needs to do for a particular method of the decorated interface, you don't need to implement that method."
 msgstr "Contrairement à d'autres Web Beans simples, un décorateur peut être une classe abstraite. Si le décorateur n'a rien de spécial à faire pour une méthode particulière d'une interface décorée, vous n'avez pas besoin d'implémenter cette méthode."
 
 #. Tag: para
@@ -208,14 +208,14 @@ msgid ""
 "    \n"
 "   public void withdraw(BigDecimal amount) {\n"
 "      account.withdraw(amount);\n"
-"      if ( amount.compareTo(LARGE_AMOUNT)&#62;0 ) {\n"
+"      if ( amount.compareTo(LARGE_AMOUNT)&gt;0 ) {\n"
 "         em.persist( new LoggedWithdrawl(amount) );\n"
 "      }\n"
 "   }\n"
 "    \n"
 "   public void deposit(BigDecimal amount);\n"
 "      account.deposit(amount);\n"
-"      if ( amount.compareTo(LARGE_AMOUNT)&#62;0 ) {\n"
+"      if ( amount.compareTo(LARGE_AMOUNT)&gt;0 ) {\n"
 "         em.persist( new LoggedDeposit(amount) );\n"
 "      }\n"
 "   }\n"
@@ -258,21 +258,21 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"&#60;beans\n"
-"   xmlns=&#34;http://java.sun.com/xml/ns/javaee&#34;\n"
-"   xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34;\n"
-"   xsi:schemaLocation=&#34;\n"
+"&lt;beans\n"
+"   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
+"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+"   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd&#34;&#62;\n"
-"   &#60;decorators&#62;\n"
-"         &#60;class&#62;org.mycompany.myapp.LargeTransactionDecorator&#60;/class&#62;\n"
-"   &#60;/decorators&#62;\n"
-"&#60;/beans&#62;"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;decorators&gt;\n"
+"         &lt;class&gt;org.mycompany.myapp.LargeTransactionDecorator&lt;/class&gt;\n"
+"   &lt;/decorators&gt;\n"
+"&lt;/beans&gt;"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This declaration serves the same purpose for decorators that the <literal>&#60;interceptors&#62;</literal> declaration serves for interceptors:"
+msgid "This declaration serves the same purpose for decorators that the <literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
 msgstr "Cette déclaration a le même but pour les décorateurs que la déclaration <literal>&lt;Interceptors&gt;</literal> pour les intercepteurs:"
 
 #. Tag: para

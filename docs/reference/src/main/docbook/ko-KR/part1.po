@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: part1\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-27 10:42+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -135,7 +135,7 @@ msgstr "이를 명시적으로 삭제해야 합니까? "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Where should I keep the reference to it when I&#39;m not currently using it?"
+msgid "Where should I keep the reference to it when I'm not currently using it?"
 msgstr "직접 사용하지 않을 경우 참조 사항을 어디에 보관해야 합니까? "
 
 #. Tag: para
@@ -150,7 +150,7 @@ msgstr "어떻게 하면 다른 개체 사이에서 이러한 개체를 공유�
 
 #. Tag: para
 #, no-c-format
-msgid "CDI is more than a framework. It&#39;s a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong typing</emphasis>. Let&#39;s study what that phrase means."
+msgid "CDI is more than a framework. It's a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong typing</emphasis>. Let's study what that phrase means."
 msgstr ""
 
 #. Tag: para
@@ -180,12 +180,12 @@ msgstr "<emphasis>데코레이터</emphasis>는 비지니스 문제를 구분하
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "What&#39;s even more powerful (and comforting) is that CDI provides all these facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating objects fit together. Instead, CDI uses the typing information that is already available in the Java object model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of XML descriptors is minimized to truly deployment-specific information."
+msgid "What's even more powerful (and comforting) is that CDI provides all these facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating objects fit together. Instead, CDI uses the typing information that is already available in the Java object model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of XML descriptors is minimized to truly deployment-specific information."
 msgstr "가장 중요하게 Web Beans는 이러한 모든 기능을 <emphasis>타입 안정적 (typesafe)</emphasis> 방식으로 제공합니다. Web Beans는 협력적 객체를 갖추기 위한 방법을 결정하기 위해 문자열 기반의 식별자를 사용하지 않습니다. XML은 옵션으로 남아있어도 거의 사용되지 않습니다. 대신 Web Beans는 <emphasis>바인딩 어노테이션 (binding annotations)</emphasis>이라는 새로운 패턴과 함께 Java 객체 모델에서 이미 사용 가능한 타이핑 정보를 사용하여 Web Beans 및 Web Beans의 의존성, 인터셉터, 데코레이터 및 이벤트 소비자를 함께 묶습니다.     "
 
 #. Tag: para
 #, no-c-format
-msgid "But CDI isn&#39;t a restrictive programming model. It doesn&#39;t tell you how you should to structure your application into layers, how you should handle persistence, or what web framework you have to use. You&#39;ll have to decide those kinds of things for yourself."
+msgid "But CDI isn't a restrictive programming model. It doesn't tell you how you should to structure your application into layers, how you should handle persistence, or what web framework you have to use. You'll have to decide those kinds of things for yourself."
 msgstr ""
 
 #. Tag: para
@@ -195,7 +195,7 @@ msgstr "Web Beans는 통합 지점을 제공하여 차후 Java EE 사양이나 �
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice. But it couldn&#39;t have been any of these without inspiration from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group (EG)."
+msgid "CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group (EG)."
 msgstr "Web Beans는 Seam, Guice, Spring을 포함하여 다수의 기존 Java 프레임워크에 의해 영향을 받았지만 Web Beans은 자체적으로 다음과 같은 고유한 기능을 소유하고 있습니다: Seam 보다 더 타입 안정적, 보다 더 상태 기반적, Spring 보다 덜 XML-중심, Guice 보다 더 웹 및 엔터프라이즈-애플리케이션 사용 가능   "
 
 #. Tag: para

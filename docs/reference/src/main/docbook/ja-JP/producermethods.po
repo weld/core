@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master.xml\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-06-23 23:39+0900\n"
 "Last-Translator: TANABE Junnichi <jun@lmns.biz>\n"
 "Language-Team: none\n"
@@ -22,7 +22,7 @@ msgstr "プロデューサメソッド"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They&#39;re also the easiest way to integrate objects which are not beans into the CDI environment."
+msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into the CDI environment."
 msgstr "Web Beanマネージャがアプリケーションの代わりにオブジェクトのインスタンス化に対して責務を負うときいくらかの発生する制限をプロデューサメソッドは、克服してくれます。それらはWeb BeansでないオブジェクトをWeb Beans環境に統合する最も簡単な方法でもあります。（我々は<xref linkend=\"xml\"/>で2番目のアプローチを見ることになるでしょう。）"
 
 #. Tag: para
@@ -77,7 +77,7 @@ msgstr "実行時にAPIタイプの実装を変える。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we&#39;ve seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
+msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we've seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
 msgstr "特に、プロデューサメソッドによってWeb Beanを利用した実行時ポリモフィズムを利用できるようになります。見てきたように、デプロイメントタイプはデプロイメントの多態性の問題に対するパワフルなソリューションです。しかし、一旦そのシステムがデプロイされると、そのWeb Beanの実装は固定されてしまいます。プロデューサメソッドにはそのような制限はありません。"
 
 #. Tag: programlisting
@@ -162,7 +162,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won&#39;t be called again in the same session."
+msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won't be called again in the same session."
 msgstr "今度プロデューサメソッドが呼び出されると、戻された<literal>PaymentStrategy</literal>はセッションコンテキストに属することになります。プロデューサメソッドが同じセッションで再び呼び出されることは無いでしょう。"
 
 #. Tag: para
@@ -177,12 +177,12 @@ msgstr "プロデューサメソッドへのインジェクション"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can&#39;t take advantage of dependency injection and don&#39;t have interceptors."
+msgid "There's one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can't take advantage of dependency injection and don't have interceptors."
 msgstr "上のコードには１つの潜在的な問題があります。<literal>CreditCardPaymentStrategy</literal>の実装はJavaの<literal>new</literal>演算子を使ってインスタンス化されています。アプリケーションにより直接インスタンス化されたオブジェクトは依存性注入の恩恵を受けることができず、インターセプタを持ちません。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If this isn&#39;t what we want, we can use dependency injection into the producer method to obtain bean instances:"
+msgid "If this isn't what we want, we can use dependency injection into the producer method to obtain bean instances:"
 msgstr "これが望むことでないのであれば、私たちはWeb Beanインスタンスを取得するためにプロデューサメソッドに依存性注入することができます。"
 
 #. Tag: programlisting
@@ -214,12 +214,12 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of &#34;promoting&#34; the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left &#34;hanging&#34; in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
+msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of \"promoting\" the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left \"hanging\" in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
 msgstr "待って！もし<literal>CreditCardPaymentStrategy</literal>がリクエストスコープのWeb Beanだとしたら？その場合、プロデューサメソッドは現在のリクエストスコープをセッションスコープに\"プロモート\"する効果を持ちます。これはほぼ確実なバグ！リクエストスコープのオブジェクトはセッションが終わる前にWeb Beanマジェージャによって破棄されることになるでしょうが、オブジェクトのリファレンスはセッションスコープに\"ぶら下がった\"ままになるでしょう。このエラーはWeb Beanマジェージャには検知され<emphasis>ない</emphasis>でしょうから、Web Beanインスタンスをプロデューサメソッドから戻すときには気をつけてください。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There&#39;s at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgid "There's at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
 msgstr "私たちがこのバグを解決する方法が少なくとも3つあります。私たちは<literal>CreditCardPaymentStrategy</literal>を実装したスコープを変えることができますが、これはWeb Beanの他のクライアントに影響を与えるでしょう。より良い選択肢はプロデューサメソッドのスコープを<literal>@Dependent</literal>か<literal>@RequestScoped</literal>に変えることでしょう。"
 
 #. Tag: para
@@ -266,7 +266,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won&#39;t be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
+msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
 msgstr "今度は、<literal>CreditCardPaymentStrategy</literal>の新たな<emphasis>依存</emphasis>インスタンスが作成され、プロデューサメソッドに渡され、プロデューサメソッドにより戻され、そして最終的にセッションコンテキストに属することになります。そのセッションの最後で<literal>Preferences</literal>オブジェクトが破棄されるまで依存オブジェクトは破棄されることは無いでしょう。"
 
 #. Tag: title
