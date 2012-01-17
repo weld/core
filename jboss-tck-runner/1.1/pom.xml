@@ -44,8 +44,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.jsr299.tck</groupId>
-            <artifactId>jsr299-tck-api</artifactId>
+            <groupId>org.jboss.cdi.tck</groupId>
+            <artifactId>cdi-tck-api</artifactId>
             <version>${cdi.tck-1-1.version}</version>
         </dependency>
 
@@ -56,8 +56,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.jsr299.tck</groupId>
-            <artifactId>jsr299-tck-impl</artifactId>
+            <groupId>org.jboss.cdi.tck</groupId>
+            <artifactId>cdi-tck-impl</artifactId>
             <version>${cdi.tck-1-1.version}</version>
             <type>xml</type>
             <classifier>suite</classifier>
@@ -65,8 +65,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.jsr299.tck</groupId>
-            <artifactId>jsr299-tck-impl</artifactId>
+            <groupId>org.jboss.cdi.tck</groupId>
+            <artifactId>cdi-tck-impl</artifactId>
             <version>${cdi.tck-1-1.version}</version>
             <scope>test</scope>
         </dependency>
@@ -92,8 +92,8 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeGroupIds>org.jboss.jsr299.tck</includeGroupIds>
-                            <includeArtifactIds>jsr299-tck-impl</includeArtifactIds>
+                            <includeGroupIds>org.jboss.cdi.tck</includeGroupIds>
+                            <includeArtifactIds>cdi-tck-impl</includeArtifactIds>
                             <includeTypes>xml</includeTypes>
                             <includeClassifiers>suite</includeClassifiers>
                             <stripVersion>true</stripVersion>
@@ -229,8 +229,8 @@
                             <excludedGroups>integration,javaee-full</excludedGroups>
                             <systemPropertyVariables>
                                 <arquillian.launch>weld</arquillian.launch>
-                                <org.jboss.jsr299.tck.libraryDirectory>target/dependency/lib</org.jboss.jsr299.tck.libraryDirectory>
-                                <org.jboss.jsr299.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.jsr299.tck.testDataSource>
+                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
+                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -294,8 +294,8 @@
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
                                 <!-- -DforkMode=never http://stackoverflow.com/questions/824019/maven-2-1-0-not-passing-on-system-properties-to-java-virtual-machine -->
                                 <!-- jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name-->
-                                <org.jboss.jsr299.tck.libraryDirectory>target/dependency/lib</org.jboss.jsr299.tck.libraryDirectory>
-                                <org.jboss.jsr299.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.jsr299.tck.testDataSource>
+                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
+                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -358,8 +358,8 @@
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
                                 <!-- -DforkMode=never http://stackoverflow.com/questions/824019/maven-2-1-0-not-passing-on-system-properties-to-java-virtual-machine -->
                                 <!-- jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name-->
-                                <org.jboss.jsr299.tck.libraryDirectory>target/dependency/lib</org.jboss.jsr299.tck.libraryDirectory>
-                                <org.jboss.jsr299.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.jsr299.tck.testDataSource>
+                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
+                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

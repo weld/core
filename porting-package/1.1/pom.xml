@@ -32,8 +32,8 @@
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.jsr299.tck</groupId>
-         <artifactId>jsr299-tck-api</artifactId>
+         <groupId>org.jboss.cdi.tck</groupId>
+         <artifactId>cdi-tck-api</artifactId>
          <version>${cdi.tck-1-1.version}</version>
       </dependency>
       

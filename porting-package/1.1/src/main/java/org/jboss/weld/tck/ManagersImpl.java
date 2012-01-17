@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tck;
 
-import org.jboss.jsr299.tck.spi.Managers;
+import org.jboss.cdi.tck.spi.Managers;
 
 public class ManagersImpl implements Managers {
 

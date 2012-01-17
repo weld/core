@@ -18,7 +18,7 @@ package org.jboss.weld.tck;
 
 import javax.enterprise.context.spi.Context;
 
-import org.jboss.jsr299.tck.spi.Contexts;
+import org.jboss.cdi.tck.spi.Contexts;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;

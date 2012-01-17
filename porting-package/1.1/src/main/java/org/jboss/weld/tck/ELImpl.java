@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.el.EL;
 
-public class ELImpl implements org.jboss.jsr299.tck.spi.EL{
+public class ELImpl implements org.jboss.cdi.tck.spi.EL {
 
     @SuppressWarnings("unchecked")
     public <T> T evaluateValueExpression(BeanManager beanManager, String expression, Class<T> expectedType) {

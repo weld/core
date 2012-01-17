@@ -1,6 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-
-<!-- JSR-299 TCK TestNG configuration for Weld -->
+<!-- CDI TCK TestNG configuration for Weld -->
 <suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
     
     <listeners>
@@ -10,56 +9,56 @@
     <test name="CDI TCK">
 
         <packages>
-            <package name="org.jboss.jsr299.tck.tests.*" />
-            <package name="org.jboss.jsr299.tck.interceptors.tests.*" />
+            <package name="org.jboss.cdi.tck.tests.*" />
+            <package name="org.jboss.cdi.tck.interceptors.tests.*" />
         </packages>
         
         <classes>
 
             <!-- Issues in the TCK -->
-            <class name="org.jboss.jsr299.tck.tests.context.DestroyForSameCreationalContext2Test">
+            <class name="org.jboss.cdi.tck.tests.context.DestroyForSameCreationalContext2Test">
                 <methods>
                     <exclude name="testDestroyForSameCreationalContextOnly" />
                 </methods>
             </class>
-            <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
+            <class name="org.jboss.cdi.tck.tests.context.DestroyedInstanceReturnedByGetTest">
                 <methods>
                     <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
                 </methods>
             </class>
             <!-- CDITCK-212 -->
-            <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
+            <class name="org.jboss.cdi.tck.tests.context.DestroyedInstanceReturnedByGetTest">
                 <methods>
                     <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
                 </methods>
             </class>
             <!-- CDITCK-263 -->
-            <class name="org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
                 <methods>
                     <exclude name="testNormalScopedUnproxyableBeanThrowsException" />
                 </methods>
             </class>
             <!-- TCK tests no longer valid for CDI 1.1 -->
             <!-- CDI-88/CDITCK-174 -->
-            <class name="org.jboss.jsr299.tck.tests.extensions.afterBeanDiscovery.AfterBeanDiscoveryTest">
+            <class name="org.jboss.cdi.tck.tests.extensions.afterBeanDiscovery.AfterBeanDiscoveryTest">
                 <methods>
                     <exclude name="testProcessObserverMethodFiredWhileAddingObserverMethod" />
                 </methods>
             </class>
             <!-- CDI-206 -->
-            <class name="org.jboss.jsr299.tck.tests.context.conversation.ClientConversationContextTest">
+            <class name="org.jboss.cdi.tck.tests.context.conversation.ClientConversationContextTest">
                 <methods>
                     <exclude name="testNonexistentConversationExceptionThrown" />
                 </methods>
             </class>
             <!-- CDI-180 -->
-            <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+            <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
                 <methods>
                     <exclude name=".*" />
                 </methods>
             </class>
             <!-- CDI-83 -->
-            <class name="org.jboss.jsr299.tck.tests.extensions.beanManager.BeanManagerTest">
+            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.BeanManagerTest">
                 <methods>
                     <exclude name="testObtainingWrappedAnnotatedType" />
                 </methods>
@@ -67,85 +66,85 @@
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-458 -->
-            <class name="org.jboss.jsr299.tck.tests.interceptors.definition.broken.interceptorForLifecycleTargetMethod.InterceptorForLifecycleTargetMethodTest">
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.broken.interceptorForLifecycleTargetMethod.InterceptorForLifecycleTargetMethodTest">
                 <methods>
                     <exclude name="testInterceptorForLifecycleTargetMethod" />
                 </methods>
             </class>
             <!-- WELD-998 -->
-            <class name="org.jboss.jsr299.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
+            <class name="org.jboss.cdi.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
                 <methods>
                     <exclude name=".*" />
                 </methods>
             </class>
             <!-- WELD-991 --> 
-            <class name="org.jboss.jsr299.tck.tests.lookup.manager.ManagerTest">
+            <class name="org.jboss.cdi.tck.tests.lookup.manager.ManagerTest">
                 <methods>
                     <exclude name="testGetReferenceWithIllegalBeanType" />
                 </methods>
             </class>
             <!-- WELD-430 -->
-            <class name="org.jboss.jsr299.tck.tests.decorators.invocation.DecoratorInvocationTest">
+            <class name="org.jboss.cdi.tck.tests.decorators.invocation.DecoratorInvocationTest">
                 <methods>
                     <exclude name="testDecoratorInvokesDelegateMethodOutsideOfBusinessMethodInterception" />
                 </methods>
             </class>
             <!-- WELD-997 -->
-            <class name="org.jboss.jsr299.tck.tests.extensions.interceptors.custom.CustomInterceptorInvocationTest">
+            <class name="org.jboss.cdi.tck.tests.extensions.interceptors.custom.CustomInterceptorInvocationTest">
                 <methods>
                     <exclude name="testCustomInterceptorInvocation" />
                 </methods>
             </class>
             <!-- WELD-993 --> 
-            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
+            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
                 <methods>
                     <exclude name="testInjectionIntoWebServiceEndpoint" />
                     <exclude name="testResourceBeanTypes"/>
                 </methods>
             </class>
             <!-- WELD-1039 -->
-            <class name="org.jboss.jsr299.tck.tests.extensions.annotated.AlternativeMetaDataTest">
+            <class name="org.jboss.cdi.tck.tests.extensions.annotated.AlternativeMetaDataTest">
                 <methods>
                     <exclude name="testGetAnnotations" />
                 </methods>
             </class>
             <!-- WELD-1038 -->
-            <class name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
                 <methods>
                     <exclude name="testMessageDrivenBeanMethodIntercepted" />
                 </methods>
             </class>
             <!-- WELD-1035 -->
-            <class name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.jms.ContainerEventTest">
+            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.jms.ContainerEventTest">
                 <methods>
                     <exclude name="testProcessInjectionTargetEventFiredForMessageDrivenBean" />
                 </methods>
             </class>
             <!-- WELD-1051 -->
-            <class name="org.jboss.jsr299.tck.tests.lookup.injectionpoint.broken.not.bean.InjectionPointTest">
+            <class name="org.jboss.cdi.tck.tests.lookup.injectionpoint.broken.not.bean.InjectionPointTest">
                 <methods>
                     <exclude name="testDefinitionErrorDetected"></exclude>
                 </methods>
             </class>
             <!-- WELD-1052 -->
-            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.nonPassivationCapableProducerField.NonPassivationCapableProducerFieldTest">
+            <class name="org.jboss.cdi.tck.tests.context.passivating.broken.nonPassivationCapableProducerField.NonPassivationCapableProducerFieldTest">
                 <methods>
                     <exclude name="testNonPassivationCapableProducerFieldNotOk"/>
                 </methods>
             </class>
-            <class name="org.jboss.jsr299.tck.tests.context.passivating.broken.nonPassivationCapableProducerMethod.NonPassivationCapableProducerMethodTest">
+            <class name="org.jboss.cdi.tck.tests.context.passivating.broken.nonPassivationCapableProducerMethod.NonPassivationCapableProducerMethodTest">
                 <methods>
                     <exclude name="testNonPassivationCapableProducerMethodNotOk"/>
                 </methods>
             </class>
             <!-- WELD-1042 -->
-            <class name="org.jboss.jsr299.tck.tests.context.application.event.ApplicationScopeEventMultiWarTest">
+            <class name="org.jboss.cdi.tck.tests.context.application.event.ApplicationScopeEventMultiWarTest">
                 <methods>
                     <exclude name="testDeployment"/>
                 </methods>
             </class>
             <!-- WELD-1049 -->
-            <class name="org.jboss.jsr299.tck.tests.extensions.beanManager.bean.SyntheticBeanTest">
+            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.bean.SyntheticBeanTest">
                 <methods>
                     <exclude name="testSyntheticBeanIntercepted"/>
                 </methods>
@@ -153,14 +152,14 @@
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
-            <class name="org.jboss.jsr299.tck.tests.context.jms.MessageListenerContextTest">
+            <class name="org.jboss.cdi.tck.tests.context.jms.MessageListenerContextTest">
                 <methods>
                     <exclude name=".*" />
                 </methods>
             </class>
 
             <!-- JBAS-8306 -->
-            <class name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+            <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
                 <methods>
                     <exclude name="testRequestScopeActiveDuringCallToEjbTimeoutMethod" />
                     <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
