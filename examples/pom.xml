@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0.Alpha1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.jboss.weld.examples</groupId>
@@ -98,7 +97,7 @@
         <!-- Testing deps -->
         <selenium.java.client.version>1.0.1</selenium.java.client.version>
         <ant.junit.version>1.6.2</ant.junit.version>
-        <ftest.version.discriminator/>
+        <ftest.version.discriminator />
         <selenium.browser>*firefoxproxy</selenium.browser>
         <selenium.browser.url>http://localhost:8080</selenium.browser.url>
         <selenium.server.port>14444</selenium.server.port>
@@ -113,14 +112,14 @@
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
         <!-- richfaces-selenium -->
         <browserSessionReuse>true</browserSessionReuse>
-        <cargo.jvmargs.additional/>
+        <cargo.jvmargs.additional />
         <cargo.timeout.deploy>120000</cargo.timeout.deploy>
         <context.host>localhost</context.host>
         <context.root>http://${context.host}:8080/</context.root>
         <context.path>/${project.build.finalName}/</context.path>
         <context.deploy.path>${context.path}</context.deploy.path>
         <jboss.master.configuration>${env.JBOSS_HOME}/server/all</jboss.master.configuration>
-        <deployable.location/>
+        <deployable.location />
         <deployable.type>war</deployable.type>
         <method>*</method>
         <selenium.maximize>false</selenium.maximize>
