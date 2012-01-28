@@ -27,7 +27,7 @@ public class LifeCycleTest {
     public void bundleLifeCycleTest(BundleContext context) throws InterruptedException, BundleException, ClassNotFoundException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         Environment.waitForEnvironment(context);
 
-        Bundle bundle = context.installBundle("mvn:org.jboss.weld.osgi.tests/weld-osgi-life-cycle/1.1.6-SNAPSHOT");
+        Bundle bundle = context.installBundle("mvn:org.jboss.weld.osgi.tests/weld-osgi-life-cycle/1.2.0-SNAPSHOT");
         Environment.waitForState(bundle, Bundle.INSTALLED);
 
         Class flagFarm = bundle.loadClass("org.jboss.weld.osgi.tests.lifecycle.FlagFarm");

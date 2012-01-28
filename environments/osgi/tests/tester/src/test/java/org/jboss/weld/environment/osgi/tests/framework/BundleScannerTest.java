@@ -44,8 +44,8 @@ public class BundleScannerTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-scanner").version("1.1.6-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-innerscanner").version("1.1.6-SNAPSHOT")
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-scanner").version("1.2.0-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-innerscanner").version("1.2.0-SNAPSHOT")
                 )
         );
     }
