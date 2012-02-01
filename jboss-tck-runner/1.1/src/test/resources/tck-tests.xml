@@ -149,6 +149,12 @@
                     <exclude name="testSyntheticBeanIntercepted"/>
                 </methods>
             </class>
+            <!-- WELD-1054 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.parameterized.AssignabilityOfRawAndParameterizedTypesTest">
+                <methods>
+                    <exclude name="testAssignabilityToRawType"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
