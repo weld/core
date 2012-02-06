@@ -16,6 +16,28 @@
  */
 package org.jboss.weld.bean;
 
+import java.beans.Introspector;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.inject.Scope;
+
 import javassist.util.proxy.ProxyObject;
 import org.jboss.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.interceptor.spi.metadata.ClassMetadata;
@@ -54,27 +76,6 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Scope;
-import java.beans.Introspector;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -166,6 +167,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     protected WeldClass<T> enhancedSubclass;
 
     protected WeldConstructor<T> constructorForEnhancedSubclass;
+
+    /**
+     *
+     */
+    protected ProxyFactory<T> decoratorProxyFactory;
 
     /**
      * Constructor
@@ -309,6 +315,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         if (isSubclassed()) {
             initEnhancedSubclass();
         }
+        if(hasDecorators()) {
+            decoratorProxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
+            decoratorProxyFactory.getProxyClass(); //eagerly generate the proxy class
+        }
     }
 
     public void initDecorators() {
@@ -320,9 +330,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
+        assert hasDecorators() : "Bean does not have decorators";
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
-        ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
         DecorationHelper.getHelperStack().push(decorationHelper);
         final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
         DecorationHelper.getHelperStack().pop();
@@ -570,7 +580,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         for (WeldMethod<?, ?> method : Beans.getInterceptableMethods(this.getWeldAnnotated())) {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
         }
-        return new InterceptedSubclassFactory<T>(getType(), Collections.<Type>emptySet(), this, enhancedMethodSignatures).getProxyClass();
+        return new InterceptedSubclassFactory<T>(getType(), getTypes(), this, enhancedMethodSignatures).getProxyClass();
     }
 
 }
