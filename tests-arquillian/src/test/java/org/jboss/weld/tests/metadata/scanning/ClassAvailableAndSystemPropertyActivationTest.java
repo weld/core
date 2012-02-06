@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.metadata.scanning;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -10,14 +12,14 @@ import org.jboss.weld.tests.metadata.Qux;
 import org.jboss.weld.tests.metadata.scanning.acme.Wibble;
 import org.jboss.weld.tests.metadata.scanning.acme.corp.Wubble;
 import org.jboss.weld.tests.metadata.scanning.jboss.Baz;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.spi.BeanManager;
 
 import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
 
 @RunWith(Arquillian.class)
+@Ignore("WELD-1059")
 public class ClassAvailableAndSystemPropertyActivationTest {
 
     public static final String TEST1_PROPERTY = ClassAvailableAndSystemPropertyActivationTest.class + ".test1";
