@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import java.io.Serializable;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
@@ -37,11 +43,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import java.io.Serializable;
 
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
@@ -99,6 +100,8 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     private final WeldInjectionPoint<?, ?> injectionPoint;
 
+    private ProxyFactory<T> proxyFactory;
+
     protected EEResourceProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(field, declaringBean, manager, services);
         this.injectionPoint = FieldInjectionPoint.of(declaringBean, field);
@@ -109,6 +112,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         if (!isInitialized()) {
             super.initialize(environment);
             checkEEResource();
+            proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
         }
     }
 
@@ -130,7 +134,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
             return createUnderlying(creationalContext);
         } else {
             BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)));
-            return new ProxyFactory<T>(getType(), getTypes(), this).create(proxyBeanInstance);
+            return proxyFactory.create(proxyBeanInstance);
         }
     }
 

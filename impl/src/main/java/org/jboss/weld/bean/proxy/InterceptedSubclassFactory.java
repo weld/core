@@ -17,6 +17,13 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+
 import javassist.NotFoundException;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
@@ -38,12 +45,6 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
-
-import javax.enterprise.inject.spi.Bean;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -119,11 +120,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             }
             for (Class<?> c : getAdditionalInterfaces()) {
                 for (Method method : c.getMethods()) {
-                    try {
-                        MethodInformation methodInformation = new RuntimeMethodInformation(method);
-                        proxyClassType.addMethod(MethodUtils.makeMethod(methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
-                        log.trace("Adding method " + method);
-                    } catch (DuplicateMemberException e) {
+                    if(enhancedMethodSignatures.contains(new MethodSignatureImpl(method))) {
+                        try {
+                            MethodInformation methodInformation = new RuntimeMethodInformation(method);
+                            proxyClassType.addMethod(MethodUtils.makeMethod(methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
+                            log.trace("Adding method " + method);
+                        } catch (DuplicateMemberException e) {
+                        }
                     }
                 }
             }

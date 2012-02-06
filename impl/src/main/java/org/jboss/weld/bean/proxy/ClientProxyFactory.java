@@ -17,6 +17,21 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.io.ObjectStreamException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.spi.Bean;
+
 import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
@@ -37,20 +52,6 @@ import org.jboss.weld.util.bytecode.JumpUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.Bean;
-import java.io.ObjectStreamException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Proxy factory that generates client proxies, it uses optimizations that
@@ -80,11 +81,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
         super(proxiedBeanType, typeClosure, bean);
-        beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-    }
-
-    public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
-        super(proxiedBeanType, typeClosure, proxyName, bean);
         beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
     }
 
