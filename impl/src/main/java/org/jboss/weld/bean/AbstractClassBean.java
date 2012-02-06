@@ -253,6 +253,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     private boolean passivationCapableBean;
     private boolean passivationCapableDependency;
 
+    protected ProxyFactory<T> decoratorProxyFactory;
+
     /**
      * Constructor
      *
@@ -388,9 +390,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             initInterceptionModelForType();
         }
         initDecorators();
-        if (isSubclassed()) {
-            initEnhancedSubclass();
-        }
         if (this.passivationCapableBean && this.hasDecorators()) {
             for (Decorator<?> decorator : this.getDecorators()) {
                 if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
@@ -408,6 +407,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             }
         }
         super.initializeAfterBeanDiscovery();
+        if (isSubclassed()) {
+            initEnhancedSubclass();
+        }
+        if (hasDecorators()) {
+            decoratorProxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
+            decoratorProxyFactory.getProxyClass(); //eagerly generate the proxy class
+        }
     }
 
     public void initDecorators() {
@@ -419,9 +425,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
+        assert hasDecorators() : "Bean does not have decorators";
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
-        ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
         DecorationHelper.getHelperStack().push(decorationHelper);
         final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
         DecorationHelper.getHelperStack().pop();
@@ -632,7 +638,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         for (WeldMethod<?, ?> method : Beans.getInterceptableMethods(this.getWeldAnnotated())) {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
         }
-        return new InterceptedSubclassFactory<T>(getType(), Collections.<Type>emptySet(), this, enhancedMethodSignatures).getProxyClass();
+        return new InterceptedSubclassFactory<T>(getType(), getTypes(), this, enhancedMethodSignatures).getProxyClass();
     }
 
     @Override

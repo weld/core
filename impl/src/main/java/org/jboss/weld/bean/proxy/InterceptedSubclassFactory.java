@@ -120,11 +120,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             }
             for (Class<?> c : getAdditionalInterfaces()) {
                 for (Method method : c.getMethods()) {
-                    try {
-                        MethodInformation methodInformation = new RuntimeMethodInformation(method);
-                        proxyClassType.addMethod(MethodUtils.makeMethod(methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
-                        log.trace("Adding method " + method);
-                    } catch (DuplicateMemberException e) {
+                    if(enhancedMethodSignatures.contains(new MethodSignatureImpl(method))) {
+                        try {
+                            MethodInformation methodInformation = new RuntimeMethodInformation(method);
+                            proxyClassType.addMethod(MethodUtils.makeMethod(methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
+                            log.trace("Adding method " + method);
+                        } catch (DuplicateMemberException e) {
+                        }
                     }
                 }
             }

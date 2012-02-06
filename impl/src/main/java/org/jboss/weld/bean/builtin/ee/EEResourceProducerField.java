@@ -101,6 +101,8 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     private final WeldInjectionPoint<?, ?> injectionPoint;
 
+    private ProxyFactory<T> proxyFactory;
+
     protected EEResourceProducerField(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, field, declaringBean, manager, services);
         this.injectionPoint = FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager);
@@ -111,6 +113,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         if (!isInitialized()) {
             super.initialize(environment);
             checkEEResource();
+            proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
         }
     }
 
@@ -132,7 +135,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
             return createUnderlying(creationalContext);
         } else {
             BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)));
-            return new ProxyFactory<T>(getType(), getTypes(), this).create(proxyBeanInstance);
+            return proxyFactory.create(proxyBeanInstance);
         }
     }
 

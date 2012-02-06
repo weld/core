@@ -281,11 +281,11 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     @Override
     protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
+        assert hasDecorators() : "Bean does not have decorators";
         //for EJBs, we apply decorators through a proxy
         T proxy = null;
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
-        ProxyFactory<T> proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, proxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), getDecorators());
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), getDecorators());
 
         DecorationHelper.getHelperStack().push(decorationHelper);
         proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
