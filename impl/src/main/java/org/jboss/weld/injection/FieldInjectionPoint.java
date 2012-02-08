@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.injection.Exceptions.rethrowException;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
@@ -26,14 +24,16 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
+import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
+
+import static org.jboss.weld.injection.Exceptions.rethrowException;
 
 public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPoint<T, Field>, Serializable {
 

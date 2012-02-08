@@ -1,19 +1,20 @@
 package org.jboss.weld.bean.interceptor;
 
-import org.jboss.interceptor.spi.instance.InterceptorInstantiator;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.metadata.InterceptorReference;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
+import java.lang.reflect.Constructor;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
-import java.lang.reflect.Constructor;
+
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.interceptor.spi.instance.InterceptorInstantiator;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorReference;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 

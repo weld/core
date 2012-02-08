@@ -17,21 +17,22 @@
 
 package org.jboss.weld.bean.interceptor;
 
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.ejb.spi.InterceptorBindings;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
+
+import org.jboss.weld.ejb.spi.InterceptorBindings;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.reflection.Reflections;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_MODEL_NULL;
 import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_LIFECYCLE;
@@ -67,7 +68,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
             throw new IllegalArgumentException(METHOD_NULL);
         }
 
-        org.jboss.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
+        org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
 
         if (internalInterceptionType.isLifecycleCallback()) {
             throw new IllegalArgumentException(INTERCEPTION_TYPE_LIFECYCLE, interceptionType.name());
@@ -82,7 +83,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
             throw new IllegalArgumentException(INTERCEPTION_TYPE_NULL);
         }
 
-        org.jboss.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
+        org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
 
         if (!internalInterceptionType.isLifecycleCallback()) {
             throw new IllegalArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());

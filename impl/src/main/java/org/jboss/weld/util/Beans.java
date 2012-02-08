@@ -80,8 +80,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
-import org.jboss.interceptor.spi.model.InterceptionType;
-import org.jboss.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -102,6 +100,8 @@ import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.interceptor.spi.model.InterceptionType;
+import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.WeldCallable;

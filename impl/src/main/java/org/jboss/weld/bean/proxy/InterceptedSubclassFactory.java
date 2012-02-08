@@ -17,6 +17,13 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+
 import javassist.NotFoundException;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
@@ -24,9 +31,9 @@ import javassist.bytecode.DuplicateMemberException;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
-import org.jboss.interceptor.proxy.LifecycleMixin;
-import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.interceptor.proxy.LifecycleMixin;
+import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.bytecode.Boxing;
@@ -38,12 +45,6 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.MethodUtils;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
-
-import javax.enterprise.inject.spi.Bean;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.

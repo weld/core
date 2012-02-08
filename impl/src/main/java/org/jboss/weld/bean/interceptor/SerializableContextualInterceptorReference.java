@@ -1,18 +1,19 @@
 package org.jboss.weld.bean.interceptor;
 
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.metadata.InterceptorReference;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import java.io.Serializable;
 
 import javax.enterprise.inject.spi.Interceptor;
-import java.io.Serializable;
+
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorReference;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
 public class SerializableContextualInterceptorReference implements InterceptorReference<SerializableContextual<Interceptor<?>, ?>>, Serializable {
 
     private static final long serialVersionUID = 8653531535170327439L;
 
-    private SerializableContextual<Interceptor<?>, ?> interceptor;
-    private ClassMetadata<?> classMetadata;
+    private final SerializableContextual<Interceptor<?>, ?> interceptor;
+    private final ClassMetadata<?> classMetadata;
 
     public SerializableContextualInterceptorReference(SerializableContextual<Interceptor<?>, ?> interceptor, ClassMetadata<?> classMetadata) {
         this.interceptor = interceptor;

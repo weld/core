@@ -17,17 +17,18 @@
 
 package org.jboss.weld.bean.proxy;
 
-import javassist.util.proxy.MethodHandler;
-import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.Container;
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.serialization.spi.ContextualStore;
-import org.slf4j.cal10n.LocLogger;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.PassivationCapable;
-import java.io.Serializable;
-import java.lang.reflect.Method;
+
+import javassist.util.proxy.MethodHandler;
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.serialization.spi.ContextualStore;
+import org.slf4j.cal10n.LocLogger;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;

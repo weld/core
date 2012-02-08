@@ -17,15 +17,15 @@
 
 package org.jboss.weld.bean.interceptor;
 
-import org.jboss.interceptor.reader.DefaultMethodMetadata;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.metadata.MethodMetadata;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import org.jboss.weld.interceptor.reader.DefaultMethodMetadata;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.WeldMethod;
 
 /**
  * @author Marius Bogoevici
