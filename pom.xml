@@ -54,7 +54,6 @@
         <jboss.as7.tck-runner.version>1.0.0.CR2</jboss.as7.tck-runner.version>
         <jboss.as7.version>7.1.0.CR1b</jboss.as7.version>
         <jboss.ejb3.ext-api.version>1.1.1</jboss.ejb3.ext-api.version>
-        <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
         <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
         <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
         <jboss.shrinkwrap.api.version>1.0.0-cr-1</jboss.shrinkwrap.api.version>
@@ -283,18 +282,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.interceptor</groupId>
-                <artifactId>jboss-interceptor-spi</artifactId>
-                <version>${jboss.interceptor.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.interceptor</groupId>
-                <artifactId>jboss-interceptor-core</artifactId>
-                <version>${jboss.interceptor.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jboss.jbossas.as7-cdi-tck</groupId>
                 <artifactId>jbossas-container</artifactId>
                 <version>${jboss.as7.tck-runner.version}</version>
@@ -398,7 +385,7 @@
                 <artifactId>weld-porting-package-tck10</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-porting-package-tck11</artifactId>
@@ -595,7 +582,7 @@
                 </property>
             </activation>
             <modules>
-                <module>jboss-tck-runner/1.0</module> 
+                <module>jboss-tck-runner/1.0</module>
             </modules>
         </profile>
         <profile>
@@ -607,7 +594,7 @@
                 </property>
             </activation>
             <modules>
-                <module>jboss-tck-runner/1.1</module> 
+                <module>jboss-tck-runner/1.1</module>
             </modules>
         </profile>
         <profile>
