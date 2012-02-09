@@ -74,7 +74,7 @@ public class PermalinkTest {
     @ArquillianResource
     private URL contextPath;
     
-    @Deployment
+    @Deployment(testable = false)
     public static WebArchive createTestDeployment1() {
         return Deployments.createDeployment();
     }
