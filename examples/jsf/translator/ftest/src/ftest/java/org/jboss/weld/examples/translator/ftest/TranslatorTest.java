@@ -66,7 +66,7 @@ public class TranslatorTest {
     @ArquillianResource
     private URL contextPath;
     
-    @Deployment
+    @Deployment(testable = false)
     public static EnterpriseArchive createTestDeployment1() {
         return Deployments.createDeployment();
     }
