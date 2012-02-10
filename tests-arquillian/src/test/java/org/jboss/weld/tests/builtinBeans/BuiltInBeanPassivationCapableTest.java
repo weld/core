@@ -54,7 +54,7 @@ public class BuiltInBeanPassivationCapableTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class).intercept(FooInterceptor.class)
                 // WELD-1048
-                // .decorate(AnimalDecorator.class)
+                 .decorate(AnimalDecorator.class)
                 .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
                 .addClass(Utils.class);
     }

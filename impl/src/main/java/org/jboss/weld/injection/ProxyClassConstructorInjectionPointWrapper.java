@@ -17,6 +17,12 @@
 
 package org.jboss.weld.injection;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+
 import javassist.util.proxy.ProxyObject;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.proxy.BeanInstance;
@@ -25,11 +31,6 @@ import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import java.lang.annotation.Annotation;
-import java.util.List;
 
 /**
  * A wrapper on a {@link ConstructorInjectionPoint}, to be used if a proxy subclass is instantiated instead of the
@@ -87,31 +88,11 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
                 DecoratorImpl di = (DecoratorImpl) bean;
                 final WeldInjectionPoint ip = di.getDelegateInjectionPoint();
                 if (ip instanceof FieldInjectionPoint) {
-                    beanInstance = new OnDemandBeanInstance(new OnDemandBeanInstance.InstanceProvider() {
-                        public Object provideInstance() {
-                            FieldInjectionPoint fip = (FieldInjectionPoint) ip;
-                            return fip.getAnnotated().get(instance);
-                        }
-                    });
+                    beanInstance = new OnDemandBeanInstance(new FieldInstanceProvider<T>(ip, instance));
                 } else if (ip instanceof MethodInjectionPoint) {
-                    beanInstance = new OnDemandBeanInstance(new OnDemandBeanInstance.InstanceProvider() {
-                        public Object provideInstance() {
-                            MethodInjectionPoint mip = (MethodInjectionPoint) ip;
-                            try {
-                                return mip.getAnnotated().invokeOnInstance(instance);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
+                    beanInstance = new OnDemandBeanInstance(new MethodInstanceProvider<T>(ip, instance));
                 } else if (ip instanceof ParameterInjectionPoint) {
-                    beanInstance = new OnDemandBeanInstance(new OnDemandBeanInstance.InstanceProvider() {
-                        public Object provideInstance() {
-                            ParameterInjectionPoint pip = (ParameterInjectionPoint) ip;
-                            // special value handling?
-                            return pip.getValueToInject(manager, creationalContext);
-                        }
-                    });
+                    beanInstance = new OnDemandBeanInstance(new ParameterInstanceProvider(ip, manager, creationalContext));
                 } else {
                     throw new IllegalArgumentException("Invalid InjectionPoint: " + ip);
                 }
@@ -123,5 +104,57 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
             }
         }
         return instance;
+    }
+
+    private static class FieldInstanceProvider<T> implements OnDemandBeanInstance.InstanceProvider {
+        private final WeldInjectionPoint ip;
+        private final T instance;
+
+        public FieldInstanceProvider(final WeldInjectionPoint ip, final T instance) {
+            this.ip = ip;
+            this.instance = instance;
+        }
+
+        public Object provideInstance() {
+            FieldInjectionPoint fip = (FieldInjectionPoint) ip;
+            return fip.getAnnotated().get(instance);
+        }
+    }
+
+    private static class ParameterInstanceProvider implements OnDemandBeanInstance.InstanceProvider {
+        private final WeldInjectionPoint ip;
+        private final BeanManagerImpl manager;
+        private final CreationalContext<?> creationalContext;
+
+        public ParameterInstanceProvider(final WeldInjectionPoint ip, final BeanManagerImpl manager, final CreationalContext<?> creationalContext) {
+            this.ip = ip;
+            this.manager = manager;
+            this.creationalContext = creationalContext;
+        }
+
+        public Object provideInstance() {
+            ParameterInjectionPoint pip = (ParameterInjectionPoint) ip;
+            // special value handling?
+            return pip.getValueToInject(manager, creationalContext);
+        }
+    }
+
+    private static class MethodInstanceProvider<T> implements OnDemandBeanInstance.InstanceProvider {
+        private final WeldInjectionPoint ip;
+        private final T instance;
+
+        public MethodInstanceProvider(final WeldInjectionPoint ip, final T instance) {
+            this.ip = ip;
+            this.instance = instance;
+        }
+
+        public Object provideInstance() {
+            MethodInjectionPoint mip = (MethodInjectionPoint) ip;
+            try {
+                return mip.getAnnotated().invokeOnInstance(instance);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
