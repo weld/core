@@ -22,6 +22,8 @@
 
 package org.jboss.weld.injection;
 
+import java.io.Serializable;
+
 import org.jboss.weld.bean.proxy.AbstractBeanInstance;
 
 /**
@@ -29,7 +31,7 @@ import org.jboss.weld.bean.proxy.AbstractBeanInstance;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-class OnDemandBeanInstance extends AbstractBeanInstance {
+class OnDemandBeanInstance extends AbstractBeanInstance implements Serializable {
     private InstanceProvider provider;
     private volatile Object instance;
 
@@ -53,7 +55,7 @@ class OnDemandBeanInstance extends AbstractBeanInstance {
         return getInstance().getClass();
     }
 
-    static interface InstanceProvider {
+    static interface InstanceProvider extends Serializable {
         Object provideInstance();
     }
 }
