@@ -1,65 +1,43 @@
 # translation of part2.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: part2\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-28 07:35+1100\n"
 "Last-Translator: \n"
-"Language-Team:  <en@li.org>\n"
-"Language: \n"
+"Language-Team: <en@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld, the JSR-299 Reference Implementation (RI), is being developed as part of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. You can download the latest community release of Weld from the <ulink url=\"http://seamframework.org/Download\">download page</ulink>. Information about the Weld source code repository and instructions about how to obtain and build the source can be found on the same page."
+msgid ""
+"Weld, the JSR-299 Reference Implementation (RI), is being developed as part "
+"of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. "
+"You can download the latest community release of Weld from the <ulink "
+"url=\"http://seamframework.org/Download\">download page</ulink>. Information"
+" about the Weld source code repository and instructions about how to obtain "
+"and build the source can be found on the same page."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld provides a complete SPI allowing Java EE containers such as JBoss AS and GlassFish to use Weld as their built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE environment."
+msgid ""
+"Weld provides a complete SPI allowing Java EE containers such as JBoss AS "
+"and GlassFish to use Weld as their built-in CDI implementation. Weld also "
+"runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE "
+"environment."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with an extensive library of examples, which are a great starting point from which to learn CDI."
+msgid ""
+"Weld comes with an extensive library of examples, which are a great starting"
+" point from which to learn CDI."
 msgstr ""
-
-#~ msgid "The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
-#~ msgstr "Das erste wichtige Thema von Web Beans ist <emphasis>Loose Coupling</emphasis> (lose Paarung). Wir haben bereits drei Wege gesehen, diese lose Paarung zu erreichen:"
-
-#~ msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
-#~ msgstr "<emphasis>Deployment-Typen</emphasis> aktivieren Polymorphie zum Zeitpunkt des Deployment, "
-
-#~ msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
-#~ msgstr "<emphasis>Producer Methoden</emphasis> aktivieren Polymorphie zur Runtime, und "
-
-#~ msgid "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean lifecycles."
-#~ msgstr "<emphasis>kontextuelles Lebenszyklus-Management</emphasis> entkoppelt Web Bean Lebenszyklen."
-
-#~ msgid "These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an implementation of an API, nor is it required to manage the lifecycle of the server object. This approach lets <emphasis>stateful objects interact as if they were services</emphasis>."
-#~ msgstr "Diese Techniken dienen der Aktivierung der losen Paarung (\"Loose Coupling\") von Client und Server. Der Client ist nicht mehr eng an eine API-Implementierung gebunden und muss den Lebenszyklus des Server-Objekts nicht mehr verwalten. Dadurch können <emphasis>Objekte, die \"stateful\" sind, interagieren als seien Sie Dienste </emphasis>."
-
-#~ msgid "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did it by sacrificing type safety. Web Beans is the first technology that achieves this level of loose coupling in a typesafe way."
-#~ msgstr "Lose Paarung macht ein System <emphasis>dynamischer</emphasis>. Das System kann auf gut definierte Weise auf Änderungen reagieren. In der Vergangenheit war es der Fall, dass Frameworks die versuchten die obigen Facilities bereitzustellen, dies auf Kosten der Typensicherheit taten. Bei Web Beans handelt es sich um die erste Technologie, die diese Ebene der losen Paarung auf typensichere Weise ermöglicht."
-
-#~ msgid "Web Beans provides three extra important facilities that further the goal of loose coupling:"
-#~ msgstr "Web Beans bieten drei weitere wichtige Facilities, die das Ziel loser Paarung weiterbringen:"
-
-#~ msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic,"
-#~ msgstr "<emphasis>Interzeptoren</emphasis> entkoppeln technische Probleme von Business Logik,"
-
-#~ msgid "<emphasis>decorators</emphasis> may be used to decouple some business concerns, and"
-#~ msgstr "<emphasis>Dekoratoren</emphasis> (\"Decorators\") können eingesetzt werden, um einige Business Probleme zu entkoppeln und"
-
-#~ msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers."
-#~ msgstr "<emphasis>Ereignis Benachrichtigungen</emphasis> (\"Event Notifications\") entkoppeln Ereignis-Producer von Ereignis-Konsument."
-
-#~ msgid "Let's explore interceptors first."
-#~ msgstr "Sehen wir uns zunächst die Interzeptoren an."

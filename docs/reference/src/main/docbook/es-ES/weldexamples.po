@@ -1,18 +1,17 @@
 # Language es-ES translations for Weld_-_JSR-299_Reference_Implementation package.
 # Automatically generated, 2009.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-11-11 15:00+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
@@ -21,7 +20,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "It's time to pull the covers back and dive into the internals of Weld example applications. Let's start with the simpler of the two examples, <literal>weld-numberguess</literal>."
+msgid ""
+"It's time to pull the covers back and dive into the internals of Weld "
+"example applications. Let's start with the simpler of the two examples, "
+"<literal>weld-numberguess</literal>."
 msgstr ""
 
 #. Tag: title
@@ -31,17 +33,29 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In the numberguess application you get 10 attempts to guess a number between 1 and 100. After each attempt, you're told whether your guess was too high or too low."
+msgid ""
+"In the numberguess application you get 10 attempts to guess a number between"
+" 1 and 100. After each attempt, you're told whether your guess was too high "
+"or too low."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The numberguess example is comprised of a number of beans, configuration files and Facelets (JSF) views, packaged as a war module. Let's start by examining the configuration files."
+msgid ""
+"The numberguess example is comprised of a number of beans, configuration "
+"files and Facelets (JSF) views, packaged as a war module. Let's start by "
+"examining the configuration files."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF 2.0, so there's really nothing that we have to configure. Thus, the configuration consists of only the root element."
+msgid ""
+"All the configuration files for this example are located in <literal>WEB-"
+"INF/</literal>, which can be found in the <literal>src/main/webapp</literal>"
+" directory of the example. First, we have the JSF 2.0 version of <literal"
+">faces-config.xml</literal>. A standardized version of Facelets is the "
+"default view handler in JSF 2.0, so there's really nothing that we have to "
+"configure. Thus, the configuration consists of only the root element."
 msgstr ""
 
 #. Tag: programlisting
@@ -58,7 +72,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There's also an empty <literal>beans.xml</literal> file, which tells the container to look for beans in this application and to activate the CDI services."
+msgid ""
+"There's also an empty <literal>beans.xml</literal> file, which tells the "
+"container to look for beans in this application and to activate the CDI "
+"services."
 msgstr ""
 
 #. Tag: para
@@ -109,12 +126,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Configure requests for URLs ending in <literal>.jsf</literal> to be handled by JSF"
+msgid ""
+"Configure requests for URLs ending in <literal>.jsf</literal> to be handled "
+"by JSF"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Tell JSF that we will be giving our JSF views (Facelets templates) an extension of <literal>.xhtml</literal>"
+msgid ""
+"Tell JSF that we will be giving our JSF views (Facelets templates) an "
+"extension of <literal>.xhtml</literal>"
 msgstr ""
 
 #. Tag: para
@@ -124,12 +145,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This demo uses JSF 2 as the view framework, but you can use Weld with any servlet-based web framework, such as JSF 1.2 or Wicket."
+msgid ""
+"This demo uses JSF 2 as the view framework, but you can use Weld with any "
+"servlet-based web framework, such as JSF 1.2 or Wicket."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let's take a look at the main JSF view, <literal>src/main/webapp/home.xhtml</literal>."
+msgid ""
+"Let's take a look at the main JSF view, "
+"<literal>src/main/webapp/home.xhtml</literal>."
 msgstr ""
 
 #. Tag: programlisting
@@ -178,17 +203,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Facelets is the built-in templating language for JSF. Here we are wrapping our page in a template which defines the layout."
+msgid ""
+"Facelets is the built-in templating language for JSF. Here we are wrapping "
+"our page in a template which defines the layout."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There are a number of messages which can be sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\""
+msgid ""
+"There are a number of messages which can be sent to the user, \"Higher!\", "
+"\"Lower!\" and \"Correct!\""
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "As the user guesses, the range of numbers they can guess gets smaller - this sentence changes to make sure they know the number range of a valid guess."
+msgid ""
+"As the user guesses, the range of numbers they can guess gets smaller - this"
+" sentence changes to make sure they know the number range of a valid guess."
 msgstr ""
 
 #. Tag: para
@@ -198,17 +229,25 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A validator binding is used to make sure the user doesn't accidentally input a number outside of the range in which they can guess - if the validator wasn't here, the user might use up a guess on an out of bounds number."
+msgid ""
+"A validator binding is used to make sure the user doesn't accidentally input"
+" a number outside of the range in which they can guess - if the validator "
+"wasn't here, the user might use up a guess on an out of bounds number."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "And, of course, there must be a way for the user to send their guess to the server. Here we bind to an action method on the bean."
+msgid ""
+"And, of course, there must be a way for the user to send their guess to the "
+"server. Here we bind to an action method on the bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The example exists of 4 classes, the first two of which are qualifiers. First, there is the <literal>@Random</literal> qualifier, used for injecting a random number:"
+msgid ""
+"The example exists of 4 classes, the first two of which are qualifiers. "
+"First, there is the <literal>@Random</literal> qualifier, used for injecting"
+" a random number:"
 msgstr ""
 
 #. Tag: programlisting
@@ -222,7 +261,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There is also the <literal>@MaxNumber</literal> qualifier, used for injecting the maximum number that can be injected:"
+msgid ""
+"There is also the <literal>@MaxNumber</literal> qualifier, used for "
+"injecting the maximum number that can be injected:"
 msgstr ""
 
 #. Tag: programlisting
@@ -236,7 +277,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The application-scoped <literal>Generator</literal> class is responsible for creating the random number, via a producer method. It also exposes the maximum possible number via a producer method:"
+msgid ""
+"The application-scoped <literal>Generator</literal> class is responsible for"
+" creating the random number, via a producer method. It also exposes the "
+"maximum possible number via a producer method:"
 msgstr ""
 
 #. Tag: programlisting
@@ -266,22 +310,36 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>Generator</literal> is application scoped, so we don't get a different random each time."
+msgid ""
+"The <literal>Generator</literal> is application scoped, so we don't get a "
+"different random each time."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The package declaration and imports have been excluded from these listings. The complete listing is available in the example source code."
+msgid ""
+"The package declaration and imports have been excluded from these listings. "
+"The complete listing is available in the example source code."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The final bean in the application is the session-scoped <literal>Game</literal> class. This is the primary entry point of the application. It's responsible for setting up or resetting the game, capturing and validating the user's guess and providing feedback to the user with a <literal>FacesMessage</literal>. We've used the post-construct lifecycle method to initialize the game by retrieving a random number from the <literal>@Random Instance&lt;Integer&gt;</literal> bean."
+msgid ""
+"The final bean in the application is the session-scoped "
+"<literal>Game</literal> class. This is the primary entry point of the "
+"application. It's responsible for setting up or resetting the game, "
+"capturing and validating the user's guess and providing feedback to the user"
+" with a <literal>FacesMessage</literal>. We've used the post-construct "
+"lifecycle method to initialize the game by retrieving a random number from "
+"the <literal>@Random Instance&lt;Integer&gt;</literal> bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You'll notice that we've also added the <literal>@Named</literal> annotation to this class. This annotation is only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game})."
+msgid ""
+"You'll notice that we've also added the <literal>@Named</literal> annotation"
+" to this class. This annotation is only required when you want to make the "
+"bean accessible to a JSF view via EL (i.e., #{game})."
 msgstr ""
 
 #. Tag: programlisting
@@ -375,17 +433,31 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A couple of modifications must be made to the numberguess artifact in order to deploy it to Tomcat or Jetty. First, Weld must be deployed as a Web Application library under <literal>WEB-INF/lib</literal> since the servlet container does not provide the CDI services. For your convenience we provide a single jar suitable for running Weld in any servlet container (including Jetty), <literal>weld-servlet.jar</literal>."
+msgid ""
+"A couple of modifications must be made to the numberguess artifact in order "
+"to deploy it to Tomcat or Jetty. First, Weld must be deployed as a Web "
+"Application library under <literal>WEB-INF/lib</literal> since the servlet "
+"container does not provide the CDI services. For your convenience we provide"
+" a single jar suitable for running Weld in any servlet container (including "
+"Jetty), <literal>weld-servlet.jar</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You must also include the jars for JSF, EL, and the common annotations (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE application server). Are you starting to appreciate why a Java EE platform is worth using?"
+msgid ""
+"You must also include the jars for JSF, EL, and the common annotations "
+"(<literal>jsr250-api.jar</literal>), all of which are provided by the Java "
+"EE platform (a Java EE application server). Are you starting to appreciate "
+"why a Java EE platform is worth using?"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Second, we need to explicitly specify the servlet listener in <literal>web.xml</literal>, again because the container isn't doing this stuff for you. The servlet listener boots Weld and controls it's interaction with requests."
+msgid ""
+"Second, we need to explicitly specify the servlet listener in "
+"<literal>web.xml</literal>, again because the container isn't doing this "
+"stuff for you. The servlet listener boots Weld and controls it's interaction"
+" with requests."
 msgstr ""
 
 #. Tag: programlisting
@@ -398,7 +470,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When Weld boots, it places the <literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI for obtaining bean instances, in the ServletContext under a variable name equal to the fully-qualified interface name. You generally don't need to access this interface, but Weld makes use of it."
+msgid ""
+"When Weld boots, it places the "
+"<literal>javax.enterprise.inject.spi.BeanManager</literal>, the portable SPI"
+" for obtaining bean instances, in the ServletContext under a variable name "
+"equal to the fully-qualified interface name. You generally don't need to "
+"access this interface, but Weld makes use of it."
 msgstr ""
 
 #. Tag: title
@@ -408,7 +485,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This example shows how to use the Weld SE extension to in a Java SE based Swing application with no EJB or servlet dependencies. This example can be found in the <literal>examples/se/numberguess</literal> folder of the Weld distribution."
+msgid ""
+"This example shows how to use the Weld SE extension to in a Java SE based "
+"Swing application with no EJB or servlet dependencies. This example can be "
+"found in the <literal>examples/se/numberguess</literal> folder of the Weld "
+"distribution."
 msgstr ""
 
 #. Tag: title
@@ -418,22 +499,36 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To use the Weld SE numberguess example in Eclipse, you can open the example natively using the <ulink url=\"http://m2eclipse.sonatype.org/\">m2eclipse plugin</ulink>."
+msgid ""
+"To use the Weld SE numberguess example in Eclipse, you can open the example "
+"natively using the <ulink url=\"http://m2eclipse.sonatype.org/\">m2eclipse "
+"plugin</ulink>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you have m2eclipse installed, you can open any Maven project directly. From within Eclipse, select <emphasis>File -&gt; Import... -&gt; Maven Projects</emphasis>. Then, browse to the location of the Weld SE numberguess example. You should see that Eclipse recognizes the existence of a Maven project."
+msgid ""
+"If you have m2eclipse installed, you can open any Maven project directly. "
+"From within Eclipse, select <emphasis>File -&gt; Import... -&gt; Maven "
+"Projects</emphasis>. Then, browse to the location of the Weld SE numberguess"
+" example. You should see that Eclipse recognizes the existence of a Maven "
+"project."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This will create a project in your workspace called <literal>weld-se-numberguess</literal>."
+msgid ""
+"This will create a project in your workspace called <literal>weld-se-"
+"numberguess</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you are not using the m2eclipse plugin, you have to follow different steps to import the project. First, switch into the Weld SE numberguess example, then execute the Maven Eclipse plugin with the jetty profile activated, as follows:"
+msgid ""
+"If you are not using the m2eclipse plugin, you have to follow different "
+"steps to import the project. First, switch into the Weld SE numberguess "
+"example, then execute the Maven Eclipse plugin with the jetty profile "
+"activated, as follows:"
 msgstr ""
 
 #. Tag: para
@@ -448,12 +543,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Disable m2eclipse's <emphasis>Workspace Resolution</emphasis>, to make sure that Eclipse can find <literal>StartMain</literal>. Right click on the project, and choose <emphasis>Properties -&gt; Maven</emphasis>, and uncheck <emphasis>Resolve dependencies from Workspace projects</emphasis>:"
+msgid ""
+"Disable m2eclipse's <emphasis>Workspace Resolution</emphasis>, to make sure "
+"that Eclipse can find <literal>StartMain</literal>. Right click on the "
+"project, and choose <emphasis>Properties -&gt; Maven</emphasis>, and uncheck"
+" <emphasis>Resolve dependencies from Workspace projects</emphasis>:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Right click on the project, and choose <emphasis>Run As -&gt; Run As Application</emphasis>:"
+msgid ""
+"Right click on the project, and choose <emphasis>Run As -&gt; Run As "
+"Application</emphasis>:"
 msgstr ""
 
 #. Tag: para
@@ -478,12 +579,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Ensure that the <literal>JAVA_HOME</literal> environment variable is pointing to your JDK installation"
+msgid ""
+"Ensure that the <literal>JAVA_HOME</literal> environment variable is "
+"pointing to your JDK installation"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Open a command line or terminal window in the <literal>examples/se/numberguess</literal> directory"
+msgid ""
+"Open a command line or terminal window in the "
+"<literal>examples/se/numberguess</literal> directory"
 msgstr ""
 
 #. Tag: para
@@ -503,17 +608,25 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let's have a look at the significant code and configuration files that make up this example."
+msgid ""
+"Let's have a look at the significant code and configuration files that make "
+"up this example."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "As usual, there is an empty <literal>beans.xml</literal> file in the root package (<literal>src/main/resources/beans.xml</literal>), which marks this application as a CDI application."
+msgid ""
+"As usual, there is an empty <literal>beans.xml</literal> file in the root "
+"package (<literal>src/main/resources/beans.xml</literal>), which marks this "
+"application as a CDI application."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The game's main logic is located in <literal>Game.java</literal>. Here is the code for that class, highlighting the ways in which this differs from the web application version:"
+msgid ""
+"The game's main logic is located in <literal>Game.java</literal>. Here is "
+"the code for that class, highlighting the ways in which this differs from "
+"the web application version:"
 msgstr ""
 
 #. Tag: programlisting
@@ -607,17 +720,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The bean is application scoped rather than session scoped, since an instance of a Swing application typically represents a single 'session'."
+msgid ""
+"The bean is application scoped rather than session scoped, since an instance"
+" of a Swing application typically represents a single 'session'."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Notice that the bean is not named, since it doesn't need to be accessed via EL."
+msgid ""
+"Notice that the bean is not named, since it doesn't need to be accessed via "
+"EL."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In Java SE there is no JSF <literal>FacesContext</literal> to which messages can be added. Instead the <literal>Game</literal> class provides additional information about the state of the current game including:"
+msgid ""
+"In Java SE there is no JSF <literal>FacesContext</literal> to which messages"
+" can be added. Instead the <literal>Game</literal> class provides additional"
+" information about the state of the current game including:"
 msgstr ""
 
 #. Tag: para
@@ -632,22 +752,38 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This allows the Swing UI to query the state of the game, which it does indirectly via a class called <literal>MessageGenerator</literal>, in order to determine the appropriate messages to display to the user during the game."
+msgid ""
+"This allows the Swing UI to query the state of the game, which it does "
+"indirectly via a class called <literal>MessageGenerator</literal>, in order "
+"to determine the appropriate messages to display to the user during the "
+"game."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Since there is no dedicated validation phase, validation of user input is performed during the <literal>check()</literal> method."
+msgid ""
+"Since there is no dedicated validation phase, validation of user input is "
+"performed during the <literal>check()</literal> method."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>reset()</literal> method makes a call to the injected <literal>rndGenerator</literal> in order to get the random number at the start of each game. Note that it can't use <literal>Instance.get()</literal> like the JSF example does because there will not be any active contexts like there are during a JSF request."
+msgid ""
+"The <literal>reset()</literal> method makes a call to the injected "
+"<literal>rndGenerator</literal> in order to get the random number at the "
+"start of each game. Note that it can't use <literal>Instance.get()</literal>"
+" like the JSF example does because there will not be any active contexts "
+"like there are during a JSF request."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>MessageGenerator</literal> class depends on the current instance of <literal>Game</literal> and queries its state in order to determine the appropriate messages to provide as the prompt for the user's next guess and the response to the previous guess. The code for <literal>MessageGenerator</literal> is as follows:"
+msgid ""
+"The <literal>MessageGenerator</literal> class depends on the current "
+"instance of <literal>Game</literal> and queries its state in order to "
+"determine the appropriate messages to provide as the prompt for the user's "
+"next guess and the response to the previous guess. The code for "
+"<literal>MessageGenerator</literal> is as follows:"
 msgstr ""
 
 #. Tag: programlisting
@@ -708,22 +844,30 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The instance of <literal>Game</literal> for the application is injected here."
+msgid ""
+"The instance of <literal>Game</literal> for the application is injected "
+"here."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>Game</literal>'s state is interrogated to determine the appropriate challenge message ..."
+msgid ""
+"The <literal>Game</literal>'s state is interrogated to determine the "
+"appropriate challenge message ..."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "... and again to determine whether to congratulate, console or encourage the user to continue."
+msgid ""
+"... and again to determine whether to congratulate, console or encourage the"
+" user to continue."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Finally we come to the <literal>NumberGuessFrame</literal> class which provides the Swing front end to our guessing game."
+msgid ""
+"Finally we come to the <literal>NumberGuessFrame</literal> class which "
+"provides the Swing front end to our guessing game."
 msgstr ""
 
 #. Tag: programlisting
@@ -808,37 +952,57 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This application is started in the prescribed Weld SE way, by observing the <literal>ContainerInitialized</literal> event."
+msgid ""
+"This application is started in the prescribed Weld SE way, by observing the "
+"<literal>ContainerInitialized</literal> event."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This method initializes all of the Swing components. Note the use of the <literal>msgGenerator</literal> here."
+msgid ""
+"This method initializes all of the Swing components. Note the use of the "
+"<literal>msgGenerator</literal> here."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>guessButtonActionPerformed</literal> is called when the 'Guess' button is clicked, and it does the following:"
+msgid ""
+"<literal>guessButtonActionPerformed</literal> is called when the 'Guess' "
+"button is clicked, and it does the following:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Gets the guess entered by the user and sets it as the current guess in the <literal>Game</literal>"
+msgid ""
+"Gets the guess entered by the user and sets it as the current guess in the "
+"<literal>Game</literal>"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Calls <literal>game.check()</literal> to validate and perform one 'turn' of the game"
+msgid ""
+"Calls <literal>game.check()</literal> to validate and perform one 'turn' of "
+"the game"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Calls <literal>refreshUI</literal>. If there were validation errors with the input, this will have been captured during <literal>game.check()</literal> and as such will be reflected in the messages returned by <literal>MessageGenerator</literal> and subsequently presented to the user. If there are no validation errors then the user will be told to guess again (higher or lower) or that the game has ended either in a win (correct guess) or a loss (ran out of guesses)."
+msgid ""
+"Calls <literal>refreshUI</literal>. If there were validation errors with the"
+" input, this will have been captured during <literal>game.check()</literal> "
+"and as such will be reflected in the messages returned by "
+"<literal>MessageGenerator</literal> and subsequently presented to the user. "
+"If there are no validation errors then the user will be told to guess again "
+"(higher or lower) or that the game has ended either in a win (correct guess)"
+" or a loss (ran out of guesses)."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>replayBtnActionPerformed</literal> simply calls <literal>game.reset()</literal> to start a new game and refreshes the messages in the UI."
+msgid ""
+"<literal>replayBtnActionPerformed</literal> simply calls "
+"<literal>game.reset()</literal> to start a new game and refreshes the "
+"messages in the UI."
 msgstr ""
 
 #. Tag: title
@@ -848,22 +1012,34 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The translator example will take any sentences you enter, and translate them to Latin. (Well, not really, but the stub is there for you to implement, at least. Good luck!)"
+msgid ""
+"The translator example will take any sentences you enter, and translate them"
+" to Latin. (Well, not really, but the stub is there for you to implement, at"
+" least. Good luck!)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The translator example is built as an ear and contains EJBs. As a result, it's structure is more complex than the numberguess example."
+msgid ""
+"The translator example is built as an ear and contains EJBs. As a result, "
+"it's structure is more complex than the numberguess example."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a war, which will make this structure much simpler! Still, there are other advantages of using an ear."
+msgid ""
+"Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a war, which"
+" will make this structure much simpler! Still, there are other advantages of"
+" using an ear."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "First, let's take a look at the ear aggregator, which is located in the example's <literal>ear</literal> directory. Maven automatically generates the <literal>application.xml</literal> for us from this plugin configuration:"
+msgid ""
+"First, let's take a look at the ear aggregator, which is located in the "
+"example's <literal>ear</literal> directory. Maven automatically generates "
+"the <literal>application.xml</literal> for us from this plugin "
+"configuration:"
 msgstr ""
 
 #. Tag: programlisting
@@ -886,12 +1062,17 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This configuration overrides the web context path, resulting in this application URL: <ulink url=\"http://localhost:8080/weld-translator\">http://localhost:8080/weld-translator</ulink>."
+msgid ""
+"This configuration overrides the web context path, resulting in this "
+"application URL: <ulink url=\"http://localhost:8080/weld-"
+"translator\">http://localhost:8080/weld-translator</ulink>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you weren't using Maven to generate these files, you would need <literal>META-INF/application.xml</literal>:"
+msgid ""
+"If you weren't using Maven to generate these files, you would need <literal"
+">META-INF/application.xml</literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -921,12 +1102,20 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Next, lets look at the war, which is located in the example's <literal>war</literal> directory. Just as in the numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal> (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>."
+msgid ""
+"Next, lets look at the war, which is located in the example's "
+"<literal>war</literal> directory. Just as in the numberguess example, we "
+"have a <literal>faces-config.xml</literal> for JSF 2.0 and a "
+"<literal>web.xml</literal> (to activate JSF) under WEB-INF, both sourced "
+"from <literal>src/main/webapp/WEB-INF</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "More interesting is the JSF view used to translate text. Just as in the numberguess example we have a template, which surrounds the form (omitted here for brevity):"
+msgid ""
+"More interesting is the JSF view used to translate text. Just as in the "
+"numberguess example we have a template, which surrounds the form (omitted "
+"here for brevity):"
 msgstr ""
 
 #. Tag: programlisting
@@ -961,22 +1150,38 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The user can enter some text in the left-hand textarea, and hit the translate button to see the result to the right."
+msgid ""
+"The user can enter some text in the left-hand textarea, and hit the "
+"translate button to see the result to the right."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Finally, let's look at the EJB module, which is located in the example's <literal>ejb</literal> directory. In <literal>src/main/resources/META-INF</literal> there is just an empty <literal>beans.xml</literal>, used to mark the archive as containing beans."
+msgid ""
+"Finally, let's look at the EJB module, which is located in the example's "
+"<literal>ejb</literal> directory. In <literal>src/main/resources/META-"
+"INF</literal> there is just an empty <literal>beans.xml</literal>, used to "
+"mark the archive as containing beans."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We've saved the most interesting bit to last, the code! The project has two simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two session beans, <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting quite familiar with what a bean looks like by now, so we'll just highlight the most interesting bits here."
+msgid ""
+"We've saved the most interesting bit to last, the code! The project has two "
+"simple beans, <literal>SentenceParser</literal> and "
+"<literal>TextTranslator</literal> and two session beans, "
+"<literal>TranslatorControllerBean</literal> and "
+"<literal>SentenceTranslator</literal>. You should be getting quite familiar "
+"with what a bean looks like by now, so we'll just highlight the most "
+"interesting bits here."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> are dependent beans, and <literal>TextTranslator</literal> uses constructor injection:"
+msgid ""
+"Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal>"
+" are dependent beans, and <literal>TextTranslator</literal> uses constructor"
+" injection:"
 msgstr ""
 
 #. Tag: programlisting
@@ -1005,7 +1210,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>TextTranslator</literal> uses the simple bean (really just a plain Java class!) <literal>SentenceParser</literal> to parse the sentence and then calls on the stateless bean with the local business interface <literal>Translator</literal> to perform the translation. That's where the magic happens. Of course, we couldn't develop a full translator, but it's convincing enough to anyone who doesn't understand Latin!"
+msgid ""
+"<literal>TextTranslator</literal> uses the simple bean (really just a plain "
+"Java class!) <literal>SentenceParser</literal> to parse the sentence and "
+"then calls on the stateless bean with the local business interface "
+"<literal>Translator</literal> to perform the translation. That's where the "
+"magic happens. Of course, we couldn't develop a full translator, but it's "
+"convincing enough to anyone who doesn't understand Latin!"
 msgstr ""
 
 #. Tag: programlisting
@@ -1023,7 +1234,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Finally, there is UI orientated controller. This is a request scoped, named, stateful session bean, which injects the translator. It collects the text from the user and dispatches it to the translator. The bean also has getters and setters for all the fields on the page."
+msgid ""
+"Finally, there is UI orientated controller. This is a request scoped, named,"
+" stateful session bean, which injects the translator. It collects the text "
+"from the user and dispatches it to the translator. The bean also has getters"
+" and setters for all the fields on the page."
 msgstr ""
 
 #. Tag: programlisting
@@ -1063,5 +1278,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "That concludes our short tour of the Weld starter examples. For more information on Weld, please visit <ulink url=\"http://www.seamframework.org/Weld\">http://www.seamframework.org/Weld</ulink>."
+msgid ""
+"That concludes our short tour of the Weld starter examples. For more "
+"information on Weld, please visit <ulink "
+"url=\"http://www.seamframework.org/Weld\">http://www.seamframework.org/Weld</ulink>."
 msgstr ""

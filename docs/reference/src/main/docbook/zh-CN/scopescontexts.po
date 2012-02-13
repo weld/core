@@ -1,17 +1,15 @@
 # Language zh-CN translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-03-30 09:18+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
@@ -21,33 +19,56 @@ msgstr "范围和上下文"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "So far, we've seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a bean determines the lifecycle of instances of the bean. The scope also determines which clients refer to which instances of the bean. According to the CDI specification, a scope determines:"
-msgstr "目前为止，我们已经看到了几个 <emphasis>范围类型注释</emphasis>的例子。Web Bean的范围决定了Web Bean实例的生命周期。范围还决定了哪个客户端引用了哪个Web Bean实例。根据Web Beans规范，一个范围决定："
+msgid ""
+"So far, we've seen a few examples of <emphasis>scope type "
+"annotations</emphasis>. The scope of a bean determines the lifecycle of "
+"instances of the bean. The scope also determines which clients refer to "
+"which instances of the bean. According to the CDI specification, a scope "
+"determines:"
+msgstr ""
+"到目前为止，我们已经看到几个<emphasis>范围类型注解</emphasis>的例子。一个bean的范围决定了bean实例的生命周期。范围还决定了哪个客户端引用了哪个bean的实例。根据CDI规范，一个范围决定了："
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "When a new instance of any bean with that scope is created"
-msgstr "该范围的Web Bean的一个实例何时被创建"
+msgstr "何时创建该范围bean的一个实例"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "When an existing instance of any bean with that scope is destroyed"
-msgstr "该范围的Web Bean实例何时被销毁"
+msgstr "何时销毁该范围bean的一个已存在实例"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Which injected references refer to any instance of a bean with that scope"
-msgstr "注入的引用指向该范围的Web Bean的哪个实例"
+msgid ""
+"Which injected references refer to any instance of a bean with that scope"
+msgstr "注入的引用指向该范围的bean的哪个实例"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "For example, if we have a session-scoped bean, <literal>CurrentUser</literal>, all beans that are called in the context of the same <literal>HttpSession</literal> will see the same instance of <literal>CurrentUser</literal>. This instance will be automatically created the first time a <literal>CurrentUser</literal> is needed in that session, and automatically destroyed when the session ends."
-msgstr "例如，如果我们有一个会话范围的Web Bean：<literal>CurrentUser</literal>。那么在同一个<literal>HttpSession</literal>的上下文中调用的所有的Web Bean都将看到同一个<literal>CurrentUser</literal>实例。这个实例在会话第一次需要<literal>CurrentUser</literal>时被自动创建，在会话结束时被自动销毁。"
-
-#. Tag: para
-#, no-c-format
-msgid "JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass an injected instance to the JPA <literal>EntityManager</literal>."
+msgid ""
+"For example, if we have a session-scoped bean, "
+"<literal>CurrentUser</literal>, all beans that are called in the context of "
+"the same <literal>HttpSession</literal> will see the same instance of "
+"<literal>CurrentUser</literal>. This instance will be automatically created "
+"the first time a <literal>CurrentUser</literal> is needed in that session, "
+"and automatically destroyed when the session ends."
 msgstr ""
+"例如，如果我们有一个会话范围的bean，<literal>CurrentUser</literal>，那么在同一个<literal>HttpSession</literal>上下文中调用的所有bean都将看到同一个<literal>CurrentUser</literal>实例。实例在会话第一次需要<literal>CurrentUser</literal>时自动创建，在会话结束时自动销毁。"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"JPA entities aren't a great fit for this model. Entities have their whole "
+"own lifecycle and identity model which just doesn't map naturally to the "
+"model used in CDI. Therefore, we recommend against treating entities as CDI "
+"beans. You're certainly going to run into problems if you try to give an "
+"entity a scope other than the default scope <literal>@Dependent</literal>. "
+"The client proxy will get in the way if you try to pass an injected instance"
+" to the JPA <literal>EntityManager</literal>."
+msgstr ""
+"JPA实体是不用与这个模型。JPA实体有其自己的生命周期和认证模型，这个模型并不适用于CDI。因此，我们再次推荐你把JPA实体作为CDI "
+"bean处理。如果你想给JPA实体一个范围，除非你指定了默认的范围<literal>@Dependent</literal>，否则你必然遇到问题。客户端在尝试传递一个注入引用给JPA<literal>EntityManager</literal>时也将遇到问题。"
 
 #. Tag: title
 #, no-c-format
@@ -56,45 +77,50 @@ msgstr "范围类型"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI features an <emphasis>extensible context model</emphasis>. It's possible to define new scopes by creating a new scope type annotation:"
-msgstr "Web Bean有一个特性是<emphasis>可扩展的上下文模型</emphasis>。我们可以创建一个新的范围类型注释来定一个新的范围："
+msgid ""
+"CDI features an <emphasis>extensible context model</emphasis>. It's possible"
+" to define new scopes by creating a new scope type annotation:"
+msgstr "<emphasis>可扩展上下文模型</emphasis>是CDI的一个特性。我们可以创建一个新的范围类型来指定新的范围："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@ScopeType\n"
 "@Retention(RUNTIME)\n"
 "@Target({TYPE, METHOD})\n"
 "public @interface ClusterScoped {}"
 msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD})\n"
-"@ScopeType\n"
-"public @interface ClusterScoped {}]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only. You can expect an implementation of the business scope, for instance, in a future version of Seam."
-msgstr "当然，这是这项工作最简单的部分。为了让这个范围类型可以使用，我们还需要定义一个<literal>Context（上下文）</literal>对象来实现这个范围！实现上下文通常是一个非常具备挑战的技术任务，这常常只能由开发编程框架的专家完成。"
+msgid ""
+"Of course, that's the easy part of the job. For this scope type to be "
+"useful, we will also need to define a <literal>Context</literal> object that"
+" implements the scope! Implementing a <literal>Context</literal> is usually "
+"a very technical task, intended for framework development only. You can "
+"expect an implementation of the business scope, for instance, in a future "
+"version of Seam."
+msgstr ""
+"当然，这是这项工作最简单的部分。为了让这个范围可用，我们还要定义一个<literal>Context</literal>对象来实现这个范围！实现上下文通常是一项非常有挑战性的任务，其只用来框架开发。你可能在新版本的seam中期待一个新的业务范围。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We can apply a scope type annotation to a bean implementation class to specify the scope of the bean:"
-msgstr "我们可以在Web Bean实现类中应用范围类型注释来指定Web Bean的范围："
+msgid ""
+"We can apply a scope type annotation to a bean implementation class to "
+"specify the scope of the bean:"
+msgstr "我们可以在bean实现类中应用范围类型注释来指定bean的范围："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@ClusterScoped\n"
 "public class SecondLevelCache { ... }"
 msgstr ""
-"<![CDATA[@ClusterScoped\n"
-"public class SecondLevelCache { ... }]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "Usually, you'll use one of CDI's built-in scopes."
-msgstr "通常，你将会使用一个Web Bean内置的范围。"
+msgstr "通常，你将会使用bean内置的范围。"
 
 #. Tag: title
 #, no-c-format
@@ -104,36 +130,38 @@ msgstr "内置范围"
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "CDI defines four built-in scopes:"
-msgstr "Web Beans定义了四个内置范围："
+msgstr "CDI定义了四种内置范围："
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@RequestScoped</literal>"
-msgstr "<literal>@New</literal>注释"
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@SessionScoped</literal>"
-msgstr "<literal>@New</literal>注释"
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@ApplicationScoped</literal>"
-msgstr "@ApplicationScoped"
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "<literal>@ConversationScoped</literal>"
-msgstr "@ConversationScoped"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "For a web application that uses CDI:"
-msgstr "对于使用Web Beans的Web应用："
+msgstr "对于使用了CDI的Web应用："
 
 #. Tag: para
 #, no-c-format
-msgid "any servlet request has access to active request, session and application scopes, and, additionally"
+msgid ""
+"any servlet request has access to active request, session and application "
+"scopes, and, additionally"
 msgstr "任何Servlet请求可以访问激活的请求，会话和应用范围，并且"
 
 #. Tag: para
@@ -142,59 +170,75 @@ msgid "any JSF request has access to an active conversation scope."
 msgstr "任何JSF请求可以访问一个激活的对话范围"
 
 #. Tag: para
-#, no-c-format
-msgid "A CDI extension can implement support for the conversation scope in other web frameworks."
-msgstr ""
+#, fuzzy, no-c-format
+msgid ""
+"A CDI extension can implement support for the conversation scope in other "
+"web frameworks."
+msgstr "在另一个Web框架中，一个CDI扩展可以实现支持会话范围。"
 
 #. Tag: para
 #, no-c-format
 msgid "The request and application scopes are also active:"
-msgstr "在下列情况下请求和应用范围是激活的："
+msgstr "下列情况下，请求范围和应用范围是被激活的："
 
 #. Tag: para
 #, no-c-format
 msgid "during invocations of EJB remote methods,"
-msgstr "在EJB远程方法调用期间，"
+msgstr "在调用远程EJB方法期间"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "during invocations of EJB asynchronous methods,"
-msgstr "在EJB远程方法调用期间，"
+msgstr "在调用EJB异步方法期间"
 
 #. Tag: para
 #, no-c-format
 msgid "during EJB timeouts,"
-msgstr "在EJB超时期间，"
+msgstr "在EJB超时期间"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "during message delivery to a message-driven bean,"
-msgstr "在消息发送给消息驱动Bean的期间，"
+msgstr "在消息发往到一个消息驱动bean期间"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "during message delivery to a <literal>MessageListener</literal>, and"
-msgstr "在消息发送给消息驱动Bean的期间，"
+msgstr "在消息发送到一个<literal>MessageListener</literal>期间"
 
 #. Tag: para
 #, no-c-format
 msgid "during web service invocations."
-msgstr "在Web Service调用期间。"
+msgstr "在调用web服务期间"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If the application tries to invoke a bean with a scope that does not have an active context, a <literal>ContextNotActiveException</literal> is thrown by the container at runtime."
-msgstr "如果应用试图调用一个Web Bean，而对应的范围上下文没有处于激活状态时，Web Bean管理器在运行时将抛出一个<literal>ContextNotActiveException</literal>异常。"
+msgid ""
+"If the application tries to invoke a bean with a scope that does not have an"
+" active context, a <literal>ContextNotActiveException</literal> is thrown by"
+" the container at runtime."
+msgstr ""
+" "
+"如果应用试图调用一个bean，而对应的范围上下文没有处于激活的状态，容器在运行时将抛出<literal>ContextNotActiveException</literal>异常。"
 
 #. Tag: para
 #, no-c-format
-msgid "Managed beans with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal> must be serializable, since the container passivates the HTTP session from time to time."
+msgid ""
+"Managed beans with scope <literal>@SessionScoped</literal> or "
+"<literal>@ConversationScoped</literal> must be serializable, since the "
+"container passivates the HTTP session from time to time."
 msgstr ""
+" "
+"<literal>@SessionScoped</literal>或<literal>@ConversationScoped</literal>范围的托管bean必须被序列化，因为容器会时常的持久化HTTP"
+" session。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let's not waste time discussing them here. One of the scopes, however, is new."
-msgstr "这四个内置范围的其中三个对于每个Java EE程序员来说都非常熟悉，所以让我们别浪费时间来讨论他们。不过有一个范围是新的。"
+msgid ""
+"Three of the four built-in scopes should be extremely familiar to every Java"
+" EE developer, so let's not waste time discussing them here. One of the "
+"scopes, however, is new."
+msgstr " 四个范围中有三个是对于JavaEE开发人员非常熟悉的，所以我们不浪费时间讨论了。然而，对于那个不熟悉的范围，它是一个全新的范围。"
 
 #. Tag: title
 #, no-c-format
@@ -203,56 +247,84 @@ msgstr "对话范围"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The conversation scope is a bit like the traditional session scope in that it holds state associated with a user of the system, and spans multiple requests to the server. However, unlike the session scope, the conversation scope:"
-msgstr "Web Beans的对话(Conversation)范围有点类似与传统的会话范围(Session)，传统的会话范围常常用来存储和系统用户相关的状态，并且能够跨越多个请求。然而，对话范围还有很多地方和会话范围不一样："
+msgid ""
+"The conversation scope is a bit like the traditional session scope in that "
+"it holds state associated with a user of the system, and spans multiple "
+"requests to the server. However, unlike the session scope, the conversation "
+"scope:"
+msgstr ""
+" 对话范围有点像传统的会话范围，传统的会话范围常常用来储存其和系统用户的状态关系，并且能够跨越多个请求。但是，对话范围还是和会话范围有很多不同的："
 
 #. Tag: para
 #, no-c-format
 msgid "is demarcated explicitly by the application, and"
-msgstr "它通过应用显式地声明，并且"
+msgstr "它是通过应用来显示声明的"
 
 #. Tag: para
 #, no-c-format
-msgid "holds state associated with a particular web browser tab in a JSF application (browsers tend to share domain cookies, and hence the session cookie, between tabs, so this is not the case for the session scope)."
+msgid ""
+"holds state associated with a particular web browser tab in a JSF "
+"application (browsers tend to share domain cookies, and hence the session "
+"cookie, between tabs, so this is not the case for the session scope)."
+msgstr ""
+"在一个JSF应用中持有与一个特定的Web浏览标签页关联的状态（浏览器倾向于在两个标签页之间分享域名cookie和会话cookie，所以这种场景不是会话范围）。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A conversation represents a task&mdash;a unit of work from the point of view"
+" of the user. The conversation context holds state associated with what the "
+"user is currently working on. If the user is doing multiple things at the "
+"same time, there are multiple conversations."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A conversation represents a task&mdash;a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
-msgstr "从用户角度出发，一个对话代表一个任务，或者一个工作单元。用户当前工作相关的状态由对话上下文维护。如果用户同时处理多个事情，就会有多个对话与之对应。"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "The conversation context is active during any JSF request. Most conversations are destroyed at the end of the request. If a conversation should hold state across multiple requests, it must be explicitly promoted to a <emphasis>long-running conversation</emphasis>."
-msgstr "一个对话上下文在任何JSF请求中都是激活的。但是，大部分对话都在请求结束的时候被销毁了。如果一个对话需要跨越多个请求来维护状态的话，它必须显式地升级为<emphasis>长时对话</emphasis>。"
+msgid ""
+"The conversation context is active during any JSF request. Most "
+"conversations are destroyed at the end of the request. If a conversation "
+"should hold state across multiple requests, it must be explicitly promoted "
+"to a <emphasis>long-running conversation</emphasis>."
+msgstr ""
+"对话上下文在任何JSF请求期间都是激活的。大多数对话在请求结束时被销毁。如果一个对话持有的状态跨越了多个请求，那么它必须被显示的升级为<emphasis>长时间对话</emphasis>。"
 
 #. Tag: title
 #, no-c-format
 msgid "Conversation demarcation"
-msgstr "对话划分"
+msgstr "对话界限划分"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI provides a built-in bean for controlling the lifecycle of conversations in a JSF application. This bean may be obtained by injection:"
-msgstr "Web Beans提供了一个内置的Web Bean来在控制一个JSF应用中对话的生命周期。这个Web Bean可以通过注入来获得："
+msgid ""
+"CDI provides a built-in bean for controlling the lifecycle of conversations "
+"in a JSF application. This bean may be obtained by injection:"
+msgstr "CDI提供了一个内置的bean来控制JSF应用中对话的生命周期。这个bean可以通过注入获得："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "@Inject Conversation conversation;"
-msgstr "@Current Conversation conversation;"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To promote the conversation associated with the current request to a long-running conversation, call the <literal>begin()</literal> method from application code. To schedule the current long-running conversation context for destruction at the end of the current request, call <literal>end()</literal>."
-msgstr "将当前请求关联的对话升级为长时对话的方法是从应用代码中调用 <literal>begin()</literal>方法。将当前长时对话上下文在当前请求结束时销毁的方法是调用<literal>end()</literal>方法。"
+msgid ""
+"To promote the conversation associated with the current request to a long-"
+"running conversation, call the <literal>begin()</literal> method from "
+"application code. To schedule the current long-running conversation context "
+"for destruction at the end of the current request, call "
+"<literal>end()</literal>."
+msgstr ""
+"要把当前请求关联的对话升级为长时间对话，需要在应用的代码中调用<literal>begin()</literal>方法。要在请求结束时定时的销毁对话上下文，那么调用<literal>end()</literal>方法。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In the following example, a conversation-scoped bean controls the conversation with which it is associated:"
-msgstr "在下面的例子中，一个对话范围的Web Bean控制和它关联的对话："
+msgid ""
+"In the following example, a conversation-scoped bean controls the "
+"conversation with which it is associated:"
+msgstr "在下面的例子中，一个对话范围的bean控制着与之关联的对话:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@ConversationScoped @Stateful\n"
 "public class OrderBuilder {\n"
@@ -283,71 +355,60 @@ msgid ""
 "   public void destroy() {}\n"
 "}"
 msgstr ""
-"@ConversationScoped @Stateful\n"
-"public class OrderBuilder {\n"
-"\n"
-"    private Order order;\n"
-"    private @Current Conversation conversation;\n"
-"    private @PersistenceContext(type=EXTENDED) EntityManager em;\n"
-"    \n"
-"    @Produces public Order getOrder() {\n"
-"        return order;\n"
-"    }\n"
-"\n"
-"    public Order createOrder() {\n"
-"        order = new Order();\n"
-"        conversation.begin();\n"
-"        return order;\n"
-"    }\n"
-"    \n"
-"    public void addLineItem(Product product, int quantity) {\n"
-"        order.add( new LineItem(product, quantity) );\n"
-"    }\n"
-"\n"
-"    public void saveOrder(Order order) {\n"
-"        em.persist(order);\n"
-"        conversation.end();\n"
-"    }\n"
-"    \n"
-"    @Remove\n"
-"    public void destroy() {}\n"
-"    \n"
-"}"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This bean is able to control its own lifecycle through use of the <literal>Conversation</literal> API. But some other beans have a lifecycle which depends completely upon another object."
-msgstr "Web Bean可以通过<literal>Conversation</literal>接口控制自己的生命周期。但是其他一些Web Bean的生命周期完全依赖与其他对象。"
+msgid ""
+"This bean is able to control its own lifecycle through use of the "
+"<literal>Conversation</literal> API. But some other beans have a lifecycle "
+"which depends completely upon another object."
+msgstr ""
+"这个bean能够通过<literal>Conversation</literal> "
+"API控制自己的生命周期。但是一些其它bean的生命周期是完全依赖于其它对象的。"
 
 #. Tag: title
 #, no-c-format
 msgid "Conversation propagation"
-msgstr "对话的传播"
+msgstr "对话传播"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The conversation context automatically propagates with any JSF faces request (JSF form submission) or redirect. It does not automatically propagate with non-faces requests, for example, navigation via a link."
-msgstr "对话上下文在任何JSF faces请求中自动传播（JSF表单提交）。在非faces请求中，对话上下文将不会自动传播，例如通过一个链接来导航。"
+msgid ""
+"The conversation context automatically propagates with any JSF faces request"
+" (JSF form submission) or redirect. It does not automatically propagate with"
+" non-faces requests, for example, navigation via a link."
+msgstr ""
+"对话上下文在任何JSF faces请求（JSF表单提交）或从定向中是自动传播的。对于非face请求则不会自动传播，例如，通过一个链接来导航。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We can force the conversation to propagate with a non-faces request by including the unique identifier of the conversation as a request parameter. The CDI specification reserves the request parameter named <literal>cid</literal> for this use. The unique identifier of the conversation may be obtained from the <literal>Conversation</literal> object, which has the EL bean name <literal>conversation</literal>."
-msgstr "我们可以强迫在非faces请求中传播对话，方法是在请求参数中包含一个对话的唯一标识符即可。Web Beans规范为此保留了一个请求参数关键字<literal>cid</literal>。对话的唯一标识符可以通过<literal>Conversation</literal>对象获得，它拥有Web Beans的名字<literal>conversation</literal>。"
+msgid ""
+"We can force the conversation to propagate with a non-faces request by "
+"including the unique identifier of the conversation as a request parameter. "
+"The CDI specification reserves the request parameter named "
+"<literal>cid</literal> for this use. The unique identifier of the "
+"conversation may be obtained from the <literal>Conversation</literal> "
+"object, which has the EL bean name <literal>conversation</literal>."
+msgstr ""
+"我们可以强迫在非faces请求中传播对话，办法是在请求参数中包含一个对话的唯一标识。CDI规范为此保留了一个请求参数关键字<literal>cid</literal>。对话的唯一标示可以通过<literal>Conversation</literal>对象获得，<literal>Conversation</literal>对象拥有一个EL"
+" bean名称<literal>conversation</literal>。"
 
 #. Tag: para
 #, no-c-format
 msgid "Therefore, the following link propagates the conversation:"
-msgstr "因此，下面的链接能够传播对话："
+msgstr " 因此，下面的链接能够传播对话："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
-msgid "&lt;a href=\"/addProduct.jsp?cid=#{conversation.id}\"&gt;Add Product&lt;/a&gt;"
-msgstr "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]>"
+#, no-c-format
+msgid ""
+"&lt;a href=\"/addProduct.jsp?cid=#{conversation.id}\"&gt;Add "
+"Product&lt;/a&gt;"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
 msgid "It's probably better to use one of the link components in JSF 2:"
-msgstr ""
+msgstr "这可能对于JSF2的链接组件非常有用："
 
 #. Tag: programlisting
 #, no-c-format
@@ -359,8 +420,14 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The conversation context propagates across redirects, making it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a \"flash\" object. The container automatically adds the conversation id to the redirect URL as a request parameter."
-msgstr "Web Bean管理器也需要能够跨越任何重定向来传播对话，甚至这个对话没有被升级为长时对话。这样我们就能很容易实现常用的POST-then-redirect模式，而不需要构建一个脆弱的 \"闪存\"对象。在这个例子中，Web Bean管理器自动向重定向URL中添加一个请求参数。"
+msgid ""
+"The conversation context propagates across redirects, making it very easy to"
+" implement the common POST-then-redirect pattern, without resort to fragile "
+"constructs such as a \"flash\" object. The container automatically adds the "
+"conversation id to the redirect URL as a request parameter."
+msgstr ""
+" 对话上下文能够跨越重定向传播，这使得实现常用的POST-then-"
+"redirect模式非常容易，而不再需要创建一个脆弱的“闪存”对象。容器会自动的为重定向URL添加一个请求参数（对话id）。"
 
 #. Tag: title
 #, no-c-format
@@ -368,69 +435,122 @@ msgid "Conversation timeout"
 msgstr "对话超时"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "The container is permitted to destroy a conversation and all state held in its context at any time in order to conserve resources. A CDI implementation will normally do this on the basis of some kind of timeout&mdash;though this is not required by the specification. The timeout is the period of inactivity before the conversation is destroyed (as opposed to the amount of time the conversation is active)."
-msgstr "Web Bean管理器可以在任何时候销毁一个对话及其上下文中维护的所有状态，这样的设计可以降低资源的消耗。一个Web Bean管理器的实现将根据超时&#151;设置自动的完成上述任务，虽然这个特性在Web Bean规范中没有要求。超时指的是对话被销毁前的非激活时间。"
+#, no-c-format
+msgid ""
+"The container is permitted to destroy a conversation and all state held in "
+"its context at any time in order to conserve resources. A CDI implementation"
+" will normally do this on the basis of some kind of timeout&mdash;though "
+"this is not required by the specification. The timeout is the period of "
+"inactivity before the conversation is destroyed (as opposed to the amount of"
+" time the conversation is active)."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>Conversation</literal> object provides a method to set the timeout. This is a hint to the container, which is free to ignore the setting."
-msgstr "<literal>Conversation</literal>对象提供一个方法来设置超时。这个方法可以让Web Bean管理器忽略原来的配置。"
+msgid ""
+"The <literal>Conversation</literal> object provides a method to set the "
+"timeout. This is a hint to the container, which is free to ignore the "
+"setting."
+msgstr "<literal>Conversation</literal>对象提供了一个方法来设置超时。这可以让容器忽略原来的配置。"
 
 #. Tag: programlisting
 #, no-c-format
 msgid "conversation.setTimeout(timeoutInMillis);"
-msgstr "conversation.setTimeout(timeoutInMillis);"
+msgstr ""
 
 #. Tag: title
 #, fuzzy, no-c-format
 msgid "The singleton pseudo-scope"
-msgstr "依赖的伪范围"
+msgstr "单例伪范围"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In addition to the four built-in scopes, CDI also supports two <emphasis>pseudo-scopes</emphasis>. The first is the <emphasis>singleton pseudo-scope</emphasis>, which we specify using the annotation <literal>@Singleton</literal>."
-msgstr "除了内置的四个范围，Web Beans还提供了一个<emphasis>依赖的伪范围</emphasis>。这个范围是没有显式设置范围类型的Web Bean的默认范围。"
+msgid ""
+"In addition to the four built-in scopes, CDI also supports two <emphasis"
+">pseudo-scopes</emphasis>. The first is the <emphasis>singleton pseudo-"
+"scope</emphasis>, which we specify using the annotation "
+"<literal>@Singleton</literal>."
+msgstr ""
+"除了内置的范围，CDI还提供了两个<emphasis>伪范围</emphasis>。第一个是<emphasis>单例伪范围</emphasis>，使用<literal>@Singleton</literal>注解指定。"
 
 #. Tag: para
 #, no-c-format
-msgid "Unlike the other scopes, which belong to the package <literal>javax.enterprise.context</literal>, the <literal>@Singleton</literal> annotation is defined in the package <literal>javax.inject</literal>."
+msgid ""
+"Unlike the other scopes, which belong to the package "
+"<literal>javax.enterprise.context</literal>, the "
+"<literal>@Singleton</literal> annotation is defined in the package "
+"<literal>javax.inject</literal>."
 msgstr ""
+"与定义在<literal>javax.enterprise.context</literal>包内的其它范围不同，<literal>@Singleton</literal>注解定义在<literal>javax.inject</literal>包内。"
 
 #. Tag: para
 #, no-c-format
-msgid "You can guess what \"singleton\" means here. It means a bean that is instantiated once. Unfortunately, there's a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don't have a proxy object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, or any stateful session bean."
+msgid ""
+"You can guess what \"singleton\" means here. It means a bean that is "
+"instantiated once. Unfortunately, there's a little problem with this pseudo-"
+"scope. Beans with scope <literal>@Singleton</literal> don't have a proxy "
+"object. Clients hold a direct reference to the singleton instance. So we "
+"need to consider the case of a client that can be serialized, for example, "
+"any bean with scope <literal>@SessionScoped</literal> or "
+"<literal>@ConversationScoped</literal>, any dependent object of a bean with "
+"scope <literal>@SessionScoped</literal> or "
+"<literal>@ConversationScoped</literal>, or any stateful session bean."
 msgstr ""
+"你能够猜到“单例”所代表的意思，它表示bean只能被实例化一次。很不幸，对于伪范围有一些小问题，<literal>@Singleton</literal>范围的bean不能有代理对象，客户端直接引用单例实例。所以我们需要考虑客户端能够被序列化的场景，例如，任何<literal>@SessionScoped</literal>或"
+" "
+"<literal>@ConversationScoped</literal>范围的bean，或者任何<literal>@SessionScoped</literal>或"
+" <literal>@ConversationScoped</literal>范围bean的依赖对象，以及任何有状态会话bean。"
 
 #. Tag: para
 #, no-c-format
-msgid "Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, we probably don't mind too much if it gets duplicated via serialization. However, that makes it no stop being a true singleton, and we may as well have just declared it with the default scope."
+msgid ""
+"Now, if the singleton instance is a simple, immutable, serializable object "
+"like a string, a number or a date, we probably don't mind too much if it "
+"gets duplicated via serialization. However, that makes it no stop being a "
+"true singleton, and we may as well have just declared it with the default "
+"scope."
 msgstr ""
+"如果单例实例是一个像stirng、number或date这样简单、不可变、可序列化的对象，那么我们可能不必介意它通过序列化被复制。否则的话，与其让它成为单例范围还不如用默认范围声明它。"
 
 #. Tag: para
 #, no-c-format
-msgid "There are several ways to ensure that the singleton bean remains a singleton when its client gets serialized:"
-msgstr ""
+msgid ""
+"There are several ways to ensure that the singleton bean remains a singleton"
+" when its client gets serialized:"
+msgstr "有几种方法确保在客户端实例化时单例bean仍然是单例的："
 
 #. Tag: para
 #, no-c-format
-msgid "have the singleton bean implement <literal>writeResolve()</literal> and <literal>readReplace()</literal> (as defined by the Java serialization specification),"
+msgid ""
+"have the singleton bean implement <literal>writeResolve()</literal> and "
+"<literal>readReplace()</literal> (as defined by the Java serialization "
+"specification),"
 msgstr ""
+"单例bean实现了<literal>writeResolve()</literal>和<literal>readReplace()</literal>方法（Java序列化规范所定义）。"
 
 #. Tag: para
 #, no-c-format
-msgid "make sure the client keeps only a transient reference to the singleton bean, or"
-msgstr ""
+msgid ""
+"make sure the client keeps only a transient reference to the singleton bean,"
+" or"
+msgstr "确保客户端持有一个单例bean的短暂引用。"
 
 #. Tag: para
 #, no-c-format
-msgid "give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is the bean type of the singleton bean."
+msgid ""
+"give the client a reference of type <literal>Instance&lt;X&gt;</literal> "
+"where <literal>X</literal> is the bean type of the singleton bean."
 msgstr ""
+"给客户端一个<literal>Instance&lt;X&gt;</literal>类型的引用，<literal>X</literal>是单例bean的类型。"
 
 #. Tag: para
 #, no-c-format
-msgid "A fourth, better solution is to instead use <literal>@ApplicationScoped</literal>, allowing the container to proxy the bean, and take care of serialization problems automatically."
+msgid ""
+"A fourth, better solution is to instead use "
+"<literal>@ApplicationScoped</literal>, allowing the container to proxy the "
+"bean, and take care of serialization problems automatically."
 msgstr ""
+"第四个比较好的方案就是使用<literal>@ApplicationScoped</literal>范围代替，允许容器代理bean，这能自动解决序列化问题。"
 
 #. Tag: title
 #, no-c-format
@@ -439,125 +559,144 @@ msgstr "依赖的伪范围"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Finally, CDI features the so-called <emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a bean which does not explicitly declare a scope type."
-msgstr "除了内置的四个范围，Web Beans还提供了一个<emphasis>依赖的伪范围</emphasis>。这个范围是没有显式设置范围类型的Web Bean的默认范围。"
+msgid ""
+"Finally, CDI features the so-called <emphasis>dependent pseudo-"
+"scope</emphasis>. This is the default scope for a bean which does not "
+"explicitly declare a scope type."
+msgstr "最后，CDI提供了一个特性称为<emphasis>依赖的伪范围</emphasis>。这作为那些没有明确声明范围类型bean的默认范围。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "For example, this bean has the scope type <literal>@Dependent</literal>:"
-msgstr "例如，这个Web Bean有一个范围类型<literal>@Dependent</literal>:"
+msgid ""
+"For example, this bean has the scope type <literal>@Dependent</literal>:"
+msgstr " 例如，这个bean有一个范围类型<literal>@Dependent</literal>："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "public class Calculator { ... }"
-msgstr "<![CDATA[public class Calculator { ... }]]>"
-
-#. Tag: para
-#, no-c-format
-msgid "An instance of a dependent bean is never shared between different clients or different injection points. It is strictly a <emphasis>dependent object</emphasis> of some other object. It is instantiated when the object it belongs to is created, and destroyed when the object it belongs to is destroyed."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If a Unified EL expression refers to a dependent bean by EL name, an instance of the bean is instantiated every time the expression is evaluated. The instance is not reused during any other expression evaluation."
+msgid ""
+"An instance of a dependent bean is never shared between different clients or"
+" different injection points. It is strictly a <emphasis>dependent "
+"object</emphasis> of some other object. It is instantiated when the object "
+"it belongs to is created, and destroyed when the object it belongs to is "
+"destroyed."
 msgstr ""
+"依赖bean的一个实例不能够在不同的客户端或不同的注入点之间共享的。这对于其它对象是一个严格的<emphasis>依赖对象</emphasis>。bean创建的时候都会创建一个依赖bean的实例，并且bean被销毁的时候也都会销毁依赖对象。"
 
 #. Tag: para
 #, no-c-format
-msgid "If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be lost immediately. That's why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page, inject it into a different bean, and expose it to EL via a getter method."
+msgid ""
+"If a Unified EL expression refers to a dependent bean by EL name, an "
+"instance of the bean is instantiated every time the expression is evaluated."
+" The instance is not reused during any other expression evaluation."
 msgstr ""
+"如果一个统一EL表达式引用了一个依赖bean（使用bean的EL名字），那么每次表达式被执行就会创建这个bean的实例。在表达式再次执行时实例不会被重用。"
 
 #. Tag: para
 #, no-c-format
-msgid "Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference to its instance."
+msgid ""
+"If you need to access a bean directly by EL name in a JSF page, you probably"
+" need to give it a scope other than <literal>@Dependent</literal>. "
+"Otherwise, any value that gets set to the bean by a JSF input will be lost "
+"immediately. That's why CDI features the <literal>@Model</literal> "
+"stereotype; it lets you give a bean a name, and set its scope to "
+"<literal>@RequestScoped</literal> in one stroke. If you need to access a "
+"bean that really <emphasis>has</emphasis> to have the scope "
+"<literal>@Dependent</literal> from a JSF page, inject it into a different "
+"bean, and expose it to EL via a getter method."
 msgstr ""
+"如果你需要在JSF页面中通过EL名字访问一个bean，你可能需要给bean一个不同于<literal>@Dependent</literal>的范围。否则，任何被JSF"
+" "
+"input设置的值都会立即丢失。这也是为什么CDI提供立体类型的注解<literal>@Model</literal>；其让你给bean一个名字，并一举为其设置了<literal>@RequestScoped</literal>范围。如果你真的<emphasis>不得不</emphasis>在JSF页面中访问一个<literal>@Dependent</literal>范围的bean，那么请先把bean注入到另一个bean中，然后通过getter方法来访问。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Beans with scope <literal>@Dependent</literal> don't need a proxy object. "
+"The client holds a direct reference to its instance."
+msgstr "<literal>@Dependent</literal>范围的bean不需要代理对象。客户端直接持有bean实例的引用。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI makes it easy to obtain a dependent instance of a bean, even if the bean is already declared as a bean with some other scope type."
-msgstr "Web Bean能够让我们轻松获得一个Java类或者EJB Bean的依赖实例，甚至这个类或者EJB Bean已经被声明为一个其他范围的Web Bean也没问题。"
+msgid ""
+"CDI makes it easy to obtain a dependent instance of a bean, even if the bean"
+" is already declared as a bean with some other scope type."
+msgstr "CDI使得获取bean实例的依赖非常容易，甚至bean已经被声明为其它范围类型。"
 
 #. Tag: title
 #, fuzzy, no-c-format
 msgid "The <literal>@New</literal> qualifier"
-msgstr "<literal>@New</literal>注释"
+msgstr "<literal>@New</literal>绑定类型"
 
 #. Tag: para
 #, no-c-format
-msgid "The built-in qualifier <literal>@New</literal> allows us to obtain a dependent object of a specified class."
-msgstr ""
+msgid ""
+"The built-in qualifier <literal>@New</literal> allows us to obtain a "
+"dependent object of a specified class."
+msgstr "内置的绑定类型注解<literal>@New</literal>允许我们获取一个指定类的依赖对象。"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "@Inject @New Calculator calculator;"
-msgstr "<![CDATA[@New Calculator calculator;]]>"
-
-#. Tag: para
-#, no-c-format
-msgid "The class must be a valid managed bean or session bean, but need not be an enabled bean."
 msgstr ""
 
 #. Tag: para
+#, no-c-format
+msgid ""
+"The class must be a valid managed bean or session bean, but need not be an "
+"enabled bean."
+msgstr " 这个类必须是一个有效托管bean或会话bean，但不必是一个激活的bean。"
+
+#. Tag: para
 #, fuzzy, no-c-format
-msgid "This works even if <literal>Calculator</literal> is <emphasis>already</emphasis> declared with a different scope type, for example:"
-msgstr "甚至在<literal>Calculator</literal><emphasis>已经</emphasis>通过不同的范围类型声明过的情况下也是如此。例如："
+msgid ""
+"This works even if <literal>Calculator</literal> is "
+"<emphasis>already</emphasis> declared with a different scope type, for "
+"example:"
+msgstr ""
+"这甚至在<literal>Calculator</literal><emphasis>已经</emphasis>被声明为不同的范围类型时仍然有效，例如："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@ConversationScoped\n"
 "public class Calculator { ... }"
 msgstr ""
-"<![CDATA[@ConversationScoped\n"
-"public class Calculator { ... }]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "So the following injected attributes each get a different instance of <literal>Calculator</literal>:"
-msgstr "所以下面注入的属性，每个都获得一个不同的 <literal>Calculator</literal>实例："
+msgid ""
+"So the following injected attributes each get a different instance of "
+"<literal>Calculator</literal>:"
+msgstr "因此下面注入的每个属性将获得不同类型的<literal>Calculator</literal>实例："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public class PaymentCalc {\n"
 "   @Inject Calculator calculator;\n"
 "   @Inject @New Calculator newCalculator;\n"
 "}"
 msgstr ""
-"<![CDATA[public class PaymentCalc {\n"
-"\n"
-"    @Current Calculator calculator;\n"
-"    @New Calculator newCalculator;\n"
-"\n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>calculator</literal> field has a conversation-scoped instance of <literal>Calculator</literal> injected. The <literal>newCalculator</literal> field has a new instance of <literal>Calculator</literal> injected, with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
-msgstr "<literal>calculator</literal>域有一个对话范围的<literal>Calculator</literal>实例注入。<literal>newCalculator</literal>域有一个新的<literal>Calculator</literal>实例注入，这个实例的生命周期绑定在其拥有者<literal>PaymentCalc</literal>类上。"
+msgid ""
+"The <literal>calculator</literal> field has a conversation-scoped instance "
+"of <literal>Calculator</literal> injected. The "
+"<literal>newCalculator</literal> field has a new instance of "
+"<literal>Calculator</literal> injected, with a lifecycle that is bound to "
+"the owning <literal>PaymentCalc</literal>."
+msgstr ""
+"变量域<literal>calculator</literal>被注入了<literal>Calculator</literal>对话范围的实例。而<literal>newCalculator</literal>变量域被注入了一个新的<literal>Calculator</literal>实例，其生命周期被绑定在<literal>PaymentCalc</literal>自身上。"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "This feature is particularly useful with producer methods, as we'll see in <xref linkend=\"producermethods\" />."
-msgstr "这个特性对于生产者方法来说特别有用，我们将在下一章看到。"
-
-#~ msgid "@RequestScoped"
-#~ msgstr "@RequestScoped"
-
-#~ msgid "@SessionScoped"
-#~ msgstr "@SessionScoped"
-
-#~ msgid "holds state associated with a particular web browser tab in a JSF application."
-#~ msgstr "在一个JSF应用中持有与一个特定的Web浏览标签页关联的状态。"
-
-#~ msgid "When an injection point of a Web Bean resolves to a dependent Web Bean, a new instance of the dependent Web Bean is created every time the first Web Bean is instantiated. Instances of dependent Web Beans are never shared between different Web Beans or different injection points. They are <emphasis>dependent objects</emphasis> of some other Web Bean instance."
-#~ msgstr "当一个注入点被解析为一个依赖的Web Bean之后，每当第一个Web Bean被初始化时，都会创建一个依赖的Web Bean实例。不同的Web Beans或者不同的注入点的依赖的Web Beans的实例都不会被共享。它们是其它Web Bean实例的<emphasis>依赖的对象</emphasis>。"
-
-#~ msgid "Dependent Web Bean instances are destroyed when the instance they depend upon is destroyed."
-#~ msgstr "依赖的Web Bean实例在它们所依赖对象实例销毁的时候被销毁。"
-
-#~ msgid "The built-in <literal>@New</literal> binding annotation allows <emphasis>implicit</emphasis> definition of a dependent Web Bean at an injection point. Suppose we declare the following injected field:"
-#~ msgstr "内置的<literal>@New</literal>绑定注释允许在注入点<emphasis>隐式</emphasis>地定义一个依赖的Web Bean。假设我们需要声明下面的注入域："
-
-#~ msgid "Then a Web Bean with scope <literal>@Dependent</literal>, binding type <literal>@New</literal>, API type <literal>Calculator</literal>, implementation class <literal>Calculator</literal> and deployment type <literal>@Standard</literal> is implicitly defined."
-#~ msgstr "这个Web Bean被隐式地定义为范围为<literal>@Dependent</literal>，绑定类型为<literal>@New</literal>，API类型为<literal>Calculator</literal>，实现了<literal>Calculator</literal>类，部署类型为<literal>@Standard</literal>。"
+#, no-c-format
+msgid ""
+"This feature is particularly useful with producer methods, as we'll see in "
+"<xref linkend=\"producermethods\" />."
+msgstr ""

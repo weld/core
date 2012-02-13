@@ -1,35 +1,21 @@
 # translation of intro.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: intro\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-29 14:49+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
-"Language: ko\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
 
 #. Tag: title
 #, no-c-format
@@ -37,9 +23,14 @@ msgid "Introduction"
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "So you're keen to get started writing your first bean? Or perhaps you're skeptical, wondering what kinds of hoops the CDI specification will make you jump through! The good news is that you've probably already written and used hundreds, perhaps thousands of beans. CDI just makes it easier to actually use them to build an application!"
-msgstr "첫 번째 Web Bean 작성을 시작해 보시겠습니까? 혹은 어떤 종류의 Web Beans 사양을 통해 도약하게 될 지를 의아해 하거나 의심하고 계실 수 도 있겠군요! 한 가지 좋은 정보는 여러분은 이미 수백개의 혹은 수천개의 Web Beans을 이미 작성 및 사용하고 계셨다는 것입니다. 아마 여러분은 처음으로 작성하신 Web Beans를 기억하지 못하고 계실 수 도 있습니다.  "
+#, no-c-format
+msgid ""
+"So you're keen to get started writing your first bean? Or perhaps you're "
+"skeptical, wondering what kinds of hoops the CDI specification will make you"
+" jump through! The good news is that you've probably already written and "
+"used hundreds, perhaps thousands of beans. CDI just makes it easier to "
+"actually use them to build an application!"
+msgstr ""
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -48,27 +39,61 @@ msgstr "Web Bean은 무엇인가요?  "
 
 #. Tag: para
 #, no-c-format
-msgid "A bean is exactly what you think it is. Only now, it has a true identity in the container environment."
+msgid ""
+"A bean is exactly what you think it is. Only now, it has a true identity in "
+"the container environment."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Prior to Java EE 6, there was no clear definition of the term \"bean\" in the Java EE platform. Of course, we've been calling Java classes used in web and enterprise applications \"beans\" for years. There were even a couple of different kinds of things called \"beans\" in EE specifications, including EJB beans and JSF managed beans. Meanwhile, other third-party frameworks such as Spring and Seam introduced their own ideas of what it meant to be a \"bean\". What we've been missing is a common definition."
+msgid ""
+"Prior to Java EE 6, there was no clear definition of the term \"bean\" in "
+"the Java EE platform. Of course, we've been calling Java classes used in web"
+" and enterprise applications \"beans\" for years. There were even a couple "
+"of different kinds of things called \"beans\" in EE specifications, "
+"including EJB beans and JSF managed beans. Meanwhile, other third-party "
+"frameworks such as Spring and Seam introduced their own ideas of what it "
+"meant to be a \"bean\". What we've been missing is a common definition."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Java EE 6 finally lays down that common definition in the Managed Beans specification. Managed Beans are defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle callbacks and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, <emphasis>at last</emphasis>, there's a uniform concept of a bean and a lightweight component model that's aligned across the Java EE platform."
+msgid ""
+"Java EE 6 finally lays down that common definition in the Managed Beans "
+"specification. Managed Beans are defined as container-managed objects with "
+"minimal programming restrictions, otherwise known by the acronym POJO (Plain"
+" Old Java Object). They support a small set of basic services, such as "
+"resource injection, lifecycle callbacks and interceptors. Companion "
+"specifications, such as EJB and CDI, build on this basic model. But, "
+"<emphasis>at last</emphasis>, there's a uniform concept of a bean and a "
+"lightweight component model that's aligned across the Java EE platform."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "With very few exceptions, almost every concrete Java class that has a constructor with no parameters (or a constructor designated with the annotation <literal>@Inject</literal>) is a bean. This includes every JavaBean and every EJB session bean. If you've already got some JavaBeans or session beans lying around, they're already beans&mdash;you won't need any additional special metadata. There's just little one thing you need to do before you can start injecting them into stuff: you need to put them in an archive (a jar, or a Java EE module such as a war or EJB jar) that contains a special marker file: <literal>META-INF/beans.xml</literal>."
+msgid ""
+"With very few exceptions, almost every concrete Java class that has a "
+"constructor with no parameters (or a constructor designated with the "
+"annotation <literal>@Inject</literal>) is a bean. This includes every "
+"JavaBean and every EJB session bean. If you've already got some JavaBeans or"
+" session beans lying around, they're already beans&mdash;you won't need any "
+"additional special metadata. There's just little one thing you need to do "
+"before you can start injecting them into stuff: you need to put them in an "
+"archive (a jar, or a Java EE module such as a war or EJB jar) that contains "
+"a special marker file: <literal>META-INF/beans.xml</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The JavaBeans and EJBs you've been writing every day, up until now, have not been able to take advantage of the new services defined by the CDI specification. But you'll be able to use every one of them with CDI&mdash;allowing the container to create and destroy instances of your beans and associate them with a designated context, injecting them into other beans, using them in EL expressions, specializing them with qualifier annotations, even adding interceptors and decorators to them&mdash;without modifying your existing code. At most, you'll need to add some annotations."
+msgid ""
+"The JavaBeans and EJBs you've been writing every day, up until now, have not"
+" been able to take advantage of the new services defined by the CDI "
+"specification. But you'll be able to use every one of them with "
+"CDI&mdash;allowing the container to create and destroy instances of your "
+"beans and associate them with a designated context, injecting them into "
+"other beans, using them in EL expressions, specializing them with qualifier "
+"annotations, even adding interceptors and decorators to them&mdash;without "
+"modifying your existing code. At most, you'll need to add some annotations."
 msgstr ""
 
 #. Tag: para
@@ -82,25 +107,29 @@ msgid "Getting our feet wet"
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Suppose that we have two existing Java classes that we've been using for years in various applications. The first class parses a string into a list of sentences:"
-msgstr "다양한 애플리케이션에서 오랫동안 사용해 온 두 개의 Java 클래스를 갖고 있다고 가정합시다. 첫 번째 클래스는 문자열을 문장 목록으로 구문 분석합니다:    "
+#, no-c-format
+msgid ""
+"Suppose that we have two existing Java classes that we've been using for "
+"years in various applications. The first class parses a string into a list "
+"of sentences:"
+msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public class SentenceParser {\n"
 "   public List&lt;String&gt; parse(String text) { ... }\n"
 "}"
 msgstr ""
-"<![CDATA[public class SentenceParser {\n"
-"    public List<String> parse(String text) { ... }\n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "The second existing class is a stateless session bean front-end for an external system that is able to translate sentences from one language to another:"
-msgstr "두 번째 클래스는 하나의 언어에서 다른 언어로 문장을 번역할 수 있는 외부 시스템에 대한 무상태 세션 빈 프론트엔드입니다:   "
+msgid ""
+"The second existing class is a stateless session bean front-end for an "
+"external system that is able to translate sentences from one language to "
+"another:"
+msgstr ""
+"두 번째 클래스는 하나의 언어에서 다른 언어로 문장을 번역할 수 있는 외부 시스템에 대한 무상태 세션 빈 프론트엔드입니다:   "
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -134,9 +163,11 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Unfortunately, we don't have a class that translates whole text documents. So let's write a bean for this job:"
-msgstr "불행하게도 전체 텍스트 문서를 번역하는 기존 클래스가 없으므로, 이러한 작업을 실행하는 Web Bean을 작성합시다:  "
+#, no-c-format
+msgid ""
+"Unfortunately, we don't have a class that translates whole text documents. "
+"So let's write a bean for this job:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -183,22 +214,42 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "But wait! <literal>TextTranslator</literal> does not have a constructor with no parameters! Is it still a bean? If you remember, a class that does not have a constructor with no parameters can still be a bean if it has a constructor annotated <literal>@Inject</literal>."
-msgstr "하지만 잠시 기다려주십시오: <literal>TextTranslator</literal>는 매개 변수 없는 생성자를 갖지 않습니다! 그래도 이것이 Web Bean입니까? 클래스가 <literal>@Initializer</literal>라고 어노테이션된 생성자를 갖고 있을 경우 매개 변수 없이 생성자를 갖지 않는 클래스는 Web Bean이 될 수 있습니다.  "
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "As you've guessed, the <literal>@Inject</literal> annotation has something to do with dependency injection! <literal>@Inject</literal> may be applied to a constructor or method of a bean, and tells the container to call that constructor or method when instantiating the bean. The container will inject other beans into the parameters of the constructor or method."
-msgstr "예상하셨듯이, <literal>@Initializer</literal> 어노테이션은 의존성 삽입을 사용하여 실행하기 위한 무엇인가를 갖고 있습니다! <literal>@Initializer</literal>는 생성자 또는 Web Bean 방식에 적용될 수 있으며, Web Bean을 인스턴스화할 때 Web Bean 관리자에게 생성자 또는 Web Bean 방식을 호출할 것을 지시합니다. Web Bean 관리자는 기타 다른 Web Beans를 생성자 또는 방식의 매개 변수에 삽입하게 됩니다.  "
+msgid ""
+"But wait! <literal>TextTranslator</literal> does not have a constructor with"
+" no parameters! Is it still a bean? If you remember, a class that does not "
+"have a constructor with no parameters can still be a bean if it has a "
+"constructor annotated <literal>@Inject</literal>."
+msgstr ""
+"하지만 잠시 기다려주십시오: <literal>TextTranslator</literal>는 매개 변수 없는 생성자를 갖지 않습니다! "
+"그래도 이것이 Web Bean입니까? 클래스가 <literal>@Initializer</literal>라고 어노테이션된 생성자를 갖고 "
+"있을 경우 매개 변수 없이 생성자를 갖지 않는 클래스는 Web Bean이 될 수 있습니다.  "
 
 #. Tag: para
 #, no-c-format
-msgid "We may obtain an instance of <literal>TextTranslator</literal> by injecting it into a constructor, method or field of a bean, or a field or method of a Java EE component class such as a servlet. The container chooses the object to be injected based on the type of the injection point, not the name of the field, method or parameter."
+msgid ""
+"As you've guessed, the <literal>@Inject</literal> annotation has something "
+"to do with dependency injection! <literal>@Inject</literal> may be applied "
+"to a constructor or method of a bean, and tells the container to call that "
+"constructor or method when instantiating the bean. The container will inject"
+" other beans into the parameters of the constructor or method."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let's create a UI controller bean that uses field injection to obtain an instance of the <literal>TextTranslator</literal>, translating the text entered by a user:"
+msgid ""
+"We may obtain an instance of <literal>TextTranslator</literal> by injecting "
+"it into a constructor, method or field of a bean, or a field or method of a "
+"Java EE component class such as a servlet. The container chooses the object "
+"to be injected based on the type of the injection point, not the name of the"
+" field, method or parameter."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Let's create a UI controller bean that uses field injection to obtain an "
+"instance of the <literal>TextTranslator</literal>, translating the text "
+"entered by a user:"
 msgstr ""
 
 #. Tag: programlisting
@@ -237,16 +288,26 @@ msgstr "여기서 <literal>Translator</literal>는 로컬 인터페이스입니�
 
 #. Tag: para
 #, no-c-format
-msgid "Notice the controller bean is request-scoped and named. Since this combination is so common in web applications, there's a built-in annotation for it in CDI that we could have used as a shorthand. When the (stereotype) annotation <literal>@Model</literal> is declared on a class, it creates a request-scoped and named bean."
+msgid ""
+"Notice the controller bean is request-scoped and named. Since this "
+"combination is so common in web applications, there's a built-in annotation "
+"for it in CDI that we could have used as a shorthand. When the (stereotype) "
+"annotation <literal>@Model</literal> is declared on a class, it creates a "
+"request-scoped and named bean."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Alternatively, we may obtain an instance of <literal>TextTranslator</literal> programmatically from an injected instance of <literal>Instance</literal>, parameterized with the bean type:"
-msgstr "인스턴스를 Web Bean, Servlet 또는 EJB로 삽입하여 <literal>TextTranslator</literal> 인스턴스를 얻을 수 있습니다:  "
+msgid ""
+"Alternatively, we may obtain an instance of "
+"<literal>TextTranslator</literal> programmatically from an injected instance"
+" of <literal>Instance</literal>, parameterized with the bean type:"
+msgstr ""
+"인스턴스를 Web Bean, Servlet 또는 EJB로 삽입하여 <literal>TextTranslator</literal> 인스턴스를"
+" 얻을 수 있습니다:  "
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Inject Instance&lt;TextTranslator&gt; textTranslatorInstance;\n"
 "...\n"
@@ -254,448 +315,35 @@ msgid ""
 "   textTranslatorInstance.get().translate(inputText);\n"
 "}"
 msgstr ""
-"<![CDATA[@Initializer\n"
-"public setTextTranslator(TextTranslator textTranslator) {\n"
-"    this.textTranslator = textTranslator;\n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "Notice that it isn't necessary to create a getter or setter method to inject one bean into another. CDI can access an injected field directly (even if it's private!), which sometimes helps eliminate some wasteful code. The name of the field is arbitrary. It's the field's type that determines what is injected."
+msgid ""
+"Notice that it isn't necessary to create a getter or setter method to inject"
+" one bean into another. CDI can access an injected field directly (even if "
+"it's private!), which sometimes helps eliminate some wasteful code. The name"
+" of the field is arbitrary. It's the field's type that determines what is "
+"injected."
 msgstr ""
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "At system initialization time, the container must validate that exactly one bean exists which satisfies each injection point. In our example, if no implementation of <literal>Translator</literal> is available&mdash;if the <literal>SentenceTranslator</literal> EJB was not deployed&mdash;the container would inform us of an <emphasis>unsatisfied dependency</emphasis>. If more than one implementation of <literal>Translator</literal> were available, the container would inform us of the <emphasis>ambiguous dependency</emphasis>."
-msgstr "시스템 초기화시 Web Bean 관리자는 각각의 삽입 지점을 만족시키는 하나의 Web Bean이 존재하도록 이를 유효화해야 합니다. 예에서 사용 가능한 <literal>Translator</literal> 구현이 없을 경우 &#151; <literal>SentenceTranslator</literal> EJB가 배치되지 않는 다면 &#151; Web Bean 관리자는 <literal>UnsatisfiedDependencyException</literal>을 넘기게 됩니다. 하나 이상의 <literal>Translator</literal>를 구현할 수 있을 경우, Web Bean 관리자는 <literal>AmbiguousDependencyException</literal>을 넘기게 됩니다.  "
 
 #. Tag: para
 #, no-c-format
-msgid "Before we get too deep in the details, let's pause and examine a bean's anatomy. What aspects of the bean are significant, and what gives it its identity? Instead of just giving examples of beans, we're going to define what <emphasis>makes</emphasis> something a bean."
+msgid ""
+"At system initialization time, the container must validate that exactly one "
+"bean exists which satisfies each injection point. In our example, if no "
+"implementation of <literal>Translator</literal> is available&mdash;if the "
+"<literal>SentenceTranslator</literal> EJB was not deployed&mdash;the "
+"container would inform us of an <emphasis>unsatisfied dependency</emphasis>."
+" If more than one implementation of <literal>Translator</literal> were "
+"available, the container would inform us of the <emphasis>ambiguous "
+"dependency</emphasis>."
 msgstr ""
 
-#~ msgid "Getting started with Web Beans"
-#~ msgstr "Web Beans로 시작하기 "
-
-#~ msgid "Your first Web Bean"
-#~ msgstr "첫 번째 Web Bean "
-
-#~ msgid "With certain, very special exceptions, every Java class with a constructor that accepts no parameters is a Web Bean. That includes every JavaBean. Furthermore, every EJB 3-style session bean is a Web Bean. Sure, the JavaBeans and EJBs you've been writing every day have not been able to take advantage of the new services defined by the Web Beans specification, but you'll be able to use every one of them as Web Beans &#151; injecting them into other Web Beans, configuring them via the Web Beans XML configuration facility, even adding interceptors and decorators to them &#151; without touching your existing code."
-#~ msgstr "특정한 예외 상항에서 매개 변수가 없는 것을 허용하는 생성자와 함께하는 모든 Java 클래스는 Web Bean으로 이에는 모든 JavaBean이 포함됩니다. 이에 더하여 모든 EJB 3-스타일 세션 빈도 Web Bean입니다. 물론 매일 작성하셨던 JavaBeans 및 EJB는 Web Beans 사양에 의해 정의된 새로운 서비스의 장점을 취할 수 없지만, Web Beans으로서 기존 코드를 변경하지 않고 이 모든 것을 사용하실 수 있습니다 &#151; 기타 다른 Web Beans로의 삽입, Web Beans XML 설정 기능을 통한 설정, 인터셉터 및 데코레이터 추가 등&#151;    "
-
-#~ msgid "Alternatively, we may obtain an instance by directly calling a method of the Web Bean manager:"
-#~ msgstr "다른 방법으로 Web Beans 관리자 방식을 직접 호출하여 인스턴스를 획득할 수 있습니다: "
-
-#~ msgid "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator.class);]]>"
-#~ msgstr "<![CDATA[TextTranslator tt = manager.getInstanceByType(TextTranslator.class);]]>"
-
-#~ msgid "So what, <emphasis>exactly</emphasis>, is a Web Bean?"
-#~ msgstr "<emphasis>정확하게</emphasis> Web Bean은 무엇인가요?"
-
-#~ msgid "A Web Bean is an application class that contains business logic. A Web Bean may be called directly from Java code, or it may be invoked via Unified EL. A Web Bean may access transactional resources. Dependencies between Web Beans are managed automatically by the Web Bean manager. Most Web Beans are <emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The lifecycle of a Web Bean is always managed by the Web Bean manager."
-#~ msgstr "Web Bean은 비지니스 로직이 들어 있는 애플리케이션 클래스입니다. Web Bean은 Java 코드에서 직접 불러오거나 또는 Unified EL을 통해 불러올 수 있습니다. Web Bean은 트랜젝션 리소스에 액세스할 수 있습니다. Web Beans 사이에서의 종속성은 Web Bean 관리자에 의해 자동으로 관리됩니다. 대부분의 Web Beans은 <emphasis>상태 유지 (stateful)</emphasis> 및 <emphasis>컨텍스트</emphasis> 기반입니다. Web Bean 수명 주기는 항상 Web Bean 관리자에 의해 관리됩니다.  "
-
-#~ msgid "Let's back up a second. What does it really mean to be \"contextual\"? Since Web Beans may be stateful, it matters <emphasis>which</emphasis> bean instance I have. Unlike a stateless component model (for example, stateless session beans) or a singleton component model (such as servlets, or singleton beans), different clients of a Web Bean see the Web Bean in different states. The client-visible state depends upon which instance of the Web Bean the client has a reference to."
-#~ msgstr "두 번째 내용으로 돌아가 봅시다. \"컨텍스트화\"된다는 의미는 정확하게 무엇입니까? Web Beans가 상태 유지 세션 빈이면, 보유하고 있는것이 <emphasis>어떤</emphasis> 빈 인스턴스인가가 문제입니다. 무상태 구성 요소 모델 이나 (예: 무상태 세션 빈) 또는 singleton 구성요소 모델 (예: ervlets 또는 singleton 빈)과는 다르게 Web Bean의 다른 클라이언트는 다른 상태에 있는 Web Bean을 보게 됩니다. 클라이언트-가시성 상태는 클라이언트가 참조하고 있는 Web Bean의 인스턴스가 무엇인가에 의존합니다. "
-
-#~ msgid "However, like a stateless or singleton model, but <emphasis>unlike</emphasis> stateful session beans, the client does not control the lifecycle of the instance by explicitly creating and destroying it. Instead, the <emphasis>scope</emphasis> of the Web Bean determines:"
-#~ msgstr "하지만, 무상태 또는 싱글턴 모델과 같으나 상태 유지 세션 빈 과는 <emphasis>다르게</emphasis>, 클라이언트는 인스턴스의 수명 주기를 명시적으로 생성 또는 파괴하여 제어하지 못합니다. 대신, Web Bean의 <emphasis>범위는</emphasis> 다음 사항을 결정합니다:  "
-
-#~ msgid "the lifecycle of each instance of the Web Bean and"
-#~ msgstr "각각의 Web Bean 인스턴스의 수명 주기 "
-
-#~ msgid "which clients share a reference to a particular instance of the Web Bean."
-#~ msgstr "어떤 클라이언트가 특정 Web Bean 인스턴스의 참조를 공유할 것인지 "
-
-#~ msgid "For a given thread in a Web Beans application, there may be an <emphasis>active context</emphasis> associated with the scope of the Web Bean. This context may be unique to the thread (for example, if the Web Bean is request scoped), or it may be shared with certain other threads (for example, if the Web Bean is session scoped) or even all other threads (if it is application scoped)."
-#~ msgstr "Web Beans 애플리케이션에 있는 주어진 스레드의 경우, Web Bean 범위와 관련된 <emphasis>활성 컨텍스트</emphasis>가 있을 수 있습니다. 이러한 컨텍스트는 스레드에서 유일하거나 (예: 요청 범위일 경우) 또는 특정한 다른 스레드와 공유될 수 있거나 (예: Web Bean이 세션 범위일 경우) 또는 기타 다른 모든 스레드일 수 있습니다 (Web Bean이 애플리케이션 범위일 경우). "
-
-#~ msgid "Clients (for example, other Web Beans) executing in the same context will see the same instance of the Web Bean. But clients in a different context will see a different instance."
-#~ msgstr "동일한 컨텍스트에서 실행되는 클라이언트 (예: 기타 다른 Web Bean)는 동일한 Web Bean의 인스턴스를 보게 됩니다. 하지만 다른 컨텍스트에서 실행되는 클라이언트는 다른 인스턴스를 보게 됩니다. "
-
-#~ msgid "One great advantage of the contextual model is that it allows stateful Web Beans to be treated like services! The client need not concern itself with managing the lifecycle of the Web Bean it is using, <emphasis>nor does it even need to know what that lifecyle is.</emphasis> Web Beans interact by passing messages, and the Web Bean implementations define the lifecycle of their own state. The Web Beans are loosely coupled because:"
-#~ msgstr "컨텍스트 모델의 큰 장점 중 하나는 상태 유지 Web Beans가 서비스처럼 다루어지게 하는 것입니다! 클라이언트는 사용되는 Web Bean의 수명 주기 관리 자체를 고려하거나, 또는 <emphasis>수명 주기가 무엇인지를 알 필요가 없습니다.</emphasis> Web Beans는 메세지를 전달하여 상호작용하고 Web Bean 구현은 자신의 상태에 따른 수명 주기를 정의합니다. Web Beans는 다음과 같은 이유로 느슨하게 연결되어 있습니다:  "
-
-#~ msgid "they interact via well-defined public APIs"
-#~ msgstr "잘 정의된 공개 API를 통해 상호 작용하므로 "
-
-#~ msgid "their lifecycles are completely decoupled"
-#~ msgstr "수명 주기는 완전하게 연결 해제되므로 "
-
-#~ msgid "We can replace one Web Bean with a different Web Bean that implements the same API and has a different lifecycle (a different scope) without affecting the other Web Bean implementation. In fact, Web Beans defines a sophisticated facility for overriding Web Bean implementations at deployment time, as we will see in <xref linkend=\"deploymenttypes\"/>."
-#~ msgstr "하나의 Web Bean을 동일한 API를 구현하고 다른 Web Bean 구현에 영향을 미치지 않고 다른 수명 주기 (다른 범위)를 갖는 다른 Web Bean으로 대체할 수 있습니다. 사실, <xref linkend=\"deploymenttypes\"/>에서 살펴보실 수 있듯이 Web Beans는 배치시 Web Bean 구현을 덮어쓰기하기 위한 정교한 기능을 정의합니다.   "
-
-#~ msgid "Note that not all clients of a Web Bean are Web Beans. Other objects such as Servlets or Message-Driven Beans &#151; which are by nature not injectable, contextual objects &#151; may also obtain references to Web Beans by injection."
-#~ msgstr "모든 Web Bean 클라이언트가 Web Beans가 될 수 없음에 유의합니다. Servlets 또는 Message-Driven Beans와 같은 &#151; 본래 삽입 가능한 컨텍스트 객체가 아닌 &#151; 객체는 삽입에 의해 Web Beans에 참조를 획득할 수 있습니다. "
-
-#~ msgid "Enough hand-waving. More formally, according to the spec:"
-#~ msgstr "보다 공식적으로 spec에 따르면: "
-
-#~ msgid "A Web Bean comprises:"
-#~ msgstr "Web Bean은 다음과 같은 것으로 구성되어 있습니다: "
-
-#~ msgid "A (nonempty) set of API types"
-#~ msgstr "(비어 있지 않은) API 유형 모음 "
-
-#~ msgid "A (nonempty) set of binding annotation types"
-#~ msgstr "(비어 있지 않은) 바인딩 어노테이션 유형 모음 "
-
-#~ msgid "A scope"
-#~ msgstr "범위 "
-
-#~ msgid "A deployment type"
-#~ msgstr "배치 유형 "
-
-#~ msgid "Optionally, a Web Bean name"
-#~ msgstr "Web Bean 이름 (옵션 사항) "
-
-#~ msgid "A set of interceptor binding types"
-#~ msgstr "인터셉터 바인딩 유형 모음 "
-
-#~ msgid "A Web Bean implementation"
-#~ msgstr "Web Bean 구현 "
-
-#~ msgid "Let's see what some of these terms mean, to the Web Bean developer."
-#~ msgstr "이러한 용어가 Web Bean 개발자에게 무엇을 의미하는 살펴봅시다.  "
-
-#~ msgid "API types, binding types and dependency injection"
-#~ msgstr "API 유형, 바인딩 유형 및 의존성 삽입 "
-
-#~ msgid "Web Beans usually acquire references to other Web Beans via dependency injection. Any injected attribute specifies a \"contract\" that must be satisfied by the Web Bean to be injected. The contract is:"
-#~ msgstr "주로 Web Beans는 의존성 삽입을 통해 다른 Web Beans에 참조를 획득합니다. 삽입된 속성은 삽입될 Web Bean을 만족시키는 \"계약\"을 지정합니다. 계약에는 다음과 같은 내용을 지정합니다: "
-
-#~ msgid "an API type, together with"
-#~ msgstr "API 유형 "
-
-#~ msgid "a set of binding types."
-#~ msgstr "바인딩 유형 모음 "
-
-#~ msgid "An API is a user-defined class or interface. (If the Web Bean is an EJB session bean, the API type is the <literal>@Local</literal> interface or bean-class local view). A binding type represents some client-visible semantic that is satisfied by some implementations of the API and not by others."
-#~ msgstr "API는 사용자 정의 클래스 또는 인터페이스입니다. (Web Bean이 EJB 세션 빈일 경우, API 유형은 <literal>@Local</literal> 인터페이스이거나 또는 bean-class 로컬 보기입니다.) 바인딩 유형은 클라이언트-가시성 시멘틱을 나타내는 것으로 API의 일부 구현에 의해 만족됩니다. "
-
-#~ msgid "Binding types are represented by user-defined annotations that are themselves annotated <literal>@BindingType</literal>. For example, the following injection point has API type <literal>PaymentProcessor</literal> and binding type <literal>@CreditCard</literal>:"
-#~ msgstr "바인딩 유형은 <literal>@BindingType</literal>으로 어노테이션된 사용자 정의 어노테이션에 의해 나타납니다. 예를 들어, 다음과 같은 삽입 지점은 <literal>PaymentProcessor</literal> API 유형 및 <literal>@CreditCard</literal> 바인딩 유형을 갖습니다:  "
-
-#~ msgid "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-#~ msgstr "<![CDATA[@CreditCard PaymentProcessor paymentProcessor]]>"
-
-#~ msgid "If no binding type is explicitly specified at an injection point, the default binding type <literal>@Current</literal> is assumed."
-#~ msgstr "바인딩 유형이 삽입 지점에 명확하게 지정되어 있지 않을 경우, 기본값 바인딩 유형<literal>@Current</literal>가 사용됩니다.  "
-
-#~ msgid "For each injection point, the Web Bean manager searches for a Web Bean which satisfies the contract (implements the API, and has all the binding types), and injects that Web Bean."
-#~ msgstr "각각의 삽입 지점의 경우, Web Bean 관리자는 계약을 만족시키는 (API를 구현하고 모든 바인딩 유형을 갖는) Web Bean을 검색하여 이를 삽입합니다. "
-
-#~ msgid "The following Web Bean has the binding type <literal>@CreditCard</literal> and implements the API type <literal>PaymentProcessor</literal>. It could therefore be injected to the example injection point:"
-#~ msgstr "다음과 같은 Web Bean은 <literal>@CreditCard</literal> 바인딩 유형을 갖고 <literal>PaymentProcessor</literal> API 유형을 구현합니다. 따라서 이는 예시 삽입 지점에 삽입될 수 있습니다:        "
-
-#~ msgid ""
-#~ "<![CDATA[@CreditCard\n"
-#~ "public class CreditCardPaymentProcessor \n"
-#~ "    implements PaymentProcessor { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@CreditCard\n"
-#~ "public class CreditCardPaymentProcessor \n"
-#~ "    implements PaymentProcessor { ... }]]>"
-
-#~ msgid "If a Web Bean does not explicitly specify a set of binding types, it has exactly one binding type: the default binding type <literal>@Current</literal>."
-#~ msgstr "Web Bean이 바인딩 유형 모음을 명확히 지정하지 않을 경우, 이는 기본값 바인딩 유형인 <literal>@Current</literal>라는 하나의 바인딩 유형을 갖습니다. "
-
-#~ msgid "Web Beans defines a sophisticated but intuitive <emphasis>resolution algorithm</emphasis> that helps the container decide what to do if there is more than one Web Bean that satisfies a particular contract. We'll get into the details in <xref linkend=\"injection\"/>."
-#~ msgstr "Web Beans는 정교하지만 직관적인 <emphasis>해상도 알고리즘</emphasis>을 정의하여 특정 계약을 만족시키는 하나 이상의 Web Bean이 있을 경우 컨테이너가 무엇을 해야할 지를 결정하는 것을 돕습니다. 보다 자세한 내용은 <xref linkend=\"injection\"/>에서 다루겠습니다. "
-
-#~ msgid "Deployment types"
-#~ msgstr "배치 유형 "
-
-#~ msgid "<emphasis>Deployment types</emphasis> let us classify our Web Beans by deployment scenario. A deployment type is an annotation that represents a particular deployment scenario, for example <literal>@Mock</literal>, <literal>@Staging</literal> or <literal>@AustralianTaxLaw</literal>. We apply the annotation to Web Beans which should be deployed in that scenario. A deployment type allows a whole set of Web Beans to be conditionally deployed, with a just single line of configuration."
-#~ msgstr "<emphasis>배치 유형</emphasis>은 배치 시나리오에 의해 Web Beans을 구분하게 합니다. 배치 유형은 특정 배치 시나리오를 나타네는 어노테이션으로, 예를 들어 <literal>@Mock</literal>, <literal>@Staging</literal>, <literal>@AustralianTaxLaw</literal>가 있습니다. 시나리오에 배치되어야 할 Web Beans에 어노테이션을 적용합니다. 배치 유형은 단일 설정행을 사용하여 전체 Web Beans 모음이 상황에 따라 배치되게 합니다.  "
-
-#~ msgid "Many Web Beans just use the default deployment type <literal>@Production</literal>, in which case no deployment type need be explicitly specified. All three Web Bean in our example have the deployment type <literal>@Production</literal>."
-#~ msgstr "다수의 Web Beans는 배기본값 배치 유형 <literal>@Production</literal>을 사용하므로, 이러한 경우 배치 유형을 명확하게 지정할 필요가 없습니다. 예에서 모든 Web Bean 트리는 <literal>@Production</literal> 배치 유형을 갖습니다. "
-
-#~ msgid "In a testing environment, we might want to replace the <literal>SentenceTranslator</literal> Web Bean with a \"mock object\":"
-#~ msgstr "테스트 환경에서, <literal>SentenceTranslator</literal> Web Bean을 \"모의 객체\"로 교체하고자 합니다: "
-
-#~ msgid ""
-#~ "<![CDATA[@Mock\n"
-#~ "public class MockSentenceTranslator implements Translator {\n"
-#~ "    public String translate(String sentence) {\n"
-#~ "        return \"Lorem ipsum dolor sit amet\";\n"
-#~ "    }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Mock\n"
-#~ "public class MockSentenceTranslator implements Translator {\n"
-#~ "    public String translate(String sentence) {\n"
-#~ "        return \"Lorem ipsum dolor sit amet\";\n"
-#~ "    }\n"
-#~ "}]]>"
-
-#~ msgid "We would enable the deployment type <literal>@Mock</literal> in our testing environment, to indicate that <literal>MockSentenceTranslator</literal> and any other Web Bean annotated <literal>@Mock</literal> should be used."
-#~ msgstr " <literal>MockSentenceTranslator</literal> 및 기타 다른 Web Bean 어노테이션 <literal>@Mock</literal>을 사용해야 함을 나타내기 위해 테스트 환경에서 <literal>@Mock</literal> 배치 유형을 활성화할 수 있습니다.   "
-
-#~ msgid "We'll talk more about this unique and powerful feature in <xref linkend=\"deploymenttypes\"/>."
-#~ msgstr "<xref linkend=\"deploymenttypes\"/>에서 이러한 유일하고 강력한 기능에 관해 자세히 살펴 보겠습니다. "
-
-#~ msgid "Scope"
-#~ msgstr "범위 "
-
-#~ msgid "The <emphasis>scope</emphasis> defines the lifecycle and visibility of instances of the Web Bean. The Web Beans context model is extensible, accommodating arbitrary scopes. However, certain important scopes are built-in to the specification, and provided by the Web Bean manager. A scope is represented by an annotation type."
-#~ msgstr "<emphasis>범위</emphasis>는 Web Bean의 수명 주기및 인스턴스의 가시성을 정의합니다. Web Beans 컨텍스트 모델은 확장 가능하고, 임의의 범위를 수용합니다. 하지만, 특정 중요 범위는 사양으로 내장되어 있으며, Web Bean 관리자가 제공합니다. 범위는 어노테이션 유형에 의해 나타납니다.  "
-
-#~ msgid "For example, any web application may have <emphasis>session scoped</emphasis> Web Beans:"
-#~ msgstr "예를 들어, 웹 애플리케어션은 <emphasis>세션 범위</emphasis> Web Beans을 갖을 수 있습니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[@SessionScoped\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@SessionScoped\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#~ msgid "An instance of a session scoped Web Bean is bound to a user session and is shared by all requests that execute in the context of that session."
-#~ msgstr "세션 범위 Web Bean의 인스턴스는 사용자 세션으로 바운딩되어 세션 컨텍스트에서 실행되는 모든 요청에 의해 공유됩니다.  "
-
-#~ msgid "By default, Web Beans belong to a special scope called the <emphasis>dependent pseudo-scope</emphasis>. Web Beans with this scope are pure dependent objects of the object into which they are injected, and their lifecycle is bound to the lifecycle of that object."
-#~ msgstr "기본값으로, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 특정 범위에 속합니다. 이러한 범위를 갖는 Web Beans는 삽입되어야할 객체의 순수한 의존적 객체이며 수명주기는 객체의 수명주기로 바운딩됩니다. "
-
-#~ msgid "We'll talk more about scopes in <xref linkend=\"scopescontexts\"/>."
-#~ msgstr "<xref linkend=\"scopescontexts\"/>에서 범위에 대해 보다 자세하게 다루겠습니다. "
-
-#~ msgid "Web Bean names and Unified EL"
-#~ msgstr "Web Bean 이름 및 Unified EL "
-
-#~ msgid "A Web Bean may have a <emphasis>name</emphasis>, allowing it to be used in Unified EL expressions. It's easy to specify the name of a Web Bean:"
-#~ msgstr "Web Bean은 <emphasis>이름</emphasis>을 갖을 수 있으며, Unified EL 표현식에서 사용될 수 있습니다. Web Bean의 이름을 지정하는 것은 쉽습니다: "
-
-#~ msgid ""
-#~ "<![CDATA[@SessionScoped @Named(\"cart\")\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@SessionScoped @Named(\"cart\")\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#~ msgid "Now we can easily use the Web Bean in any JSF or JSP page:"
-#~ msgstr "이제 JSF 또는 JSP 페이지에서 쉽게 Web Bean을 사용할 수 있습니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
-#~ "    ....\n"
-#~ "</h:dataTable>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<h:dataTable value=\"#{cart.lineItems}\" var=\"item\">\n"
-#~ "    ....\n"
-#~ "</h:dataTable>]]>"
-
-#~ msgid "It's even easier to just let the name be defaulted by the Web Bean manager:"
-#~ msgstr "Web Bean 관리자기 이름을 기본값으로 하게 하는 것이 보다 수월합니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[@SessionScoped @Named\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@SessionScoped @Named\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#~ msgid "In this case, the name defaults to <literal>shoppingCart</literal> &#151; the unqualified class name, with the first character changed to lowercase."
-#~ msgstr "이러한 경우, 이름 기본값은 <literal>shoppingCart</literal>가 됩니다 &#151; 첫번째 문자가 소문자로 된 수식어가 붙지않는 클래스 이름. "
-
-#~ msgid "Interceptor binding types"
-#~ msgstr "인터셉터 바인딩 유형 "
-
-#~ msgid "Web Beans supports the interceptor functionality defined by EJB 3, not only for EJB beans, but also for plain Java classes. In addition, Web Beans provides a new approach to binding interceptors to EJB beans and other Web Beans."
-#~ msgstr "Web Beans는 EJB beans 뿐 만 아니라 일반 Java 클래스에 대해 EJB 3에 의해 정의된 인터셉터 기능을 지원합니다. 이에 더하여, Web Beans는 바인딩 인터셉터, EJB beans 및 기타 다른 Web Beans에 새로운 접근 방식을 제공합니다.  "
-
-#~ msgid "It remains possible to directly specify the interceptor class via use of the <literal>@Interceptors</literal> annotation:"
-#~ msgstr "<literal>@Interceptors</literal> 어노테이션의 사용을 통해 인터셉터 클래스를 직접 지정할 수 있습니다: "
-
-#~ msgid ""
-#~ "<![CDATA[@SessionScoped \n"
-#~ "@Interceptors(TransactionInterceptor.class)\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@SessionScoped \n"
-#~ "@Interceptors(TransactionInterceptor.class)\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#~ msgid "However, it is more elegant, and better practice, to indirect the interceptor binding through an <emphasis>interceptor binding type</emphasis>:"
-#~ msgstr "하지만, <emphasis>인터셉터 바인딩 유형</emphasis>을 통해 인터셉터 바인딩을 돌려 놓는 것이 보다 좋습니다:    "
-
-#~ msgid ""
-#~ "<![CDATA[@SessionScoped @Transactional\n"
-#~ "public class ShoppingCart { ... }]]>"
-#~ msgstr ""
-#~ "<![CDATA[@SessionScoped @Transactional\n"
-#~ "public class ShoppingCart { ... }]]>"
-
-#~ msgid "We'll discuss Web Beans interceptors and decorators in <xref linkend=\"interceptors\"/> and <xref linkend=\"decorators\"/>."
-#~ msgstr "<xref linkend=\"interceptors\"/> 및 <xref linkend=\"decorators\"/>에서 Web Beans 인터셉터 및 데코레이터에 대해 설명하겠습니다.  "
-
-#~ msgid "What kinds of objects can be Web Beans?"
-#~ msgstr "어떤 종류의 객체가 Web Beans가 될 수 있을까요? "
-
-#~ msgid "We've already seen that JavaBeans, EJBs and some other Java classes can be Web Beans. But exactly what kinds of objects are Web Beans?"
-#~ msgstr "JavaBeans, EJB 및 기타 다른 Java 클래스가 Web Beans이 될 수 있음을 살펴보았습니다. 하지만, 정확히 어떤 종류의 객체가 Web Beans인가요? "
-
-#~ msgid "Simple Web Beans"
-#~ msgstr "심플 Web Beans  "
-
-#~ msgid "The Web Beans specification says that a concrete Java class is a <emphasis>simple</emphasis> Web Bean if:"
-#~ msgstr "Web Beans 사양은 다음과 같을 경우 구체적 Java 클래스가 <emphasis>심플</emphasis> Web Bean이라고 말합니다:  "
-
-#~ msgid "it is not an EE container-managed component, like an EJB, a Servlet or a JPA entity,"
-#~ msgstr "EJB, Servlet 또는 JPA 엔티티와 같이 EE 컨테이너 관리 기반 구성요소가 아닐 경우, "
-
-#~ msgid "it is not a non-static static inner class,"
-#~ msgstr "비-정적인 내부 클래스가 아닐 경우, "
-
-#~ msgid "it is not a parameterized type, and"
-#~ msgstr "매개 변수화된 유형이 아닐 경우,  "
-
-#~ msgid "it has a constructor with no parameters, or a constructor annotated <literal>@Initializer</literal>."
-#~ msgstr "매개 변수 없는 생성자나 또는 <literal>@Initializer</literal> 어노테이션된 생성자를 갖을 경우, "
-
-#~ msgid "Thus, almost every JavaBean is a simple Web Bean."
-#~ msgstr "따라서, 거의 모든 JavaBean은 심플 Web Bean이 됩니다.  "
-
-#~ msgid "Every interface implemented directly or indirectly by a simple Web Bean is an API type of the simple Web Bean. The class and its superclasses are also API types."
-#~ msgstr "심플 Web Bean에 의해 직접적 또는 간접적으로 구현되는 모든 인터페이스는 API 유형의 심플 Web Bean입니다. 클래스 및 상위클래스도 API 유형이 됩니다.  "
-
-#~ msgid "Enterprise Web Beans"
-#~ msgstr "엔터프라이즈 Web Beans "
-
-#~ msgid "The specification says that all EJB 3-style session and singleton beans are <emphasis>enterprise</emphasis> Web Beans. Message driven beans are not Web Beans &#151; since they are not intended to be injected into other objects &#151; but they can take advantage of most of the functionality of Web Beans, including dependency injection and interceptors."
-#~ msgstr "사양에서는 모든 EJB 3 스타일 세션 및 singleton beans가 EJB 3 <emphasis>엔터프라이즈</emphasis> Web Beans라고 말합니다. Message driven beans는 Web Beans이 아닙니다 &#151; 다른 객체에 삽입되도록 되어있지 않기 때문 &#151; 하지만 이는 의존성 삽입 및 인터셉터를 포함한 대부분의 Web Beans 기능의 장점을 취할 수 있습니다. "
-
-#~ msgid "Every local interface of an enterprise Web Bean that does not have a wildcard type parameter or type variable, and every one of its superinterfaces, is an API type of the enterprise Web Bean. If the EJB bean has a bean class local view, the bean class, and every one of its superclasses, is also an API type."
-#~ msgstr "와일드카드 유형 매개 변수 또는 유형 변수를 갖지 않는 엔터프라이즈 Web Bean의 모든 로컬 인터페이스 및 이의 상위인터페이스는 엔터프라이즈 Web Bean의 API 유형입니다. EJB bean이 bean 클래스 로컬 보기를 갖고 있을 경우 bean 클래스 및 이의 모든 상위 클래스도 API 유형입니다. "
-
-#~ msgid "Stateful session beans should declare a remove method with no parameters or a remove method annotated <literal>@Destructor</literal>. The Web Bean manager calls this method to destroy the stateful session bean instance at the end of its lifecycle. This method is called the <emphasis>destructor</emphasis> method of the enterprise Web Bean."
-#~ msgstr "상태유지 세션 빈은 매개 변수가 없는 제거 방식이나 <literal>@Destructor</literal>로 어노테이션된 삭제 방식을 명시해야 합니다. Web Bean 관리자는 수명 주기의 마지막에 상태 유지 세션 빈 인스턴스를 파괴하기 위해 이러한 방식을 호출합니다. 이러한 방식은 엔터프라이즈 Web Bean의 <emphasis>파괴자</emphasis> 방식이라고 합니다.   "
-
-#~ msgid ""
-#~ "<![CDATA[@Stateful @SessionScoped\n"
-#~ "public class ShoppingCart {\n"
-#~ "\n"
-#~ "    ...\n"
-#~ "    \n"
-#~ "    @Remove\n"
-#~ "    public void destroy() {}\n"
-#~ "\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Stateful @SessionScoped\n"
-#~ "public class ShoppingCart {\n"
-#~ "\n"
-#~ "    ...\n"
-#~ "    \n"
-#~ "    @Remove\n"
-#~ "    public void destroy() {}\n"
-#~ "\n"
-#~ "}]]>"
-
-#~ msgid "So when should we use an enterprise Web Bean instead of a simple Web Bean? Well, whenever we need the advanced enterprise services offered by EJB, such as:"
-#~ msgstr "그러면 언제 심플 Web Bean 대신 엔터프라이즈 Web Bean을 사용해야 할까요? 다음과 같이 EJB에 의해 제공되는 고급 엔터프라이즈 서비스가 필요할 때 마다 사용하면 됩니다: "
-
-#~ msgid "method-level transaction management and security,"
-#~ msgstr "메소드-수준 트랜젝션 관리 및 보안 "
-
-#~ msgid "concurrency management,"
-#~ msgstr "동시성 관리 "
-
-#~ msgid "instance-level passivation for stateful session beans and instance-pooling for stateless session beans,"
-#~ msgstr "상태 유지 세션 빈 용 인스턴스 레벨 수동화 및 무상태 세션 빈 용 인스턴스 풀링 "
-
-#~ msgid "remote and web service invocation, and"
-#~ msgstr "원격 및 웹 서비스 호출 "
-
-#~ msgid "timers and asynchronous methods,"
-#~ msgstr "타이머 및 비동기 방식 "
-
-#~ msgid "we should use an enterprise Web Bean. When we don't need any of these things, a simple Web Bean will serve just fine."
-#~ msgstr "엔터프라이즈 Web Bean을 사용해야 합니다. 이러한 것이 전혀 필요하지 않을 경우, 심플 Web Bean도 잘 실행될 것입니다.  "
-
-#~ msgid "Many Web Beans (including any session or application scoped Web Bean) are available for concurrent access. Therefore, the concurrency management provided by EJB 3.1 is especially useful. Most session and application scoped Web Beans should be EJBs."
-#~ msgstr "다수의 Web Beans (세션 또는 애플리케이션 범위 Web Bean 포함)은 동시 액세스에서 사용 가능합니다. 따라서, EJB 3.1에 의해 제공되는 동시성 관리는 아주 유용합니다. 대부분의 세션 및 애플리케이션 범위 Web Beans는 EJB이어야 합니다. "
-
-#~ msgid "Web Beans which hold references to heavy-weight resources, or hold a lot of internal state benefit from the advanced container-managed lifecycle defined by the EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal> model, with its support for passivation and instance pooling."
-#~ msgstr "Web Beans는 중량의 리소스에 참조를 보유하고 있거나 EJB <literal>@Stateless</literal>/<literal>@Stateful</literal>/<literal>@Singleton</literal> 모델에 의해 정의된 고급 컨테이너 관리 수명주기로 부터의 내부적 상태 장점을 수동화 및 인스턴스 풀링 지원과 함께 보유하고 있어야 합니다.    "
-
-#~ msgid "Finally, it's usually obvious when method-level transaction management, method-level security, timers, remote methods or asynchronous methods are needed."
-#~ msgstr "마지막으로, 메서드-수준 트랜젝션 관리, 메서드-수준 보안, 타이머, 원격 방식 또는 비동기 방식은 명백하게 필요합니다. "
-
-#~ msgid "It's usually easy to start with simple Web Bean, and then turn it into an EJB, just by adding an annotation: <literal>@Stateless</literal>, <literal>@Stateful</literal> or <literal>@Singleton</literal>."
-#~ msgstr "심플 Web Bean으로 시작하고, <literal>@Stateless</literal>, <literal>@Stateful</literal>, <literal>@Singleton</literal> 어노테이션을 추가하여 EJB로 변환합니다. "
-
-#~ msgid "Producer methods"
-#~ msgstr "생산자 방식 "
-
-#~ msgid "A <emphasis>producer method</emphasis> is a method that is called by the Web Bean manager to obtain an instance of the Web Bean when no instance exists in the current context. A producer method lets the application take full control of the instantiation process, instead of leaving instantiation to the Web Bean manager. For example:"
-#~ msgstr "<emphasis>생산자 방식</emphasis>은 현재 컨텍스트에 인스턴스가 존재하지 않을 때 Web Bean의 인스턴스를 획득하기 위해 Web Bean 관리자에 의해 호출되는 방식입니다. 생산자 방식은 인스턴스를 Web Bean 관리자가 관리하게 두지 않고 애플리케이션이 인스턴스 절차를 완전히 제어하게 합니다. 예:  "
-
-#~ msgid ""
-#~ "<![CDATA[@ApplicationScoped\n"
-#~ "public class Generator {\n"
-#~ "\n"
-#~ "    private Random random = new Random( System.currentTimeMillis() );\n"
-#~ "    \n"
-#~ "    @Produces @Random int next() {\n"
-#~ "        return random.nextInt(100);\n"
-#~ "    }\n"
-#~ "\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@ApplicationScoped\n"
-#~ "public class Generator {\n"
-#~ "\n"
-#~ "    private Random random = new Random( System.currentTimeMillis() );\n"
-#~ "    \n"
-#~ "    @Produces @Random int next() {\n"
-#~ "        return random.nextInt(100);\n"
-#~ "    }\n"
-#~ "\n"
-#~ "}]]>"
-
-#~ msgid "The result of a producer method is injected just like any other Web Bean."
-#~ msgstr "생산자 방식 결과는 기타 다른 Web Bean과 같이 삽입됩니다.  "
-
-#~ msgid "<![CDATA[@Random int randomNumber]]>"
-#~ msgstr "<![CDATA[@Random int randomNumber]]>"
-
-#~ msgid "The method return type and all interfaces it extends/implements directly or indirectly are API types of the producer method. If the return type is a class, all superclasses are also API types."
-#~ msgstr "방식 반환 유형 및 직접적이나 간접적으로 확장/구현하는 모든 인터페이스 API 유형의 생산자 방식입니다. 반환 유형이 클래스일 경우 모든 상위클래스도 API 유형이 됩니다.  "
-
-#~ msgid "Some producer methods return objects that require explicit destruction:"
-#~ msgstr "일부 생산자 방식은 명시적 파괴를 요청하는 객체를 반환합니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
-#~ "    return createConnection( user.getId(), user.getPassword() );\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces @RequestScoped Connection connect(User user) {\n"
-#~ "    return createConnection( user.getId(), user.getPassword() );\n"
-#~ "}]]>"
-
-#~ msgid "These producer methods may define matching <emphasis>disposal methods</emphasis>:"
-#~ msgstr "이러한 생산자 방식은 <emphasis>폐지 방식</emphasis>과 일치하게 정의될 수 있습니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[void close(@Disposes Connection connection) {\n"
-#~ "    connection.close();\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[void close(@Disposes Connection connection) {\n"
-#~ "    connection.close();\n"
-#~ "}]]>"
-
-#~ msgid "This disposal method is called automatically by the Web Bean manager at the end of the request."
-#~ msgstr "이러한 폐지 방식은 요청 마지막에 Web Bean 관리자에 의해 자동으로 호출됩니다.  "
-
-#~ msgid "We'll talk much more about producer methods in <xref linkend=\"producermethods\"/>."
-#~ msgstr "<xref linkend=\"producermethods\"/>에서 생산자 방식에 관해 보다 자세하게 다룹니다. "
-
-#~ msgid "JMS endpoints"
-#~ msgstr "JMS 엔드포인트 "
-
-#~ msgid "Finally, a JMS queue or topic can be a Web Bean. Web Beans relieves the developer from the tedium of managing the lifecycles of all the various JMS objects required to send messages to queues and topics. We'll discuss JMS endpoints in <xref linkend=\"jms\"/>."
-#~ msgstr "마지막으로, JMS 큐 또는 토픽은 Web Bean이 될 수 있습니다. Web Beans는 큐 및 토픽에 메세지를 전달하기 위해 필요한 모든 다양한 JMS 객체의 수명주기 관리에 있어서 개발자에게  단조로움을 완화시킵니다. <xref linkend=\"jms\"/>에서 JMS 엔드포인트를 다루게 됩니다. "
+#. Tag: para
+#, no-c-format
+msgid ""
+"Before we get too deep in the details, let's pause and examine a bean's "
+"anatomy. What aspects of the bean are significant, and what gives it its "
+"identity? Instead of just giving examples of beans, we're going to define "
+"what <emphasis>makes</emphasis> something a bean."
+msgstr ""

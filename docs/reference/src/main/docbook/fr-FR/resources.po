@@ -1,73 +1,122 @@
 # Language fr-FR translations for Weld_-_JSR-299_Reference_Implementation package.
 # Automatically generated, 2009.
-#
+# 
+# Julien Herr <julien@herr.fr>, 2011. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-11-11 15:00+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Java EE component environment resources"
+msgstr "Ressources Java EE"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"Java EE 5 already introduced some limited support for dependency injection, "
+"in the form of component environment injection. A component environment "
+"resource is a Java EE component, for example a JDBC datasource, JMS queue or"
+" topic, JPA persistence context, remote EJB or web service."
 msgstr ""
+"Java EE 5 introduisait déjà une prise en charge limitée  pour l'injection de"
+" dépendances, sous la forme d'injection de ressources. Une ressource est un "
+"composant Java EE, par exemple une source de données JDBC, une queue ou un "
+"topic JMS, un contexte de persistance JPA, un EJB distant ou un web service."
 
 #. Tag: para
 #, no-c-format
-msgid "Java EE 5 already introduced some limited support for dependency injection, in the form of component environment injection. A component environment resource is a Java EE component, for example a JDBC datasource, JMS queue or topic, JPA persistence context, remote EJB or web service."
+msgid ""
+"Naturally, there is now a slight mismatch with the new style of dependency "
+"injection in CDI. Most notably, component environment injection relies on "
+"string-based names to qualify ambiguous types, and there is no real "
+"consistency as to the nature of the names (sometimes a JNDI name, sometimes "
+"a persistence unit name, sometimes an EJB link, sometimes a non-portable "
+"\"mapped name\"). Producer fields turned out to be an elegant adaptor to "
+"reduce all this complexity to a common model and get component environment "
+"resources to participate in the CDI system just like any other kind of bean."
 msgstr ""
 
 #. Tag: para
-#, no-c-format
-msgid "Naturally, there is now a slight mismatch with the new style of dependency injection in CDI. Most notably, component environment injection relies on string-based names to qualify ambiguous types, and there is no real consistency as to the nature of the names (sometimes a JNDI name, sometimes a persistence unit name, sometimes an EJB link, sometimes a non-portable \"mapped name\"). Producer fields turned out to be an elegant adaptor to reduce all this complexity to a common model and get component environment resources to participate in the CDI system just like any other kind of bean."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Fields have a duality in that they can both be the target of Java EE component environment injection and be declared as a CDI producer field. Therefore, they can define a mapping from a string-based name in the component environment, to a combination of type and qualifiers used in the world of typesafe injection. We call a producer field that represents a reference to an object in the Java EE component environment a <emphasis>resource</emphasis>."
-msgstr ""
+#, fuzzy, no-c-format
+msgid ""
+"Fields have a duality in that they can both be the target of Java EE "
+"component environment injection and be declared as a CDI producer field. "
+"Therefore, they can define a mapping from a string-based name in the "
+"component environment, to a combination of type and qualifiers used in the "
+"world of typesafe injection. We call a producer field that represents a "
+"reference to an object in the Java EE component environment a "
+"<emphasis>resource</emphasis>."
+msgstr "REVOIR LA PARTIE CI-DESSUS -> incohérence avec le terme \"ressource\""
 
 #. Tag: title
 #, no-c-format
 msgid "Defining a resource"
-msgstr ""
+msgstr "Définir une ressource"
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI specification uses the term <emphasis>resource</emphasis> to refer, generically, to any of the following kinds of object which might be available in the Java EE component environment:"
+msgid ""
+"The CDI specification uses the term <emphasis>resource</emphasis> to refer, "
+"generically, to any of the following kinds of object which might be "
+"available in the Java EE component environment:"
 msgstr ""
+"La spécification CDI utilise le terme <emphasis>resource</emphasis> pour "
+"référencer, de manière générique, n'importe quel genre d'objet qui peut être"
+" disponible dans l'environnement Java EE :"
 
 #. Tag: para
 #, no-c-format
-msgid "JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, <literal>Topic</literal>s and <literal>ConnectionFactory</literal>s, JavaMail <literal>Session</literal>s and other transactional resources including JCA connectors,"
+msgid ""
+"JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, "
+"<literal>Topic</literal>s and <literal>ConnectionFactory</literal>s, "
+"JavaMail <literal>Session</literal>s and other transactional resources "
+"including JCA connectors,"
 msgstr ""
+"JDBC <literal>Datasource</literal>s, JMS <literal>Queue</literal>s, "
+"<literal>Topic</literal>s et <literal>ConnectionFactory</literal>s, JavaMail"
+" <literal>Session</literal>s et les autres ressources transactionnelles en "
+"incluant les connecteurs JCA,"
 
 #. Tag: para
 #, no-c-format
-msgid "JPA <literal>EntityManager</literal>s and <literal>EntityManagerFactory</literal>s,"
+msgid ""
+"JPA <literal>EntityManager</literal>s and "
+"<literal>EntityManagerFactory</literal>s,"
 msgstr ""
+"JPA <literal>EntityManager</literal>s et "
+"<literal>EntityManagerFactory</literal>s,"
 
 #. Tag: para
 #, no-c-format
 msgid "remote EJBs, and"
-msgstr ""
+msgstr "EJBs distants, et"
 
 #. Tag: para
 #, no-c-format
 msgid "web services"
-msgstr ""
+msgstr "services web"
 
 #. Tag: para
-#, no-c-format
-msgid "We declare a resource by annotating a producer field with a component environment injection annotation: <literal>@Resource</literal>, <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>."
+#, fuzzy, no-c-format
+msgid ""
+"We declare a resource by annotating a producer field with a component "
+"environment injection annotation: <literal>@Resource</literal>, "
+"<literal>@EJB</literal>, <literal>@PersistenceContext</literal>, "
+"<literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>."
 msgstr ""
+"Nous déclarons une ressource en annotant un attribut de production avec une "
+"annotation d'injection de <????> : <literal>@Resource</literal>, "
+"<literal>@EJB</literal>, <literal>@PersistenceContext</literal>, "
+"<literal>@PersistenceUnit</literal> or <literal>@WebServiceRef</literal>."
 
 #. Tag: programlisting
 #, no-c-format
@@ -107,37 +156,55 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "The field may be static (but not final)."
-msgstr ""
+msgstr "L'attribut peut être static (mais non final)."
 
 #. Tag: para
 #, no-c-format
 msgid "A resource declaration really contains two pieces of information:"
 msgstr ""
+"Une déclaration de ressource contient réellement deux éléments d'information"
+" :"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"the JNDI name, EJB link, persistence unit name, or other metadata needed to "
+"obtain a reference to the resource from the component environment, and"
+msgstr ""
+"le nom JNDI, l'EJB link, le nom de l'unité de persistance, ou d'autres "
+"métadonnées nécessaire pour obtenir une référence à la ressource <???>, et"
 
 #. Tag: para
 #, no-c-format
-msgid "the JNDI name, EJB link, persistence unit name, or other metadata needed to obtain a reference to the resource from the component environment, and"
+msgid ""
+"the type and qualifiers that we will use to inject the reference into our "
+"beans."
 msgstr ""
+"le type et les qualifiants que nous utiliserons pour injecter la référence "
+"dans nos beans."
 
 #. Tag: para
 #, no-c-format
-msgid "the type and qualifiers that we will use to inject the reference into our beans."
+msgid ""
+"It might feel strange to be declaring resources in Java code. Isn't this "
+"stuff that might be deployment-specific? Certainly, and that's why it makes "
+"sense to declare your resources in a class annotated "
+"<literal>@Alternative</literal>."
 msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "It might feel strange to be declaring resources in Java code. Isn't this stuff that might be deployment-specific? Certainly, and that's why it makes sense to declare your resources in a class annotated <literal>@Alternative</literal>."
-msgstr ""
+"Il pourrait sembler étrange de déclarer des ressources en code Java. N'est-"
+"ce pas ce genre de choses qui devraient  être spécifiques au déploiement ? "
+"Certainement, et c'est pourquoi il est logique de déclarer vos ressources "
+"dans une classe annotée <literal>@Alternative</literal>."
 
 #. Tag: title
 #, no-c-format
 msgid "Typesafe resource injection"
-msgstr ""
+msgstr "Injection typesafe de ressource"
 
 #. Tag: para
 #, no-c-format
 msgid "These resources can now be injected in the usual way."
-msgstr ""
+msgstr "Ces ressources peuvent maintenant être injectés de façon courante."
 
 #. Tag: programlisting
 #, no-c-format
@@ -156,7 +223,9 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "@Inject @CustomerDatabase EntityManagerFactory customerDatabaseEntityManagerFactory;"
+msgid ""
+"@Inject @CustomerDatabase EntityManagerFactory "
+"customerDatabaseEntityManagerFactory;"
 msgstr ""
 
 #. Tag: programlisting
@@ -166,13 +235,30 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The bean type and qualifiers of the resource are determined by the producer field declaration."
+msgid ""
+"The bean type and qualifiers of the resource are determined by the producer "
+"field declaration."
 msgstr ""
+"Le type et les qualifiants de la ressource sont déterminés par la "
+"déclaration de l'attribut de production."
 
 #. Tag: para
-#, no-c-format
-msgid "It might seem like a pain to have to write these extra producer field declarations, just to gain an additional level of indirection. You could just as well use component environment injection directly, right? But remember that you're going to be using resources like the <literal>EntityManager</literal> in several different beans. Isn't it nicer and more typesafe to write"
+#, fuzzy, no-c-format
+msgid ""
+"It might seem like a pain to have to write these extra producer field "
+"declarations, just to gain an additional level of indirection. You could "
+"just as well use component environment injection directly, right? But "
+"remember that you're going to be using resources like the "
+"<literal>EntityManager</literal> in several different beans. Isn't it nicer "
+"and more typesafe to write"
 msgstr ""
+"Il pourrait sembler comme une douleur d'avoir à écrire ces déclarations "
+"supplémentaires sur l'attribut de production, juste pour gagner un niveau "
+"supplémentaire d'indirection. Vous pourriez tout aussi bien utiliser "
+"l'injection de <???> directement, non? Mais n'oubliez pas que vous allez "
+"utiliser des ressources comme l'<literal>EntityManager</ literal> dans "
+"plusieurs beans différents. N'est-il pas plus agréable et plus typesafe "
+"d'écrire"
 
 #. Tag: programlisting
 #, no-c-format
@@ -182,7 +268,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "instead of"
-msgstr ""
+msgstr "au lieu de"
 
 #. Tag: programlisting
 #, no-c-format
@@ -192,4 +278,4 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "all over the place?"
-msgstr ""
+msgstr "partout ?"

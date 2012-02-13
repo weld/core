@@ -1,18 +1,17 @@
 # Language ja-JP translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-06-09 03:51+0900\n"
 "Last-Translator: Shinobu NOGAMI <s-nogami@sourceforge.jp>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
@@ -20,9 +19,14 @@ msgid "JSF web application example"
 msgstr "JSF Web アプリケーションサンプル"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
-msgstr "完全な例でこの考えを説明しましょう。JSF を 使用するアプリケーションとしてユーザのログイン / ログアウトを実装します。まず最初に、ログインしている間にユーザ名とパスワードを保持しておくための Web Bean を定義するでしょう:"
+#, no-c-format
+msgid ""
+"Let's illustrate these ideas with a full example. We're going to implement "
+"user login/logout for an application that uses JSF. First, we'll define a "
+"request-scoped bean to hold the username and password entered during login, "
+"with constraints defined using annotations from the Bean Validation "
+"specification:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -61,7 +65,7 @@ msgid "This bean is bound to the login prompt in the following JSF form:"
 msgstr "この Web Bean は、以下の JSF フォームのログインプロンプトにバインドされます:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;h:form&gt;\n"
 "   &lt;h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\"&gt;\n"
@@ -76,16 +80,6 @@ msgid ""
 "   &lt;h:commandButton value=\"Logout\" action=\"#{login.logout}\" rendered=\"#{login.loggedIn}\"/&gt;\n"
 "&lt;/h:form&gt;"
 msgstr ""
-"<![CDATA[<f:form>\n"
-"    <h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\">\n"
-"        <h:outputLabel for=\"username\">Username:</h:outputLabel>\n"
-"        <h:inputText id=\"username\" value=\"#{credentials.username}\"/>\n"
-"        <h:outputLabel for=\"password\">Password:</h:outputLabel>\n"
-"        <h:inputText id=\"password\" value=\"#{credentials.password}\"/>\n"
-"    </h:panelGrid>\n"
-"    <h:commandButton value=\"Login\" action=\"#{login.login}\" rendered=\"#{!login.loggedIn}\"/>\n"
-"    <h:commandButton value=\"Logout\" acion=\"#{login.logout}\" rendered=\"#{login.loggedIn}\"/>\n"
-"</f:form]]>"
 
 #. Tag: para
 #, no-c-format
@@ -121,16 +115,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "(Note that we're also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
+msgid ""
+"(Note that we're also going to need a <literal>persistence.xml</literal> "
+"file to configure the JPA persistence unit containing "
+"<literal>User</literal>.)"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The actual work is done by a session-scoped bean that maintains information about the currently logged-in user and exposes the <literal>User</literal> entity to other beans:"
-msgstr "実際の仕事は、現在ログイン中のユーザの情報を保持するセッションスコープの Web Bean によって行われ、他の Web Bean に対して <literal>User</literal> エンティティを公開します:"
+msgid ""
+"The actual work is done by a session-scoped bean that maintains information "
+"about the currently logged-in user and exposes the <literal>User</literal> "
+"entity to other beans:"
+msgstr ""
+"実際の仕事は、現在ログイン中のユーザの情報を保持するセッションスコープの Web Bean によって行われ、他の Web Bean に対して "
+"<literal>User</literal> エンティティを公開します:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@SessionScoped @Named\n"
 "public class Login implements Serializable {\n"
@@ -169,45 +171,12 @@ msgid ""
 "\n"
 "}"
 msgstr ""
-"<![CDATA[@SessionScoped @Named\n"
-"public class Login {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @PersistenceContext EntityManager userDatabase;\n"
-"\n"
-"    private User user;\n"
-"    \n"
-"    public void login() {\n"
-"            \n"
-"        List<User> results = userDatabase.createQuery(\n"
-"           \"select u from User u where u.username=:username and u.password=:password\")\n"
-"           .setParameter(\"username\", credentials.getUsername())\n"
-"           .setParameter(\"password\", credentials.getPassword())\n"
-"           .getResultList();\n"
-"        \n"
-"        if ( !results.isEmpty() ) {\n"
-"           user = results.get(0);\n"
-"        }\n"
-"        \n"
-"    }\n"
-"    \n"
-"    public void logout() {\n"
-"        user = null;\n"
-"    }\n"
-"    \n"
-"    public boolean isLoggedIn() {\n"
-"       return user!=null;\n"
-"    }\n"
-"    \n"
-"    @Produces @LoggedIn User getCurrentUser() {\n"
-"        return user;\n"
-"    }\n"
-"\n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom qualifier annotations:"
+msgid ""
+"<literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom"
+" qualifier annotations:"
 msgstr ""
 
 #. Tag: programlisting
@@ -238,7 +207,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We need an adaptor bean to expose our typesafe <literal>EntityManager</literal>:"
+msgid ""
+"We need an adaptor bean to expose our typesafe "
+"<literal>EntityManager</literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -252,7 +223,9 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now <literal>DocumentEditor</literal>, or any other bean, can easily inject the current user:"
+msgid ""
+"Now <literal>DocumentEditor</literal>, or any other bean, can easily inject "
+"the current user:"
 msgstr "これで他の Web Bean に、現在のユーザを簡単にインジェクトすることができます:"
 
 #. Tag: programlisting
@@ -296,9 +269,8 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we'll explore dependency injection in greater depth."
-msgstr "うまくいけば、このサンプルから Web Bean プログラミングモデルの感触をつかむことができます。次の章では、 Web Beans の依存性注入 (dependency injection) をより深く説明します。"
-
-#~ msgid "Of course, <literal>@LoggedIn</literal> is a binding annotation:"
-#~ msgstr "もちろん <literal>@LoggedIn</literal> は、バインディングアノテーションです:"
+#, no-c-format
+msgid ""
+"Hopefully, this example gave you a taste of the CDI programming model. In "
+"the next chapter, we'll explore dependency injection in greater depth."
+msgstr ""

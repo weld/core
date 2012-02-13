@@ -1,17 +1,15 @@
 # Language zh-CN translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-16 14:16+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
@@ -21,8 +19,14 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI is intended to be a foundation for frameworks, extensions and integration with other technologies. Therefore, CDI exposes a set of SPIs for the use of developers of portable extensions to CDI. For example, the following kinds of extensions were envisaged by the designers of CDI:"
-msgstr "Web Beans意图成为框架的平台，扩展的平台，和能够与其他技术整合的平台。因此，Web Bean将一套SPI暴露给开发者，从而能够让他们便于扩展Web Bean。例如，下面是Web Bean设计者设想的扩展类型："
+msgid ""
+"CDI is intended to be a foundation for frameworks, extensions and "
+"integration with other technologies. Therefore, CDI exposes a set of SPIs "
+"for the use of developers of portable extensions to CDI. For example, the "
+"following kinds of extensions were envisaged by the designers of CDI:"
+msgstr ""
+"Web Beans意图成为框架的平台，扩展的平台，和能够与其他技术整合的平台。因此，Web "
+"Bean将一套SPI暴露给开发者，从而能够让他们便于扩展Web Bean。例如，下面是Web Bean设计者设想的扩展类型："
 
 #. Tag: para
 #, no-c-format
@@ -31,7 +35,9 @@ msgstr "整合业务流程管理引擎，"
 
 #. Tag: para
 #, no-c-format
-msgid "integration with third-party frameworks such as Spring, Seam, GWT or Wicket, and"
+msgid ""
+"integration with third-party frameworks such as Spring, Seam, GWT or Wicket,"
+" and"
 msgstr "整合第三方框架，例如Spring, Seam, GWT或者Wicket，和"
 
 #. Tag: para
@@ -56,7 +62,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Injecting dependencies into its own objects using the dependency injection service"
+msgid ""
+"Injecting dependencies into its own objects using the dependency injection "
+"service"
 msgstr ""
 
 #. Tag: para
@@ -66,7 +74,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Augmenting or overriding the annotation-based metadata with metadata from some other source"
+msgid ""
+"Augmenting or overriding the annotation-based metadata with metadata from "
+"some other source"
 msgstr ""
 
 #. Tag: title
@@ -76,7 +86,11 @@ msgstr " <literal>Bean</literal> 类"
 
 #. Tag: para
 #, no-c-format
-msgid "The first step in creating a portable extension is to write a class that implements <literal>Extension</literal>. This marker interface does not define any methods, but it's needed to satisfy the requirements of Java SE's service provider architecture."
+msgid ""
+"The first step in creating a portable extension is to write a class that "
+"implements <literal>Extension</literal>. This marker interface does not "
+"define any methods, but it's needed to satisfy the requirements of Java SE's"
+" service provider architecture."
 msgstr ""
 
 #. Tag: programlisting
@@ -86,7 +100,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Next, we need to register our extension as a service provider by creating a file named <literal>META-INF/services/javax.enterprise.inject.spi.Extension</literal>, which contains the name of our extension class:"
+msgid ""
+"Next, we need to register our extension as a service provider by creating a "
+"file named <literal>META-"
+"INF/services/javax.enterprise.inject.spi.Extension</literal>, which contains"
+" the name of our extension class:"
 msgstr ""
 
 #. Tag: programlisting
@@ -96,7 +114,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An extension is not a bean, exactly, since it is instantiated by the container during the initialization process, before any beans or contexts exist. However, it can be injected into other beans once the initialization process is complete."
+msgid ""
+"An extension is not a bean, exactly, since it is instantiated by the "
+"container during the initialization process, before any beans or contexts "
+"exist. However, it can be injected into other beans once the initialization "
+"process is complete."
 msgstr ""
 
 #. Tag: programlisting
@@ -110,7 +132,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "And, like beans, extensions can have observer methods. Usually, the observer methods observe <emphasis>container lifecycle events</emphasis>."
+msgid ""
+"And, like beans, extensions can have observer methods. Usually, the observer"
+" methods observe <emphasis>container lifecycle events</emphasis>."
 msgstr ""
 
 #. Tag: title
@@ -120,7 +144,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "During the initialization process, the container fires a series of events, including:"
+msgid ""
+"During the initialization process, the container fires a series of events, "
+"including:"
 msgstr ""
 
 #. Tag: para
@@ -135,12 +161,15 @@ msgstr " <literal>Manager</literal> 对象"
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>ProcessInjectionTarget</literal> and <literal>ProcessProducer</literal>"
+msgid ""
+"<literal>ProcessInjectionTarget</literal> and "
+"<literal>ProcessProducer</literal>"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>ProcessBean</literal> and <literal>ProcessObserverMethod</literal>"
+msgid ""
+"<literal>ProcessBean</literal> and <literal>ProcessObserverMethod</literal>"
 msgstr ""
 
 #. Tag: para
@@ -180,7 +209,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In fact, the extension can do a lot more than just observe. The extension is permitted to modify the container's metamodel and more. Here's a very simple example:"
+msgid ""
+"In fact, the extension can do a lot more than just observe. The extension is"
+" permitted to modify the container's metamodel and more. Here's a very "
+"simple example:"
 msgstr ""
 
 #. Tag: programlisting
@@ -203,7 +235,9 @@ msgstr "扩展Web Bean的神经中枢是 <literal>Manager</literal> 对象。"
 
 #. Tag: programlisting
 #, no-c-format
-msgid "&lt;T&gt; void processAnnotatedType(@Observes ProcessAnnotatedType&lt;T&gt; pat, BeanManager beanManager) { ... }"
+msgid ""
+"&lt;T&gt; void processAnnotatedType(@Observes ProcessAnnotatedType&lt;T&gt; "
+"pat, BeanManager beanManager) { ... }"
 msgstr ""
 
 #. Tag: title
@@ -213,8 +247,12 @@ msgstr " <literal>Manager</literal> 对象"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The nerve center for extending CDI is the <literal>BeanManager</literal> object. The <literal>BeanManager</literal> interface lets us obtain beans, interceptors, decorators, observers and contexts programmatically."
-msgstr " <literal>Manager</literal> 接口能够让我们通过编程来注册和获得Web Bean，拦截器，装饰器，观察者和上下文。"
+msgid ""
+"The nerve center for extending CDI is the <literal>BeanManager</literal> "
+"object. The <literal>BeanManager</literal> interface lets us obtain beans, "
+"interceptors, decorators, observers and contexts programmatically."
+msgstr ""
+" <literal>Manager</literal> 接口能够让我们通过编程来注册和获得Web Bean，拦截器，装饰器，观察者和上下文。"
 
 #. Tag: programlisting
 #, no-c-format
@@ -250,22 +288,30 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Any bean or other Java EE component which supports injection can obtain an instance of <literal>BeanManager</literal> via injection:"
+msgid ""
+"Any bean or other Java EE component which supports injection can obtain an "
+"instance of <literal>BeanManager</literal> via injection:"
 msgstr "我们可以通过注入来获得一个 <literal>Manager</literal> 实例："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "@Inject BeanManager beanManager;"
-msgstr "@Current Manager manager"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Java EE components may obtain an instance of <literal>BeanManager</literal> from JNDI by looking up the name <literal>java:comp/BeanManager</literal>. Any operation of <literal>BeanManager</literal> may be called at any time during the execution of the application."
+msgid ""
+"Java EE components may obtain an instance of <literal>BeanManager</literal> "
+"from JNDI by looking up the name <literal>java:comp/BeanManager</literal>. "
+"Any operation of <literal>BeanManager</literal> may be called at any time "
+"during the execution of the application."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Let's study some of the interfaces exposed by the <literal>BeanManager</literal>."
+msgid ""
+"Let's study some of the interfaces exposed by the "
+"<literal>BeanManager</literal>."
 msgstr "扩展Web Bean的神经中枢是 <literal>Manager</literal> 对象。"
 
 #. Tag: title
@@ -275,12 +321,22 @@ msgstr " <literal>Context</literal> 接口"
 
 #. Tag: para
 #, no-c-format
-msgid "The first thing that a framework developer is going to look for in the portable extension SPI is a way to inject CDI beans into objects which are not under the control of CDI. The <literal>InjectionTarget</literal> interface makes this very easy."
+msgid ""
+"The first thing that a framework developer is going to look for in the "
+"portable extension SPI is a way to inject CDI beans into objects which are "
+"not under the control of CDI. The <literal>InjectionTarget</literal> "
+"interface makes this very easy."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We recommend that frameworks let CDI take over the job of actually instantiating the framework-controlled objects. That way, the framework-controlled objects can take advantage of constructor injection. However, if the framework requires use of a constructor with a special signature, the framework will need to insntatiate the object itself, and so only method and field injection will be supported."
+msgid ""
+"We recommend that frameworks let CDI take over the job of actually "
+"instantiating the framework-controlled objects. That way, the framework-"
+"controlled objects can take advantage of constructor injection. However, if "
+"the framework requires use of a constructor with a special signature, the "
+"framework will need to insntatiate the object itself, and so only method and"
+" field injection will be supported."
 msgstr ""
 
 #. Tag: programlisting
@@ -319,12 +375,21 @@ msgstr " <literal>Context</literal> 接口"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Instances of the interface <literal>Bean</literal> represent beans. There is an instance of <literal>Bean</literal> registered with the <literal>BeanManager</literal> object for every bean in the application. There are even <literal>Bean</literal> objects representing interceptors, decorators and producer methods."
-msgstr "抽象类 <literal>Bean</literal> 的实例代表Web Bean。应用中的每个Web Bean都有一个在 <literal>Manager</literal> 注册的  <literal>Bean</literal> 实例。"
+msgid ""
+"Instances of the interface <literal>Bean</literal> represent beans. There is"
+" an instance of <literal>Bean</literal> registered with the "
+"<literal>BeanManager</literal> object for every bean in the application. "
+"There are even <literal>Bean</literal> objects representing interceptors, "
+"decorators and producer methods."
+msgstr ""
+"抽象类 <literal>Bean</literal> 的实例代表Web Bean。应用中的每个Web Bean都有一个在 "
+"<literal>Manager</literal> 注册的  <literal>Bean</literal> 实例。"
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>Bean</literal> interface exposes all the interesting things we discussed in <xref linkend=\"bean-anatomy\" />."
+msgid ""
+"The <literal>Bean</literal> interface exposes all the interesting things we "
+"discussed in <xref linkend=\"bean-anatomy\" />."
 msgstr ""
 
 #. Tag: programlisting
@@ -350,13 +415,23 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "Set&lt;Bean&lt;?&gt;&gt; allBeans = beanManager.getBeans(Obect.class, new AnnotationLiteral&lt;Any&gt;() {});"
+msgid ""
+"Set&lt;Bean&lt;?&gt;&gt; allBeans = beanManager.getBeans(Obect.class, new "
+"AnnotationLiteral&lt;Any&gt;() {});"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>Bean</literal> interface makes it possible for a portable extension to provide support for new kinds of beans, beyond those defined by the CDI specification. For example, we could use the <literal>Bean</literal> interface to allow objects managed by another framework to be injected into beans."
-msgstr "我们可以继承 <literal>Bean</literal> 类，通过调用 <literal>Manager.addBean()</literal> 方法注册实例，从而提供超出Web Bean规范之外（简单Web Bean, 企业WebBean, 生产者方法和JMS端点）的新的Web Bean类型。例如，我们可以使用 <literal>Bean</literal> 类来允许其他框架管理的对象能够注入到Web Bean中。"
+msgid ""
+"The <literal>Bean</literal> interface makes it possible for a portable "
+"extension to provide support for new kinds of beans, beyond those defined by"
+" the CDI specification. For example, we could use the "
+"<literal>Bean</literal> interface to allow objects managed by another "
+"framework to be injected into beans."
+msgstr ""
+"我们可以继承 <literal>Bean</literal> 类，通过调用 <literal>Manager.addBean()</literal> "
+"方法注册实例，从而提供超出Web Bean规范之外（简单Web Bean, 企业WebBean, 生产者方法和JMS端点）的新的Web "
+"Bean类型。例如，我们可以使用 <literal>Bean</literal> 类来允许其他框架管理的对象能够注入到Web Bean中。"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -365,12 +440,19 @@ msgstr " <literal>Bean</literal> 类"
 
 #. Tag: para
 #, no-c-format
-msgid "The most common kind of CDI portable extension registers a bean (or beans) with the container."
+msgid ""
+"The most common kind of CDI portable extension registers a bean (or beans) "
+"with the container."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In this example, we make a framework class, <literal>SecurityManager</literal> available for injection. To make things a bit more interesting, we're going to delegate back to the container's <literal>InjectionTarget</literal> to perform instantiation and injection upon the <literal>SecurityManager</literal> instance."
+msgid ""
+"In this example, we make a framework class, "
+"<literal>SecurityManager</literal> available for injection. To make things a"
+" bit more interesting, we're going to delegate back to the container's "
+"<literal>InjectionTarget</literal> to perform instantiation and injection "
+"upon the <literal>SecurityManager</literal> instance."
 msgstr ""
 
 #. Tag: programlisting
@@ -463,7 +545,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But a portable extension can also mess with beans that are discovered automatically by the container."
+msgid ""
+"But a portable extension can also mess with beans that are discovered "
+"automatically by the container."
 msgstr ""
 
 #. Tag: title
@@ -473,12 +557,21 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "One of the most interesting things that an extension class can do is process the annotations of a bean class <emphasis>before</emphasis> the container builds its metamodel."
+msgid ""
+"One of the most interesting things that an extension class can do is process"
+" the annotations of a bean class <emphasis>before</emphasis> the container "
+"builds its metamodel."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Let's start with an example of an extension that provides support for the use of <literal>@Named</literal> at the package level. The package-level name is used to qualify the EL names of all beans defined in that package. The portable extension uses the <literal>ProcessAnnotatedType</literal> event to wrap the <literal>AnnotatedType</literal> object and override the <literal>value()</literal> of the <literal>@Named</literal> annotation."
+msgid ""
+"Let's start with an example of an extension that provides support for the "
+"use of <literal>@Named</literal> at the package level. The package-level "
+"name is used to qualify the EL names of all beans defined in that package. "
+"The portable extension uses the <literal>ProcessAnnotatedType</literal> "
+"event to wrap the <literal>AnnotatedType</literal> object and override the "
+"<literal>value()</literal> of the <literal>@Named</literal> annotation."
 msgstr ""
 
 #. Tag: programlisting
@@ -571,7 +664,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Here's a second example, which adds the <literal>@Alternative</literal> annotation to any class which implements a certain <literal>Service</literal> interface."
+msgid ""
+"Here's a second example, which adds the <literal>@Alternative</literal> "
+"annotation to any class which implements a certain "
+"<literal>Service</literal> interface."
 msgstr ""
 
 #. Tag: programlisting
@@ -607,7 +703,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>AnnotatedType</literal> is not the only thing that can be wrapped by an extension."
+msgid ""
+"The <literal>AnnotatedType</literal> is not the only thing that can be "
+"wrapped by an extension."
 msgstr ""
 
 #. Tag: title
@@ -617,12 +715,25 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>InjectionTarget</literal> interface exposes operations for producing and disposing an instance of a component, injecting its dependencies and invoking its lifecycle callbacks. A portable extension may wrap the <literal>InjectionTarget</literal> for any Java EE component that supports injection, allowing it to intercept any of these operations when they are invoked by the container."
+msgid ""
+"The <literal>InjectionTarget</literal> interface exposes operations for "
+"producing and disposing an instance of a component, injecting its "
+"dependencies and invoking its lifecycle callbacks. A portable extension may "
+"wrap the <literal>InjectionTarget</literal> for any Java EE component that "
+"supports injection, allowing it to intercept any of these operations when "
+"they are invoked by the container."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Here's a CDI portable extension that reads values from properties files and configures fields of Java EE components, including servlets, EJBs, managed beans, interceptors and more. In this example, properties for a class such as <literal>org.mydomain.blog.Blogger</literal> go in a resource named <literal>org/mydomain/blog/Blogger.properties</literal>, and the name of a property must match the name of the field to be configured. So <literal>Blogger.properties</literal> could contain:"
+msgid ""
+"Here's a CDI portable extension that reads values from properties files and "
+"configures fields of Java EE components, including servlets, EJBs, managed "
+"beans, interceptors and more. In this example, properties for a class such "
+"as <literal>org.mydomain.blog.Blogger</literal> go in a resource named "
+"<literal>org/mydomain/blog/Blogger.properties</literal>, and the name of a "
+"property must match the name of the field to be configured. So "
+"<literal>Blogger.properties</literal> could contain:"
 msgstr ""
 
 #. Tag: programlisting
@@ -634,7 +745,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The portable extension works by wrapping the containers <literal>InjectionTarget</literal> and setting field values from the <literal>inject()</literal> method."
+msgid ""
+"The portable extension works by wrapping the containers "
+"<literal>InjectionTarget</literal> and setting field values from the "
+"<literal>inject()</literal> method."
 msgstr ""
 
 #. Tag: programlisting
@@ -741,7 +855,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There's a lot more to the portable extension SPI than what we've discussed here. Check out the CDI spec or Javadoc for more information. For now, we'll just mention one more extension point."
+msgid ""
+"There's a lot more to the portable extension SPI than what we've discussed "
+"here. Check out the CDI spec or Javadoc for more information. For now, we'll"
+" just mention one more extension point."
 msgstr ""
 
 #. Tag: title
@@ -751,11 +868,13 @@ msgstr " <literal>Context</literal> 接口"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>Context</literal> interface supports addition of new scopes to CDI, or extension of the built-in scopes to new environments."
+msgid ""
+"The <literal>Context</literal> interface supports addition of new scopes to "
+"CDI, or extension of the built-in scopes to new environments."
 msgstr " <literal>Context</literal> 接口支持向Web Bean中添加新的范围，或者在新的环境中扩展内置的范围。"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public interface Context {\n"
 "   public Class&lt;? extends Annotation&gt; getScope();\n"
@@ -764,184 +883,13 @@ msgid ""
 "   boolean isActive();\n"
 "}"
 msgstr ""
-"public interface Context {\n"
-"    \n"
-"    public Class&lt;? extends Annotation&gt; getScopeType();\n"
-"    \n"
-"    public &lt;T&gt; T get(Bean&lt;T&gt; bean, boolean create);\n"
-"    \n"
-"    boolean isActive();\n"
-"    \n"
-"}"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "For example, we might implement <literal>Context</literal> to add a business process scope to CDI, or to add support for the conversation scope to an application that uses Wicket."
-msgstr "例如，我们可以实现 <literal>Context</literal> ，向Web Bean添加一个业务流程范围，或者向使用Wicket框架的应用添加对对话的支持。"
-
-#, fuzzy
-#~ msgid "There are two subinterfaces of <literal>Bean</literal> defined by the CDI specification: <literal>Interceptor</literal> and <literal>Decorator</literal>."
-#~ msgstr "Web Bean规范定义了两种 <literal>Bean</literal> 的子类：<literal>拦截器</literal> 和 <literal>装饰器</literal>。"
-
-#~ msgid "Extending Web Beans"
-#~ msgstr "扩展Web Bean"
-
-#~ msgid ""
-#~ "<![CDATA[public interface Manager\n"
-#~ "{\n"
-#~ "\n"
-#~ "   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> T getInstanceByType(TypeLiteral<T> type,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public Set<Bean<?>> resolveByName(String name);\n"
-#~ "\n"
-#~ "   public Object getInstanceByName(String name);\n"
-#~ "\n"
-#~ "   public <T> T getInstance(Bean<T> bean);\n"
-#~ "\n"
-#~ "   public void fireEvent(Object event, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public Context getContext(Class<? extends Annotation> scopeType);\n"
-#~ "\n"
-#~ "   public Manager addContext(Context context);\n"
-#~ "\n"
-#~ "   public Manager addBean(Bean<?> bean);\n"
-#~ "\n"
-#~ "   public Manager addInterceptor(Interceptor interceptor);\n"
-#~ "\n"
-#~ "   public Manager addDecorator(Decorator decorator);\n"
-#~ "\n"
-#~ "   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Manager removeObserver(Observer<T> observer,\n"
-#~ "         TypeLiteral<T> eventType, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public List<Interceptor> resolveInterceptors(InterceptionType type,\n"
-#~ "         Annotation... interceptorBindings);\n"
-#~ "\n"
-#~ "   public List<Decorator> resolveDecorators(Set<Class<?>> types,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public interface Manager\n"
-#~ "{\n"
-#~ "\n"
-#~ "   public <T> Set<Bean<T>> resolveByType(Class<T> type, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Set<Bean<T>> resolveByType(TypeLiteral<T> apiType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> T getInstanceByType(Class<T> type, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> T getInstanceByType(TypeLiteral<T> type,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public Set<Bean<?>> resolveByName(String name);\n"
-#~ "\n"
-#~ "   public Object getInstanceByName(String name);\n"
-#~ "\n"
-#~ "   public <T> T getInstance(Bean<T> bean);\n"
-#~ "\n"
-#~ "   public void fireEvent(Object event, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public Context getContext(Class<? extends Annotation> scopeType);\n"
-#~ "\n"
-#~ "   public Manager addContext(Context context);\n"
-#~ "\n"
-#~ "   public Manager addBean(Bean<?> bean);\n"
-#~ "\n"
-#~ "   public Manager addInterceptor(Interceptor interceptor);\n"
-#~ "\n"
-#~ "   public Manager addDecorator(Decorator decorator);\n"
-#~ "\n"
-#~ "   public <T> Manager addObserver(Observer<T> observer, Class<T> eventType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Manager addObserver(Observer<T> observer, TypeLiteral<T> eventType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Manager removeObserver(Observer<T> observer, Class<T> eventType,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Manager removeObserver(Observer<T> observer,\n"
-#~ "         TypeLiteral<T> eventType, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public <T> Set<Observer<T>> resolveObservers(T event, Annotation... bindings);\n"
-#~ "\n"
-#~ "   public List<Interceptor> resolveInterceptors(InterceptionType type,\n"
-#~ "         Annotation... interceptorBindings);\n"
-#~ "\n"
-#~ "   public List<Decorator> resolveDecorators(Set<Class<?>> types,\n"
-#~ "         Annotation... bindings);\n"
-#~ "\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "public abstract class Bean&lt;T&gt; {\n"
-#~ "    \n"
-#~ "    private final Manager manager;\n"
-#~ "    \n"
-#~ "    protected Bean(Manager manager) {\n"
-#~ "        this.manager=manager;\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "    protected Manager getManager() {\n"
-#~ "        return manager;\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "    public abstract Set&lt;Class&gt; getTypes();\n"
-#~ "    public abstract Set&lt;Annotation&gt; getBindingTypes();\n"
-#~ "    public abstract Class&lt;? extends Annotation&gt; getScopeType();\n"
-#~ "    public abstract Class&lt;? extends Annotation&gt; getDeploymentType(); \n"
-#~ "    public abstract String getName();\n"
-#~ "    \n"
-#~ "    public abstract boolean isSerializable();\n"
-#~ "    public abstract boolean isNullable();\n"
-#~ "\n"
-#~ "    public abstract T create();\n"
-#~ "    public abstract void destroy(T instance);\n"
-#~ "    \n"
-#~ "}"
-#~ msgstr ""
-#~ "public abstract class Bean&lt;T&gt; {\n"
-#~ "    \n"
-#~ "    private final Manager manager;\n"
-#~ "    \n"
-#~ "    protected Bean(Manager manager) {\n"
-#~ "        this.manager=manager;\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "    protected Manager getManager() {\n"
-#~ "        return manager;\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "    public abstract Set&lt;Class&gt; getTypes();\n"
-#~ "    public abstract Set&lt;Annotation&gt; getBindingTypes();\n"
-#~ "    public abstract Class&lt;? extends Annotation&gt; getScopeType();\n"
-#~ "    public abstract Class&lt;? extends Annotation&gt; getDeploymentType(); \n"
-#~ "    public abstract String getName();\n"
-#~ "    \n"
-#~ "    public abstract boolean isSerializable();\n"
-#~ "    public abstract boolean isNullable();\n"
-#~ "\n"
-#~ "    public abstract T create();\n"
-#~ "    public abstract void destroy(T instance);\n"
-#~ "    \n"
-#~ "}"
+msgid ""
+"For example, we might implement <literal>Context</literal> to add a business"
+" process scope to CDI, or to add support for the conversation scope to an "
+"application that uses Wicket."
+msgstr ""
+"例如，我们可以实现 <literal>Context</literal> ，向Web "
+"Bean添加一个业务流程范围，或者向使用Wicket框架的应用添加对对话的支持。"

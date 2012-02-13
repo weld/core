@@ -1,18 +1,17 @@
 # Language ja-JP translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-04-19 02:20+0900\n"
 "Last-Translator: wadahiro <wadahiro@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
@@ -21,22 +20,35 @@ msgstr "次のステップ"
 
 #. Tag: para
 #, no-c-format
-msgid "Because CDI is so new, there's not yet a lot of information available online. That will change over time. Regardless, the CDI specification remains the authority for information on CDI. The spec is less than 100 pages and is quite readable (don't worry, it's not like your Blu-ray player manual). Of course, it covers many details we've skipped over here. The spec is available on the <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299 page</ulink> at the JCP website."
+msgid ""
+"Because CDI is so new, there's not yet a lot of information available "
+"online. That will change over time. Regardless, the CDI specification "
+"remains the authority for information on CDI. The spec is less than 100 "
+"pages and is quite readable (don't worry, it's not like your Blu-ray player "
+"manual). Of course, it covers many details we've skipped over here. The spec"
+" is available on the <ulink "
+"url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299 page</ulink> at the JCP "
+"website."
 msgstr ""
-
-# substantiallyってどう訳す
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "The CDI reference implementation, Weld, is being developed at the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. The RI development team and the CDI spec lead blog at <ulink url=\"http://in.relation.to\">in.relation.to</ulink>. This guide was originally based on a series of blog entries published there while the specification was being developed. It's probably the best source of information about the future of CDI, Weld and Seam."
-msgstr "Web Beansの参照実装は、<literal>http://seamframework.org/WebBeans</literal>で開発されています。RI開発チームとWeb Beansのスペックリードは<literal>http://in.relation.to</literal>でブログを書いています。この記事は、大体はそこで書かかれた一連のブログエントリーに基づいています。"
 
 #. Tag: para
 #, no-c-format
-msgid "We encourage you to follow the <ulink url=\"https://lists.jboss.org/mailman/listinfo/weld-dev\">weld-dev</ulink> mailing list and to get involved in <ulink url=\"http://seamframework.org/Weld/Development\">development</ulink>. If you are reading this guide, you likely have something to offer."
+msgid ""
+"The CDI reference implementation, Weld, is being developed at the <ulink "
+"url=\"http://seamframework.org/Weld\">Seam project</ulink>. The RI "
+"development team and the CDI spec lead blog at <ulink "
+"url=\"http://in.relation.to\">in.relation.to</ulink>. This guide was "
+"originally based on a series of blog entries published there while the "
+"specification was being developed. It's probably the best source of "
+"information about the future of CDI, Weld and Seam."
 msgstr ""
 
-#~ msgid "Because Web Beans is so new, there's not yet a lot of information available online."
-#~ msgstr "Web Beansは非常に新しいため、オンラインで利用可能な情報がまだありません。"
-
-#~ msgid "Of course, the Web Beans specification is the best source of more information about Web Beans. The spec is about 100 pages long, only twice the length of this article, and almost as readable. But, of course, it covers many details that we've skipped over. The spec is available from <literal>http://jcp.org/en/jsr/detail?id=299</literal>."
-#~ msgstr "もちろん、Web Beansの仕様書は、Web Beansについて最も詳しい情報源です。仕様書は、約100ページあり、この記事の二倍の長さだけで読みやすいです。しかしやはり仕様書はここでは省略した多くの詳細をカバーしています。仕様書は、<literal>http://jcp.org/en/jsr/detail?id=299</literal>から利用可能です。"
+#. Tag: para
+#, no-c-format
+msgid ""
+"We encourage you to follow the <ulink "
+"url=\"https://lists.jboss.org/mailman/listinfo/weld-dev\">weld-dev</ulink> "
+"mailing list and to get involved in <ulink "
+"url=\"http://seamframework.org/Weld/Development\">development</ulink>. If "
+"you are reading this guide, you likely have something to offer."
+msgstr ""

@@ -1,20 +1,19 @@
 # translation of ri-spi.po to Spanish
 # Language es-ES translations for master.xml package.
-#
+# 
 # Automatically generated, 2008.
 # Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ri-spi\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-20 10:15+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
@@ -24,7 +23,10 @@ msgstr "Integración de la IR de Web Beans en otros entornos"
 
 #. Tag: para
 #, no-c-format
-msgid "If you want to use Weld in another environment, you will need to provide certain information to Weld via the integration SPI. In this Appendix we will briefly discuss the steps needed."
+msgid ""
+"If you want to use Weld in another environment, you will need to provide "
+"certain information to Weld via the integration SPI. In this Appendix we "
+"will briefly discuss the steps needed."
 msgstr ""
 
 #. Tag: title
@@ -34,12 +36,20 @@ msgstr "Carga de recurso"
 
 #. Tag: para
 #, no-c-format
-msgid "If you just want to use managed beans, and not take advantage of enterprise services (EE resource injection, CDI injection into EE component classes, transactional events, support for CDI services in EJBs) and non-flat deployments, then the generic servlet support provided by the \"Weld: Servlets\" extension will be sufficient, and will work in any container supporting the Servlet API."
+msgid ""
+"If you just want to use managed beans, and not take advantage of enterprise "
+"services (EE resource injection, CDI injection into EE component classes, "
+"transactional events, support for CDI services in EJBs) and non-flat "
+"deployments, then the generic servlet support provided by the \"Weld: "
+"Servlets\" extension will be sufficient, and will work in any container "
+"supporting the Servlet API."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "All SPIs and APIs described have extensive JavaDoc, which spell out the detailed contract between the container and Weld."
+msgid ""
+"All SPIs and APIs described have extensive JavaDoc, which spell out the "
+"detailed contract between the container and Weld."
 msgstr ""
 
 #. Tag: title
@@ -49,22 +59,46 @@ msgstr "SPI RI de Web Beans"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The Weld SPI is located in the <literal>weld-spi</literal> module, and packaged as <literal>weld-spi.jar</literal>. Some SPIs are optional, and should only be implemented if you need to override the default behavior; others are required."
-msgstr "El SPI de Web Beans está ubicado en el módulo <literal>webbeans-ri-spi</literal>, empaquetado como <literal>webbeans-ri-spi.jar</literal>. Algunos SPI son opcionales, si necesita anular la conducta predeterminada, se requerirán otros."
+msgid ""
+"The Weld SPI is located in the <literal>weld-spi</literal> module, and "
+"packaged as <literal>weld-spi.jar</literal>. Some SPIs are optional, and "
+"should only be implemented if you need to override the default behavior; "
+"others are required."
+msgstr ""
+"El SPI de Web Beans está ubicado en el módulo <literal>webbeans-ri-"
+"spi</literal>, empaquetado como <literal>webbeans-ri-spi.jar</literal>. "
+"Algunos SPI son opcionales, si necesita anular la conducta predeterminada, "
+"se requerirán otros."
 
 #. Tag: para
 #, no-c-format
-msgid "All interfaces in the SPI support the decorator pattern and provide a <literal>Forwarding</literal> class located in the <literal>helpers</literal> sub package. Additional, commonly used, utility classes, and standard implementations are also located in the <literal>helpers</literal> sub package."
+msgid ""
+"All interfaces in the SPI support the decorator pattern and provide a "
+"<literal>Forwarding</literal> class located in the "
+"<literal>helpers</literal> sub package. Additional, commonly used, utility "
+"classes, and standard implementations are also located in the "
+"<literal>helpers</literal> sub package."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld supports multiple environments. An environment is defined by an implementation of the <literal>Environment</literal> interface. A number of standard environments are built in, and described by the <literal>Environments</literal> enumeration. Different environments require different services to be present (for example a Servlet container doesn't require transaction, EJB or JPA services). By default an EE environment is assumed, but you can adjust the environment by calling <literal>bootstrap.setEnvironment()</literal>."
+msgid ""
+"Weld supports multiple environments. An environment is defined by an "
+"implementation of the <literal>Environment</literal> interface. A number of "
+"standard environments are built in, and described by the "
+"<literal>Environments</literal> enumeration. Different environments require "
+"different services to be present (for example a Servlet container doesn't "
+"require transaction, EJB or JPA services). By default an EE environment is "
+"assumed, but you can adjust the environment by calling "
+"<literal>bootstrap.setEnvironment()</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld uses a generic-typed service registry to allow services to be registered. All services implement the <literal>Service</literal> interface. The service registry allows services to be added and retrieved."
+msgid ""
+"Weld uses a generic-typed service registry to allow services to be "
+"registered. All services implement the <literal>Service</literal> interface."
+" The service registry allows services to be added and retrieved."
 msgstr ""
 
 #. Tag: title
@@ -74,22 +108,51 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An application is often comprised of a number of modules. For example, a Java EE deployment may contain a number of EJB modules (containing business logic) and war modules (containing the user interface). A container may enforce certain <emphasis>accessibility</emphasis> rules which limit the visibility of classes between modules. CDI allows these same rules to apply to bean and observer method resolution. As the accessibility rules vary between containers, Weld requires the container to <emphasis>describe</emphasis> the deployment structure, via the <literal>Deployment</literal> SPI."
+msgid ""
+"An application is often comprised of a number of modules. For example, a "
+"Java EE deployment may contain a number of EJB modules (containing business "
+"logic) and war modules (containing the user interface). A container may "
+"enforce certain <emphasis>accessibility</emphasis> rules which limit the "
+"visibility of classes between modules. CDI allows these same rules to apply "
+"to bean and observer method resolution. As the accessibility rules vary "
+"between containers, Weld requires the container to "
+"<emphasis>describe</emphasis> the deployment structure, via the "
+"<literal>Deployment</literal> SPI."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI specification discusses <emphasis>Bean Deployment Archives</emphasis> (BDAs)&mdash;archives which are marked as containing beans which should be deployed to the CDI container, and made available for injection and resolution. Weld reuses this description of <emphasis>Bean Deployment Archives</emphasis> in its deployment structure SPI. Each deployment exposes the BDAs which it contains; each BDA may also reference other which it can access. Together, the transitive closure of this graph forms the beans which are deployed in the application."
+msgid ""
+"The CDI specification discusses <emphasis>Bean Deployment "
+"Archives</emphasis> (BDAs)&mdash;archives which are marked as containing "
+"beans which should be deployed to the CDI container, and made available for "
+"injection and resolution. Weld reuses this description of <emphasis>Bean "
+"Deployment Archives</emphasis> in its deployment structure SPI. Each "
+"deployment exposes the BDAs which it contains; each BDA may also reference "
+"other which it can access. Together, the transitive closure of this graph "
+"forms the beans which are deployed in the application."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To describe the deployment structure to Weld, the container should provide an implementation of <literal>Deployment</literal>. <literal>Deployment.getBeanDeploymentArchives()</literal> allows Weld to discover the modules which make up the application. The CDI specification also allows beans to be specified programmatically as part of the bean deployment. These beans may, or may not, be in an existing BDA. For this reason, Weld will call <literal>Deployment.loadBeanDeploymentArchive(Class clazz)</literal> for each programmatically described bean."
+msgid ""
+"To describe the deployment structure to Weld, the container should provide "
+"an implementation of <literal>Deployment</literal>. "
+"<literal>Deployment.getBeanDeploymentArchives()</literal> allows Weld to "
+"discover the modules which make up the application. The CDI specification "
+"also allows beans to be specified programmatically as part of the bean "
+"deployment. These beans may, or may not, be in an existing BDA. For this "
+"reason, Weld will call <literal>Deployment.loadBeanDeploymentArchive(Class "
+"clazz)</literal> for each programmatically described bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "As programmatically described beans may result in additional BDAs being added to the graph, Weld will discover the BDA structure every time an unknown BDA is returned by <literal>Deployment.loadBeanDeploymentArchive</literal>."
+msgid ""
+"As programmatically described beans may result in additional BDAs being "
+"added to the graph, Weld will discover the BDA structure every time an "
+"unknown BDA is returned by "
+"<literal>Deployment.loadBeanDeploymentArchive</literal>."
 msgstr ""
 
 #. Tag: title
@@ -99,27 +162,56 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In a strict container, each BDA might have to explicitly specify which other BDAs it can access. However many containers will allow an easy mechanism to make BDAs bi-directionally accessible (such as a library directory). In this case, it is allowable (and reasonable) to describe all such archives as a single, 'virtual' <literal>BeanDeploymentArchive</literal>."
+msgid ""
+"In a strict container, each BDA might have to explicitly specify which other"
+" BDAs it can access. However many containers will allow an easy mechanism to"
+" make BDAs bi-directionally accessible (such as a library directory). In "
+"this case, it is allowable (and reasonable) to describe all such archives as"
+" a single, 'virtual' <literal>BeanDeploymentArchive</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A container, might, for example, use a flat accessibility structure for the application. In this case, a single <literal>BeanDeploymentArchive</literal> would be attached to the <literal>Deployment</literal>."
+msgid ""
+"A container, might, for example, use a flat accessibility structure for the "
+"application. In this case, a single <literal>BeanDeploymentArchive</literal>"
+" would be attached to the <literal>Deployment</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>BeanDeploymentArchive</literal> provides three methods which allow it's contents to be discovered by Weld&mdash;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must return all the classes in the BDA, <literal>BeanDeploymentArchive.getBeansXml()</literal> must return a data structure representing the <code>beans.xml</code> deployment descriptor for the archive, and <literal>BeanDeploymentArchive.getEjbs()</literal> must provide an EJB descriptor for every EJB in the BDA, or an empty list if it is not an EJB archive."
+msgid ""
+"<literal>BeanDeploymentArchive</literal> provides three methods which allow "
+"it's contents to be discovered by "
+"Weld&mdash;<literal>BeanDeploymentArchive.getBeanClasses()</literal> must "
+"return all the classes in the BDA, "
+"<literal>BeanDeploymentArchive.getBeansXml()</literal> must return a data "
+"structure representing the <code>beans.xml</code> deployment descriptor for "
+"the archive, and <literal>BeanDeploymentArchive.getEjbs()</literal> must "
+"provide an EJB descriptor for every EJB in the BDA, or an empty list if it "
+"is not an EJB archive."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To aid container integrator, Weld provides a built-in <code>beans.xml</code> parser. To parse a <code>beans.xml</code> into the data-structure required by <code>BeanDeploymentArchive</code>, the container should call <code>Bootstrap.parseBeansXml(URL)</code>. Weld can also parse multiple <code>beans.xml</code> files, merging them to become a single data-structure. This can be achieved by calling <code>Bootstrap.parseBeansXml(Iterable&lt;URL&gt;)</code>."
+msgid ""
+"To aid container integrator, Weld provides a built-in <code>beans.xml</code>"
+" parser. To parse a <code>beans.xml</code> into the data-structure required "
+"by <code>BeanDeploymentArchive</code>, the container should call "
+"<code>Bootstrap.parseBeansXml(URL)</code>. Weld can also parse multiple "
+"<code>beans.xml</code> files, merging them to become a single data-"
+"structure. This can be achieved by calling "
+"<code>Bootstrap.parseBeansXml(Iterable&lt;URL&gt;)</code>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "BDA X may also reference another BDA Y whose beans can be resolved by, and injected into, any bean in BDA X. These are the accessible BDAs, and every BDA that is directly accessible by BDA X should be returned. A BDA will also have BDAs which are accessible transitively, and the transitive closure of the sub-graph of BDA X describes all the beans resolvable by BDA X."
+msgid ""
+"BDA X may also reference another BDA Y whose beans can be resolved by, and "
+"injected into, any bean in BDA X. These are the accessible BDAs, and every "
+"BDA that is directly accessible by BDA X should be returned. A BDA will also"
+" have BDAs which are accessible transitively, and the transitive closure of "
+"the sub-graph of BDA X describes all the beans resolvable by BDA X."
 msgstr ""
 
 #. Tag: title
@@ -129,27 +221,46 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In practice, you can regard the deployment structure represented by <literal>Deployment</literal>, and the virtual BDA graph as a mirror of the classloader structure for a deployment. If a class can from BDA X can be loaded by another in BDA Y, it is accessible, and therefore BDA Y's accessible BDAs should include BDA X."
+msgid ""
+"In practice, you can regard the deployment structure represented by "
+"<literal>Deployment</literal>, and the virtual BDA graph as a mirror of the "
+"classloader structure for a deployment. If a class can from BDA X can be "
+"loaded by another in BDA Y, it is accessible, and therefore BDA Y's "
+"accessible BDAs should include BDA X."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To specify the directly accessible BDAs, the container should provide an implementation of <literal>BeanDeploymentArchive.getBeanDeploymentArchives()</literal>."
+msgid ""
+"To specify the directly accessible BDAs, the container should provide an "
+"implementation of "
+"<literal>BeanDeploymentArchive.getBeanDeploymentArchives()</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld allows the container to describe a circular graph, and will convert a graph to a tree as part of the deployment process."
+msgid ""
+"Weld allows the container to describe a circular graph, and will convert a "
+"graph to a tree as part of the deployment process."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Certain services are provided for the whole deployment, whilst some are provided per-BDA. BDA services are provided using <literal>BeanDeploymentArchive.getServices()</literal> and only apply to the BDA on which they are provided."
+msgid ""
+"Certain services are provided for the whole deployment, whilst some are "
+"provided per-BDA. BDA services are provided using "
+"<literal>BeanDeploymentArchive.getServices()</literal> and only apply to the"
+" BDA on which they are provided."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The contract for <code>Deployment</code> requires the container to specify the portable extensions (see chapter 12 of the CDI specification) which should be loaded by the application. To aid the container integrator, Weld provides the method <code>Bootstrap.loadExtensions(ClassLoader)</code> which will load the extensions for the specified classloader."
+msgid ""
+"The contract for <code>Deployment</code> requires the container to specify "
+"the portable extensions (see chapter 12 of the CDI specification) which "
+"should be loaded by the application. To aid the container integrator, Weld "
+"provides the method <code>Bootstrap.loadExtensions(ClassLoader)</code> which"
+" will load the extensions for the specified classloader."
 msgstr ""
 
 #. Tag: title
@@ -159,13 +270,25 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld delegates EJB 3 bean discovery to the container so that it doesn't duplicate the work done by the EJB container, and respects any vendor-extensions to the EJB definition."
+msgid ""
+"Weld delegates EJB 3 bean discovery to the container so that it doesn't "
+"duplicate the work done by the EJB container, and respects any vendor-"
+"extensions to the EJB definition."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>EjbDescriptor</literal> should return the relevant metadata as defined in the EJB specification. Each business interface of a session bean should be described using a <literal>BusinessInterfaceDescriptor</literal>."
-msgstr "El <literal>EjbDescriptor</literal> es bastante auto explicativo y debería devolver los metadatos pertinentes como se define en la especificación de EJB. Además de estas dos interfaces, está <literal>BusinessInterfaceDescriptor</literal>, la cual representa una interfaz de negocios local (encapsulando la clase de interfaz y el nombre de jndi a la búsqueda de una instancia del EJB)."
+msgid ""
+"The <literal>EjbDescriptor</literal> should return the relevant metadata as "
+"defined in the EJB specification. Each business interface of a session bean "
+"should be described using a <literal>BusinessInterfaceDescriptor</literal>."
+msgstr ""
+"El <literal>EjbDescriptor</literal> es bastante auto explicativo y debería "
+"devolver los metadatos pertinentes como se define en la especificación de "
+"EJB. Además de estas dos interfaces, está "
+"<literal>BusinessInterfaceDescriptor</literal>, la cual representa una "
+"interfaz de negocios local (encapsulando la clase de interfaz y el nombre de"
+" jndi a la búsqueda de una instancia del EJB)."
 
 #. Tag: title
 #, no-c-format
@@ -174,32 +297,53 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "All the EE resource services are per-BDA services, and may be provided using one of two methods. Which method to use is at the discretion of the integrator."
+msgid ""
+"All the EE resource services are per-BDA services, and may be provided using"
+" one of two methods. Which method to use is at the discretion of the "
+"integrator."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The integrator may choose to provide all EE resource injection services themselves, using another library or framework. In this case the integrator should use the <literal>EE</literal> environment, and implement the <xref linkend=\"injection.services\" /> SPI."
+msgid ""
+"The integrator may choose to provide all EE resource injection services "
+"themselves, using another library or framework. In this case the integrator "
+"should use the <literal>EE</literal> environment, and implement the <xref "
+"linkend=\"injection.services\" /> SPI."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Alternatively, the integrator may choose to use CDI to provide EE resource injection. In this case, the <literal>EE_INJECT</literal> environment should be used, and the integrator should implement the <xref linkend=\"ejb.services.resolution\" />, <xref linkend=\"resource.services\" /> and <xref linkend=\"jpa.services\" />."
+msgid ""
+"Alternatively, the integrator may choose to use CDI to provide EE resource "
+"injection. In this case, the <literal>EE_INJECT</literal> environment should"
+" be used, and the integrator should implement the <xref "
+"linkend=\"ejb.services.resolution\" />, <xref linkend=\"resource.services\" "
+"/> and <xref linkend=\"jpa.services\" />."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "CDI only provides annotation-based EE resource injection; if you wish to provide deployment descriptor (e.g. <literal>ejb-jar.xml</literal>) injection, you must use <xref linkend=\"injection.services\" />."
+msgid ""
+"CDI only provides annotation-based EE resource injection; if you wish to "
+"provide deployment descriptor (e.g. <literal>ejb-jar.xml</literal>) "
+"injection, you must use <xref linkend=\"injection.services\" />."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If the container performs EE resource injection, the injected resources must be serializable. If EE resource injection is provided by Weld, the resolved resource must be serializable."
+msgid ""
+"If the container performs EE resource injection, the injected resources must"
+" be serializable. If EE resource injection is provided by Weld, the resolved"
+" resource must be serializable."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you use a non-EE environment then you may implement any of the EE service SPIs, and Weld will provide the associated functionality. There is no need to implement those services you don't need!"
+msgid ""
+"If you use a non-EE environment then you may implement any of the EE service"
+" SPIs, and Weld will provide the associated functionality. There is no need "
+"to implement those services you don't need!"
 msgstr ""
 
 #. Tag: title
@@ -214,12 +358,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>EJBServices</literal> is used to resolve local EJBs used to back session beans, and must always be provided in an EE environment. <literal>EJBServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal> returns a wrapper&mdash;<literal>SessionObjectReference</literal>&mdash;around the EJB reference. This wrapper allows Weld to request a reference that implements the given business interface, and, in the case of SFSBs, both request the removal of the EJB from the container and query whether the EJB has been previously removed."
+msgid ""
+"<literal>EJBServices</literal> is used to resolve local EJBs used to back "
+"session beans, and must always be provided in an EE environment. "
+"<literal>EJBServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal> "
+"returns a "
+"wrapper&mdash;<literal>SessionObjectReference</literal>&mdash;around the EJB"
+" reference. This wrapper allows Weld to request a reference that implements "
+"the given business interface, and, in the case of SFSBs, both request the "
+"removal of the EJB from the container and query whether the EJB has been "
+"previously removed."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>EJBResolutionServices.resolveEjb(InjectionPoint ij)</literal> allows the resolution of <literal>@EJB</literal> (for injection into managed beans). This service is not required if the implementation of <xref linkend=\"injection.services\" /> takes care of <literal>@EJB</literal> injection."
+msgid ""
+"<literal>EJBResolutionServices.resolveEjb(InjectionPoint ij)</literal> "
+"allows the resolution of <literal>@EJB</literal> (for injection into managed"
+" beans). This service is not required if the implementation of <xref "
+"linkend=\"injection.services\" /> takes care of <literal>@EJB</literal> "
+"injection."
 msgstr ""
 
 #. Tag: title
@@ -229,12 +387,20 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Just as EJB resolution is delegated to the container, resolution of <literal>@PersistenceContext</literal> for injection into managed beans (with the <literal>InjectionPoint</literal> provided), is delegated to the container."
+msgid ""
+"Just as EJB resolution is delegated to the container, resolution of "
+"<literal>@PersistenceContext</literal> for injection into managed beans "
+"(with the <literal>InjectionPoint</literal> provided), is delegated to the "
+"container."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To allow JPA integration, the <literal>JpaServices</literal> interface should be implemented. This service is not required if the implementation of <xref linkend=\"injection.services\" /> takes care of <literal>@PersistenceContext</literal> injection."
+msgid ""
+"To allow JPA integration, the <literal>JpaServices</literal> interface "
+"should be implemented. This service is not required if the implementation of"
+" <xref linkend=\"injection.services\" /> takes care of "
+"<literal>@PersistenceContext</literal> injection."
 msgstr ""
 
 #. Tag: title
@@ -244,17 +410,29 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld delegates JTA activities to the container. The SPI provides a couple hooks to easily achieve this with the <literal>TransactionServices</literal> interface."
+msgid ""
+"Weld delegates JTA activities to the container. The SPI provides a couple "
+"hooks to easily achieve this with the <literal>TransactionServices</literal>"
+" interface."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Any <literal>javax.transaction.Synchronization</literal> implementation may be passed to the <literal>registerSynchronization()</literal> method and the SPI implementation should immediately register the synchronization with the JTA transaction manager used for the EJBs."
+msgid ""
+"Any <literal>javax.transaction.Synchronization</literal> implementation may "
+"be passed to the <literal>registerSynchronization()</literal> method and the"
+" SPI implementation should immediately register the synchronization with the"
+" JTA transaction manager used for the EJBs."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To make it easier to determine whether or not a transaction is currently active for the requesting thread, the <literal>isTransactionActive()</literal> method can be used. The SPI implementation should query the same JTA transaction manager used for the EJBs."
+msgid ""
+"To make it easier to determine whether or not a transaction is currently "
+"active for the requesting thread, the "
+"<literal>isTransactionActive()</literal> method can be used. The SPI "
+"implementation should query the same JTA transaction manager used for the "
+"EJBs."
 msgstr ""
 
 #. Tag: title
@@ -264,7 +442,13 @@ msgstr "Carga de recurso"
 
 #. Tag: para
 #, no-c-format
-msgid "The resolution of <literal>@Resource</literal> (for injection into managed beans) is delegated to the container. You must provide an implementation of <literal>ResourceServices</literal> which provides these operations. This service is not required if the implementation of <xref linkend=\"injection.services\" /> takes care of <literal>@Resource</literal> injection."
+msgid ""
+"The resolution of <literal>@Resource</literal> (for injection into managed "
+"beans) is delegated to the container. You must provide an implementation of "
+"<literal>ResourceServices</literal> which provides these operations. This "
+"service is not required if the implementation of <xref "
+"linkend=\"injection.services\" /> takes care of <literal>@Resource</literal>"
+" injection."
 msgstr ""
 
 #. Tag: title
@@ -274,17 +458,32 @@ msgstr "Carga de recurso"
 
 #. Tag: para
 #, no-c-format
-msgid "An integrator may wish to use <literal>InjectionServices</literal> to provide additional field or method injection over-and-above that provided by Weld. An integration into a Java EE environment may use <literal>InjectionServices</literal> to provide EE resource injection for managed beans."
+msgid ""
+"An integrator may wish to use <literal>InjectionServices</literal> to "
+"provide additional field or method injection over-and-above that provided by"
+" Weld. An integration into a Java EE environment may use "
+"<literal>InjectionServices</literal> to provide EE resource injection for "
+"managed beans."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>InjectionServices</literal> provides a very simple contract, the <literal>InjectionServices.aroundInject(InjectionContext ic);</literal> interceptor will be called for every instance that CDI injects, whether it is a contextual instance, or a non-contextual instance injected by <literal>InjectionTarget.inject()</literal>."
+msgid ""
+"<literal>InjectionServices</literal> provides a very simple contract, the "
+"<literal>InjectionServices.aroundInject(InjectionContext ic);</literal> "
+"interceptor will be called for every instance that CDI injects, whether it "
+"is a contextual instance, or a non-contextual instance injected by "
+"<literal>InjectionTarget.inject()</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>InjectionContext</literal> can be used to discover additional information about the injection being performed, including the <literal>target</literal> being injected. <literal>ic.proceed()</literal> should be called to perform CDI-style injection, and call initializer methods."
+msgid ""
+"The <literal>InjectionContext</literal> can be used to discover additional "
+"information about the injection being performed, including the "
+"<literal>target</literal> being injected. <literal>ic.proceed()</literal> "
+"should be called to perform CDI-style injection, and call initializer "
+"methods."
 msgstr ""
 
 #. Tag: title
@@ -294,7 +493,10 @@ msgstr "Carga de recurso"
 
 #. Tag: para
 #, no-c-format
-msgid "In order to obtain the <literal>Principal</literal> representing the current caller identity, the container should provide an implementation of <literal>SecurityServices</literal>."
+msgid ""
+"In order to obtain the <literal>Principal</literal> representing the current"
+" caller identity, the container should provide an implementation of "
+"<literal>SecurityServices</literal>."
 msgstr ""
 
 #. Tag: title
@@ -304,7 +506,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In order to obtain the default <literal>ValidatorFactory</literal> for the application deployment, the container should provide an implementation of <literal>ValidationServices</literal>."
+msgid ""
+"In order to obtain the default <literal>ValidatorFactory</literal> for the "
+"application deployment, the container should provide an implementation of "
+"<literal>ValidationServices</literal>."
 msgstr ""
 
 #. Tag: title
@@ -314,27 +519,40 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When a client makes a request to an application which uses Weld, the request may be addressed at any of the BDAs in the application deployment. To allow Weld to correctly service the request, it needs to know which BDA the request is addressed at. Where possible, Weld will provide some context, but use of these by the integrator is optional."
+msgid ""
+"When a client makes a request to an application which uses Weld, the request"
+" may be addressed at any of the BDAs in the application deployment. To allow"
+" Weld to correctly service the request, it needs to know which BDA the "
+"request is addressed at. Where possible, Weld will provide some context, but"
+" use of these by the integrator is optional."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Most Servlet contains use a classloader-per-war, this may provide a good way to identify the BDA in use for web requests."
+msgid ""
+"Most Servlet contains use a classloader-per-war, this may provide a good way"
+" to identify the BDA in use for web requests."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When Weld needs to identify the BDA, it will use one of these services, depending on what is servicing the request:"
+msgid ""
+"When Weld needs to identify the BDA, it will use one of these services, "
+"depending on what is servicing the request:"
 msgstr ""
 
 #. Tag: term
 #, no-c-format
-msgid "<literal>ServletServices.getBeanDeploymentArchive(ServletContext ctx)</literal>"
+msgid ""
+"<literal>ServletServices.getBeanDeploymentArchive(ServletContext "
+"ctx)</literal>"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Identify the war in use. The <literal>ServletContext</literal> is provided for additional context."
+msgid ""
+"Identify the war in use. The <literal>ServletContext</literal> is provided "
+"for additional context."
 msgstr ""
 
 #. Tag: title
@@ -344,7 +562,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld uses a map like structure to store bean instances - <literal>org.jboss.weld.context.api.BeanStore</literal>. You may find <literal>org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore</literal> useful."
+msgid ""
+"Weld uses a map like structure to store bean instances - "
+"<literal>org.jboss.weld.context.api.BeanStore</literal>. You may find "
+"<literal>org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore</literal>"
+" useful."
 msgstr ""
 
 #. Tag: title
@@ -354,7 +576,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld expects the Application Server or other container to provide the storage for each application's context. The <literal>org.jboss.weld.context.api.BeanStore</literal> should be implemented to provide an application scoped storage."
+msgid ""
+"Weld expects the Application Server or other container to provide the "
+"storage for each application's context. The "
+"<literal>org.jboss.weld.context.api.BeanStore</literal> should be "
+"implemented to provide an application scoped storage."
 msgstr ""
 
 #. Tag: title
@@ -364,42 +590,71 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>org.jboss.weld.bootstrap.api.Bootstrap</literal> interface defines the initialization for Weld, bean deployment and bean validation. To boot Weld, you must create an instance of <literal>org.jboss.weld.bootstrap.WeldBeansBootstrap</literal> (which implements <literal>Boostrap</literal>), tell it about the services in use, and then request the container start."
+msgid ""
+"The <literal>org.jboss.weld.bootstrap.api.Bootstrap</literal> interface "
+"defines the initialization for Weld, bean deployment and bean validation. To"
+" boot Weld, you must create an instance of "
+"<literal>org.jboss.weld.bootstrap.WeldBeansBootstrap</literal> (which "
+"implements <literal>Boostrap</literal>), tell it about the services in use, "
+"and then request the container start."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The bootstrap is split into phases, container initialization, bean deployment, bean validation and shutdown. Initialization will create a manager, and add the built-in contexts, and examine the deployment structure. Bean deployment will deploy any beans (defined using annotations, programmatically, or built in). Bean validation will validate all beans."
+msgid ""
+"The bootstrap is split into phases, container initialization, bean "
+"deployment, bean validation and shutdown. Initialization will create a "
+"manager, and add the built-in contexts, and examine the deployment "
+"structure. Bean deployment will deploy any beans (defined using annotations,"
+" programmatically, or built in). Bean validation will validate all beans."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To initialize the container, you call <literal>Bootstrap.startInitialization()</literal>. Before calling <literal>startInitialization()</literal>, you must register any services required by the environment. You can do this by calling, for example, <literal>bootstrap.getServices().add(JpaServices.class, new MyJpaServices())</literal>. You must also provide the application context bean store."
+msgid ""
+"To initialize the container, you call "
+"<literal>Bootstrap.startInitialization()</literal>. Before calling "
+"<literal>startInitialization()</literal>, you must register any services "
+"required by the environment. You can do this by calling, for example, "
+"<literal>bootstrap.getServices().add(JpaServices.class, new "
+"MyJpaServices())</literal>. You must also provide the application context "
+"bean store."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Having called <literal>startInitialization()</literal>, the <literal>Manager</literal> for each BDA can be obtained by calling <literal>Bootstrap.getManager(BeanDeploymentArchive bda)</literal>."
+msgid ""
+"Having called <literal>startInitialization()</literal>, the "
+"<literal>Manager</literal> for each BDA can be obtained by calling "
+"<literal>Bootstrap.getManager(BeanDeploymentArchive bda)</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To deploy the discovered beans, call <literal>Bootstrap.deployBeans()</literal>."
+msgid ""
+"To deploy the discovered beans, call "
+"<literal>Bootstrap.deployBeans()</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To validate the deployed beans, call <literal>Bootstrap.validateBeans()</literal>."
+msgid ""
+"To validate the deployed beans, call "
+"<literal>Bootstrap.validateBeans()</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To place the container into a state where it can service requests, call <literal>Bootstrap.endInitialization()</literal>"
+msgid ""
+"To place the container into a state where it can service requests, call "
+"<literal>Bootstrap.endInitialization()</literal>"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. This allows the container to perform any cleanup operations needed."
+msgid ""
+"To shutdown the container you call <literal>Bootstrap.shutdown()</literal>. "
+"This allows the container to perform any cleanup operations needed."
 msgstr ""
 
 #. Tag: title
@@ -409,8 +664,18 @@ msgstr "Carga de recurso"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Weld needs to load classes and resources from the classpath at various times. By default, they are loaded from the Thread Context ClassLoader if available, if not the same classloader that was used to load Weld, however this may not be correct for some environments. If this is case, you can implement <literal>org.jboss.weld.spi.ResourceLoader</literal>."
-msgstr "La IR de Web Beans necesita cargar clases y recursos desde el classpath en varios momentos. Por defecto, se cargan desde el mismo classloader utilizado para cargar la IR, sin embargo, puede no ser lo apropiado para algunos entornos. Si este es el caso, implemente <literal>org.jboss.webbeans.spi.ResourceLoader</literal>:"
+msgid ""
+"Weld needs to load classes and resources from the classpath at various "
+"times. By default, they are loaded from the Thread Context ClassLoader if "
+"available, if not the same classloader that was used to load Weld, however "
+"this may not be correct for some environments. If this is case, you can "
+"implement <literal>org.jboss.weld.spi.ResourceLoader</literal>."
+msgstr ""
+"La IR de Web Beans necesita cargar clases y recursos desde el classpath en "
+"varios momentos. Por defecto, se cargan desde el mismo classloader utilizado"
+" para cargar la IR, sin embargo, puede no ser lo apropiado para algunos "
+"entornos. Si este es el caso, implemente "
+"<literal>org.jboss.webbeans.spi.ResourceLoader</literal>:"
 
 #. Tag: title
 #, no-c-format
@@ -419,8 +684,13 @@ msgstr "El contrato con el contenedor"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There are a number of requirements that Weld places on the container for correct functioning that fall outside implementation of APIs."
-msgstr "Hay una serie de requisitos que la IR de Web Beans ubica en el contenedor para el funcionamiento correcto que está fuera de la implementación de las API."
+msgid ""
+"There are a number of requirements that Weld places on the container for "
+"correct functioning that fall outside implementation of APIs."
+msgstr ""
+"Hay una serie de requisitos que la IR de Web Beans ubica en el contenedor "
+"para el funcionamiento correcto que está fuera de la implementación de las "
+"API."
 
 #. Tag: term
 #, no-c-format
@@ -428,9 +698,12 @@ msgid "Classloader isolation"
 msgstr "Aislamiento de classloader"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "If you are integrating Weld into an environment that supports deployment of multiple applications, you must enable, automatically, or through user configuration, classloader isolation for each CDI application."
-msgstr "Si se está integrando la IR de Web Beans dentro de un entorno que admite despliegue de varias aplicaciones, debe habilitar el aislamiento de classloader para cada aplicación de Web Beans, de forma automática o a través de la configuración del usuario."
+#, no-c-format
+msgid ""
+"If you are integrating Weld into an environment that supports deployment of "
+"multiple applications, you must enable, automatically, or through user "
+"configuration, classloader isolation for each CDI application."
+msgstr ""
 
 #. Tag: term
 #, no-c-format
@@ -439,12 +712,24 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a Servlet environment you must register <literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet listener, either automatically, or through user configuration, for each CDI application which uses Servlet."
-msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
+msgid ""
+"If you are integrating Weld into a Servlet environment you must register "
+"<literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet "
+"listener, either automatically, or through user configuration, for each CDI "
+"application which uses Servlet."
+msgstr ""
+"Si usted está integrando el Web Beans en un entorno de Servlet debe "
+"registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> "
+"como oyente de Servlet, ya sea automáticamente o a través de la "
+"configuración de usuario, para cada aplicación Web Beans que utiliza "
+"Servlet."
 
 #. Tag: para
 #, no-c-format
-msgid "You must ensure that <literal>WeldListener.contextInitialized()</literal> is called after beans are deployed is complete (<literal>Bootstrap.deployBeans()</literal> has been called)."
+msgid ""
+"You must ensure that <literal>WeldListener.contextInitialized()</literal> is"
+" called after beans are deployed is complete "
+"(<literal>Bootstrap.deployBeans()</literal> has been called)."
 msgstr ""
 
 #. Tag: term
@@ -454,38 +739,85 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a JSF environment you must register <literal>org.jboss.weld.jsf.WeldPhaseListener</literal> as a phase listener."
-msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
+msgid ""
+"If you are integrating Weld into a JSF environment you must register "
+"<literal>org.jboss.weld.jsf.WeldPhaseListener</literal> as a phase listener."
+msgstr ""
+"Si usted está integrando el Web Beans en un entorno de Servlet debe "
+"registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> "
+"como oyente de Servlet, ya sea automáticamente o a través de la "
+"configuración de usuario, para cada aplicación Web Beans que utiliza "
+"Servlet."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a JSF environment you must register <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener."
-msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
+msgid ""
+"If you are integrating Weld into a JSF environment you must register "
+"<literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context "
+"listener."
+msgstr ""
+"Si usted está integrando el Web Beans en un entorno de Servlet debe "
+"registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> "
+"como oyente de Servlet, ya sea automáticamente o a través de la "
+"configuración de usuario, para cada aplicación Web Beans que utiliza "
+"Servlet."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a JSF environment you must register <literal>org.jboss.weld.jsf.ConversationAwareViewHandler</literal> as a delegating view handler."
-msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
+msgid ""
+"If you are integrating Weld into a JSF environment you must register "
+"<literal>org.jboss.weld.jsf.ConversationAwareViewHandler</literal> as a "
+"delegating view handler."
+msgstr ""
+"Si usted está integrando el Web Beans en un entorno de Servlet debe "
+"registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> "
+"como oyente de Servlet, ya sea automáticamente o a través de la "
+"configuración de usuario, para cada aplicación Web Beans que utiliza "
+"Servlet."
 
 #. Tag: para
 #, no-c-format
-msgid "If you are integrating Weld into a JSF environment you must obtain the bean manager for the module and then call <literal>BeanManager.wrapExpressionFactory()</literal>, passing <literal>Application.getExpressionFactory()</literal> as the argument. The wrapped expression factory must be used in all EL expression evaluations performed by JSF in this web application."
+msgid ""
+"If you are integrating Weld into a JSF environment you must obtain the bean "
+"manager for the module and then call "
+"<literal>BeanManager.wrapExpressionFactory()</literal>, passing "
+"<literal>Application.getExpressionFactory()</literal> as the argument. The "
+"wrapped expression factory must be used in all EL expression evaluations "
+"performed by JSF in this web application."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you are integrating Weld into a JSF environment you must obtain the bean manager for the module and then call <literal>BeanManager.getELResolver()</literal>, The returned EL resolver should be registered with JSF for this web application."
+msgid ""
+"If you are integrating Weld into a JSF environment you must obtain the bean "
+"manager for the module and then call "
+"<literal>BeanManager.getELResolver()</literal>, The returned EL resolver "
+"should be registered with JSF for this web application."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There are a number of ways you can obtain the bean manager for the module. You could call <literal>Bootstrap.getManager()</literal>, passing in the BDA for this module. Alternatively, you could use the injection into Java EE component classes, or look up the bean manager in JNDI."
+msgid ""
+"There are a number of ways you can obtain the bean manager for the module. "
+"You could call <literal>Bootstrap.getManager()</literal>, passing in the BDA"
+" for this module. Alternatively, you could use the injection into Java EE "
+"component classes, or look up the bean manager in JNDI."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a JSF environment you must register <literal>org.jboss.weld.servlet.ConversationPropagationFilter</literal> as a Servlet listener, either automatically, or through user configuration, for each CDI application which uses JSF. This filter can be registered for all Servlet deployment safely."
-msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
+msgid ""
+"If you are integrating Weld into a JSF environment you must register "
+"<literal>org.jboss.weld.servlet.ConversationPropagationFilter</literal> as a"
+" Servlet listener, either automatically, or through user configuration, for "
+"each CDI application which uses JSF. This filter can be registered for all "
+"Servlet deployment safely."
+msgstr ""
+"Si usted está integrando el Web Beans en un entorno de Servlet debe "
+"registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> "
+"como oyente de Servlet, ya sea automáticamente o a través de la "
+"configuración de usuario, para cada aplicación Web Beans que utiliza "
+"Servlet."
 
 #. Tag: para
 #, no-c-format
@@ -499,17 +831,35 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a JSP environment you must register <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener."
-msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
+msgid ""
+"If you are integrating Weld into a JSP environment you must register "
+"<literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context "
+"listener."
+msgstr ""
+"Si usted está integrando el Web Beans en un entorno de Servlet debe "
+"registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> "
+"como oyente de Servlet, ya sea automáticamente o a través de la "
+"configuración de usuario, para cada aplicación Web Beans que utiliza "
+"Servlet."
 
 #. Tag: para
 #, no-c-format
-msgid "If you are integrating Weld into a JSP environment you must obtain the bean manager for the module and then call <literal>BeanManager.wrapExpressionFactory()</literal>, passing <literal>Application.getExpressionFactory()</literal> as the argument. The wrapped expression factory must be used in all EL expression evaluations performed by JSP."
+msgid ""
+"If you are integrating Weld into a JSP environment you must obtain the bean "
+"manager for the module and then call "
+"<literal>BeanManager.wrapExpressionFactory()</literal>, passing "
+"<literal>Application.getExpressionFactory()</literal> as the argument. The "
+"wrapped expression factory must be used in all EL expression evaluations "
+"performed by JSP."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you are integrating Weld into a JSP environment you must obtain the bean manager for the module and then call <literal>BeanManager.getELResolver()</literal>, The returned EL resolver should be registered with JSP for this web application."
+msgid ""
+"If you are integrating Weld into a JSP environment you must obtain the bean "
+"manager for the module and then call "
+"<literal>BeanManager.getELResolver()</literal>, The returned EL resolver "
+"should be registered with JSP for this web application."
 msgstr ""
 
 #. Tag: term
@@ -519,12 +869,26 @@ msgstr "Intercepción de sesión de Bean"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into an EJB environment you must register the <literal>aroundInvoke</literal> method of <literal>org.jboss.weld.ejb.SessionBeanInterceptor</literal> as a EJB around-invoke interceptor for all EJBs in the application, either automatically, or through user configuration, for each CDI application which uses enterprise beans. If you are running in a EJB 3.1 environment, you should register this as an around-timeout interceptor as well."
-msgstr "Si está integrando los Web Beans en un entorno EJB debe registrar <literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> como un interceptor EJB para todos los EJB en la aplicación, automáticamente o a través de la configuración de usuario, para cada aplicación que utilice Web Beans empresariales."
+msgid ""
+"If you are integrating Weld into an EJB environment you must register the "
+"<literal>aroundInvoke</literal> method of "
+"<literal>org.jboss.weld.ejb.SessionBeanInterceptor</literal> as a EJB "
+"around-invoke interceptor for all EJBs in the application, either "
+"automatically, or through user configuration, for each CDI application which"
+" uses enterprise beans. If you are running in a EJB 3.1 environment, you "
+"should register this as an around-timeout interceptor as well."
+msgstr ""
+"Si está integrando los Web Beans en un entorno EJB debe registrar "
+"<literal>org.jboss.webbeans.ejb.SessionBeanInterceptor</literal> como un "
+"interceptor EJB para todos los EJB en la aplicación, automáticamente o a "
+"través de la configuración de usuario, para cada aplicación que utilice Web "
+"Beans empresariales."
 
 #. Tag: para
 #, no-c-format
-msgid "You must register the <literal>SessionBeanInterceptor</literal> as the inner most interceptor in the stack for all EJBs."
+msgid ""
+"You must register the <literal>SessionBeanInterceptor</literal> as the inner"
+" most interceptor in the stack for all EJBs."
 msgstr ""
 
 #. Tag: term
@@ -534,17 +898,28 @@ msgstr "El <literal>webbeans-ri.jar</literal>"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld can reside on an isolated classloader, or on a shared classloader. If you choose to use an isolated classloader, the default <literal>SingletonProvider</literal>, <literal>IsolatedStaticSingletonProvider</literal>, can be used. If you choose to use a shared classloader, then you will need to choose another strategy."
+msgid ""
+"Weld can reside on an isolated classloader, or on a shared classloader. If "
+"you choose to use an isolated classloader, the default "
+"<literal>SingletonProvider</literal>, "
+"<literal>IsolatedStaticSingletonProvider</literal>, can be used. If you "
+"choose to use a shared classloader, then you will need to choose another "
+"strategy."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You can provide your own implementation of <literal>Singleton</literal> and <literal>SingletonProvider</literal> and register it for use using <literal>SingletonProvider.initialize(SingletonProvider provider)</literal>."
+msgid ""
+"You can provide your own implementation of <literal>Singleton</literal> and "
+"<literal>SingletonProvider</literal> and register it for use using "
+"<literal>SingletonProvider.initialize(SingletonProvider provider)</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld also provides an implementation of Thread Context Classloader per application strategy, via the <literal>TCCLSingletonProvider</literal>."
+msgid ""
+"Weld also provides an implementation of Thread Context Classloader per "
+"application strategy, via the <literal>TCCLSingletonProvider</literal>."
 msgstr ""
 
 #. Tag: term
@@ -554,7 +929,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You should bind the bean manager for the bean deployment archive into JNDI at <literal>java:comp/BeanManager</literal>. The type should be <literal>javax.enterprise.inject.spi.BeanManager</literal>. To obtain the correct bean manager for the bean deployment archive, you may call <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>"
+msgid ""
+"You should bind the bean manager for the bean deployment archive into JNDI "
+"at <literal>java:comp/BeanManager</literal>. The type should be "
+"<literal>javax.enterprise.inject.spi.BeanManager</literal>. To obtain the "
+"correct bean manager for the bean deployment archive, you may call "
+"<literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>"
 msgstr ""
 
 #. Tag: term
@@ -564,17 +944,32 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI specification requires the container to provide injection into non-contextual resources for all Java EE component classes. Weld delegates this responsibility to the container. This can be achieved using the CDI defined <literal>InjectionTarget</literal> SPI. Furthermore, you must perform this operation on the correct bean manager for the bean deployment archive containing the EE component class."
+msgid ""
+"The CDI specification requires the container to provide injection into non-"
+"contextual resources for all Java EE component classes. Weld delegates this "
+"responsibility to the container. This can be achieved using the CDI defined "
+"<literal>InjectionTarget</literal> SPI. Furthermore, you must perform this "
+"operation on the correct bean manager for the bean deployment archive "
+"containing the EE component class."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI specification also requires that a <literal>ProcessInjectionTarget</literal> event is fired for every Java EE component class. Furthermore, if an observer calls <literal>ProcessInjectionTarget.setInjectionTarget()</literal> the container must use <emphasis>the specified</emphasis> injection target to perform injection."
+msgid ""
+"The CDI specification also requires that a "
+"<literal>ProcessInjectionTarget</literal> event is fired for every Java EE "
+"component class. Furthermore, if an observer calls "
+"<literal>ProcessInjectionTarget.setInjectionTarget()</literal> the container"
+" must use <emphasis>the specified</emphasis> injection target to perform "
+"injection."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To help the integrator, Weld provides <literal>WeldManager.fireProcessInjectionTarget()</literal> which returns the <literal>InjectionTarget</literal> to use."
+msgid ""
+"To help the integrator, Weld provides "
+"<literal>WeldManager.fireProcessInjectionTarget()</literal> which returns "
+"the <literal>InjectionTarget</literal> to use."
 msgstr ""
 
 #. Tag: programlisting
@@ -606,12 +1001,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The container may intersperse other operations between these calls. Further, the integrator may choose to implement any of these calls in another manner, assuming the contract is fulfilled."
+msgid ""
+"The container may intersperse other operations between these calls. Further,"
+" the integrator may choose to implement any of these calls in another "
+"manner, assuming the contract is fulfilled."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When performing injections on EJBs you must use the Weld-defined SPI, <literal>WeldManager</literal>. Furthermore, you must perform this operation on the correct bean manager for the bean deployment archive containing the EJB."
+msgid ""
+"When performing injections on EJBs you must use the Weld-defined SPI, "
+"<literal>WeldManager</literal>. Furthermore, you must perform this operation"
+" on the correct bean manager for the bean deployment archive containing the "
+"EJB."
 msgstr ""
 
 #. Tag: programlisting
@@ -646,408 +1048,3 @@ msgid ""
 "it.dispose();\n"
 "cc.release();"
 msgstr ""
-
-#, fuzzy
-#~ msgid "Currently Web Beans only runs in JBoss AS 5; integrating the RI into other EE environments (for example another application server like Glassfish), into a servlet container (like Tomcat), or with an Embedded EJB3.1 implementation is fairly easy. In this Appendix we will briefly discuss the steps needed."
-#~ msgstr "Actualmente la IR de Web Beans sólo se ejecuta en JBoss AS 5; integrando la IR dentro de otros entornos EE (por ejemplo otro servidor de aplicación como Glassfish), dentro de un contenedor de servlet (como Tomcat), o con una implementación incrustada EJB3.1 es bastante fácil. En este apéndice veremos brevemente los pasos requeridos."
-
-#~ msgid "Web Bean Discovery"
-#~ msgstr "Web Bean Discovery"
-
-#, fuzzy
-#~ msgid ""
-#~ "<![CDATA[/**\n"
-#~ "    * Gets list of all classes in classpath archives with META-INF/beans.xml (or\n"
-#~ "    * for WARs WEB-INF/beans.xml) files\n"
-#~ "    * \n"
-#~ "    * @return An iterable over the classes \n"
-#~ "    */\n"
-#~ "   public Iterable<Class<?>> discoverWebBeanClasses();\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets a list of all deployment descriptors in the app classpath\n"
-#~ "    * \n"
-#~ "    * @return An iterable over the beans.xml files \n"
-#~ "    */\n"
-#~ "   public Iterable<URL> discoverWebBeansXml();]]>"
-#~ msgstr ""
-#~ "<![CDATA[public interface WebBeanDiscovery {\n"
-#~ "   /**\n"
-#~ "    * Gets list of all classes in classpath archives with web-beans.xml files\n"
-#~ "    * \n"
-#~ "    * @return An iterable over the classes \n"
-#~ "    */\n"
-#~ "   public Iterable<Class<?>> discoverWebBeanClasses();\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets a list of all web-beans.xml files in the app classpath\n"
-#~ "    * \n"
-#~ "    * @return An iterable over the web-beans.xml files \n"
-#~ "    */\n"
-#~ "   public Iterable<URL> discoverWebBeansXml();\n"
-#~ "   \n"
-#~ "}]]>"
-
-#, fuzzy
-#~ msgid "The discovery of Web Bean classes and <literal>beans.xml</literal> files is self-explanatory (the algorithm is described in Section 11.1 of the JSR-299 specification, and isn't repeated here)."
-#~ msgstr "El descubirmiento de clases de Web Bean y de archivos <literal>web-bean.xml</literal> es autoexplicativo (el algoritmo está descrito en la sección 11.1 de la especificación JSR299 y no se repite aquí)."
-
-#, fuzzy
-#~ msgid "Web Beans also delegates EJB3 bean discovery to the container so that it doesn't have to scan for EJB3 annotations or parse <literal>ejb-jar.xml</literal>. For each EJB in the application an EJBDescriptor should be discovered:"
-#~ msgstr "La IR de Web Beans también delega el descubrimiento de bean EJB3 al contenedor para no tener que examinar las anotaciones EJB3 o analizar <literal>ejb-jar.xml</literal>. Para cada EJB en la aplicación se debe descubrir un EJBDescriptor:"
-
-#, fuzzy
-#~ msgid ""
-#~ "<![CDATA[public interface EjbDescriptor<T>\n"
-#~ "{\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets the EJB type\n"
-#~ "    * \n"
-#~ "    * @return The EJB Bean class\n"
-#~ "    */\n"
-#~ "   public Class<T> getType();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Gets the local business interfaces of the EJB\n"
-#~ "    * \n"
-#~ "    * @return An iterator over the local business interfaces\n"
-#~ "    */\n"
-#~ "   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets the remote business interfaces of the EJB\n"
-#~ "    * \n"
-#~ "    * @return An iterator over the remote business interfaces\n"
-#~ "    */\n"
-#~ "   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces();\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Get the remove methods of the EJB\n"
-#~ "    * \n"
-#~ "    * @return An iterator over the remove methods\n"
-#~ "    */\n"
-#~ "   public Iterable<Method> getRemoveMethods();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the bean is stateless\n"
-#~ "    * \n"
-#~ "    * @return True if stateless, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isStateless();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the bean is a EJB 3.1 Singleton\n"
-#~ "    * \n"
-#~ "    * @return True if the bean is a singleton, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isSingleton();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the EJB is stateful\n"
-#~ "    * \n"
-#~ "    * @return True if the bean is stateful, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isStateful();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the EJB is and MDB\n"
-#~ "    * \n"
-#~ "    * @return True if the bean is an MDB, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isMessageDriven();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Gets the EJB name\n"
-#~ "    * \n"
-#~ "    * @return The name\n"
-#~ "    */\n"
-#~ "   public String getEjbName();]]>"
-#~ msgstr ""
-#~ "<![CDATA[public interface EjbDescriptor<T> {\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets the EJB type\n"
-#~ "    * \n"
-#~ "    * @return The EJB Bean class\n"
-#~ "    */\n"
-#~ "   public Class<T> getType();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Gets the local business interfaces of the EJB\n"
-#~ "    * \n"
-#~ "    * @return An iterator over the local business interfaces\n"
-#~ "    */\n"
-#~ "   public Iterable<BusinessInterfaceDescriptor<?>> getLocalBusinessInterfaces();\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets the remote business interfaces of the EJB\n"
-#~ "    * \n"
-#~ "    * @return An iterator over the remote business interfaces\n"
-#~ "    */\n"
-#~ "   public Iterable<BusinessInterfaceDescriptor<?>> getRemoteBusinessInterfaces();\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Get the remove methods of the EJB\n"
-#~ "    * \n"
-#~ "    * @return An iterator over the remove methods\n"
-#~ "    */\n"
-#~ "   public Iterable<Method> getRemoveMethods();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the bean is stateless\n"
-#~ "    * \n"
-#~ "    * @return True if stateless, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isStateless();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the bean is a EJB 3.1 Singleton\n"
-#~ "    * \n"
-#~ "    * @return True if the bean is a singleton, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isSingleton();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the EJB is stateful\n"
-#~ "    * \n"
-#~ "    * @return True if the bean is stateful, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isStateful();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Indicates if the EJB is and MDB\n"
-#~ "    * \n"
-#~ "    * @return True if the bean is an MDB, false otherwise\n"
-#~ "    */\n"
-#~ "   public boolean isMessageDriven();\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Gets the EJB name\n"
-#~ "    * \n"
-#~ "    * @return The name\n"
-#~ "    */\n"
-#~ "   public String getEjbName();\n"
-#~ "   \n"
-#~ "   \n"
-#~ "}]]>"
-
-#~ msgid "JNDI"
-#~ msgstr "JNDI"
-
-#~ msgid ""
-#~ "<![CDATA[\n"
-#~ "         public interface ResourceLoader {\n"
-#~ "    \n"
-#~ "   /**\n"
-#~ "    * Creates a class from a given FQCN\n"
-#~ "    * \n"
-#~ "    * @param name The name of the clsas\n"
-#~ "    * @return The class\n"
-#~ "    */\n"
-#~ "   public Class<?> classForName(String name);\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets a resource as a URL by name\n"
-#~ "    * \n"
-#~ "    * @param name The name of the resource\n"
-#~ "    * @return An URL to the resource\n"
-#~ "    */\n"
-#~ "   public URL getResource(String name);\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets resources as URLs by name\n"
-#~ "    * \n"
-#~ "    * @param name The name of the resource\n"
-#~ "    * @return An iterable reference to the URLS\n"
-#~ "    */\n"
-#~ "   public Iterable<URL> getResources(String name);\n"
-#~ "   \n"
-#~ "}\n"
-#~ "         ]]>"
-#~ msgstr ""
-#~ "<![CDATA[\n"
-#~ "         public interface ResourceLoader {\n"
-#~ "    \n"
-#~ "   /**\n"
-#~ "    * Creates a class from a given FQCN\n"
-#~ "    * \n"
-#~ "    * @param name The name of the clsas\n"
-#~ "    * @return The class\n"
-#~ "    */\n"
-#~ "   public Class<?> classForName(String name);\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets a resource as a URL by name\n"
-#~ "    * \n"
-#~ "    * @param name The name of the resource\n"
-#~ "    * @return An URL to the resource\n"
-#~ "    */\n"
-#~ "   public URL getResource(String name);\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets resources as URLs by name\n"
-#~ "    * \n"
-#~ "    * @param name The name of the resource\n"
-#~ "    * @return An iterable reference to the URLS\n"
-#~ "    */\n"
-#~ "   public Iterable<URL> getResources(String name);\n"
-#~ "   \n"
-#~ "}\n"
-#~ "         ]]>"
-
-#, fuzzy
-#~ msgid "Servlet injection"
-#~ msgstr "Oyente de Servlet"
-
-#, fuzzy
-#~ msgid "If you are integrating the Web Beans into a JSF environment you must register <literal>org.jboss.webbeans.jsf.WebBeansPhaseListener</literal> as a phase listener, and <literal>org.jboss.webbeans.el.WebBeansELREsolver</literal> as an EL resolver, either automatically, or through user configuration, for each Web Beans application which uses JSF."
-#~ msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
-
-#, fuzzy
-#~ msgid "If you are integrating the Web Beans into an environment that supports deployment of applications, you must insert the <literal>webbeans-core.jar</literal> into the applications isolated classloader. It cannot be loaded from a shared classloader."
-#~ msgstr "Si está integrando el Web Beans dentro de un entorno que admite despliegue de aplicaciones, debe insertar el <literal>webbeans-ri.jar</literal> dentro de las aplicaciones del classloader aislado. No se puede cargar desde el classloader compartido."
-
-#~ msgid "It should be possible to run Web Beans in an SE environment, but you'll to do more work, adding your own contexts and lifecycle. The Web Beans RI currently doesn't expose lifecycle extension points, so you would have to code directly against Web Beans RI classes."
-#~ msgstr "Debería ser posible ejecutar Web Beans en un entorno SE, pero tendría que hacer más cosas, agregar sus propios contextos y ciclo de vida. La IR de Web Beans actualmente no expone puntos de extensión del ciclo de vida, por lo tanto se tendría que codificar directamente en clases IR de Web Beans."
-
-#~ msgid "All interfaces in the SPI support the decorator pattern and provide a <literal>Forwarding</literal> class."
-#~ msgstr "Todas las interfaces en el patrón decorador SPI soportan y proporcionan una clase <literal>Forwarding</literal>."
-
-#, fuzzy
-#~ msgid ""
-#~ "<![CDATA[public interface EjbServices\n"
-#~ "{\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets a descriptor for each EJB in the application\n"
-#~ "    * \n"
-#~ "    * @return The bean class to descriptor map \n"
-#~ "    */\n"
-#~ "   public Iterable<EjbDescriptor<?>> discoverEjbs();]]>"
-#~ msgstr ""
-#~ "<![CDATA[public interface EjbDiscovery\n"
-#~ "{\n"
-#~ "   public static final String PROPERTY_NAME = EjbDiscovery.class.getName();\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Gets a descriptor for each EJB in the application\n"
-#~ "    * \n"
-#~ "    * @return The bean class to descriptor map \n"
-#~ "    */\n"
-#~ "   public Iterable<EjbDescriptor<?>> discoverEjbs();\n"
-#~ "   \n"
-#~ "}]]>"
-
-#, fuzzy
-#~ msgid "The Web Beans RI implements JNDI binding and lookup according to standards, however you may want to alter the binding and lookup (for example in an environment where JNDI isn't available). To do this, implement <literal>org.jboss.webbeans.resources.spi.NamingContext</literal>:"
-#~ msgstr "La IR de Web Beans implementa el enlace JNDI y la búsqueda según los estándares, sin embargo si desea puede alterar el enlace y la búsqueda (Por ejemplo en un entorno donde JNDI no está disponible). Para este fin, implemente <literal>org.jboss.webbeans.spi.resources.NamingContext</literal>:"
-
-#~ msgid ""
-#~ "<![CDATA[public interface NamingContext extends Serializable {\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Typed JNDI lookup\n"
-#~ "    * \n"
-#~ "    * @param <T> The type\n"
-#~ "    * @param name The JNDI name\n"
-#~ "    * @param expectedType The expected type\n"
-#~ "    * @return The object\n"
-#~ "    */\n"
-#~ "   public <T> T lookup(String name, Class<? extends T> expectedType);\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Binds an item to JNDI\n"
-#~ "    * \n"
-#~ "    * @param name The key to bind under\n"
-#~ "    * @param value The item to bind\n"
-#~ "    */\n"
-#~ "   public void bind(String name, Object value);\n"
-#~ "   \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public interface NamingContext extends Serializable {\n"
-#~ "   \n"
-#~ "   /**\n"
-#~ "    * Typed JNDI lookup\n"
-#~ "    * \n"
-#~ "    * @param <T> The type\n"
-#~ "    * @param name The JNDI name\n"
-#~ "    * @param expectedType The expected type\n"
-#~ "    * @return The object\n"
-#~ "    */\n"
-#~ "   public <T> T lookup(String name, Class<? extends T> expectedType);\n"
-#~ "\n"
-#~ "   /**\n"
-#~ "    * Binds an item to JNDI\n"
-#~ "    * \n"
-#~ "    * @param name The key to bind under\n"
-#~ "    * @param value The item to bind\n"
-#~ "    */\n"
-#~ "   public void bind(String name, Object value);\n"
-#~ "   \n"
-#~ "}]]>"
-
-#, fuzzy
-#~ msgid "Servlet listener and filters"
-#~ msgstr "Oyente de Servlet"
-
-#~ msgid "EJB Discovery"
-#~ msgstr "EJB Discovery"
-
-#~ msgid "You can specify the implementation of an SPI either as a system property, or in a properties file <literal>META-INF/web-beans-ri.properties</literal>. All property names are the fully qualified class name of the implemented interface; all property values are the fully qualified class name of the implementation class."
-#~ msgstr "Se puede especificar la implementación de un SPI ya sea como una propiedad del sistema, o en un archivo de propiedades <literal>META-INF/web-beans-ri.properties</literal>. Todos los nombres de propiedad son el nombre completo de clase de la interfaz implementada; todos los valores de propiedad son el nombre completo de clase calificado de la clase de implementación."
-
-#~ msgid "The Web Beans RI can be told to load your implementation of <literal>WebBeanDiscovery</literal> using the property <literal>org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery</literal> with the fully qualified class name as the value. For example:"
-#~ msgstr "Se le puede pedir a la IR de Web Beans cargar la implementación de <literal>WebBeanDiscovery</literal> mediante la propiedad <literal>org.jboss.webbeans.bootstrap.WebBeanDiscovery</literal> con el nombre completo de la clase calificada como el valor. Por ejemplo:"
-
-#, fuzzy
-#~ msgid ""
-#~ "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery= \\ \n"
-#~ "   org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl"
-#~ msgstr "org.jboss.webbeans.bootstrap.spi.WebBeanDiscovery=org.jboss.webbeans.integration.jbossas.WebBeanDiscoveryImpl"
-
-#~ msgid "If the Web Beans RI is being used in a servlet container, it expects a constructor of the form:"
-#~ msgstr "Si la IR de Web Beans se utiliza en un contenedor de Servlet, se espera un constructor de la forma:"
-
-#~ msgid "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
-#~ msgstr "<![CDATA[public WebBeanDiscoveryImpl(ServletContext servletContext) {}]]>"
-
-#~ msgid "The servlet context can be used to allow your implementation of <literal>WebBeanDiscovery</literal> to interact with the container."
-#~ msgstr "El contexto de servlet se puede utilizar para permitir que la implementación de <literal>WebBeanDiscovery</literal> interactúe con el contenedor."
-
-#~ msgid "The Web Beans RI can be told to load your implementation of <literal>EjbDiscovery</literal> using the property <literal>org.jboss.webbeans.bootstrap.spi.EjbDiscovery</literal> with the fully qualified class name as the value. For example:"
-#~ msgstr "Se le puede pedir a la IR de Web Beans cargar la implementación de <literal>EjbDiscovery</literal> mediante la propiedad <literal>org.jboss.webbeans.bootstrap.spi.EjbDiscovery</literal> con el nombre completo de la clase calificada como el valor. Por ejemplo:"
-
-#, fuzzy
-#~ msgid ""
-#~ "org.jboss.webbeans.bootstrap.spi.EjbDiscovery= \\\n"
-#~ "   org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl"
-#~ msgstr "org.jboss.webbeans.bootstrap.spi.EjbDiscovery=org.jboss.webbeans.integration.jbossas.EjbDiscoveryImpl"
-
-#~ msgid "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
-#~ msgstr "<![CDATA[public EjbDiscoveryImpl(ServletContext servletContext) {}]]>"
-
-#~ msgid "The servlet context can be used to allow your implementation of <literal>EjbDiscovery</literal> to interact with the container."
-#~ msgstr "El contexto de Servlet se puede utilizar para permitir que la implementación de <literal>EjbDiscovery</literal> interactúe con el contenedor."
-
-#~ msgid "and tell the RI to use it:"
-#~ msgstr "y le pide a la IR que lo utilice:"
-
-#~ msgid "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
-#~ msgstr "org.jboss.webbeans.resources.spi.NamingContext=com.acme.MyNamingContext"
-
-#~ msgid "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
-#~ msgstr "<![CDATA[public MyNamingContext(ServletContext servletContext) {}]]>"
-
-#~ msgid "The servlet context can be used to allow your implementation of <literal>NamingContext</literal> to interact with the container."
-#~ msgstr "El contexto de Servlet se puede utilizar para permitir que la implementación de <literal>NamingContext</literal> interactúe con el contenedor."
-
-#~ msgid "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-#~ msgstr "org.jboss.webbeans.resources.spi.ResourceLoader=com.acme.ResourceLoader"
-
-#~ msgid "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
-#~ msgstr "<![CDATA[public MyResourceLoader(ServletContext servletContext) {}]]>"
-
-#~ msgid "The servlet context can be used to allow your implementation of <literal>ResourceLoader</literal> to interact with the container."
-#~ msgstr "El contexto de Servlet puede utilizarse para permitir que la implementación de <literal>ResourceLoader</literal> interactúe con el contenedor."

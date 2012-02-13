@@ -1,128 +1,178 @@
 # Language zh-CN translations for Weld_-_JSR-299_Reference_Implementation package.
 # Automatically generated, 2009.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: Weld_-_JSR-299_Reference_Implementation VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-11-11 15:00+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: title
 #, no-c-format
 msgid "More about beans"
-msgstr ""
+msgstr "深入beans"
 
 #. Tag: para
 #, no-c-format
-msgid "A bean is usually an application class that contains business logic. It may be called directly from Java code, or it may be invoked via the Unified EL. A bean may access transactional resources. Dependencies between beans are managed automatically by the container. Most beans are <emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The lifecycle of a bean is always managed by the container."
+msgid ""
+"A bean is usually an application class that contains business logic. It may "
+"be called directly from Java code, or it may be invoked via the Unified EL. "
+"A bean may access transactional resources. Dependencies between beans are "
+"managed automatically by the container. Most beans are "
+"<emphasis>stateful</emphasis> and <emphasis>contextual</emphasis>. The "
+"lifecycle of a bean is always managed by the container."
 msgstr ""
+" "
+"Bean通常是包含业务逻辑的应用类。它可以直接被Java代码调用，或者被统一EL表达式语言调用。Bean可以访问事务资源。Bean之间的依赖可以被容器自动管理。大多数Bean是具有"
+"   <emphasis> 状态 </emphasis> 和 <emphasis> 上下文 </emphasis> 的。"
 
 #. Tag: para
 #, no-c-format
-msgid "Let's back up a second. What does it really mean to be <emphasis>contextual</emphasis>? Since beans may be stateful, it matters <emphasis>which</emphasis> bean instance I have. Unlike a stateless component model (for example, stateless session beans) or a singleton component model (such as servlets, or singleton beans), different clients of a bean see the bean in different states. The client-visible state depends upon which instance of the bean the client has a reference to."
+msgid ""
+"Let's back up a second. What does it really mean to be "
+"<emphasis>contextual</emphasis>? Since beans may be stateful, it matters "
+"<emphasis>which</emphasis> bean instance I have. Unlike a stateless "
+"component model (for example, stateless session beans) or a singleton "
+"component model (such as servlets, or singleton beans), different clients of"
+" a bean see the bean in different states. The client-visible state depends "
+"upon which instance of the bean the client has a reference to."
 msgstr ""
+"让我们回过头来看看 <emphasis> 上下文 </emphasis> 到底是什么意思。既然bean是 <emphasis> 有状态 "
+"</emphasis> 的，那么它关系到我到底持有 <emphasis> 哪个 </emphasis> "
+"bean的实例。与无状态组件模型（例如无状态会话bean）或者一个单例模型组件（例如Servlet或者单例bean）不同，一个有状态bean的不同客户端看到的bean状态时不同的。客户端看到的状态取决于当前客户端持有哪个bean实例的引用。"
 
 #. Tag: para
 #, no-c-format
-msgid "However, like a stateless or singleton model, but <emphasis>unlike</emphasis> stateful session beans, the client does not control the lifecycle of the instance by explicitly creating and destroying it. Instead, the <emphasis>scope</emphasis> of the bean determines:"
+msgid ""
+"However, like a stateless or singleton model, but "
+"<emphasis>unlike</emphasis> stateful session beans, the client does not "
+"control the lifecycle of the instance by explicitly creating and destroying "
+"it. Instead, the <emphasis>scope</emphasis> of the bean determines:"
 msgstr ""
+"然而，bean就像无状态或者单例模式，都与有状态会话bean有着<emphasis>不同</emphasis>，客户端不能通过显示的创建或销毁来控制实例的生命周期。取而代之是通过bean的<emphasis>范围</emphasis>决定的:"
 
 #. Tag: para
 #, no-c-format
 msgid "the lifecycle of each instance of the bean and"
-msgstr ""
+msgstr "每个bean实例的生命周期，以及"
 
 #. Tag: para
 #, no-c-format
 msgid "which clients share a reference to a particular instance of the bean."
-msgstr ""
+msgstr "哪个客户端共享特定bean实例的一个引用。"
 
 #. Tag: para
 #, no-c-format
-msgid "For a given thread in a CDI application, there may be an <emphasis>active context</emphasis> associated with the scope of the bean. This context may be unique to the thread (for example, if the bean is request scoped), or it may be shared with certain other threads (for example, if the bean is session scoped) or even all other threads (if it is application scoped)."
+msgid ""
+"For a given thread in a CDI application, there may be an <emphasis>active "
+"context</emphasis> associated with the scope of the bean. This context may "
+"be unique to the thread (for example, if the bean is request scoped), or it "
+"may be shared with certain other threads (for example, if the bean is "
+"session scoped) or even all other threads (if it is application scoped)."
 msgstr ""
+"对于在CDI应用中一个给定的线程，其可能是一个与bean范围关联的<emphasis>激活上下文</emphasis>。这个上下文可能对于该线程是唯一的（例如，一个请求范围的bean）或者这个上下文被其它线程共享（例如，一个会话范围的bean），甚至被所有其它线程所共享（例如，一个应用范围的bean）。"
 
 #. Tag: para
 #, no-c-format
-msgid "Clients (for example, other beans) executing in the same context will see the same instance of the bean. But clients in a different context may see a different instance (depending on the relationship between the contexts)."
+msgid ""
+"Clients (for example, other beans) executing in the same context will see "
+"the same instance of the bean. But clients in a different context may see a "
+"different instance (depending on the relationship between the contexts)."
 msgstr ""
+"在同一个上下文中执行的客户端（例如，其它的bean）会看到同一个bean的实例。但是在不同的上下文中可能会看到不同的实例（依赖于上下文的关系）。"
 
 #. Tag: para
 #, no-c-format
-msgid "One great advantage of the contextual model is that it allows stateful beans to be treated like services! The client need not concern itself with managing the lifecycle of the bean it's using, <emphasis>nor does it even need to know what that lifecycle is.</emphasis> Beans interact by passing messages, and the bean implementations define the lifecycle of their own state. The beans are loosely coupled because:"
+msgid ""
+"One great advantage of the contextual model is that it allows stateful beans"
+" to be treated like services! The client need not concern itself with "
+"managing the lifecycle of the bean it's using, <emphasis>nor does it even "
+"need to know what that lifecycle is.</emphasis> Beans interact by passing "
+"messages, and the bean implementations define the lifecycle of their own "
+"state. The beans are loosely coupled because:"
 msgstr ""
+"上下文模型的一个巨大优势是它允许像使用服务似地使用有状态bean。客户端不需要关心如何管理它所使用bean的生命周期，<emphasis>甚至根本不需要知道生命周期是什么。</emphasis>Bean通过相互传递消息进行交互，并且bean实现了定义其状态的声明周期。Bean是松耦合的，因为："
 
 #. Tag: para
 #, no-c-format
 msgid "they interact via well-defined public APIs"
-msgstr ""
+msgstr "他们通过设计良好的公共接口进行交互"
 
 #. Tag: para
 #, no-c-format
 msgid "their lifecycles are completely decoupled"
+msgstr "它们的生命周期被完全彻底的被解耦"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"We can replace one bean with another different bean that implements the same"
+" interface and has a different lifecycle (a different scope) without "
+"affecting the other bean implementation. In fact, CDI defines a simple "
+"facility for overriding bean implementations at deployment time, as we will "
+"see in <xref linkend=\"alternatives\" />."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We can replace one bean with another different bean that implements the same interface and has a different lifecycle (a different scope) without affecting the other bean implementation. In fact, CDI defines a simple facility for overriding bean implementations at deployment time, as we will see in <xref linkend=\"alternatives\" />."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Note that not all clients of a bean are beans themselves. Other objects such as servlets or message-driven beans&mdash;which are by nature not injectable, contextual objects&mdash;may also obtain references to beans by injection."
+msgid ""
+"Note that not all clients of a bean are beans themselves. Other objects such"
+" as servlets or message-driven beans&mdash;which are by nature not "
+"injectable, contextual objects&mdash;may also obtain references to beans by "
+"injection."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "The anatomy of a bean"
-msgstr ""
+msgstr "剖析一个bean"
 
 #. Tag: para
 #, no-c-format
-msgid "Enough hand-waving. More formally, the anatomy of a bean, according to the spec:"
-msgstr ""
+msgid ""
+"Enough hand-waving. More formally, the anatomy of a bean, according to the "
+"spec:"
+msgstr "讨论的够多了。我们来看看规范是怎么定义一个bean，根据规范："
 
 #. Tag: para
 #, no-c-format
 msgid "A bean comprises the following attributes:"
-msgstr ""
+msgstr "一个bean包含下列特性:"
 
 #. Tag: para
 #, no-c-format
 msgid "A (nonempty) set of bean types"
-msgstr ""
+msgstr "一套（非空）bean类型"
 
 #. Tag: para
 #, no-c-format
 msgid "A (nonempty) set of qualifiers"
-msgstr ""
+msgstr "一套（非空）绑定类型"
 
 #. Tag: para
 #, no-c-format
 msgid "A scope"
-msgstr ""
+msgstr "一个范围"
 
 #. Tag: para
 #, no-c-format
 msgid "Optionally, a bean EL name"
-msgstr ""
+msgstr "可选的，一个bean EL名字"
 
 #. Tag: para
 #, no-c-format
 msgid "A set of interceptor bindings"
-msgstr ""
+msgstr "一套拦截器绑定类型"
 
 #. Tag: para
 #, no-c-format
 msgid "A bean implementation"
-msgstr ""
+msgstr "一个bean实现"
 
 #. Tag: para
 #, no-c-format
@@ -132,32 +182,41 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Let's see what all this new terminology means."
-msgstr ""
+msgstr "让我们来看看这些新技术都意味着什么。"
 
 #. Tag: title
 #, no-c-format
 msgid "Bean types, qualifiers and dependency injection"
-msgstr ""
+msgstr "Bean类型，绑定和依赖注入"
 
 #. Tag: para
 #, no-c-format
-msgid "Beans usually acquire references to other beans via dependency injection. Any injected attribute specifies a \"contract\" that must be satisfied by the bean to be injected. The contract is:"
-msgstr ""
+msgid ""
+"Beans usually acquire references to other beans via dependency injection. "
+"Any injected attribute specifies a \"contract\" that must be satisfied by "
+"the bean to be injected. The contract is:"
+msgstr "Bean通常通过依赖注入取得其它bean的引用。任何被注入的属性必须遵守一个\\\"约定\\\"，这个约定必须满足注入bean的要求。这个约定是："
 
 #. Tag: para
 #, no-c-format
 msgid "a bean type, together with"
-msgstr ""
+msgstr "一个bean类型"
 
 #. Tag: para
 #, no-c-format
 msgid "a set of qualifiers."
-msgstr ""
+msgstr "一套绑定类型"
 
 #. Tag: para
 #, no-c-format
-msgid "A bean type is a user-defined class or interface; a type that is client-visible. If the bean is an EJB session bean, the bean type is the <literal>@Local</literal> interface or bean-class local view. A bean may have multiple bean types. For example, the following bean has four bean types:"
+msgid ""
+"A bean type is a user-defined class or interface; a type that is client-"
+"visible. If the bean is an EJB session bean, the bean type is the "
+"<literal>@Local</literal> interface or bean-class local view. A bean may "
+"have multiple bean types. For example, the following bean has four bean "
+"types:"
 msgstr ""
+"一个bean类型是用户定义的类或者借口；类型是客户端可见的。如果bean是一个EJB会话bean，bean类型是<literal>@Local</literal>接口或者bean类本地视图。一个bean可以有多个bean类型。例如，下面的bean有四种bean类型:"
 
 #. Tag: programlisting
 #, no-c-format
@@ -171,13 +230,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The bean types are <literal>BookShop</literal>, <literal>Business</literal> and <literal>Shop&lt;Book&gt;</literal>, as well as the implicit type <literal>java.lang.Object</literal>. (Notice that a parameterized type is a legal bean type)."
+msgid ""
+"The bean types are <literal>BookShop</literal>, <literal>Business</literal> "
+"and <literal>Shop&lt;Book&gt;</literal>, as well as the implicit type "
+"<literal>java.lang.Object</literal>. (Notice that a parameterized type is a "
+"legal bean type)."
 msgstr ""
+"Bean类型是<literal>BookShop</literal>, <literal>Business</literal>和 "
+"<literal>Shop&lt;Book&gt;</literal>，同样还有一个隐含类型<literal>java.lang.Object</literal>。（注意，一个参数化类型是合法的bean类型）。"
 
 #. Tag: para
 #, no-c-format
-msgid "Meanwhile, this session bean has only the local interfaces <literal>BookShop</literal>, <literal>Auditable</literal> and <literal>java.lang.Object</literal> as bean types, since the bean class, <literal>BookShopBean</literal> is not a client-visible type."
+msgid ""
+"Meanwhile, this session bean has only the local interfaces "
+"<literal>BookShop</literal>, <literal>Auditable</literal> and "
+"<literal>java.lang.Object</literal> as bean types, since the bean class, "
+"<literal>BookShopBean</literal> is not a client-visible type."
 msgstr ""
+"此时，这个会话bean把本地接口<literal>BookShop</literal>，<literal>Auditable</literal>和<literal>java.lang.Object</literal>作为bean类型，自从<literal>BookShopBean</literal>作为一个bean类，它就不再是客户端可见类型了。"
 
 #. Tag: programlisting
 #, no-c-format
@@ -192,13 +262,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The bean types of a session bean include local interfaces and the bean class local view (if any). EJB remote interfaces are not considered bean types of a session bean. You can't inject an EJB using its remote interface unless you define a <emphasis>resource</emphasis>, which we'll meet in <xref linkend=\"resources\" />."
+msgid ""
+"The bean types of a session bean include local interfaces and the bean class"
+" local view (if any). EJB remote interfaces are not considered bean types of"
+" a session bean. You can't inject an EJB using its remote interface unless "
+"you define a <emphasis>resource</emphasis>, which we'll meet in <xref "
+"linkend=\"resources\" />."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Bean types may be restricted to an explicit set by annotating the bean with the <literal>@Typed</literal> annotation and listing the classes that should be bean types. For instance, the bean types of this bean have been restricted to <literal>Shop&lt;Book&gt;</literal>, together with <literal>java.lang.Object</literal>:"
+msgid ""
+"Bean types may be restricted to an explicit set by annotating the bean with "
+"the <literal>@Typed</literal> annotation and listing the classes that should"
+" be bean types. For instance, the bean types of this bean have been "
+"restricted to <literal>Shop&lt;Book&gt;</literal>, together with "
+"<literal>java.lang.Object</literal>:"
 msgstr ""
+"bean类型可以通过注解<literal>@Typed</literal>明确限定并列出所属bean类型的类。如例子，bean类型被限定为<literal>Shop&lt;Book&gt;</literal>，还有<literal>java.lang.Object</literal>："
 
 #. Tag: programlisting
 #, no-c-format
@@ -213,13 +294,28 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Sometimes, a bean type alone does not provide enough information for the container to know which bean to inject. For instance, suppose we have two implementations of the <literal>PaymentProcessor</literal> interface: <literal>CreditCardPaymentProcessor</literal> and <literal>DebitPaymentProcessor</literal>. Injecting a field of type <literal>PaymentProcessor</literal> introduces an ambiguous condition. In these cases, the client must specify some additional quality of the implementation it is interested in. We model this kind of \"quality\" using a qualifier."
+msgid ""
+"Sometimes, a bean type alone does not provide enough information for the "
+"container to know which bean to inject. For instance, suppose we have two "
+"implementations of the <literal>PaymentProcessor</literal> interface: "
+"<literal>CreditCardPaymentProcessor</literal> and "
+"<literal>DebitPaymentProcessor</literal>. Injecting a field of type "
+"<literal>PaymentProcessor</literal> introduces an ambiguous condition. In "
+"these cases, the client must specify some additional quality of the "
+"implementation it is interested in. We model this kind of \"quality\" using "
+"a qualifier."
 msgstr ""
+"有些时候，一个独立的bean类型没有为容器提供足够的信息来知道注入哪个bean。举例来说，假设我们有<literal>PaymentProcessor</literal>接口的两个实现<literal>CreditCardPaymentProcessor</literal>和<literal>DebitPaymentProcessor</literal>。需要注入的<literal>PaymentProcessor</literal>类型域给出的是一个模糊条件，这种情况下，客户端必须制定附加的属性来确定倾向于哪个实现。我们为这种\\\"属性\\\"使用一个限定词。"
 
 #. Tag: para
 #, no-c-format
-msgid "A qualifier is a user-defined annotation that is itself annotated <literal>@Qualifer</literal>. A qualifier annotation is an extension of the type system. It lets us disambiguate a type without having to fall back to string-based names. Here's an example of a qualifier annotation:"
+msgid ""
+"A qualifier is a user-defined annotation that is itself annotated "
+"<literal>@Qualifer</literal>. A qualifier annotation is an extension of the "
+"type system. It lets us disambiguate a type without having to fall back to "
+"string-based names. Here's an example of a qualifier annotation:"
 msgstr ""
+"限定词使用自定义注解<literal>@Qualifer</literal>。限定词注解是类型机制的扩展。它消除了字面上的歧义。下面是限定词注解的例子："
 
 #. Tag: programlisting
 #, no-c-format
@@ -232,18 +328,31 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You may not be used to seeing the definition of an annotation. In fact, this might be the first time you've encountered one. With CDI, annotation definitions will become a familiar artifact as you'll be creating them from time to time."
-msgstr ""
+msgid ""
+"You may not be used to seeing the definition of an annotation. In fact, this"
+" might be the first time you've encountered one. With CDI, annotation "
+"definitions will become a familiar artifact as you'll be creating them from "
+"time to time."
+msgstr "你可能不习惯去查看一个注解的定义。实际上，这可能是你第一次遇到。在CDI中，定义注解将会成为一种习惯使用的武器，你将不时的创建它们。"
 
 #. Tag: para
 #, no-c-format
-msgid "Pay attention to the names of the built-in annotations in CDI and EJB. You'll notice that they are often adjectives. We encourage you to follow this convention when creating your custom annotations, since they serve to describe the behaviors and roles of the class."
-msgstr ""
+msgid ""
+"Pay attention to the names of the built-in annotations in CDI and EJB. "
+"You'll notice that they are often adjectives. We encourage you to follow "
+"this convention when creating your custom annotations, since they serve to "
+"describe the behaviors and roles of the class."
+msgstr "注意CDI和EJB内建的注解命名。你可能发现它们经常使用形容词。我们鼓励你在创建自定义注解时使用这个习惯，因为它们用来形容类的作用和行为。"
 
 #. Tag: para
 #, no-c-format
-msgid "Now that we have defined a qualifier annotation, we can use it to disambiguate an injection point. The following injection point has the bean type <literal>PaymentProcessor</literal> and qualifier <literal>@CreditCard</literal>:"
+msgid ""
+"Now that we have defined a qualifier annotation, we can use it to "
+"disambiguate an injection point. The following injection point has the bean "
+"type <literal>PaymentProcessor</literal> and qualifier "
+"<literal>@CreditCard</literal>:"
 msgstr ""
+"既然我们已经定义了一个绑定类型注解，那么我们就可以使用其来明确注入点。下面的注入点拥有bean类型<literal>PaymentProcessor</literal>和绑定类型<literal>@CreditCard</literal>："
 
 #. Tag: programlisting
 #, no-c-format
@@ -252,13 +361,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "For each injection point, the container searches for a bean which satisfies the contract, one which has the bean type and all the qualifiers. If it finds exactly one matching bean, it injects an instance of that bean. If it doesn't, it reports an error to the user."
+msgid ""
+"For each injection point, the container searches for a bean which satisfies "
+"the contract, one which has the bean type and all the qualifiers. If it "
+"finds exactly one matching bean, it injects an instance of that bean. If it "
+"doesn't, it reports an error to the user."
 msgstr ""
+"对于每个注入点，容器检索bean满足那种约定，拥有哪个bean类型和其拥有的全部绑定类型。如果找到了相匹配的bean，将会注入这个bean实例。如果没有检索到匹配的，将返回一个错误给用户。"
 
 #. Tag: para
 #, no-c-format
-msgid "How do we specify that qualifiers of a bean? By annotating the bean class, of course! The following bean has the qualifier <literal>@CreditCard</literal> and implements the bean type <literal>PaymentProcessor</literal>. Therefore, it satisfies our qualified injection point:"
+msgid ""
+"How do we specify that qualifiers of a bean? By annotating the bean class, "
+"of course! The following bean has the qualifier "
+"<literal>@CreditCard</literal> and implements the bean type "
+"<literal>PaymentProcessor</literal>. Therefore, it satisfies our qualified "
+"injection point:"
 msgstr ""
+"如何指定bean的绑定类型呢? "
+"当然是在bean上加注解!下面的bean拥有绑定类型<literal>@CreditCard</literal>和<literal>PaymentProcessor</literal>"
+" bean类型的实现。因此它满足我们的绑定类型注入点："
 
 #. Tag: programlisting
 #, no-c-format
@@ -270,28 +392,42 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If a bean or an injection point does not explicitly specify a qualifier, it has the default qualifier, <literal>@Default</literal>."
+msgid ""
+"If a bean or an injection point does not explicitly specify a qualifier, it "
+"has the default qualifier, <literal>@Default</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "That's not quite the end of the story. CDI also defines a simple <emphasis>resolution rule</emphasis> that helps the container decide what to do if there is more than one bean that satisfies a particular contract. We'll get into the details in <xref linkend=\"injection\" />."
+msgid ""
+"That's not quite the end of the story. CDI also defines a simple "
+"<emphasis>resolution rule</emphasis> that helps the container decide what to"
+" do if there is more than one bean that satisfies a particular contract. "
+"We'll get into the details in <xref linkend=\"injection\" />."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "范围"
 
 #. Tag: para
 #, no-c-format
-msgid "The <emphasis>scope</emphasis> of a bean defines the lifecycle and visibility of its instances. The CDI context model is extensible, accommodating arbitrary scopes. However, certain important scopes are built into the specification, and provided by the container. Each scope is represented by an annotation type."
+msgid ""
+"The <emphasis>scope</emphasis> of a bean defines the lifecycle and "
+"visibility of its instances. The CDI context model is extensible, "
+"accommodating arbitrary scopes. However, certain important scopes are built "
+"into the specification, and provided by the container. Each scope is "
+"represented by an annotation type."
 msgstr ""
+"一个bean的<emphasis>范围</emphasis>定义了其实例的生命周期和可见度。CDI上下文模型是一个可扩展的，随意调节的范围。然而，某些范围是内建在规范中的，并由容器提供。每一个范围都用一个注解来呈现。"
 
 #. Tag: para
 #, no-c-format
-msgid "For example, any web application may have <emphasis>session scoped</emphasis> bean:"
-msgstr ""
+msgid ""
+"For example, any web application may have <emphasis>session "
+"scoped</emphasis> bean:"
+msgstr "例如，任何web应用都有<emphasis>会话范围</emphasis>的bean："
 
 #. Tag: programlisting
 #, no-c-format
@@ -302,18 +438,31 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An instance of a session-scoped bean is bound to a user session and is shared by all requests that execute in the context of that session."
-msgstr ""
+msgid ""
+"An instance of a session-scoped bean is bound to a user session and is "
+"shared by all requests that execute in the context of that session."
+msgstr "一个会话范围的bean被绑定在用户会话中，并且被这个会话上下文中所有执行的请求共享。"
 
 #. Tag: para
 #, no-c-format
-msgid "Keep in mind that once a bean is bound to a context, it remains in that context until the context is destroyed. There is no way to manually remove a bean from a context. If you don't want the bean to sit in the session indefinitely, consider using another scope with a shorted lifespan, such as the request or conversation scope."
+msgid ""
+"Keep in mind that once a bean is bound to a context, it remains in that "
+"context until the context is destroyed. There is no way to manually remove a"
+" bean from a context. If you don't want the bean to sit in the session "
+"indefinitely, consider using another scope with a shorted lifespan, such as "
+"the request or conversation scope."
 msgstr ""
+"记住，一旦bean绑定到上下文中，它会一直呆在上下文中直到其销毁。我们没办法从上下文中手工删除一个bean。如果你不希望bean无限期的逗留在会话中，考虑使用其它寿命短的范围，比如请求范围和会话范围。"
 
 #. Tag: para
 #, no-c-format
-msgid "If a scope is not explicitly specified, then the bean belongs to a special scope called the <emphasis>dependent pseudo-scope</emphasis>. Beans with this scope live to serve the object into which they were injected, which means their lifecycle is bound to the lifecycle of that object."
+msgid ""
+"If a scope is not explicitly specified, then the bean belongs to a special "
+"scope called the <emphasis>dependent pseudo-scope</emphasis>. Beans with "
+"this scope live to serve the object into which they were injected, which "
+"means their lifecycle is bound to the lifecycle of that object."
 msgstr ""
+"如果一个范围没有被明确指定，那么这个bean属于一个特定的<emphasis>伪依赖范围</emphasis>。这个bean的范围服务于所注入的对象，这意味着bean的声明周期绑定在注入对象上。"
 
 #. Tag: para
 #, no-c-format
@@ -323,17 +472,24 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "EL name"
-msgstr ""
+msgstr "EL名字"
 
 #. Tag: para
 #, no-c-format
-msgid "If you want to reference a bean in non-Java code that supports Unified EL expressions, for example, in a JSP or JSF page, you must assign the bean an <emphasis>EL name</emphasis>."
+msgid ""
+"If you want to reference a bean in non-Java code that supports Unified EL "
+"expressions, for example, in a JSP or JSF page, you must assign the bean an "
+"<emphasis>EL name</emphasis>."
 msgstr ""
+"如果你想在非Java代码使用统一表达式语言引用一个bean，例如，在JSP或者JSF页面，你必须为bean分配一个 <emphasis> EL名字 "
+"</emphasis> 。"
 
 #. Tag: para
 #, no-c-format
-msgid "The EL name is specified using the <literal>@Named</literal> annotation, as shown here:"
-msgstr ""
+msgid ""
+"The EL name is specified using the <literal>@Named</literal> annotation, as "
+"shown here:"
+msgstr "使用<literal>@Named</literal>注解指定EL名字，如下所示："
 
 #. Tag: programlisting
 #, no-c-format
@@ -345,7 +501,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Now we can easily use the bean in any JSF or JSP page:"
-msgstr ""
+msgstr "现在我们可以方便的在JSF或JSP页面中使用bean:"
 
 #. Tag: programlisting
 #, no-c-format
@@ -357,13 +513,20 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>@Named</literal> annotation is not what makes the class a bean. Most classes in a bean archive are already recognized as beans. The <literal>@Named</literal> annotation just makes it possible to reference the bean from the EL, most commonly from a JSF view."
+msgid ""
+"The <literal>@Named</literal> annotation is not what makes the class a bean."
+" Most classes in a bean archive are already recognized as beans. The "
+"<literal>@Named</literal> annotation just makes it possible to reference the"
+" bean from the EL, most commonly from a JSF view."
 msgstr ""
+"<literal>@Named</literal>注解不是让类成为一个bean。多数在bean中的类已经被识别为bean。<literal>@Named</literal>注解只是让EL中可以使用bean，通常应用在JSF视图中。"
 
 #. Tag: para
 #, no-c-format
-msgid "We can let CDI choose a name for us by leaving off the value of the <literal>@Named</literal> annotation:"
-msgstr ""
+msgid ""
+"We can let CDI choose a name for us by leaving off the value of the "
+"<literal>@Named</literal> annotation:"
+msgstr "我们可以让CDI为<literal>@Named</literal>注解选定一个没有被使用过的的名字："
 
 #. Tag: programlisting
 #, no-c-format
@@ -374,18 +537,28 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The name defaults to the unqualified class name, decapitalized; in this case, <literal>shoppingCart</literal>."
-msgstr ""
+msgid ""
+"The name defaults to the unqualified class name, decapitalized; in this "
+"case, <literal>shoppingCart</literal>."
+msgstr "名字默认是类的完整类名，并且首字母小写；在这个例子中是<literal>shoppingCart</literal>。"
 
 #. Tag: title
 #, no-c-format
 msgid "Alternatives"
-msgstr ""
+msgstr "替代选择"
 
 #. Tag: para
 #, no-c-format
-msgid "We've already seen how qualifiers let us choose between multiple implementations of an interface at development time. But sometimes we have an interface (or other bean type) whose implementation varies depending upon the deployment environment. For example, we may want to use a mock implementation in a testing environment. An <emphasis>alternative</emphasis> may be declared by annotating the bean class with the <literal>@Alternative</literal> annotation."
+msgid ""
+"We've already seen how qualifiers let us choose between multiple "
+"implementations of an interface at development time. But sometimes we have "
+"an interface (or other bean type) whose implementation varies depending upon"
+" the deployment environment. For example, we may want to use a mock "
+"implementation in a testing environment. An <emphasis>alternative</emphasis>"
+" may be declared by annotating the bean class with the "
+"<literal>@Alternative</literal> annotation."
 msgstr ""
+"我已经看到绑定类型是如何在开发时在接口的多个实现中作出选择的。但是有些时候一个接口（或者一个bean类型）的实现取决于开发环境。例如，我们希望在测试环境使用一个mock类型的实现。<literal>@Alternative</literal>注解可以把bean类声明为可代替选择的。"
 
 #. Tag: programlisting
 #, no-c-format
@@ -396,8 +569,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We normally annotate a bean <literal>@Alternative</literal> only when there is some other implementation of an interface it implements (or of any of its bean types). We can choose between alternatives at deployment time by <emphasis>selecting</emphasis> an alternative in the CDI deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module that uses it. Different modules can specify that they use different alternatives."
+msgid ""
+"We normally annotate a bean <literal>@Alternative</literal> only when there "
+"is some other implementation of an interface it implements (or of any of its"
+" bean types). We can choose between alternatives at deployment time by "
+"<emphasis>selecting</emphasis> an alternative in the CDI deployment "
+"descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE "
+"module that uses it. Different modules can specify that they use different "
+"alternatives."
 msgstr ""
+"我们通常只有在使用接口（或者bean类型）的其它实现时才使用<literal>@Alternative</literal>注解。我们能够在部署时通过CDI部署描述符<literal"
+">META-"
+"INF/beans.xml</literal>（存在于jar文件或者JavaEE模型中）<emphasis>选择</emphasis>可供的替代选择。不同的模型可以指定不同的替代选择。"
 
 #. Tag: para
 #, no-c-format
@@ -407,27 +590,55 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Interceptor binding types"
-msgstr ""
+msgstr "拦截器绑定类型"
 
 #. Tag: para
 #, no-c-format
-msgid "You might be familiar with the use of interceptors in EJB 3.0. In Java EE 6, this functionality has been generalized to work with other managed beans. That's right, you no longer have to make your bean an EJB just to intercept its methods. Holler. So what does CDI have to offer above and beyond that? Well, quite a lot actually. Let's cover some background."
+msgid ""
+"You might be familiar with the use of interceptors in EJB 3.0. In Java EE 6,"
+" this functionality has been generalized to work with other managed beans. "
+"That's right, you no longer have to make your bean an EJB just to intercept "
+"its methods. Holler. So what does CDI have to offer above and beyond that? "
+"Well, quite a lot actually. Let's cover some background."
 msgstr ""
+"你可能已经熟练的在EJB3.0中使用拦截器。在JavaEE6中，这个功能通常被用来管理bean。的确如此，你不再需要为了拦截方法而把你的bean定义为EJB。那么CDI是如何做到的呢？让我们来看看后台的细节。"
 
 #. Tag: para
 #, no-c-format
-msgid "The way that interceptors were defined in Java EE 5 was counter-intuitive. You were required to specify the <emphasis>implementation</emphasis> of the interceptor directly on the <emphasis>implementation</emphasis> of the EJB, either in the <literal>@Interceptors</literal> annotation or in the XML descriptor. You might as well just put the interceptor code <emphasis>in</emphasis> the implementation! Second, the order in which the interceptors are applied is taken from the order in which they are declared in the annotation or the XML descriptor. Perhaps this isn't so bad if you're applying the interceptors to a single bean. But, if you are applying them repeatedly, then there's a good chance that you'll inadvertently define a different order for different beans. Now that's a problem."
+msgid ""
+"The way that interceptors were defined in Java EE 5 was counter-intuitive. "
+"You were required to specify the <emphasis>implementation</emphasis> of the "
+"interceptor directly on the <emphasis>implementation</emphasis> of the EJB, "
+"either in the <literal>@Interceptors</literal> annotation or in the XML "
+"descriptor. You might as well just put the interceptor code "
+"<emphasis>in</emphasis> the implementation! Second, the order in which the "
+"interceptors are applied is taken from the order in which they are declared "
+"in the annotation or the XML descriptor. Perhaps this isn't so bad if you're"
+" applying the interceptors to a single bean. But, if you are applying them "
+"repeatedly, then there's a good chance that you'll inadvertently define a "
+"different order for different beans. Now that's a problem."
 msgstr ""
+"在JavaEE5中定义拦截器的方式是反直观的。无论是使用<literal>@Interceptors</literal>注解还是XML描述符，你都必须在EJB实现中指定拦截器的实现。你可能干脆在实现利放置拦截器代码！其次，应用拦截器的顺序取决于注解或描述符中定义的顺序。如果只是把拦截器应用于单独的bean或许没什么问题。但是如果应用于多个bean，那么你就的为不同的bean定义不同的顺序。这就存在问题了。"
 
 #. Tag: para
 #, no-c-format
-msgid "CDI provides a new approach to binding interceptors to beans that introduces a level of indirection (and thus control). We must define an <emphasis>interceptor binding type</emphasis> to describe the behavior implemented by the interceptor."
+msgid ""
+"CDI provides a new approach to binding interceptors to beans that introduces"
+" a level of indirection (and thus control). We must define an "
+"<emphasis>interceptor binding type</emphasis> to describe the behavior "
+"implemented by the interceptor."
 msgstr ""
+"CDI提供了一个全新的方式在bean上绑定拦截器，它引入了一个中间层（用来控制）。我们必须定义<emphasis>拦截器绑定类型</emphasis>来描述拦截器如何执行。"
 
 #. Tag: para
 #, no-c-format
-msgid "An interceptor binding type is a user-defined annotation that is itself annotated <literal>@InterceptorBinding</literal>. It lets us bind interceptor classes to bean classes with no direct dependency between the two classes."
+msgid ""
+"An interceptor binding type is a user-defined annotation that is itself "
+"annotated <literal>@InterceptorBinding</literal>. It lets us bind "
+"interceptor classes to bean classes with no direct dependency between the "
+"two classes."
 msgstr ""
+"一个拦截器绑定类型是用户定义注解<literal>@InterceptorBinding</literal>。它让我们在两个没有直接依赖关系的类中绑定拦截器类到bean类。"
 
 #. Tag: programlisting
 #, no-c-format
@@ -441,8 +652,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The interceptor that implements transaction management declares this annotation:"
-msgstr ""
+msgid ""
+"The interceptor that implements transaction management declares this "
+"annotation:"
+msgstr "拦截器要实现事务管理要声明这个注解："
 
 #. Tag: programlisting
 #, no-c-format
@@ -453,8 +666,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We can apply the interceptor to a bean by annotating the bean class with the same interceptor binding type:"
-msgstr ""
+msgid ""
+"We can apply the interceptor to a bean by annotating the bean class with the"
+" same interceptor binding type:"
+msgstr "我们可以在bean上使用拦截器类型注解来应用一个拦截器："
 
 #. Tag: programlisting
 #, no-c-format
@@ -465,58 +680,86 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Notice that <literal>ShoppingCart</literal> and <literal>TransactionInterceptor</literal> don't know anything about each other."
+msgid ""
+"Notice that <literal>ShoppingCart</literal> and "
+"<literal>TransactionInterceptor</literal> don't know anything about each "
+"other."
 msgstr ""
+"注意，<literal>ShoppingCart</literal>和<literal>TransactionInterceptor</literal>相互之间是不知道对方任何信息的。"
 
 #. Tag: para
 #, no-c-format
-msgid "Interceptors are deployment-specific. (We don't need a <literal>TransactionInterceptor</literal> in our unit tests!) By default, an interceptor is disabled. We can enable an interceptor using the CDI deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or Java EE module. This is also where we specify the interceptor ordering."
+msgid ""
+"Interceptors are deployment-specific. (We don't need a "
+"<literal>TransactionInterceptor</literal> in our unit tests!) By default, an"
+" interceptor is disabled. We can enable an interceptor using the CDI "
+"deployment descriptor <literal>META-INF/beans.xml</literal> of the jar or "
+"Java EE module. This is also where we specify the interceptor ordering."
 msgstr ""
+"拦截器属于部署时的范畴。（我们不需要在单元测试时使用<literal>TransactionInterceptor</literal>）默认情况下，一个拦截器被禁用了。我们能够通过CDI部署描述符<literal"
+">META-INF/beans.xml</literal>（在jar文件或者Java EE模块中）启用这个拦截器。在这里我们同样可以指定拦截器的顺序。"
 
 #. Tag: para
 #, no-c-format
-msgid "We'll discuss interceptors, and their cousins, decorators, in <xref linkend=\"interceptors\" /> and <xref linkend=\"decorators\" />."
+msgid ""
+"We'll discuss interceptors, and their cousins, decorators, in <xref "
+"linkend=\"interceptors\" /> and <xref linkend=\"decorators\" />."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "What kinds of classes are beans?"
-msgstr ""
+msgstr "什么样的类能够称为beans?"
 
 #. Tag: para
 #, no-c-format
-msgid "We've already seen two types of beans: JavaBeans and EJB session beans. Is that the whole story? Actually, it's just the beginning. Let's explore the various kinds of beans that CDI implementations must support out-of-the-box."
+msgid ""
+"We've already seen two types of beans: JavaBeans and EJB session beans. Is "
+"that the whole story? Actually, it's just the beginning. Let's explore the "
+"various kinds of beans that CDI implementations must support out-of-the-box."
 msgstr ""
+"我们已经接触了两种类型的beans：JavaBean和EJB会话bean。这就是全部吗？其实，这仅仅是开始。让我们来探索各式各样的CDI实现bean，它们都是必须是开箱即用的。"
 
 #. Tag: title
 #, no-c-format
 msgid "Managed beans"
-msgstr ""
+msgstr "托管bean"
 
 #. Tag: para
 #, no-c-format
-msgid "A managed bean is a Java class. The basic lifecycle and semantics of a managed bean are defined by the Managed Beans specification. You can explicitly declare a managed bean by annotating the bean class <literal>@ManagedBean</literal>, but in CDI you don't need to. According to the specification, the CDI container treats any class that satisfies the following conditions as a managed bean:"
+msgid ""
+"A managed bean is a Java class. The basic lifecycle and semantics of a "
+"managed bean are defined by the Managed Beans specification. You can "
+"explicitly declare a managed bean by annotating the bean class "
+"<literal>@ManagedBean</literal>, but in CDI you don't need to. According to "
+"the specification, the CDI container treats any class that satisfies the "
+"following conditions as a managed bean:"
 msgstr ""
+"一个托管bean就是一个Java类。托管bean的声明周期和概念定义在托管bean规范中。你可以通过<literal>@ManagedBean</literal>注解明确的声明一个Java类为托管bean，但是在CDI中不需要做这些。按照规范，CDI容器会把满足下列条件的任何类当做托管bean处理:"
 
 #. Tag: para
 #, no-c-format
 msgid "It is not a non-static inner class."
-msgstr ""
+msgstr "一个非静态内部类"
 
 #. Tag: para
 #, no-c-format
 msgid "It is a concrete class, or is annotated <literal>@Decorator</literal>."
-msgstr ""
+msgstr "一个实体类，或者带有<literal>@Decorator</literal>注解的类"
 
 #. Tag: para
 #, no-c-format
-msgid "It is not annotated with an EJB component-defining annotation or declared as an EJB bean class in <literal>ejb-jar.xml</literal>."
-msgstr ""
+msgid ""
+"It is not annotated with an EJB component-defining annotation or declared as"
+" an EJB bean class in <literal>ejb-jar.xml</literal>."
+msgstr "没有EJB组件定义注解或没有再<literal>ejb-jar.xml</literal>中声明EJB类。"
 
 #. Tag: para
 #, no-c-format
-msgid "It does not implement <literal>javax.enterprise.inject.spi.Extension</literal>."
-msgstr ""
+msgid ""
+"It does not implement "
+"<literal>javax.enterprise.inject.spi.Extension</literal>."
+msgstr "没有实现<literal>javax.enterprise.inject.spi.Extension</literal>接口的类"
 
 #. Tag: para
 #, no-c-format
@@ -526,147 +769,256 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "the class has a constructor with no parameters, or"
-msgstr ""
+msgstr "一个没有参数的构造器，或者"
 
 #. Tag: para
 #, no-c-format
 msgid "the class declares a constructor annotated <literal>@Inject</literal>."
+msgstr "类构造器注有<literal>@Inject</literal>注解。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"According to this definition, JPA entities are technically managed beans. "
+"However, entities have their own special lifecycle, state and identity model"
+" and are usually instantiated by JPA or using <literal>new</literal>. "
+"Therefore we don't recommend directly injecting an entity class. We "
+"especially recommend against assigning a scope other than "
+"<literal>@Dependent</literal> to an entity class, since JPA is not able to "
+"persist injected CDI proxies."
+msgstr ""
+"根据这些定义，JPA实体从技术上讲是托管bean。然而实体有自己特定的声明周期、状态和身份认证模型，通常这些有JPA或者<literal>new</literal>关键字来实例化。因此，我们不建议直接注入一个实体类。我们特别推荐不要为实体类分配一个范围，除非它具有<literal>@Dependent</literal>注解，因为JPA不能够持久化注入的CDI代理。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The unrestricted set of bean types for a managed bean contains the bean "
+"class, every superclass and all interfaces it implements directly or "
+"indirectly."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "According to this definition, JPA entities are technically managed beans. However, entities have their own special lifecycle, state and identity model and are usually instantiated by JPA or using <literal>new</literal>. Therefore we don't recommend directly injecting an entity class. We especially recommend against assigning a scope other than <literal>@Dependent</literal> to an entity class, since JPA is not able to persist injected CDI proxies."
-msgstr ""
+msgid ""
+"If a managed bean has a public field, it must have the default scope "
+"<literal>@Dependent</literal>."
+msgstr "如果一个托管bean包含一个公共类型的域，那么这个域必须拥有默认的范围<literal>@Dependent</literal>。"
 
 #. Tag: para
 #, no-c-format
-msgid "The unrestricted set of bean types for a managed bean contains the bean class, every superclass and all interfaces it implements directly or indirectly."
+msgid ""
+"Managed beans support the <literal>@PostConstruct</literal> and "
+"<literal>@PreDestroy</literal> lifecycle callbacks."
 msgstr ""
+"托管bean支持<literal>@PostConstruct</literal>和<literal>@PreDestroy</literal>生命周期回调。"
 
 #. Tag: para
 #, no-c-format
-msgid "If a managed bean has a public field, it must have the default scope <literal>@Dependent</literal>."
+msgid ""
+"Session beans are also, technically, managed beans. However, since they have"
+" their own special lifecycle and take advantage of additional enterprise "
+"services, the CDI specification considers them to be a different kind of "
+"bean."
 msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Managed beans support the <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> lifecycle callbacks."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Session beans are also, technically, managed beans. However, since they have their own special lifecycle and take advantage of additional enterprise services, the CDI specification considers them to be a different kind of bean."
-msgstr ""
+"会话bean也是一样的，技术上讲也是托管bean。然而，自从它们有了自己特定的生命周期和能够利用附加的企业级服务，CDI规范就认为它们是不同类型的bean。"
 
 #. Tag: title
 #, no-c-format
 msgid "Session beans"
+msgstr "会话bean"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Session beans belong to the EJB specification. They have a special "
+"lifecycle, state management and concurrency model that is different to other"
+" managed beans and non-managed Java objects. But session beans participate "
+"in CDI just like any other bean. You can inject one session bean into "
+"another session bean, a managed bean into a session bean, a session bean "
+"into a managed bean, have a managed bean observe an event raised by a "
+"session bean, and so on."
+msgstr ""
+"会话bean属于EJB规范。它们有特定的声明周期，状态管理和并发模型，这不同于其它的托管bean和非管理Java对象。但是会话bean像其它bean一样参与到CDI中。你可以注入会话bean到另一个会话bean，可以把托管bean放进会话bean中，可以把会话bean放进托管bean中，以及会话bean有对于托管bean的观察事件，等等。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Message-driven and entity beans are by nature non-contextual objects and may"
+" not be injected into other objects. However, message-driven beans can take "
+"advantage of some CDI functionality, such as dependency injection, "
+"interceptors and decorators. In fact, CDI will perform injection into any "
+"session or message-driven bean, even those which are not contextual "
+"instances."
+msgstr ""
+"消息驱动bean和实体bean天生不具备上下文环境对象，它们不可以注入到其它对象中。然而消息驱动bean对于某些CDI功能是有用的，比如依赖注入、拦截器和装饰器。实际上，CDI可以在任何会话或实体bean上执行注入，它们甚至没有上下文实例。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The unrestricted set of bean types for a session bean contains all local "
+"interfaces of the bean and their superinterfaces. If the session bean has a "
+"bean class local view, the unrestricted set of bean types contains the bean "
+"class and all superclasses. In addition, <literal>java.lang.Object</literal>"
+" is a bean type of every session bean. But remote interfaces are "
+"<emphasis>not</emphasis> included in the set of bean types."
+msgstr ""
+"会话bean的非限制bean类型集包括bean所有的本地接口和其父类接口。如果一个会话bean有bean类的本地视图，那么非限制bean类型集包含bean类和所有的父类。每一个会话bean还有附加上<literal>java.lang.Object</literal>bean类型。但是远程接口不包含在bean类型集中。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"There's no reason to explicitly declare the scope of a stateless session "
+"bean or singleton session bean. The EJB container controls the lifecycle of "
+"these beans, according to the semantics of the <literal>@Stateless</literal>"
+" or <literal>@Singleton</literal> declaration. On the other hand, a stateful"
+" session bean may have any scope."
+msgstr ""
+"我们没有理由为无状态会话bean或单例模式会话bean明确的声明范围。根据<literal>@Stateless</literal>和<literal>@Singleton</literal>注解描述，EJB容器会控制这些bean。反过来讲，有状态会话bean可以拥有任何范围。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Stateful session beans may define a <emphasis>remove method</emphasis>, "
+"annotated <literal>@Remove</literal>, that is used by the application to "
+"indicate that an instance should be destroyed. However, for a contextual "
+"instance of the bean&mdash;an instance under the control of CDI&mdash;this "
+"method may only be called by the application if the bean has scope "
+"<literal>@Dependent</literal>. For beans with other scopes, the application "
+"must let the container destroy the bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Session beans belong to the EJB specification. They have a special lifecycle, state management and concurrency model that is different to other managed beans and non-managed Java objects. But session beans participate in CDI just like any other bean. You can inject one session bean into another session bean, a managed bean into a session bean, a session bean into a managed bean, have a managed bean observe an event raised by a session bean, and so on."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Message-driven and entity beans are by nature non-contextual objects and may not be injected into other objects. However, message-driven beans can take advantage of some CDI functionality, such as dependency injection, interceptors and decorators. In fact, CDI will perform injection into any session or message-driven bean, even those which are not contextual instances."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The unrestricted set of bean types for a session bean contains all local interfaces of the bean and their superinterfaces. If the session bean has a bean class local view, the unrestricted set of bean types contains the bean class and all superclasses. In addition, <literal>java.lang.Object</literal> is a bean type of every session bean. But remote interfaces are <emphasis>not</emphasis> included in the set of bean types."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "There's no reason to explicitly declare the scope of a stateless session bean or singleton session bean. The EJB container controls the lifecycle of these beans, according to the semantics of the <literal>@Stateless</literal> or <literal>@Singleton</literal> declaration. On the other hand, a stateful session bean may have any scope."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Stateful session beans may define a <emphasis>remove method</emphasis>, annotated <literal>@Remove</literal>, that is used by the application to indicate that an instance should be destroyed. However, for a contextual instance of the bean&mdash;an instance under the control of CDI&mdash;this method may only be called by the application if the bean has scope <literal>@Dependent</literal>. For beans with other scopes, the application must let the container destroy the bean."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "So, when should we use a session bean instead of a plain managed bean? Whenever we need the advanced enterprise services offered by EJB, such as:"
-msgstr ""
+msgid ""
+"So, when should we use a session bean instead of a plain managed bean? "
+"Whenever we need the advanced enterprise services offered by EJB, such as:"
+msgstr "那么我们什么时候应该用一个会话bean去代替一个普通的托管bean呢？当我们需要EJB提供的高级企业服务的时候，例如："
 
 #. Tag: para
 #, no-c-format
 msgid "method-level transaction management and security,"
-msgstr ""
+msgstr "方法层事务管理和安全"
 
 #. Tag: para
 #, no-c-format
 msgid "concurrency management,"
-msgstr ""
+msgstr "并发管理"
 
 #. Tag: para
 #, no-c-format
-msgid "instance-level passivation for stateful session beans and instance-pooling for stateless session beans,"
-msgstr ""
+msgid ""
+"instance-level passivation for stateful session beans and instance-pooling "
+"for stateless session beans,"
+msgstr "有状态会话bean的实例层持久化和无状态会话bean的实例池"
 
 #. Tag: para
 #, no-c-format
 msgid "remote or web service invocation, or"
-msgstr ""
+msgstr "远程和web服务的调用"
 
 #. Tag: para
 #, no-c-format
 msgid "timers and asynchronous methods,"
-msgstr ""
+msgstr "定时器和异步调用"
 
 #. Tag: para
 #, no-c-format
-msgid "When we don't need any of these things, an ordinary managed bean will serve just fine."
-msgstr ""
+msgid ""
+"When we don't need any of these things, an ordinary managed bean will serve "
+"just fine."
+msgstr "当我们不需要处理这些问题的时候，一个普通托管bean就可以很好的提供服务。"
 
 #. Tag: para
 #, no-c-format
-msgid "Many beans (including any <literal>@SessionScoped</literal> or <literal>@ApplicationScoped</literal> beans) are available for concurrent access. Therefore, the concurrency management provided by EJB 3.1 is especially useful. Most session and application scoped beans should be EJBs."
+msgid ""
+"Many beans (including any <literal>@SessionScoped</literal> or "
+"<literal>@ApplicationScoped</literal> beans) are available for concurrent "
+"access. Therefore, the concurrency management provided by EJB 3.1 is "
+"especially useful. Most session and application scoped beans should be EJBs."
 msgstr ""
+"多数bean(包括任何 "
+"<literal>@SessionScoped</literal>或<literal>@ApplicationScoped</literal> "
+"bean)都可以被并发访问。因此，EJB3.1提供的并发管理功能尤其的有用。多数的会话和应用周期bean应该定义为EJB。"
 
 #. Tag: para
 #, no-c-format
-msgid "Beans which hold references to heavy-weight resources, or hold a lot of internal state benefit from the advanced container-managed lifecycle defined by the EJB stateless/stateful/singleton model, with its support for passivation and instance pooling."
-msgstr ""
+msgid ""
+"Beans which hold references to heavy-weight resources, or hold a lot of "
+"internal state benefit from the advanced container-managed lifecycle defined"
+" by the EJB stateless/stateful/singleton model, with its support for "
+"passivation and instance pooling."
+msgstr "bean持有重量级资源或大量的内部状态。这都受益于EJB无状态/有状态/单例模型中定义的高级容器管理生命周期，它支持持久化和实例池。"
 
 #. Tag: para
 #, no-c-format
-msgid "Finally, it's usually obvious when method-level transaction management, method-level security, timers, remote methods or asynchronous methods are needed."
-msgstr ""
+msgid ""
+"Finally, it's usually obvious when method-level transaction management, "
+"method-level security, timers, remote methods or asynchronous methods are "
+"needed."
+msgstr "最终，什么情况下使用方法层事务管理，方法层安全，定时器，远程方法或异步方法是显而易见的。"
 
 #. Tag: para
 #, no-c-format
-msgid "The point we're trying to make is: use a session bean when you need the services it provides, not just because you want to use dependency injection, lifecycle management, or interceptors. Java EE 6 provides a graduated programming model. It's usually easy to start with an ordinary managed bean, and later turn it into an EJB just by adding one of the following annotations: <literal>@Stateless</literal>, <literal>@Stateful</literal> or <literal>@Singleton</literal>."
+msgid ""
+"The point we're trying to make is: use a session bean when you need the "
+"services it provides, not just because you want to use dependency injection,"
+" lifecycle management, or interceptors. Java EE 6 provides a graduated "
+"programming model. It's usually easy to start with an ordinary managed bean,"
+" and later turn it into an EJB just by adding one of the following "
+"annotations: <literal>@Stateless</literal>, <literal>@Stateful</literal> or "
+"<literal>@Singleton</literal>."
 msgstr ""
+"这里我想说的是：当你想使用EJB提供的服务时，这里不只是使用依赖注入、生命周期管理或拦截器。JavaEE "
+"6提供了一个升级的模型，从一个普通托管bean起步非常容易，要转换到EJB上，只需要加上如下注解：<literal>@Stateless</literal>，<literal>@Stateful</literal>"
+" 或 <literal>@Singleton</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid "On the other hand, don't be scared to use session beans just because you've heard your friends say they're \"heavyweight\". It's nothing more than superstition to think that something is \"heavier\" just because it's hosted natively within the Java EE container, instead of by a proprietary bean container or dependency injection framework that runs as an additional layer of obfuscation. And as a general principle, you should be skeptical of folks who use vaguely defined terminology like \"heavyweight\"."
+msgid ""
+"On the other hand, don't be scared to use session beans just because you've "
+"heard your friends say they're \"heavyweight\". It's nothing more than "
+"superstition to think that something is \"heavier\" just because it's hosted"
+" natively within the Java EE container, instead of by a proprietary bean "
+"container or dependency injection framework that runs as an additional layer"
+" of obfuscation. And as a general principle, you should be skeptical of "
+"folks who use vaguely defined terminology like \"heavyweight\"."
 msgstr ""
+"另外，不要只是听从朋友说会话bean是重量级的就害怕使用它。这只不过是谣言，因为它们认为在JavaEE容器内管理的都是\\“重量级\\”的，而不知道其实只是由专有的bean容器或者依赖注入框架，其只是一个附加的模糊处理层。你反而应该怀疑这些不明确的术语定义，例如\\“重量级\\”。"
 
 #. Tag: title
 #, no-c-format
 msgid "Producer methods"
-msgstr ""
+msgstr "生产者方法"
 
 #. Tag: para
 #, no-c-format
-msgid "Not everything that needs to be injected can be boiled down to a bean class instantiated by the container using <literal>new</literal>. There are plenty of cases where we need additional control. What if we need to decide at runtime which implementation of a type to instantiate and inject? What if we need to inject an object that is obtained by querying a service or transactional resource, for example by executing a JPA query?"
+msgid ""
+"Not everything that needs to be injected can be boiled down to a bean class "
+"instantiated by the container using <literal>new</literal>. There are plenty"
+" of cases where we need additional control. What if we need to decide at "
+"runtime which implementation of a type to instantiate and inject? What if we"
+" need to inject an object that is obtained by querying a service or "
+"transactional resource, for example by executing a JPA query?"
 msgstr ""
+"不是所有需要的注入都归结为容器使用<literal>new</literal>来实例化一个bean类。有很多情况下我们需要更多的附加控制。我们该如何在运行时断定使用哪个实例类型的实现，我们该如何注入一个通过从查询服务或事务资源获取的对象（例如执行一个JPA查询）。"
 
 #. Tag: para
 #, no-c-format
-msgid "A <emphasis>producer method</emphasis> is a method that acts as a source of bean instances. The method declaration itself describes the bean and the container invokes the method to obtain an instance of the bean when no instance exists in the specified context. A producer method lets the application take full control of the bean instantiation process."
+msgid ""
+"A <emphasis>producer method</emphasis> is a method that acts as a source of "
+"bean instances. The method declaration itself describes the bean and the "
+"container invokes the method to obtain an instance of the bean when no "
+"instance exists in the specified context. A producer method lets the "
+"application take full control of the bean instantiation process."
 msgstr ""
+"<emphasis>生产者方法</emphasis>由bean管理器在当前上下文中没有某个bean实例的时候调用，用以获得该bean的一个实例。一个生产者方法能够让应用完全控制实例化的过程。"
 
 #. Tag: para
 #, no-c-format
-msgid "A producer method is declared by annotating a method of a bean class with the <literal>@Produces</literal> annotation."
-msgstr ""
+msgid ""
+"A producer method is declared by annotating a method of a bean class with "
+"the <literal>@Produces</literal> annotation."
+msgstr "要声明一个生产者方法，是通过在bean类的方法上声明一个<literal>@Produces</literal>注解来完成的。"
 
 #. Tag: programlisting
 #, no-c-format
@@ -685,7 +1037,16 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We can't write a bean class that is itself a random number. But we can certainly write a method that returns a random number. By making the method a producer method, we allow the return value of the method&mdash;in this case an <literal>Integer</literal>&mdash;to be injected. We can even specify a qualifier&mdash;in this case <literal>@Random</literal>, a scope&mdash;which in this case defaults to <literal>@Dependent</literal>, and an EL name&mdash;which in this case defaults to <literal>randomNumber</literal> according to the JavaBeans property name convention. Now we can get a random number anywhere:"
+msgid ""
+"We can't write a bean class that is itself a random number. But we can "
+"certainly write a method that returns a random number. By making the method "
+"a producer method, we allow the return value of the method&mdash;in this "
+"case an <literal>Integer</literal>&mdash;to be injected. We can even specify"
+" a qualifier&mdash;in this case <literal>@Random</literal>, a "
+"scope&mdash;which in this case defaults to <literal>@Dependent</literal>, "
+"and an EL name&mdash;which in this case defaults to "
+"<literal>randomNumber</literal> according to the JavaBeans property name "
+"convention. Now we can get a random number anywhere:"
 msgstr ""
 
 #. Tag: programlisting
@@ -696,7 +1057,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Even in a Unified EL expression:"
-msgstr ""
+msgstr "甚至在一个通用EL表达式中："
 
 #. Tag: programlisting
 #, no-c-format
@@ -705,37 +1066,61 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A producer method must be a non-abstract method of a managed bean class or session bean class. A producer method may be either static or non-static. If the bean is a session bean, the producer method must be either a business method of the EJB or a static method of the bean class."
+msgid ""
+"A producer method must be a non-abstract method of a managed bean class or "
+"session bean class. A producer method may be either static or non-static. If"
+" the bean is a session bean, the producer method must be either a business "
+"method of the EJB or a static method of the bean class."
 msgstr ""
+"一个托管bean或会话bean中的生产者方法必须是非抽象方法。一个生产者方法可能是静态或者非静态的。如果是会话bean，生产者方法要么是EJB中的业务方法，要么是bean类中的静态方法。"
 
 #. Tag: para
 #, no-c-format
-msgid "The bean types of a producer method depend upon the method return type:"
-msgstr ""
+msgid ""
+"The bean types of a producer method depend upon the method return type:"
+msgstr "生产者方法的bean类型取决于方法的返回类型:"
 
 #. Tag: para
 #, no-c-format
-msgid "If the return type is an interface, the unrestricted set of bean types contains the return type, all interfaces it extends directly or indirectly and <literal>java.lang.Object</literal>."
+msgid ""
+"If the return type is an interface, the unrestricted set of bean types "
+"contains the return type, all interfaces it extends directly or indirectly "
+"and <literal>java.lang.Object</literal>."
 msgstr ""
+"如果返回类型是一个接口，那么bean非受限制类型集合包括返回类型，所有间接或直接扩展的接口以及<literal>java.lang.Object</literal>。"
 
 #. Tag: para
 #, no-c-format
-msgid "If a return type is primitive or is a Java array type, the unrestricted set of bean types contains exactly two types: the method return type and <literal>java.lang.Object</literal>."
+msgid ""
+"If a return type is primitive or is a Java array type, the unrestricted set "
+"of bean types contains exactly two types: the method return type and "
+"<literal>java.lang.Object</literal>."
 msgstr ""
+"如果返回类型是一个Java基本类型或Java数组类型，那么bean的非受限类型集合包括两个:方法返回类型和<literal>java.lang.Object</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid "If the return type is a class, the unrestricted set of bean types contains the return type, every superclass and all interfaces it implements directly or indirectly."
-msgstr ""
+msgid ""
+"If the return type is a class, the unrestricted set of bean types contains "
+"the return type, every superclass and all interfaces it implements directly "
+"or indirectly."
+msgstr "如果返回类型是一个类，bean的非受限类型集合包括方法的返回类型，每个超类及其所有直接或间接实现的接口。"
 
 #. Tag: para
 #, no-c-format
-msgid "Producer methods and fields may have a primitive bean type. For the purpose of resolving dependencies, primitive types are considered to be identical to their corresponding wrapper types in <literal>java.lang</literal>."
+msgid ""
+"Producer methods and fields may have a primitive bean type. For the purpose "
+"of resolving dependencies, primitive types are considered to be identical to"
+" their corresponding wrapper types in <literal>java.lang</literal>."
 msgstr ""
+"生产者方法和变量域可以有一个基本bean类型。为了解决依赖关系，基本类型被认为与相应的封装类型<literal>java.lang</literal>相一致。"
 
 #. Tag: para
 #, no-c-format
-msgid "If the producer method has method parameters, the container will look for a bean that satisfies the type and qualifiers of each parameter and pass it to the method automatically—another form of dependency injection."
+msgid ""
+"If the producer method has method parameters, the container will look for a "
+"bean that satisfies the type and qualifiers of each parameter and pass it to"
+" the method automatically—another form of dependency injection."
 msgstr ""
 
 #. Tag: programlisting
@@ -748,17 +1133,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We'll talk much more about producer methods in <xref linkend=\"producermethods\" />."
+msgid ""
+"We'll talk much more about producer methods in <xref "
+"linkend=\"producermethods\" />."
 msgstr ""
 
 #. Tag: title
 #, no-c-format
 msgid "Producer fields"
-msgstr ""
+msgstr "生产者变量域"
 
 #. Tag: para
 #, no-c-format
-msgid "A <emphasis>producer field</emphasis> is a simpler alternative to a producer method. A producer field is declared by annotating a field of a bean class with the <literal>@Produces</literal> annotation&mdash;the same annotation used for producer methods."
+msgid ""
+"A <emphasis>producer field</emphasis> is a simpler alternative to a producer"
+" method. A producer field is declared by annotating a field of a bean class "
+"with the <literal>@Produces</literal> annotation&mdash;the same annotation "
+"used for producer methods."
 msgstr ""
 
 #. Tag: programlisting
@@ -772,10 +1163,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The rules for determining the bean types of a producer field parallel the rules for producer methods."
-msgstr ""
+msgid ""
+"The rules for determining the bean types of a producer field parallel the "
+"rules for producer methods."
+msgstr "断定生产者变量域bean类型的规则与生产者方法的规则相同。"
 
 #. Tag: para
 #, no-c-format
-msgid "A producer field is really just a shortcut that lets us avoid writing a useless getter method. However, in addition to convenience, producer fields serve a specific purpose as an adaptor for Java EE component environment injection, but to learn more about that, you'll have to wait until <xref linkend=\"resources\" />. Because we can't wait to get to work on some examples."
+msgid ""
+"A producer field is really just a shortcut that lets us avoid writing a "
+"useless getter method. However, in addition to convenience, producer fields "
+"serve a specific purpose as an adaptor for Java EE component environment "
+"injection, but to learn more about that, you'll have to wait until <xref "
+"linkend=\"resources\" />. Because we can't wait to get to work on some "
+"examples."
 msgstr ""

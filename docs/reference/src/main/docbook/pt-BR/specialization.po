@@ -1,84 +1,152 @@
 # Language pt-BR translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
-#
+# 
+# Bruno Leonardo Gonçalves <brunolmfg@gmail.com>, 2012. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-12-19 18:08-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
 msgid "Specialization, inheritance and alternatives"
-msgstr ""
+msgstr "Especialização, herança e alternativos"
 
 #. Tag: para
 #, no-c-format
-msgid "When you first start developing with CDI, you'll likely be dealing only with a single bean implementation for each bean type. In this case, it's easy to understand how beans get selected for injection. As the complexity of your application grows, multiple occurrences of the same bean type start appearing, either because you have multiple implementations or two beans share a common (Java) inheritance. That's when you have to begin studying the specialization, inheritance and alternative rules to work through unsatisfied or ambiguous dependencies or to avoid certain beans from being called."
+msgid ""
+"When you first start developing with CDI, you'll likely be dealing only with"
+" a single bean implementation for each bean type. In this case, it's easy to"
+" understand how beans get selected for injection. As the complexity of your "
+"application grows, multiple occurrences of the same bean type start "
+"appearing, either because you have multiple implementations or two beans "
+"share a common (Java) inheritance. That's when you have to begin studying "
+"the specialization, inheritance and alternative rules to work through "
+"unsatisfied or ambiguous dependencies or to avoid certain beans from being "
+"called."
 msgstr ""
+"Quando você começa a desenvolver com CDI provavelmente estará lidando com "
+"apenas uma única implementação para cada bean type. Neste caso, é fácil "
+"entender como beans são selecionados para injeção. Conforme a complexidade "
+"de sua aplicação aumenta, várias ocorrências do mesmo bean type começam a "
+"aparecer, seja por existir várias implementações ou dois beans "
+"compartilharem uma mesma hierarquia (Java). É neste momento que você tem que"
+" começar a estudar as regras de especialização, herança e alternativos para "
+"lidar com dependências não satisfeitas ou ambíguas, ou para evitar que "
+"certos beans sejam chamados."
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI specification recognizes two distinct scenarios in which one bean extends another:"
+msgid ""
+"The CDI specification recognizes two distinct scenarios in which one bean "
+"extends another:"
 msgstr ""
+"A especificação CDI reconhece dois cenários distintos e que um bean estende "
+"um outro:"
 
 #. Tag: para
 #, no-c-format
-msgid "The second bean <emphasis>specializes</emphasis> the first bean in certain deployment scenarios. In these deployments, the second bean completely replaces the first, fulfilling the same role in the system."
+msgid ""
+"The second bean <emphasis>specializes</emphasis> the first bean in certain "
+"deployment scenarios. In these deployments, the second bean completely "
+"replaces the first, fulfilling the same role in the system."
 msgstr ""
+"O bean suplementar <emphasis>especializa</emphasis> o bean inicial em certos"
+" cenários de implantação. Nestas implantações, o bean suplementar substitui "
+"completamente o primeiro, realizando o mesmo papel no sistema."
 
 #. Tag: para
 #, no-c-format
-msgid "The second bean is simply reusing the Java implementation, and otherwise bears no relation to the first bean. The first bean may not even have been designed for use as a contextual object."
+msgid ""
+"The second bean is simply reusing the Java implementation, and otherwise "
+"bears no relation to the first bean. The first bean may not even have been "
+"designed for use as a contextual object."
 msgstr ""
+"O bean suplementar está simplesmente reutilizando a implementação Java, e de"
+" outro modo suporta nenhuma relação com o priemeiro bean. O bean inicial "
+"pode nem mesmo ter sido projetado para uso como um objeto contextual."
 
 #. Tag: para
 #, no-c-format
-msgid "The second case is the default assumed by CDI. It's possible to have two beans in the system with the same part bean type (interface or parent class). As you've learned, you select between the two implementations using qualifiers."
+msgid ""
+"The second case is the default assumed by CDI. It's possible to have two "
+"beans in the system with the same part bean type (interface or parent "
+"class). As you've learned, you select between the two implementations using "
+"qualifiers."
 msgstr ""
+"O segundo caso é o padrão assumido pela CDI. É possível ter dois beans no "
+"sistema com o mesmo bean type (interface ou classe pai). Conforme você "
+"aprendeu, você seleciona uma entre duas implementações usando "
+"qualificadores."
 
 #. Tag: para
 #, no-c-format
-msgid "The first case is the exception, and also requires more care. In any given deployment, only one bean can fulfill a given role at a time. That means one bean needs to be enabled and the other disabled. There are a two modifiers involved: <literal>@Alternative</literal> and <literal>@Specializes</literal>. We'll start by looking at alternatives and then show the guarantees that specialization adds."
+msgid ""
+"The first case is the exception, and also requires more care. In any given "
+"deployment, only one bean can fulfill a given role at a time. That means one"
+" bean needs to be enabled and the other disabled. There are a two modifiers "
+"involved: <literal>@Alternative</literal> and "
+"<literal>@Specializes</literal>. We'll start by looking at alternatives and "
+"then show the guarantees that specialization adds."
 msgstr ""
+"O primeiro caso é a exceção, e também requer mais cuidado. Em qualquer "
+"implantação, somente um bean pode realizar um dado papel em um momento. Isto"
+" significa que um bean precisa ser habilitado e outro desabilitado. Existem "
+"dois modificadores envolvidos: <literal>@Alternative</literal> e "
+"<literal>@Specializes</literal>. Vamos começar observando os alternativos e "
+"depois mostraremos as garantias que a especialização adiciona."
 
 #. Tag: title
 #, no-c-format
 msgid "Using alternative stereotypes"
-msgstr ""
+msgstr "Utilizando estereótipos alternativos"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "CDI lets you <emphasis>override</emphasis> the implementation of a bean type at deployment time using an alternative. For example, the following bean provides a default implementation of the <literal>PaymentProcessor</literal> interface:"
-msgstr "Nós já vimos a forma como o modelo de injeção de dependências da Web Beans permite  <emphasis>sobrescrever</emphasis> a implementação da API em tempo de implantação. Por exemplo, o seguinte Bean Web corporativo fornece uma implementação da API <literal>PaymentProcessor</literal> em produção:"
+#, no-c-format
+msgid ""
+"CDI lets you <emphasis>override</emphasis> the implementation of a bean type"
+" at deployment time using an alternative. For example, the following bean "
+"provides a default implementation of the <literal>PaymentProcessor</literal>"
+" interface:"
+msgstr ""
+"CDI permite que você <emphasis>sobrescreva</emphasis> a implementação de um "
+"bean type durante a implantação utilizando um alternativo. Por exemplo, o "
+"seguinte bean fornece uma implementação padrão para a interface "
+"<literal>PaymentProcessor</literal>:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public class DefaultPaymentProcessor \n"
 "      implements PaymentProcessor {\n"
 "   ...\n"
 "}"
 msgstr ""
-"<![CDATA[public class DefaultPaymentProcessor \n"
+"public class DefaultPaymentProcessor \n"
 "      implements PaymentProcessor {\n"
 "   ...\n"
-"}]]>"
+"}"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "But in our staging environment, we don't really want to submit payments to the external system, so we override that implementation of <literal>PaymentProcessor</literal> with a different bean:"
-msgstr "Mas, no nosso ambiente simulado, nos sobrepomos a implementação de <literal>PaymentProcessor</literal> com um Web Bean diferente:"
+#, no-c-format
+msgid ""
+"But in our staging environment, we don't really want to submit payments to "
+"the external system, so we override that implementation of "
+"<literal>PaymentProcessor</literal> with a different bean:"
+msgstr ""
+"Mas em nosso ambiente simulado, não queremos efetivamente enviar ordens de "
+"pagamento para o sistema externo, dessa forma sobrescrevemos esta "
+"implementação de <literal>PaymentProcessor</literal> com um bean diferente:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public @Alternative\n"
 "class StagingPaymentProcessor \n"
@@ -86,19 +154,19 @@ msgid ""
 "   ...\n"
 "}"
 msgstr ""
-"<![CDATA[public @Alternative\n"
+"public @Alternative\n"
 "class StagingPaymentProcessor \n"
 "      implements PaymentProcessor {\n"
 "   ...\n"
-"}]]>"
+"}"
 
 #. Tag: para
 #, no-c-format
 msgid "or"
-msgstr ""
+msgstr "ou"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public @Alternative\n"
 "class StagingPaymentProcessor \n"
@@ -106,24 +174,38 @@ msgid ""
 "   ...\n"
 "}"
 msgstr ""
-"<![CDATA[public @Alternative\n"
+"public @Alternative\n"
 "class StagingPaymentProcessor \n"
 "      extends DefaultPaymentProcessor {\n"
 "   ...\n"
-"}]]>"
+"}"
 
 #. Tag: para
 #, no-c-format
-msgid "We've already seen how we can enable this alternative by listing its class in the <literal>beans.xml</literal> descriptor."
+msgid ""
+"We've already seen how we can enable this alternative by listing its class "
+"in the <literal>beans.xml</literal> descriptor."
 msgstr ""
+"Já vimos como podemos habilitar este alternativo registrando sua classe no "
+"descritor <literal>beans.xml</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid "But suppose we have many alternatives in the staging environment. It would be much more convenient to be able to enable them all at once. So let's make <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype and annotate the staging beans with this stereotype instead. You'll see how this level of indirection pays off. First, we create the stereotype:"
+msgid ""
+"But suppose we have many alternatives in the staging environment. It would "
+"be much more convenient to be able to enable them all at once. So let's make"
+" <literal>@Staging</literal> an <literal>@Alternative</literal> stereotype "
+"and annotate the staging beans with this stereotype instead. You'll see how "
+"this level of indirection pays off. First, we create the stereotype:"
 msgstr ""
+"Mas suponha que temos muitos alternativos no ambiente simulado. Deveria ser "
+"mais conveniente habilitar todos eles de uma vez. então vamos tornar "
+"<literal>@Staging</literal> um estereótipo <literal>@Alternative</literal> e"
+" anotar os beans simuladores com este estereótipo. Você verá como este nível"
+" de indireção compensa. Primeiro, criamos o estereótipo:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Alternative\n"
 "@Stereotype\n"
@@ -131,19 +213,23 @@ msgid ""
 "@Target(TYPE)\n"
 "public @interface Staging {}"
 msgstr ""
-"<![CDATA[@Alternative\n"
+"@Alternative\n"
 "@Stereotype\n"
 "@Retention(RUNTIME)\n"
 "@Target(TYPE)\n"
-"public @interface Staging {}]]>"
+"public @interface Staging {}"
 
 #. Tag: para
 #, no-c-format
-msgid "Then we replace the <literal>@Alternative</literal> annotation on our bean with <literal>@Staging</literal>:"
+msgid ""
+"Then we replace the <literal>@Alternative</literal> annotation on our bean "
+"with <literal>@Staging</literal>:"
 msgstr ""
+"Então substituímos a anotação <literal>@Alternative</literal> em nosso bean "
+"por <literal>@Staging</literal>:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Staging\n"
 "public class StagingPaymentProcessor \n"
@@ -151,19 +237,23 @@ msgid ""
 "   ...\n"
 "}"
 msgstr ""
-"<![CDATA[@Staging\n"
+"@Staging\n"
 "public class StagingPaymentProcessor \n"
 "      implements PaymentProcessor {\n"
 "   ...\n"
-"}]]>"
+"}"
 
 #. Tag: para
 #, no-c-format
-msgid "Finally, we activate the <literal>@Staging</literal> stereotype in the <literal>beans.xml</literal> descriptor:"
+msgid ""
+"Finally, we activate the <literal>@Staging</literal> stereotype in the "
+"<literal>beans.xml</literal> descriptor:"
 msgstr ""
+"Finalmente, ativamos o estereótipo <literal>@Staging</literal> no descritor "
+"<literal>beans.xml</literal>:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;beans\n"
 "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
@@ -176,46 +266,81 @@ msgid ""
 "   &lt;/alternatives&gt;\n"
 "&lt;/beans&gt;"
 msgstr ""
-"<![CDATA[<beans\n"
+"&lt;beans\n"
 "   xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
 "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
 "   xsi:schemaLocation=\"\n"
 "      http://java.sun.com/xml/ns/javaee\n"
-"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\">\n"
-"   <alternatives>\n"
-"         <stereotype>org.mycompany.myapp.Staging</stereotype>\n"
-"   </alternatives>\n"
-"</beans>]]>"
+"      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd\"&gt;\n"
+"   &lt;alternatives&gt;\n"
+"         &lt;stereotype&gt;org.mycompany.myapp.Staging&lt;/stereotype&gt;\n"
+"   &lt;/alternatives&gt;\n"
+"&lt;/beans&gt;"
 
 #. Tag: para
 #, no-c-format
-msgid "Now, no matter how many staging beans we have, they will all be enabled at once."
+msgid ""
+"Now, no matter how many staging beans we have, they will all be enabled at "
+"once."
 msgstr ""
+"Agora, não importa quantos beans simuladores temos, eles serão habilitados "
+"todos de uma vez."
 
 #. Tag: title
 #, no-c-format
 msgid "A minor problem with alternatives"
-msgstr ""
+msgstr "Um pequeno problema com alternativos"
 
 #. Tag: para
 #, no-c-format
-msgid "When we enable an alternative, does that mean the default implementation is disabled? Well, not exactly. If the default implementation has a qualifier, for instance <literal>@LargeTransaction</literal>, and the alternative does not, you could still inject the default implementation."
+msgid ""
+"When we enable an alternative, does that mean the default implementation is "
+"disabled? Well, not exactly. If the default implementation has a qualifier, "
+"for instance <literal>@LargeTransaction</literal>, and the alternative does "
+"not, you could still inject the default implementation."
 msgstr ""
+"Quando habilitamos um alternativo, significa que a implementação padrão é "
+"desabilitada? Bem, não exatamente. Se a implementação padrão possui um "
+"qualificador, por exemplo <literal>@LargeTransaction</literal>, e o "
+"alternativo não possui, você pode ainda injetar a implementação padrão."
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "@Inject @LargeTransaction PaymentProcessor paymentProcessor;"
-msgstr "<![CDATA[@Inject @LargeTransaction PaymentProcessor paymentProcessor;]]>"
+msgstr "@Inject @LargeTransaction PaymentProcessor paymentProcessor;"
 
 #. Tag: para
 #, no-c-format
-msgid "So we haven't completely replaced the default implementation in this deployment of the system. The only way one bean can completely override a second bean at all injection points is if it implements all the bean types and declares all the qualifiers of the second bean. However, if the second bean declares a producer method or observer method, then even this is not enough to ensure that the second bean is never called! We need something extra."
+msgid ""
+"So we haven't completely replaced the default implementation in this "
+"deployment of the system. The only way one bean can completely override a "
+"second bean at all injection points is if it implements all the bean types "
+"and declares all the qualifiers of the second bean. However, if the second "
+"bean declares a producer method or observer method, then even this is not "
+"enough to ensure that the second bean is never called! We need something "
+"extra."
 msgstr ""
+"Então não teremos substituído completamente a implementação padrão nesta "
+"implantação do sistema. O único modo que um bean pode substituir "
+"completamente um outro bean em todos os pontos de injeção é se ele "
+"implementa todos os beans types e declara todos os qualificadores deste "
+"outro bean. No entanto, se o outro bean declara um método produtor ou um "
+"método observador, então mesmo isto não é suficiente para assegurar que o "
+"outro bean nunca seja chamado! Precisamos de algo a mais."
 
 #. Tag: para
 #, no-c-format
-msgid "CDI provides a special feature, called <emphasis>specialization</emphasis>, that helps the developer avoid these traps. Specialization is a way of informing the system of your intent to completely replace and disable an implementation of a bean."
+msgid ""
+"CDI provides a special feature, called <emphasis>specialization</emphasis>, "
+"that helps the developer avoid these traps. Specialization is a way of "
+"informing the system of your intent to completely replace and disable an "
+"implementation of a bean."
 msgstr ""
+"CDI fornece uma funcionalidade especial, chamada "
+"<emphasis>especialização</emphasis>, que ajuda o desenvolvedor a evitar "
+"essas armadilhas. Especialização é um meio de informar o sistema de sua "
+"intenção de substituir completamente e desabilitar uma implementação de um "
+"bean."
 
 #. Tag: title
 #, no-c-format
@@ -224,26 +349,37 @@ msgstr "Utilizando a especialização"
 
 #. Tag: para
 #, no-c-format
-msgid "When the goal is to replace one bean implementation with a second, to help prevent developer error, the first bean may:"
+msgid ""
+"When the goal is to replace one bean implementation with a second, to help "
+"prevent developer error, the first bean may:"
 msgstr ""
+"Quando o objetivo é substituir uma implementação por uma outra, para ajudar "
+"a prevenir erros do desenvolvedor, o primeiro bean pode:"
 
 #. Tag: para
 #, no-c-format
 msgid "directly extend the bean class of the second bean, or"
-msgstr ""
+msgstr "estender diretamente a classe do outro bean, ou"
 
 #. Tag: para
 #, no-c-format
-msgid "directly override the producer method, in the case that the second bean is a producer method, and then"
+msgid ""
+"directly override the producer method, in the case that the second bean is a"
+" producer method, and then"
 msgstr ""
+"substituir diretamente o método produtor, no caso em que o outro bean for um"
+" método produtor, e então"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "explicitly declare that it <emphasis>specializes</emphasis> the second bean:"
-msgstr "Nós dizemos que a alta prioridade na Web Bean <emphasis>specializa</emphasis> sua superclasse."
+#, no-c-format
+msgid ""
+"explicitly declare that it <emphasis>specializes</emphasis> the second bean:"
+msgstr ""
+"declarar explicitamente que ele <emphasis>especializa</emphasis> o outro "
+"bean."
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Alternative @Specializes\n"
 "public class MockCreditCardPaymentProcessor \n"
@@ -251,91 +387,55 @@ msgid ""
 "   ...\n"
 "}"
 msgstr ""
-"<![CDATA[@Alternative @Specializes\n"
+"@Alternative @Specializes\n"
 "public class MockCreditCardPaymentProcessor \n"
 "      extends CreditCardPaymentProcessor {\n"
 "   ...\n"
-"}]]>"
+"}"
 
 #. Tag: para
 #, no-c-format
-msgid "When an enabled bean specializes another bean, the other bean is never instantiated or called by the container. Even if the other bean defines a producer or observer method, the method will never be called."
+msgid ""
+"When an enabled bean specializes another bean, the other bean is never "
+"instantiated or called by the container. Even if the other bean defines a "
+"producer or observer method, the method will never be called."
 msgstr ""
+"Quando um bean está ativado e especializa um outro bean, este nunca é "
+"instanciado ou chamado pelo contêiner. Mesmo se o outro bean define um "
+"método produtor ou observador, o método nunca será chamado."
 
 #. Tag: para
 #, no-c-format
-msgid "So why does specialization work, and what does it have to do with inheritance?"
+msgid ""
+"So why does specialization work, and what does it have to do with "
+"inheritance?"
 msgstr ""
+"Então, como essa especialização funciona e o que tem a ver com herança?"
 
 #. Tag: para
 #, no-c-format
-msgid "Since we're informing the container that our alternative bean is meant to stand in as a replacement for the default implementation, the alternative implementation automatically inherits all qualifiers of the default implementation. Thus, in our example, <literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers <literal>@Default</literal> and <literal>@CreditCard</literal>."
+msgid ""
+"Since we're informing the container that our alternative bean is meant to "
+"stand in as a replacement for the default implementation, the alternative "
+"implementation automatically inherits all qualifiers of the default "
+"implementation. Thus, in our example, "
+"<literal>MockCreditCardPaymentProcessor</literal> inherits the qualifiers "
+"<literal>@Default</literal> and <literal>@CreditCard</literal>."
 msgstr ""
+"Uma vez que estamos informando ao contêiner que nosso bean alternativo está "
+"destinado a ficar como um substituto da implementação padrão, a "
+"implementação alternativa automaticamente herda todos os qualificadores da "
+"implementação padrão. Desta maneira, em nosso exemplo, "
+"<literal>MockCreditCardPaymentProcessor</literal> herda os qualificadores "
+"<literal>@Default</literal> e <literal>@CreditCard</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid "Furthermore, if the default implementation declares a bean EL name using <literal>@Named</literal>, the name is inherited by the specialized alternative bean."
+msgid ""
+"Furthermore, if the default implementation declares a bean EL name using "
+"<literal>@Named</literal>, the name is inherited by the specialized "
+"alternative bean."
 msgstr ""
-
-#~ msgid "Specialization"
-#~ msgstr "Especialização"
-
-#~ msgid "@CreditCard PaymentProcessor ccpp"
-#~ msgstr "@CreditCard PaymentProcessor ccpp"
-
-#~ msgid "Would receive an instance of <literal>StagingCreditCardPaymentProcessor</literal>."
-#~ msgstr "Pode receber uma instância de <literal>StagingCreditCardPaymentProcessor</literal>."
-
-#~ msgid "Unfortunately, there are several traps we can easily fall into:"
-#~ msgstr "Infelizmente, existem várias armadilhas que facilmente podemos cair:"
-
-#~ msgid "the higher-priority Web Bean may not implement all the API types of the Web Bean that it attempts to override,"
-#~ msgstr "o Web Bean de maior prioridade não pode implementar todos os tipos da API do Web Bean que tenta sobrepor,"
-
-#~ msgid "the higher-priority Web Bean may not declare all the binding types of the Web Bean that it attempts to override,"
-#~ msgstr "o Web Bean de maior prioridade não pode declarar todos os tipos de binding do Web Bean que tenta sobrepor,"
-
-#~ msgid "the higher-priority Web Bean might not have the same name as the Web Bean that it attempts to override, or"
-#~ msgstr "o Web Bean de maior prioridade talvez não tenha o mesmo nome que o Web Bean que tenta sobrepor, ou"
-
-#~ msgid "the Web Bean that it attempts to override might declare a producer method, disposal method or observer method."
-#~ msgstr "o Web Bean que tenta sobrepor poderia declarar um método produtor, método de eliminação ou método observador."
-
-#~ msgid "In each of these cases, the Web Bean that we tried to override could still be called at runtime. Therefore, overriding is somewhat prone to developer error."
-#~ msgstr "Em cada um destes casos, o Web Bean que tentamos sobrescrever ainda podia ser chamado em tempo de execução. Portanto, a sobrescrita é algo propensa a erros de desenvolvimento."
-
-#~ msgid "Specialization is a feature that is specific to simple and enterprise Web Beans. To make use of specialization, the higher-priority Web Bean must:"
-#~ msgstr "Especialização é uma característica que é específica de Web Beans simples e enterprise. Para fazer uso da especialização, o Web Bean de maior prioridade deve:"
-
-#~ msgid "be a direct subclass of the Web Bean it overrides, and"
-#~ msgstr "ser uma subclasse direta do Web Bean que sobrescreve, e"
-
-#~ msgid "be a simple Web Bean if the Web Bean it overrides is a simple Web Bean or an enterprise Web Bean if the Web Bean it overrides is an enterprise Web Bean, and"
-#~ msgstr "ser um simples Web se o Web Bean que sobrepuser for um Web Bean simples ou um Web Bean enterprise se o Web Bean que sobrepuser for um Web Bean enterprise, e"
-
-#~ msgid "be annotated <literal>@Specializes</literal>."
-#~ msgstr "será anotada <literal>@Specializes</literal>."
-
-#~ msgid "Advantages of specialization"
-#~ msgstr "Vantagens da especialização"
-
-#~ msgid "When specialization is used:"
-#~ msgstr "Quando a especialização é utilizada:"
-
-#~ msgid "producer methods, disposal methods and observer methods declared by the superclass are called upon an instance of the Web Bean annotated <literal>@Specializes</literal>."
-#~ msgstr "métodos produtores, métodos de eliminação e métodos observadores declarados pela superclasse são chamados sobre uma instância do Web Bean anotado com <literal>@Specializes</literal>."
-
-#~ msgid "In our example, the binding type <literal>@CreditCard</literal> of <literal>CreditCardPaymentProcessor</literal> is inherited by <literal>StagingCreditCardPaymentProcessor</literal>."
-#~ msgstr "Em nosso exemplo, o tipo de ligação (binding type) <literal>@CreditCard</literal> do <literal>CreditCardPaymentProcessor</literal> é herdado por <literal>StagingCreditCardPaymentProcessor</literal>."
-
-#~ msgid "Furthermore, the Web Bean manager will validate that:"
-#~ msgstr "Além disso, o gerenciador do Web Bean irá validar que:"
-
-#~ msgid "the deployment type of the Web Bean annotated <literal>@Specializes</literal> has a higher precedence than the deployment type of the superclass, and"
-#~ msgstr "o tipo de implantação do Web Bean anotado com <literal>@Specializes</literal> tem uma precedência maior do que o tipo de implantação da superclasse, e"
-
-#~ msgid "there is no other enabled Web Bean that also specializes the superclass."
-#~ msgstr "não há outro Web Bean ativado que também especializa a superclasse."
-
-#~ msgid "If any of these conditions are violated, the Web Bean manager throws an exception at initialization time."
-#~ msgstr "Se qualquer uma dessas condições são violadas, o gerenciador do Web Bean lança uma excepção em tempo de inicialização."
+"Adicionalmente, se a implementação padrão declara um nome EL para o bean "
+"usando <literal>@Named</literal>, o nome é herdado pelo bean alternativo "
+"especializado."

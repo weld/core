@@ -1,66 +1,44 @@
 # translation of part2.po to Spanish
 # Language es-ES translations for master.xml package.
-#
+# 
 # Automatically generated, 2008.
 # Gladys Guerrero Lozano <gguerrer@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: part2\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-19 16:41+1000\n"
 "Last-Translator: Gladys Guerrero Lozano <gguerrer@redhat.com>\n"
 "Language-Team: Spanish <fedora-trans-es@redhat.com>\n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld, the JSR-299 Reference Implementation (RI), is being developed as part of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. You can download the latest community release of Weld from the <ulink url=\"http://seamframework.org/Download\">download page</ulink>. Information about the Weld source code repository and instructions about how to obtain and build the source can be found on the same page."
+msgid ""
+"Weld, the JSR-299 Reference Implementation (RI), is being developed as part "
+"of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. "
+"You can download the latest community release of Weld from the <ulink "
+"url=\"http://seamframework.org/Download\">download page</ulink>. Information"
+" about the Weld source code repository and instructions about how to obtain "
+"and build the source can be found on the same page."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld provides a complete SPI allowing Java EE containers such as JBoss AS and GlassFish to use Weld as their built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE environment."
+msgid ""
+"Weld provides a complete SPI allowing Java EE containers such as JBoss AS "
+"and GlassFish to use Weld as their built-in CDI implementation. Weld also "
+"runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE "
+"environment."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with an extensive library of examples, which are a great starting point from which to learn CDI."
+msgid ""
+"Weld comes with an extensive library of examples, which are a great starting"
+" point from which to learn CDI."
 msgstr ""
-
-#~ msgid "The first major theme of Web Beans is <emphasis>loose coupling</emphasis>. We've already seen three means of achieving loose coupling:"
-#~ msgstr "El primer tema importante de Web Beans es el <emphasis>acoplamiento flexible</emphasis>. Ya hemos visto tres medios para lograr dicho acoplamiento:"
-
-#~ msgid "<emphasis>deployment types</emphasis> enable deployment time polymorphism,"
-#~ msgstr "Los <emphasis>tipos de despliegue</emphasis> habilitan el polimorfismo del tiempo de despliegue,"
-
-#~ msgid "<emphasis>producer methods</emphasis> enable runtime polymorphism, and"
-#~ msgstr "los <emphasis>métodos de productor</emphasis> habilitan el polimorfismo del tiempo de ejecución, y"
-
-#~ msgid "<emphasis>contextual lifecycle management</emphasis> decouples Web Bean lifecycles."
-#~ msgstr "la <emphasis>administración de ciclo de vida contextual</emphasis> separa los ciclos de vida de WebBean."
-
-#~ msgid "These techniques serve to enable loose coupling of client and server. The client is no longer tightly bound to an implementation of an API, nor is it required to manage the lifecycle of the server object. This approach lets <emphasis>stateful objects interact as if they were services</emphasis>."
-#~ msgstr "Estas técnicas sirven para habilitar el acoplamiento flexible de cliente y servidor. El cliente ya no está estrechamente ligado a una implementación de un API, ni tiene que administrar el ciclo de vida del objeto del servidor. Este método permite <emphasis>interactuar a los objetos con estado como si fueran servicios</emphasis>."
-
-#~ msgid "Loose coupling makes a system more <emphasis>dynamic</emphasis>. The system can respond to change in a well-defined manner. In the past, frameworks that attempted to provide the facilities listed above invariably did it by sacrificing type safety. Web Beans is the first technology that achieves this level of loose coupling in a typesafe way."
-#~ msgstr "El acoplamiento flexible hace más <emphasis>dinámico</emphasis> a un sistema. El sistema puede responder al cambio de una manera bien definida. En el pasado, los marcos que trataban de ofrecer los servicios listados arriba invariablemente lo hacían sacrificando la seguridad. Web Beans es la primera tecnología que logra este nivel de acoplamiento flexible en una forma typesafe."
-
-#~ msgid "Web Beans provides three extra important facilities that further the goal of loose coupling:"
-#~ msgstr "Web Beans ofrece tres servicios adicionales importantes que amplían el objetivo del acoplamiento flexible:"
-
-#~ msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic,"
-#~ msgstr "los <emphasis>interceptores</emphasis> separan las cuestiones técnicas de la lógica de negocios,"
-
-#~ msgid "<emphasis>decorators</emphasis> may be used to decouple some business concerns, and"
-#~ msgstr "los <emphasis>decoradores</emphasis> pueden ser utilizados para separar algunas cuestiones de negocios, y"
-
-#~ msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers."
-#~ msgstr "las <emphasis>notificaciones de eventos</emphasis> separan a los productores de eventos de los consumidores de eventos."
-
-#~ msgid "Let's explore interceptors first."
-#~ msgstr "En primer lugar, exploremos los interceptores."

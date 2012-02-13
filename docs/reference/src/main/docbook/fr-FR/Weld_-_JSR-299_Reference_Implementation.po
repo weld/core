@@ -1,6 +1,5 @@
-# 
 # AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
@@ -15,45 +14,82 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "A note about naming and nomenclature"
-msgstr ""
+msgstr "Note sur la nomenclature et les règles de nommage"
 
 #. Tag: para
 #, no-c-format
-msgid "Shortly before the final draft of JSR-299 was submitted, the specification changed its name from \"Web Beans\" to \"Java Contexts and Dependency Injection for the Java EE platform\", abbreviated CDI. For a brief period after the renaming, the reference implementation adopted the name \"Web Beans\". However, this ended up causing more confusion than it solved and Red Hat decided to change the name of the reference implementation to \"Weld\". You may still find other documentation, blogs, forum posts, etc. that use the old nomenclature. Please update any references you can. The naming game is over."
+msgid ""
+"Shortly before the final draft of JSR-299 was submitted, the specification "
+"changed its name from \"Web Beans\" to \"Java Contexts and Dependency "
+"Injection for the Java EE platform\", abbreviated CDI. For a brief period "
+"after the renaming, the reference implementation adopted the name \"Web "
+"Beans\". However, this ended up causing more confusion than it solved and "
+"Red Hat decided to change the name of the reference implementation to "
+"\"Weld\". You may still find other documentation, blogs, forum posts, etc. "
+"that use the old nomenclature. Please update any references you can. The "
+"naming game is over."
 msgstr ""
+"Peu de temps avant la publication de la version finale, la spécification "
+"JSR-299 a été renommée en passant de \"Composants Web\" (Web Beans) à "
+"\"Injection de Contextes et de Dépendances pour la plateforme Java EE\" "
+"(Java Contexts and Dependency Injection for the Java EE platform : CDI). "
+"Cette mise à jour a amené plus de confusion que de clarté et finalement Red "
+"Hat a choisi de renommer l'implémentation de référence \"Weld\". Si vous "
+"rencontrez des références documentaires (forums, blogs, articles  ...) "
+"utilisant l'ancienne nomenclature, mettez-les à jour s'il vous plaît. Le jeu"
+" de renommage est fini."
 
 #. Tag: para
 #, no-c-format
-msgid "You'll also find that some of the functionality that once existed in the specification is now missing, such as defining beans in XML. These features will be available as portable extensions for CDI in the Weld project, and perhaps other implementations."
+msgid ""
+"You'll also find that some of the functionality that once existed in the "
+"specification is now missing, such as defining beans in XML. These features "
+"will be available as portable extensions for CDI in the Weld project, and "
+"perhaps other implementations."
 msgstr ""
+"Vous pourrez constater que certaines fonctionnalités telles que la "
+"définition XML des composants ont disparu. Ces fonctionnalités seront "
+"proposées en tant qu'extensions du projet Weld et potentiellement dans "
+"autres implémentations de CDI. "
 
 #. Tag: para
 #, no-c-format
-msgid "Note that this reference guide was started while changes were still being made to the specification. We've done our best to update it for accuracy. If you discover a conflict between what is written in this guide and the specification, the specification is the authority&mdash;assume it is correct. If you believe you have found an error in the specification, please report it to the JSR-299 EG."
+msgid ""
+"Note that this reference guide was started while changes were still being "
+"made to the specification. We've done our best to update it for accuracy. If"
+" you discover a conflict between what is written in this guide and the "
+"specification, the specification is the authority&mdash;assume it is "
+"correct. If you believe you have found an error in the specification, please"
+" report it to the JSR-299 EG."
 msgstr ""
+"Veuillez noter que la rédaction de ce guide de référence a commencé alors "
+"que la spécification était encore en cours d'évolution. Nous avons fait de "
+"notre mieux pour la maintenir à jour. En cas de conflit entre ce guide et la"
+" spécification, la spécification prévaut étant supposée correcte. Si vous "
+"pensez avoir trouvée une erreur dans la spécification, notifiez s'il vous "
+"plaît le groupe d'experts de la JSR-299 (JSR-299 EG). "
 
 #. Tag: title
 #, no-c-format
 msgid "Beans"
-msgstr ""
+msgstr "Composants"
 
 #. Tag: title
 #, no-c-format
 msgid "Getting Start with Weld, the CDI Reference Implementation"
-msgstr ""
+msgstr "Démarrer avec Weld, l'implémentation de référence de CDI"
 
 #. Tag: title
 #, no-c-format
 msgid "Loose coupling with strong typing"
-msgstr ""
+msgstr "Découplage et typage fort"
 
 #. Tag: title
 #, no-c-format
 msgid "CDI and the Java EE ecosystem"
-msgstr ""
+msgstr "CDI l'écosystème Java EE"
 
 #. Tag: title
 #, no-c-format
 msgid "Weld Reference Guide"
-msgstr ""
-
+msgstr "Guide de référence Weld"

@@ -1,19 +1,18 @@
 # translation of producermethods.po to
 # Language de-DE translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: producermethods\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-23 08:08+1100\n"
 "Last-Translator: \n"
-"Language-Team:  <en@li.org>\n"
-"Language: \n"
+"Language-Team: <en@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: title
@@ -22,9 +21,13 @@ msgid "Producer methods"
 msgstr "Producer-Methoden"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Producer methods let us overcome certain limitations that arise when a container, instead of the application, is responsible for instantiating objects. They're also the easiest way to integrate objects which are not beans into the CDI environment."
-msgstr "Producer-Methoden gestatten es uns, bestimmte Beschränkungen zu umgehen, die auftreten, wenn der Web Bean Manager statt die Anwendung für die Instantiierung von Objekten verantwortlich ist. Sie sind auch die einfachste Art der Integration von Objekten in die Web Beans Umgebung, die keine Web Beans sind. (In <xref linkend=\"xml\"/> lernen wir eine zweite Weise kennen.)"
+#, no-c-format
+msgid ""
+"Producer methods let us overcome certain limitations that arise when a "
+"container, instead of the application, is responsible for instantiating "
+"objects. They're also the easiest way to integrate objects which are not "
+"beans into the CDI environment."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -48,7 +51,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "the objects require some custom initialization that is not performed by the bean constructor"
+msgid ""
+"the objects require some custom initialization that is not performed by the "
+"bean constructor"
 msgstr ""
 
 #. Tag: para
@@ -68,7 +73,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "define multiple beans, with different scopes or initialization, for the same implementation class, or"
+msgid ""
+"define multiple beans, with different scopes or initialization, for the same"
+" implementation class, or"
 msgstr ""
 
 #. Tag: para
@@ -78,7 +85,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In particular, producer methods let us use runtime polymorphism with CDI. As we've seen, alternative beans are one solution to the problem of deployment-time polymorphism. But once the system is deployed, the CDI implementation is fixed. A producer method has no such limitation:"
+msgid ""
+"In particular, producer methods let us use runtime polymorphism with CDI. As"
+" we've seen, alternative beans are one solution to the problem of "
+"deployment-time polymorphism. But once the system is deployed, the CDI "
+"implementation is fixed. A producer method has no such limitation:"
 msgstr ""
 
 #. Tag: programlisting
@@ -127,7 +138,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This injection point has the same type and qualifier annotations as the producer method, so it resolves to the producer method using the usual CDI injection rules. The producer method will be called by the container to obtain an instance to service this injection point."
+msgid ""
+"This injection point has the same type and qualifier annotations as the "
+"producer method, so it resolves to the producer method using the usual CDI "
+"injection rules. The producer method will be called by the container to "
+"obtain an instance to service this injection point."
 msgstr ""
 
 #. Tag: title
@@ -137,13 +152,29 @@ msgstr "Geltungsbereich einer Producer-Methode"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The scope of the producer method defaults to <literal>@Dependent</literal>, and so it will be called <emphasis>every time</emphasis> the container injects this field or any other field that resolves to the same producer method. Thus, there could be multiple instances of the <literal>PaymentStrategy</literal> object for each user session."
-msgstr "Der Geltungsbereich der Producer-Methode ist standardmäßig <literal>@Dependent</literal>, und daher wird sie <emphasis>jedes Mal</emphasis> aufgerufen, wenn der Web Bean Manager eine Einspeisung in dieses oder ein anderes in diese Producer-Methode auflösendes Feld vornimmt. Es könnten daher mehrere Instanzen des <literal>PaymentStrategy</literal>-Objekts für jede Benutzer-Session vorhanden sein."
+msgid ""
+"The scope of the producer method defaults to <literal>@Dependent</literal>, "
+"and so it will be called <emphasis>every time</emphasis> the container "
+"injects this field or any other field that resolves to the same producer "
+"method. Thus, there could be multiple instances of the "
+"<literal>PaymentStrategy</literal> object for each user session."
+msgstr ""
+"Der Geltungsbereich der Producer-Methode ist standardmäßig "
+"<literal>@Dependent</literal>, und daher wird sie <emphasis>jedes "
+"Mal</emphasis> aufgerufen, wenn der Web Bean Manager eine Einspeisung in "
+"dieses oder ein anderes in diese Producer-Methode auflösendes Feld vornimmt."
+" Es könnten daher mehrere Instanzen des "
+"<literal>PaymentStrategy</literal>-Objekts für jede Benutzer-Session "
+"vorhanden sein."
 
 #. Tag: para
 #, no-c-format
-msgid "To change this behavior, we can add a <literal>@SessionScoped</literal> annotation to the method."
-msgstr "Um dieses Verhalten zu ändern, können wir der Methode eine <literal>@SessionScoped</literal>-Annotation hinzufügen."
+msgid ""
+"To change this behavior, we can add a <literal>@SessionScoped</literal> "
+"annotation to the method."
+msgstr ""
+"Um dieses Verhalten zu ändern, können wir der Methode eine "
+"<literal>@SessionScoped</literal>-Annotation hinzufügen."
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -159,13 +190,23 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Now, when the producer method is called, the returned <literal>PaymentStrategy</literal> will be bound to the session context. The producer method won't be called again in the same session."
-msgstr "Wird jetzt die Producer-Methode aufgerufen, so wird die wiedergegebene <literal>PaymentStrategy</literal> an den Session-Kontext gebunden. Die Producer-Methode wird in drselben Session nicht mehr aufgerufen."
+#, no-c-format
+msgid ""
+"Now, when the producer method is called, the returned "
+"<literal>PaymentStrategy</literal> will be bound to the session context. The"
+" producer method won't be called again in the same session."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A producer method does <emphasis>not</emphasis> inherit the scope of the bean that declares the method. There are two different beans here: the producer method, and the bean which declares it. The scope of the producer method determines how often the method will be called, and the lifecycle of the objects returned by the method. The scope of the bean that declares the producer method determines the lifecycle of the object upon which the producer method is invoked."
+msgid ""
+"A producer method does <emphasis>not</emphasis> inherit the scope of the "
+"bean that declares the method. There are two different beans here: the "
+"producer method, and the bean which declares it. The scope of the producer "
+"method determines how often the method will be called, and the lifecycle of "
+"the objects returned by the method. The scope of the bean that declares the "
+"producer method determines the lifecycle of the object upon which the "
+"producer method is invoked."
 msgstr ""
 
 #. Tag: title
@@ -174,14 +215,21 @@ msgid "Injection into producer methods"
 msgstr "Einspeisung in Producer-Methoden"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "There's one potential problem with the code above. The implementations of <literal>CreditCardPaymentStrategy</literal> are instantiated using the Java <literal>new</literal> operator. Objects instantiated directly by the application can't take advantage of dependency injection and don't have interceptors."
-msgstr "Es gibt ein potenzielles Problem mit dem Code oben. Die Implementierungen von <literal>CreditCardPaymentStrategy</literal> werden unter Verwendung des Java <literal>new</literal> Operators instantiiert. Direkt durch die Anwendung instantiierte Objekte können die Dependency-Einspeisung nicht nutzen und besitzen keine Interzeptoren."
+#, no-c-format
+msgid ""
+"There's one potential problem with the code above. The implementations of "
+"<literal>CreditCardPaymentStrategy</literal> are instantiated using the Java"
+" <literal>new</literal> operator. Objects instantiated directly by the "
+"application can't take advantage of dependency injection and don't have "
+"interceptors."
+msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "If this isn't what we want, we can use dependency injection into the producer method to obtain bean instances:"
-msgstr "Falls dies nicht das ist was wir wünschen, so können wir Dependency-Einspeisung in die Producer-Methode verwenden, um Web Bean Instanzen zu erhalten: "
+#, no-c-format
+msgid ""
+"If this isn't what we want, we can use dependency injection into the "
+"producer method to obtain bean instances:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -211,19 +259,36 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-scoped bean? Then the producer method has the effect of \"promoting\" the current request scoped instance into session scope. This is almost certainly a bug! The request scoped object will be destroyed by the container before the session ends, but the reference to the object will be left \"hanging\" in the session scope. This error will <emphasis>not</emphasis> be detected by the container, so please take extra care when returning bean instances from producer methods!"
-msgstr "Aber Moment mal, was wenn <literal>CreditCardPaymentStrategy</literal> ein anfragenbegrenztes Web Bean ist? Dann hat die Producer-Methode die Wirkung, dass Sie die aktuelle anfragenbegrenzte Instanz in den Geltungsbereich der Session \"befördert\". Das ist mit ziemlicher Sicherheit ein Fehler! Das anfragenbegrenzte Objekt wird vom Web Bean Manager gelöscht ehe die Session endet, aber der Verweis auf das Objekt bleibt im Geltungsbereich der Session \"hängen\" in the session scope. Dieser Fehler wird <emphasis>nicht</emphasis> vom Web Bean Manager aufgespürt, daher seien Sie besonders vorsichtig wenn Sie Web Bean Instanzen von Producer-Methoden wiedergeben!"
+#, no-c-format
+msgid ""
+"Wait, what if <literal>CreditCardPaymentStrategy</literal> is a request-"
+"scoped bean? Then the producer method has the effect of \"promoting\" the "
+"current request scoped instance into session scope. This is almost certainly"
+" a bug! The request scoped object will be destroyed by the container before "
+"the session ends, but the reference to the object will be left \"hanging\" "
+"in the session scope. This error will <emphasis>not</emphasis> be detected "
+"by the container, so please take extra care when returning bean instances "
+"from producer methods!"
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"There's at least three ways we could go about fixing this bug. We could "
+"change the scope of the <literal>CreditCardPaymentStrategy</literal> "
+"implementation, but this would affect other clients of that bean. A better "
+"option would be to change the scope of the producer method to "
+"<literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There's at least three ways we could go about fixing this bug. We could change the scope of the <literal>CreditCardPaymentStrategy</literal> implementation, but this would affect other clients of that bean. A better option would be to change the scope of the producer method to <literal>@Dependent</literal> or <literal>@RequestScoped</literal>."
-msgstr "Es existieren mindestens drei Arten, wie dieser Fehler behoben werden kann. Wir könnten den Geltungsbereich der <literal>CreditCardPaymentStrategy</literal>-Implementierung ändern, aber das würde auch andere Clients dieses Web Beans betreffen. Eine bessere Option wäre es, den Geltungsbereich der Producer-Methode auf <literal>@Dependent</literal> oder <literal>@RequestScoped</literal> zu ändern."
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "But a more common solution is to use the special <literal>@New</literal> qualifier annotation."
-msgstr "Eine gängigere Lösung ist es jedoch, die spezielle <literal>@New</literal> Binding-Annotation zu verwenden."
+msgid ""
+"But a more common solution is to use the special <literal>@New</literal> "
+"qualifier annotation."
+msgstr ""
+"Eine gängigere Lösung ist es jedoch, die spezielle <literal>@New</literal> "
+"Binding-Annotation zu verwenden."
 
 #. Tag: title
 #, no-c-format
@@ -263,9 +328,15 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Then a new <emphasis>dependent</emphasis> instance of <literal>CreditCardPaymentStrategy</literal> will be created, passed to the producer method, returned by the producer method and finally bound to the session context. The dependent object won't be destroyed until the <literal>Preferences</literal> object is destroyed, at the end of the session."
-msgstr "Dann wird eine neue <emphasis>abhängige</emphasis> Instanz von <literal>CreditCardPaymentStrategy</literal> erstellt, an die Producer-Methode weitergegeben, von der Producer-Methode wiedergegeben und schließlich an den Session-Kontext gebunden. Das abhängige Objekt wird nicht gelöscht bis das <literal>Preferences</literal>-Objekt gelöscht wird, meist am Ende der Session."
+#, no-c-format
+msgid ""
+"Then a new <emphasis>dependent</emphasis> instance of "
+"<literal>CreditCardPaymentStrategy</literal> will be created, passed to the "
+"producer method, returned by the producer method and finally bound to the "
+"session context. The dependent object won't be destroyed until the "
+"<literal>Preferences</literal> object is destroyed, at the end of the "
+"session."
+msgstr ""
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -274,7 +345,9 @@ msgstr "Producer-Methoden"
 
 #. Tag: para
 #, no-c-format
-msgid "Some producer methods return objects that require explicit destruction. For example, somebody needs to close this JDBC connection:"
+msgid ""
+"Some producer methods return objects that require explicit destruction. For "
+"example, somebody needs to close this JDBC connection:"
 msgstr ""
 
 #. Tag: programlisting
@@ -287,7 +360,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Destruction can be performed by a matching <emphasis>disposer method</emphasis>, defined by the same class as the producer method:"
+msgid ""
+"Destruction can be performed by a matching <emphasis>disposer "
+"method</emphasis>, defined by the same class as the producer method:"
 msgstr ""
 
 #. Tag: programlisting
@@ -300,44 +375,13 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The disposer method must have at least one parameter, annotated <literal>@Disposes</literal>, with the same type and qualifiers as the producer method. The disposer method is called automatically when the context ends (in this case, at the end of the request), and this parameter receives the object produced by the producer method. If the disposer method has additional method parameters, the container will look for a bean that satisfies the type and qualifiers of each parameter and pass it to the method automatically."
+msgid ""
+"The disposer method must have at least one parameter, annotated "
+"<literal>@Disposes</literal>, with the same type and qualifiers as the "
+"producer method. The disposer method is called automatically when the "
+"context ends (in this case, at the end of the request), and this parameter "
+"receives the object produced by the producer method. If the disposer method "
+"has additional method parameters, the container will look for a bean that "
+"satisfies the type and qualifiers of each parameter and pass it to the "
+"method automatically."
 msgstr ""
-
-#~ msgid ""
-#~ "<blockquote> <para>A Web Beans producer method acts as a source of objects to be injected, where:</para> <itemizedlist> <listitem> <para>the objects to be injected are not required to be instances of Web Beans,</para> </listitem> <listitem> <para>the concrete type of the objects to be injected may vary at runtime or</para> </listitem> <listitem> <para>the objects require some custom initialization that is not performed by the Web Bean constructor</para> </listitem> </itemizedlist> </blockquote> <para>For example, producer methods let us:</para> <itemizedlist> <listitem> <para>expose a JPA entity as a Web Bean,</para> </listitem> <listitem> <para>expose any JDK class as a Web Bean,</para> </listitem> <listitem> <para>define multiple Web Beans, with different scopes or initialization, for the same implementation class, or</para> </listitem> <listitem> <para>vary the implementation of an API type at runtime.</para> </listitem> </itemizedlist> <para>In particular, producer methods let us use runtime polymorphism with Web Beans. As we've seen, deployment types are a powerful solution to the problem of deployment-time polymorphism. But once the system is deployed, the Web Bean implementation is fixed. A producer method has no such limitation:</para> <programlisting role=\"JAVA\"><![CDATA[@SessionScoped\n"
-#~ "public class Preferences {\n"
-#~ "    \n"
-#~ "    private PaymentStrategyType paymentStrategy;\n"
-#~ "    \n"
-#~ "    ...\n"
-#~ "    \n"
-#~ "    @Produces @Preferred \n"
-#~ "    public PaymentStrategy getPaymentStrategy() {\n"
-#~ "        switch (paymentStrategy) {\n"
-#~ "            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-#~ "            case CHEQUE: return new ChequePaymentStrategy();\n"
-#~ "            case PAYPAL: return new PayPalPaymentStrategy();\n"
-#~ "            default: return null;\n"
-#~ "        } \n"
-#~ "    }\n"
-#~ "    \n"
-#~ "}]]></programlisting> <para>Consider an injection point:</para> <programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></programlisting> <para>This injection point has the same type and binding annotations as the producer method, so it resolves to the producer method using the usual Web Beans injection rules. The producer method will be called by the Web Bean manager to obtain an instance to service this injection point.</para>."
-#~ msgstr ""
-#~ "<blockquote> <para>Eine Web Beans Producer-Methode fungiert als Quelle einzuspeisender Objekte wenn:</para> <itemizedlist> <listitem> <para>die einzuspeisenden Objekte keine Instanzen von Web Beans sein müssen,</para> </listitem> <listitem> <para>der konkrete Typ einzuspeisender Objekte zur Runtime variieren kann oder </para> </listitem> <listitem> <para>die Objekte eine bestimmte angepasste Initialisierung erfordern, die nicht vom Web Bean Konstruktor durchgeführt wird</para> </listitem> </itemizedlist> </blockquote> <para>Producer-Methoden lassen uns zum Beispiel:</para> <itemizedlist> <listitem> <para>eine JPA-Entity als ein Web Bean darlegen,</para> </listitem> <listitem> <para>eine beliebige JDK-Klasse als ein Web Bean darlegen,</para> </listitem> <listitem> <para>mehrere Web Beans mit unterschiedlichen Geltungsbereichen oder Initialisierung für diesselbe Implementierungsklasse definieren oder </para> </listitem> <listitem> <para>die Implementierung eines API-Typs zur Runtime variieren.</para> </listitem> </itemizedlist> <para>Insbesondere lassen uns Producer-Methoden Runtime-Polymorphie mit Web Beans verwenden. Wie wir bereits gesehen haben sind Deployment-Typen eine leistungsfähige Lösung zum Problem der Polymorphie zum Zeitpunkt des Deployment. Aber nachdem das System deployt ist, wird die Web Bean Implementierung behoben. Eine Producer-Methode besitzt keine solche Einschränkung:</para> <programlisting role=\"JAVA\"><![CDATA[@SessionScoped\n"
-#~ "public class Preferences {\n"
-#~ "    \n"
-#~ "    private PaymentStrategyType paymentStrategy;\n"
-#~ "    \n"
-#~ "    ...\n"
-#~ "    \n"
-#~ "    @Produces @Preferred \n"
-#~ "    public PaymentStrategy getPaymentStrategy() {\n"
-#~ "        switch (paymentStrategy) {\n"
-#~ "            case CREDIT_CARD: return new CreditCardPaymentStrategy();\n"
-#~ "            case CHEQUE: return new ChequePaymentStrategy();\n"
-#~ "            case PAYPAL: return new PayPalPaymentStrategy();\n"
-#~ "            default: return null;\n"
-#~ "        } \n"
-#~ "    }\n"
-#~ "    \n"
-#~ "}]]></programlisting> <para>Überlegen Sie einen Einspeisungspunkt:</para> <programlisting role=\"JAVA\"><![CDATA[@Preferred PaymentStrategy paymentStrat;]]></programlisting> <para>Dieser Einspeisungspunkt besitzt denselben Typ und diesselben Binding-Annotationen wie die Producer-Methode, so dass er unter Verwendung der üblichen Web Beans Einspeisungsregeln zur Producer-Methode auflöst. Die Producer-Methode wird vom Web Bean Manager aufgerufen um eine Instanz zu erhalten, um diesen Einspeisungspunkt zu bedienen.</para>."

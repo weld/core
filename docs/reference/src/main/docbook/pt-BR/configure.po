@@ -1,6 +1,7 @@
-#
+# 
 # AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+# Bruno Leonardo Gonçalves <brunolmfg@gmail.com>, 2012. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
@@ -8,30 +9,40 @@ msgstr ""
 "PO-Revision-Date: 2010-10-19T02:05:00\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
 msgid "Configuration"
-msgstr ""
+msgstr "Configuração "
 
 #. Tag: title
 #, no-c-format
 msgid "Excluding classes from scanning and deployment"
-msgstr ""
+msgstr "Evitando classes de serem escaneadas e implantadas"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld allows you to exclude classes in your archive from scanning, having container lifecycle events fired, and being deployed as beans."
+msgid ""
+"Weld allows you to exclude classes in your archive from scanning, having "
+"container lifecycle events fired, and being deployed as beans."
 msgstr ""
+"Weld permite que você evite que classes em seu arquivo sejam escaneadas, que"
+" acionem eventos de ciclo de vida, e que sejam implantadas como beans."
 
 #. Tag: para
 #, no-c-format
-msgid "In this tutorial, we'll explore this feature via an example; a more formal specification can be found in the xsd, located at <ulink url=\"http://jboss.org/schema/weld/beans_1_1.xsd\">http://jboss.org/schema/weld/beans_1_1.xsd</ulink>."
+msgid ""
+"In this tutorial, we'll explore this feature via an example; a more formal "
+"specification can be found in the xsd, located at <ulink "
+"url=\"http://jboss.org/schema/weld/beans_1_1.xsd\">http://jboss.org/schema/weld/beans_1_1.xsd</ulink>."
 msgstr ""
+"Neste tutorial iremos explorar essa funcionalidade através de um exemplo, "
+"uma especificação mais formal pode ser encontrada no xsd: <ulink "
+"url=\"http://jboss.org/schema/weld/beans_1_1.xsd\">http://jboss.org/schema/weld/beans_1_1.xsd</ulink>"
 
 #. Tag: programlisting
 #, no-c-format
@@ -75,43 +86,140 @@ msgid ""
 "    \n"
 "&lt;/beans&gt;"
 msgstr ""
+"&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n"
+"&lt;beans xmlns=\"http://java.sun.com/xml/ns/javaee\" \n"
+"       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n"
+"       xmlns:weld=\"http://jboss.org/schema/weld/beans\" \n"
+"       xsi:schemaLocation=\"\n"
+"          http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd\n"
+"          http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd\"&gt;\n"
+"    \n"
+"    &lt;weld:scan&gt;\n"
+"      \n"
+"        &lt;!-- Don't deploy the classes for the swing app! --&gt;\n"
+"        &lt;weld:exclude name=\"com.acme.swing.**\" /&gt;\n"
+"      \n"
+"        &lt;!-- Don't include GWT support if GWT is not installed --&gt;\n"
+"        &lt;weld:exclude name=\"com.acme.gwt.**\"&gt;\n"
+"            &lt;weld:if-class-available name=\"!com.google.GWT\"/&gt;\n"
+"        &lt;/weld:exclude&gt;\n"
+"        \n"
+"        &lt;!--\n"
+"            Exclude classes which end in Blether if the system property verbosity is set to low\n"
+"            i.e.\n"
+"              java ... -Dverbosity=low            \n"
+"        --&gt;        \n"
+"        &lt;weld:exclude pattern=\"^(.*)Blether$\"&gt;\n"
+"            &lt;weld:if-system-property name=\"verbosity\" value=\"low\"/&gt;\n"
+"        &lt;/weld:exclude&gt;\n"
+"        \n"
+"       &lt;!--\n"
+"             Don't include JSF support if Wicket classes are present, and the viewlayer system\n"
+"             property is not set\n"
+"        --&gt;\n"
+"        &lt;weld:exclude name=\"com.acme.jsf.**\"&gt;\n"
+"            &lt;weld:if-class-available name=\"org.apahce.wicket.Wicket\"/&gt;\n"
+"            &lt;weld:if-system-property name=\"!viewlayer\"/&gt;\n"
+"        &lt;/weld:exclude&gt;\n"
+"    &lt;/weld:scan&gt;\n"
+"    \n"
+"&lt;/beans&gt;"
 
 #. Tag: para
 #, no-c-format
-msgid "In this example we show the most common use cases for exercising fine control over which classes Weld scans. The first filter excludes all classes in the package <code>com.acme.swing</code>, and in most cases this will be sufficient for your needs."
+msgid ""
+"In this example we show the most common use cases for exercising fine "
+"control over which classes Weld scans. The first filter excludes all classes"
+" in the package <code>com.acme.swing</code>, and in most cases this will be "
+"sufficient for your needs."
 msgstr ""
+"Neste exemplo iremos mostrar o mais comum dos casos quando é preciso ter um "
+"maior controle de quais classes o Weld irá scanear. O primeiro filtro exclui"
+" todas as classes pertencentes a package <code>com.acme.swing</code>, e na "
+"maioria dos casos isso já será o suficiente para as suas necessidades."
 
 #. Tag: para
 #, no-c-format
-msgid "However, sometimes it's useful to be able to activate the filter depending on the environment used. In this case, Weld allows you to activate (or deactivate) a filter based on either system properties or whether a class is available. The second filter shows the use case of disabling scanning of certain classes depending on the capabilities of the environment you deploy to - in this case we are excluding GWT support if GWT is not installed."
+msgid ""
+"However, sometimes it's useful to be able to activate the filter depending "
+"on the environment used. In this case, Weld allows you to activate (or "
+"deactivate) a filter based on either system properties or whether a class is"
+" available. The second filter shows the use case of disabling scanning of "
+"certain classes depending on the capabilities of the environment you deploy "
+"to - in this case we are excluding GWT support if GWT is not installed."
 msgstr ""
+"Entretanto, as vezes é útil ser capas de ativar filtros dependendo do "
+"ambiente utilizado. Neste caso, Weld  permite que você ative (ou desative) "
+"um filtro baseado em se tanto propriedades do sistema ou classes estão "
+"presente. O segundo filtro mostra o caso quando o escaneamento de certas "
+"classes é desativado dependendo do ambiente em que o sistema é implantado – "
+"neste caso estamos excluindo suporte ao GWT se o GWT não esta instalado. "
 
 #. Tag: para
 #, no-c-format
-msgid "Notice how we use a <code>!</code> character on the <code>name</code> attribute to invert the activation condition. You can invert any activation condition in this way."
+msgid ""
+"Notice how we use a <code>!</code> character on the <code>name</code> "
+"attribute to invert the activation condition. You can invert any activation "
+"condition in this way."
 msgstr ""
+"Repare que usamos <code>!</code> no atributo <code>name</code> para inverter"
+" a condição de ativação do filtro. Você pode inverter qualquer condição de "
+"ativação deste modo."
 
 #. Tag: para
 #, no-c-format
-msgid "The third filter uses a regular expression to select the classes to match (normally we use simple name-based patterns, as they don't require us to escape the period which delimits the package hierarchy)."
+msgid ""
+"The third filter uses a regular expression to select the classes to match "
+"(normally we use simple name-based patterns, as they don't require us to "
+"escape the period which delimits the package hierarchy)."
 msgstr ""
+"O terceiro filtro usa uma expressão regular para selecionar as classes "
+"(normalmente utilizamos padrões simples baseados em nomes, eles não requerem"
+" que determinemos o ponto que delimita a hierarquia de pacotes)."
 
 #. Tag: para
 #, no-c-format
-msgid "If you specify just a system property name, Weld will activate the filter if that system property has been set (with any value). If you also specify the system property value, then Weld will only activate the filter if the system property's value matches exactly."
+msgid ""
+"If you specify just a system property name, Weld will activate the filter if"
+" that system property has been set (with any value). If you also specify the"
+" system property value, then Weld will only activate the filter if the "
+"system property's value matches exactly."
 msgstr ""
+"Se você especificar somente o nome da propriedade do sistema, o Weld irá "
+"ativar o filtro se a propriedade tiver sido configurada (com qualquer "
+"valor). Se você também especificar o valor da propriedade do sistema, então "
+"o Weld irá ativar o filtro somente se o valor da propriedade corresponde "
+"exatamente com o valor dado a propriedade"
 
 #. Tag: para
 #, no-c-format
-msgid "The fourth filter shows more a advanced configurations, where we use multiple activation conditions to decide whether to activate the filter."
+msgid ""
+"The fourth filter shows more a advanced configurations, where we use "
+"multiple activation conditions to decide whether to activate the filter."
 msgstr ""
+"O quarto filtro mostra uma configuração mais avançada, onde usamos múltiplas"
+" condições para decidir se filtro vai ser ativado ou não."
 
 #. Tag: para
 #, no-c-format
-msgid "You can combine as many activation conditions as you like (<emphasis>all</emphasis> must be true for the filter to be activated). If you want to a filter that is active if <emphasis>any</emphasis> of the activation conditions are true, then you need multiple identical filters, each with different activation conditions."
+msgid ""
+"You can combine as many activation conditions as you like "
+"(<emphasis>all</emphasis> must be true for the filter to be activated). If "
+"you want to a filter that is active if <emphasis>any</emphasis> of the "
+"activation conditions are true, then you need multiple identical filters, "
+"each with different activation conditions."
 msgstr ""
+"Você pode combinar quantas condições quiser (<emphasis>todas</emphasis> "
+"necessariamente tem que ser verdadeiras para o filtro ser ativado). Se você "
+"quiser que um filtro seja ativado se <emphasis>qualquer</emphasis> das "
+"condições seja verdadeira, você precisa de múltiplos filtros idênticos, cada"
+" um com condições de ativação diferentes."
 
 #. Tag: para
 #, no-c-format
-msgid "In general, the semantics defined by Ant's pattern sets (http://ant.apache.org/manual/dirtasks.html#patternset) are followed."
+msgid ""
+"In general, the semantics defined by Ant's pattern sets "
+"(http://ant.apache.org/manual/dirtasks.html#patternset) are followed."
 msgstr ""
+"No geral, a semântica definida pelas patterns sets do Ant "
+"(http://ant.apache.org/manual/dirtasks.html#patternset) são seguidas."

@@ -1,30 +1,55 @@
 # Language fr-FR translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
+# Julien Herr <julien@herr.fr>, 2011. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:17\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld, the JSR-299 Reference Implementation (RI), is being developed as part of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. You can download the latest community release of Weld from the <ulink url=\"http://seamframework.org/Download\">download page</ulink>. Information about the Weld source code repository and instructions about how to obtain and build the source can be found on the same page."
+msgid ""
+"Weld, the JSR-299 Reference Implementation (RI), is being developed as part "
+"of the <ulink url=\"http://seamframework.org/Weld\">Seam project</ulink>. "
+"You can download the latest community release of Weld from the <ulink "
+"url=\"http://seamframework.org/Download\">download page</ulink>. Information"
+" about the Weld source code repository and instructions about how to obtain "
+"and build the source can be found on the same page."
 msgstr ""
+"Weld, l'Implémentation de Référence (RI) de la JSR-299, est développé dans "
+"le cadre du <ulink url=\"http://seamframework.org/Weld\">projet "
+"Seam</ulink>. Vous pouvez télécharger la dernière version communautaire de "
+"Weld sur la <ulink url=\"http://seamframework.org/Download\">page de "
+"téléchargement</ulink>. Des informations sur le gestionnaire de sources de "
+"Weld et des instructions sur comment obtenir et compiler les sources peuvent"
+" être trouvées sur cette même page."
 
 #. Tag: para
 #, no-c-format
-msgid "Weld provides a complete SPI allowing Java EE containers such as JBoss AS and GlassFish to use Weld as their built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE environment."
+msgid ""
+"Weld provides a complete SPI allowing Java EE containers such as JBoss AS "
+"and GlassFish to use Weld as their built-in CDI implementation. Weld also "
+"runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE "
+"environment."
 msgstr ""
+"Weld fournis un SPI complet permettant aux conteneurs Java EE tel que JBoss "
+"AS et GlassFish d'utiliser Weld comme implémentation intégrée de CDI. Weld "
+"fonctionne aussi dans les moteurs de servlets comme Tomcat et Jetty, ou même"
+" dans l'environnement standard Java SE."
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with an extensive library of examples, which are a great starting point from which to learn CDI."
+msgid ""
+"Weld comes with an extensive library of examples, which are a great starting"
+" point from which to learn CDI."
 msgstr ""
+"Weld est livré avec une vaste bibliothèque d'exemples, qui sont un bon point"
+" d'entré pour ceux qui veulent apprendre à utiliser CDI."

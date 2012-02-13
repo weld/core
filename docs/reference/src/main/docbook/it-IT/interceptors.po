@@ -1,18 +1,17 @@
 # Language it-IT translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-05 00:26+0100\n"
 "Last-Translator: Nicola Benaglia <nico.benaz@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
@@ -21,12 +20,18 @@ msgstr "Gli interceptor"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Interceptor functionality is defined in the Java Interceptors specification. CDI enhances this functionality with a more sophisticated, semantic, annotation-based approach to binding interceptors to beans."
-msgstr "Web Bean fornisce un più sofisticato approccio basato su annotazioni per associare interceptor ai Web Beans."
+msgid ""
+"Interceptor functionality is defined in the Java Interceptors specification."
+" CDI enhances this functionality with a more sophisticated, semantic, "
+"annotation-based approach to binding interceptors to beans."
+msgstr ""
+"Web Bean fornisce un più sofisticato approccio basato su annotazioni per "
+"associare interceptor ai Web Beans."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The Interceptors specification defines two kinds of interception points:"
+msgid ""
+"The Interceptors specification defines two kinds of interception points:"
 msgstr "\"La specifica Web Bean definisce due tipi di punti di intercettazione:"
 
 #. Tag: para
@@ -34,7 +39,6 @@ msgstr "\"La specifica Web Bean definisce due tipi di punti di intercettazione:"
 msgid "business method interception, and"
 msgstr "intercettazione del metodo di business, e"
 
-# lifecycle callback interception = ?
 #. Tag: para
 #, no-c-format
 msgid "lifecycle callback interception."
@@ -42,13 +46,18 @@ msgstr "intercettazione della chiamata del ciclo di vita"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In addition, the EJB specification defines timeout method interception."
+msgid ""
+"In addition, the EJB specification defines timeout method interception."
 msgstr "\"La specifica Web Bean definisce due tipi di punti di intercettazione:"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A <emphasis>business method interceptor</emphasis> applies to invocations of methods of the bean by clients of the bean:"
-msgstr "Un <emphasis>interceptor di un metodo di business</emphasis> si applica alle invocazioni di metodi del Web Bean da parte di client del Web Bean:"
+msgid ""
+"A <emphasis>business method interceptor</emphasis> applies to invocations of"
+" methods of the bean by clients of the bean:"
+msgstr ""
+"Un <emphasis>interceptor di un metodo di business</emphasis> si applica alle"
+" invocazioni di metodi del Web Bean da parte di client del Web Bean:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -62,11 +71,14 @@ msgstr ""
 "    @AroundInvoke public Object manageTransaction(InvocationContext ctx) { ... }\n"
 "}]]>"
 
-# rivedere la frase
 #. Tag: para
 #, no-c-format
-msgid "A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations of lifecycle callbacks by the container:"
-msgstr "Un <emphasis>interceptor di chiamata del ciclo di vita</emphasis> si applica alle invocazioni delle chiamate del ciclo di vita da parte del container:"
+msgid ""
+"A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations"
+" of lifecycle callbacks by the container:"
+msgstr ""
+"Un <emphasis>interceptor di chiamata del ciclo di vita</emphasis> si applica"
+" alle invocazioni delle chiamate del ciclo di vita da parte del container:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -82,14 +94,21 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An interceptor class may intercept both lifecycle callbacks and business methods."
-msgstr "Una classe interceptor può intercettare entrambi le chiamate del ciclo di vita ed i metodi di business."
+msgid ""
+"An interceptor class may intercept both lifecycle callbacks and business "
+"methods."
+msgstr ""
+"Una classe interceptor può intercettare entrambi le chiamate del ciclo di "
+"vita ed i metodi di business."
 
-# rivedere la frase
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A <emphasis>timeout method interceptor</emphasis> applies to invocations of EJB timeout methods by the container:"
-msgstr "Un <emphasis>interceptor di chiamata del ciclo di vita</emphasis> si applica alle invocazioni delle chiamate del ciclo di vita da parte del container:"
+msgid ""
+"A <emphasis>timeout method interceptor</emphasis> applies to invocations of "
+"EJB timeout methods by the container:"
+msgstr ""
+"Un <emphasis>interceptor di chiamata del ciclo di vita</emphasis> si applica"
+" alle invocazioni delle chiamate del ciclo di vita da parte del container:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -109,9 +128,12 @@ msgid "Interceptor bindings"
 msgstr "Interceptor bindings"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:"
-msgstr "Si supponga di voler dichiarare transazionali alcuni Web Beans. La prima cosa necessaria è un'<emphasis>annotazione di interceptor binding</emphasis> per specificare esattamente quali Web Beans sono interessati:"
+#, no-c-format
+msgid ""
+"Suppose we want to declare that some of our beans are transactional. The "
+"first thing we need is an <emphasis>interceptor binding type</emphasis> to "
+"specify exactly which beans we're interested in:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -128,8 +150,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now we can easily specify that our <literal>ShoppingCart</literal> is a transactional object:"
-msgstr "Ora è facilmente possibile specificare che <literal>ShoppingCart</literal> è un oggetto transazionale:"
+msgid ""
+"Now we can easily specify that our <literal>ShoppingCart</literal> is a "
+"transactional object:"
+msgstr ""
+"Ora è facilmente possibile specificare che <literal>ShoppingCart</literal> è"
+" un oggetto transazionale:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -142,8 +168,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Or, if we prefer, we can specify that just one method is transactional:"
-msgstr "O se si preferisce, si può specificare che solo un metodo sia transazionale:"
+msgid ""
+"Or, if we prefer, we can specify that just one method is transactional:"
+msgstr ""
+"O se si preferisce, si può specificare che solo un metodo sia transazionale:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -162,9 +190,13 @@ msgid "Implementing interceptors"
 msgstr "Implementare gli interceptor"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "That's great, but somewhere along the line we're going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
-msgstr "Bene, ma da qualche parte è necessario implementare l'interceptor che fornisce l'aspect di gestione della transazione. Occore quindi creare un interceptor EJB standard e annotarlo con <literal>@Interceptor</literal> e <literal>@Transactional</literal>.\""
+#, no-c-format
+msgid ""
+"That's great, but somewhere along the line we're going to have to actually "
+"implement the interceptor that provides this transaction management aspect. "
+"All we need to do is create a standard interceptor, and annotate it "
+"<literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -210,7 +242,8 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Multiple interceptors may use the same interceptor binding type."
-msgstr "Diverso interceptor possono usare lo stesso tipo di interceptor binding."
+msgstr ""
+"Diverso interceptor possono usare lo stesso tipo di interceptor binding."
 
 #. Tag: title
 #, no-c-format
@@ -219,7 +252,11 @@ msgstr "Abilitare gli interceptor"
 
 #. Tag: para
 #, no-c-format
-msgid "By default, all interceptors are disabled. We need to <emphasis>enable</emphasis> our interceptor in the <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans in that archive."
+msgid ""
+"By default, all interceptors are disabled. We need to "
+"<emphasis>enable</emphasis> our interceptor in the "
+"<literal>beans.xml</literal> descriptor of a bean archive. This activation "
+"only applies to the beans in that archive."
 msgstr ""
 
 #. Tag: programlisting
@@ -240,27 +277,40 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "Whoah! Why the angle bracket stew?"
-msgstr "Ma perché viene usato ancora XML, quando Web Beans non dovrebbe utilizzarlo?"
+msgstr ""
+"Ma perché viene usato ancora XML, quando Web Beans non dovrebbe utilizzarlo?"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Well, having the XML declaration is actually a <emphasis>good thing</emphasis>. It solves two problems:"
+msgid ""
+"Well, having the XML declaration is actually a <emphasis>good "
+"thing</emphasis>. It solves two problems:"
 msgstr "La dichiarazione XML risolve due problemi:"
 
 #. Tag: para
 #, no-c-format
-msgid "it enables us to specify a total ordering for all the interceptors in our system, ensuring deterministic behavior, and"
-msgstr "Ci consente di specificare un ordinamento totale per tutti gli interceptor del sistema, assicurando un comportamente deterministico, e"
+msgid ""
+"it enables us to specify a total ordering for all the interceptors in our "
+"system, ensuring deterministic behavior, and"
+msgstr ""
+"Ci consente di specificare un ordinamento totale per tutti gli interceptor "
+"del sistema, assicurando un comportamente deterministico, e"
 
 #. Tag: para
 #, no-c-format
 msgid "it lets us enable or disable interceptor classes at deployment time."
-msgstr "consente di abilitare o disabilitare le classi di interceptor a deployment time"
+msgstr ""
+"consente di abilitare o disabilitare le classi di interceptor a deployment "
+"time"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "For example, we could specify that our security interceptor runs before our transaction interceptor."
-msgstr "Per esempio è possibile specificare che l'interceptor di sicurezza venga eseguito prima di <literal>TransactionInterceptor</literal>.\""
+msgid ""
+"For example, we could specify that our security interceptor runs before our "
+"transaction interceptor."
+msgstr ""
+"Per esempio è possibile specificare che l'interceptor di sicurezza venga "
+"eseguito prima di <literal>TransactionInterceptor</literal>.\""
 
 #. Tag: programlisting
 #, no-c-format
@@ -280,7 +330,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Or we could turn them both off in our test environment by simply not mentioning them in <literal>beans.xml</literal>! Ah, so simple."
+msgid ""
+"Or we could turn them both off in our test environment by simply not "
+"mentioning them in <literal>beans.xml</literal>! Ah, so simple."
 msgstr ""
 
 #. Tag: title
@@ -290,8 +342,12 @@ msgstr "Interceptor binding con membri"
 
 #. Tag: para
 #, no-c-format
-msgid "Suppose we want to add some extra information to our <literal>@Transactional</literal> annotation:"
-msgstr "Si supponga di voler aggiungere qualche informazione extra all'annotazione  <literal>@Transactional</literal>:"
+msgid ""
+"Suppose we want to add some extra information to our "
+"<literal>@Transactional</literal> annotation:"
+msgstr ""
+"Si supponga di voler aggiungere qualche informazione extra all'annotazione  "
+"<literal>@Transactional</literal>:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -312,8 +368,15 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI will use the value of <literal>requiresNew</literal> to choose between two different interceptors, <literal>TransactionInterceptor</literal> and <literal>RequiresNewTransactionInterceptor</literal>."
-msgstr "Web Beans utilizzerà il valore di <literal>requiresNew</literal> per scegliere tra due diversi interceptor, <literal>TransactionInterceptor</literal> e <literal>RequiresNewTransactionInterceptor</literal>."
+msgid ""
+"CDI will use the value of <literal>requiresNew</literal> to choose between "
+"two different interceptors, <literal>TransactionInterceptor</literal> and "
+"<literal>RequiresNewTransactionInterceptor</literal>."
+msgstr ""
+"Web Beans utilizzerà il valore di <literal>requiresNew</literal> per "
+"scegliere tra due diversi interceptor, "
+"<literal>TransactionInterceptor</literal> e "
+"<literal>RequiresNewTransactionInterceptor</literal>."
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -331,8 +394,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now we can use <literal>RequiresNewTransactionInterceptor</literal> like this:"
-msgstr "Ora è possibile usare <literal>RequiresNewTransactionInterceptor</literal> in questo modo:"
+msgid ""
+"Now we can use <literal>RequiresNewTransactionInterceptor</literal> like "
+"this:"
+msgstr ""
+"Ora è possibile usare <literal>RequiresNewTransactionInterceptor</literal> "
+"in questo modo:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -345,8 +412,15 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "But what if we only have one interceptor and we want the container to ignore the value of <literal>requiresNew</literal> when binding interceptors? Perhaps this information is only useful for the interceptor implementation. We can use the <literal>@Nonbinding</literal> annotation:"
-msgstr "Ma cosa succede se si ha solo un interceptor e si vuole che il manager ignori il valore di <literal>requiresNew</literal> quando si associa l'interceptor? Si può usare l'annotazione <literal>@NonBinding</literal>:"
+msgid ""
+"But what if we only have one interceptor and we want the container to ignore"
+" the value of <literal>requiresNew</literal> when binding interceptors? "
+"Perhaps this information is only useful for the interceptor implementation. "
+"We can use the <literal>@Nonbinding</literal> annotation:"
+msgstr ""
+"Ma cosa succede se si ha solo un interceptor e si vuole che il manager "
+"ignori il valore di <literal>requiresNew</literal> quando si associa "
+"l'interceptor? Si può usare l'annotazione <literal>@NonBinding</literal>:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -372,22 +446,33 @@ msgstr "Annotazioni per interceptor binding multipli"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Usually we use combinations of interceptor bindings types to bind multiple interceptors to a bean. For example, the following declaration would be used to bind <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal> to the same bean:"
-msgstr "Solitamente si usano combinazioni di tipi di interceptor binding per associare pià interceptor ad un Web Bean. Per esempio, la seguente dichiarazione verrebbe impiegata per associare <literal>TransactionInterceptor</literal> e <literal>SecurityInterceptor</literal> allo stesso Web Bean:"
+msgid ""
+"Usually we use combinations of interceptor bindings types to bind multiple "
+"interceptors to a bean. For example, the following declaration would be used"
+" to bind <literal>TransactionInterceptor</literal> and "
+"<literal>SecurityInterceptor</literal> to the same bean:"
+msgstr ""
+"Solitamente si usano combinazioni di tipi di interceptor binding per "
+"associare pià interceptor ad un Web Bean. Per esempio, la seguente "
+"dichiarazione verrebbe impiegata per associare "
+"<literal>TransactionInterceptor</literal> e "
+"<literal>SecurityInterceptor</literal> allo stesso Web Bean:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Secure(rolesAllowed=\"admin\") @Transactional\n"
 "public class ShoppingCart { ... }"
 msgstr ""
-"<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
-"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "However, in very complex cases, an interceptor itself may specify some combination of interceptor binding types:"
-msgstr "Comunque in casi molto complessi un interceptor da solo potrebbe specificare alcune combinazioni di tipi di interceptor binding:"
+msgid ""
+"However, in very complex cases, an interceptor itself may specify some "
+"combination of interceptor binding types:"
+msgstr ""
+"Comunque in casi molto complessi un interceptor da solo potrebbe specificare"
+" alcune combinazioni di tipi di interceptor binding:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -400,8 +485,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Then this interceptor could be bound to the <literal>checkout()</literal> method using any one of the following combinations:"
-msgstr "Allora quest'interceptor potrebbe venire associato al metodo <literal>checkout()</literal> usando una delle seguenti combinazioni:"
+msgid ""
+"Then this interceptor could be bound to the <literal>checkout()</literal> "
+"method using any one of the following combinations:"
+msgstr ""
+"Allora quest'interceptor potrebbe venire associato al metodo "
+"<literal>checkout()</literal> usando una delle seguenti combinazioni:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -460,18 +549,31 @@ msgstr "Ereditarietà del tipo di interceptor binding"
 
 #. Tag: para
 #, no-c-format
-msgid "One limitation of the Java language support for annotations is the lack of annotation inheritance. Really, annotations should have reuse built in, to allow this kind of thing to work:"
-msgstr "Una limitazione del supporto del linguaggio Java per le annotazioni è la mancanza di ereditarietà delle annotazioni. In verità le annotazioni dovrebbero avere il riutilizzo predefinito per consentire che questo avvenga:"
+msgid ""
+"One limitation of the Java language support for annotations is the lack of "
+"annotation inheritance. Really, annotations should have reuse built in, to "
+"allow this kind of thing to work:"
+msgstr ""
+"Una limitazione del supporto del linguaggio Java per le annotazioni è la "
+"mancanza di ereditarietà delle annotazioni. In verità le annotazioni "
+"dovrebbero avere il riutilizzo predefinito per consentire che questo "
+"avvenga:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid "public @interface Action extends Transactional, Secure { ... }"
-msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
+msgstr ""
+"<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive &mdash; any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
-msgstr "Fortunatamente Web Beans provvede a questa mancanza di Java. E' possibile annotare un tipo di interceptor binding con altri tipi di interceptor binding. Gli interceptor binding sono transitivi &#151; qualsiasi Web Bean con il primo interceptor binding eredita gli interceptor binding dichiarati come meta-annotazioni."
+#, no-c-format
+msgid ""
+"Well, fortunately, CDI works around this missing feature of Java. We may "
+"annotate one interceptor binding type with other interceptor binding types "
+"(termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings "
+"are transitive &mdash; any bean with the first interceptor binding inherits "
+"the interceptor bindings declared as meta-annotations."
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -490,8 +592,16 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now, any bean annotated <literal>@Action</literal> will be bound to both <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal>. (And even <literal>TransactionalSecureInterceptor</literal>, if it exists.)"
-msgstr "Ogni Web Bean annotato con <literal>@Action</literal> verrà legato ad entrambi <literal>TransactionInterceptor</literal> e <literal>SecurityInterceptor</literal>. (E anche <literal>TransactionalSecureInterceptor</literal>, se questo esiste.)"
+msgid ""
+"Now, any bean annotated <literal>@Action</literal> will be bound to both "
+"<literal>TransactionInterceptor</literal> and "
+"<literal>SecurityInterceptor</literal>. (And even "
+"<literal>TransactionalSecureInterceptor</literal>, if it exists.)"
+msgstr ""
+"Ogni Web Bean annotato con <literal>@Action</literal> verrà legato ad "
+"entrambi <literal>TransactionInterceptor</literal> e "
+"<literal>SecurityInterceptor</literal>. (E anche "
+"<literal>TransactionalSecureInterceptor</literal>, se questo esiste.)"
 
 #. Tag: title
 #, no-c-format
@@ -500,8 +610,13 @@ msgstr "Uso di <literal>@Interceptors</literal>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>@Interceptors</literal> annotation defined by the interceptor specification (and used by the managed bean and EJB specifications) is still supported in CDI."
-msgstr "L'annotazione <literal>@Interceptors</literal> definita dalla specifica EJB è supportata per entrambi i Web Bean semplici ed enterprise, per esempio:"
+msgid ""
+"The <literal>@Interceptors</literal> annotation defined by the interceptor "
+"specification (and used by the managed bean and EJB specifications) is still"
+" supported in CDI."
+msgstr ""
+"L'annotazione <literal>@Interceptors</literal> definita dalla specifica EJB "
+"è supportata per entrambi i Web Bean semplici ed enterprise, per esempio:"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -524,54 +639,24 @@ msgstr "Comunque, quest'approccio soffre dei seguenti difetti:"
 #. Tag: para
 #, no-c-format
 msgid "the interceptor implementation is hardcoded in business code,"
-msgstr "l'implementazione degli interceptor è codificata nel codice di business,"
+msgstr ""
+"l'implementazione degli interceptor è codificata nel codice di business,"
 
 #. Tag: para
 #, no-c-format
 msgid "interceptors may not be easily disabled at deployment time, and"
-msgstr "gli interceptor possono non essere facilmente disabilitati a deployment time, e"
+msgstr ""
+"gli interceptor possono non essere facilmente disabilitati a deployment "
+"time, e"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "the interceptor ordering is non-global &mdash; it is determined by the order in which interceptors are listed at the class level."
-msgstr "l'ordinamento degli interceptor è non-globale &#151; è determinata dall'ordine in cui gli interceptor sono elencati al livello di classe."
+#, no-c-format
+msgid ""
+"the interceptor ordering is non-global &mdash; it is determined by the order"
+" in which interceptors are listed at the class level."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "Therefore, we recommend the use of CDI-style interceptor bindings."
 msgstr "Quindi si raccomanda l'uso di interceptor binding di stile Web Beans."
-
-#~ msgid "Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending the functionality in two directions:"
-#~ msgstr "Web Beans riutilizza l'architettura base degli interceptor di EJB3.0, estendendo la funzionalità in due direzioni:"
-
-#~ msgid "Any Web Bean may have interceptors, not just session beans."
-#~ msgstr "Qualsiasi Web Bean può avere interceptor, non solo i session bean."
-
-#~ msgid "All Web Beans interceptors are simple Web Beans, and can take advantage of dependency injection and contextual lifecycle management."
-#~ msgstr "Tutti gli interceptor dei Web Beans sono Web Beans semplici e possono sfruttare la dependency injection e la gestione del ciclo di vita contestuale."
-
-#~ msgid "Finally, we need to <emphasis>enable</emphasis> our interceptor in <literal>web-beans.xml</literal>."
-#~ msgstr "Infine occorre <emphasis>abilitare</emphasis> l'interceptor in <literal>web-beans.xml</literal>."
-
-#~ msgid ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-
-#~ msgid ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <sx:SecurityInterceptor/>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <sx:SecurityInterceptor/>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-
-#~ msgid "Or we could turn them both off in our test environment!"
-#~ msgstr "Oppure si può disattivarli entrambi dal proprio ambiente di test!"

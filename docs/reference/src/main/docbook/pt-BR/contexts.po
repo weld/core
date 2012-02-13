@@ -1,6 +1,7 @@
-#
+# 
 # AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+# Bruno Leonardo Gonçalves <brunolmfg@gmail.com>, 2012. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
@@ -8,250 +9,364 @@ msgstr ""
 "PO-Revision-Date: 2010-10-19T02:05:00\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
 msgid "Context Management"
-msgstr ""
+msgstr "Gerenciamento de contextos"
 
 #. Tag: title
 #, no-c-format
 msgid "Managing the built in contexts"
-msgstr ""
+msgstr "Gerenciamento dos contextos embutidos"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld allows you to easily manage the built in contexts by injecting them and calling lifecycle methods. Weld defines two types of context, <emphasis>managed</emphasis> and <emphasis>unmanaged</emphasis>. Managed contexts can be activated (allowing bean instances to be retrieved from the context), invalidated (scheduling bean instances for destruction) and deactivated (stopping bean instances from being retrieved, and if the context has been invalidated, causing the bean instances to destroyed). Unmanaged contexts are always active; some may offer the ability to destroy instances."
+msgid ""
+"Weld allows you to easily manage the built in contexts by injecting them and"
+" calling lifecycle methods. Weld defines two types of context, "
+"<emphasis>managed</emphasis> and <emphasis>unmanaged</emphasis>. Managed "
+"contexts can be activated (allowing bean instances to be retrieved from the "
+"context), invalidated (scheduling bean instances for destruction) and "
+"deactivated (stopping bean instances from being retrieved, and if the "
+"context has been invalidated, causing the bean instances to destroyed). "
+"Unmanaged contexts are always active; some may offer the ability to destroy "
+"instances."
 msgstr ""
+"Weld permite que você gerencie facilmente os contextos embutidos através de "
+"injeção e execução dos métodos de ciclo de vida. Weld define dois tipos de "
+"contexto, <emphasis>gerenciado</emphasis> e <emphasis>não "
+"gerenciado</emphasis>.  Contextos gerenciados podem ser ativados (permitindo"
+" instâncias de beans serem buscadas do contexto), invalidados (agendando "
+"instâncias de beans para serem destruídas) e desativados (evitando "
+"instâncias de beans de serem buscadas e, se o contexto foi invalidado, "
+"causando a destruição das mesmas. Contextos não gerenciados são sempre "
+"ativos, alguns podem oferecer a habilidade de destruir instâncias."
 
 #. Tag: para
 #, no-c-format
-msgid "Managed contexts can either be <emphasis>bound</emphasis> or <emphasis>unbound</emphasis>. An unbound context is scoped to the thread in which it is activated (instances placed in the context in one thread are not visible in other threads), and is destroyed upon invalidation and deactivation. Bound contexts are attached to some external data store (such as the Http Session or a manually propagated map) by <emphasis>associating</emphasis> the data store with the context before calling activate, and dissociating the data store after calling activate."
+msgid ""
+"Managed contexts can either be <emphasis>bound</emphasis> or "
+"<emphasis>unbound</emphasis>. An unbound context is scoped to the thread in "
+"which it is activated (instances placed in the context in one thread are not"
+" visible in other threads), and is destroyed upon invalidation and "
+"deactivation. Bound contexts are attached to some external data store (such "
+"as the Http Session or a manually propagated map) by "
+"<emphasis>associating</emphasis> the data store with the context before "
+"calling activate, and dissociating the data store after calling activate."
 msgstr ""
+"Os contextos gerenciados podem tanto ser <emphasis>acoplados</emphasis> ou "
+"<emphasis>desacoplados</emphasis>. Um contexto desacoplado possui um escopo "
+"dentro da thread em que foi ativado (instâncias colocadas em contexto numa "
+"thread não são visíveis nas outras threads), e é destruído após sua "
+"invalidação e desativação. Contextos acoplados são anexados a algum "
+"recipiente de dados externo (como o Http Session ou um mapa manualmente "
+"propagado) ao <emphasis>associar</emphasis> o recipiente com o contexto "
+"antes de ativar e o desassociando após desativar."
 
 #. Tag: para
 #, no-c-format
-msgid "Weld automatically controls context lifecycle in many scenarios such as HTTP requests, EJB remote invocations, and MDB invocations. Many of the extensions for CDI offer context lifecycle for other environments, it's worth checking to see if there is a suitable extension before deciding to manage the context yourself."
+msgid ""
+"Weld automatically controls context lifecycle in many scenarios such as HTTP"
+" requests, EJB remote invocations, and MDB invocations. Many of the "
+"extensions for CDI offer context lifecycle for other environments, it's "
+"worth checking to see if there is a suitable extension before deciding to "
+"manage the context yourself."
 msgstr ""
+"O Weld controla automaticamente o ciclo de vida do contexto em muitos "
+"cenários como em requisições HTTP, invocações remotas de EJB e invocações de"
+" MDB. Muitas das extensões de CDI oferece um ciclo de vida do contexto para "
+"outros ambientes, vale a pena verificar se existe uma extensão adequada "
+"antes de decidir gerenciar algum contexto por conta própria."
 
 #. Tag: para
 #, no-c-format
-msgid "Weld provides a number of built in contexts, which are shown in <xref linkend=\"contexts.available\" />."
+msgid ""
+"Weld provides a number of built in contexts, which are shown in <xref "
+"linkend=\"contexts.available\" />."
 msgstr ""
+"O Weld fornece alguns contextos embutidos, os quais são apresentados em "
+"<xref linkend=\"contexts.available\" />."
 
 #. Tag: title
 #, no-c-format
 msgid "Available Contexts in Weld"
-msgstr ""
+msgstr "Contextos avaliáveis no Weld"
 
 #. Tag: entry
 #, no-c-format
 msgid "Scope"
-msgstr ""
+msgstr "Escopo"
 
 #. Tag: entry
 #, no-c-format
 msgid "Qualifiers"
-msgstr ""
+msgstr "Qualificadores"
 
 #. Tag: entry
 #, no-c-format
 msgid "Context"
-msgstr ""
+msgstr "Contexto"
 
 #. Tag: entry
 #, no-c-format
 msgid "Notes"
-msgstr ""
+msgstr "Notas"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@Dependent</code>"
-msgstr ""
+msgstr "<code>@Dependent</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@Default</code>"
-msgstr ""
+msgstr "<code>@Default</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>DependentContext</code>"
-msgstr ""
+msgstr "<code>DependentContext</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "The dependent context is unbound and unmanaged"
-msgstr ""
+msgstr "O contexto dependente é desacoplado e não gerenciado"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@RequestScoped</code>"
-msgstr ""
+msgstr "<code>@RequestScoped</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@Unbound</code>"
-msgstr ""
+msgstr "<code>@Unbound</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>RequestContext</code>"
-msgstr ""
+msgstr "<code>RequestContext</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "An unbound request context, useful for testing"
-msgstr ""
+msgstr "Um contexto de requisição desacoplado, útil para testes"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@Bound</code>"
-msgstr ""
+msgstr "<code>@Bound</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A request context bound to a manually propagated map, useful for testing or non-Servlet environments"
+msgid ""
+"A request context bound to a manually propagated map, useful for testing or "
+"non-Servlet environments"
 msgstr ""
+"Um contexto de requisição acoplado acoplado a um mapa manualmente propagado,"
+" útil para testes ou em ambientes non-Servlet"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>BoundRequestContext</code>"
-msgstr ""
+msgstr "<code>BoundRequestContext</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@Http</code>"
-msgstr ""
+msgstr "<code>@Http</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A request context bound to a Servlet request, used for any Servlet based request context"
+msgid ""
+"A request context bound to a Servlet request, used for any Servlet based "
+"request context"
 msgstr ""
+"Um contexto de requisição acoplado a uma requisição Servlet, usado em "
+"qualquer contexto de requisição com base em Servlets"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>HttpRequestContext</code>"
-msgstr ""
+msgstr "<code>HttpRequestContext</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@Ejb</code>"
-msgstr ""
+msgstr "<code>@Ejb</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A request context bound to a an interceptor's invocation context, used for EJB invocations outside of Servlet requests"
+msgid ""
+"A request context bound to a an interceptor's invocation context, used for "
+"EJB invocations outside of Servlet requests"
 msgstr ""
+"Um contexto de requisição acoplado a um contexto de invocação de um "
+"interceptador, utilizado para invocações de EJB fora das requisições de "
+"Servlets"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>EjbRequestContext</code>"
-msgstr ""
+msgstr "<code>EjbRequestContext</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@ConversationScoped</code>"
-msgstr ""
+msgstr "<code>@ConversationScoped</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>ConversationContext</code>"
-msgstr ""
+msgstr "<code>ConversationContext</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A conversation context bound to two manually propagated maps (one which represents the request and one which represents the session), useful for testing or non-Servlet environments"
+msgid ""
+"A conversation context bound to two manually propagated maps (one which "
+"represents the request and one which represents the session), useful for "
+"testing or non-Servlet environments"
 msgstr ""
+"Um contexto de conversação acoplado a dois mapas manualmente propagados (um "
+"que representa a requisição e outro que representa a sessão), útil para "
+"testes ou em ambientes non-Servlet"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>BoundConversationContext</code>"
-msgstr ""
+msgstr "<code>BoundConversationContext</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A conversation context bound to a Servlet request, used for any Servlet based conversation context"
+msgid ""
+"A conversation context bound to a Servlet request, used for any Servlet "
+"based conversation context"
 msgstr ""
+"Um contexto de conversação acoplado a uma requisição Servlet, usado em "
+"qualquer contexto de conversação com base em Servlets"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>HttpConversationContext</code>"
-msgstr ""
+msgstr "<code>HttpConversationContext</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@SessionScoped</code>"
-msgstr ""
+msgstr "<code>@SessionScoped</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>SessionContext</code>"
-msgstr ""
+msgstr "<code>SessionContext</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A session context bound to a manually propagated map, useful for testing or non-Servlet environments"
+msgid ""
+"A session context bound to a manually propagated map, useful for testing or "
+"non-Servlet environments"
 msgstr ""
+"Um contexto de sessão acoplado a um mapa manualmente propagado, útil para "
+"testes ou em ambientes non-Servlet"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>BoundSessionContext</code>"
-msgstr ""
+msgstr "<code>BoundSessionContext</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A session context bound to a Servlet request, used for any Servlet based session context"
+msgid ""
+"A session context bound to a Servlet request, used for any Servlet based "
+"session context"
 msgstr ""
+"Um contexto de sessão acoplado a uma requisição Servlet, usado em qualquer "
+"contexto de sessão com base em Servlets"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>HttpSessionContext</code>"
-msgstr ""
+msgstr "<code>HttpSessionContext</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@ApplicationScoped</code>"
-msgstr ""
+msgstr "<code>@ApplicationScoped</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>ApplicationContext</code>"
-msgstr ""
+msgstr "<code>ApplicationContext</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "An application context backed by an application scoped singleton, it is unmanaged and unbound but does offer an option to destroy all entries"
+msgid ""
+"An application context backed by an application scoped singleton, it is "
+"unmanaged and unbound but does offer an option to destroy all entries"
 msgstr ""
+"Um contexto de aplicação apoiado por um singleton com escopo de aplicação, é"
+" não-gerenciado e desacoplado mas oferece uma opção para destruir todas as "
+"entradas"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>@SingletonScoped</code>"
-msgstr ""
+msgstr "<code>@SingletonScoped</code>"
 
 #. Tag: entry
 #, no-c-format
 msgid "<code>SingletonContext</code>"
-msgstr ""
+msgstr "<code>SingletonContext</code>"
 
 #. Tag: entry
 #, no-c-format
-msgid "A singleton context backed by an application scoped singleton, it is unmanaged and unbound but does offer an option to destroy all entries"
+msgid ""
+"A singleton context backed by an application scoped singleton, it is "
+"unmanaged and unbound but does offer an option to destroy all entries"
 msgstr ""
+"Um contexto singleton apoiado por um singleton com escopo de aplicação, é "
+"não-gerenciado e desacoplado mas oferece uma opção para destruir todas as "
+"entradas"
 
 #. Tag: para
 #, no-c-format
-msgid "Unmanaged contexts offer little of interest in a discussion about managing context lifecycles, so from here on in we will concentrate on the managed contexts (unmanaged contexts of course play a vital role in the functioning of your application and Weld!). As you can see from the table above, the managed contexts offer a number of different implementations for the same scope; in general, each flavor of context for a scope has the same API. We'll walk through a number of common lifecycle management scenarios below; armed with this knowledge, and the Javadoc, you should be able to work with any of the context implementations Weld offers."
+msgid ""
+"Unmanaged contexts offer little of interest in a discussion about managing "
+"context lifecycles, so from here on in we will concentrate on the managed "
+"contexts (unmanaged contexts of course play a vital role in the functioning "
+"of your application and Weld!). As you can see from the table above, the "
+"managed contexts offer a number of different implementations for the same "
+"scope; in general, each flavor of context for a scope has the same API. "
+"We'll walk through a number of common lifecycle management scenarios below; "
+"armed with this knowledge, and the Javadoc, you should be able to work with "
+"any of the context implementations Weld offers."
 msgstr ""
+"Os contextos não-gerenciados possuem pouco interesse em uma discussão sobre "
+"gerenciamento do ciclo de vida de contextos, assim, a partir daqui "
+"concentraremos nos contextos gerenciados (contextos não-gerenciados "
+"certamente desempenham um papel vital no funcionamento de sua aplicação e no"
+" Weld!). Como você pode observar na tabela acima, os contextos gerenciados "
+"oferecem uma série de diferentes implementações para o mesmo escopo; em "
+"general, cada opção de contexto para um escopo possui a mesma API. Nós vamos"
+" ver abaixo uma série de cenários comuns no gerenciamento de ciclo de vida; "
+"de posse deste conhecimento e o Javadoc, você deverá ser capaz de lidar com "
+"qualquer das implementações de contexto que o Weld dispõe."
 
 #. Tag: para
 #, no-c-format
-msgid "We'll start simple with the <code>BoundRequestContext</code>, which you might use to provide the request scope outside of a Servlet request or EJB Invocation."
+msgid ""
+"We'll start simple with the <code>BoundRequestContext</code>, which you "
+"might use to provide the request scope outside of a Servlet request or EJB "
+"Invocation."
 msgstr ""
+"Vamos começar com o simples <code>BoundRequestContext</code>, o qual você "
+"pode usar para fornecer ao escopo de requisição fora de uma requisição "
+"Servlet ou uma invocação de EJB."
 
 #. Tag: programlisting
 #, no-c-format
@@ -282,21 +397,68 @@ msgid ""
 "      }\n"
 "   }"
 msgstr ""
+"   /* Inject the BoundRequestContext. */\n"
+"   /* Alternatively, you could look this up from the BeanManager */ \n"
+"   @Inject BoundRequestContext requestContext;\n"
+"   \n"
+"   ...\n"
+"   \n"
+"   /* Start the request, providing a data store which will last the lifetime of the request */\n"
+"   public void startRequest(Map&lt;String, Object&gt; requestDataStore) {\n"
+"      // Associate the store with the context and acticate the context\n"
+"      requestContext.associate(requestDataStore);\n"
+"      requestContext.activate();\n"
+"   }\n"
+"   \n"
+"   /* End the request, providing the same data store as was used to start the request */\n"
+"   public void endRequest(Map&lt;String, Object&gt; requestDataStore) {\n"
+"      try {\n"
+"         /* Invalidate the request (all bean instances will be scheduled for destruction) */\n"
+"         requestContext.invalidate();\n"
+"         /* Deactivate the request, causing all bean instances to be destroyed (as the context is invalid) */\n"
+"         requestContext.deactivate();\n"
+"      } finally {\n"
+"         /* Ensure that whatever happens we dissociate to prevent any memory leaks */\n"
+"         requestContext.dissociate(requestDataStore);\n"
+"      }\n"
+"   }"
 
 #. Tag: para
 #, no-c-format
-msgid "The bound session context works in much the same way, excepting that invalidating and deactivating the session context causes the any conversations in the session to be destroyed as well. The http session context and http request context also work similarly, and might be of use if you find yourself creating threads from an http request). The http session context additionally offers a method which can immediately destroy the context."
+msgid ""
+"The bound session context works in much the same way, excepting that "
+"invalidating and deactivating the session context causes the any "
+"conversations in the session to be destroyed as well. The http session "
+"context and http request context also work similarly, and might be of use if"
+" you find yourself creating threads from an http request). The http session "
+"context additionally offers a method which can immediately destroy the "
+"context."
 msgstr ""
+"O contexto de sessão acoplado funciona da mesma maneira, exceto que a "
+"invalidação e desativação do contexto de sessão faz com que todas "
+"conversações na sessão sejam destruídas também. Os contextos de sessão e "
+"requisição http também funcionam de forma semelhante e podem ser úteis se "
+"você estiver criando threads a partir de uma requisição http). O contexto de"
+" sessão http oferece adicionalmente um método que pode destruir "
+"imediatamente o contexto."
 
 #. Tag: para
 #, no-c-format
-msgid "Weld's session contexts are \"lazy\" and don't require a session to actually exist until a bean instance must be written."
+msgid ""
+"Weld's session contexts are \"lazy\" and don't require a session to actually"
+" exist until a bean instance must be written."
 msgstr ""
+"Os contextos de sessão do Weld são \"preguiçosos\" e não requerem uma sessão"
+" para realmente existir até que uma instância de bean precise ser criada."
 
 #. Tag: para
 #, no-c-format
-msgid "The conversation context offers a few more options, which we will walk through here."
+msgid ""
+"The conversation context offers a few more options, which we will walk "
+"through here."
 msgstr ""
+"O contexto de conversação oferece mais algumas opções, as quais veremos por "
+"aqui."
 
 #. Tag: programlisting
 #, no-c-format
@@ -342,18 +504,89 @@ msgid ""
 "      }\n"
 "   }"
 msgstr ""
+"   @Inject BoundConversationContext conversationContext;\n"
+"   \n"
+"   ...\n"
+"\n"
+"   /* Start a transient conversation */\n"
+"   /* Provide a data store which will last the lifetime of the request */\n"
+"   /* and one that will last the lifetime of the session */\n"
+"   public void startTransientConversation(Map&lt;String, Object&gt; requestDataStore, \n"
+"                                          Map&lt;String, Object&gt; sessionDataStore) {\n"
+"      resumeOrStartConversation(requestDataStore, sessionDataStore, null);\n"
+"   }\n"
+"\n"
+"   /* Start a transient conversation (if cid is null) or resume a non-transient */\n"
+"   /* conversation. Provide a data store which will last the lifetime of the request */\n"
+"   /* and one that will last the lifetime of the session */      \n"
+"   public void resumeOrStartConversation(Map&lt;String, Object&gt; requestDataStore, \n"
+"                                         Map&lt;String, Object&gt; sessionDataStore, \n"
+"                                         String cid) {\n"
+"      /* Associate the stores with the context and acticate the context */\n"
+"      * BoundRequest just wraps the two datastores */\n"
+"      conversationContext.associate(new MutableBoundRequest(requestDataStore, sessionDataStore));\n"
+"      // Pass the cid in\n"
+"      conversationContext.activate(cid);\n"
+"   }\n"
+"   \n"
+"   /* End the conversations, providing the same data store as was used to start */\n"
+"   /* the request. Any transient conversations will be destroyed, any newly-promoted */\n"
+"   /* conversations will be placed into the session */\n"
+"   public void endOrPassivateConversation(Map&lt;String, Object&gt; requestDataStore, \n"
+"                                          Map&lt;String, Object&gt; sessionDataStore) {\n"
+"      try {\n"
+"         /* Invalidate the conversation (all transient conversations will be scheduled for destruction) */\n"
+"         conversationContext.invalidate();\n"
+"         /* Deactivate the conversation, causing all transient conversations to be destroyed */\n"
+"         conversationContext.deactivate();\n"
+"      } finally {\n"
+"        /* Ensure that whatever happens we dissociate to prevent memory leaks*/\n"
+"         conversationContext.dissociate(new MutableBoundRequest(requestDataStore, sessionDataStore));\n"
+"      }\n"
+"   }"
 
 #. Tag: para
 #, no-c-format
-msgid "The conversation context also offers a number of properties which control the behavior of conversation expiration (after this period of inactivity the conversation will be ended and destroyed by the container), and the duration of lock timeouts (the conversation context ensures that a single thread is accessing any bean instances by locking access, if a lock can't be obtained after a certain time Weld will error rather than continue to wait for the lock). Additionally, you can alter the name of the parameter used to transfer the conversation id (by default, <code>cid</code>)."
+msgid ""
+"The conversation context also offers a number of properties which control "
+"the behavior of conversation expiration (after this period of inactivity the"
+" conversation will be ended and destroyed by the container), and the "
+"duration of lock timeouts (the conversation context ensures that a single "
+"thread is accessing any bean instances by locking access, if a lock can't be"
+" obtained after a certain time Weld will error rather than continue to wait "
+"for the lock). Additionally, you can alter the name of the parameter used to"
+" transfer the conversation id (by default, <code>cid</code>)."
 msgstr ""
+"O contexto de conversação também oferece uma série de propriedades que "
+"controlam o comportamento da expiração da conversação (depois este período "
+"de inatividade a conversação será terminada e destruída pelo contêiner) e a "
+"duração do tempo limite das travas (o contexto de conversação assegura que "
+"uma única thread está acessando qualquer instância de beans ao travar o "
+"acesso, se uma trava não pode ser obtida depois de um certo tempo, o Weld "
+"lançará um erro em vez de continuar aguardando o travamento). "
+"Adicionalmente, você pode alterar o nome do parâmetro utilizado para "
+"transferir o id da conversação (por padrão, <code>cid</code>)."
 
 #. Tag: para
 #, no-c-format
-msgid "Weld also introduces the notion of a <code>ManagedConversation</code>, which extends the <code>Conversation</code> interface with the ability to lock, unlock and touch (update the last used timestamp) a conversation. Finally, all non-transient conversations in a session can be obtained from the conversation context, as can the current conversation."
+msgid ""
+"Weld also introduces the notion of a <code>ManagedConversation</code>, which"
+" extends the <code>Conversation</code> interface with the ability to lock, "
+"unlock and touch (update the last used timestamp) a conversation. Finally, "
+"all non-transient conversations in a session can be obtained from the "
+"conversation context, as can the current conversation."
 msgstr ""
+"O Weld também introduz a noção de um <code>ManagedConversation</code>, a "
+"qual estende a interface <code>Conversation</code> com a habilidade de "
+"travar, destravar e afetar (atualizar o último timestamp utilizado) uma "
+"conversação. Finalmente, todas as conversações não-transientes em uma sessão"
+" podem ser obtidas a partir do contexto de conversação, assim como a "
+"conversação corrente."
 
 #. Tag: para
 #, no-c-format
-msgid "Weld's conversations are not assigned ids until they become non-transient."
+msgid ""
+"Weld's conversations are not assigned ids until they become non-transient."
 msgstr ""
+"As conversações do Weld não possuem ids atribuídos até que elas se tornem "
+"não-transientes."

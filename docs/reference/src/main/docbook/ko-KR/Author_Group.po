@@ -1,24 +1,21 @@
 # translation of Author_Group.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Author_Group\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:16\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-08 10:32+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
-"Language: ko\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
-"\n"
-"\n"
 
 #. Tag: firstname
 #, no-c-format
@@ -91,9 +88,9 @@ msgid "Guerrero"
 msgstr ""
 
 #. Tag: contrib
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Spanish Translation"
-msgstr "이탈리아어 번역 "
+msgstr "스페인어 번역 "
 
 #. Tag: firstname
 #, no-c-format
@@ -106,9 +103,9 @@ msgid "Ki,"
 msgstr ""
 
 #. Tag: contrib
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Korean Translation"
-msgstr "이탈리아어 번역 "
+msgstr "한국어 번역 "
 
 #. Tag: firstname
 #, no-c-format
@@ -121,9 +118,9 @@ msgid "Chuang"
 msgstr ""
 
 #. Tag: contrib
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Traditional Chinese Translation"
-msgstr "이탈리아어 번역 "
+msgstr ""
 
 #. Tag: firstname
 #, no-c-format
@@ -146,50 +143,6 @@ msgid "Wu"
 msgstr ""
 
 #. Tag: contrib
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Simplified Chinese Translation"
-msgstr "이탈리아어 번역 "
-
-#~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
-#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#~ msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
-#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
-#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>David</firstname> <surname>Allen</surname>"
-#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#~ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-#~ msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
-#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
-#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
-#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
-
-#~ msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-#~ msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
-#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
-
-#, fuzzy
-#~ msgid "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-#~ msgstr "<jobtitle>Web Beans (JSR-299) specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-
-#, fuzzy
-#~ msgid "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-#~ msgstr "<jobtitle>Web Beans (JSR-299) Reference Implementation lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
+msgstr ""

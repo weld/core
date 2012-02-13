@@ -1,18 +1,17 @@
 # Language ja-JP translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-05-21 20:05+0900\n"
 "Last-Translator: Keita Higashi <winnie_the_pooh@y3.dion.ne.jp>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
@@ -26,8 +25,15 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In many systems, use of architectural patterns produces a set of recurring bean roles. A stereotype allows a framework developer to identify such a role and declare some common metadata for beans with that role in a central place."
-msgstr "多くのシステムでは、アーキテクチャパターンを使用することで、繰り返される Web Bean の役割を作り出すことでしょう。ステレオタイプは、フレームワーク開発者がそのような役割を認識し、集約された場所において Web Beans のための共通のメタデータを宣言できるようにします。"
+msgid ""
+"In many systems, use of architectural patterns produces a set of recurring "
+"bean roles. A stereotype allows a framework developer to identify such a "
+"role and declare some common metadata for beans with that role in a central "
+"place."
+msgstr ""
+"多くのシステムでは、アーキテクチャパターンを使用することで、繰り返される Web Bean "
+"の役割を作り出すことでしょう。ステレオタイプは、フレームワーク開発者がそのような役割を認識し、集約された場所において Web Beans "
+"のための共通のメタデータを宣言できるようにします。"
 
 #. Tag: para
 #, no-c-format
@@ -52,7 +58,8 @@ msgstr ""
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "all beans with the stereotype have defaulted bean EL names, or that"
-msgstr "あるステレオタイプを持つすべての Web Beans が、デフォルトの Web Beans 名を持つようにステレオタイプを指定する事もありえます。"
+msgstr ""
+"あるステレオタイプを持つすべての Web Beans が、デフォルトの Web Beans 名を持つようにステレオタイプを指定する事もありえます。"
 
 #. Tag: para
 #, no-c-format
@@ -61,13 +68,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A bean may declare zero, one or multiple stereotypes. Stereotype annotations may be applied to a bean class or producer method or field."
+msgid ""
+"A bean may declare zero, one or multiple stereotypes. Stereotype annotations"
+" may be applied to a bean class or producer method or field."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A stereotype is an annotation, annotated <literal>@Stereotype</literal>, that packages several other annotations. For instance, the following stereotype identifies action classes in some MVC framework:"
-msgstr "ステレオタイプは、Java アノテーションタイプです。このステレオタイプは、いくつかの MVC フレームワークでアクションクラスを特定します。"
+msgid ""
+"A stereotype is an annotation, annotated <literal>@Stereotype</literal>, "
+"that packages several other annotations. For instance, the following "
+"stereotype identifies action classes in some MVC framework:"
+msgstr ""
+"ステレオタイプは、Java アノテーションタイプです。このステレオタイプは、いくつかの MVC フレームワークでアクションクラスを特定します。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -99,7 +112,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Of course, we need to apply some other annotations to our stereotype or else it wouldn't be adding much value."
+msgid ""
+"Of course, we need to apply some other annotations to our stereotype or else"
+" it wouldn't be adding much value."
 msgstr ""
 
 #. Tag: title
@@ -109,8 +124,11 @@ msgstr "ステレオタイプのデフォルトスコープとデプロイメン
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A stereotype may specify a default scope for beans annotated with the stereotype. For example:"
-msgstr "あるステレオタイプを持つすべての Web Beans が、デフォルトの Web Beans 名を持つようにステレオタイプを指定する事もありえます。"
+msgid ""
+"A stereotype may specify a default scope for beans annotated with the "
+"stereotype. For example:"
+msgstr ""
+"あるステレオタイプを持つすべての Web Beans が、デフォルトの Web Beans 名を持つようにステレオタイプを指定する事もありえます。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -142,7 +160,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Naturally, overriding a single default isn't much use. But remember, stereotypes can define more than just the default scope."
+msgid ""
+"Naturally, overriding a single default isn't much use. But remember, "
+"stereotypes can define more than just the default scope."
 msgstr ""
 
 #. Tag: title
@@ -152,8 +172,12 @@ msgstr "ステレオタイプのためのインターセプタバインディン
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A stereotype may specify a set of interceptor bindings to be inherited by all beans with that stereotype."
-msgstr "ステレオタイプは、そのステレオタイプですべての Web Beans によって受け継がれるために、一組のインターセプタバインディングを明示することがありえます。"
+msgid ""
+"A stereotype may specify a set of interceptor bindings to be inherited by "
+"all beans with that stereotype."
+msgstr ""
+"ステレオタイプは、そのステレオタイプですべての Web Beans "
+"によって受け継がれるために、一組のインターセプタバインディングを明示することがありえます。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -177,7 +201,9 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This helps us get technical concerns, like transactions and security, even further away from the business code!"
+msgid ""
+"This helps us get technical concerns, like transactions and security, even "
+"further away from the business code!"
 msgstr "これは、ビジネスコードから離れてさらに技術的関心事を理解するのを助けます。"
 
 #. Tag: title
@@ -187,8 +213,15 @@ msgstr "ステレオタイプによる名前のデフォルティング"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We can specify that all beans with a certain stereotype have a defaulted EL name when a name is not explicitly defined for that bean. All we need to do is add an empty <literal>@Named</literal> annotation:"
-msgstr "最後に、特定のステレオタイプによるすべての Web Beans が Web Bean の名前を持つことを明示することができて、 Web Bean マネージャによってデフォルトとしました。アクションは JSP ページでよく参照されるので、それらがこの機能の完璧なユースケースとなっています。必要なのは、空の <literal>@Named</literal> アノテーションを加えることだけです。"
+msgid ""
+"We can specify that all beans with a certain stereotype have a defaulted EL "
+"name when a name is not explicitly defined for that bean. All we need to do "
+"is add an empty <literal>@Named</literal> annotation:"
+msgstr ""
+"最後に、特定のステレオタイプによるすべての Web Beans が Web Bean の名前を持つことを明示することができて、 Web Bean "
+"マネージャによってデフォルトとしました。アクションは JSP "
+"ページでよく参照されるので、それらがこの機能の完璧なユースケースとなっています。必要なのは、空の <literal>@Named</literal> "
+"アノテーションを加えることだけです。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -214,8 +247,12 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now, the <literal>LoginAction</literal> bean will have the defaulted name <literal>loginAction</literal>."
-msgstr "こうして、 <literal>LoginAction</literal> は、<literal>loginAction</literal> として名前を持つようになります。"
+msgid ""
+"Now, the <literal>LoginAction</literal> bean will have the defaulted name "
+"<literal>loginAction</literal>."
+msgstr ""
+"こうして、 <literal>LoginAction</literal> は、<literal>loginAction</literal> "
+"として名前を持つようになります。"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -224,7 +261,10 @@ msgstr "標準ステレオタイプ"
 
 #. Tag: para
 #, no-c-format
-msgid "A stereotype can indicate that all beans to which it is applied are <literal>@Alternative</literal>s. An <emphasis>alternative stereotype</emphasis> lets us classify beans by deployment scenario."
+msgid ""
+"A stereotype can indicate that all beans to which it is applied are "
+"<literal>@Alternative</literal>s. An <emphasis>alternative "
+"stereotype</emphasis> lets us classify beans by deployment scenario."
 msgstr ""
 
 #. Tag: programlisting
@@ -243,7 +283,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "We can apply an alternative stereotype to a whole set of beans, and activate them all with one line of code in <literal>beans.xml</literal>."
+msgid ""
+"We can apply an alternative stereotype to a whole set of beans, and activate"
+" them all with one line of code in <literal>beans.xml</literal>."
 msgstr ""
 
 #. Tag: programlisting
@@ -262,12 +304,19 @@ msgstr "ステレオタイプ"
 
 #. Tag: para
 #, no-c-format
-msgid "This may blow your mind a bit, but stereotypes may declare other stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You may want to do this if you have two distinct stereotypes which are meaningful on their own, but in other situation may be meaningful when combined."
+msgid ""
+"This may blow your mind a bit, but stereotypes may declare other "
+"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
+"may want to do this if you have two distinct stereotypes which are "
+"meaningful on their own, but in other situation may be meaningful when "
+"combined."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Here's an example that combines the <literal>@Action</literal> and <literal>@Auditable</literal> stereotypes:"
+msgid ""
+"Here's an example that combines the <literal>@Action</literal> and "
+"<literal>@Auditable</literal> stereotypes:"
 msgstr ""
 
 #. Tag: programlisting
@@ -293,13 +342,17 @@ msgid "Built-in stereotypes"
 msgstr "標準ステレオタイプ"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "We've already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal> and <literal>@Decorator</literal>."
-msgstr "Web Beans 仕様によって定義される <literal>@Interceptor</literal> と <literal>@Decorator</literal> の二つの標準ステレオタイプをすでに経験しました。"
+#, no-c-format
+msgid ""
+"We've already met two standard stereotypes defined by the CDI specification:"
+" <literal>@Interceptor</literal> and <literal>@Decorator</literal>."
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "CDI defines one further standard stereotype, <literal>@Model</literal>, which is expected to be used frequently in web applications:"
+msgid ""
+"CDI defines one further standard stereotype, <literal>@Model</literal>, "
+"which is expected to be used frequently in web applications:"
 msgstr ""
 
 #. Tag: programlisting
@@ -321,89 +374,9 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Instead of using JSF managed beans, just annotate a bean <literal>@Model</literal>, and use it directly in your JSF view!"
-msgstr "このステレオタイプは、 JSF と一緒に使う事が意図されています。 JSF 管理 beans を使うのではなく、ただ Web Bean に <literal>@Model</literal> アノテーションを付加するだけで、 JSFページで直接それを使えるようになります。"
-
-#~ msgid "According to the Web Beans specification:"
-#~ msgstr "Web　Beans　の仕様に従って"
-
-#~ msgid "a default deployment type,"
-#~ msgstr "デフォルトデプロイメントタイプ"
-
-#~ msgid "a restriction upon the Web Bean scope,"
-#~ msgstr "Web Bean スコープの制限"
-
-#~ msgid "a requirement that the Web Bean implement or extend a certain type, and"
-#~ msgstr "Web Bean が特定の型を実装するか、拡張するという要件"
-
-#~ msgid "A Web Bean may declare zero, one or multiple stereotypes."
-#~ msgstr "Web Bean は、無し、一つまたは複数のステレオタイプを宣言することがあります。"
-
-#~ msgid "A stereotype may specify a default scope and/or default deployment type for Web Beans with that stereotype. For example, if the deployment type <literal>@WebTier</literal> identifies Web Beans that should only be deployed when the system executes as a web application, we might specify the following defaults for action classes:"
-#~ msgstr "ステレオタイプでは、 Web Beans のためにデフォルトスコープやデフォルトデプロイメントタイプを明示することがありえます。たとえば、システムが web アプリケーションとして実行するとき、デプロイメントタイプ<literal>@WebTier</literal>がデプロイされるべき Web Beans を特定するならば、アクションクラスのために以下のデフォルトを明示するかもしれません。"
-
-#~ msgid ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target(TYPE)\n"
-#~ "@RequestScoped\n"
-#~ "@WebTier\n"
-#~ "@Stereotype\n"
-#~ "public @interface Action {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target(TYPE)\n"
-#~ "@RequestScoped\n"
-#~ "@WebTier\n"
-#~ "@Stereotype\n"
-#~ "public @interface Action {}]]>"
-
-#~ msgid "If we want to force all actions to a particular scope, we can do that too."
-#~ msgstr "すべての動作を特定のスコープに移動したいならば、またそうすることができます。"
-
-#~ msgid "Restricting scope and type with a stereotype"
-#~ msgstr "ステレオタイプによるスコープと型の制限"
-
-#~ msgid "Suppose that we wish to prevent actions from declaring certain scopes. Web Beans lets us explicitly specify the set of allowed scopes for Web Beans with a certain stereotype. For example:"
-#~ msgstr "特定のスコープを宣言できないようにしたいと仮定します。 Web Beans では、ステレオタイプを使って Web Beans に許可されたスコープを明示的に指定できます。例を以下に示します。"
-
-#~ msgid ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target(TYPE)\n"
-#~ "@RequestScoped\n"
-#~ "@WebTier\n"
-#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
-#~ "public @interface Action {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target(TYPE)\n"
-#~ "@RequestScoped\n"
-#~ "@WebTier\n"
-#~ "@Stereotype(supportedScopes=RequestScoped.class)\n"
-#~ "public @interface Action {}]]>"
-
-#~ msgid "If a particular action class attempts to specify a scope other than the Web Beans request scope, an exception will be thrown by the Web Bean manager at initialization time."
-#~ msgstr "特定のアクションクラスが Web Beans リクエスト スコープ以外のスコープを指定しようとするならば、例外はWeb Bean マネージャによって初期化時点にスローされます。"
-
-#~ msgid "We can also force all Web Bean with a certain stereotype to implement an interface or extend a class:"
-#~ msgstr "特定のステレオタイプをもつすべての Web Bean にインターフェースを実装するか、クラスを拡張することを強制することもできます。"
-
-#~ msgid ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target(TYPE)\n"
-#~ "@RequestScoped\n"
-#~ "@WebTier\n"
-#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
-#~ "public @interface Action {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target(TYPE)\n"
-#~ "@RequestScoped\n"
-#~ "@WebTier\n"
-#~ "@Stereotype(requiredTypes=AbstractAction.class)\n"
-#~ "public @interface Action {}]]>"
-
-#~ msgid "If a particular action class does not extend the class <literal>AbstractAction</literal>, an exception will be thrown by the Web Bean manager at initialization time."
-#~ msgstr "特定のアクションクラスがクラス <literal>AbstractAction</literal> を拡張しないならば、例外は Web Bean マネージャによって初期化時点にスローされます。"
-
-#~ msgid "Web Beans defines one further standard stereotype:"
-#~ msgstr "Web Beans は、一つの更なる標準的なステレオタイプを定めます。"
+msgid ""
+"Instead of using JSF managed beans, just annotate a bean "
+"<literal>@Model</literal>, and use it directly in your JSF view!"
+msgstr ""
+"このステレオタイプは、 JSF と一緒に使う事が意図されています。 JSF 管理 beans を使うのではなく、ただ Web Bean に "
+"<literal>@Model</literal> アノテーションを付加するだけで、 JSFページで直接それを使えるようになります。"

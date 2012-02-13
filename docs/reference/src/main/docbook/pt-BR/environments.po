@@ -1,38 +1,52 @@
 # Language pt-BR translations for Web_Beans:_Java_Contexts_and_Dependency_Injection package.
 # Automatically generated, 2009.
-#
+# 
+# Bruno Leonardo Gonçalves <brunolmfg@gmail.com>, 2012. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Web_Beans:_Java_Contexts_and_Dependency_Injection VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-12-19 18:10-0300\n"
 "Last-Translator: João Paulo Viragine <joao.viragine@redhat.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Application servers and environments supported by Weld"
-msgstr "Servidores de Aplicação e ambientes suportados pela Web Beans"
+msgstr "Servidores de aplicação e ambientes suportados pelo Weld"
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Using Weld with JBoss AS"
-msgstr "Utilizando a Web Beans com o JBoss AS"
+msgstr "Utilizando Weld com o JBoss AS"
 
 #. Tag: para
 #, no-c-format
-msgid "If you are using JBoss AS 6.0, no additional configuration is required to use Weld (or CDI for that matter). All you need to do is make your application a bean bean archive by adding <literal>META-INF/beans.xml</literal> to the classpath or <literal>WEB-INF/beans.xml</literal> to the web root!"
+msgid ""
+"If you are using JBoss AS 6.0, no additional configuration is required to "
+"use Weld (or CDI for that matter). All you need to do is make your "
+"application a bean bean archive by adding <literal>META-"
+"INF/beans.xml</literal> to the classpath or <literal>WEB-"
+"INF/beans.xml</literal> to the web root!"
 msgstr ""
+"Se você está usando JBoss AS 6.0, nenhuma configuração adicional é "
+"necessária para usar Weld (ou CDI para este caso). Tudo que você precisa "
+"fazer é tornar sua aplicação em um bean archive adicionando <literal>META-"
+"INF/beans.xml</literal> ao classpath ou <literal>WEB-INF/beans.xml</literal>"
+" à raiz web!"
 
 #. Tag: para
 #, no-c-format
-msgid "Additionally, Weld Servlet supports JBoss EAP 5.1, to do this use the <literal>jboss5</literal> variant of Weld Servlet."
+msgid ""
+"Additionally, Weld Servlet supports JBoss EAP 5.1, to do this use the "
+"<literal>jboss5</literal> variant of Weld Servlet."
 msgstr ""
+"Adicionalmente, a Servlet do Weld suporta o JBoss EAP 5.1, usando a variante"
+" <literal>jboss5</literal> da Servlet do Weld."
 
 #. Tag: title
 #, no-c-format
@@ -41,44 +55,92 @@ msgstr "GlassFish"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is the Java EE 6 reference implementation, it must support all features of CDI. What better way for GlassFish to support these features than to use Weld, the JSR-299 reference implementation? Just package up your CDI application and deploy."
+msgid ""
+"Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is the"
+" Java EE 6 reference implementation, it must support all features of CDI. "
+"What better way for GlassFish to support these features than to use Weld, "
+"the JSR-299 reference implementation? Just package up your CDI application "
+"and deploy."
 msgstr ""
+"O Weld também está embutido no GlassFish a partir da V3 e posteriores. Já "
+"que o GlassFish V3 é a implementação de referência da Java EE 6, ele deve "
+"suportar todas as funcionalidades da CDI. Qual a melhor maneira para que o "
+"GlassFish suporte estas funcionalidade do que usar Weld, a implementação de "
+"referência da JSR-299? Apenas empacote sua aplicação CDI e implante."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Servlet containers (such as Tomcat or Jetty)"
-msgstr "Servlet Containers (como o Tomcat ou Jetty)"
+msgstr "Servlet containers (como o Tomcat ou Jetty)"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "While JSR-299 does not require support for servlet environments, Weld can be used in a servlet container, such as Tomcat 6.0 or Jetty 6.1."
-msgstr "A Web Beans pode ser utilizada em qualquer Servlet container como o Tomcat 6.0 ou Jetty 6.1."
+#, no-c-format
+msgid ""
+"While JSR-299 does not require support for servlet environments, Weld can be"
+" used in a servlet container, such as Tomcat 6.0 or Jetty 6.1."
+msgstr ""
+"Enquanto a JSR-299 não requer suporte a ambientes servlet, o Weld pode ser "
+"utilizado em qualquer contêiner Servlet, como o Tomcat 6.0 ou Jetty 6.1."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "There is a major limitation to using a servlet container. Weld doesn't support deploying session beans, injection using <literal>@EJB</literal> or <literal>@PersistenceContext</literal>, or using transactional events in servlet containers. For enterprise features such as these, you should really be looking at a Java EE application server."
-msgstr "A Web Beans não suporta a implantação de session beans, injeção utilizando <literal>@EJB</literal>, <literal>@Resource</literal>, ou <literal>@PersistenceContext</literal>, ou eventos transacionais no Tomcat."
+#, no-c-format
+msgid ""
+"There is a major limitation to using a servlet container. Weld doesn't "
+"support deploying session beans, injection using <literal>@EJB</literal> or "
+"<literal>@PersistenceContext</literal>, or using transactional events in "
+"servlet containers. For enterprise features such as these, you should really"
+" be looking at a Java EE application server."
+msgstr ""
+"Há uma limitação maior no uso de um contêiner servlet. O Weld não suporta a "
+"implantação de session beans, injeção usando <literal>@EJB</literal> ou "
+"<literal>@PersistenceContext</literal>, ou a utilização de eventos "
+"transacionais em contêineres servlet. Para funcionalidades corporativas como"
+" estas, você deveria realmente procurar um servidor de aplicações Java EE."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Weld can be used as a library in an web application that is deployed to a Servlet container. You should place <literal>weld-servlet.jar</literal> within the <literal>WEB-INF/lib</literal> directory relative to the web root. <literal>weld-servlet.jar</literal> is an \"uber-jar\", meaning it bundles all the bits of Weld and CDI required for running in a Servlet container, for your convenience. Alternatively, you can use its component jars. A list of transitive dependencies can be found in the <literal>META-INF/DEPENDENCIES.txt</literal> file inside the <literal>weld-servlet.jar</literal> artifact."
-msgstr "A Web Beans deveria ser utilizada como uma bibilioteca de aplicação web no Tomcat. Você deve colocar o <literal>webbeans-tomcat.jar</literal> em <literal>WEB-INF/lib</literal>. <literal>webbeans-tomcat.jar</literal> é um \"hiper-jar\", disponível para a sua conveniência. Em vez disso, você pode utilizar os componentes do jars:"
+#, no-c-format
+msgid ""
+"Weld can be used as a library in an web application that is deployed to a "
+"Servlet container. You should place <literal>weld-servlet.jar</literal> "
+"within the <literal>WEB-INF/lib</literal> directory relative to the web "
+"root. <literal>weld-servlet.jar</literal> is an \"uber-jar\", meaning it "
+"bundles all the bits of Weld and CDI required for running in a Servlet "
+"container, for your convenience. Alternatively, you can use its component "
+"jars. A list of transitive dependencies can be found in the <literal>META-"
+"INF/DEPENDENCIES.txt</literal> file inside the <literal>weld-"
+"servlet.jar</literal> artifact."
+msgstr ""
+"O Weld pode ser usado como uma biblioteca de aplicação web em um contêiner "
+"Servlet. Você deve colocar <literal>weld-servlet.jar</literal> dentro do "
+"diretório <literal>WEB-INF/lib</literal> relativo à raiz web. <literal>weld-"
+"servlet.jar</literal> é um \"uber-jar\", significando que ele empacota todas"
+" as partes do Weld e CDI necessárias para rodar em um contêiner servlet, "
+"para sua conveniência. Alternativamente, você pode usar seus jars "
+"componentes. Uma lista de dependências pode ser encontrada no arquivo "
+"<literal>META-INF/DEPENDENCIES.txt</literal> dentro do artefato <literal"
+">weld-servlet.jar</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "You also need to explicitly specify the servlet listener (used to boot Weld, and control its interaction with requests) in <literal>WEB-INF/web.xml</literal> in the web root:"
-msgstr "Você também precisa especificar explicitamente o Tomcat servlet listener (utilizado para \"bootar\" a Web Beans e controlar a interação com as requisições) no <literal>web.xml</literal>:"
+#, no-c-format
+msgid ""
+"You also need to explicitly specify the servlet listener (used to boot Weld,"
+" and control its interaction with requests) in <literal>WEB-"
+"INF/web.xml</literal> in the web root:"
+msgstr ""
+"Você também precisa especificar explicitamente o servlet listener (usado "
+"para iniciar o Weld e controlar a interação com as requisições) no "
+"<literal>web.xml</literal>:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;listener&gt;\n"
 "   &lt;listener-class&gt;org.jboss.weld.environment.servlet.Listener&lt;/listener-class&gt;\n"
 "&lt;/listener&gt;"
 msgstr ""
-"<![CDATA[<listener>\n"
-"   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>\n"
-"</listener>]]>"
+"&lt;listener&gt;\n"
+"   &lt;listener-class&gt;org.jboss.weld.environment.servlet.Listener&lt;/listener-class&gt;\n"
+"&lt;/listener&gt;"
 
 #. Tag: title
 #, no-c-format
@@ -86,12 +148,20 @@ msgid "Tomcat"
 msgstr "Tomcat"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Tomcat has a read-only JNDI, so Weld can't automatically bind the BeanManager extension SPI. To bind the BeanManager into JNDI, you should populate <literal>META-INF/context.xml</literal> in the web root with the following contents:"
-msgstr "O Tomcat tem um JNDI apenas de leitura. Assim, a Web Beans não pode vincular automaticamente o Manager. Para vincular o Manager no JNDI, você deve adicionar o seguinte ao seu <literal>META-INF/context.xml</literal>:"
+#, no-c-format
+msgid ""
+"Tomcat has a read-only JNDI, so Weld can't automatically bind the "
+"BeanManager extension SPI. To bind the BeanManager into JNDI, you should "
+"populate <literal>META-INF/context.xml</literal> in the web root with the "
+"following contents:"
+msgstr ""
+"O Tomcat possui um JNDI somente leitura, assim o Weld não pode vincular "
+"automaticamente a extensão SPI do BeanManager. Para vincular o BeanManager "
+"ao JNDI, você deve preencher <literal>META-INF/context.xml</literal> na raiz"
+" web com o seguinte conteúdo:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;Context&gt;\n"
 "   &lt;Resource name=\"BeanManager\" \n"
@@ -100,20 +170,24 @@ msgid ""
 "      factory=\"org.jboss.weld.resources.ManagerObjectFactory\"/&gt;\n"
 "&lt;/Context&gt;"
 msgstr ""
-"<![CDATA[<Context>\n"
-"   <Resource name=\"BeanManager\" \n"
+"&lt;Context&gt;\n"
+"   &lt;Resource name=\"BeanManager\" \n"
 "      auth=\"Container\"\n"
 "      type=\"javax.enterprise.inject.spi.BeanManager\"\n"
-"      factory=\"org.jboss.weld.resources.ManagerObjectFactory\"/>\n"
-"</Context>]]>"
+"      factory=\"org.jboss.weld.resources.ManagerObjectFactory\"/&gt;\n"
+"&lt;/Context&gt;"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "and make it available to your deployment by adding this to the bottom of <literal>web.xml</literal>:"
-msgstr "e torná-lo disponível para a sua implantação, acrescentando-o ao <literal>web.xml</literal>:"
+#, no-c-format
+msgid ""
+"and make it available to your deployment by adding this to the bottom of "
+"<literal>web.xml</literal>:"
+msgstr ""
+"e torná-lo disponível para a sua implantação, acrescentando isto no final do"
+" <literal>web.xml</literal>:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;resource-env-ref&gt;\n"
 "   &lt;resource-env-ref-name&gt;BeanManager&lt;/resource-env-ref-name&gt;\n"
@@ -122,22 +196,28 @@ msgid ""
 "   &lt;/resource-env-ref-type&gt;\n"
 "&lt;/resource-env-ref&gt;"
 msgstr ""
-"<![CDATA[<resource-env-ref>\n"
-"   <resource-env-ref-name>BeanManager</resource-env-ref-name>\n"
-"   <resource-env-ref-type>\n"
+"&lt;resource-env-ref&gt;\n"
+"   &lt;resource-env-ref-name&gt;BeanManager&lt;/resource-env-ref-name&gt;\n"
+"   &lt;resource-env-ref-type&gt;\n"
 "      javax.enterprise.inject.spi.BeanManager\n"
-"   </resource-env-ref-type>\n"
-"</resource-env-ref>]]>"
+"   &lt;/resource-env-ref-type&gt;\n"
+"&lt;/resource-env-ref&gt;"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, so the BeanManager will be available at <literal>java:comp/env/BeanManager</literal>"
-msgstr "O Tomcat não só permite a você vincular as entradas para <literal>java:comp/env</literal>, assim que o Manager estará disponível em <literal>java:comp/env/app/Manager</literal>"
+#, no-c-format
+msgid ""
+"Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, "
+"so the BeanManager will be available at "
+"<literal>java:comp/env/BeanManager</literal>"
+msgstr ""
+"O Tomcat somente permite que você vincule entradas em "
+"<literal>java:comp/env</literal>, assim o BeanManager estará disponível em "
+"<literal>java:comp/env/BeanManager</literal>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Weld also supports Servlet injection in Tomcat 6."
-msgstr "Web Beans atualmente não suporta injeção de Servlet no Jetty."
+msgstr "Weld também suporta injeção de Servlet no Tomcat 6."
 
 #. Tag: title
 #, no-c-format
@@ -145,12 +225,20 @@ msgid "Jetty"
 msgstr "Jetty"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Like Tomcat, Jetty has a read-only JNDI, so Weld can't automatically bind the BeanManager. To bind the BeanManager to JNDI in Jetty 6, you should populate <literal>WEB-INF/jetty-env.xml</literal> with the following contents:"
-msgstr "O Tomcat tem um JNDI apenas de leitura. Assim, a Web Beans não pode vincular automaticamente o Manager. Para vincular o Manager no JNDI, você deve adicionar o seguinte ao seu <literal>META-INF/context.xml</literal>:"
+#, no-c-format
+msgid ""
+"Like Tomcat, Jetty has a read-only JNDI, so Weld can't automatically bind "
+"the BeanManager. To bind the BeanManager to JNDI in Jetty 6, you should "
+"populate <literal>WEB-INF/jetty-env.xml</literal> with the following "
+"contents:"
+msgstr ""
+"Como o Tomcat, o Jetty possui um JNDI somente leitura, assim o Weld não pode"
+" vincular automaticamente o BeanManager. Para vincular o BeanManager ao JNDI"
+" no Jetty 6, você deve preencher <literal>WEB-INF/jetty-env.xml</literal> "
+"com o seguinte conteúdo:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//EN\"\n"
 "   \"http://jetty.mortbay.org/configure.dtd\"&gt;\n"
@@ -168,29 +256,33 @@ msgid ""
 "   &lt;/New&gt;\n"
 "&lt;/Configure&gt;"
 msgstr ""
-"<![CDATA[<!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//EN\"\n"
-"   \"http://jetty.mortbay.org/configure.dtd\">\n"
-"<Configure id=\"webAppCtx\" class=\"org.mortbay.jetty.webapp.WebAppContext\">\n"
-"   <New id=\"BeanManager\" class=\"org.mortbay.jetty.plus.naming.Resource\">\n"
-"      <Arg><Ref id=\"webAppCtx\"/></Arg> \n"
-"      <Arg>BeanManager</Arg>\n"
-"      <Arg>\n"
-"         <New class=\"javax.naming.Reference\">\n"
-"            <Arg>javax.enterprise.inject.spi.BeanManager</Arg> \n"
-"            <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>\n"
-"            <Arg/>\n"
-"         </New>\n"
-"      </Arg>\n"
-"   </New>\n"
-"</Configure>]]>"
+"&lt;!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//EN\"\n"
+"   \"http://jetty.mortbay.org/configure.dtd\"&gt;\n"
+"&lt;Configure id=\"webAppCtx\" class=\"org.mortbay.jetty.webapp.WebAppContext\"&gt;\n"
+"   &lt;New id=\"BeanManager\" class=\"org.mortbay.jetty.plus.naming.Resource\"&gt;\n"
+"      &lt;Arg&gt;&lt;Ref id=\"webAppCtx\"/&gt;&lt;/Arg&gt; \n"
+"      &lt;Arg&gt;BeanManager&lt;/Arg&gt;\n"
+"      &lt;Arg&gt;\n"
+"         &lt;New class=\"javax.naming.Reference\"&gt;\n"
+"            &lt;Arg&gt;javax.enterprise.inject.spi.BeanManager&lt;/Arg&gt; \n"
+"            &lt;Arg&gt;org.jboss.weld.resources.ManagerObjectFactory&lt;/Arg&gt;\n"
+"            &lt;Arg/&gt;\n"
+"         &lt;/New&gt;\n"
+"      &lt;/Arg&gt;\n"
+"   &lt;/New&gt;\n"
+"&lt;/Configure&gt;"
 
 #. Tag: para
 #, no-c-format
-msgid "Jetty 7 has moved to the Eclipse Foundation; if you are using Jetty 7 put the following in your <literal>WEB-INF/jetty-env.xml</literal>:"
+msgid ""
+"Jetty 7 has moved to the Eclipse Foundation; if you are using Jetty 7 put "
+"the following in your <literal>WEB-INF/jetty-env.xml</literal>:"
 msgstr ""
+"O Jetty 7 foi movido para a Fundação Eclipse; se você está usando o Jetty 7 "
+"coloque o seguinte conteúdo em seu <literal>WEB-INF/jetty-env.xml</literal>:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//EN\"\n"
 "   \"http://www.eclipse.org/jetty/configure.dtd\"&gt;\n"
@@ -209,41 +301,66 @@ msgid ""
 "    &lt;/New&gt;\n"
 "&lt;/Configure&gt; "
 msgstr ""
-"<![CDATA[<!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//EN\"\n"
-"   \"http://jetty.mortbay.org/configure.dtd\">\n"
-"<Configure id=\"webAppCtx\" class=\"org.mortbay.jetty.webapp.WebAppContext\">\n"
-"   <New id=\"BeanManager\" class=\"org.mortbay.jetty.plus.naming.Resource\">\n"
-"      <Arg><Ref id=\"webAppCtx\"/></Arg> \n"
-"      <Arg>BeanManager</Arg>\n"
-"      <Arg>\n"
-"         <New class=\"javax.naming.Reference\">\n"
-"            <Arg>javax.enterprise.inject.spi.BeanManager</Arg> \n"
-"            <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>\n"
-"            <Arg/>\n"
-"         </New>\n"
-"      </Arg>\n"
-"   </New>\n"
-"</Configure>]]>"
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "Just like in Tomcat, you need to make it available to your deployment by adding this to the bottom of <literal>web.xml</literal>:"
-msgstr "e torná-lo disponível para a sua implantação, acrescentando-o ao <literal>web.xml</literal>:"
+"&lt;!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//EN\"\n"
+"   \"http://www.eclipse.org/jetty/configure.dtd\"&gt;\n"
+"\n"
+"&lt;Configure id=\"webAppCtx\" class=\"org.eclipse.jetty.webapp.WebAppContext\"&gt;\n"
+"    &lt;New id=\"BeanManager\" class=\"org.eclipse.jetty.plus.jndi.Resource\"&gt;\n"
+"        &lt;Arg&gt; &lt;Ref id=\"webAppCtx\"/&gt; &lt;/Arg&gt;\n"
+"        &lt;Arg&gt;BeanManager&lt;/Arg&gt;\n"
+"        &lt;Arg&gt;\n"
+"            &lt;New class=\"javax.naming.Reference\"&gt;\n"
+"                &lt;Arg&gt;javax.enterprise.inject.spi.BeanManager&lt;/Arg&gt;\n"
+"                &lt;Arg&gt;org.jboss.weld.resources.ManagerObjectFactory&lt;/Arg&gt;\n"
+"                &lt;Arg/&gt;\n"
+"            &lt;/New&gt;\n"
+"        &lt;/Arg&gt;\n"
+"    &lt;/New&gt;\n"
+"&lt;/Configure&gt; "
 
 #. Tag: para
 #, no-c-format
-msgid "Notice that Jetty doesn't not have built-in support for an <literal>javax.naming.spi.ObjectFactory</literal> like Tomcat, so it's necessary to manually create the <literal>javax.naming.Reference</literal> to wrap around it."
+msgid ""
+"Just like in Tomcat, you need to make it available to your deployment by "
+"adding this to the bottom of <literal>web.xml</literal>:"
 msgstr ""
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "Jetty only allows you to bind entries to <literal>java:comp/env</literal>, so the BeanManager will be available at <literal>java:comp/env/BeanManager</literal>"
-msgstr "O Tomcat não só permite a você vincular as entradas para <literal>java:comp/env</literal>, assim que o Manager estará disponível em <literal>java:comp/env/app/Manager</literal>"
+"Assim como no Tomcat, você precisa torná-lo disponível em sua implantação, "
+"acrescentando isto ao final do <literal>web.xml</literal>:"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld also supports Servlet injection in Jetty 6. To enable this, add the file <literal>WEB-INF/jetty-web.xml</literal> with the following content to your war:"
+msgid ""
+"Notice that Jetty doesn't not have built-in support for an "
+"<literal>javax.naming.spi.ObjectFactory</literal> like Tomcat, so it's "
+"necessary to manually create the <literal>javax.naming.Reference</literal> "
+"to wrap around it."
 msgstr ""
+"Note que o Jetty não possui suporte já existente a um "
+"<literal>javax.naming.spi.ObjectFactory</literal> como o Tomcat, assim é "
+"necessário criar manualmente o <literal>javax.naming.Reference</literal> "
+"para envolvê-lo."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Jetty only allows you to bind entries to <literal>java:comp/env</literal>, "
+"so the BeanManager will be available at "
+"<literal>java:comp/env/BeanManager</literal>"
+msgstr ""
+"O Jetty somente permite que você vincule entradas em "
+"<literal>java:comp/env</literal>, assim o BeanManager estará disponível em "
+"<literal>java:comp/env/BeanManager</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Weld also supports Servlet injection in Jetty 6. To enable this, add the "
+"file <literal>WEB-INF/jetty-web.xml</literal> with the following content to "
+"your war:"
+msgstr ""
+"O Weld também suporta injeção em Servlet no Jetty 6. Para habilitar isto, "
+"adicione o arquivo <literal>META-INF/jetty-web.xml</literal> com o seguinte "
+"conteúdo em seu war:"
 
 #. Tag: programlisting
 #, no-c-format
@@ -256,6 +373,13 @@ msgid ""
 "   &lt;/Call&gt;\n"
 "&lt;/Configure&gt;"
 msgstr ""
+"&lt;!DOCTYPE Configure PUBLIC \"-//Mort Bay Consulting//DTD Configure//EN\"\n"
+"   \"http://jetty.mortbay.org/configure.dtd\"&gt;\n"
+"&lt;Configure id=\"webAppCtx\" class=\"org.mortbay.jetty.webapp.WebAppContext\"&gt;\n"
+"   &lt;Call class=\"org.jboss.weld.environment.jetty.WeldServletHandler\" name=\"process\"&gt;\n"
+"      &lt;Arg&gt;&lt;Ref id=\"webAppCtx\"/&gt;&lt;/Arg&gt;\n"
+"   &lt;/Call&gt;\n"
+"&lt;/Configure&gt;"
 
 #. Tag: title
 #, no-c-format
@@ -264,91 +388,134 @@ msgstr "Java SE"
 
 #. Tag: para
 #, no-c-format
-msgid "In addition to improved integration of the Enterprise Java stack, the \"Contexts and Dependency Injection for the Java EE platform\" specification also defines a state of the art typesafe, stateful dependency injection framework, which can prove useful in a wide range of application types. To help developers take advantage of this, Weld provides a simple means for being executed in the Java Standard Edition (SE) environment independently of any Java EE APIs."
+msgid ""
+"In addition to improved integration of the Enterprise Java stack, the "
+"\"Contexts and Dependency Injection for the Java EE platform\" specification"
+" also defines a state of the art typesafe, stateful dependency injection "
+"framework, which can prove useful in a wide range of application types. To "
+"help developers take advantage of this, Weld provides a simple means for "
+"being executed in the Java Standard Edition (SE) environment independently "
+"of any Java EE APIs."
 msgstr ""
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "When executing in the SE environment the following features of Weld are available:"
-msgstr "Quando executando no ambiente SE as seguintes funcionalidades da Web Beans estão disponíveis:"
+"Em adição a uma integração melhorada da pilha Java Enterprise, a "
+"especificação \"Contexts and Dependency Injection for the Java EE platform\""
+" também define um framework de injeção de dependência em estado da arte e "
+"typesafe, o qual pode se comprovar útil em uma ampla variedade de tipos de "
+"aplicação. Para ajudar desenvolvedores tirar vantagem disto, o Weld fornece "
+"um meio simples de ser executado no ambiente Java Standard Edition (SE) "
+"independentemente de qualquer API da Java EE."
 
 #. Tag: para
 #, no-c-format
-msgid "Managed beans with <literal>@PostConstruct</literal> and <literal>@PreDestroy</literal> lifecycle callbacks"
+msgid ""
+"When executing in the SE environment the following features of Weld are "
+"available:"
 msgstr ""
+"Quando executando no ambiente SE as seguintes funcionalidades do Weld estão "
+"disponíveis:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Managed beans with <literal>@PostConstruct</literal> and "
+"<literal>@PreDestroy</literal> lifecycle callbacks"
+msgstr ""
+"Managed beans com os callbacks <literal>@PostConstruct</literal> e "
+"<literal>@PreDestroy</literal> do ciclo de vida"
 
 #. Tag: para
 #, no-c-format
 msgid "Dependency injection with qualifiers and alternatives"
-msgstr ""
+msgstr "Injeção de dependência com qualificadores e alternativos"
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>@Application</literal>, <literal>@Dependent</literal> and <literal>@Singleton</literal> scopes"
+msgid ""
+"<literal>@Application</literal>, <literal>@Dependent</literal> and "
+"<literal>@Singleton</literal> scopes"
 msgstr ""
+"Os escopos <literal>@Application</literal>, <literal>@Dependent</literal> e "
+"<literal>@Singleton</literal>"
 
 #. Tag: para
 #, no-c-format
 msgid "Interceptors and decorators"
-msgstr ""
+msgstr "Interceptadores e decoradores"
 
 #. Tag: para
 #, no-c-format
 msgid "Stereotypes"
-msgstr ""
+msgstr "Estereótipos"
 
 #. Tag: para
 #, no-c-format
 msgid "Events"
-msgstr ""
+msgstr "Eventos"
 
 #. Tag: para
 #, no-c-format
 msgid "Portable extension support"
-msgstr ""
+msgstr "Suporte a extensão portável"
 
 #. Tag: para
 #, no-c-format
 msgid "EJB beans are not supported."
-msgstr ""
+msgstr "Beans EJB não são suportados."
 
 #. Tag: title
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "CDI SE Module"
-msgstr "Módulo Web Beans SE"
+msgstr "Módulo CDI SE"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld provides an extension which will boot a CDI bean manager in Java SE, automatically registering all simple beans found on the classpath. The command line parameters can be injected using either of the following:"
+msgid ""
+"Weld provides an extension which will boot a CDI bean manager in Java SE, "
+"automatically registering all simple beans found on the classpath. The "
+"command line parameters can be injected using either of the following:"
 msgstr ""
+"O Weld fornece uma extensão que inicializa um gerenciador de beans CDI em "
+"Java SE, registrando automaticamente todos os beans simples encontrados no "
+"classpath. Os parâmetros de linha de comando podem ser injetados usando uma "
+"das seguintes formas:"
 
 #. Tag: programlisting
 #, no-c-format
 msgid "@Inject @Parameters List&lt;String&gt; params;"
-msgstr ""
+msgstr "@Inject @Parameters List&lt;String&gt; params;"
 
 #. Tag: programlisting
 #, no-c-format
 msgid "@Inject @Parameters String[] paramsArray;"
-msgstr ""
+msgstr "@Inject @Parameters String[] paramsArray;"
 
 #. Tag: para
 #, no-c-format
 msgid "The second form is useful for compatibility with existing classes."
-msgstr ""
+msgstr "A segunda forma é útil para compatibilidade com classes existentes."
 
 #. Tag: para
 #, no-c-format
-msgid "The command line parameters do not become available for injection until the <literal>ContainerInitialized</literal> event is fired. If you need access to the parameters during initialization you can do so via the <literal>public static String[] getParameters()</literal> method in <literal>StartMain</literal>."
+msgid ""
+"The command line parameters do not become available for injection until the "
+"<literal>ContainerInitialized</literal> event is fired. If you need access "
+"to the parameters during initialization you can do so via the "
+"<literal>public static String[] getParameters()</literal> method in "
+"<literal>StartMain</literal>."
 msgstr ""
+"Os parâmetros de linha de comando não ficaram disponíveis para injeção até "
+"que o evento <literal>ContainerInitialized</literal> seja disparado. Se você"
+" precisa acessar os parâmetros durante a inicialização você pode fazer assim"
+" por meio do método <literal>public static String[] "
+"getParameters()</literal> em <literal>StartMain</literal>."
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Here's an example of a simple CDI SE application:"
-msgstr "Aqui está um exemplo de uma simples aplicação Web Beans SE:"
+msgstr "Aqui está um exemplo de uma simples aplicação CDI SE:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Singleton\n"
 "public class HelloWorld\n"
@@ -358,55 +525,78 @@ msgid ""
 "   }\n"
 "}"
 msgstr ""
-"<![CDATA[@ApplicationScoped\n"
+"@Singleton\n"
 "public class HelloWorld\n"
 "{\n"
-"   @Inject @Parameters List<String> parameters;\n"
-"\n"
-"   public void printHello(@Observes ContainerInitialized event) {\n"
+"   public void printHello(@Observes ContainerInitialized event, @Parameters List&lt;String&gt; parameters) {\n"
 "       System.out.println(\"Hello \" + parameters.get(0));\n"
 "   }\n"
-"}]]>"
+"}"
 
 #. Tag: title
 #, no-c-format
 msgid "Bootstrapping CDI SE"
-msgstr ""
+msgstr "Inicializando aplicações CDI SE"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "CDI SE applications can be bootstrapped in the following ways."
-msgstr "Aplicações Web Beans SE são iniciadas executando o seguinte método principal."
+msgstr "Aplicações CDI SE podem ser inicializadas das seguintes maneiras."
 
 #. Tag: title
 #, no-c-format
 msgid "The ContainerInitialized Event"
-msgstr ""
+msgstr "O Evento ContainerInitialized"
 
 #. Tag: para
 #, no-c-format
-msgid "Thanks to the power of CDI's typesafe event model, application developers need not write any bootstrapping code. The Weld SE module comes with a built-in main method which will bootstrap CDI for you and then fire a <literal>ContainerInitialized</literal> event. The entry point for your application code would therefore be a simple bean which observes the <literal>ContainerInitialized</literal> event, as in the previous example."
+msgid ""
+"Thanks to the power of CDI's typesafe event model, application developers "
+"need not write any bootstrapping code. The Weld SE module comes with a "
+"built-in main method which will bootstrap CDI for you and then fire a "
+"<literal>ContainerInitialized</literal> event. The entry point for your "
+"application code would therefore be a simple bean which observes the "
+"<literal>ContainerInitialized</literal> event, as in the previous example."
 msgstr ""
+"Devido ao poder do modelo de eventos typesafe de CDI, desenvolvedores de "
+"aplicação não precisam escrever qualquer código de inicialização. O módulo "
+"Weld SE vem com um método main embutido que inicializa o CDI para você e "
+"então dispara um evento <literal>ContainerInitialized</literal>. O ponto de "
+"entrada para o código de sua aplicação seria, portanto, um simples bean que "
+"observa o evento <literal>ContainerInitialized</literal>, como no exemplo "
+"anterior."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "In this case your application can be started by calling the provided main method like so:"
-msgstr "Aplicações Web Beans SE são iniciadas executando o seguinte método principal."
+#, no-c-format
+msgid ""
+"In this case your application can be started by calling the provided main "
+"method like so:"
+msgstr ""
+"Neste caso sua aplicação pode ser iniciada chamando o método main fornecido "
+"como este:"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "java org.jboss.weld.environment.se.StartMain &lt;args&gt;"
-msgstr "<![CDATA[java org.jboss.weld.environments.se.StartMain <args>]]>"
+msgstr "java org.jboss.weld.environment.se.StartMain &lt;args&gt;"
 
 #. Tag: title
 #, no-c-format
 msgid "Programmatic Bootstrap API"
-msgstr ""
+msgstr "API de Inicialização Programática"
 
 #. Tag: para
 #, no-c-format
-msgid "For added flexibility, CDI SE also comes with a bootstrap API which can be called from within your application in order to initialize CDI and obtain references to your application's beans and events. The API consists of two classes: <literal>Weld</literal> and <literal>WeldContainer</literal>."
+msgid ""
+"For added flexibility, CDI SE also comes with a bootstrap API which can be "
+"called from within your application in order to initialize CDI and obtain "
+"references to your application's beans and events. The API consists of two "
+"classes: <literal>Weld</literal> and <literal>WeldContainer</literal>."
 msgstr ""
+"Para adicionar flexibilidade, CDI SE também vem com uma API de inicialização"
+" que pode ser chamada dentro de sua aplicação para inicializar a CDI e obter"
+" referências para os beans e eventos de sua aplicação. A API consiste em "
+"duas classes: <literal>Weld</literal> e <literal>WeldContainer</literal>."
 
 #. Tag: programlisting
 #, no-c-format
@@ -423,6 +613,17 @@ msgid ""
 "\n"
 "}"
 msgstr ""
+"public class Weld\n"
+"{\n"
+"\n"
+"   /** Inicia o Weld, cria e retorna uma instância de WeldContainer, por meio do qual\n"
+"    * os beans e events podem ser acessados. */\n"
+"   public WeldContainer initialize() {...}\n"
+"\n"
+"   /** Método conveniente para encerramento do contêiner. */\n"
+"   public void shutdown() {...}\n"
+"\n"
+"}"
 
 #. Tag: programlisting
 #, no-c-format
@@ -441,11 +642,28 @@ msgid ""
 "\n"
 "}"
 msgstr ""
+"public class WeldContainer\n"
+"{\n"
+"\n"
+"   /** Fornece acesso a todos os beans dentro da aplicação. */\n"
+"   public Instance&lt;Object&gt; instance() {...}\n"
+"\n"
+"   /** Fornece acesso a todos os events dentro da aplicação. */\n"
+"   public Event&lt;Object&gt; event() {...}\n"
+"\n"
+"   /** Fornece acesso direto ao BeanManager. */\n"
+"   public BeanManager getBeanManager() {...}\n"
+"\n"
+"}"
 
 #. Tag: para
 #, no-c-format
-msgid "Here's an example application main method which uses this API to initialize a bean of type <literal>MyApplicationBean</literal>."
+msgid ""
+"Here's an example application main method which uses this API to initialize "
+"a bean of type <literal>MyApplicationBean</literal>."
 msgstr ""
+"Aqui está um método main da aplicação de exemplo que usa esta API para "
+"inicializar um bean do tipo <literal>MyApplicationBean</literal>."
 
 #. Tag: programlisting
 #, no-c-format
@@ -456,11 +674,22 @@ msgid ""
 "   weld.shutdown();\n"
 "}"
 msgstr ""
+"public static void main(String[] args) {\n"
+"   WeldContainer weld = new Weld().initialize();\n"
+"   weld.instance().select(MyApplicationBean.class).get();\n"
+"   weld.shutdown();\n"
+"}"
 
 #. Tag: para
 #, no-c-format
-msgid "Alternatively the application could be started by firing a custom event which would then be observed by another simple bean. The following example fires <literal>MyEvent</literal> on startup."
+msgid ""
+"Alternatively the application could be started by firing a custom event "
+"which would then be observed by another simple bean. The following example "
+"fires <literal>MyEvent</literal> on startup."
 msgstr ""
+"Alternativamente a aplicação poderia ser iniciada ao disparar um evento "
+"personalizado que, então, seria observado por um outro simples bean. O "
+"seguinte exemplo dispara <literal>MyEvent</literal> na inicialização."
 
 #. Tag: programlisting
 #, no-c-format
@@ -471,21 +700,52 @@ msgid ""
 "   weld.shutdown();\n"
 "}"
 msgstr ""
+"public static void main(String[] args) {\n"
+"   WeldContainer weld = new Weld().initialize();\n"
+"   weld.event().select(MyEvent.class).fire( new MyEvent() );\n"
+"   weld.shutdown();\n"
+"}"
 
 #. Tag: title
 #, no-c-format
 msgid "Thread Context"
-msgstr ""
+msgstr "Thread Context"
 
 #. Tag: para
 #, no-c-format
-msgid "In contrast to Java EE applications, Java SE applications place no restrictions on developers regarding the creation and usage of threads. Therefore Weld SE provides a custom scope annotation, <literal>@ThreadScoped</literal>, and corresponding context implementation which can be used to bind bean instances to the current thread. It is intended to be used in scenarios where you might otherwise use <literal>ThreadLocal</literal>, and does in fact use <literal>ThreadLocal</literal> under the hood."
+msgid ""
+"In contrast to Java EE applications, Java SE applications place no "
+"restrictions on developers regarding the creation and usage of threads. "
+"Therefore Weld SE provides a custom scope annotation, "
+"<literal>@ThreadScoped</literal>, and corresponding context implementation "
+"which can be used to bind bean instances to the current thread. It is "
+"intended to be used in scenarios where you might otherwise use "
+"<literal>ThreadLocal</literal>, and does in fact use "
+"<literal>ThreadLocal</literal> under the hood."
 msgstr ""
+"Em contraste com aplicações Java EE, aplicações Java SE coloca nenhuma "
+"restrição aos desenvolvedores a respeito da criação e uso de threads. Por "
+"isso o Weld SE fornece uma anotação de escopo específico, "
+"<literal>@ThreadScoped</literal>, e uma correspondente implementação de "
+"contexto que pode ser usada para vincular instâncias de beans à thread "
+"corrente. É destinada a ser usada em cenários onde você poderia usar "
+"<literal>ThreadLocal</literal>, e de fato fará uso de "
+"<literal>ThreadLocal</literal>, mas por baixo dos panos."
 
 #. Tag: para
 #, no-c-format
-msgid "To use the @ThreadScoped annotation you need to enable the <literal>RunnableDecorator</literal> which 'listens' for all executions of <literal>Runnable.run()</literal> and decorates them by setting up the thread context beforehand, bound to the current thread, and destroying the context afterwards."
+msgid ""
+"To use the @ThreadScoped annotation you need to enable the "
+"<literal>RunnableDecorator</literal> which 'listens' for all executions of "
+"<literal>Runnable.run()</literal> and decorates them by setting up the "
+"thread context beforehand, bound to the current thread, and destroying the "
+"context afterwards."
 msgstr ""
+"Para usar a anotação @ThreadScoped você precisa habilitar o "
+"<literal>RunnableDecorator</literal> que 'ouve' todas as execuções de "
+"<literal>Runnable.run()</literal> e decora elas configurando o contexto de "
+"thread antecipadamente, delimitando a thread corrente e destruindo o "
+"contexto mais tarde."
 
 #. Tag: programlisting
 #, no-c-format
@@ -496,113 +756,69 @@ msgid ""
 "  &lt;/decorator&gt;\n"
 "&lt;/beans&gt;"
 msgstr ""
+"&lt;beans&gt;\n"
+"  &lt;decorators&gt;\n"
+"     &lt;decorator&gt;org.jboss.weld.environment.se.threading.RunnableDecorator&lt;/decorator&gt;\n"
+"  &lt;/decorator&gt;\n"
+"&lt;/beans&gt;"
 
 #. Tag: para
 #, no-c-format
-msgid "It is not necessary to use @ThreadScoped in all multithreaded applications. The thread context is not intended as a replacement for defining your own application-specific contexts. It is generally only useful in situations where you would otherwise have used ThreadLocal directly, which are typically rare."
+msgid ""
+"It is not necessary to use @ThreadScoped in all multithreaded applications. "
+"The thread context is not intended as a replacement for defining your own "
+"application-specific contexts. It is generally only useful in situations "
+"where you would otherwise have used ThreadLocal directly, which are "
+"typically rare."
 msgstr ""
+"Não é necessário usar @ThreadScoped em todas aplicações multithreaded. O "
+"contexto de thread não é destinado como um substituição a definir seus "
+"próprios cotextos específicos da aplicação. Somente é geralmente útil em "
+"situações onde você teria utilizado ThreadLocal diretamente, as quais são "
+"tipicamente raras."
 
 #. Tag: title
 #, no-c-format
 msgid "Setting the Classpath"
-msgstr ""
+msgstr "Configurando o Classpath"
 
 #. Tag: para
 #, no-c-format
-msgid "Weld SE comes packaged as a 'shaded' jar which includes the CDI API, Weld Core and all dependant classes bundled into a single jar. Therefore the only Weld jar you need on the classpath, in addition to your application's classes and dependant jars, is the Weld SE jar. If you are working with a pure Java SE application you launch using <literal>java</literal>, this may be simpler for you."
+msgid ""
+"Weld SE comes packaged as a 'shaded' jar which includes the CDI API, Weld "
+"Core and all dependant classes bundled into a single jar. Therefore the only"
+" Weld jar you need on the classpath, in addition to your application's "
+"classes and dependant jars, is the Weld SE jar. If you are working with a "
+"pure Java SE application you launch using <literal>java</literal>, this may "
+"be simpler for you."
 msgstr ""
+"O Weld SE vem empacotado como um jar 'iluminado' que inclui a API CDI, o "
+"Weld Core e todas classes dependentes agrupadas em um único jar. Por esse "
+"motivo o único jar do Weld que você precisa no classpath, em adição às "
+"classes e jars dependentes de sua aplicação, é o jar do Weld SE. Se você "
+"está trabalhando com uma aplicação Java SE pura você lançará ela usando "
+"<literal>java</literal> e isto pode ser mais simples para você."
 
 #. Tag: para
 #, no-c-format
-msgid "If you prefer to work with individual dependencies, then you can use the <literal>weld-core</literal> jar which just contains the Weld SE classes. Of course in this mode you will need to assemble the classpath yourself. This mode is useful, for example, if you wish to use an alternative slf4j log binding."
+msgid ""
+"If you prefer to work with individual dependencies, then you can use the "
+"<literal>weld-core</literal> jar which just contains the Weld SE classes. Of"
+" course in this mode you will need to assemble the classpath yourself. This "
+"mode is useful, for example, if you wish to use an alternative slf4j log "
+"binding."
 msgstr ""
+"Se você prefere trabalhar com dependências individuais, então você pode usar"
+" o jar <literal>weld-core</literal> que contém apenas as classes do Weld SE."
+" Certamente neste modo você precisará montar o classpath você mesmo. Este "
+"modo é útil, por exemplo, se você deseja usar um slf4j alternativo."
 
 #. Tag: para
 #, no-c-format
-msgid "If you work with a dependency management solution such as Maven you can declare a dependency on <literal>org.jboss.weld.se:weld-se-core</literal>."
+msgid ""
+"If you work with a dependency management solution such as Maven you can "
+"declare a dependency on <literal>org.jboss.weld.se:weld-se-core</literal>."
 msgstr ""
-
-#, fuzzy
-#~ msgid "A new deployer, <literal>weld.deployer</literal> is added to JBoss AS. This adds supports for JSR-299 deployments to JBoss AS, and allows Weld to query the EJB 3 container and discover which EJBs are installed in your application. It also performs an upgrade of the Javassist library, if necessary."
-#~ msgstr "Um novo deployer <literal>webbeans.deployer</literal> é adicionado ao JBoss AS. Isso adiciona suporte a implantações JSR-299 no JBoss AS e permite à Web Beans consultar o EJB3 container e descobrir quais EJBs estão instalados na sua aplicação."
-
-#, fuzzy
-#~ msgid "<literal>weld-logging.jar</literal>"
-#~ msgstr "webbeans-logging.jar"
-
-#, fuzzy
-#~ msgid "<literal>weld-servlet-int.jar</literal>"
-#~ msgstr "webbeans-servlet-int.jar"
-
-#~ msgid "<![CDATA[jboss.home=/path/to/jboss-as-5.x]]>"
-#~ msgstr "<![CDATA[jboss.home=/path/to/jboss-as-5.x]]>"
-
-#, fuzzy
-#~ msgid ""
-#~ "$> cd jboss-as\n"
-#~ "$> ant update"
-#~ msgstr ""
-#~ "$ cd webbeans-$VERSION/jboss-as\n"
-#~ "$ ant update"
-
-#~ msgid "jsr299-api.jar"
-#~ msgstr "jsr299-api.jar"
-
-#, fuzzy
-#~ msgid "weld-api.jar"
-#~ msgstr "webbeans-api.jar"
-
-#, fuzzy
-#~ msgid "weld-spi.jar"
-#~ msgstr "webbeans-spi.jar"
-
-#, fuzzy
-#~ msgid "weld-core.jar"
-#~ msgstr "webbeans-core.jar"
-
-#~ msgid "javassist.jar"
-#~ msgstr "javassist.jar"
-
-#~ msgid "dom4j.jar"
-#~ msgstr "dom4j.jar"
-
-#~ msgid "<![CDATA[<Listener className=\"org.jboss.weld.environment.tomcat.WeldLifecycleListener\"/>]]>"
-#~ msgstr "<![CDATA[<Listener className=\"org.jboss.weld.environment.tomcat.WeldLifecycleListener\"/>]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Inject @Parameters List<String> params;\n"
-#~ "@Inject @Parameters String[] paramsArray; // useful for compatability with existing classes]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Inject @Parameters List<String> params;\n"
-#~ "@Inject @Parameters String[] paramsArray; // useful for compatability with existing classes]]>"
-
-#~ msgid ""
-#~ "<![CDATA[public class PerformSetup {\n"
-#~ "   public void setup(@Observes AfterBeanDiscovery event) {\n"
-#~ "      event.addContext( ThreadContext.INSTANCE );\n"
-#~ "   }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class PerformSetup {\n"
-#~ "   public void setup(@Observes AfterBeanDiscovery event) {\n"
-#~ "      event.addContext( ThreadContext.INSTANCE );\n"
-#~ "   }\n"
-#~ "}]]>"
-
-#~ msgid "No special configuration of your application, beyond adding either <literal>META-INF/beans.xml</literal> or <literal>WEB-INF/beans.xml</literal> is needed."
-#~ msgstr "Além da adição de <literal>META-INF/beans.xml</literal> ou <literal>WEB-INF/beans.xml</literal>, nenhuma outra configuração especial na sua aplicação é necessária."
-
-#~ msgid "If you are using JBoss AS 5.0.1.GA then you'll need to install Web Beans as an extra. First we need to tell Web Beans where JBoss is located. Edit <literal>jboss-as/build.properties</literal> and set the <literal>jboss.home</literal> property. For example:"
-#~ msgstr "Se você estiver usando o JBoss AS 5.0.1.GA, então  precisará instalar a Web Beans como um extra. Primeiro, precisamos  dizer à Web Beans onde o JBoss está localizado. Editar o  <literal>jboss-as/build.properties</literal> e definir a propriedade <literal>jboss.home</literal>. Por exemplo:"
-
-#~ msgid "Now we can install Web Beans:"
-#~ msgstr "Agora podemos instalar a Web Beans:"
-
-#~ msgid "Web Beans is built into all releases of JBoss AS from 5.1 onwards."
-#~ msgstr "A Web Beans está embutida em todas as versões do JBoss AS a partir da versão 5.1."
-
-#~ msgid "TODO"
-#~ msgstr "TODO"
-
-#~ msgid "Simple Web Beans (POJOs)"
-#~ msgstr "Web Beans Simples (POJOs)"
+"Se você trabalha com uma solução de gerenciamento de dependências como o "
+"Maven, você pode declarar uma dependência com <literal>org.jboss.weld.se"
+":weld-se-core</literal>."

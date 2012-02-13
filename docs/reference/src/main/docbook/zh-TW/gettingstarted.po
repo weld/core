@@ -1,19 +1,17 @@
 # translation of ri.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ri\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-19 18:21+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
@@ -24,12 +22,23 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with a number of examples. We recommend you start with <literal>examples/jsf/numberguess</literal> and <literal>examples/jsf/translator</literal>. Numberguess is a web (war) example containing only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. Translator is an enterprise (ear) example that contains session beans. This example must be run on JBoss AS 6.0, GlassFish 3.0 or any compliant Java EE 6 container."
+msgid ""
+"Weld comes with a number of examples. We recommend you start with "
+"<literal>examples/jsf/numberguess</literal> and "
+"<literal>examples/jsf/translator</literal>. Numberguess is a web (war) "
+"example containing only non-transactional managed beans. This example can be"
+" run on a wide range of servers, including JBoss AS, GlassFish, Apache "
+"Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. "
+"Translator is an enterprise (ear) example that contains session beans. This "
+"example must be run on JBoss AS 6.0, GlassFish 3.0 or any compliant Java EE "
+"6 container."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Both examples use JSF 2.0 as the web framework and, as such, can be found in the <literal>examples/jsf</literal> directory of the Weld distribution."
+msgid ""
+"Both examples use JSF 2.0 as the web framework and, as such, can be found in"
+" the <literal>examples/jsf</literal> directory of the Weld distribution."
 msgstr ""
 
 #. Tag: title
@@ -39,7 +48,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To run the examples with the provided build scripts, you'll need the following:"
+msgid ""
+"To run the examples with the provided build scripts, you'll need the "
+"following:"
 msgstr ""
 
 #. Tag: para
@@ -79,27 +90,41 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "(optionally) Maven 2.x, to run the examples in an embedded servlet container"
+msgid ""
+"(optionally) Maven 2.x, to run the examples in an embedded servlet container"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You'll need a full install of Ant 1.7.0. Some linux distributions only supply a partial installation of Ant which cause the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath."
+msgid ""
+"You'll need a full install of Ant 1.7.0. Some linux distributions only "
+"supply a partial installation of Ant which cause the build to fail. If you "
+"encounter problems, verify that ant-nodeps.jar is on the classpath."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In the next few sections, you'll be using the Ant command (<literal>ant</literal>) to invoke the Ant build script in each example to compile, assemble and deploy the example to JBoss AS and, for the war example, Apache Tomcat. You can also deploy the generated artifact (war or ear) to any other container that supports Java EE 6, such as GlassFish 3."
+msgid ""
+"In the next few sections, you'll be using the Ant command "
+"(<literal>ant</literal>) to invoke the Ant build script in each example to "
+"compile, assemble and deploy the example to JBoss AS and, for the war "
+"example, Apache Tomcat. You can also deploy the generated artifact (war or "
+"ear) to any other container that supports Java EE 6, such as GlassFish 3."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you have Maven installed, you can use the Maven command (<literal>mvn</literal>) to compile and assemble the standalone artifact (war or ear) and, for the war example, run it in an embedded container."
+msgid ""
+"If you have Maven installed, you can use the Maven command "
+"(<literal>mvn</literal>) to compile and assemble the standalone artifact "
+"(war or ear) and, for the war example, run it in an embedded container."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The sections below cover the steps for deploying with both Ant and Maven in detail. Let's start with JBoss AS."
+msgid ""
+"The sections below cover the steps for deploying with both Ant and Maven in "
+"detail. Let's start with JBoss AS."
 msgstr ""
 
 #. Tag: title
@@ -109,12 +134,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To deploy the examples to JBoss AS, you'll need <ulink url=\"http://jboss.org/jbossas/\">JBoss AS 6.0.0</ulink> or above. If a release of the JBoss AS 6.0 line isn't yet available, you can download a <ulink url=\"http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-AS-6.0.x/\">nightly snapshot</ulink>. The reason JBoss AS 6.0.0 or above is required is because it's the first release that has both CDI and Bean Validation support built-in, making it close enough to Java EE 6 to run the examples. The good news is that there are no additional modifications you have to make to the server. It's ready to go!"
+msgid ""
+"To deploy the examples to JBoss AS, you'll need <ulink "
+"url=\"http://jboss.org/jbossas/\">JBoss AS 6.0.0</ulink> or above. If a "
+"release of the JBoss AS 6.0 line isn't yet available, you can download a "
+"<ulink url=\"http://hudson.jboss.org/hudson/view/JBoss%20AS/job/JBoss-"
+"AS-6.0.x/\">nightly snapshot</ulink>. The reason JBoss AS 6.0.0 or above is "
+"required is because it's the first release that has both CDI and Bean "
+"Validation support built-in, making it close enough to Java EE 6 to run the "
+"examples. The good news is that there are no additional modifications you "
+"have to make to the server. It's ready to go!"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "After you have downloaded JBoss AS, extract it. (We recommended renaming the folder to include the <literal>as</literal> qualifier so it's clear that it's the application server). You can move the extracted folder anywhere you like. Wherever it lays to rest, that's what we'll call the JBoss AS installation directory, or <literal>JBOSS_HOME</literal>."
+msgid ""
+"After you have downloaded JBoss AS, extract it. (We recommended renaming the"
+" folder to include the <literal>as</literal> qualifier so it's clear that "
+"it's the application server). You can move the extracted folder anywhere you"
+" like. Wherever it lays to rest, that's what we'll call the JBoss AS "
+"installation directory, or <literal>JBOSS_HOME</literal>."
 msgstr ""
 
 #. Tag: programlisting
@@ -126,13 +165,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In order for the build scripts to know where to deploy the example, you have to tell them where to find your JBoss AS installation (i.e., <literal>JBOSS_HOME</literal>). Create a new file named <literal>local.build.properties</literal> in the examples directory of the Weld distribution and assign the path of your JBoss AS installation to the property key <literal>jboss.home</literal>, as follows:"
+msgid ""
+"In order for the build scripts to know where to deploy the example, you have"
+" to tell them where to find your JBoss AS installation (i.e., "
+"<literal>JBOSS_HOME</literal>). Create a new file named "
+"<literal>local.build.properties</literal> in the examples directory of the "
+"Weld distribution and assign the path of your JBoss AS installation to the "
+"property key <literal>jboss.home</literal>, as follows:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "jboss.home=/path/to/jboss-as-6.0"
-msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -141,29 +186,31 @@ msgstr "現在，您已準備好建置您的第一個範例！"
 
 #. Tag: para
 #, no-c-format
-msgid "Switch to the <literal>examples/jsf/numberguess</literal> directory and execute the Ant <literal>deploy</literal> target:"
+msgid ""
+"Switch to the <literal>examples/jsf/numberguess</literal> directory and "
+"execute the Ant <literal>deploy</literal> target:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd examples/jsf/numberguess\n"
 "$&gt; ant deploy"
 msgstr ""
-"$ cd examples/numberguess\n"
-"ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "If you haven't already, start JBoss AS. You can either start JBoss AS from a Linux shell:"
+msgid ""
+"If you haven't already, start JBoss AS. You can either start JBoss AS from a"
+" Linux shell:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd /path/to/jboss-as-6.0\n"
 "$&gt; ./bin/run.sh"
-msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -171,11 +218,11 @@ msgid "a Windows command window:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd c:\\path\\to\\jboss-as-6.0\\bin\n"
 "$&gt; run"
-msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -184,32 +231,52 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you are using Eclipse, you should seriously consider installing the <ulink url=\"http://www.jboss.org/tools\">JBoss Tools</ulink> add-ons, which include a wide variety of tooling for JSR-299 and Java EE development, as well as an enhanced JBoss AS server view."
+msgid ""
+"If you are using Eclipse, you should seriously consider installing the "
+"<ulink url=\"http://www.jboss.org/tools\">JBoss Tools</ulink> add-ons, which"
+" include a wide variety of tooling for JSR-299 and Java EE development, as "
+"well as an enhanced JBoss AS server view."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Wait a few seconds for the application to deploy (or the application server to start) and see if you can determine the most efficient approach to pinpoint the random number at the local URL <ulink url=\"http://localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</ulink>."
-msgstr "在此我們將設置 context 路徑，它能提供給我們一個網址（<ulink url=\"http://localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-translator</ulink>）。"
+msgid ""
+"Wait a few seconds for the application to deploy (or the application server "
+"to start) and see if you can determine the most efficient approach to "
+"pinpoint the random number at the local URL <ulink "
+"url=\"http://localhost:8080/weld-numberguess\">http://localhost:8080/weld-"
+"numberguess</ulink>."
+msgstr ""
+"在此我們將設置 context 路徑，它能提供給我們一個網址（<ulink url=\"http://localhost:8080/webbeans-"
+"translator\">http://localhost:8080/webbeans-translator</ulink>）。"
 
 #. Tag: para
 #, no-c-format
-msgid "The Ant build script includes additional targets for JBoss AS to deploy and undeploy the archive in either exploded or packaged format and to tidy things up."
+msgid ""
+"The Ant build script includes additional targets for JBoss AS to deploy and "
+"undeploy the archive in either exploded or packaged format and to tidy "
+"things up."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "<literal>ant restart</literal> - deploy the example in exploded format to JBoss AS"
+msgid ""
+"<literal>ant restart</literal> - deploy the example in exploded format to "
+"JBoss AS"
 msgstr "<literal>ant restart</literal> - 以分解的格式來建置範例"
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>ant explode</literal> - update an exploded example, without restarting the deployment"
+msgid ""
+"<literal>ant explode</literal> - update an exploded example, without "
+"restarting the deployment"
 msgstr "<literal>ant explode</literal> - 在不重新建置的情況下更新一個已分解的範例"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "<literal>ant deploy</literal> - deploy the example in compressed jar format to JBoss AS"
+msgid ""
+"<literal>ant deploy</literal> - deploy the example in compressed jar format "
+"to JBoss AS"
 msgstr "<literal>ant deploy</literal> - 以 jar 格式來建置範例"
 
 #. Tag: para
@@ -224,27 +291,38 @@ msgstr "<literal>ant clean</literal> - 清除範例"
 
 #. Tag: para
 #, no-c-format
-msgid "The second starter example, <literal>weld-translator</literal>, will translate your text into Latin. (Well, not really, but the stub is there for you to implement, at least. Good luck!) To try it out, switch to the translator example directory and execute the deploy target:"
+msgid ""
+"The second starter example, <literal>weld-translator</literal>, will "
+"translate your text into Latin. (Well, not really, but the stub is there for"
+" you to implement, at least. Good luck!) To try it out, switch to the "
+"translator example directory and execute the deploy target:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd examples/jsf/translator\n"
 "$&gt; ant deploy"
 msgstr ""
-"$ cd examples/translator\n"
-"ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "The translator uses session beans, which are packaged in an EJB module within an ear. Java EE 6 will allow session beans to be deployed in war modules, but that's a topic for a later chapter."
+msgid ""
+"The translator uses session beans, which are packaged in an EJB module "
+"within an ear. Java EE 6 will allow session beans to be deployed in war "
+"modules, but that's a topic for a later chapter."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Again, wait a few seconds for the application to deploy (if you're really bored, read the log messages), and visit <ulink url=\"http://localhost:8080/weld-translator\">http://localhost:8080/weld-translator</ulink> to begin pseudo-translating."
-msgstr "在此我們將設置 context 路徑，它能提供給我們一個網址（<ulink url=\"http://localhost:8080/webbeans-translator\">http://localhost:8080/webbeans-translator</ulink>）。"
+msgid ""
+"Again, wait a few seconds for the application to deploy (if you're really "
+"bored, read the log messages), and visit <ulink url=\"http://localhost:8080"
+"/weld-translator\">http://localhost:8080/weld-translator</ulink> to begin "
+"pseudo-translating."
+msgstr ""
+"在此我們將設置 context 路徑，它能提供給我們一個網址（<ulink url=\"http://localhost:8080/webbeans-"
+"translator\">http://localhost:8080/webbeans-translator</ulink>）。"
 
 #. Tag: title
 #, no-c-format
@@ -253,12 +331,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Deploying to GlassFish should be easy and familiar, right? After all, it's the Java EE 6 reference implementation and Weld is the JSR-299 reference implementation, meaning Weld gets bundled with GlassFish. So yes, it's all quite easy and familiar."
+msgid ""
+"Deploying to GlassFish should be easy and familiar, right? After all, it's "
+"the Java EE 6 reference implementation and Weld is the JSR-299 reference "
+"implementation, meaning Weld gets bundled with GlassFish. So yes, it's all "
+"quite easy and familiar."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To deploy the examples to GlassFish, you'll need the final <ulink url=\"https://glassfish.dev.java.net/downloads/v3-final.html\">GlassFish V3</ulink> release. Select the release that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform. After the download is complete, execute the installer. On Linux/Unix, you'll need to first make the script executable."
+msgid ""
+"To deploy the examples to GlassFish, you'll need the final <ulink "
+"url=\"https://glassfish.dev.java.net/downloads/v3-final.html\">GlassFish "
+"V3</ulink> release. Select the release that ends in either "
+"<literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on "
+"your platform. After the download is complete, execute the installer. On "
+"Linux/Unix, you'll need to first make the script executable."
 msgstr ""
 
 #. Tag: programlisting
@@ -270,31 +358,50 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "On Windows you can just click on the executable. Follow the instructions in the installer. It will create a single domain named <literal>domain1</literal>. You'll use that domain to deploy the example. We recommend that you choose <literal>7070</literal> as the main HTTP port to avoid conflicts with a running instance of JBoss AS (or Apache Tomcat)."
+msgid ""
+"On Windows you can just click on the executable. Follow the instructions in "
+"the installer. It will create a single domain named "
+"<literal>domain1</literal>. You'll use that domain to deploy the example. We"
+" recommend that you choose <literal>7070</literal> as the main HTTP port to "
+"avoid conflicts with a running instance of JBoss AS (or Apache Tomcat)."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you've deployed either of the starter examples, <literal>weld-numberguess</literal> or <literal>weld-translator</literal>, to JBoss AS, then you already have the deployable artifact you need. If not, switch to either of the two directories and build it."
+msgid ""
+"If you've deployed either of the starter examples, <literal>weld-"
+"numberguess</literal> or <literal>weld-translator</literal>, to JBoss AS, "
+"then you already have the deployable artifact you need. If not, switch to "
+"either of the two directories and build it."
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd examples/jsf/numberguess (or examples/jsf/translator)\n"
 "$&gt; ant package"
 msgstr ""
-"$ cd examples/numberguess\n"
-"ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "The deployable archive for the <literal>weld-numberguess</literal>, named <literal>weld-numberguess.war</literal>, ends up in the example's <literal>target</literal> directory. The archive for the <literal>weld-translator</literal> example, named <literal>weld-translator.ear</literal>, ends up in the example's <literal>ear/target</literal> directory. All you need to do now is deploy them to GlassFish."
+msgid ""
+"The deployable archive for the <literal>weld-numberguess</literal>, named "
+"<literal>weld-numberguess.war</literal>, ends up in the example's "
+"<literal>target</literal> directory. The archive for the <literal>weld-"
+"translator</literal> example, named <literal>weld-translator.ear</literal>, "
+"ends up in the example's <literal>ear/target</literal> directory. All you "
+"need to do now is deploy them to GlassFish."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "One way to deploy applications to GlassFish is by using the <ulink url=\"http://localhost:4848\">GlassFish Admin Console</ulink>. To get the Admin Console running, you need to start a GlassFish domain, in our case <literal>domain1</literal>. Switch to the <literal>bin</literal> folder in the directory where you installed GlassFish and execute the following command:"
+msgid ""
+"One way to deploy applications to GlassFish is by using the <ulink "
+"url=\"http://localhost:4848\">GlassFish Admin Console</ulink>. To get the "
+"Admin Console running, you need to start a GlassFish domain, in our case "
+"<literal>domain1</literal>. Switch to the <literal>bin</literal> folder in "
+"the directory where you installed GlassFish and execute the following "
+"command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -304,12 +411,25 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "After a few seconds you can visit the Admin Console in the browser at the URL <ulink url=\"http://localhost:4848\">http://localhost:4848</ulink>. In the tree on the left-hand side of the page, click on \"Applications\", then click on the \"Deploy...\" button under the heading \"Applications\" and select the deployable artifact for either of the two examples. The deployer should recognize that you have selected a Java EE artifact and allow you to start it. You can see the examples running at either <ulink url=\"http://localhost:7070/weld-numberguess\">http://localhost:7070/weld-numberguess</ulink> or <ulink url=\"http://localhost:7070/weld-translator\">http://localhost:7070/weld-translator</ulink>, depending on which example you deployed."
+msgid ""
+"After a few seconds you can visit the Admin Console in the browser at the "
+"URL <ulink url=\"http://localhost:4848\">http://localhost:4848</ulink>. In "
+"the tree on the left-hand side of the page, click on \"Applications\", then "
+"click on the \"Deploy...\" button under the heading \"Applications\" and "
+"select the deployable artifact for either of the two examples. The deployer "
+"should recognize that you have selected a Java EE artifact and allow you to "
+"start it. You can see the examples running at either <ulink "
+"url=\"http://localhost:7070/weld-numberguess\">http://localhost:7070/weld-"
+"numberguess</ulink> or <ulink url=\"http://localhost:7070/weld-"
+"translator\">http://localhost:7070/weld-translator</ulink>, depending on "
+"which example you deployed."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Alternatively, you can deploy the application to GlassFish using the asadmin command:"
+msgid ""
+"Alternatively, you can deploy the application to GlassFish using the asadmin"
+" command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -319,7 +439,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The reason the same artifact can be deployed to both JBoss AS and GlassFish, without any modifications, is because all of the features being used are part of the standard platform. And what a capable platform it has become!"
+msgid ""
+"The reason the same artifact can be deployed to both JBoss AS and GlassFish,"
+" without any modifications, is because all of the features being used are "
+"part of the standard platform. And what a capable platform it has become!"
 msgstr ""
 
 #. Tag: title
@@ -329,29 +452,47 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Servlet containers are not required to support Java EE services like CDI. However, you can use CDI in a servlet container like Tomcat by embedding a standalone CDI implementation such as Weld."
+msgid ""
+"Servlet containers are not required to support Java EE services like CDI. "
+"However, you can use CDI in a servlet container like Tomcat by embedding a "
+"standalone CDI implementation such as Weld."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Weld comes with a servlet listener which bootstraps the CDI environment, registers the <literal>BeanManager</literal> in JNDI and provides injection into servlets. Basically, it emulates some of the work done by the Java EE container. (But you don't get enterprise features such as session beans and container-managed transactions.)"
+msgid ""
+"Weld comes with a servlet listener which bootstraps the CDI environment, "
+"registers the <literal>BeanManager</literal> in JNDI and provides injection "
+"into servlets. Basically, it emulates some of the work done by the Java EE "
+"container. (But you don't get enterprise features such as session beans and "
+"container-managed transactions.)"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll need to download Tomcat 6.0.18 or later from <ulink url=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink> and extract it."
-msgstr "接下來，請由 <ulink url=\"http://seamframework.org/Download\">seamframework.org</ulink> 下載 Web Beans RI 並將它解壓縮。例如"
+msgid ""
+"Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll"
+" need to download Tomcat 6.0.18 or later from <ulink "
+"url=\"http://tomcat.apache.org/download-60.cgi\">tomcat.apache.org</ulink> "
+"and extract it."
+msgstr ""
+"接下來，請由 <ulink "
+"url=\"http://seamframework.org/Download\">seamframework.org</ulink> 下載 Web "
+"Beans RI 並將它解壓縮。例如"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "$&gt; unzip apache-tomcat-6.0.18.zip"
 msgstr ""
-"<![CDATA[$ cd /Applications\n"
-"$ unzip ~/jboss-5.0.0.GA.zip]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "You have two choices for how you can deploy the application to Tomcat. You can deploy it by pushing the artifact to the hot deploy directory using Ant or you can deploy to the server across HTTP using a Maven plugin. The Ant approach doesn't require that you have Maven installed, so we'll start there. If you want to use Maven, you can just skip ahead."
+msgid ""
+"You have two choices for how you can deploy the application to Tomcat. You "
+"can deploy it by pushing the artifact to the hot deploy directory using Ant "
+"or you can deploy to the server across HTTP using a Maven plugin. The Ant "
+"approach doesn't require that you have Maven installed, so we'll start "
+"there. If you want to use Maven, you can just skip ahead."
 msgstr ""
 
 #. Tag: title
@@ -361,13 +502,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In order for Ant to push the artifact to the Tomcat hot deploy directory, it needs to know where the Tomcat installation is located. Again, we need to set a property in the <literal>local.build.properties</literal> file in the examples directory of the Weld distribution. If you haven't yet created this file, do so now. Then assign the path of your Tomcat installation to the property key <literal>tomcat.home</literal>."
+msgid ""
+"In order for Ant to push the artifact to the Tomcat hot deploy directory, it"
+" needs to know where the Tomcat installation is located. Again, we need to "
+"set a property in the <literal>local.build.properties</literal> file in the "
+"examples directory of the Weld distribution. If you haven't yet created this"
+" file, do so now. Then assign the path of your Tomcat installation to the "
+"property key <literal>tomcat.home</literal>."
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "tomcat.home=/path/to/apache-tomcat-6"
-msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -376,67 +523,82 @@ msgstr "若要建置 numberguess 範例："
 
 #. Tag: para
 #, no-c-format
-msgid "Change to the <literal>examples/jsf/numberguess</literal> directory again and run the Ant <literal>deploy</literal> target for Tomcat:"
+msgid ""
+"Change to the <literal>examples/jsf/numberguess</literal> directory again "
+"and run the Ant <literal>deploy</literal> target for Tomcat:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd examples/jsf/numberguess\n"
 "$&gt; ant tomcat.deploy"
 msgstr ""
-"$ cd examples/numberguess\n"
-"ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "The Ant build script includes additional targets for Tomcat to deploy and undeploy the archive in either exploded or packaged format. They are the same target names used for JBoss AS, prefixed with \"tomcat.\"."
+msgid ""
+"The Ant build script includes additional targets for Tomcat to deploy and "
+"undeploy the archive in either exploded or packaged format. They are the "
+"same target names used for JBoss AS, prefixed with \"tomcat.\"."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "<literal>ant tomcat.restart</literal> - deploy the example in exploded format to Tomcat"
+msgid ""
+"<literal>ant tomcat.restart</literal> - deploy the example in exploded "
+"format to Tomcat"
 msgstr "<literal>ant restart</literal> - 以分解的格式來建置範例"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "<literal>ant tomcat.explode</literal> - update an exploded example, without restarting the deployment"
+msgid ""
+"<literal>ant tomcat.explode</literal> - update an exploded example, without "
+"restarting the deployment"
 msgstr "<literal>ant explode</literal> - 在不重新建置的情況下更新一個已分解的範例"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar format to Tomcat"
+msgid ""
+"<literal>ant tomcat.deploy</literal> - deploy the example in compressed jar "
+"format to Tomcat"
 msgstr "<literal>ant deploy</literal> - 以 jar 格式來建置範例"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "<literal>ant tomcat.undeploy</literal> - remove the example from Tomcat"
+msgid ""
+"<literal>ant tomcat.undeploy</literal> - remove the example from Tomcat"
 msgstr "<literal>ant undeploy</literal> - 將範例由伺服器中移除"
 
 #. Tag: para
 #, no-c-format
-msgid "If you haven't already, start Tomcat. You can either start Tomcat from a Linux shell:"
+msgid ""
+"If you haven't already, start Tomcat. You can either start Tomcat from a "
+"Linux shell:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd /path/to/apache-tomcat-6\n"
 "$&gt; ./bin/start.sh"
-msgstr "jboss.home=/Applications/jboss-5.0.0.GA"
+msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd c:\\path\\to\\apache-tomcat-6\\bin\n"
 "$&gt; start"
 msgstr ""
-"<![CDATA[$ cd /Applications\n"
-"$ unzip ~/jboss-5.0.0.GA.zip]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "Wait a few seconds for the application to deploy (or the application server to start) and see if you can figure out the most efficient approach to pinpoint the random number at the local URL <ulink url=\"http://localhost:8080/weld-numberguess\">http://localhost:8080/weld-numberguess</ulink>!"
+msgid ""
+"Wait a few seconds for the application to deploy (or the application server "
+"to start) and see if you can figure out the most efficient approach to "
+"pinpoint the random number at the local URL <ulink "
+"url=\"http://localhost:8080/weld-numberguess\">http://localhost:8080/weld-"
+"numberguess</ulink>!"
 msgstr ""
 
 #. Tag: title
@@ -446,17 +608,30 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You can also deploy the application to Tomcat using Maven. This section is a bit more advanced, so skip it unless you're itching to use Maven natively. Of course, you'll first need to make sure that you have Maven installed on your path, similar to how you setup Ant."
+msgid ""
+"You can also deploy the application to Tomcat using Maven. This section is a"
+" bit more advanced, so skip it unless you're itching to use Maven natively. "
+"Of course, you'll first need to make sure that you have Maven installed on "
+"your path, similar to how you setup Ant."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The Maven plugin communicates with Tomcat over HTTP, so it doesn't care where you have installed Tomcat. However, the plugin configuration assumes you are running Tomcat in its default configuration, with a hostname of localhost and port <literal>8080</literal>. The <literal>readme.txt</literal> file in the example directory has information about how to modify the Maven settings to accommodate a different setup."
+msgid ""
+"The Maven plugin communicates with Tomcat over HTTP, so it doesn't care "
+"where you have installed Tomcat. However, the plugin configuration assumes "
+"you are running Tomcat in its default configuration, with a hostname of "
+"localhost and port <literal>8080</literal>. The "
+"<literal>readme.txt</literal> file in the example directory has information "
+"about how to modify the Maven settings to accommodate a different setup."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To allow Maven to communicate with Tomcat over HTTP, edit the <literal>conf/tomcat-users.xml</literal> file in your Tomcat installation and add the following line:"
+msgid ""
+"To allow Maven to communicate with Tomcat over HTTP, edit the <literal>conf"
+"/tomcat-users.xml</literal> file in your Tomcat installation and add the "
+"following line:"
 msgstr ""
 
 #. Tag: programlisting
@@ -466,7 +641,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Restart Tomcat. You can now deploy the application to Tomcat with Maven using this command:"
+msgid ""
+"Restart Tomcat. You can now deploy the application to Tomcat with Maven "
+"using this command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -476,7 +653,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Once the application is deployed, you can redeploy it using this command:"
+msgid ""
+"Once the application is deployed, you can redeploy it using this command:"
 msgstr ""
 
 #. Tag: programlisting
@@ -486,12 +664,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>-Ptomcat</literal> argument activates the <literal>tomcat</literal> profile defined in the Maven POM (<literal>pom.xml</literal>). Among other things, this profile activates the Tomcat plugin."
+msgid ""
+"The <literal>-Ptomcat</literal> argument activates the "
+"<literal>tomcat</literal> profile defined in the Maven POM "
+"(<literal>pom.xml</literal>). Among other things, this profile activates the"
+" Tomcat plugin."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Rather than shipping the container off to a standalone Tomcat installation, you can also execute the application in an embedded Tomcat 6 container:"
+msgid ""
+"Rather than shipping the container off to a standalone Tomcat installation, "
+"you can also execute the application in an embedded Tomcat 6 container:"
 msgstr ""
 
 #. Tag: programlisting
@@ -501,7 +685,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The advantage of using the embedded server is that changes to assets in <literal>src/main/webapp</literal> take effect immediately. If a change to a webapp configuration file is made, the application may automatically redeploy (depending on the plugin configuration). If you make a change to a classpath resource, you need to execute a build:"
+msgid ""
+"The advantage of using the embedded server is that changes to assets in "
+"<literal>src/main/webapp</literal> take effect immediately. If a change to a"
+" webapp configuration file is made, the application may automatically "
+"redeploy (depending on the plugin configuration). If you make a change to a "
+"classpath resource, you need to execute a build:"
 msgstr ""
 
 #. Tag: programlisting
@@ -511,7 +700,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There are several other Maven goals that you can use if you are hacking on the example, which are documented in the example's <literal>readme.txt</literal> file."
+msgid ""
+"There are several other Maven goals that you can use if you are hacking on "
+"the example, which are documented in the example's "
+"<literal>readme.txt</literal> file."
 msgstr ""
 
 #. Tag: title
@@ -521,41 +713,71 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Support for Jetty in the examples is a more recent addition. Since Jetty is traditionally used with Maven, there are no Ant targets. You must invoke the Maven build directly to deploy the examples to Jetty out of the box. Also, only the <literal>weld-numberguess</literal> example is configured for Jetty support at the time of writing."
+msgid ""
+"Support for Jetty in the examples is a more recent addition. Since Jetty is "
+"traditionally used with Maven, there are no Ant targets. You must invoke the"
+" Maven build directly to deploy the examples to Jetty out of the box. Also, "
+"only the <literal>weld-numberguess</literal> example is configured for Jetty"
+" support at the time of writing."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you've read through the entire Tomcat section, then you're all ready to go. The Maven build parallels the embedded Tomcat deployment. If not, don't worry. We'll still go over everything that you need to know again in this section."
+msgid ""
+"If you've read through the entire Tomcat section, then you're all ready to "
+"go. The Maven build parallels the embedded Tomcat deployment. If not, don't "
+"worry. We'll still go over everything that you need to know again in this "
+"section."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The Maven POM (<literal>pom.xml</literal>) includes a profile named <literal>jetty</literal> that activates the Maven Jetty plugin, which you can use to start Jetty in embedded mode and deploy the application in place. You don't need anything else installed except to have the Maven command (<literal>mvn</literal>) on your path. The rest will be downloaded from the internet when the build is run."
+msgid ""
+"The Maven POM (<literal>pom.xml</literal>) includes a profile named "
+"<literal>jetty</literal> that activates the Maven Jetty plugin, which you "
+"can use to start Jetty in embedded mode and deploy the application in place."
+" You don't need anything else installed except to have the Maven command "
+"(<literal>mvn</literal>) on your path. The rest will be downloaded from the "
+"internet when the build is run."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "To run the <literal>weld-numberguess</literal> example on Jetty, switch to the example directory and execute the <literal>inplace</literal> goal of the Maven war plugin followed by the <literal>run</literal> goal of the Maven Jetty plugin with the <literal>jetty</literal> profile enabled, as follows:"
+msgid ""
+"To run the <literal>weld-numberguess</literal> example on Jetty, switch to "
+"the example directory and execute the <literal>inplace</literal> goal of the"
+" Maven war plugin followed by the <literal>run</literal> goal of the Maven "
+"Jetty plugin with the <literal>jetty</literal> profile enabled, as follows:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "$&gt; cd examples/jsf/numberguess\n"
 "$&gt; mvn war:inplace jetty:run -Pjetty"
 msgstr ""
-"$ cd examples/numberguess\n"
-"ant deploy"
 
 #. Tag: para
 #, no-c-format
-msgid "The log output of Jetty will be shown in the console. Once Jetty reports that the application has deployed, you can access it at the following local URL: <ulink url=\"http://localhost:9090/weld-numberguess\">http://localhost:9090/weld-numberguess</ulink>. The port is defined in the Maven Jetty plugin configuration within the <literal>jetty</literal> profile."
+msgid ""
+"The log output of Jetty will be shown in the console. Once Jetty reports "
+"that the application has deployed, you can access it at the following local "
+"URL: <ulink url=\"http://localhost:9090/weld-"
+"numberguess\">http://localhost:9090/weld-numberguess</ulink>. The port is "
+"defined in the Maven Jetty plugin configuration within the "
+"<literal>jetty</literal> profile."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Any changes to assets in <literal>src/main/webapp</literal> take effect immediately. If a change to a webapp configuration file is made, the application may automatically redeploy. The redeploy behavior can be fined-tuned in the plugin configuration. If you make a change to a classpath resource, you need to execute a build and the <literal>inplace</literal> goal of the Maven war plugin, again with the <literal>jetty</literal> profile enabled."
+msgid ""
+"Any changes to assets in <literal>src/main/webapp</literal> take effect "
+"immediately. If a change to a webapp configuration file is made, the "
+"application may automatically redeploy. The redeploy behavior can be fined-"
+"tuned in the plugin configuration. If you make a change to a classpath "
+"resource, you need to execute a build and the <literal>inplace</literal> "
+"goal of the Maven war plugin, again with the <literal>jetty</literal> "
+"profile enabled."
 msgstr ""
 
 #. Tag: programlisting
@@ -565,12 +787,22 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>war:inplace</literal> goal copies the compiled classes and jars inside <literal>src/main/webapp</literal>, under <literal>WEB-INF/classes</literal> and <literal>WEB-INF/lib</literal>, respectively, mixing source and compiled files. However, the build does work around these temporary files by excluding them from the packaged war and cleaning them during the Maven clean phase."
+msgid ""
+"The <literal>war:inplace</literal> goal copies the compiled classes and jars"
+" inside <literal>src/main/webapp</literal>, under <literal>WEB-"
+"INF/classes</literal> and <literal>WEB-INF/lib</literal>, respectively, "
+"mixing source and compiled files. However, the build does work around these "
+"temporary files by excluding them from the packaged war and cleaning them "
+"during the Maven clean phase."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You have two options if you want to run the example on Jetty from the IDE. You can either install the m2eclipse[link] plugin and run the goals as described above. Your other option is to start the Jetty container from a Java application."
+msgid ""
+"You have two options if you want to run the example on Jetty from the IDE. "
+"You can either install the m2eclipse[link] plugin and run the goals as "
+"described above. Your other option is to start the Jetty container from a "
+"Java application."
 msgstr ""
 
 #. Tag: para
@@ -585,7 +817,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Next, assemble all the necessary resources under <literal>src/main/webapp</literal>:"
+msgid ""
+"Next, assemble all the necessary resources under "
+"<literal>src/main/webapp</literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -595,859 +829,20 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, you are ready to run the server in Eclipse. Import the project into your Eclipse workspace using \"Import Existing Project into Workspace. Then, find the start class in <literal>src/jetty/java</literal> and run its main method as a Java Application. Jetty will launch. You can view the application at the following local URL: <ulink url=\"http://localhost:8080\">http://localhost:8080</ulink>. Pay particular attention to the port in the URL and the lack of a trailing context path."
+msgid ""
+"Now, you are ready to run the server in Eclipse. Import the project into "
+"your Eclipse workspace using \"Import Existing Project into Workspace. Then,"
+" find the start class in <literal>src/jetty/java</literal> and run its main "
+"method as a Java Application. Jetty will launch. You can view the "
+"application at the following local URL: <ulink "
+"url=\"http://localhost:8080\">http://localhost:8080</ulink>. Pay particular "
+"attention to the port in the URL and the lack of a trailing context path."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now that you have gotten the starter applications deployed on the server of your choice, you probably want to know a little bit about how they actually work."
+msgid ""
+"Now that you have gotten the starter applications deployed on the server of "
+"your choice, you probably want to know a little bit about how they actually "
+"work."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Getting started with Web Beans, the Reference Implementation of JSR-299"
-#~ msgstr "Web Bean 參照實做"
-
-#, fuzzy
-#~ msgid "The Web Beans is being developed at <ulink url=\"http://seamframework.org/WebBeans\">the Seam project</ulink>. You can download the latest developer release of Web Beans from the <ulink url=\"http://seamframework.org/Download\">the downloads page</ulink>."
-#~ msgstr "Web Bean 參照實作（Web Beans Reference Implementation）開發於 <ulink url=\"http://seamframework.org/WebBeans\">the Seam project</ulink>。您可藉由 <ulink url=\"http://seamframework.org/Download\">the downloads page</ulink> 來下載最新開發人員版本的 Web Bean。"
-
-#, fuzzy
-#~ msgid "Web Beans comes with a two deployable example applications: <literal>webbeans-numberguess</literal>, a war example, containing only simple beans, and <literal>webbeans-translator</literal> an ear example, containing enterprise beans. There are also two variations on the numberguess example, the tomcat example (suitable for deployment to Tomcat) and the jsf2 example, which you can use if you are running JSF2. To run the examples you'll need the following:"
-#~ msgstr "Web Bean RI 包含了兩個可建置的範例應用程式：<literal>webbeans-numberguess</literal>，這是個 war 範例，並且只包含著基本的 bean，以及 <literal>webbeans-translator</literal>，這是個 ear 範例，並包含著企業級的 bean。若要執行這些範例，您將需要滿足下列需求："
-
-#~ msgid "Ant 1.7.0."
-#~ msgstr "Ant 1.7.0。"
-
-#, fuzzy
-#~ msgid "You'll need to download JBoss AS 5.0.1.GA from <ulink url=\"http://www.jboss.org/jbossas/downloads/\">jboss.org</ulink>, and unzip it. For example:"
-#~ msgstr "目前，Web Beans RI 只能在 JBoss Application Server 5 上執行。您將需要由 <ulink url=\"http://www.jboss.org/jbossas/downloads/\">jboss.org</ulink> 來下載 JBoss AS 5.0.0.GA，然後再將它解壓縮。例如："
-
-#, fuzzy
-#~ msgid ""
-#~ "<![CDATA[$ cd /Applications\n"
-#~ "$ unzip ~/jboss-5.0.1.GA.zip]]>"
-#~ msgstr ""
-#~ "<![CDATA[$ cd /Applications\n"
-#~ "$ unzip ~/jboss-5.0.0.GA.zip]]>"
-
-#, fuzzy
-#~ msgid "Next, download Web Beans from <ulink url=\"http://seamframework.org/Download\">seamframework.org</ulink>, and unzip it. For example"
-#~ msgstr "接下來，請由 <ulink url=\"http://seamframework.org/Download\">seamframework.org</ulink> 下載 Web Beans RI 並將它解壓縮。例如"
-
-#, fuzzy
-#~ msgid ""
-#~ "<![CDATA[$ cd ~/\n"
-#~ "$ unzip ~/webbeans-$VERSION.zip]]>"
-#~ msgstr ""
-#~ "<![CDATA[$ cd ~/\n"
-#~ "$ unzip ~/webbeans-1.0.0.ALPHA1.zip]]>"
-
-#~ msgid "Next, we need to tell Web Beans where JBoss is located. Edit <literal>jboss-as/build.properties</literal> and set the <literal>jboss.home</literal> property. For example:"
-#~ msgstr "接下來，我們需要讓 Web Bean 知道 JBoss 的位置在哪裡。請編輯 <literal>jboss-as/build.properties</literal> 然後設置 <literal>jboss.home</literal> 內容。例如："
-
-#, fuzzy
-#~ msgid "To install Web Beans, you'll need Ant 1.7.0 installed, and the <literal>ANT_HOME</literal> environment variable set. For example:"
-#~ msgstr "若要安裝更新，您將需要先安裝 Ant 1.7.0，並設置 <literal>ANT_HOME</literal> 環境變數。例如："
-
-#~ msgid ""
-#~ "$ unzip apache-ant-1.7.0.zip\n"
-#~ "$ export ANT_HOME=~/apache-ant-1.7.0"
-#~ msgstr ""
-#~ "$ unzip apache-ant-1.7.0.zip\n"
-#~ "$ export ANT_HOME=~/apache-ant-1.7.0"
-
-#, fuzzy
-#~ msgid "Then, you can install the update. The update script will use Maven to download Web Beans automatically."
-#~ msgstr "接下來，您便可安裝更新。更新 script 將會使用 Maven 來自動地下載 Web Bean 以及 EJB3。"
-
-#, fuzzy
-#~ msgid ""
-#~ "$ cd webbeans-$VERSION/jboss-as\n"
-#~ "$ ant update"
-#~ msgstr ""
-#~ "$ cd webbeans-1.0.0.ALPHA1/jboss-as\n"
-#~ "$ ant update"
-
-#, fuzzy
-#~ msgid "The build scripts for the examples offer a number of targets for JBoss AS, these are:"
-#~ msgstr "這些範例的建置 script 提供了一些目標，它們包含了："
-
-#~ msgid "To deploy the numberguess example:"
-#~ msgstr "若要建置 numberguess 範例："
-
-#~ msgid "Wait for the application to deploy, and enjoy hours of fun at <ulink url=\"http://localhost:8080/webbeans-numberguess\"></ulink>!"
-#~ msgstr "請等待應用程式的建置，然後在 <ulink url=\"http://localhost:8080/webbeans-numberguess\"></ulink> 花上幾個小時！"
-
-#, fuzzy
-#~ msgid "Web Beans includes a second simple example that will translate your text into Latin. The numberguess example is a war example, and uses only simple beans; the translator example is an ear example, and includes enterprise beans, packaged in an EJB module. To try it out:"
-#~ msgstr "Web Bean RI 包含了第二個基本範例，它可將您的文字轉譯為拉丁文。numberguess 範例為一個 war 範例，並且只使用基本的 bean；轉譯器範例則為 ear 範例，並且包含著企業級的 bean，封裝於一個 EJB 模組中。若要嘗試："
-
-#~ msgid "Wait for the application to deploy, and visit <ulink url=\"http://localhost:8080/webbeans-translator\"></ulink>!"
-#~ msgstr "請等待應用程式的建置並進入 <ulink url=\"http://localhost:8080/webbeans-translator\"></ulink>！"
-
-#, fuzzy
-#~ msgid "Next, we need to tell Web Beans where Tomcat is located. Edit <literal>jboss-as/build.properties</literal> and set the <literal>tomcat.home</literal> property. For example:"
-#~ msgstr "接下來，我們需要讓 Web Bean 知道 JBoss 的位置在哪裡。請編輯 <literal>jboss-as/build.properties</literal> 然後設置 <literal>jboss.home</literal> 內容。例如："
-
-#, fuzzy
-#~ msgid "The build scripts for the examples offer a number of targets for Tomcat, these are:"
-#~ msgstr "這些範例的建置 script 提供了一些目標，它們包含了："
-
-#, fuzzy
-#~ msgid "<literal>ant tomcat.undeploy</literal> - remove the example (in compressed jar format) from the server"
-#~ msgstr "<literal>ant deploy</literal> - 以 jar 格式來建置範例"
-
-#, fuzzy
-#~ msgid "<literal>ant tomcat.unexplode</literal> - remove the example (in exploded format) from the server"
-#~ msgstr "<literal>ant undeploy</literal> - 將範例由伺服器中移除"
-
-#, fuzzy
-#~ msgid "<literal>ant tomcat.clean</literal> - clean the example"
-#~ msgstr "<literal>ant clean</literal> - 清除範例"
-
-#, fuzzy
-#~ msgid ""
-#~ "$ cd examples/tomcat\n"
-#~ "ant tomcat.deploy"
-#~ msgstr ""
-#~ "$ cd examples/translator\n"
-#~ "ant deploy"
-
-#~ msgid "The numberguess example"
-#~ msgstr "numberguess 範例"
-
-#~ msgid "In the numberguess application you get given 10 attempts to guess a number between 1 and 100. After each attempt, you will be told whether you are too high, or too low."
-#~ msgstr "在 numberguess 應用程式中，您將會有 10 次機會來猜一個介於 1 至 100 之間的號碼。每當猜過一遍，系統便會告知您您所輸入的數字是否太大或太小。"
-
-#~ msgid "The numberguess example is comprised of a number of Web Beans, configuration files, and Facelet JSF pages, packaged as a war. Let's start with the configuration files."
-#~ msgstr "numberguess 範例包含了 Web Bean 的一個數字、配置檔案，以及 Facelet JSF 頁面，並且封裝為 war。讓我們先從配置檔案開始。"
-
-#~ msgid "All the configuration files for this example are located in <literal>WEB-INF/</literal>, which is stored in <literal>WebContent</literal> in the source tree. First, we have <literal>faces-config.xml</literal>, in which we tell JSF to use Facelets:"
-#~ msgstr "此範例的所有配置檔案都位於 <literal>WEB-INF/</literal> 中，並且它又儲存在來源樹中的 <literal>WebContent</literal> 裡。首先，我們有個可使用來指定 JSF 來使用 Facelet 的 <literal>faces-config.xml</literal>："
-
-#~ msgid ""
-#~ "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
-#~ "<faces-config version=\"1.2\"\n"
-#~ "              xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "              xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "              xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd\">\n"
-#~ "    \n"
-#~ "    <application>\n"
-#~ "        <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>\n"
-#~ "    </application>\n"
-#~ "\n"
-#~ "</faces-config>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<?xml version='1.0' encoding='UTF-8'?>\n"
-#~ "<faces-config version=\"1.2\"\n"
-#~ "              xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "              xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "              xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd\">\n"
-#~ "    \n"
-#~ "    <application>\n"
-#~ "        <view-handler>com.sun.facelets.FaceletViewHandler</view-handler>\n"
-#~ "    </application>\n"
-#~ "\n"
-#~ "</faces-config>]]>"
-
-#~ msgid "There is an empty <literal>web-beans.xml</literal> file, which marks this application as a Web Beans application."
-#~ msgstr "有個空的 <literal>web-beans.xml</literal> 檔案，它會將此應用程式標記為一個 Web Bean 應用程式。"
-
-#~ msgid "Finally there is <literal>web.xml</literal>:"
-#~ msgstr "最後為 <literal>web.xml</literal>："
-
-#, fuzzy
-#~ msgid ""
-#~ "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> <area id=\"faces.servlet.mapping\" coords=\"18\"/> <area id=\"faces.default.suffix\" coords=\"23\"/> <area id=\"session.timeout\" coords=\"28\"/> <area id=\"webbeans.listener\" coords=\"32\"/> </areaspec> <programlisting><![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-#~ "\n"
-#~ "<web-app version=\"2.5\"\n"
-#~ "    xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "    xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\">\n"
-#~ "   \n"
-#~ "   <display-name>Web Beans Numbergues example</display-name>\n"
-#~ "\n"
-#~ "   <!-- JSF -->\n"
-#~ "\n"
-#~ "   <servlet>\n"
-#~ "      <servlet-name>Faces Servlet</servlet-name>\n"
-#~ "      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>\n"
-#~ "      <load-on-startup>1</load-on-startup>\n"
-#~ "   </servlet>\n"
-#~ "\n"
-#~ "   <servlet-mapping>\n"
-#~ "      <servlet-name>Faces Servlet</servlet-name>\n"
-#~ "      <url-pattern>*.jsf</url-pattern>\n"
-#~ "   </servlet-mapping>\n"
-#~ "   \n"
-#~ "   <context-param>\n"
-#~ "      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>\n"
-#~ "      <param-value>.xhtml</param-value>\n"
-#~ "   </context-param>\n"
-#~ "\n"
-#~ "   <session-config>\n"
-#~ "      <session-timeout>10</session-timeout>\n"
-#~ "   </session-config>\n"
-#~ "\n"
-#~ "</web-app>]]></programlisting> <calloutlist> <callout arearefs=\"faces.servlet\"> <para> Enable and load the JSF servlet </para> </callout> <callout arearefs=\"faces.servlet.mapping\"> <para> Configure requests to <literal>.jsf</literal> pages to be handled by JSF </para> </callout> <callout arearefs=\"faces.default.suffix\"> <para> Tell JSF that we will be giving our source files (facelets) an extension of <literal>.xhtml</literal> </para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a session timeout of 10 minutes </para> </callout> </calloutlist> </programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use Web Beans with any Servlet based web framework. </para> </note> <para> Let's take a look at the Facelet view: </para> <programlistingco> <areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"messages2\" coords=\"12\"/> <area id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords=\"25\"/> <area id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords=\"33\"/> </areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
-#~ "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
-#~ "    xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
-#~ "    xmlns:h=\"http://java.sun.com/jsf/html\"\n"
-#~ "    xmlns:f=\"http://java.sun.com/jsf/core\"\n"
-#~ "    xmlns:s=\"http://jboss.com/products/seam/taglib\">\n"
-#~ "\n"
-#~ "  <ui:composition template=\"template.xhtml\">\n"
-#~ "    <ui:define name=\"content\">\n"
-#~ "       <h1>Guess a number...</h1>\n"
-#~ "       <h:form id=\"NumberGuessMain\">\n"
-#~ "          <div style=\"color: red\">\n"
-#~ "             <h:messages id=\"messages\" globalOnly=\"false\"/>\n"
-#~ "             <h:outputText id=\"Higher\" value=\"Higher!\" rendered=\"#{game.number gt game.guess and game.guess ne 0}\"/>\n"
-#~ "             <h:outputText id=\"Lower\" value=\"Lower!\" rendered=\"#{game.number lt game.guess and game.guess ne 0}\"/>\n"
-#~ "          </div>\n"
-#~ "   \n"
-#~ "          <div>\n"
-#~ "             I'm thinking of a number between #{game.smallest} and #{game.biggest}.\n"
-#~ "             You have #{game.remainingGuesses} guesses.\n"
-#~ "          </div>\n"
-#~ "     \n"
-#~ "          <div>\n"
-#~ "             Your guess: \n"
-#~ "             <h:inputText id=\"inputGuess\" \n"
-#~ "                          value=\"#{game.guess}\" \n"
-#~ "                          required=\"true\" \n"
-#~ "                          size=\"3\" \n"
-#~ "                          disabled=\"#{game.number eq game.guess}\">\n"
-#~ "                <f:validateLongRange maximum=\"#{game.biggest}\" \n"
-#~ "                                     minimum=\"#{game.smallest}\"/>\n"
-#~ "             </h:inputText>\n"
-#~ "            <h:commandButton id=\"GuessButton\"  \n"
-#~ "                             value=\"Guess\" \n"
-#~ "                             action=\"#{game.check}\" \n"
-#~ "                             disabled=\"#{game.number eq game.guess}\"/>\n"
-#~ "          </div>\n"
-#~ "          <div>\n"
-#~ "            <h:commandButton id=\"RestartButton\" value=\"Reset\" action=\"#{game.reset}\" immediate=\"true\" />\n"
-#~ "          </div>\n"
-#~ "       </h:form>\n"
-#~ "    </ui:define>\n"
-#~ "  </ui:composition>\n"
-#~ "</html>]]></programlisting> <calloutlist> <callout arearefs=\"template\"> <para> Facelets is a templating language for JSF, here we are wrapping our page in a template which defines the header. </para> </callout> <callout arearefs=\"messages2\"> <para> There are a number of messages which can be sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\" </para> </callout> <callout arearefs=\"instructions\"> <para> As the user guesses, the range of numbers they can guess gets smaller - this sentance changes to make sure they know what range to guess in. </para> </callout> <callout arearefs=\"guess\"> <para> This input field is bound to a Web Bean, using the value expression. </para> </callout> <callout arearefs=\"validator\"> <para> A range validator is used to make sure the user doesn't accidentally input a number outside of the range in which they can guess - if the validator wasn't here, the user might use up a guess on an out of range number. </para> </callout> <callout arearefs=\"submit\"> <para> And, of course, there must be a way for the user to send their guess to the server. Here we bind to an action method on the Web Bean. </para> </callout> </calloutlist> </programlistingco>"
-#~ msgstr ""
-#~ "<programlistingco> <areaspec> <area id=\"faces.servlet\" coords=\"12\"/> <area id=\"faces.servlet.mapping\" coords=\"18\"/> <area id=\"faces.default.suffix\" coords=\"23\"/> <area id=\"session.timeout\" coords=\"28\"/> <area id=\"webbeans.listener\" coords=\"32\"/> </areaspec> <programlisting><![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-#~ "\n"
-#~ "<web-app version=\"2.5\"\n"
-#~ "    xmlns=\"http://java.sun.com/xml/ns/javaee\"\n"
-#~ "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "    xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\">\n"
-#~ "   \n"
-#~ "   <display-name>Web Beans Numbergues example</display-name>\n"
-#~ "\n"
-#~ "   <!-- JSF -->\n"
-#~ "\n"
-#~ "   <servlet>\n"
-#~ "      <servlet-name>Faces Servlet</servlet-name>\n"
-#~ "      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>\n"
-#~ "      <load-on-startup>1</load-on-startup>\n"
-#~ "   </servlet>\n"
-#~ "\n"
-#~ "   <servlet-mapping>\n"
-#~ "      <servlet-name>Faces Servlet</servlet-name>\n"
-#~ "      <url-pattern>*.jsf</url-pattern>\n"
-#~ "   </servlet-mapping>\n"
-#~ "   \n"
-#~ "   <context-param>\n"
-#~ "      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>\n"
-#~ "      <param-value>.xhtml</param-value>\n"
-#~ "   </context-param>\n"
-#~ "\n"
-#~ "   <session-config>\n"
-#~ "      <session-timeout>10</session-timeout>\n"
-#~ "   </session-config>\n"
-#~ "\n"
-#~ "</web-app>]]></programlisting> <calloutlist> <callout arearefs=\"faces.servlet\"> <para> Enable and load the JSF servlet </para> </callout> <callout arearefs=\"faces.servlet.mapping\"> <para> Configure requests to <literal>.jsf</literal> pages to be handled by JSF </para> </callout> <callout arearefs=\"faces.default.suffix\"> <para> Tell JSF that we will be giving our source files (facelets) an extension of <literal>.jsf</literal> </para> </callout> <callout arearefs=\"session.timeout\"> <para> Configure a session timeout of 10 minutes </para> </callout> </calloutlist> </programlistingco> <note> <para> Whilst this demo is a JSF demo, you can use the Web Beans RI with any Servlet based web framework. </para> </note> <para> Let's take a look at the Facelet view: </para> <programlistingco> <areaspec> <area id=\"template\" coords=\"8\"/> <area id=\"messages\" coords=\"12\"/> <area id=\"instructions\" coords=\"19\"/> <area id=\"guess\" coords=\"25\"/> <area id=\"validator\" coords=\"30\"/> <area id=\"submit\" coords=\"33\"/> </areaspec> <programlisting><![CDATA[<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
-#~ "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
-#~ "    xmlns:ui=\"http://java.sun.com/jsf/facelets\"\n"
-#~ "    xmlns:h=\"http://java.sun.com/jsf/html\"\n"
-#~ "    xmlns:f=\"http://java.sun.com/jsf/core\"\n"
-#~ "    xmlns:s=\"http://jboss.com/products/seam/taglib\">\n"
-#~ "\n"
-#~ "  <ui:composition template=\"template.xhtml\">\n"
-#~ "    <ui:define name=\"content\">\n"
-#~ "       <h1>Guess a number...</h1>\n"
-#~ "       <h:form id=\"NumberGuessMain\">\n"
-#~ "          <div style=\"color: red\">\n"
-#~ "             <h:messages id=\"messages\" globalOnly=\"false\"/>\n"
-#~ "             <h:outputText id=\"Higher\" value=\"Higher!\" rendered=\"#{game.number gt game.guess and game.guess ne 0}\"/>\n"
-#~ "             <h:outputText id=\"Lower\" value=\"Lower!\" rendered=\"#{game.number lt game.guess and game.guess ne 0}\"/>\n"
-#~ "          </div>\n"
-#~ "   \n"
-#~ "          <div>\n"
-#~ "             I'm thinking of a number between #{game.smallest} and #{game.biggest}.\n"
-#~ "             You have #{game.remainingGuesses} guesses.\n"
-#~ "          </div>\n"
-#~ "     \n"
-#~ "          <div>\n"
-#~ "             Your guess: \n"
-#~ "             <h:inputText id=\"inputGuess\" \n"
-#~ "                          value=\"#{game.guess}\" \n"
-#~ "                          required=\"true\" \n"
-#~ "                          size=\"3\" \n"
-#~ "                          disabled=\"#{game.number eq game.guess}\">\n"
-#~ "                <f:validateLongRange maximum=\"#{game.biggest}\" \n"
-#~ "                                     minimum=\"#{game.smallest}\"/>\n"
-#~ "             </h:inputText>\n"
-#~ "            <h:commandButton id=\"GuessButton\"  \n"
-#~ "                             value=\"Guess\" \n"
-#~ "                             action=\"#{game.check}\" \n"
-#~ "                             disabled=\"#{game.number eq game.guess}\"/>\n"
-#~ "          </div>\n"
-#~ "          <div>\n"
-#~ "            <h:commandButton id=\"RestartButton\" value=\"Reset\" action=\"#{game.reset}\" immediate=\"true\" />\n"
-#~ "          </div>\n"
-#~ "       </h:form>\n"
-#~ "    </ui:define>\n"
-#~ "  </ui:composition>\n"
-#~ "</html>]]></programlisting> <calloutlist> <callout arearefs=\"template\"> <para> Facelets is a templating language for JSF, here we are wrapping our page in a template which defines the header. </para> </callout> <callout arearefs=\"messages\"> <para> There are a number of messages which can be sent to the user, \"Higher!\", \"Lower!\" and \"Correct!\" </para> </callout> <callout arearefs=\"instructions\"> <para> As the user guesses, the range of numbers they can guess gets smaller - this sentance changes to make sure they know what range to guess in. </para> </callout> <callout arearefs=\"guess\"> <para> This input field is bound to a Web Bean, using the value expression. </para> </callout> <callout arearefs=\"validator\"> <para> A range validator is used to make sure the user doesn't accidentally input a number outside of the range in which they can guess - if the validator wasn't here, the user might use up a guess on an out of range number. </para> </callout> <callout arearefs=\"submit\"> <para> And, of course, there must be a way for the user to send their guess to the server. Here we bind to an action method on the Web Bean. </para> </callout> </calloutlist> </programlistingco>"
-
-#~ msgid "The example exists of 4 classes, the first two of which are binding types. First, there is the <literal>@Random</literal> binding type, used for injecting a random number:"
-#~ msgstr "範例存有 4 個類別，前兩個為綁定類型。首先，有個使用來注入亂數號碼的 <literal>@Random</literal> 綁定類型："
-
-#~ msgid ""
-#~ "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "@Documented\n"
-#~ "@BindingType\n"
-#~ "public @interface Random {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "@Documented\n"
-#~ "@BindingType\n"
-#~ "public @interface Random {}]]>"
-
-#~ msgid "There is also the <literal>@MaxNumber</literal> binding type, used for injecting the maximum number that can be injected:"
-#~ msgstr "還有個用來注入可注入之最大號碼的 <literal>@MaxNumber</literal> 綁定類型："
-
-#~ msgid ""
-#~ "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "@Documented\n"
-#~ "@BindingType\n"
-#~ "public @interface MaxNumber {}\n"
-#~ "]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Target( { TYPE, METHOD, PARAMETER, FIELD })\n"
-#~ "@Retention(RUNTIME)\n"
-#~ "@Documented\n"
-#~ "@BindingType\n"
-#~ "public @interface MaxNumber {}\n"
-#~ "]]>"
-
-#~ msgid "The <literal>Generator</literal> class is responsible for creating the random number, via a producer method. It also exposes the maximum possible number via a producer method:"
-#~ msgstr "<literal>Generator</literal> 類別負責透過產生器的方式來建立亂數號碼。它也會透過一個產生器的方式來顯示最大的可能號碼："
-
-#~ msgid ""
-#~ "<![CDATA[@ApplicationScoped\n"
-#~ "public class Generator {\n"
-#~ "   \n"
-#~ "   private java.util.Random random = new java.util.Random( System.currentTimeMillis() );\n"
-#~ "   \n"
-#~ "   private int maxNumber = 100;\n"
-#~ "   \n"
-#~ "   java.util.Random getRandom()\n"
-#~ "   {\n"
-#~ "      return random;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @Produces @Random int next() { \n"
-#~ "      return getRandom().nextInt(maxNumber); \n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @Produces @MaxNumber int getMaxNumber()\n"
-#~ "   {\n"
-#~ "      return maxNumber;\n"
-#~ "   }\n"
-#~ "\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@ApplicationScoped\n"
-#~ "public class Generator {\n"
-#~ "   \n"
-#~ "   private java.util.Random random = new java.util.Random( System.currentTimeMillis() );\n"
-#~ "   \n"
-#~ "   private int maxNumber = 100;\n"
-#~ "   \n"
-#~ "   java.util.Random getRandom()\n"
-#~ "   {\n"
-#~ "      return random;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @Produces @Random int next() { \n"
-#~ "      return getRandom().nextInt(maxNumber); \n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @Produces @MaxNumber int getMaxNumber()\n"
-#~ "   {\n"
-#~ "      return maxNumber;\n"
-#~ "   }\n"
-#~ "\n"
-#~ "}]]>"
-
-#~ msgid "You'll notice that the <literal>Generator</literal> is application scoped; therefore we don't get a different random each time."
-#~ msgstr "您將會注意到 <literal>Generator</literal> 是屬於應用程式導向的；因此，我們不會每次都一定能得到不同的亂數號碼。"
-
-#~ msgid "The final Web Bean in the application is the session scoped <literal>Game</literal>."
-#~ msgstr "應用程式中最後的 Web Bean 為 session 導向的 <literal>Game</literal>。"
-
-#~ msgid "You'll note that we've used the <literal>@Named</literal> annotation, so that we can use the bean through EL in the JSF page. Finally, we've used constructor injection to initialize the game with a random number. And of course, we need to tell the player when they've won, so we give feedback with a <literal>FacesMessage</literal>."
-#~ msgstr "您將會注意到我們使用了 <literal>@Named</literal> 標記，如此一來我們便可在 JSF 頁面中的 EL 上使用這個 bean。最後，我們使用了 constructor injection 來利用亂數號碼來初始化了這個遊戲。當然，當玩家贏時我們將需要告知玩家，並藉由一個 <literal>FacesMessage</literal> 來給予回應。"
-
-#~ msgid ""
-#~ "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
-#~ "\n"
-#~ "\n"
-#~ "import javax.annotation.PostConstruct;\n"
-#~ "import javax.faces.application.FacesMessage;\n"
-#~ "import javax.faces.context.FacesContext;\n"
-#~ "import javax.webbeans.AnnotationLiteral;\n"
-#~ "import javax.webbeans.Current;\n"
-#~ "import javax.webbeans.Initializer;\n"
-#~ "import javax.webbeans.Named;\n"
-#~ "import javax.webbeans.SessionScoped;\n"
-#~ "import javax.webbeans.manager.Manager;\n"
-#~ "\n"
-#~ "@Named\n"
-#~ "@SessionScoped\n"
-#~ "public class Game\n"
-#~ "{\n"
-#~ "   private int number;\n"
-#~ "   \n"
-#~ "   private int guess;\n"
-#~ "   private int smallest;\n"
-#~ "   private int biggest;\n"
-#~ "   private int remainingGuesses;\n"
-#~ "   \n"
-#~ "   @Current Manager manager;\n"
-#~ "   \n"
-#~ "   public Game()\n"
-#~ "   {\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @Initializer\n"
-#~ "   Game(@MaxNumber int maxNumber)\n"
-#~ "   {      \n"
-#~ "      this.biggest = maxNumber;\n"
-#~ "   }\n"
-#~ "\n"
-#~ "   public int getNumber()\n"
-#~ "   {\n"
-#~ "      return number;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getGuess()\n"
-#~ "   {\n"
-#~ "      return guess;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public void setGuess(int guess)\n"
-#~ "   {\n"
-#~ "      this.guess = guess;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getSmallest()\n"
-#~ "   {\n"
-#~ "      return smallest;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getBiggest()\n"
-#~ "   {\n"
-#~ "      return biggest;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getRemainingGuesses()\n"
-#~ "   {\n"
-#~ "      return remainingGuesses;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public String check()\n"
-#~ "   {\n"
-#~ "      if (guess>number)\n"
-#~ "      {\n"
-#~ "         biggest = guess - 1;\n"
-#~ "      }\n"
-#~ "      if (guess<number)\n"
-#~ "      {\n"
-#~ "         smallest = guess + 1;\n"
-#~ "      }\n"
-#~ "      if (guess == number)\n"
-#~ "      {\n"
-#~ "         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(\"Correct!\"));\n"
-#~ "      }\n"
-#~ "      remainingGuesses--;\n"
-#~ "      return null;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @PostConstruct\n"
-#~ "   public void reset()\n"
-#~ "   {\n"
-#~ "      this.smallest = 0;\n"
-#~ "      this.guess = 0;\n"
-#~ "      this.remainingGuesses = 10;\n"
-#~ "      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[package org.jboss.webbeans.examples.numberguess;\n"
-#~ "\n"
-#~ "\n"
-#~ "import javax.annotation.PostConstruct;\n"
-#~ "import javax.faces.application.FacesMessage;\n"
-#~ "import javax.faces.context.FacesContext;\n"
-#~ "import javax.webbeans.AnnotationLiteral;\n"
-#~ "import javax.webbeans.Current;\n"
-#~ "import javax.webbeans.Initializer;\n"
-#~ "import javax.webbeans.Named;\n"
-#~ "import javax.webbeans.SessionScoped;\n"
-#~ "import javax.webbeans.manager.Manager;\n"
-#~ "\n"
-#~ "@Named\n"
-#~ "@SessionScoped\n"
-#~ "public class Game\n"
-#~ "{\n"
-#~ "   private int number;\n"
-#~ "   \n"
-#~ "   private int guess;\n"
-#~ "   private int smallest;\n"
-#~ "   private int biggest;\n"
-#~ "   private int remainingGuesses;\n"
-#~ "   \n"
-#~ "   @Current Manager manager;\n"
-#~ "   \n"
-#~ "   public Game()\n"
-#~ "   {\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @Initializer\n"
-#~ "   Game(@MaxNumber int maxNumber)\n"
-#~ "   {      \n"
-#~ "      this.biggest = maxNumber;\n"
-#~ "   }\n"
-#~ "\n"
-#~ "   public int getNumber()\n"
-#~ "   {\n"
-#~ "      return number;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getGuess()\n"
-#~ "   {\n"
-#~ "      return guess;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public void setGuess(int guess)\n"
-#~ "   {\n"
-#~ "      this.guess = guess;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getSmallest()\n"
-#~ "   {\n"
-#~ "      return smallest;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getBiggest()\n"
-#~ "   {\n"
-#~ "      return biggest;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public int getRemainingGuesses()\n"
-#~ "   {\n"
-#~ "      return remainingGuesses;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   public String check()\n"
-#~ "   {\n"
-#~ "      if (guess>number)\n"
-#~ "      {\n"
-#~ "         biggest = guess - 1;\n"
-#~ "      }\n"
-#~ "      if (guess<number)\n"
-#~ "      {\n"
-#~ "         smallest = guess + 1;\n"
-#~ "      }\n"
-#~ "      if (guess == number)\n"
-#~ "      {\n"
-#~ "         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(\"Correct!\"));\n"
-#~ "      }\n"
-#~ "      remainingGuesses--;\n"
-#~ "      return null;\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "   @PostConstruct\n"
-#~ "   public void reset()\n"
-#~ "   {\n"
-#~ "      this.smallest = 0;\n"
-#~ "      this.guess = 0;\n"
-#~ "      this.remainingGuesses = 10;\n"
-#~ "      this.number = manager.getInstanceByType(Integer.class, new AnnotationLiteral<Random>(){});\n"
-#~ "   }\n"
-#~ "   \n"
-#~ "}]]>"
-
-#, fuzzy
-#~ msgid "The numberguess example in Tomcat"
-#~ msgstr "numberguess 範例"
-
-#, fuzzy
-#~ msgid "The numberguess example for Apache Wicket"
-#~ msgstr "numberguess 範例"
-
-#, fuzzy
-#~ msgid "The numberguess example for Java SE with Swing"
-#~ msgstr "numberguess 範例"
-
-#, fuzzy
-#~ msgid "To run this example:"
-#~ msgstr "轉譯器範例"
-
-#, fuzzy
-#~ msgid "There is an empty <literal>beans.xml</literal> file in the root package (<literal>src/main/resources/beans.xml</literal>), which marks this application as a Web Beans application."
-#~ msgstr "有個空的 <literal>web-beans.xml</literal> 檔案，它會將此應用程式標記為一個 Web Bean 應用程式。"
-
-#~ msgid "The translator example"
-#~ msgstr "轉譯器範例"
-
-#~ msgid "The translator example will take any sentences you enter, and translate them to Latin."
-#~ msgstr "轉譯器範例能接受您所輸入的任何句子，然後將它們翻譯成拉丁文。"
-
-#~ msgid "The translator example is built as an ear, and contains EJBs. As a result, it's structure is more complex than the numberguess example."
-#~ msgstr "轉換器範例被建置為一個 ear 並包含著 EJB。正因如此，它的結構比 numberguess 範例要複雜得多。"
-
-#~ msgid "EJB 3.1 and Jave EE 6 allow you to package EJBs in a war, which will make this structure much simpler!"
-#~ msgstr "EJB 3.1 和 Jave EE 6 能讓您將 EJB 封裝為 war，並使得該結構變得更為簡樸！"
-
-#~ msgid "First, let's take a look at the ear aggregator, which is located in <literal>webbeans-translator-ear</literal> module. Maven automatically generates the <literal>application.xml</literal> for us:"
-#~ msgstr "首先，讓我們先來看一下 ear 聚合器，它位於 <literal>webbeans-translator-ear</literal> 模組中。Maven 會自動地為我們產生 <literal>application.xml</literal>："
-
-#~ msgid ""
-#~ "<![CDATA[<plugin>\n"
-#~ "   <groupId>org.apache.maven.plugins</groupId>\n"
-#~ "   <artifactId>maven-ear-plugin</artifactId>\n"
-#~ "   <configuration>\n"
-#~ "      <modules>\n"
-#~ "         <webModule>\n"
-#~ "            <groupId>org.jboss.webbeans.examples.translator</groupId>\n"
-#~ "            <artifactId>webbeans-translator-war</artifactId>\n"
-#~ "            <contextRoot>/webbeans-translator</contextRoot>\n"
-#~ "         </webModule>\n"
-#~ "      </modules>\n"
-#~ "   </configuration>\n"
-#~ "</plugin>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<plugin>\n"
-#~ "   <groupId>org.apache.maven.plugins</groupId>\n"
-#~ "   <artifactId>maven-ear-plugin</artifactId>\n"
-#~ "   <configuration>\n"
-#~ "      <modules>\n"
-#~ "         <webModule>\n"
-#~ "            <groupId>org.jboss.webbeans.examples.translator</groupId>\n"
-#~ "            <artifactId>webbeans-translator-war</artifactId>\n"
-#~ "            <contextRoot>/webbeans-translator</contextRoot>\n"
-#~ "         </webModule>\n"
-#~ "      </modules>\n"
-#~ "   </configuration>\n"
-#~ "</plugin>]]>"
-
-#~ msgid "If you aren't using Maven to generate these files, you would need <literal>META-INF/application.xml</literal>:"
-#~ msgstr "若您不使用 Maven 來產生這些檔案，那麼您將需要 <literal>META-INF/application.xml</literal>："
-
-#~ msgid ""
-#~ "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-#~ "<application xmlns=\"http://java.sun.com/xml/ns/javaee\" \n"
-#~ "             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "             xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd\"\n"
-#~ "             version=\"5\">\n"
-#~ "  <display-name>webbeans-translator-ear</display-name>\n"
-#~ "  <description>Ear Example for the reference implementation of JSR 299: Web Beans</description>\n"
-#~ "  \n"
-#~ "  <module>\n"
-#~ "    <web>\n"
-#~ "      <web-uri>webbeans-translator.war</web-uri>\n"
-#~ "      <context-root>/webbeans-translator</context-root>\n"
-#~ "    </web>\n"
-#~ "  </module>\n"
-#~ "  <module>\n"
-#~ "    <ejb>webbeans-translator.jar</ejb>\n"
-#~ "  </module>\n"
-#~ "</application>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-#~ "<application xmlns=\"http://java.sun.com/xml/ns/javaee\" \n"
-#~ "             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-#~ "             xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd\"\n"
-#~ "             version=\"5\">\n"
-#~ "  <display-name>webbeans-translator-ear</display-name>\n"
-#~ "  <description>Ear Example for the reference implementation of JSR 299: Web Beans</description>\n"
-#~ "  \n"
-#~ "  <module>\n"
-#~ "    <web>\n"
-#~ "      <web-uri>webbeans-translator.war</web-uri>\n"
-#~ "      <context-root>/webbeans-translator</context-root>\n"
-#~ "    </web>\n"
-#~ "  </module>\n"
-#~ "  <module>\n"
-#~ "    <ejb>webbeans-translator.jar</ejb>\n"
-#~ "  </module>\n"
-#~ "</application>]]>"
-
-#, fuzzy
-#~ msgid "Next, lets look at the war. Just as in the numberguess example, we have a <literal>faces-config.xml</literal> (to enable Facelets) and a <literal>web.xml</literal> (to enable JSF) in <literal>WebContent/WEB-INF</literal>."
-#~ msgstr "接下來，讓我們看一下 war。就和 numberguess 範例中一樣，我們在 <literal>WebContent/WEB-INF</literal> 中有個 <literal>faces-config.xml</literal>（用來啟用 Facelets）以及一個 <literal>web.xml</literal>（用來啟用 JSF）。"
-
-#~ msgid "More intersting is the facelet used to translate text. Just as in the numberguess example we have a template, which surrounds the form (ommitted here for brevity):"
-#~ msgstr "還有更有趣的就是使用來轉換文字的 facelet。就和 numberguess 範例中一樣，我們有個圍繞著 form 的頁面格式（在此將省略不提）："
-
-#~ msgid ""
-#~ "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
-#~ "            \n"
-#~ "   <table>\n"
-#~ "      <tr align=\"center\" style=\"font-weight: bold\" >\n"
-#~ "         <td>\n"
-#~ "            Your text\n"
-#~ "         </td>\n"
-#~ "         <td>\n"
-#~ "            Translation\n"
-#~ "         </td>\n"
-#~ "      </tr>\n"
-#~ "      <tr>\n"
-#~ "         <td>\n"
-#~ "            <h:inputTextarea id=\"text\" value=\"#{translator.text}\" required=\"true\" rows=\"5\" cols=\"80\" />\n"
-#~ "         </td>\n"
-#~ "         <td>\n"
-#~ "            <h:outputText value=\"#{translator.translatedText}\" />\n"
-#~ "         </td>\n"
-#~ "      </tr>\n"
-#~ "   </table>\n"
-#~ "   <div>\n"
-#~ "      <h:commandButton id=\"button\" value=\"Translate\" action=\"#{translator.translate}\"/>\n"
-#~ "   </div>\n"
-#~ "   \n"
-#~ "</h:form>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<h:form id=\"NumberGuessMain\">\n"
-#~ "            \n"
-#~ "   <table>\n"
-#~ "      <tr align=\"center\" style=\"font-weight: bold\" >\n"
-#~ "         <td>\n"
-#~ "            Your text\n"
-#~ "         </td>\n"
-#~ "         <td>\n"
-#~ "            Translation\n"
-#~ "         </td>\n"
-#~ "      </tr>\n"
-#~ "      <tr>\n"
-#~ "         <td>\n"
-#~ "            <h:inputTextarea id=\"text\" value=\"#{translator.text}\" required=\"true\" rows=\"5\" cols=\"80\" />\n"
-#~ "         </td>\n"
-#~ "         <td>\n"
-#~ "            <h:outputText value=\"#{translator.translatedText}\" />\n"
-#~ "         </td>\n"
-#~ "      </tr>\n"
-#~ "   </table>\n"
-#~ "   <div>\n"
-#~ "      <h:commandButton id=\"button\" value=\"Translate\" action=\"#{translator.translate}\"/>\n"
-#~ "   </div>\n"
-#~ "   \n"
-#~ "</h:form>]]>"
-
-#~ msgid "The user can enter some text in the lefthand textarea, and hit the translate button to see the result to the right."
-#~ msgstr "用戶可在左手邊的文字區域中輸入一些文字，然後點選轉譯按鈕並於右手邊的區域中查看結果。"
-
-#~ msgid "Finally, let's look at the ejb module, <literal>webbeans-translator-ejb</literal>. In <literal>src/main/resources/META-INF</literal> there is just an empty <literal>web-beans.xml</literal>, used to mark the archive as containing Web Beans."
-#~ msgstr "最後，讓我們來看一下 ejb 模組 <literal>webbeans-translator-ejb</literal>。在 <literal>src/main/resources/META-INF</literal> 中只有一個用來將 archive 標記為包含著 Web Bean 的空 <literal>web-beans.xml</literal>。"
-
-#~ msgid "We've saved the most interesting bit to last, the code! The project has two simple beans, <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two enterprise beans, <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting quite familiar with what a Web Bean looks like by now, so we'll just highlight the most interesting bits here."
-#~ msgstr "我們將最有趣的部份保留到了最後，那就是程式碼！該專案含有兩個基本的 bean，<literal>SentenceParser</literal> 和 <literal>TextTranslator</literal>，以及兩個企業級的 bean，<literal>TranslatorControllerBean</literal> 和 <literal>SentenceTranslator</literal>。到了現在您應該已經很熟悉 Web Bean 長得如何了，因此我們在此將只著重於其它較有趣的部份。"
-
-#~ msgid "Both <literal>SentenceParser</literal> and <literal>TextTranslator</literal> are dependent beans, and <literal>TextTranslator</literal> uses constructor initialization:"
-#~ msgstr "<literal>SentenceParser</literal> 和 <literal>TextTranslator</literal> 兩者皆為相依性的 bean，並且 <literal>TextTranslator</literal> 使用了 constructor 初始化："
-
-#~ msgid ""
-#~ "<![CDATA[public class TextTranslator { \n"
-#~ "   private SentenceParser sentenceParser; \n"
-#~ "   private Translator sentenceTranslator; \n"
-#~ "   \n"
-#~ "   @Initializer\n"
-#~ "   TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) \n"
-#~ "   { \n"
-#~ "      this.sentenceParser = sentenceParser; \n"
-#~ "      this.sentenceTranslator = sentenceTranslator;]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class TextTranslator { \n"
-#~ "   private SentenceParser sentenceParser; \n"
-#~ "   private Translator sentenceTranslator; \n"
-#~ "   \n"
-#~ "   @Initializer\n"
-#~ "   TextTranslator(SentenceParser sentenceParser, Translator sentenceTranslator) \n"
-#~ "   { \n"
-#~ "      this.sentenceParser = sentenceParser; \n"
-#~ "      this.sentenceTranslator = sentenceTranslator;]]>"
-
-#~ msgid "<literal>TextTranslator</literal> is a stateless bean (with a local business interface), where the magic happens - of course, we couldn't develop a full translator, but we gave it a good go!"
-#~ msgstr "<literal>TextTranslator</literal> 是個無狀態的 bean（以及一個本地的商業介面）- 當然，我們無法開發一個完整的轉譯器。"
-
-#~ msgid "Finally, there is UI orientated controller, that collects the text from the user, and dispatches it to the translator. This is a request scoped, named, stateful session bean, which injects the translator."
-#~ msgstr "最後，有個 UI 導向的控制器，它會藉由用戶收集文字然後將它發送給轉譯器。這是個請求導向、被命名，而有狀態的 session bean，並且會注入轉譯器。"
-
-#~ msgid ""
-#~ "<![CDATA[@Stateful\n"
-#~ "@RequestScoped\n"
-#~ "@Named(\"translator\")\n"
-#~ "public class TranslatorControllerBean implements TranslatorController\n"
-#~ "{\n"
-#~ "   \n"
-#~ "   @Current TextTranslator translator;]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Stateful\n"
-#~ "@RequestScoped\n"
-#~ "@Named(\"translator\")\n"
-#~ "public class TranslatorControllerBean implements TranslatorController\n"
-#~ "{\n"
-#~ "   \n"
-#~ "   @Current TextTranslator translator;]]>"
-
-#~ msgid "The bean also has getters and setters for all the fields on the page."
-#~ msgstr "這個 bean 針對於頁面上所有欄位都有 getter 與 setter。"
-
-#~ msgid "As this is a stateful session bean, we have to have a remove method:"
-#~ msgstr "因為這是個 stateful（有狀態）的 session bean，因此我們必須要有個 remove method："
-
-#~ msgid ""
-#~ "<![CDATA[   @Remove\n"
-#~ "   public void remove()\n"
-#~ "   {\n"
-#~ "      \n"
-#~ "   }]]>"
-#~ msgstr ""
-#~ "<![CDATA[   @Remove\n"
-#~ "   public void remove()\n"
-#~ "   {\n"
-#~ "      \n"
-#~ "   }]]>"
-
-#~ msgid "The Web Beans manager will call the remove method for you when the bean is destroyed; in this case at the end of the request."
-#~ msgstr "當 bean 被毀掉後，Web Bean 管理員會為您調用 remove 這個 method；在此情況下為請求結束之後。"
-
-#, fuzzy
-#~ msgid "That concludes our short tour of the Web Beans examples. For more on Web Beans , or to help out, please visit <ulink url=\"http://www.seamframework.org/WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</ulink>."
-#~ msgstr "這結束了我們簡短的 Web Bean RI 範例。如欲取得更多有關於 RI 的相關資訊，或是提供相關協助，請參閱 <ulink url=\"http://www.seamframework.org/WebBeans/Development\">http://www.seamframework.org/WebBeans/Development</ulink>。"
-
-#~ msgid "We need help in all areas - bug fixing, writing new features, writing examples and translating this reference guide."
-#~ msgstr "我們在所有層面都需要協助 - 錯誤修正、編寫新功能、編寫範例，以及翻譯此參照指南。"
-
-#, fuzzy
-#~ msgid "A new deployer, <literal>webbeans.deployer</literal> is added to JBoss AS. This adds supports for Web Bean archives to JBoss AS, and allows the Web Beans RI to query the EJB3 container and discover which EJBs are installed in your application."
-#~ msgstr "目前您需要兩個更新。首先一個新的建置器 <literal>webbeans.deployer</literal> 被新增了。這可為 JBoss AS 提供 Web Bean archive，並能讓 Web Bean RI 查詢 EJB3 container，並找出安裝在您應用程式中的 EJB 為何。接下來，您需要 JBoss EJB3 的更新。"
-
-#~ msgid "As Web Beans is a new piece of software, you need to update JBoss AS to run the Web Beans RI. Future versions of JBoss AS will include these updates, and this step won't be necessary."
-#~ msgstr "因為 Web Bean 是個新的軟體，您需要更新 JBoss AS 才可執行 Web Bean RI。未來版本的 JBoss AS 將會包含這些更新，因此這個步驟將可被忽略。"

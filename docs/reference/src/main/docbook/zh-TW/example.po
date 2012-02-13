@@ -1,19 +1,17 @@
 # translation of example.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: example\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-15 12:13+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
@@ -24,11 +22,18 @@ msgstr "JSF 網站應用程式範例"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Let's illustrate these ideas with a full example. We're going to implement user login/logout for an application that uses JSF. First, we'll define a request-scoped bean to hold the username and password entered during login, with constraints defined using annotations from the Bean Validation specification:"
-msgstr "現在我們將採用一個完整的範例來描述這些概念。我們將要為一個使用 JSF 的應用程式實做用戶的登錄/登出。首先，我們將要定義一個 Web Bean 來在登錄時保持已輸入的用戶名稱與密碼："
+msgid ""
+"Let's illustrate these ideas with a full example. We're going to implement "
+"user login/logout for an application that uses JSF. First, we'll define a "
+"request-scoped bean to hold the username and password entered during login, "
+"with constraints defined using annotations from the Bean Validation "
+"specification:"
+msgstr ""
+"現在我們將採用一個完整的範例來描述這些概念。我們將要為一個使用 JSF 的應用程式實做用戶的登錄/登出。首先，我們將要定義一個 Web Bean "
+"來在登錄時保持已輸入的用戶名稱與密碼："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Named @RequestScoped\n"
 "public class Credentials {\n"
@@ -44,19 +49,6 @@ msgid ""
 "    public void setPassword(String password) { this.password = password; }\n"
 "}"
 msgstr ""
-"<![CDATA[@Named @RequestScoped\n"
-"public class Credentials {\n"
-"        \n"
-"    private String username;\n"
-"    private String password;\n"
-"    \n"
-"    public String getUsername() { return username; }\n"
-"    public void setUsername(String username) { this.username = username; }\n"
-"    \n"
-"    public String getPassword() { return password; }\n"
-"    public void setPassword(String password) { this.password = password; }\n"
-"    \n"
-"}]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -64,7 +56,7 @@ msgid "This bean is bound to the login prompt in the following JSF form:"
 msgstr "這個 Web Bean 已透過下列 JSF 格式綁定至登錄提示："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "&lt;h:form&gt;\n"
 "   &lt;h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\"&gt;\n"
@@ -79,16 +71,6 @@ msgid ""
 "   &lt;h:commandButton value=\"Logout\" action=\"#{login.logout}\" rendered=\"#{login.loggedIn}\"/&gt;\n"
 "&lt;/h:form&gt;"
 msgstr ""
-"<![CDATA[<h:form>\n"
-"    <h:panelGrid columns=\"2\" rendered=\"#{!login.loggedIn}\">\n"
-"        <h:outputLabel for=\"username\">Username:</h:outputLabel>\n"
-"        <h:inputText id=\"username\" value=\"#{credentials.username}\"/>\n"
-"        <h:outputLabel for=\"password\">Password:</h:outputLabel>\n"
-"        <h:inputText id=\"password\" value=\"#{credentials.password}\"/>\n"
-"    </h:panelGrid>\n"
-"    <h:commandButton value=\"Login\" action=\"#{login.login}\" rendered=\"#{!login.loggedIn}\"/>\n"
-"    <h:commandButton value=\"Logout\" acion=\"#{login.logout}\" rendered=\"#{login.loggedIn}\"/>\n"
-"</h:form>]]>"
 
 #. Tag: para
 #, no-c-format
@@ -96,7 +78,7 @@ msgid "Users are represented by a JPA entity:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Entity\n"
 "public class User {\n"
@@ -108,32 +90,27 @@ msgid ""
 "   public String setPassword(String password) { this.password = password; }\n"
 "}"
 msgstr ""
-"<![CDATA[@Named @RequestScoped\n"
-"public class Credentials {\n"
-"        \n"
-"    private String username;\n"
-"    private String password;\n"
-"    \n"
-"    public String getUsername() { return username; }\n"
-"    public void setUsername(String username) { this.username = username; }\n"
-"    \n"
-"    public String getPassword() { return password; }\n"
-"    public void setPassword(String password) { this.password = password; }\n"
-"    \n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "(Note that we're also going to need a <literal>persistence.xml</literal> file to configure the JPA persistence unit containing <literal>User</literal>.)"
+msgid ""
+"(Note that we're also going to need a <literal>persistence.xml</literal> "
+"file to configure the JPA persistence unit containing "
+"<literal>User</literal>.)"
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The actual work is done by a session-scoped bean that maintains information about the currently logged-in user and exposes the <literal>User</literal> entity to other beans:"
-msgstr "實際的工作是由 session 導向的 Web Bean 所完成的，這個 Web Bean 保留了有關於目前已登入用戶的相關資料並將 <literal>User</literal> 這個 entity 提供給其它 Web Bean："
+msgid ""
+"The actual work is done by a session-scoped bean that maintains information "
+"about the currently logged-in user and exposes the <literal>User</literal> "
+"entity to other beans:"
+msgstr ""
+"實際的工作是由 session 導向的 Web Bean 所完成的，這個 Web Bean 保留了有關於目前已登入用戶的相關資料並將 "
+"<literal>User</literal> 這個 entity 提供給其它 Web Bean："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@SessionScoped @Named\n"
 "public class Login implements Serializable {\n"
@@ -172,76 +149,37 @@ msgid ""
 "\n"
 "}"
 msgstr ""
-"<![CDATA[@SessionScoped @Named\n"
-"public class Login {\n"
-"\n"
-"    @Current Credentials credentials;\n"
-"    @PersistenceContext EntityManager userDatabase;\n"
-"\n"
-"    private User user;\n"
-"    \n"
-"    public void login() {\n"
-"            \n"
-"        List<User> results = userDatabase.createQuery(\n"
-"           \"select u from User u where u.username=:username and u.password=:password\")\n"
-"           .setParameter(\"username\", credentials.getUsername())\n"
-"           .setParameter(\"password\", credentials.getPassword())\n"
-"           .getResultList();\n"
-"        \n"
-"        if ( !results.isEmpty() ) {\n"
-"           user = results.get(0);\n"
-"        }\n"
-"        \n"
-"    }\n"
-"    \n"
-"    public void logout() {\n"
-"        user = null;\n"
-"    }\n"
-"    \n"
-"    public boolean isLoggedIn() {\n"
-"       return user!=null;\n"
-"    }\n"
-"    \n"
-"    @Produces @LoggedIn User getCurrentUser() {\n"
-"        return user;\n"
-"    }\n"
-"\n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "<literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom qualifier annotations:"
+msgid ""
+"<literal>@LoggedIn</literal> and <literal>@UserDatabase</literal> are custom"
+" qualifier annotations:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Qualifier\n"
 "@Retention(RUNTIME)\n"
 "@Target({TYPE, METHOD, PARAMETER, FIELD})\n"
 "public @interface LoggedIn {}"
 msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD})\n"
-"@BindingType\n"
-"public @interface LoggedIn {}]]>"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Qualifier\n"
 "@Retention(RUNTIME)\n"
 "@Target({METHOD, PARAMETER, FIELD})\n"
 "public @interface UserDatabase {}"
 msgstr ""
-"<![CDATA[@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD})\n"
-"@BindingType\n"
-"public @interface LoggedIn {}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "We need an adaptor bean to expose our typesafe <literal>EntityManager</literal>:"
+msgid ""
+"We need an adaptor bean to expose our typesafe "
+"<literal>EntityManager</literal>:"
 msgstr ""
 
 #. Tag: programlisting
@@ -255,11 +193,13 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now <literal>DocumentEditor</literal>, or any other bean, can easily inject the current user:"
+msgid ""
+"Now <literal>DocumentEditor</literal>, or any other bean, can easily inject "
+"the current user:"
 msgstr "現在，任何其它 Web Bean 都可輕易地注入目前的用戶："
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public class DocumentEditor {\n"
 "   @Inject Document document;\n"
@@ -272,18 +212,6 @@ msgid ""
 "   }\n"
 "}"
 msgstr ""
-"<![CDATA[public class DocumentEditor {\n"
-"\n"
-"    @Current Document document;\n"
-"    @LoggedIn User currentUser;\n"
-"    @PersistenceContext EntityManager docDatabase;\n"
-"    \n"
-"    public void save() {\n"
-"        document.setCreatedBy(currentUser);\n"
-"        docDatabase.persist(document);\n"
-"    }\n"
-"    \n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
@@ -300,8 +228,9 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Hopefully, this example gave you a taste of the CDI programming model. In the next chapter, we'll explore dependency injection in greater depth."
-msgstr "但願此範例能針對於 Web Bean 程式撰寫模型（Programming Model）提供相關益處。在下個章節當中，我們將會更深入地探討 Web Bean 依賴注入（Web Beans dependency injection）。"
-
-#~ msgid "Of course, <literal>@LoggedIn</literal> is a binding annotation:"
-#~ msgstr "當然，<literal>@LoggedIn</literal> 是個綁定標記："
+msgid ""
+"Hopefully, this example gave you a taste of the CDI programming model. In "
+"the next chapter, we'll explore dependency injection in greater depth."
+msgstr ""
+"但願此範例能針對於 Web Bean 程式撰寫模型（Programming Model）提供相關益處。在下個章節當中，我們將會更深入地探討 Web "
+"Bean 依賴注入（Web Beans dependency injection）。"

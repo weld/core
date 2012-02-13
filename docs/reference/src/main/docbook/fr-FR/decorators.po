@@ -1,18 +1,18 @@
 # Language fr-FR translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
+# Julien Herr <julien@herr.fr>, 2011. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-02 22:25+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
@@ -20,19 +20,55 @@ msgid "Decorators"
 msgstr "Décorateurs"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Interceptors are a powerful way to capture and separate concerns which are <emphasis>orthogonal</emphasis> to the application (and type system). Any interceptor is able to intercept invocations of any Java type. This makes them perfect for solving technical concerns such as transaction management, security and call logging. However, by nature, interceptors are unaware of the actual semantics of the events they intercept. Thus, interceptors aren't an appropriate tool for separating business-related concerns."
-msgstr "Les intercepteurs sont une manière puissante de capter et de séparer les problèmes qui sont <emphasis>orthogonaux</emphasis> au type de système. Tout intercepteur est capable d'intercepter les invocations à tout type Java. Cela les rend parfait pour résoudre des problèmes techniques tels que la gestion transactionnelle et la sécurité.Cependant, par nature, les intercepteurs ne sont pas conscients de la sémantique réelle des évênements qu'ils interceptent. En conséquence, les intercepteurs ne sont pas un outil approprié pour séparer problèmes <emphasis>métiers<emphasis>."
+#, no-c-format
+msgid ""
+"Interceptors are a powerful way to capture and separate concerns which are "
+"<emphasis>orthogonal</emphasis> to the application (and type system). Any "
+"interceptor is able to intercept invocations of any Java type. This makes "
+"them perfect for solving technical concerns such as transaction management, "
+"security and call logging. However, by nature, interceptors are unaware of "
+"the actual semantics of the events they intercept. Thus, interceptors aren't"
+" an appropriate tool for separating business-related concerns."
+msgstr ""
+"Les intercepteurs sont un puissant moyen de capturer et de séparer les "
+"préoccupations qui sont <emphasis>orthogonales</emphasis> à l'application "
+"(et système de type). Tout intercepteur est capable d'intercepter les "
+"invocations de tout type Java. Cela les rend parfaits pour résoudre les "
+"problèmes techniques tels que la gestion des transactions, la sécurité et la"
+" journalisation des appels. Cependant, par nature, les intercepteurs ne sont"
+" pas conscients de la sémantique réelle des événements qu'ils interceptent. "
+"Ainsi, les intercepteurs ne sont pas un outil approprié pour séparer des  "
+"préoccupations liées au métier."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The reverse is true of <emphasis>decorators</emphasis>. A decorator intercepts invocations only for a certain Java interface, and is therefore aware of all the semantics attached to that interface. Since decorators directly implement operations with business semantics, it makes them the perfect tool for modeling some kinds of business concerns. It also means that a decorator doesn't have the generality of an interceptor. Decorators aren't able to solve technical concerns that cut across many disparate types. Interceptors and decorators, though similar in many ways, are complementary. Let's look at some cases where decorators fit the bill."
-msgstr "L'inverse est vrai pour les <emphasis>décorateurs</emphasis>. Un décorateur intercepte les invocations uniquement pour une certain interface Java, et est donc conscient de toute la sémantique rattachée à cette interface. Cela fait des décorateurs un outil parfait pour modéliser certains concepts métiers. Cela veut aussi dire qu'un décorateur n'est pas aussi générique qu'un intercepteur. Les décorateurs ne sont pas capables de résoudres des problèmes techniques qui peuvent toucher des types très disparates."
+msgid ""
+"The reverse is true of <emphasis>decorators</emphasis>. A decorator "
+"intercepts invocations only for a certain Java interface, and is therefore "
+"aware of all the semantics attached to that interface. Since decorators "
+"directly implement operations with business semantics, it makes them the "
+"perfect tool for modeling some kinds of business concerns. It also means "
+"that a decorator doesn't have the generality of an interceptor. Decorators "
+"aren't able to solve technical concerns that cut across many disparate "
+"types. Interceptors and decorators, though similar in many ways, are "
+"complementary. Let's look at some cases where decorators fit the bill."
+msgstr ""
+"L'inverse est vrai pour les <emphasis>décorateurs</emphasis>. Un décorateur "
+"intercepte que les invocations pour une interface Java précise, et est donc "
+"conscient de toute la sémantique attachée à cette interface. Depuis que les "
+"décorateurs implémentent directement les opérations avec les sémantiques "
+"métier, il les rend parfaits comme outil pour la modélisation de certains "
+"types de préoccupations métier. Cela signifie également qu'un décorateur ne "
+"peut être aussi générique qu'un intercepteur. Les décorateurs ne sont pas en"
+" mesure de résoudre les problèmes techniques qui recoupent plusieurs types "
+"disparates. Les intercepteurs et les décorateurs, quoique similaires à bien "
+"des égards, sont complémentaires. Regardons quelques cas où les décorateurs "
+"font l'affaire."
 
 #. Tag: para
 #, no-c-format
 msgid "Suppose we have an interface that represents accounts:"
-msgstr "Supposez que nous ayons une interfaces représentant des comptes:"
+msgstr "Supposons que nous ayons une interface représentant des comptes :"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -52,14 +88,29 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Several different beans in our system implement the <literal>Account</literal> interface. However, we have a common legal requirement that; for any kind of account, large transactions must be recorded by the system in a special log. This is a perfect job for a decorator."
-msgstr "Plusieurs Web Beans distincts dans notre système implémentent l'interface <literal>Account</literal>. Nous avons cependant une obligation légale qui nous oblige à enregistrer les grosses transactions faites sur le système dans un journal spécial, et ce, pour tout type de compte. Ceci est un cas d'utilisation idéal d'un décorateur."
+#, no-c-format
+msgid ""
+"Several different beans in our system implement the "
+"<literal>Account</literal> interface. However, we have a common legal "
+"requirement that; for any kind of account, large transactions must be "
+"recorded by the system in a special log. This is a perfect job for a "
+"decorator."
+msgstr ""
+"Plusieurs beans différents implémentent l'interface "
+"<literal>Account</literal> dans notre système. Nous avons cependant une "
+"obligation légale qui nous oblige à enregistrer les grosses transactions "
+"faites sur le système dans un journal spécial, et ce, pour tout type de "
+"compte. Ceci est un cas d'utilisation idéal d'un décorateur."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "A decorator is a bean (possibly even an abstract class) that implements the type it decorates and is annotated <literal>@Decorator</literal>."
-msgstr "Un décorateur est un simple Web Bean qui implémente le type qu'il décore, et qui est annoté <literal>@Decorator</literal>."
+#, no-c-format
+msgid ""
+"A decorator is a bean (possibly even an abstract class) that implements the "
+"type it decorates and is annotated <literal>@Decorator</literal>."
+msgstr ""
+"Un décorateur est un bean (peut-être même une classe abstraite)  qui "
+"implémente le type qu'il décore, et qui est annoté "
+"<literal>@Decorator</literal>."
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -76,8 +127,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The decorator implements the methods of the decorated type that it wants to intercept."
+msgid ""
+"The decorator implements the methods of the decorated type that it wants to "
+"intercept."
 msgstr ""
+"Le décorateur implémente les méthodes du type décoré qu'il veut intercepter."
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -123,24 +177,46 @@ msgstr ""
 "}]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Unlike other beans, a decorator may be an abstract class. Therefore, if there's nothing special the decorator needs to do for a particular method of the decorated interface, you don't need to implement that method."
-msgstr "Contrairement à d'autres Web Beans simples, un décorateur peut être une classe abstraite. Si le décorateur n'a rien de spécial à faire pour une méthode particulière d'une interface décorée, vous n'avez pas besoin d'implémenter cette méthode."
+#, no-c-format
+msgid ""
+"Unlike other beans, a decorator may be an abstract class. Therefore, if "
+"there's nothing special the decorator needs to do for a particular method of"
+" the decorated interface, you don't need to implement that method."
+msgstr ""
+"Contrairement aux autres beans, un décorateur peut être une classe "
+"abstraite. Donc, s'il n'y a rien de spécial que le décorateur doit faire "
+"pour une méthode particulière de l'interface décorée, vous n'avez pas besoin"
+" d'implémenter cette méthode."
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Interceptors for a method are called before decorators that apply to the method."
-msgstr "Les intercepteurs pour une méthode sont appelés avant les décorateurs qui s'appliquent à cette méthode."
+#, no-c-format
+msgid ""
+"Interceptors for a method are called before decorators that apply to the "
+"method."
+msgstr ""
+"Les intercepteurs pour une méthode sont appelés avant les décorateurs qui "
+"s'appliquent à cette méthode."
 
 #. Tag: title
 #, fuzzy, no-c-format
 msgid "Delegate object"
-msgstr "Attributs de délégation"
+msgstr "Objets de délégation"
 
 #. Tag: para
-#, no-c-format
-msgid "Decorators have a special injection point, called the <emphasis>delegate injection point</emphasis>, with the same type as the beans they decorate, and the annotation <literal>@Delegate</literal>. There must be exactly one delegate injection point, which can be a constructor parameter, initializer method parameter or injected field."
+#, fuzzy, no-c-format
+msgid ""
+"Decorators have a special injection point, called the <emphasis>delegate "
+"injection point</emphasis>, with the same type as the beans they decorate, "
+"and the annotation <literal>@Delegate</literal>. There must be exactly one "
+"delegate injection point, which can be a constructor parameter, initializer "
+"method parameter or injected field."
 msgstr ""
+"Les décorateurs ont un point d'injection spécial, appelé "
+"l'<emphasis>attribut de délégation</emphasis>, ayant le même type que les "
+"beans qu'ils décorent, et l'annotation <literal>@Delegate</literal>. Il doit"
+" y avoir exactement un seul attribut de délégation, qui peut être un "
+"paramètre de constructeur, un paramètre d'une méthode d'initialisation ou un"
+" attribut injecté."
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -157,24 +233,29 @@ msgstr ""
 "</Decorators>]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "A decorator is bound to any bean which:"
-msgstr "Un décorateur est lié à tout Web Bean qui:"
+msgstr "Un décorateur est lié à tout bean qui :"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "has the type of the delegate injection point as a bean type, and"
-msgstr "a le type de l'attribut de délégation comme type d'API, et"
+msgstr ""
+"a le type de l'attribut de délégation identique au type du bean décoré, et"
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "has all qualifiers that are declared at the delegate injection point."
-msgstr "a tous les types de liaison qui sont déclarés par l'attribut de délégation."
+msgstr "a tous les qualifiants déclarés par l'attribut de délégation."
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This delegate injection point specifies that the decorator is bound to all beans that implement <literal>Account</literal>:"
-msgstr "L'attribut de délégation spécifie que le décorateur est lié à tous les Web Beans qui impémentent <literal>Account</literal>:"
+msgid ""
+"This delegate injection point specifies that the decorator is bound to all "
+"beans that implement <literal>Account</literal>:"
+msgstr ""
+"Cet attribut de délégation spécifie que le décorateur est lié à tous les "
+"beans  implémentant <literal>Account</literal> :"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -183,8 +264,13 @@ msgstr "<![CDATA[@Decorates Account account;]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A delegate injection point may specify any number of qualifier annotations. The decorator will only be bound to beans with the same qualifiers."
-msgstr "Un attribut de délégation peut spécifier une annotation de liaison. Alors, le décorateur sera seulement lié à tous les Web Beans ayant la même liaison."
+msgid ""
+"A delegate injection point may specify any number of qualifier annotations. "
+"The decorator will only be bound to beans with the same qualifiers."
+msgstr ""
+"Un attribut de délégation peut spécifier n'importe quel nombre d'annotations"
+" de qualification. Le décorateur sera seulement lié aux beans ayant les "
+"mêmes qualifiants."
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -193,11 +279,20 @@ msgstr "<![CDATA[@Decorates @Foreign Account account;]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The decorator may invoke the delegate object, which has much the same effect as calling <literal>InvocationContext.proceed()</literal> from an interceptor. The main difference is that the decorator can invoke <emphasis>any</emphasis> business method on the delegate object."
-msgstr "Le décorateur peut invoquer l'attribut de délégation, qui a le même effet que d'appeler <literal>InvocationContext.proceed()</literal> à partir d'un intercepteur."
+msgid ""
+"The decorator may invoke the delegate object, which has much the same effect"
+" as calling <literal>InvocationContext.proceed()</literal> from an "
+"interceptor. The main difference is that the decorator can invoke "
+"<emphasis>any</emphasis> business method on the delegate object."
+msgstr ""
+"Le décorateur peut invoquer l'attribut de délégation, qui a le même effet "
+"que d'appeler <literal>InvocationContext.proceed()</literal> à partir d'un "
+"intercepteur. La principale différence est que le décorateur peut appeler "
+"<emphasis>n'importe quelles</emphasis> méthodes métier sur l'attribut de "
+"délégation."
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Decorator\n"
 "public abstract class LargeTransactionDecorator\n"
@@ -221,29 +316,6 @@ msgid ""
 "   }\n"
 "}"
 msgstr ""
-"<![CDATA[@Decorator\n"
-"public abstract class LargeTransactionDecorator \n"
-"        implements Account {\n"
-"    \n"
-"    @Decorates Account account;\n"
-"    \n"
-"    @PersistenceContext EntityManager em;\n"
-"    \n"
-"    public void withdraw(BigDecimal amount) {\n"
-"        account.withdraw(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedWithdrawl(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
-"    public void deposit(BigDecimal amount);\n"
-"        account.deposit(amount);\n"
-"        if ( amount.compareTo(LARGE_AMOUNT)>0 ) {\n"
-"            em.persist( new LoggedDeposit(amount) );\n"
-"        }\n"
-"    }\n"
-"    \n"
-"}]]>"
 
 #. Tag: title
 #, no-c-format
@@ -251,9 +323,17 @@ msgid "Enabling decorators"
 msgstr "Activation des décorateurs"
 
 #. Tag: para
-#, no-c-format
-msgid "By default, all decorators are disabled. We need to <emphasis>enable</emphasis> our decorator in the <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans in that archive."
+#, fuzzy, no-c-format
+msgid ""
+"By default, all decorators are disabled. We need to "
+"<emphasis>enable</emphasis> our decorator in the "
+"<literal>beans.xml</literal> descriptor of a bean archive. This activation "
+"only applies to the beans in that archive."
 msgstr ""
+"Par défaut, tous les décorateurs sont désactivés. Nous devons "
+"<emphasis>activer</emphasis> notre décorateur dans le descripteur d'archive "
+"de beans : <literal>beans.xml</literal>. Cette activation s'applique "
+"seulement pour les beans de cette archive."
 
 #. Tag: programlisting
 #, no-c-format
@@ -271,22 +351,26 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "This declaration serves the same purpose for decorators that the <literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
-msgstr "Cette déclaration a le même but pour les décorateurs que la déclaration <literal>&lt;Interceptors&gt;</literal> pour les intercepteurs:"
+#, no-c-format
+msgid ""
+"This declaration serves the same purpose for decorators that the "
+"<literal>&lt;interceptors&gt;</literal> declaration serves for interceptors:"
+msgstr ""
+"Cette déclaration a le même objectif pour les décorateur que la déclaration"
+"  <literal>&lt;interceptors&gt;</literal> qui sert aux intercepteurs :"
 
 #. Tag: para
 #, no-c-format
-msgid "it enables us to specify a total ordering for all decorators in our system, ensuring deterministic behavior, and"
-msgstr "cela nous permet de spécifier un ordre total pour tous les décorateurs dans notre système, assurant un comportement déterministe, et"
+msgid ""
+"it enables us to specify a total ordering for all decorators in our system, "
+"ensuring deterministic behavior, and"
+msgstr ""
+"cela nous permet de spécifier un ordre précis pour tous les décorateurs dans"
+" notre système, assurant un comportement déterministe, et"
 
 #. Tag: para
 #, no-c-format
 msgid "it lets us enable or disable decorator classes at deployment time."
-msgstr "cela nous permet d'activer ou désactiver les classes de décorateurs au moment du déploiement."
-
-#~ msgid "All decorators have a <emphasis>delegate attribute</emphasis>. The type and binding types of the delegate attribute determine which Web Beans the decorator is bound to. The delegate attribute type must implement or extend all interfaces implemented by the decorator."
-#~ msgstr "Tous les décorateurs ont un <emphasis>attribut de délégation</emphasis>. Le type et les types liés d'un attribut de délégation déterminent à quel Web Beans le décorateur est relié. Le type de l'attribut délégué doit implémenter ou étendre toutes les interfaces implémentées par le décorateur."
-
-#~ msgid "We need to <emphasis>enable</emphasis> our decorator in <literal>web-beans.xml</literal>."
-#~ msgstr "Nous avons besoin d'<emphasis>activer</emphasis> notre décorateur dans le fichier <literal>web-beans.xml</literal>."
+msgstr ""
+"cela nous permet d'activer ou désactiver les classes de décorateurs au "
+"moment du déploiement."

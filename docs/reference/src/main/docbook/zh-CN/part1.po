@@ -1,103 +1,138 @@
 # Language zh-CN translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2008-12-22 10:45+0800\n"
 "Last-Translator: Sean Wu <alartin@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> specification (CDI) defines a set of complementary services that help improve the structure of application code. CDI layers an enhanced lifecycle and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. The CDI services provide:"
-msgstr "The Web Beans (JSR-299)规范为Java EE环境定义了一套服务以便开发者能够更轻松地开发应用。Web Beans在现有的包括JavaBeans和企业JavaBeans在内的Java组件类型之上增强了生命周期和交互的模型层。作为传统的Java EE编程模型的补充，Web Beans服务提供了："
+msgid ""
+"The <ulink url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink> "
+"specification (CDI) defines a set of complementary services that help "
+"improve the structure of application code. CDI layers an enhanced lifecycle "
+"and interaction model over existing Java component types, including managed "
+"beans and Enterprise Java Beans. The CDI services provide:"
+msgstr ""
+"<ulink "
+"url=\"http://jcp.org/en/jsr/detail?id=299\">JSR-299</ulink>规范（CDI）定义了一套增值服务用来帮助改善应用代码的结构。CDI在现有包括JavaBeans和企业JavaBeans在内的Java组件类型之上又假设了一层，用来增强了生命周期和交互的模型。CDI服务提供了："
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "an improved lifecycle for stateful objects, bound to well-defined <emphasis>contexts</emphasis>,"
-msgstr "一个为有状态组件而改良的并且绑定到定义明确的 <emphasis>上下文</emphasis>上的生命周期，"
+msgid ""
+"an improved lifecycle for stateful objects, bound to well-defined "
+"<emphasis>contexts</emphasis>,"
+msgstr "一个对于有状态组件改良的生命周期，并且绑定到定义明确的 <emphasis>上下文</emphasis>上，"
 
 #. Tag: para
 #, no-c-format
 msgid "a typesafe approach to <emphasis>dependency injection</emphasis>,"
-msgstr "一个类型安全的<emphasis>依赖注入</emphasis>方法,"
+msgstr "一个类型安全的<emphasis>依赖注入</emphasis>方法，"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "object interaction via an <emphasis>event notification facility</emphasis>,"
-msgstr "通过 <emphasis>事件通知</emphasis> 机制实现的交互，并且"
+msgid ""
+"object interaction via an <emphasis>event notification facility</emphasis>,"
+msgstr "通过 <emphasis>事件通知</emphasis> 机制实现的交互，"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "a better approach to binding <emphasis>interceptors</emphasis> to objects, along with a new kind of interceptor, called a <emphasis>decorator</emphasis>, that is more appropriate for use in solving business problems, and"
-msgstr "一个更好的将<emphasis>拦截器</emphasis>绑定到组件上的方法，同时提供了一个名为<emphasis>装饰器(decorator)</emphasis>的新型拦截器，这种拦截器更加适合解决业务问题。"
+msgid ""
+"a better approach to binding <emphasis>interceptors</emphasis> to objects, "
+"along with a new kind of interceptor, called a "
+"<emphasis>decorator</emphasis>, that is more appropriate for use in solving "
+"business problems, and"
+msgstr ""
+"一个更好的将<emphasis>拦截器</emphasis>绑定到组件上的方法，同时提供了一个名为<emphasis>装饰器(decorator)</emphasis>的新型拦截器，这种拦截器更加适合解决业务问题。"
 
 #. Tag: para
 #, no-c-format
-msgid "an <emphasis>SPI</emphasis> for developing portable extensions to the container."
+msgid ""
+"an <emphasis>SPI</emphasis> for developing portable extensions to the "
+"container."
+msgstr "一个<emphasis>SPI</emphasis>，用来开发容器的便携扩展。"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The CDI services are a core aspect of the Java EE platform and include full "
+"support for Java EE modularity and the Java EE component architecture. But "
+"the specification does not limit the use of CDI to the Java EE environment. "
+"In the Java SE environment, the services might be provided by a standalone "
+"CDI implementation like Weld (see <xref linkend=\"weld-se\" />), or even by "
+"a container that also implements the subset of EJB defined for embedded "
+"usage by the EJB 3.1 specification. CDI is especially useful in the context "
+"of web application development, but the problems it solves are general "
+"development concerns and it is therefore applicable to a wide variety of "
+"application."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The CDI services are a core aspect of the Java EE platform and include full support for Java EE modularity and the Java EE component architecture. But the specification does not limit the use of CDI to the Java EE environment. In the Java SE environment, the services might be provided by a standalone CDI implementation like Weld (see <xref linkend=\"weld-se\" />), or even by a container that also implements the subset of EJB defined for embedded usage by the EJB 3.1 specification. CDI is especially useful in the context of web application development, but the problems it solves are general development concerns and it is therefore applicable to a wide variety of application."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "An object bound to a lifecycle context is called a bean. CDI includes built-in support for several different kinds of bean, including the following Java EE component types:"
-msgstr ""
+msgid ""
+"An object bound to a lifecycle context is called a bean. CDI includes built-"
+"in support for several different kinds of bean, including the following Java"
+" EE component types:"
+msgstr "被绑定在生命周期上下文上的对象被称作一个bean，CDI内置支持几种不同类型的bean，包括下面JavaEE组件类型："
 
 #. Tag: para
 #, no-c-format
 msgid "managed beans, and"
-msgstr ""
+msgstr "托管bean"
 
 #. Tag: para
 #, no-c-format
 msgid "EJB session beans."
-msgstr ""
+msgstr "EJB会话bean"
 
 #. Tag: para
-#, no-c-format
-msgid "Both managed beans and EJB session beans may inject other beans. But some other objects, which are not themselves beans in the sense used here, may also have beans injected via CDI. In the Java EE platform, the following kinds of component may have beans injected:"
+#, fuzzy, no-c-format
+msgid ""
+"Both managed beans and EJB session beans may inject other beans. But some "
+"other objects, which are not themselves beans in the sense used here, may "
+"also have beans injected via CDI. In the Java EE platform, the following "
+"kinds of component may have beans injected:"
 msgstr ""
+"托管bean和EJB会话bean都可以注入其它bean，但是某些对象从自身意义上讲不是bean，但是同样可以通过CDI被注入。在JavaEE平台里，下面类型的组件可以被注入："
 
 #. Tag: para
 #, no-c-format
 msgid "message-driven beans,"
-msgstr ""
+msgstr "消息驱动bean"
 
 #. Tag: para
 #, no-c-format
 msgid "interceptors,"
-msgstr ""
+msgstr "拦截器"
 
 #. Tag: para
 #, no-c-format
 msgid "servlets, servlet filters and servlet event listeners,"
-msgstr ""
+msgstr "servlet，servlet过滤器和servlet事件监听器"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "JAX-WS service endpoints and handlers, and"
-msgstr ""
+msgstr "JAX-WS服务末端和持有者"
 
 #. Tag: para
 #, no-c-format
 msgid "JSP tag handlers and tag library event listeners."
-msgstr ""
+msgstr "JSP标签持有者和标签库事件监听器"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI relieves the user of an unfamiliar API of the need to answer the following questions:"
-msgstr "依赖注入和具备上下文的生命周期管理节省了开发者出于对接口的不熟悉而不得不处理下列问题所浪费时间："
+msgid ""
+"CDI relieves the user of an unfamiliar API of the need to answer the "
+"following questions:"
+msgstr "CDI消除用户不熟悉的API需要回答下列问题："
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -117,7 +152,7 @@ msgstr "它是多线程的么？"
 #. Tag: para
 #, no-c-format
 msgid "How do I get access to it from a client?"
-msgstr ""
+msgstr "如何从客户端获得？"
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -126,12 +161,15 @@ msgstr "我需要显式地销毁它么？"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Where should I keep the reference to it when I'm not currently using it?"
+msgid ""
+"Where should I keep the reference to it when I'm not currently using it?"
 msgstr "当我不再直接使用它的时候，我需要将它的引用保存到哪里？"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "How can I define an alternative implementation, so that the implementation can vary at deployment time?"
+msgid ""
+"How can I define an alternative implementation, so that the implementation "
+"can vary at deployment time?"
 msgstr "我如何才能添加一个间接层，以便在部署的时候可以更换这个对象的不同实现？"
 
 #. Tag: para
@@ -141,73 +179,110 @@ msgstr "我应该如何在其他对象中共享这个对象？"
 
 #. Tag: para
 #, no-c-format
-msgid "CDI is more than a framework. It's a whole, rich programming model. The <emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong typing</emphasis>. Let's study what that phrase means."
+msgid ""
+"CDI is more than a framework. It's a whole, rich programming model. The "
+"<emphasis>theme</emphasis> of CDI is <emphasis>loose-coupling with strong "
+"typing</emphasis>. Let's study what that phrase means."
 msgstr ""
+"CDI已经超出了框架的范围。它是一个完整的，丰富的编程模型。CDI的<emphasis>主旋律</emphasis>是<emphasis>强类型松耦合</emphasis>，让我们来学习这个短语代表着什么。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A bean specifies only the type and semantics of other beans it depends upon. It need not be aware of the actual lifecycle, concrete implementation, threading model or other clients of any bean it interacts with. Even better, the concrete implementation, lifecycle and threading model of a bean may vary according to the deployment scenario, without affecting any client. This loose-coupling makes your code easier to maintain."
-msgstr "一个Web Bean仅仅需要指定它所依赖的其他Web Bean的类型和语义。它不需要知道他所依赖的任何Web Bean的实际生命周期，具体的实现，线程模型或者这个Web Bean的其他客户端。更棒的是，它所依赖的Web Bean的具体实现和生命周期，线程模型可以根据部署场景而更改，却丝毫不影响任何客户端。"
+msgid ""
+"A bean specifies only the type and semantics of other beans it depends upon."
+" It need not be aware of the actual lifecycle, concrete implementation, "
+"threading model or other clients of any bean it interacts with. Even better,"
+" the concrete implementation, lifecycle and threading model of a bean may "
+"vary according to the deployment scenario, without affecting any client. "
+"This loose-coupling makes your code easier to maintain."
+msgstr ""
+"一个bean仅仅需要指定它所依赖的其他bean的类型和语义。它不需要知道他所依赖的任何bean的实际生命周期，具体的实现，线程模型或者这个bean的其他客户端。更棒的是，它所依赖的bean的具体实现和生命周期，线程模型可以根据部署场景而更改，却丝毫不影响任何客户端。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Events, interceptors and decorators enhance the loose-coupling inherent in this model:"
+msgid ""
+"Events, interceptors and decorators enhance the loose-coupling inherent in "
+"this model:"
 msgstr "事件，拦截器和装饰器增强了这个模型固有的<emphasis>松耦合</emphasis>特性："
 
 #. Tag: para
 #, no-c-format
-msgid "<emphasis>event notifications</emphasis> decouple event producers from event consumers,"
+msgid ""
+"<emphasis>event notifications</emphasis> decouple event producers from event"
+" consumers,"
 msgstr "<emphasis>事件通知</emphasis>将事件的消费者和事件的产生者解耦，"
 
 #. Tag: para
 #, no-c-format
-msgid "<emphasis>interceptors</emphasis> decouple technical concerns from business logic, and"
+msgid ""
+"<emphasis>interceptors</emphasis> decouple technical concerns from business "
+"logic, and"
 msgstr "<emphasis>拦截器</emphasis>将技术关注点从业务逻辑中解耦，并且"
 
 #. Tag: para
 #, no-c-format
-msgid "<emphasis>decorators</emphasis> allow business concerns to be compartmentalized."
+msgid ""
+"<emphasis>decorators</emphasis> allow business concerns to be "
+"compartmentalized."
 msgstr "<emphasis>装饰器</emphasis>允许开发者划分业务关注点。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "What's even more powerful (and comforting) is that CDI provides all these facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on string-based identifiers to determine how collaborating objects fit together. Instead, CDI uses the typing information that is already available in the Java object model, augmented using a new programming pattern, called <emphasis>qualifier annotations</emphasis>, to wire together beans, their dependencies, their interceptors and decorators, and their event consumers. Usage of XML descriptors is minimized to truly deployment-specific information."
-msgstr "最重要的是，Web Beans以一种<emphasis>类型安全</emphasis>的方式提供所有的特性。Web Beans从来不使用基于字符串的标识符来决定交互的对象如何关联在一起。至于XML, 虽然它仍旧是一个选项，但也可以几乎不使用。取而代之，Web Bean使用Java对象模型的类型信息和一种新的<emphasis>绑定注释</emphasis>模式将Web Beans和它们的依赖以及拦截器，装饰器和事件消费者关联在一起。"
+msgid ""
+"What's even more powerful (and comforting) is that CDI provides all these "
+"facilities in a <emphasis>typesafe</emphasis> way. CDI never relies on "
+"string-based identifiers to determine how collaborating objects fit "
+"together. Instead, CDI uses the typing information that is already available"
+" in the Java object model, augmented using a new programming pattern, called"
+" <emphasis>qualifier annotations</emphasis>, to wire together beans, their "
+"dependencies, their interceptors and decorators, and their event consumers. "
+"Usage of XML descriptors is minimized to truly deployment-specific "
+"information."
+msgstr ""
+"最重要的是，CDI以一种<emphasis>类型安全</emphasis>的方式提供所有的特性。CDI从来不使用基于字符串的标识符来决定交互的对象如何关联在一起，而是使用已经在Java对象模型中可用的类型信息，扩展成为一种叫做<emphasis>类型绑定注解</emphasis>的新编程模式，以此来将bean和它们的依赖以及拦截器，装饰器和事件消费者关联在一起。"
 
 #. Tag: para
 #, no-c-format
-msgid "But CDI isn't a restrictive programming model. It doesn't tell you how you should to structure your application into layers, how you should handle persistence, or what web framework you have to use. You'll have to decide those kinds of things for yourself."
+msgid ""
+"But CDI isn't a restrictive programming model. It doesn't tell you how you "
+"should to structure your application into layers, how you should handle "
+"persistence, or what web framework you have to use. You'll have to decide "
+"those kinds of things for yourself."
 msgstr ""
+"但是CDI不是一个受限制的编程模型。它不会告诉你该如何在层中组织你的应用，如何持久化，以及选择使用什么web框架。你必须自己决定该如何解决这些事情。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI even provides a comprehensive SPI, allowing other kinds of object defined by future Java EE specifications or by third-party frameworks to be cleanly integrated with CDI, take advantage of the CDI services, and interact with any other kind of bean."
-msgstr "Web Beans甚至提供了必要的整合点，以便未来的Java EE规范或者其他非标准的框架中的不同组件能够和Web Beans轻松整合，使用Web Beans服务以及和任何其他类型的Web Bean交互。"
+msgid ""
+"CDI even provides a comprehensive SPI, allowing other kinds of object "
+"defined by future Java EE specifications or by third-party frameworks to be "
+"cleanly integrated with CDI, take advantage of the CDI services, and "
+"interact with any other kind of bean."
+msgstr ""
+"CDI甚至提供了一个全面的SPI，以便未来的Java "
+"EE规范或者其他第三方框架中的不同组件能够和CDI轻松整合，使用CDI服务以及和任何其他类型的bean交互。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration from the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group (EG)."
-msgstr "Web Beans受到了包括Seam, Guice和Spring在内的很多现有的Java框架的影响。然而，Web Beans具有自己鲜明的特性：在类型安全方面优于Seam，比Spring更加具备状态和使用更少的XML, 比Guice更加具备Web和企业应用的能力。"
+msgid ""
+"CDI was influenced by a number of existing Java frameworks, including Seam, "
+"Guice and Spring. However, CDI has its own, very distinct, character: more "
+"typesafe than Seam, more stateful and less XML-centric than Spring, more web"
+" and enterprise-application capable than Guice. But it couldn't have been "
+"any of these without inspiration from the frameworks mentioned and "
+"<emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 "
+"Expert Group (EG)."
+msgstr ""
+"CDI受到了包括Seam, "
+"Guice和Spring在内的很多现有的Java框架的影响。然而，CDI具有自己鲜明的特性：在类型安全方面优于Seam，比Spring更加具备状态和使用更少的XML,"
+" 比Guice更加具备Web和企业应用的能力。但是灵感不是来自于任何所提及的框架，众多的合作和努力而是来自于JSR-299专家组（EG）"
 
 #. Tag: para
 #, no-c-format
-msgid "Finally, CDI is a <ulink url=\"http://jcp.org\">Java Community Process</ulink> (JCP) standard. Java EE 6 requires that all compliant application servers provide support for JSR-299 (even in the web profile)."
+msgid ""
+"Finally, CDI is a <ulink url=\"http://jcp.org\">Java Community "
+"Process</ulink> (JCP) standard. Java EE 6 requires that all compliant "
+"application servers provide support for JSR-299 (even in the web profile)."
 msgstr ""
-
-#~ msgid "where can I get one from?"
-#~ msgstr "我能从哪里得到一个对象？"
-
-#~ msgid "The Web Beans services are general and apply to the following types of components that exist in the Java EE environment:"
-#~ msgstr "Web Beans服务是相当普遍的，可以应用在下列Java EE环境中的组件类型中："
-
-#~ msgid "all JavaBeans,"
-#~ msgstr "所有的JavaBeans,"
-
-#~ msgid "all EJBs, and"
-#~ msgstr "所有的EJB, 和"
-
-#~ msgid "all Servlets."
-#~ msgstr "所有的Servlet。"
-
-#~ msgid "Most importantly, Web Beans is a JCP standard that integrates cleanly with Java EE, and with any Java SE environment where embeddable EJB Lite is available."
-#~ msgstr "最重要的是，Web Beans是一个JCP标准，能够干净地整合到Java EE中。Web Beans也可以整合到任何使用轻量的内嵌EJB的Java SE环境中。"
+"最后，CDI是一个<ulink url=\"http://jcp.org\">Java Community "
+"Process</ulink>（JCP）标准，所有遵循JavaEE 6标准的应用服务器需要提供JSR-299支持（即便在web层面）。"

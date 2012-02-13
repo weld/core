@@ -1,6 +1,7 @@
-#
+# 
 # AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+# Julien Herr <julien@herr.fr>, 2011. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: 0\n"
@@ -8,30 +9,42 @@ msgstr ""
 "PO-Revision-Date: 2010-10-19T02:13:49\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: None\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
 #. Tag: title
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Excluding classes from scanning and deployment"
-msgstr ""
+msgstr "Exclusion de classes lors de la recherche et du déploiement"
 
 #. Tag: para
-#, no-c-format
-msgid "Weld allows you to exclude classes in your archive from scanning, having container lifecycle events fired, and being deployed as beans."
+#, fuzzy, no-c-format
+msgid ""
+"Weld allows you to exclude classes in your archive from scanning, having "
+"container lifecycle events fired, and being deployed as beans."
 msgstr ""
+"Weld vous permet d'exclure des classes lors de la rechercher dans votre "
+"archive, en levant des évènements du cycle de vie du conteneur, et les "
+"déployer comme des beans."
 
 #. Tag: para
-#, no-c-format
-msgid "In this tutorial, we'll explore this feature via an example; a more formal specification can be found in the xsd, located at <ulink url=\"http://jboss.org/schema/weld/beans_1_1.xsd\">http://jboss.org/schema/weld/beans_1_1.xsd</ulink>."
+#, fuzzy, no-c-format
+msgid ""
+"In this tutorial, we'll explore this feature via an example; a more formal "
+"specification can be found in the xsd, located at <ulink "
+"url=\"http://jboss.org/schema/weld/beans_1_1.xsd\">http://jboss.org/schema/weld/beans_1_1.xsd</ulink>."
 msgstr ""
+"Dans ce tutoriel, nous explorerons cette fonctionnalité par un exemple ; une"
+" spécification plus formelle peut être trouvée dans le fichier XSD, sur "
+"<ulink "
+"url=\"http://jboss.org/schema/weld/beans_1_1.xsd\">http://jboss.org/schema/weld/beans_1_1.xsd</ulink>."
 
 #. Tag: programlisting
 #, no-c-format
@@ -78,40 +91,101 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "In this example we show the most common use cases for exercising fine control over which classes Weld scans. The first filter excludes all classes in the package <code>com.acme.swing</code>, and in most cases this will be sufficient for your needs."
+msgid ""
+"In this example we show the most common use cases for exercising fine "
+"control over which classes Weld scans. The first filter excludes all classes"
+" in the package <code>com.acme.swing</code>, and in most cases this will be "
+"sufficient for your needs."
 msgstr ""
+"Dans cet exemple, nous montrons les cas d'utilisation les plus communs pour "
+"avoir un contrôle fin sur les classes que Weld va rechercher. Le premier "
+"filtre exclut toutes les classes du package <code>com.acme.swing</code>, et "
+"dans la plupart des cas cela sera suffisant pour vos besoins."
 
 #. Tag: para
 #, no-c-format
-msgid "However, sometimes it's useful to be able to activate the filter depending on the environment used. In this case, Weld allows you to activate (or deactivate) a filter based on either system properties or whether a class is available. The second filter shows the use case of disabling scanning of certain classes depending on the capabilities of the environment you deploy to - in this case we are excluding GWT support if GWT is not installed."
+msgid ""
+"However, sometimes it's useful to be able to activate the filter depending "
+"on the environment used. In this case, Weld allows you to activate (or "
+"deactivate) a filter based on either system properties or whether a class is"
+" available. The second filter shows the use case of disabling scanning of "
+"certain classes depending on the capabilities of the environment you deploy "
+"to - in this case we are excluding GWT support if GWT is not installed."
 msgstr ""
+"Toutefois, il est parfois utile d'être capable d'activer le filtre en "
+"fonction de l'environnement utilisé. Dans ce cas, Weld vous permet d'activer"
+" (ou désactiver) un filtre basé sur les propriétés système ou sur la "
+"disponibilité d'une classe. Le deuxième filtre montre le cas d'utilisation "
+"de la désactivation de la recherche de certaines classes en fonction des "
+"capacités de l'environnement que vous déployez - dans ce cas nous excluons "
+"la prise en charge de GWT s'il n'est pas installé."
 
 #. Tag: para
 #, no-c-format
-msgid "Notice how we use a <code>!</code> character on the <code>name</code> attribute to invert the activation condition. You can invert any activation condition in this way."
+msgid ""
+"Notice how we use a <code>!</code> character on the <code>name</code> "
+"attribute to invert the activation condition. You can invert any activation "
+"condition in this way."
 msgstr ""
+"Remarquez comment nous utilisons un caractère <code>!</code> sur le "
+"<code>nom</code> de l'attribut pour inverser la condition d'activation. Vous"
+" pouvez inverser une condition d'activation de cette façon."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"The third filter uses a regular expression to select the classes to match "
+"(normally we use simple name-based patterns, as they don't require us to "
+"escape the period which delimits the package hierarchy)."
+msgstr ""
+"Le troisième filtre utilise une expression régulière pour sélectionner les "
+"classes à sélectionner (normalement nous utilisons les simples modèles basés"
+" sur le nom, comme ils ne nous obligent pas à échapper aux règles qui "
+"délimite la hiérarchie du package)."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"If you specify just a system property name, Weld will activate the filter if"
+" that system property has been set (with any value). If you also specify the"
+" system property value, then Weld will only activate the filter if the "
+"system property's value matches exactly."
+msgstr ""
+"Si vous spécifiez seulement un nom de propriété système, Weld activera le "
+"filtre si cette propriété système est activée (peu importe la valeur). Si "
+"vous spécifiez également la valeur de la propriété système, alors Weld "
+"n'activera le filtre que si la valeur de la propriété système correspond."
 
 #. Tag: para
 #, no-c-format
-msgid "The third filter uses a regular expression to select the classes to match (normally we use simple name-based patterns, as they don't require us to escape the period which delimits the package hierarchy)."
+msgid ""
+"The fourth filter shows more a advanced configurations, where we use "
+"multiple activation conditions to decide whether to activate the filter."
 msgstr ""
+"Le quatrième filtre montre une configuration avancée, où nous utilisons les "
+"conditions d'activation multiples pour décider quel filtre activer."
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"You can combine as many activation conditions as you like "
+"(<emphasis>all</emphasis> must be true for the filter to be activated). If "
+"you want to a filter that is active if <emphasis>any</emphasis> of the "
+"activation conditions are true, then you need multiple identical filters, "
+"each with different activation conditions."
+msgstr ""
+"Vous pouvez combiner autant de conditions d'activation que vous le souhaitez"
+" (elles doivent <emphasis>toutes</emphasis> être vraies pour que le filtre "
+"soit activé). Si vous voulez qu'un filtre soit actif si <emphasis>n'importe "
+"quelle</emphasis> condition d'activation soit vraie, alors vous avez besoin "
+"de plusieurs filtres identiques, chacun avec différentes conditions "
+"d'activation."
 
 #. Tag: para
 #, no-c-format
-msgid "If you specify just a system property name, Weld will activate the filter if that system property has been set (with any value). If you also specify the system property value, then Weld will only activate the filter if the system property's value matches exactly."
+msgid ""
+"In general, the semantics defined by Ant's pattern sets "
+"(http://ant.apache.org/manual/dirtasks.html#patternset) are followed."
 msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "The fourth filter shows more a advanced configurations, where we use multiple activation conditions to decide whether to activate the filter."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "You can combine as many activation conditions as you like (<emphasis>all</emphasis> must be true for the filter to be activated). If you want to a filter that is active if <emphasis>any</emphasis> of the activation conditions are true, then you need multiple identical filters, each with different activation conditions."
-msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "In general, the semantics defined by Ant's pattern sets (http://ant.apache.org/manual/dirtasks.html#patternset) are followed."
-msgstr ""
+"En général, la sémantique définie par les \"pattern sets\" d'Ant "
+"(http://ant.apache.org/manual/dirtasks.html # patternset) sont suivies."

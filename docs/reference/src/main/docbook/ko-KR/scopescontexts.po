@@ -1,26 +1,21 @@
 # translation of scopescontexts.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: scopescontexts\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-22 12:18+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
-"Language: ko\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
-"\n"
-"\n"
-"\n"
-"\n"
 
 #. Tag: title
 #, no-c-format
@@ -28,9 +23,14 @@ msgid "Scopes and contexts"
 msgstr "범위 및 컨텍스트 "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "So far, we've seen a few examples of <emphasis>scope type annotations</emphasis>. The scope of a bean determines the lifecycle of instances of the bean. The scope also determines which clients refer to which instances of the bean. According to the CDI specification, a scope determines:"
-msgstr "지금까지 <emphasis>범위 유형 어노테이션</emphasis>의 여러 가지 예를 살펴보았습니다. Web Bean의 범위는 Web Bean 인스턴스의 수명주기를 결정합니다. 또한 범위는 어떤 클라이언트가 어떤 Web Bean 인스턴스를 참조하게 할 지를 결정합니다. Web Beans 사양에 따라 범위는 다음을 결정합니다: "
+#, no-c-format
+msgid ""
+"So far, we've seen a few examples of <emphasis>scope type "
+"annotations</emphasis>. The scope of a bean determines the lifecycle of "
+"instances of the bean. The scope also determines which clients refer to "
+"which instances of the bean. According to the CDI specification, a scope "
+"determines:"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -44,17 +44,35 @@ msgstr "범위와 함께 Web Bean의 기존 인스턴스가 제거될 시기  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Which injected references refer to any instance of a bean with that scope"
+msgid ""
+"Which injected references refer to any instance of a bean with that scope"
 msgstr "삽입된 어떤 참조가 범위와 함께 Web Bean 인스턴스를 참조하는 지 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "For example, if we have a session-scoped bean, <literal>CurrentUser</literal>, all beans that are called in the context of the same <literal>HttpSession</literal> will see the same instance of <literal>CurrentUser</literal>. This instance will be automatically created the first time a <literal>CurrentUser</literal> is needed in that session, and automatically destroyed when the session ends."
-msgstr "예를 들어, Web Bean 세션 범위가 있을 경우, <literal>CurrentUser</literal>, 동일한 <literal>HttpSession</literal> 컨텍스트에서 호출되는 모든 Web Beans는 동일한 <literal>CurrentUser</literal> 인스턴스를 확인하게 됩니다. 이러한 인스턴스는 세션에서 <literal>CurrentUser</literal>가 처음으로 필요할 때 자동으로 생성되고 세션이 끝나면 자동으로 삭제됩니다. "
+msgid ""
+"For example, if we have a session-scoped bean, "
+"<literal>CurrentUser</literal>, all beans that are called in the context of "
+"the same <literal>HttpSession</literal> will see the same instance of "
+"<literal>CurrentUser</literal>. This instance will be automatically created "
+"the first time a <literal>CurrentUser</literal> is needed in that session, "
+"and automatically destroyed when the session ends."
+msgstr ""
+"예를 들어, Web Bean 세션 범위가 있을 경우, <literal>CurrentUser</literal>, 동일한 "
+"<literal>HttpSession</literal> 컨텍스트에서 호출되는 모든 Web Beans는 동일한 "
+"<literal>CurrentUser</literal> 인스턴스를 확인하게 됩니다. 이러한 인스턴스는 세션에서 "
+"<literal>CurrentUser</literal>가 처음으로 필요할 때 자동으로 생성되고 세션이 끝나면 자동으로 삭제됩니다. "
 
 #. Tag: para
 #, no-c-format
-msgid "JPA entities aren't a great fit for this model. Entities have their whole own lifecycle and identity model which just doesn't map naturally to the model used in CDI. Therefore, we recommend against treating entities as CDI beans. You're certainly going to run into problems if you try to give an entity a scope other than the default scope <literal>@Dependent</literal>. The client proxy will get in the way if you try to pass an injected instance to the JPA <literal>EntityManager</literal>."
+msgid ""
+"JPA entities aren't a great fit for this model. Entities have their whole "
+"own lifecycle and identity model which just doesn't map naturally to the "
+"model used in CDI. Therefore, we recommend against treating entities as CDI "
+"beans. You're certainly going to run into problems if you try to give an "
+"entity a scope other than the default scope <literal>@Dependent</literal>. "
+"The client proxy will get in the way if you try to pass an injected instance"
+" to the JPA <literal>EntityManager</literal>."
 msgstr ""
 
 #. Tag: title
@@ -63,9 +81,11 @@ msgid "Scope types"
 msgstr "범위 유형 "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "CDI features an <emphasis>extensible context model</emphasis>. It's possible to define new scopes by creating a new scope type annotation:"
-msgstr "Web Beans는 <emphasis>extensible context model</emphasis>을 특징으로 합니다. 새로운 범위 유형 어노테이션을 생성하여 새로운 범위를 정의할 수 있습니다:  "
+#, no-c-format
+msgid ""
+"CDI features an <emphasis>extensible context model</emphasis>. It's possible"
+" to define new scopes by creating a new scope type annotation:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -81,13 +101,21 @@ msgstr ""
 "public @interface ClusterScoped {}]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Of course, that's the easy part of the job. For this scope type to be useful, we will also need to define a <literal>Context</literal> object that implements the scope! Implementing a <literal>Context</literal> is usually a very technical task, intended for framework development only. You can expect an implementation of the business scope, for instance, in a future version of Seam."
-msgstr "물론 이는 이러한 작업 중 쉬운 부분입니다. 이러한 범위 유형을 유용하게 하려면, 범위를 구현하는 <literal>Context</literal> 객체를 정의해야 합니다! <literal>Context</literal> 구현은 아주 기술적인 작업으로, 프레임워크 개발 만을 목적으로 합니다.  "
+#, no-c-format
+msgid ""
+"Of course, that's the easy part of the job. For this scope type to be "
+"useful, we will also need to define a <literal>Context</literal> object that"
+" implements the scope! Implementing a <literal>Context</literal> is usually "
+"a very technical task, intended for framework development only. You can "
+"expect an implementation of the business scope, for instance, in a future "
+"version of Seam."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We can apply a scope type annotation to a bean implementation class to specify the scope of the bean:"
+msgid ""
+"We can apply a scope type annotation to a bean implementation class to "
+"specify the scope of the bean:"
 msgstr "Web Bean 범위를 지정하기 위해 Web Bean 구현 클래스에 범위 유형 어노테이션을 적용할 수 있습니다:  "
 
 #. Tag: programlisting
@@ -100,9 +128,9 @@ msgstr ""
 "public class SecondLevelCache { ... }]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Usually, you'll use one of CDI's built-in scopes."
-msgstr "주로, Web Beans의 내장된 범위 중 하나를 사용하게 됩니다.  "
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -141,7 +169,9 @@ msgstr "Web Beans를 사용하는 웹 애플리케이션의 경우: "
 
 #. Tag: para
 #, no-c-format
-msgid "any servlet request has access to active request, session and application scopes, and, additionally"
+msgid ""
+"any servlet request has access to active request, session and application "
+"scopes, and, additionally"
 msgstr "servlet 요청은 활성 요청, 세션 및 애플리케이션 범위에 액세스합니다 "
 
 #. Tag: para
@@ -151,7 +181,9 @@ msgstr "JSF 요청은 활성 컨버세이션 범위에 액세스합니다.   "
 
 #. Tag: para
 #, no-c-format
-msgid "A CDI extension can implement support for the conversation scope in other web frameworks."
+msgid ""
+"A CDI extension can implement support for the conversation scope in other "
+"web frameworks."
 msgstr ""
 
 #. Tag: para
@@ -191,18 +223,29 @@ msgstr "웹 서비스 호출시 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If the application tries to invoke a bean with a scope that does not have an active context, a <literal>ContextNotActiveException</literal> is thrown by the container at runtime."
-msgstr "애플리케이션이 활성 컨텍스트가 없는 범위와 함께 Web Bean을 호출하고자할 경우, 런타임시 <literal>ContextNotActiveException</literal>은 Web Bean 관리자에 의해 넘기게 됩니다.  "
+msgid ""
+"If the application tries to invoke a bean with a scope that does not have an"
+" active context, a <literal>ContextNotActiveException</literal> is thrown by"
+" the container at runtime."
+msgstr ""
+"애플리케이션이 활성 컨텍스트가 없는 범위와 함께 Web Bean을 호출하고자할 경우, 런타임시 "
+"<literal>ContextNotActiveException</literal>은 Web Bean 관리자에 의해 넘기게 됩니다.  "
 
 #. Tag: para
 #, no-c-format
-msgid "Managed beans with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal> must be serializable, since the container passivates the HTTP session from time to time."
+msgid ""
+"Managed beans with scope <literal>@SessionScoped</literal> or "
+"<literal>@ConversationScoped</literal> must be serializable, since the "
+"container passivates the HTTP session from time to time."
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Three of the four built-in scopes should be extremely familiar to every Java EE developer, so let's not waste time discussing them here. One of the scopes, however, is new."
-msgstr "네 개의 내장된 범위 중 세 개는 모든 Java EE 개발자에게 익숙하므로, 여기서 다루지 않겠습니다. 하지만 이 중 하나의 범위 새로운 것입니다. "
+#, no-c-format
+msgid ""
+"Three of the four built-in scopes should be extremely familiar to every Java"
+" EE developer, so let's not waste time discussing them here. One of the "
+"scopes, however, is new."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -211,8 +254,14 @@ msgstr "컨버세이션 범위 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The conversation scope is a bit like the traditional session scope in that it holds state associated with a user of the system, and spans multiple requests to the server. However, unlike the session scope, the conversation scope:"
-msgstr "Web Beans 컨버세이션 범위는 시스템 사용자와 관련된 상태를 보유하고 있는 전통 세션 범위와 유사하며, 서버에 여러 가지 요청을 보냅니다. 하지만, 세션 범위와 다르게 컨버세이션 범위는 다음과 같은 사항을 갖습니다:      "
+msgid ""
+"The conversation scope is a bit like the traditional session scope in that "
+"it holds state associated with a user of the system, and spans multiple "
+"requests to the server. However, unlike the session scope, the conversation "
+"scope:"
+msgstr ""
+"Web Beans 컨버세이션 범위는 시스템 사용자와 관련된 상태를 보유하고 있는 전통 세션 범위와 유사하며, 서버에 여러 가지 요청을 "
+"보냅니다. 하지만, 세션 범위와 다르게 컨버세이션 범위는 다음과 같은 사항을 갖습니다:      "
 
 #. Tag: para
 #, no-c-format
@@ -221,18 +270,31 @@ msgstr "애플리케이션에 의해 명시적으로 경계를 정합니다  "
 
 #. Tag: para
 #, no-c-format
-msgid "holds state associated with a particular web browser tab in a JSF application (browsers tend to share domain cookies, and hence the session cookie, between tabs, so this is not the case for the session scope)."
+msgid ""
+"holds state associated with a particular web browser tab in a JSF "
+"application (browsers tend to share domain cookies, and hence the session "
+"cookie, between tabs, so this is not the case for the session scope)."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A conversation represents a task&mdash;a unit of work from the point of view"
+" of the user. The conversation context holds state associated with what the "
+"user is currently working on. If the user is doing multiple things at the "
+"same time, there are multiple conversations."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A conversation represents a task&mdash;a unit of work from the point of view of the user. The conversation context holds state associated with what the user is currently working on. If the user is doing multiple things at the same time, there are multiple conversations."
-msgstr "컨버세이션은 사용자 관점에서의 작업 단위, 작업 내용을 나타냅니다. 컨버세이션 컨텍스트는 현재 사용자가 작업하고 있는 것과 관련된 상태를 유지합니다. 사용자가 동시에 여러가지 작업을 실행하고 있을 경우, 여러 개의 컨버세이션이 있게 됩니다. "
-
-#. Tag: para
-#, fuzzy, no-c-format
-msgid "The conversation context is active during any JSF request. Most conversations are destroyed at the end of the request. If a conversation should hold state across multiple requests, it must be explicitly promoted to a <emphasis>long-running conversation</emphasis>."
-msgstr "컨버세이션 컨텍스트는 JSF 요청 시 활성화되어 있습니다. 하지만 대부분의 컨버세이션은 요청 마지막에 삭제됩니다. 컨버세이션이 여러 가지 요청을 통해 상태를 유지해야 할 경우, <emphasis>장기 실행 컨버세이션</emphasis>으로 요청되어야 합니다. "
+msgid ""
+"The conversation context is active during any JSF request. Most "
+"conversations are destroyed at the end of the request. If a conversation "
+"should hold state across multiple requests, it must be explicitly promoted "
+"to a <emphasis>long-running conversation</emphasis>."
+msgstr ""
+"컨버세이션 컨텍스트는 JSF 요청 시 활성화되어 있습니다. 하지만 대부분의 컨버세이션은 요청 마지막에 삭제됩니다. 컨버세이션이 여러 가지"
+" 요청을 통해 상태를 유지해야 할 경우, <emphasis>장기 실행 컨버세이션</emphasis>으로 요청되어야 합니다. "
 
 #. Tag: title
 #, no-c-format
@@ -241,8 +303,12 @@ msgstr "컨버세이션 경계 설정 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI provides a built-in bean for controlling the lifecycle of conversations in a JSF application. This bean may be obtained by injection:"
-msgstr "Web Beans는 JSF 애플리케이션에 있는 컨버세이션 수명 주기를 제어하기 위한 내장된 Web Bean을 제공합니다. 이러한 Web Bean은 삽입에 의해 획득될 수 있습니다:  "
+msgid ""
+"CDI provides a built-in bean for controlling the lifecycle of conversations "
+"in a JSF application. This bean may be obtained by injection:"
+msgstr ""
+"Web Beans는 JSF 애플리케이션에 있는 컨버세이션 수명 주기를 제어하기 위한 내장된 Web Bean을 제공합니다. 이러한 Web "
+"Bean은 삽입에 의해 획득될 수 있습니다:  "
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -251,12 +317,22 @@ msgstr "@Current Conversation conversation;"
 
 #. Tag: para
 #, no-c-format
-msgid "To promote the conversation associated with the current request to a long-running conversation, call the <literal>begin()</literal> method from application code. To schedule the current long-running conversation context for destruction at the end of the current request, call <literal>end()</literal>."
-msgstr "장기 실행 컨버세이션으로의 최근 요청과 관련된 컨버세이션을 활성화하려면, 애플리케이션 코드에서 <literal>begin()</literal> 방식을 호출합니다. 현재 요청의 마지막에 삭제를 위해 장기 실행 컨버세이션 컨텍스트를 스케줄하려면 <literal>end()</literal>를 호출합니다.  "
+msgid ""
+"To promote the conversation associated with the current request to a long-"
+"running conversation, call the <literal>begin()</literal> method from "
+"application code. To schedule the current long-running conversation context "
+"for destruction at the end of the current request, call "
+"<literal>end()</literal>."
+msgstr ""
+"장기 실행 컨버세이션으로의 최근 요청과 관련된 컨버세이션을 활성화하려면, 애플리케이션 코드에서 "
+"<literal>begin()</literal> 방식을 호출합니다. 현재 요청의 마지막에 삭제를 위해 장기 실행 컨버세이션 컨텍스트를 "
+"스케줄하려면 <literal>end()</literal>를 호출합니다.  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In the following example, a conversation-scoped bean controls the conversation with which it is associated:"
+msgid ""
+"In the following example, a conversation-scoped bean controls the "
+"conversation with which it is associated:"
 msgstr "다음의 예에서, 컨버세이션 범위 Web Bean은 관련 된 컨버세이션을 제어합니다: "
 
 #. Tag: programlisting
@@ -324,8 +400,13 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This bean is able to control its own lifecycle through use of the <literal>Conversation</literal> API. But some other beans have a lifecycle which depends completely upon another object."
-msgstr "Web Bean은 <literal>Conversation</literal> API를 사용하여 수명 주기를 제어할 수 있습니다. 하지만 일부 다른 Web Beans는 다른 객체에 완전히 의존하는 수명 주기를 갖습니다.  "
+msgid ""
+"This bean is able to control its own lifecycle through use of the "
+"<literal>Conversation</literal> API. But some other beans have a lifecycle "
+"which depends completely upon another object."
+msgstr ""
+"Web Bean은 <literal>Conversation</literal> API를 사용하여 수명 주기를 제어할 수 있습니다. 하지만 "
+"일부 다른 Web Beans는 다른 객체에 완전히 의존하는 수명 주기를 갖습니다.  "
 
 #. Tag: title
 #, no-c-format
@@ -334,13 +415,28 @@ msgstr "컨버세이션 보급 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The conversation context automatically propagates with any JSF faces request (JSF form submission) or redirect. It does not automatically propagate with non-faces requests, for example, navigation via a link."
-msgstr "컨버세이션 컨텍스트는 JSF faces 요청 (JSF 양식 제출)과 함께 자동으로 보급됩니다. 예를 들어, 링크를 통한 네비게이션과 같이 이는 non-faces 요청과 함께 자동으로 보급되지 않습니다.  "
+msgid ""
+"The conversation context automatically propagates with any JSF faces request"
+" (JSF form submission) or redirect. It does not automatically propagate with"
+" non-faces requests, for example, navigation via a link."
+msgstr ""
+"컨버세이션 컨텍스트는 JSF faces 요청 (JSF 양식 제출)과 함께 자동으로 보급됩니다. 예를 들어, 링크를 통한 네비게이션과 같이"
+" 이는 non-faces 요청과 함께 자동으로 보급되지 않습니다.  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We can force the conversation to propagate with a non-faces request by including the unique identifier of the conversation as a request parameter. The CDI specification reserves the request parameter named <literal>cid</literal> for this use. The unique identifier of the conversation may be obtained from the <literal>Conversation</literal> object, which has the EL bean name <literal>conversation</literal>."
-msgstr "요청 매개 변수로서 컨버세이션의 고유 식별자를 포함하여 컨버세이션이 non-faces 요청과 함께 보급되도록 강제할 수 있습니다. Web Beans 사양은 이를 사용하기 위해 <literal>cid</literal> 라는 요청 매개 변수를 가집니다. 컨버세이션의 고유 식별자는 <literal>Conversation</literal> 객체에서 획득할 수 있으며, <literal>conversation</literal>이라는 Web Beans 이름을 갖습니다.  "
+msgid ""
+"We can force the conversation to propagate with a non-faces request by "
+"including the unique identifier of the conversation as a request parameter. "
+"The CDI specification reserves the request parameter named "
+"<literal>cid</literal> for this use. The unique identifier of the "
+"conversation may be obtained from the <literal>Conversation</literal> "
+"object, which has the EL bean name <literal>conversation</literal>."
+msgstr ""
+"요청 매개 변수로서 컨버세이션의 고유 식별자를 포함하여 컨버세이션이 non-faces 요청과 함께 보급되도록 강제할 수 있습니다. Web"
+" Beans 사양은 이를 사용하기 위해 <literal>cid</literal> 라는 요청 매개 변수를 가집니다. 컨버세이션의 고유 "
+"식별자는 <literal>Conversation</literal> 객체에서 획득할 수 있으며, "
+"<literal>conversation</literal>이라는 Web Beans 이름을 갖습니다.  "
 
 #. Tag: para
 #, no-c-format
@@ -348,9 +444,11 @@ msgid "Therefore, the following link propagates the conversation:"
 msgstr "따라서, 다음과 같은 링크가 컨버세이션을 보급합니다:  "
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
-msgid "&lt;a href=\"/addProduct.jsp?cid=#{conversation.id}\"&gt;Add Product&lt;/a&gt;"
-msgstr "<![CDATA[<a href=\"/addProduct.jsp?cid=#{conversation.id}\">Add Product</a>]]>"
+#, no-c-format
+msgid ""
+"&lt;a href=\"/addProduct.jsp?cid=#{conversation.id}\"&gt;Add "
+"Product&lt;/a&gt;"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
@@ -366,9 +464,13 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "The conversation context propagates across redirects, making it very easy to implement the common POST-then-redirect pattern, without resort to fragile constructs such as a \"flash\" object. The container automatically adds the conversation id to the redirect URL as a request parameter."
-msgstr "Web Bean 관리자는 컨버세이션이 장기 실행으로 표시되어 있지 않아도, 리다이렉트를 통해 컨버세이션을 보급해야 합니다. 이는 \"플래시\" 객체와 같은 깨지기 쉬운 구조에 의지하지 않고 일반적인 POST-then-redirect 패턴 쉽게 구현하게 합니다. 이러한 경우 Web Bean 관리자는 리다이렉트 URL에 요청 매개 변수를 자동으로 추가합니다.  "
+#, no-c-format
+msgid ""
+"The conversation context propagates across redirects, making it very easy to"
+" implement the common POST-then-redirect pattern, without resort to fragile "
+"constructs such as a \"flash\" object. The container automatically adds the "
+"conversation id to the redirect URL as a request parameter."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -376,14 +478,25 @@ msgid "Conversation timeout"
 msgstr "컨버세이션 시간 초과   "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "The container is permitted to destroy a conversation and all state held in its context at any time in order to conserve resources. A CDI implementation will normally do this on the basis of some kind of timeout&mdash;though this is not required by the specification. The timeout is the period of inactivity before the conversation is destroyed (as opposed to the amount of time the conversation is active)."
-msgstr "Web Bean 관리자에게는 리소스를 보관하기 위해 컨텍스트에 있는 모든 상태 및 컨버세이션을 삭제할 수 있는 권한이 있습니다. Web Bean 관리자 구현은 주로 시간 초과에 기반하여 이를 실행합니다 &#151; 이는 Web Beans 사양에 의해 요청되지 않습니다. 시간 초과는 컨버세이션이 삭제된 후 비활성화 기간을 말합니다.       "
+#, no-c-format
+msgid ""
+"The container is permitted to destroy a conversation and all state held in "
+"its context at any time in order to conserve resources. A CDI implementation"
+" will normally do this on the basis of some kind of timeout&mdash;though "
+"this is not required by the specification. The timeout is the period of "
+"inactivity before the conversation is destroyed (as opposed to the amount of"
+" time the conversation is active)."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>Conversation</literal> object provides a method to set the timeout. This is a hint to the container, which is free to ignore the setting."
-msgstr "<literal>Conversation</literal> 객체는 시간 초과를 설정하기 위한 방식을 제공합니다. 이는 Web Bean 관리자에게 도움이 되며, 설정 사항을 무시하셔도 상관 없습니다. "
+msgid ""
+"The <literal>Conversation</literal> object provides a method to set the "
+"timeout. This is a hint to the container, which is free to ignore the "
+"setting."
+msgstr ""
+"<literal>Conversation</literal> 객체는 시간 초과를 설정하기 위한 방식을 제공합니다. 이는 Web Bean "
+"관리자에게 도움이 되며, 설정 사항을 무시하셔도 상관 없습니다. "
 
 #. Tag: programlisting
 #, no-c-format
@@ -397,47 +510,83 @@ msgstr "dependent pseudo-scope "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In addition to the four built-in scopes, CDI also supports two <emphasis>pseudo-scopes</emphasis>. The first is the <emphasis>singleton pseudo-scope</emphasis>, which we specify using the annotation <literal>@Singleton</literal>."
-msgstr "네 가지 내장된 범위에 더하여, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 기능을 특징으로 합니다. 이는 범위 유형을 명시하지 않는 Web Bean에 대한 기본값 범위입니다. "
+msgid ""
+"In addition to the four built-in scopes, CDI also supports two <emphasis"
+">pseudo-scopes</emphasis>. The first is the <emphasis>singleton pseudo-"
+"scope</emphasis>, which we specify using the annotation "
+"<literal>@Singleton</literal>."
+msgstr ""
+"네 가지 내장된 범위에 더하여, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 "
+"기능을 특징으로 합니다. 이는 범위 유형을 명시하지 않는 Web Bean에 대한 기본값 범위입니다. "
 
 #. Tag: para
 #, no-c-format
-msgid "Unlike the other scopes, which belong to the package <literal>javax.enterprise.context</literal>, the <literal>@Singleton</literal> annotation is defined in the package <literal>javax.inject</literal>."
+msgid ""
+"Unlike the other scopes, which belong to the package "
+"<literal>javax.enterprise.context</literal>, the "
+"<literal>@Singleton</literal> annotation is defined in the package "
+"<literal>javax.inject</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You can guess what \"singleton\" means here. It means a bean that is instantiated once. Unfortunately, there's a little problem with this pseudo-scope. Beans with scope <literal>@Singleton</literal> don't have a proxy object. Clients hold a direct reference to the singleton instance. So we need to consider the case of a client that can be serialized, for example, any bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, any dependent object of a bean with scope <literal>@SessionScoped</literal> or <literal>@ConversationScoped</literal>, or any stateful session bean."
+msgid ""
+"You can guess what \"singleton\" means here. It means a bean that is "
+"instantiated once. Unfortunately, there's a little problem with this pseudo-"
+"scope. Beans with scope <literal>@Singleton</literal> don't have a proxy "
+"object. Clients hold a direct reference to the singleton instance. So we "
+"need to consider the case of a client that can be serialized, for example, "
+"any bean with scope <literal>@SessionScoped</literal> or "
+"<literal>@ConversationScoped</literal>, any dependent object of a bean with "
+"scope <literal>@SessionScoped</literal> or "
+"<literal>@ConversationScoped</literal>, or any stateful session bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, if the singleton instance is a simple, immutable, serializable object like a string, a number or a date, we probably don't mind too much if it gets duplicated via serialization. However, that makes it no stop being a true singleton, and we may as well have just declared it with the default scope."
+msgid ""
+"Now, if the singleton instance is a simple, immutable, serializable object "
+"like a string, a number or a date, we probably don't mind too much if it "
+"gets duplicated via serialization. However, that makes it no stop being a "
+"true singleton, and we may as well have just declared it with the default "
+"scope."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "There are several ways to ensure that the singleton bean remains a singleton when its client gets serialized:"
+msgid ""
+"There are several ways to ensure that the singleton bean remains a singleton"
+" when its client gets serialized:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "have the singleton bean implement <literal>writeResolve()</literal> and <literal>readReplace()</literal> (as defined by the Java serialization specification),"
+msgid ""
+"have the singleton bean implement <literal>writeResolve()</literal> and "
+"<literal>readReplace()</literal> (as defined by the Java serialization "
+"specification),"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "make sure the client keeps only a transient reference to the singleton bean, or"
+msgid ""
+"make sure the client keeps only a transient reference to the singleton bean,"
+" or"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "give the client a reference of type <literal>Instance&lt;X&gt;</literal> where <literal>X</literal> is the bean type of the singleton bean."
+msgid ""
+"give the client a reference of type <literal>Instance&lt;X&gt;</literal> "
+"where <literal>X</literal> is the bean type of the singleton bean."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A fourth, better solution is to instead use <literal>@ApplicationScoped</literal>, allowing the container to proxy the bean, and take care of serialization problems automatically."
+msgid ""
+"A fourth, better solution is to instead use "
+"<literal>@ApplicationScoped</literal>, allowing the container to proxy the "
+"bean, and take care of serialization problems automatically."
 msgstr ""
 
 #. Tag: title
@@ -447,12 +596,18 @@ msgstr "dependent pseudo-scope "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Finally, CDI features the so-called <emphasis>dependent pseudo-scope</emphasis>. This is the default scope for a bean which does not explicitly declare a scope type."
-msgstr "네 가지 내장된 범위에 더하여, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 기능을 특징으로 합니다. 이는 범위 유형을 명시하지 않는 Web Bean에 대한 기본값 범위입니다. "
+msgid ""
+"Finally, CDI features the so-called <emphasis>dependent pseudo-"
+"scope</emphasis>. This is the default scope for a bean which does not "
+"explicitly declare a scope type."
+msgstr ""
+"네 가지 내장된 범위에 더하여, Web Beans는 <emphasis>dependent pseudo-scope</emphasis>라는 "
+"기능을 특징으로 합니다. 이는 범위 유형을 명시하지 않는 Web Bean에 대한 기본값 범위입니다. "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "For example, this bean has the scope type <literal>@Dependent</literal>:"
+msgid ""
+"For example, this bean has the scope type <literal>@Dependent</literal>:"
 msgstr "예를 들어, Web Bean에는 <literal>@Dependent</literal> 범위 유형이 있습니다:  "
 
 #. Tag: programlisting
@@ -462,28 +617,51 @@ msgstr "<![CDATA[public class Calculator { ... }]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "An instance of a dependent bean is never shared between different clients or different injection points. It is strictly a <emphasis>dependent object</emphasis> of some other object. It is instantiated when the object it belongs to is created, and destroyed when the object it belongs to is destroyed."
+msgid ""
+"An instance of a dependent bean is never shared between different clients or"
+" different injection points. It is strictly a <emphasis>dependent "
+"object</emphasis> of some other object. It is instantiated when the object "
+"it belongs to is created, and destroyed when the object it belongs to is "
+"destroyed."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If a Unified EL expression refers to a dependent bean by EL name, an instance of the bean is instantiated every time the expression is evaluated. The instance is not reused during any other expression evaluation."
+msgid ""
+"If a Unified EL expression refers to a dependent bean by EL name, an "
+"instance of the bean is instantiated every time the expression is evaluated."
+" The instance is not reused during any other expression evaluation."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If you need to access a bean directly by EL name in a JSF page, you probably need to give it a scope other than <literal>@Dependent</literal>. Otherwise, any value that gets set to the bean by a JSF input will be lost immediately. That's why CDI features the <literal>@Model</literal> stereotype; it lets you give a bean a name, and set its scope to <literal>@RequestScoped</literal> in one stroke. If you need to access a bean that really <emphasis>has</emphasis> to have the scope <literal>@Dependent</literal> from a JSF page, inject it into a different bean, and expose it to EL via a getter method."
+msgid ""
+"If you need to access a bean directly by EL name in a JSF page, you probably"
+" need to give it a scope other than <literal>@Dependent</literal>. "
+"Otherwise, any value that gets set to the bean by a JSF input will be lost "
+"immediately. That's why CDI features the <literal>@Model</literal> "
+"stereotype; it lets you give a bean a name, and set its scope to "
+"<literal>@RequestScoped</literal> in one stroke. If you need to access a "
+"bean that really <emphasis>has</emphasis> to have the scope "
+"<literal>@Dependent</literal> from a JSF page, inject it into a different "
+"bean, and expose it to EL via a getter method."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Beans with scope <literal>@Dependent</literal> don't need a proxy object. The client holds a direct reference to its instance."
+msgid ""
+"Beans with scope <literal>@Dependent</literal> don't need a proxy object. "
+"The client holds a direct reference to its instance."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI makes it easy to obtain a dependent instance of a bean, even if the bean is already declared as a bean with some other scope type."
-msgstr "클래스 또는 EJB bean이 일부 다른 범위 유형과 함께 Web Bean으로 명시되어 있어도, Web Beans는 Java 클래스 또는 EJB bean의 의존적 인스턴스를 쉽게 획득할 수 있게 합니다.   "
+msgid ""
+"CDI makes it easy to obtain a dependent instance of a bean, even if the bean"
+" is already declared as a bean with some other scope type."
+msgstr ""
+"클래스 또는 EJB bean이 일부 다른 범위 유형과 함께 Web Bean으로 명시되어 있어도, Web Beans는 Java 클래스 또는"
+" EJB bean의 의존적 인스턴스를 쉽게 획득할 수 있게 합니다.   "
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -492,7 +670,9 @@ msgstr "<literal>@New</literal> 어노테이션 "
 
 #. Tag: para
 #, no-c-format
-msgid "The built-in qualifier <literal>@New</literal> allows us to obtain a dependent object of a specified class."
+msgid ""
+"The built-in qualifier <literal>@New</literal> allows us to obtain a "
+"dependent object of a specified class."
 msgstr ""
 
 #. Tag: programlisting
@@ -502,13 +682,20 @@ msgstr "<![CDATA[@New Calculator calculator;]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "The class must be a valid managed bean or session bean, but need not be an enabled bean."
+msgid ""
+"The class must be a valid managed bean or session bean, but need not be an "
+"enabled bean."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "This works even if <literal>Calculator</literal> is <emphasis>already</emphasis> declared with a different scope type, for example:"
-msgstr "<literal>Calculator</literal>가 다른 범위 유형과 함께 <emphasis>이미</emphasis> 명시되어 있어도 이는 사실입니다, 예:  "
+msgid ""
+"This works even if <literal>Calculator</literal> is "
+"<emphasis>already</emphasis> declared with a different scope type, for "
+"example:"
+msgstr ""
+"<literal>Calculator</literal>가 다른 범위 유형과 함께 <emphasis>이미</emphasis> 명시되어 있어도"
+" 이는 사실입니다, 예:  "
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -521,7 +708,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "So the following injected attributes each get a different instance of <literal>Calculator</literal>:"
+msgid ""
+"So the following injected attributes each get a different instance of "
+"<literal>Calculator</literal>:"
 msgstr "다음의 삽입 속성은 다른 <literal>Calculator</literal> 인스턴스를 갖습니다:  "
 
 #. Tag: programlisting
@@ -541,31 +730,21 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>calculator</literal> field has a conversation-scoped instance of <literal>Calculator</literal> injected. The <literal>newCalculator</literal> field has a new instance of <literal>Calculator</literal> injected, with a lifecycle that is bound to the owning <literal>PaymentCalc</literal>."
-msgstr "<literal>calculator</literal> 영역에는 <literal>Calculator</literal>의 컨버세이션 범위 인스턴스가 삽입되어 있습니다. <literal>newCalculator</literal> 영역에는 <literal>PaymentCalc</literal> 소유로 바운딩된 수명 주기와 함께 <literal>Calculator</literal>의 새로운 인스턴스가 삽입되어 있습니다.  "
+msgid ""
+"The <literal>calculator</literal> field has a conversation-scoped instance "
+"of <literal>Calculator</literal> injected. The "
+"<literal>newCalculator</literal> field has a new instance of "
+"<literal>Calculator</literal> injected, with a lifecycle that is bound to "
+"the owning <literal>PaymentCalc</literal>."
+msgstr ""
+"<literal>calculator</literal> 영역에는 <literal>Calculator</literal>의 컨버세이션 범위 "
+"인스턴스가 삽입되어 있습니다. <literal>newCalculator</literal> 영역에는 "
+"<literal>PaymentCalc</literal> 소유로 바운딩된 수명 주기와 함께 "
+"<literal>Calculator</literal>의 새로운 인스턴스가 삽입되어 있습니다.  "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "This feature is particularly useful with producer methods, as we'll see in <xref linkend=\"producermethods\" />."
-msgstr "특히 이러한 기능은 다음 장에서 다루게 될 생산자 방식에서 유용합니다.  "
-
-#~ msgid "@RequestScoped"
-#~ msgstr "@RequestScoped"
-
-#~ msgid "@SessionScoped"
-#~ msgstr "@SessionScoped"
-
-#~ msgid "holds state associated with a particular web browser tab in a JSF application."
-#~ msgstr "JSF 애플리케이션에 있는 특정 웹 브라우저 탭과 관련한 상태를 유지합니다.  "
-
-#~ msgid "When an injection point of a Web Bean resolves to a dependent Web Bean, a new instance of the dependent Web Bean is created every time the first Web Bean is instantiated. Instances of dependent Web Beans are never shared between different Web Beans or different injection points. They are <emphasis>dependent objects</emphasis> of some other Web Bean instance."
-#~ msgstr "Web Bean의 삽입 지점이 의존적 Web Bean을 해결할 때, 의존적 Web Bean의 새로운 인스턴스는 처음으로 Web Bean이 초기화될 때 마다 생성됩니다. 의존적 Web Beans의 인스턴스는 다른 Web Bean 사이에서나 또는 다른 삽입 지점 간에 공유되지 않습니다. 이는 일부 다른 Web Bean 인스턴스에 대해 <emphasis>의존적 객체</emphasis>입니다.  "
-
-#~ msgid "Dependent Web Bean instances are destroyed when the instance they depend upon is destroyed."
-#~ msgstr "의존하는 인스턴스가 삭제되면 의존적 Web Bean 인스턴스가 삭제됩니다.   "
-
-#~ msgid "The built-in <literal>@New</literal> binding annotation allows <emphasis>implicit</emphasis> definition of a dependent Web Bean at an injection point. Suppose we declare the following injected field:"
-#~ msgstr "내장된 <literal>@New</literal> 바인딩 어노테이션은 삽입 지점에서 의존적 Web Bean의 <emphasis>암시적</emphasis> 정의를 허용합니다. 다음과 같은 삽입 영역을 명시한다고 가정합시다:  "
-
-#~ msgid "Then a Web Bean with scope <literal>@Dependent</literal>, binding type <literal>@New</literal>, API type <literal>Calculator</literal>, implementation class <literal>Calculator</literal> and deployment type <literal>@Standard</literal> is implicitly defined."
-#~ msgstr "<literal>@Dependent</literal> 범위, <literal>@New</literal> 바인딩 유형, <literal>Calculator</literal> API 유형, <literal>Calculator</literal> 구현 클래스, <literal>@Standard</literal> 배치 유형과 함께 Web Bean은 암시적으로 정의됩니다.  "
+#, no-c-format
+msgid ""
+"This feature is particularly useful with producer methods, as we'll see in "
+"<xref linkend=\"producermethods\" />."
+msgstr ""

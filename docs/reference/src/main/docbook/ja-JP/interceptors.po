@@ -1,18 +1,17 @@
 # Language ja-JP translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-04-30 23:14+0900\n"
 "Last-Translator: Fusayuki Minamoto <miki.htmnet@nifty.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
@@ -21,12 +20,16 @@ msgstr "インタセプタ"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Interceptor functionality is defined in the Java Interceptors specification. CDI enhances this functionality with a more sophisticated, semantic, annotation-based approach to binding interceptors to beans."
+msgid ""
+"Interceptor functionality is defined in the Java Interceptors specification."
+" CDI enhances this functionality with a more sophisticated, semantic, "
+"annotation-based approach to binding interceptors to beans."
 msgstr "Web BeansはWeb Beansへのバインディングインタセプタに対してより洗練されたアノテーションベースのアプローチを取る"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The Interceptors specification defines two kinds of interception points:"
+msgid ""
+"The Interceptors specification defines two kinds of interception points:"
 msgstr "EJB仕様書は次の二つのインタセプションポイントを定義します。"
 
 #. Tag: para
@@ -41,13 +44,18 @@ msgstr "ライフサイクルコールバックインタセプション"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In addition, the EJB specification defines timeout method interception."
+msgid ""
+"In addition, the EJB specification defines timeout method interception."
 msgstr "EJB仕様書は次の二つのインタセプションポイントを定義します。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A <emphasis>business method interceptor</emphasis> applies to invocations of methods of the bean by clients of the bean:"
-msgstr "<emphasis>ビジネスメソッドインタセプタ</emphasis> は次のようにWeb BeansのクライアントによってWeb Beansのメソッド呼び出しへ適用されます。"
+msgid ""
+"A <emphasis>business method interceptor</emphasis> applies to invocations of"
+" methods of the bean by clients of the bean:"
+msgstr ""
+"<emphasis>ビジネスメソッドインタセプタ</emphasis> は次のようにWeb BeansのクライアントによってWeb "
+"Beansのメソッド呼び出しへ適用されます。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -63,8 +71,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations of lifecycle callbacks by the container:"
-msgstr "<emphasis>ライフサイクルコールバックインタセプタ</emphasis> は次のようにコンテナによってライフサイクルコールバックの呼び出しに適用されます。"
+msgid ""
+"A <emphasis>lifecycle callback interceptor</emphasis> applies to invocations"
+" of lifecycle callbacks by the container:"
+msgstr ""
+"<emphasis>ライフサイクルコールバックインタセプタ</emphasis> "
+"は次のようにコンテナによってライフサイクルコールバックの呼び出しに適用されます。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -80,13 +92,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "An interceptor class may intercept both lifecycle callbacks and business methods."
+msgid ""
+"An interceptor class may intercept both lifecycle callbacks and business "
+"methods."
 msgstr "インタセプタクラスはライフサイクルコールバックとビジネスメソッドの両方に対して割り込むことができます。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A <emphasis>timeout method interceptor</emphasis> applies to invocations of EJB timeout methods by the container:"
-msgstr "<emphasis>ライフサイクルコールバックインタセプタ</emphasis> は次のようにコンテナによってライフサイクルコールバックの呼び出しに適用されます。"
+msgid ""
+"A <emphasis>timeout method interceptor</emphasis> applies to invocations of "
+"EJB timeout methods by the container:"
+msgstr ""
+"<emphasis>ライフサイクルコールバックインタセプタ</emphasis> "
+"は次のようにコンテナによってライフサイクルコールバックの呼び出しに適用されます。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -106,9 +124,12 @@ msgid "Interceptor bindings"
 msgstr "インタセプタバインディング"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Suppose we want to declare that some of our beans are transactional. The first thing we need is an <emphasis>interceptor binding type</emphasis> to specify exactly which beans we're interested in:"
-msgstr "Web Beansをトランザクション型として宣言したいと仮定します。最初に必要なことは、次のような、興味のあるWeb Beansを正確に指定するための <emphasis>インタセプタバインディングアノテーション</emphasis> です。"
+#, no-c-format
+msgid ""
+"Suppose we want to declare that some of our beans are transactional. The "
+"first thing we need is an <emphasis>interceptor binding type</emphasis> to "
+"specify exactly which beans we're interested in:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -125,8 +146,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now we can easily specify that our <literal>ShoppingCart</literal> is a transactional object:"
-msgstr "こうして <literal>ShoppingCart</literal> がトランザクション型オブジェクトであることを簡単に指定することが可能になりました。"
+msgid ""
+"Now we can easily specify that our <literal>ShoppingCart</literal> is a "
+"transactional object:"
+msgstr ""
+"こうして <literal>ShoppingCart</literal> "
+"がトランザクション型オブジェクトであることを簡単に指定することが可能になりました。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -139,7 +164,8 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Or, if we prefer, we can specify that just one method is transactional:"
+msgid ""
+"Or, if we prefer, we can specify that just one method is transactional:"
 msgstr "または、望みとあらば、だだ一つのメソッドだけをトランザクション型として指定できます。"
 
 #. Tag: programlisting
@@ -159,9 +185,13 @@ msgid "Implementing interceptors"
 msgstr "インタセプタの実装"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "That's great, but somewhere along the line we're going to have to actually implement the interceptor that provides this transaction management aspect. All we need to do is create a standard interceptor, and annotate it <literal>@Interceptor</literal> and <literal>@Transactional</literal>."
-msgstr "それは素晴らしいことではありますが、どこかでこのトランザクション管理アスペクトを提供するインタセプタを実際に実装する必要があります。必要なのは、標準的なEJBインタセプタを作成し、それに <literal>@Interceptor</literal> と <literal>@Transactional</literal> のアノテーションを付加するだけです。"
+#, no-c-format
+msgid ""
+"That's great, but somewhere along the line we're going to have to actually "
+"implement the interceptor that provides this transaction management aspect. "
+"All we need to do is create a standard interceptor, and annotate it "
+"<literal>@Interceptor</literal> and <literal>@Transactional</literal>."
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -216,7 +246,11 @@ msgstr "インタセプタの有効化"
 
 #. Tag: para
 #, no-c-format
-msgid "By default, all interceptors are disabled. We need to <emphasis>enable</emphasis> our interceptor in the <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans in that archive."
+msgid ""
+"By default, all interceptors are disabled. We need to "
+"<emphasis>enable</emphasis> our interceptor in the "
+"<literal>beans.xml</literal> descriptor of a bean archive. This activation "
+"only applies to the beans in that archive."
 msgstr ""
 
 #. Tag: programlisting
@@ -241,12 +275,16 @@ msgstr "なぜ、かぎ括弧が必要なのでしょうか。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Well, having the XML declaration is actually a <emphasis>good thing</emphasis>. It solves two problems:"
+msgid ""
+"Well, having the XML declaration is actually a <emphasis>good "
+"thing</emphasis>. It solves two problems:"
 msgstr "XML宣言は次の二つの問題を解決します。"
 
 #. Tag: para
 #, no-c-format
-msgid "it enables us to specify a total ordering for all the interceptors in our system, ensuring deterministic behavior, and"
+msgid ""
+"it enables us to specify a total ordering for all the interceptors in our "
+"system, ensuring deterministic behavior, and"
 msgstr "システム内のすべてのインタセプタの順番を指定できるようにするので、振る舞いを一意に保証する"
 
 #. Tag: para
@@ -256,8 +294,12 @@ msgstr "デプロイ時にインタセプタクラスの有効、無効を指定
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "For example, we could specify that our security interceptor runs before our transaction interceptor."
-msgstr "たとえば、セキュリティインタセプタが <literal>TransactionInterceptor</literal> より前に実行するように指定できます。"
+msgid ""
+"For example, we could specify that our security interceptor runs before our "
+"transaction interceptor."
+msgstr ""
+"たとえば、セキュリティインタセプタが <literal>TransactionInterceptor</literal> "
+"より前に実行するように指定できます。"
 
 #. Tag: programlisting
 #, no-c-format
@@ -277,7 +319,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Or we could turn them both off in our test environment by simply not mentioning them in <literal>beans.xml</literal>! Ah, so simple."
+msgid ""
+"Or we could turn them both off in our test environment by simply not "
+"mentioning them in <literal>beans.xml</literal>! Ah, so simple."
 msgstr ""
 
 #. Tag: title
@@ -287,7 +331,9 @@ msgstr "メンバを持つインタセプタバインディング"
 
 #. Tag: para
 #, no-c-format
-msgid "Suppose we want to add some extra information to our <literal>@Transactional</literal> annotation:"
+msgid ""
+"Suppose we want to add some extra information to our "
+"<literal>@Transactional</literal> annotation:"
 msgstr " <literal>@Transactional</literal> アノテーションに付加情報を追加したいと仮定しましょう。"
 
 #. Tag: programlisting
@@ -309,8 +355,14 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI will use the value of <literal>requiresNew</literal> to choose between two different interceptors, <literal>TransactionInterceptor</literal> and <literal>RequiresNewTransactionInterceptor</literal>."
-msgstr "Web Beansは <literal>TransactionInterceptor</literal>  と <literal>RequiresNewTransactionInterceptor</literal> という二つの異なるインタセプタの中から選択できるようにするため <literal>requiresNew</literal> の値を使用します。"
+msgid ""
+"CDI will use the value of <literal>requiresNew</literal> to choose between "
+"two different interceptors, <literal>TransactionInterceptor</literal> and "
+"<literal>RequiresNewTransactionInterceptor</literal>."
+msgstr ""
+"Web Beansは <literal>TransactionInterceptor</literal>  と "
+"<literal>RequiresNewTransactionInterceptor</literal> "
+"という二つの異なるインタセプタの中から選択できるようにするため <literal>requiresNew</literal> の値を使用します。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -328,8 +380,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now we can use <literal>RequiresNewTransactionInterceptor</literal> like this:"
-msgstr "これで次のように <literal>RequiresNewTransactionInterceptor</literal> を使用できるようになりました。"
+msgid ""
+"Now we can use <literal>RequiresNewTransactionInterceptor</literal> like "
+"this:"
+msgstr ""
+"これで次のように <literal>RequiresNewTransactionInterceptor</literal> "
+"を使用できるようになりました。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -342,8 +398,15 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "But what if we only have one interceptor and we want the container to ignore the value of <literal>requiresNew</literal> when binding interceptors? Perhaps this information is only useful for the interceptor implementation. We can use the <literal>@Nonbinding</literal> annotation:"
-msgstr "しかし、もしインタセプタを一つしか持っていなくて、インタセプタをバインディングするときにマネージャに <literal>requiresNew</literal> の値を無視させたいならどうしたらよいでしょうか。そのようなときは <literal>@NonBinding</literal> アノテーションを使うことができます。"
+msgid ""
+"But what if we only have one interceptor and we want the container to ignore"
+" the value of <literal>requiresNew</literal> when binding interceptors? "
+"Perhaps this information is only useful for the interceptor implementation. "
+"We can use the <literal>@Nonbinding</literal> annotation:"
+msgstr ""
+"しかし、もしインタセプタを一つしか持っていなくて、インタセプタをバインディングするときにマネージャに "
+"<literal>requiresNew</literal> の値を無視させたいならどうしたらよいでしょうか。そのようなときは "
+"<literal>@NonBinding</literal> アノテーションを使うことができます。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -369,21 +432,28 @@ msgstr "複数のインタセプタバインディングアノテーション"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Usually we use combinations of interceptor bindings types to bind multiple interceptors to a bean. For example, the following declaration would be used to bind <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal> to the same bean:"
-msgstr "通常、複数のインタセプタをWeb Beanに結びつけるためにインタセプタバインディングタイプを組み合わせます。たとえば、次の定義は  <literal>TransactionInterceptor</literal> と <literal>SecurityInterceptor</literal> を同じWeb Beanに結びつけます。"
+msgid ""
+"Usually we use combinations of interceptor bindings types to bind multiple "
+"interceptors to a bean. For example, the following declaration would be used"
+" to bind <literal>TransactionInterceptor</literal> and "
+"<literal>SecurityInterceptor</literal> to the same bean:"
+msgstr ""
+"通常、複数のインタセプタをWeb Beanに結びつけるためにインタセプタバインディングタイプを組み合わせます。たとえば、次の定義は  "
+"<literal>TransactionInterceptor</literal> と "
+"<literal>SecurityInterceptor</literal> を同じWeb Beanに結びつけます。"
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Secure(rolesAllowed=\"admin\") @Transactional\n"
 "public class ShoppingCart { ... }"
 msgstr ""
-"<![CDATA[@Secure(rolesAllowed=\"admin\") @Transactional\n"
-"public class ShoppingCart { ... }]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "However, in very complex cases, an interceptor itself may specify some combination of interceptor binding types:"
+msgid ""
+"However, in very complex cases, an interceptor itself may specify some "
+"combination of interceptor binding types:"
 msgstr "しかし、とても複雑なケースでは、インタセプタ自身がいくつかのインタセプタバインディングタイプの組み合わせを指定することが許されます。"
 
 #. Tag: programlisting
@@ -397,8 +467,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Then this interceptor could be bound to the <literal>checkout()</literal> method using any one of the following combinations:"
-msgstr "次に、このインタセプタは次の組み合わせのどれかを使って <literal>checkout()</literal> メソッドに結びつきます。"
+msgid ""
+"Then this interceptor could be bound to the <literal>checkout()</literal> "
+"method using any one of the following combinations:"
+msgstr ""
+"次に、このインタセプタは次の組み合わせのどれかを使って <literal>checkout()</literal> メソッドに結びつきます。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -457,18 +530,28 @@ msgstr "インタセプタバインディングタイプの継承"
 
 #. Tag: para
 #, no-c-format
-msgid "One limitation of the Java language support for annotations is the lack of annotation inheritance. Really, annotations should have reuse built in, to allow this kind of thing to work:"
-msgstr "Java言語でのアノテーションサポートの制限の一つとして、アノテーションの継承ができないことがあげられます。本当に、アノテーションは次のようなことが許されるように組み込みのものを再利用できるべきです。"
+msgid ""
+"One limitation of the Java language support for annotations is the lack of "
+"annotation inheritance. Really, annotations should have reuse built in, to "
+"allow this kind of thing to work:"
+msgstr ""
+"Java言語でのアノテーションサポートの制限の一つとして、アノテーションの継承ができないことがあげられます。本当に、アノテーションは次のようなことが許されるように組み込みのものを再利用できるべきです。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid "public @interface Action extends Transactional, Secure { ... }"
-msgstr "<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
+msgstr ""
+"<![CDATA[public @interface Action extends Transactional, Secure { ... }]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Well, fortunately, CDI works around this missing feature of Java. We may annotate one interceptor binding type with other interceptor binding types (termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings are transitive &mdash; any bean with the first interceptor binding inherits the interceptor bindings declared as meta-annotations."
-msgstr "幸い、Web BeansはJavaのこの不足機能を補います。あるインタセプタバインディングタイプを他の複数のバインディングタイプにアノテーションとして付加することが許されます。このインタセプタバインディングは推移的です。つまり、最初のインタセプタバインディングを持つ任意のWeb Beanはメタアノテーションとして宣言されたインタセプタバインディングを継承します。"
+#, no-c-format
+msgid ""
+"Well, fortunately, CDI works around this missing feature of Java. We may "
+"annotate one interceptor binding type with other interceptor binding types "
+"(termed a <emphasis>meta-annotation</emphasis>). The interceptor bindings "
+"are transitive &mdash; any bean with the first interceptor binding inherits "
+"the interceptor bindings declared as meta-annotations."
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -487,8 +570,16 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now, any bean annotated <literal>@Action</literal> will be bound to both <literal>TransactionInterceptor</literal> and <literal>SecurityInterceptor</literal>. (And even <literal>TransactionalSecureInterceptor</literal>, if it exists.)"
-msgstr "<literal>@Action</literal> とアノテーションが付加されたWeb Beanは <literal>TransactionInterceptor</literal> と <literal>SecurityInterceptor</literal> の両方に結びつきます。（そして <literal>TransactionalSecureInterceptor</literal> が存在それば、それさえも）"
+msgid ""
+"Now, any bean annotated <literal>@Action</literal> will be bound to both "
+"<literal>TransactionInterceptor</literal> and "
+"<literal>SecurityInterceptor</literal>. (And even "
+"<literal>TransactionalSecureInterceptor</literal>, if it exists.)"
+msgstr ""
+"<literal>@Action</literal> とアノテーションが付加されたWeb Beanは "
+"<literal>TransactionInterceptor</literal> と "
+"<literal>SecurityInterceptor</literal> の両方に結びつきます。（そして "
+"<literal>TransactionalSecureInterceptor</literal> が存在それば、それさえも）"
 
 #. Tag: title
 #, no-c-format
@@ -497,8 +588,13 @@ msgstr "<literal>@Interceptors</literal> の使用"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>@Interceptors</literal> annotation defined by the interceptor specification (and used by the managed bean and EJB specifications) is still supported in CDI."
-msgstr "EJB仕様書で定義された<literal>@Interceptors</literal> アノテーションはエンタープライズとシンプルの両方のWeb Beansでサポートされます。たとえば、次のように。"
+msgid ""
+"The <literal>@Interceptors</literal> annotation defined by the interceptor "
+"specification (and used by the managed bean and EJB specifications) is still"
+" supported in CDI."
+msgstr ""
+"EJB仕様書で定義された<literal>@Interceptors</literal> アノテーションはエンタープライズとシンプルの両方のWeb "
+"Beansでサポートされます。たとえば、次のように。"
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -529,46 +625,13 @@ msgid "interceptors may not be easily disabled at deployment time, and"
 msgstr "インタセプタはデプロイ時に簡単に無効に設定できない"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "the interceptor ordering is non-global &mdash; it is determined by the order in which interceptors are listed at the class level."
-msgstr "インタセプタの順番はグローバルではない。つまり、クラスレベルでリストされたインタセプタの順番によって決定される"
+#, no-c-format
+msgid ""
+"the interceptor ordering is non-global &mdash; it is determined by the order"
+" in which interceptors are listed at the class level."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
 msgid "Therefore, we recommend the use of CDI-style interceptor bindings."
 msgstr "そのため、私たちはWeb Beansスタイルのインタセプタバインディングを推奨します。"
-
-#~ msgid "Web Beans re-uses the basic interceptor architecture of EJB 3.0, extending the functionality in two directions:"
-#~ msgstr "Web BeansはEJB 3.0の基本的なインタセプタアーキテクチャを再利用し、次の2つの方向において機能を拡張します。"
-
-#~ msgid "Any Web Bean may have interceptors, not just session beans."
-#~ msgstr "任意のWeb BeanはセッションBeanだけでなくインタセプタを持つことができる"
-
-#~ msgid "All Web Beans interceptors are simple Web Beans, and can take advantage of dependency injection and contextual lifecycle management."
-#~ msgstr "すべてのWeb BeansインタセプタはシンプルWeb Beansなので、依存性注入とコンテキスト依存ライフサイクル管理を利用することができます。"
-
-#~ msgid "Finally, we need to <emphasis>enable</emphasis> our interceptor in <literal>web-beans.xml</literal>."
-#~ msgstr "最後に、<literal>web-beans.xml</literal> において私たちのインタセプタを <emphasis>有効にする</emphasis> 必要があります。"
-
-#~ msgid ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-
-#~ msgid ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <sx:SecurityInterceptor/>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<Interceptors>\n"
-#~ "    <sx:SecurityInterceptor/>\n"
-#~ "    <tx:TransactionInterceptor/>\n"
-#~ "</Interceptors>]]>"
-
-#~ msgid "Or we could turn them both off in our test environment!"
-#~ msgstr "または、テスト環境で両方とも無効にすることもできるのです。"

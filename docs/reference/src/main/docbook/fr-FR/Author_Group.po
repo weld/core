@@ -1,73 +1,74 @@
 # Language fr-FR translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
-#
+# 
+# fabien.charlet <fabien.charlet@gmail.com>, 2011. #zanata
+# michel.strogoff <eric.manuguerra@gmail.com>, 2012. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: Introduction_to_Web_Beans VERSION\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2010-12-14T13:35:16\n"
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-02-02 22:03+0100\n"
 "Last-Translator: Vincent Latombe <vincent.latombe@gmail.com>\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: firstname
 #, no-c-format
 msgid "Gavin"
-msgstr ""
+msgstr "Gavin"
 
 #. Tag: surname
 #, no-c-format
 msgid "King"
-msgstr ""
+msgstr "King"
 
 #. Tag: contrib
 #, no-c-format
 msgid "JSR-299: Contexts and Dependency Injection Lead"
-msgstr ""
+msgstr "JSR-299: Chef de projet Injection de Contextes et de Dépendances"
 
 #. Tag: firstname
 #, no-c-format
 msgid "Pete"
-msgstr ""
+msgstr "Pete"
 
 #. Tag: surname
 #, no-c-format
 msgid "Muir"
-msgstr ""
+msgstr "Muir"
 
 #. Tag: contrib
 #, no-c-format
 msgid "Weld (JSR-299 RI) Lead"
-msgstr ""
+msgstr "Chef de projet Weld (JSR-299 RI)"
 
 #. Tag: firstname
 #, no-c-format
 msgid "Dan"
-msgstr ""
+msgstr "Dan"
 
 #. Tag: surname
 #, no-c-format
 msgid "Allen"
-msgstr ""
+msgstr "Allen"
 
 #. Tag: firstname
 #, no-c-format
 msgid "David"
-msgstr ""
+msgstr "David"
 
 #. Tag: firstname
 #, no-c-format
 msgid "Nicola"
-msgstr ""
+msgstr "Nicola"
 
 #. Tag: surname
 #, no-c-format
 msgid "Benaglia"
-msgstr ""
+msgstr "Benaglia"
 
 #. Tag: contrib
 #, no-c-format
@@ -77,27 +78,27 @@ msgstr "Traduction italienne"
 #. Tag: firstname
 #, no-c-format
 msgid "Gladys"
-msgstr ""
+msgstr "Gladys"
 
 #. Tag: surname
 #, no-c-format
 msgid "Guerrero"
-msgstr ""
+msgstr "Guerrero"
 
 #. Tag: contrib
 #, no-c-format
 msgid "Spanish Translation"
-msgstr "Traduction espagnole"
+msgstr "Spanish Translation"
 
 #. Tag: firstname
 #, no-c-format
 msgid "Eun-Ju"
-msgstr ""
+msgstr "Eun-Ju"
 
 #. Tag: surname
 #, no-c-format
 msgid "Ki,"
-msgstr ""
+msgstr "Ki"
 
 #. Tag: contrib
 #, no-c-format
@@ -107,81 +108,39 @@ msgstr "Traduction coréenne"
 #. Tag: firstname
 #, no-c-format
 msgid "Terry"
-msgstr ""
+msgstr "Terry"
 
 #. Tag: surname
 #, no-c-format
 msgid "Chuang"
-msgstr ""
+msgstr "Chuang"
 
 #. Tag: contrib
 #, no-c-format
 msgid "Traditional Chinese Translation"
-msgstr "Traduction en chinois traditionnel"
+msgstr "Traduction chinoise traditionnelle"
 
 #. Tag: firstname
 #, no-c-format
 msgid "Francesco"
-msgstr ""
+msgstr "Francesco"
 
 #. Tag: surname
 #, no-c-format
 msgid "Milesi"
-msgstr ""
+msgstr "Milesi"
 
 #. Tag: firstname
 #, no-c-format
 msgid "Sean"
-msgstr ""
+msgstr "Sean"
 
 #. Tag: surname
 #, no-c-format
 msgid "Wu"
-msgstr ""
+msgstr "Wu"
 
 #. Tag: contrib
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Simplified Chinese Translation"
-msgstr "Traduction en chinois traditionnel"
-
-#~ msgid "<firstname>Gavin</firstname> <surname>King</surname>"
-#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#~ msgid "<firstname>Pete</firstname> <surname>Muir</surname>"
-#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>Dan</firstname> <surname>Allen</surname>"
-#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>David</firstname> <surname>Allen</surname>"
-#~ msgstr "<firstname>Gavin</firstname> <surname>King</surname>"
-
-#~ msgid "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-#~ msgstr "<firstname>Nicola</firstname> <surname>Benaglia</surname>"
-
-#~ msgid "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
-#~ msgstr "<firstname>Gladys</firstname> <surname>Guerrero</surname>"
-
-#~ msgid "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
-#~ msgstr "<firstname>Eun-Ju</firstname> <surname>Ki,</surname>"
-
-#~ msgid "<firstname>Terry</firstname> <surname>Chuang</surname>"
-#~ msgstr "<firstname>Terry</firstname> <surname>Chuang</surname>"
-
-#~ msgid "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-#~ msgstr "<firstname>Francesco</firstname> <surname>Milesi</surname>"
-
-#, fuzzy
-#~ msgid "<firstname>Sean</firstname> <surname>Wu</surname>"
-#~ msgstr "<firstname>Pete</firstname> <surname>Muir</surname>"
-
-#~ msgid "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-#~ msgstr "<jobtitle>JSR-299 specification lead</jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-
-#~ msgid "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-#~ msgstr "<jobtitle>Web Beans (JSR-299 Reference Implementation) lead </jobtitle> <orgname>Red Hat Middleware LLC</orgname>"
-
-#~ msgid "Red Hat Middleware LLC"
-#~ msgstr "Red Hat Middleware LLC"
+msgstr "Traduction chinoise simplifiée"

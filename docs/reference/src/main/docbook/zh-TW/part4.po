@@ -1,36 +1,62 @@
 # translation of part4.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: part4\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-14 16:59+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #. Tag: para
 #, no-c-format
-msgid "The third theme of CDI is <emphasis>integration</emphasis>. We've already seen how CDI helps integrate EJB and JSF, allowing EJBs to be bound directly to JSF pages. That's just the beginning. The CDI services are integrated into the very core of the Java EE platform. Even EJB session beans can take advantage of the dependency injection, event bus, and contextual lifecycle management that CDI provides."
+msgid ""
+"The third theme of CDI is <emphasis>integration</emphasis>. We've already "
+"seen how CDI helps integrate EJB and JSF, allowing EJBs to be bound directly"
+" to JSF pages. That's just the beginning. The CDI services are integrated "
+"into the very core of the Java EE platform. Even EJB session beans can take "
+"advantage of the dependency injection, event bus, and contextual lifecycle "
+"management that CDI provides."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "CDI is also designed to work in concert with technologies outside of the platform by providing integration points into the Java EE platform via an SPI. This SPI positions CDI as the foundation for a new ecosystem of <emphasis>portable</emphasis> extensions and integration with existing frameworks and technologies. The CDI services will be able to reach a diverse collection of technologies, such as business process management (BPM) engines, existing web frameworks and de facto standard component models. Of course, The Java EE platform will never be able to standardize all the interesting technologies that are used in the world of Java application development, but CDI makes it easier to use the technologies which are not yet part of the platform seamlessly within the Java EE environment."
-msgstr "我們已經看到了 Web Bean 如何協助整合 EJB 與 JSF，它讓 EJB 能夠直接地綁定至 JSF 頁面。那僅是一開始而已。Web Bean 也提供了能夠使其它技術（例如商業流程管理、其它網站 Framework 以及第三方元件模型）變得多變化的功能。Java EE 平台永遠也無法標準化全部使用於 Java 應用程式開發領域中的技術，不過 Web Bean 能使得在 Java EE 環境下使用還未屬於該平台的技術變得更為容易。"
+msgid ""
+"CDI is also designed to work in concert with technologies outside of the "
+"platform by providing integration points into the Java EE platform via an "
+"SPI. This SPI positions CDI as the foundation for a new ecosystem of "
+"<emphasis>portable</emphasis> extensions and integration with existing "
+"frameworks and technologies. The CDI services will be able to reach a "
+"diverse collection of technologies, such as business process management "
+"(BPM) engines, existing web frameworks and de facto standard component "
+"models. Of course, The Java EE platform will never be able to standardize "
+"all the interesting technologies that are used in the world of Java "
+"application development, but CDI makes it easier to use the technologies "
+"which are not yet part of the platform seamlessly within the Java EE "
+"environment."
+msgstr ""
+"我們已經看到了 Web Bean 如何協助整合 EJB 與 JSF，它讓 EJB 能夠直接地綁定至 JSF 頁面。那僅是一開始而已。Web Bean "
+"也提供了能夠使其它技術（例如商業流程管理、其它網站 Framework 以及第三方元件模型）變得多變化的功能。Java EE "
+"平台永遠也無法標準化全部使用於 Java 應用程式開發領域中的技術，不過 Web Bean 能使得在 Java EE "
+"環境下使用還未屬於該平台的技術變得更為容易。"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We're about to see how to take full advantage of the Java EE platform in an application that uses CDI. We'll also briefly meet a set of SPIs that are provided to support portable extensions to CDI. You might not ever need to use these SPIs directly, but don't take them for granted. You will likely be using them indirectly, every time you use a third-party extension, such as Seam."
-msgstr "我們正要探討如何在一個使用 Web Bean 的應用程式中有效地利用 Java EE 平台。我們也將簡短地探討一組提供來讓 Web Bean 支援 portable extension 的 SPI。您可能永遠也不會需要直接使用到這些 SPI，不過知道它們的存在以備不時之需總是較好的。最重要的是，每當您使用第三方的 extension 時，您便會間接地利用到它們。"
-
-#~ msgid "The third theme of Web Beans is <emphasis>integration</emphasis>. Web Beans was designed to work in concert with other technologies, helping the application developer fit the other technologies together. Web Beans is an open technology. It forms a part of the Java EE ecosystem, and is itself the foundation for a new ecosystem of portable extensions and integration with existing frameworks and technologies."
-#~ msgstr "Web Bean 的第三個主題為 <emphasis>integration（整合性）</emphasis>。Web Bean 本身就是設計來與其它技術整合用的，它可協助應用程式開發員將不同的技術統合在一起。Web Bean 是個開放式技術。它形成了 Java EE 生態系統的一部分，並且它本身身為一個 portable extension 的新生態系統基礎，同時也是和現有 framework 和技術整合上的一個根本。"
+msgid ""
+"We're about to see how to take full advantage of the Java EE platform in an "
+"application that uses CDI. We'll also briefly meet a set of SPIs that are "
+"provided to support portable extensions to CDI. You might not ever need to "
+"use these SPIs directly, but don't take them for granted. You will likely be"
+" using them indirectly, every time you use a third-party extension, such as "
+"Seam."
+msgstr ""
+"我們正要探討如何在一個使用 Web Bean 的應用程式中有效地利用 Java EE 平台。我們也將簡短地探討一組提供來讓 Web Bean 支援 "
+"portable extension 的 SPI。您可能永遠也不會需要直接使用到這些 "
+"SPI，不過知道它們的存在以備不時之需總是較好的。最重要的是，每當您使用第三方的 extension 時，您便會間接地利用到它們。"

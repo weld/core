@@ -1,37 +1,21 @@
 # translation of injection.po to Korean
 # Language ko-KR translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Eunju Kim <eukim@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: injection\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2009-01-23 17:37+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
-"Language: ko\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
 
 #. Tag: title
 #, fuzzy, no-c-format
@@ -40,7 +24,10 @@ msgstr "의존성 삽입 "
 
 #. Tag: para
 #, no-c-format
-msgid "One of the most significant features of CDI&mdash;certainly the most recognized&mdash;is dependency injection; excuse me, <emphasis>typesafe</emphasis> dependency injection."
+msgid ""
+"One of the most significant features of CDI&mdash;certainly the most "
+"recognized&mdash;is dependency injection; excuse me, "
+"<emphasis>typesafe</emphasis> dependency injection."
 msgstr ""
 
 #. Tag: title
@@ -50,7 +37,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "The <literal>@Inject</literal> annotation lets us define an injection point that is injected during bean instantiation. Injection can occur via three different mechanisms."
+msgid ""
+"The <literal>@Inject</literal> annotation lets us define an injection point "
+"that is injected during bean instantiation. Injection can occur via three "
+"different mechanisms."
 msgstr ""
 
 #. Tag: para
@@ -120,7 +110,10 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A bean can have multiple initializer methods. If the bean is a session bean, the initializer method is not required to be a business method of the session bean."
+msgid ""
+"A bean can have multiple initializer methods. If the bean is a session bean,"
+" the initializer method is not required to be a business method of the "
+"session bean."
 msgstr ""
 
 #. Tag: para
@@ -145,47 +138,68 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Getter and setter methods are not required for field injection to work (unlike with JSF managed beans)."
+msgid ""
+"Getter and setter methods are not required for field injection to work "
+"(unlike with JSF managed beans)."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Dependency injection always occurs when the bean instance is first instantiated by the container. Simplifying just a little, things happen in this order:"
+msgid ""
+"Dependency injection always occurs when the bean instance is first "
+"instantiated by the container. Simplifying just a little, things happen in "
+"this order:"
 msgstr "Web Bean 인스턴스가 먼저 인스턴스화되었을 경우 의존성 삽입이 발생합니다. "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "First, the container calls the bean constructor (the default constructor or the one annotated <literal>@Inject</literal>), to obtain an instance of the bean."
+msgid ""
+"First, the container calls the bean constructor (the default constructor or "
+"the one annotated <literal>@Inject</literal>), to obtain an instance of the "
+"bean."
 msgstr "먼저, Web Bean 관리자는 Web Bean 생성자를 호출하여 Web Bean 인스턴스를 획득합니다.  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Next, the container initializes the values of all injected fields of the bean."
+msgid ""
+"Next, the container initializes the values of all injected fields of the "
+"bean."
 msgstr "다음으로, Web Bean 관리자는 Web Bean의 삽입된 모든 영역의 값을 초기화합니다. "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Next, the container calls all initializer methods of bean (the call order is not portable, don't rely on it)."
-msgstr "그 후, Web Bean 관리자는 Web Bean의 모든 초기화 방식을 호출합니다.  "
+#, no-c-format
+msgid ""
+"Next, the container calls all initializer methods of bean (the call order is"
+" not portable, don't rely on it)."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Finally, the <literal>@PostConstruct</literal> method, if any, is called."
+msgid ""
+"Finally, the <literal>@PostConstruct</literal> method, if any, is called."
 msgstr "마지막으로 Web Bean의 <literal>@PostConstruct</literal> 방식이 호출됩니다. "
 
 #. Tag: para
 #, no-c-format
-msgid "(The only complication is that the container might call initializer methods declared by a superclass before initializing injected fields declared by a subclass.)"
+msgid ""
+"(The only complication is that the container might call initializer methods "
+"declared by a superclass before initializing injected fields declared by a "
+"subclass.)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "One major advantage of constructor injection is that it allows the bean to be immutable."
+msgid ""
+"One major advantage of constructor injection is that it allows the bean to "
+"be immutable."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "CDI also supports parameter injection for some other methods that are invoked by the container. For instance, parameter injection is supported for producer methods:"
+msgid ""
+"CDI also supports parameter injection for some other methods that are "
+"invoked by the container. For instance, parameter injection is supported for"
+" producer methods:"
 msgstr ""
 
 #. Tag: programlisting
@@ -201,7 +215,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the injection point. The same is true for observer methods (which we'll meet in <xref linkend=\"events\" />) and disposer methods."
+msgid ""
+"This is a case where the <literal>@Inject</literal> annotation <emphasis>is "
+"not</emphasis> required at the injection point. The same is true for "
+"observer methods (which we'll meet in <xref linkend=\"events\" />) and "
+"disposer methods."
 msgstr ""
 
 #. Tag: title
@@ -210,24 +228,40 @@ msgid "What gets injected"
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the container follows when identifying the bean to inject to an injection point. This algorithm looks complex at first, but once you understand it, it's really quite intuitive. Typesafe resolution is performed at system initialization time, which means that the container will inform the developer immediately if a bean's dependencies cannot be satisfied."
-msgstr "Web Beans 사양은 <emphasis>타입 안정적 해상도 알고리즘</emphasis>이라는 절차를 정의하여, Web Bean 관리자가 삽입 지점에 삽입하기 위해 Web Bean을 인식할 때 이를 따르게 됩니다. 이러한 알고르짐은 처음에는 복잡하게 보이지만, 일단 이를 이해하면, 이는 다소 직관적입니다. 타입 안정적 해상도는 시스템 초기화시에 실행되어, 관리자는 사용자에 과한 정보를 즉각적으로 알게되며 Web Bean의 의존성에 만족하지 않을 경우, <literal>UnsatisfiedDependencyException</literal> 또는 <literal>AmbiguousDependencyException</literal>을 넘기게 됩니다.  "
+#, no-c-format
+msgid ""
+"The CDI specification defines a procedure, called <emphasis>typesafe "
+"resolution</emphasis>, that the container follows when identifying the bean "
+"to inject to an injection point. This algorithm looks complex at first, but "
+"once you understand it, it's really quite intuitive. Typesafe resolution is "
+"performed at system initialization time, which means that the container will"
+" inform the developer immediately if a bean's dependencies cannot be "
+"satisfied."
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The purpose of this algorithm is to allow multiple beans to implement the same bean type and either:"
+msgid ""
+"The purpose of this algorithm is to allow multiple beans to implement the "
+"same bean type and either:"
 msgstr "이러한 알고리즘은 여러 Web Beans를 허용하여 동일한 API 유형을 구현하기 위한 것입니다: "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "allow the client to select which implementation it requires using a <emphasis>qualifier</emphasis> or"
+msgid ""
+"allow the client to select which implementation it requires using a "
+"<emphasis>qualifier</emphasis> or"
 msgstr "또는 클라이언트가 <emphasis>바인딩 어노테이션</emphasis>을 사용하여 필요한 구현 사항을 선택하게 합니다, "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "allow the application deployer to select which implementation is appropriate for a particular deployment, without changes to the client, by enabling or disabling an <emphasis>alternative</emphasis>, or"
-msgstr "애플리케이션 개발자가 클라이언트로 변경하지 않고 <emphasis>배치 유형</emphasis>을 활성화 또는 비활성화하여 특정 시스템에 어떤 구헌이 적합할 지를 선택하게 합니다.   "
+msgid ""
+"allow the application deployer to select which implementation is appropriate"
+" for a particular deployment, without changes to the client, by enabling or "
+"disabling an <emphasis>alternative</emphasis>, or"
+msgstr ""
+"애플리케이션 개발자가 클라이언트로 변경하지 않고 <emphasis>배치 유형</emphasis>을 활성화 또는 비활성화하여 특정 시스템에"
+" 어떤 구헌이 적합할 지를 선택하게 합니다.   "
 
 #. Tag: para
 #, no-c-format
@@ -236,12 +270,19 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then bean A is going to go into slot A. That's the simplest possible scenario. When you first start your application, you'll likely have lots of those."
+msgid ""
+"Obviously, if you have exactly one bean of a given type, and an injection "
+"point with that same type, then bean A is going to go into slot A. That's "
+"the simplest possible scenario. When you first start your application, "
+"you'll likely have lots of those."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "But then, things start to get complicated. Let's explore how the container determines which bean to inject in more advanced cases. We'll start by taking a closer look at qualifiers."
+msgid ""
+"But then, things start to get complicated. Let's explore how the container "
+"determines which bean to inject in more advanced cases. We'll start by "
+"taking a closer look at qualifiers."
 msgstr ""
 
 #. Tag: title
@@ -251,8 +292,15 @@ msgstr "바인딩 어노테이션 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If we have more than one bean that implements a particular bean type, the injection point can specify exactly which bean should be injected using a qualifier annotation. For example, there might be two implementations of <literal>PaymentProcessor</literal>:"
-msgstr "특정 API 유형을 구현하는 하나 이상의 Web Bean이 있을 경우, 삽입 지점은 바인딩 어노테이션을 사용하여 어떤 Web Bean이 삽입되어야 할 지를 지정할 수 있습니다. 예를 들어, <literal>PaymentProcessor</literal>의 두 가지 구현이 있을 수 있습니다: "
+msgid ""
+"If we have more than one bean that implements a particular bean type, the "
+"injection point can specify exactly which bean should be injected using a "
+"qualifier annotation. For example, there might be two implementations of "
+"<literal>PaymentProcessor</literal>:"
+msgstr ""
+"특정 API 유형을 구현하는 하나 이상의 Web Bean이 있을 경우, 삽입 지점은 바인딩 어노테이션을 사용하여 어떤 Web Bean이 "
+"삽입되어야 할 지를 지정할 수 있습니다. 예를 들어, <literal>PaymentProcessor</literal>의 두 가지 구현이 "
+"있을 수 있습니다: "
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -282,8 +330,12 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> are qualifier annotations:"
-msgstr "여기서 <literal>@PayByCheque</literal> 및 <literal>@PayByCreditCard</literal>는 바인딩 어노테이션입니다:  "
+msgid ""
+"Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> "
+"are qualifier annotations:"
+msgstr ""
+"여기서 <literal>@PayByCheque</literal> 및 <literal>@PayByCreditCard</literal>는 "
+"바인딩 어노테이션입니다:  "
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -313,8 +365,11 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A client bean developer uses the qualifier annotation to specify exactly which bean should be injected."
-msgstr "클라이언트 Web Bean 개발자는 바인딩 어노테이션을 사용하여 정확히 어떤 Web Bean이 삽입되어야 하는 지를 지정합니다. "
+msgid ""
+"A client bean developer uses the qualifier annotation to specify exactly "
+"which bean should be injected."
+msgstr ""
+"클라이언트 Web Bean 개발자는 바인딩 어노테이션을 사용하여 정확히 어떤 Web Bean이 삽입되어야 하는 지를 지정합니다. "
 
 #. Tag: para
 #, no-c-format
@@ -376,7 +431,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Qualifier annotations can also qualify method arguments of producer, disposer and observer methods. Combining qualified arguments with producer methods is a good way to have an implementation of a bean type selected at runtime based on the state of the system:"
+msgid ""
+"Qualifier annotations can also qualify method arguments of producer, "
+"disposer and observer methods. Combining qualified arguments with producer "
+"methods is a good way to have an implementation of a bean type selected at "
+"runtime based on the state of the system:"
 msgstr ""
 
 #. Tag: programlisting
@@ -397,27 +456,50 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "If an injected field or a parameter of a bean constructor or initializer method is not explicitly annotated with a qualifier, the default qualifier, <literal>@Default</literal>, is assumed."
+msgid ""
+"If an injected field or a parameter of a bean constructor or initializer "
+"method is not explicitly annotated with a qualifier, the default qualifier, "
+"<literal>@Default</literal>, is assumed."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, you may be thinking, <emphasis>\"What's the different between using a qualifier and just specifying the exact implementation class you want?\"</emphasis> It's important to understand that a qualifier is like an extension of the interface. It does not create a direct dependency to any particular implementation. There may be multiple alternative implementations of <literal>@Asynchronous PaymentProcessor</literal>!"
+msgid ""
+"Now, you may be thinking, <emphasis>\"What's the different between using a "
+"qualifier and just specifying the exact implementation class you "
+"want?\"</emphasis> It's important to understand that a qualifier is like an "
+"extension of the interface. It does not create a direct dependency to any "
+"particular implementation. There may be multiple alternative implementations"
+" of <literal>@Asynchronous PaymentProcessor</literal>!"
 msgstr ""
 
 #. Tag: title
 #, fuzzy, no-c-format
-msgid "The built-in qualifiers <literal>@Default</literal> and <literal>@Any</literal>"
-msgstr "심플 Web Beans는 <literal>@PostConstruct</literal> 및 <literal>@PreDestroy</literal> 콜백 기능만을 지원합니다.    "
+msgid ""
+"The built-in qualifiers <literal>@Default</literal> and "
+"<literal>@Any</literal>"
+msgstr ""
+"심플 Web Beans는 <literal>@PostConstruct</literal> 및 "
+"<literal>@PreDestroy</literal> 콜백 기능만을 지원합니다.    "
 
 #. Tag: para
 #, no-c-format
-msgid "Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the qualifier <literal>@Default</literal>. From time to time, you'll need to declare an injection point without specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>. Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default qualifier, without otherwise restricting the beans that are eligible for injection."
+msgid ""
+"Whenever a bean or injection point does not explicitly declare a qualifier, "
+"the container assumes the qualifier <literal>@Default</literal>. From time "
+"to time, you'll need to declare an injection point without specifying a "
+"qualifier. There's a qualifier for that too. All beans have the qualifier "
+"<literal>@Any</literal>. Therefore, by explicitly specifying "
+"<literal>@Any</literal> at an injection point, you suppress the default "
+"qualifier, without otherwise restricting the beans that are eligible for "
+"injection."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "This is especially useful if you want to iterate over all beans with a certain bean type. For example:"
+msgid ""
+"This is especially useful if you want to iterate over all beans with a "
+"certain bean type. For example:"
 msgstr ""
 
 #. Tag: programlisting
@@ -438,7 +520,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Java annotations can have members. We can use annotation members to further discriminate a qualifier. This prevents a potential explosion of new annotations. For example, instead of creating several qualifiers representing different payment methods, we could aggregate them into a single annotation with a member:"
+msgid ""
+"Java annotations can have members. We can use annotation members to further "
+"discriminate a qualifier. This prevents a potential explosion of new "
+"annotations. For example, instead of creating several qualifiers "
+"representing different payment methods, we could aggregate them into a "
+"single annotation with a member:"
 msgstr ""
 
 #. Tag: programlisting
@@ -460,21 +547,28 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Then we select one of the possible member values when applying the qualifier:"
+msgid ""
+"Then we select one of the possible member values when applying the "
+"qualifier:"
 msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid "private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;"
-msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+msgstr ""
+"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "We can force the container to ignore a member of a qualifier type by annotating the member <literal>@Nonbinding</literal>."
-msgstr "Web Bean 관리자에게 <literal>@NonBinding</literal> 멤버를 어노테이션하여 바인딩 어노테이션 유형 멤버를 무시하라고 말할 수 있습니다.  "
+msgid ""
+"We can force the container to ignore a member of a qualifier type by "
+"annotating the member <literal>@Nonbinding</literal>."
+msgstr ""
+"Web Bean 관리자에게 <literal>@NonBinding</literal> 멤버를 어노테이션하여 바인딩 어노테이션 유형 멤버를 "
+"무시하라고 말할 수 있습니다.  "
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@Qualifier\n"
 "@Retention(RUNTIME)\n"
@@ -484,12 +578,6 @@ msgid ""
 "   @Nonbinding String comment() default \"\";\n"
 "}"
 msgstr ""
-"<![CDATA[@BindingType\n"
-"@Retention(RUNTIME)\n"
-"@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-"public @interface HttpParam {\n"
-"   @NonBinding public String value();\n"
-"}]]>"
 
 #. Tag: title
 #, no-c-format
@@ -504,11 +592,14 @@ msgstr "삽입 지점은 여러 바인딩 어노테이션을 지정할 수 도 �
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid "@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;"
-msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
+msgstr ""
+"<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Then only a bean which has <emphasis>both</emphasis> qualifier annotations would be eligible for injection."
+msgid ""
+"Then only a bean which has <emphasis>both</emphasis> qualifier annotations "
+"would be eligible for injection."
 msgstr "이러한 경우, <emphasis>양쪽</emphasis> 바인딩 어노테이션을 갖는 Web Bean만 삽입될 수 있습니다. "
 
 #. Tag: programlisting
@@ -531,7 +622,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Alternatives are beans whose implementation is specific to a particular client module or deployment scenario. This alternative defines a mock implementation of both <literal>@Synchronous PaymentProcessor</literal> and <literal>@Asynchronous PaymentProcessor</literal>, all in one:"
+msgid ""
+"Alternatives are beans whose implementation is specific to a particular "
+"client module or deployment scenario. This alternative defines a mock "
+"implementation of both <literal>@Synchronous PaymentProcessor</literal> and "
+"<literal>@Asynchronous PaymentProcessor</literal>, all in one:"
 msgstr ""
 
 #. Tag: programlisting
@@ -549,7 +644,12 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "By default, <literal>@Alternative</literal> beans are disabled. We need to <emphasis>enable</emphasis> an alternative in the <literal>beans.xml</literal> descriptor of a bean archive to make it available for instantiation and injection. This activation only applies to the beans in that archive."
+msgid ""
+"By default, <literal>@Alternative</literal> beans are disabled. We need to "
+"<emphasis>enable</emphasis> an alternative in the "
+"<literal>beans.xml</literal> descriptor of a bean archive to make it "
+"available for instantiation and injection. This activation only applies to "
+"the beans in that archive."
 msgstr ""
 
 #. Tag: programlisting
@@ -569,7 +669,11 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity by looking for an enabled alternative among the beans that could be injected. If there is exactly one enabled alternative, that's the bean that will be injected."
+msgid ""
+"When an ambiguous dependency exists at an injection point, the container "
+"attempts to resolve the ambiguity by looking for an enabled alternative "
+"among the beans that could be injected. If there is exactly one enabled "
+"alternative, that's the bean that will be injected."
 msgstr ""
 
 #. Tag: title
@@ -579,12 +683,23 @@ msgstr "불만족스러운 의존성 수정 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The typesafe resolution algorithm fails when, after considering the qualifier annotations on all beans that implement the bean type of an injection point and filtering out disabled beans (<literal>@Alternative</literal> beans which are not explicitly enabled), the container is unable to identify exactly one bean to inject. The container will abort deployment, informing us of the unsatisfied or ambiguous dependency."
-msgstr "바인딩 어노테이션 및 삽입 지점의 API 유형을 구현하는 모든 Web Beans의 배치 유형을 고려한 후, Web Bean 관리자는 삽입할 하나의 Web Bean을 인식하지 못할 경우 타입 안정적 해상도 알고리즘은 실패하게 됩니다.     "
+msgid ""
+"The typesafe resolution algorithm fails when, after considering the "
+"qualifier annotations on all beans that implement the bean type of an "
+"injection point and filtering out disabled beans "
+"(<literal>@Alternative</literal> beans which are not explicitly enabled), "
+"the container is unable to identify exactly one bean to inject. The "
+"container will abort deployment, informing us of the unsatisfied or "
+"ambiguous dependency."
+msgstr ""
+"바인딩 어노테이션 및 삽입 지점의 API 유형을 구현하는 모든 Web Beans의 배치 유형을 고려한 후, Web Bean 관리자는 "
+"삽입할 하나의 Web Bean을 인식하지 못할 경우 타입 안정적 해상도 알고리즘은 실패하게 됩니다.     "
 
 #. Tag: para
 #, no-c-format
-msgid "During the course of your development, you're going to encounter this situation. Let's learn how to resolve it."
+msgid ""
+"During the course of your development, you're going to encounter this "
+"situation. Let's learn how to resolve it."
 msgstr ""
 
 #. Tag: para
@@ -594,17 +709,24 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "create a bean which implements the bean type and has all the qualifier types of the injection point,"
+msgid ""
+"create a bean which implements the bean type and has all the qualifier types"
+" of the injection point,"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "make sure that the bean you already have is in the classpath of the module with the injection point, or"
+msgid ""
+"make sure that the bean you already have is in the classpath of the module "
+"with the injection point, or"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "explicitly enable an <literal>@Alternative</literal> bean that implements the bean type and has the appropriate qualifier types, using <literal>beans.xml</literal>."
+msgid ""
+"explicitly enable an <literal>@Alternative</literal> bean that implements "
+"the bean type and has the appropriate qualifier types, using "
+"<literal>beans.xml</literal>."
 msgstr ""
 
 #. Tag: para
@@ -614,27 +736,39 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "introduce a qualifier to distinguish between the two implementations of the bean type,"
+msgid ""
+"introduce a qualifier to distinguish between the two implementations of the "
+"bean type,"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "disable one of the beans by annotating it <literal>@Alternative</literal>,"
+msgid ""
+"disable one of the beans by annotating it <literal>@Alternative</literal>,"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "move one of the implementations to a module that is not in the classpath of the module with the injection point, or"
+msgid ""
+"move one of the implementations to a module that is not in the classpath of "
+"the module with the injection point, or"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "disable one of two <literal>@Alternative</literal> beans that are trying to occupy the same space, using <literal>beans.xml</literal>."
+msgid ""
+"disable one of two <literal>@Alternative</literal> beans that are trying to "
+"occupy the same space, using <literal>beans.xml</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "See <ulink url=\"http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType\">this FAQ</ulink> for step-by-step instructions for how to resolve an ambiguous resolution exception between a raw bean type and a producer method that returns the same bean type."
+msgid ""
+"See <ulink "
+"url=\"http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType\">this"
+" FAQ</ulink> for step-by-step instructions for how to resolve an ambiguous "
+"resolution exception between a raw bean type and a producer method that "
+"returns the same bean type."
 msgstr ""
 
 #. Tag: para
@@ -644,13 +778,18 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "On the other hand, if you really do have an optional or multivalued injection point, you should change the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\" />."
+msgid ""
+"On the other hand, if you really do have an optional or multivalued "
+"injection point, you should change the type of your injection point to "
+"<literal>Instance</literal>, as we'll see in <xref linkend=\"lookup\" />."
 msgstr ""
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Now there's one more issue you need to be aware of when using the dependency injection service."
-msgstr "Web Beans에서 의존성 삽입을 사용할 때 유의하셔야 할 사항이 한 가지 더 있습니다. "
+#, no-c-format
+msgid ""
+"Now there's one more issue you need to be aware of when using the dependency"
+" injection service."
+msgstr ""
 
 #. Tag: title
 #, no-c-format
@@ -659,28 +798,65 @@ msgstr "클라이언트 프록시 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Clients of an injected bean do not usually hold a direct reference to a bean instance, unless the bean is a dependent object (scope <literal>@Dependent</literal>)."
+msgid ""
+"Clients of an injected bean do not usually hold a direct reference to a bean"
+" instance, unless the bean is a dependent object (scope "
+"<literal>@Dependent</literal>)."
 msgstr "삽입된 Web Bean 클라이언트는 Web Bean 인스턴스에 직접적인 참조를 유지하지 않습니다. "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request scope. The application-scoped bean is shared between many different requests. However, each request should see a different instance of the request scoped bean&mdash;the current one!"
-msgstr "요청 범위로 바운딩된 Web Bean으로의 직접 참조를 보유하고 있는 애플리케이션 범위에 바운딩된 Web Bean을 가정해 봅시다. 애플리케이션 범위에 바운딩된 Web Bean은 다른 많은 요청 사이에서 공유됩니다. 하지만, 각각의 요청은 요청 범위로 바운딩된 Web Bean의 다른 인스턴스를 확인해야 합니다! "
+#, no-c-format
+msgid ""
+"Imagine that a bean bound to the application scope held a direct reference "
+"to a bean bound to the request scope. The application-scoped bean is shared "
+"between many different requests. However, each request should see a "
+"different instance of the request scoped bean&mdash;the current one!"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Now imagine that a bean bound to the session scope holds a direct reference to a bean bound to the application scope. From time to time, the session context is serialized to disk in order to use memory more efficiently. However, the application scoped bean instance should not be serialized along with the session scoped bean! It can get that reference any time. No need to hoard it!"
-msgstr "이제 애플리케이션 범위로 바운딩된 Web Bean으로의 직접 참조를 보유하고 있는 세션 범위에 바운딩된 Web Bean을 가정해 봅시다. 때때로 세션 컨텍스트는 메모리를 보다 효과적으로 사용하기 위해 디스크 순서대로 나열됩니다. 하지만, 애플리케이션 범위로 바운딩된 Web Bean 인스턴스는 세션 범위로 바운딩된 Web Bean과 함께 나열되어서는 안됩니다! "
+msgid ""
+"Now imagine that a bean bound to the session scope holds a direct reference "
+"to a bean bound to the application scope. From time to time, the session "
+"context is serialized to disk in order to use memory more efficiently. "
+"However, the application scoped bean instance should not be serialized along"
+" with the session scoped bean! It can get that reference any time. No need "
+"to hoard it!"
+msgstr ""
+"이제 애플리케이션 범위로 바운딩된 Web Bean으로의 직접 참조를 보유하고 있는 세션 범위에 바운딩된 Web Bean을 가정해 봅시다."
+" 때때로 세션 컨텍스트는 메모리를 보다 효과적으로 사용하기 위해 디스크 순서대로 나열됩니다. 하지만, 애플리케이션 범위로 바운딩된 Web"
+" Bean 인스턴스는 세션 범위로 바운딩된 Web Bean과 함께 나열되어서는 안됩니다! "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Therefore, unless a bean has the default scope <literal>@Dependent</literal>, the container must indirect all injected references to the bean through a proxy object. This <emphasis>client proxy</emphasis> is responsible for ensuring that the bean instance that receives a method invocation is the instance that is associated with the current context. The client proxy also allows beans bound to contexts such as the session context to be serialized to disk without recursively serializing other injected beans."
-msgstr "따라서, Web Bean은 기본값 범위 <literal>@Dependent</literal>를 갖지 않는 한, Web Bean 관리자는 프록시 객체를 통해 삽입된 모든 참조를 Web Bean으로 돌려 놓아야 합니다. 이러한 <emphasis>클라이언트 프록시</emphasis>는 방식 호출을 받는 Web Bean 인스턴스가 현재 컨텍스트와 관련된 인스턴스임을 확인해야 할 책임이 있습니다. 또한 클라이언트 프록시는 Web Beans가 삽입된 다른 Web Beans를 귀납적으로 나열하지 않고 디스크 순서대로 나열한 세션 컨텍스트와 같은 컨텍스트로 바운딩되게 합니다. "
+msgid ""
+"Therefore, unless a bean has the default scope "
+"<literal>@Dependent</literal>, the container must indirect all injected "
+"references to the bean through a proxy object. This <emphasis>client "
+"proxy</emphasis> is responsible for ensuring that the bean instance that "
+"receives a method invocation is the instance that is associated with the "
+"current context. The client proxy also allows beans bound to contexts such "
+"as the session context to be serialized to disk without recursively "
+"serializing other injected beans."
+msgstr ""
+"따라서, Web Bean은 기본값 범위 <literal>@Dependent</literal>를 갖지 않는 한, Web Bean 관리자는 "
+"프록시 객체를 통해 삽입된 모든 참조를 Web Bean으로 돌려 놓아야 합니다. 이러한 <emphasis>클라이언트 "
+"프록시</emphasis>는 방식 호출을 받는 Web Bean 인스턴스가 현재 컨텍스트와 관련된 인스턴스임을 확인해야 할 책임이 "
+"있습니다. 또한 클라이언트 프록시는 Web Beans가 삽입된 다른 Web Beans를 귀납적으로 나열하지 않고 디스크 순서대로 나열한 "
+"세션 컨텍스트와 같은 컨텍스트로 바운딩되게 합니다. "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Unfortunately, due to limitations of the Java language, some Java types cannot be proxied by the container. If an injection point declared with one of these types resolves to a bean with any scope other than <literal>@Dependent</literal>, the container will abort deployment, informing us of the problem."
-msgstr "Java 언어의 한계로 인해, 일부 Java 유형은 Web Bean 관리자에 의해 프록시될 수 없습니다. 따라서, 삽입 지점 유형이 프록시될 수 없을 경우 Web Bean 관리자는 <literal>UnproxyableDependencyException</literal>을 던지게 됩니다.      "
+msgid ""
+"Unfortunately, due to limitations of the Java language, some Java types "
+"cannot be proxied by the container. If an injection point declared with one "
+"of these types resolves to a bean with any scope other than "
+"<literal>@Dependent</literal>, the container will abort deployment, "
+"informing us of the problem."
+msgstr ""
+"Java 언어의 한계로 인해, 일부 Java 유형은 Web Bean 관리자에 의해 프록시될 수 없습니다. 따라서, 삽입 지점 유형이 "
+"프록시될 수 없을 경우 Web Bean 관리자는 "
+"<literal>UnproxyableDependencyException</literal>을 던지게 됩니다.      "
 
 #. Tag: para
 #, fuzzy, no-c-format
@@ -688,14 +864,19 @@ msgid "The following Java types cannot be proxied by the container:"
 msgstr "다음과 같은 Java 유형은 Web Bean 관리자에 의해 프록시될 수 없습니다:  "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "classes which don't have a non-private constructor with no parameters, and"
-msgstr "매개 변수 없는 비전용 생성자를 갖지 않는 클래스, "
+#, no-c-format
+msgid ""
+"classes which don't have a non-private constructor with no parameters, and"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "classes which are declared <literal>final</literal> or have a <literal>final</literal> method,"
-msgstr "<literal>final</literal>이라고 명시되어 있거나 또는 <literal>final</literal> 방식을 갖는 클래스, "
+msgid ""
+"classes which are declared <literal>final</literal> or have a "
+"<literal>final</literal> method,"
+msgstr ""
+"<literal>final</literal>이라고 명시되어 있거나 또는 <literal>final</literal> 방식을 갖는 클래스,"
+" "
 
 #. Tag: para
 #, no-c-format
@@ -704,7 +885,10 @@ msgstr "배열 및 기본 유형   "
 
 #. Tag: para
 #, no-c-format
-msgid "It's usually very easy to fix an unproxyable dependency problem. If an injection point of type <literal>X</literal> results in an unproxyable dependency, simply:"
+msgid ""
+"It's usually very easy to fix an unproxyable dependency problem. If an "
+"injection point of type <literal>X</literal> results in an unproxyable "
+"dependency, simply:"
 msgstr ""
 
 #. Tag: para
@@ -714,32 +898,44 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "change the type of the injection point to <literal>Instance&lt;X&gt;</literal>,"
+msgid ""
+"change the type of the injection point to "
+"<literal>Instance&lt;X&gt;</literal>,"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "introduce an interface <literal>Y</literal>, implemented by the injected bean, and change the type of the injection point to <literal>Y</literal>, or"
+msgid ""
+"introduce an interface <literal>Y</literal>, implemented by the injected "
+"bean, and change the type of the injection point to <literal>Y</literal>, or"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "if all else fails, change the scope of the injected bean to <literal>@Dependent</literal>."
+msgid ""
+"if all else fails, change the scope of the injected bean to "
+"<literal>@Dependent</literal>."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "A future release of Weld will likely support a non-standard workaround for this limitation, using non-portable JVM APIs:"
+msgid ""
+"A future release of Weld will likely support a non-standard workaround for "
+"this limitation, using non-portable JVM APIs:"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most efficient)"
+msgid ""
+"Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most "
+"efficient)"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</literal>"
+msgid ""
+"IBM, JRockit: "
+"<literal>ReflectionFactory.newConstructorForSerialization()</literal>"
 msgstr ""
 
 #. Tag: para
@@ -754,7 +950,9 @@ msgstr "프로그램적 lookup에 의해 Web Bean 획득 "
 
 #. Tag: para
 #, no-c-format
-msgid "In certain situations, injection is not the most convenient way to obtain a contextual reference. For example, it may not be used when:"
+msgid ""
+"In certain situations, injection is not the most convenient way to obtain a "
+"contextual reference. For example, it may not be used when:"
 msgstr ""
 
 #. Tag: para
@@ -764,7 +962,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "depending upon the deployment, there may be no bean which satisfies the type and qualifiers, or"
+msgid ""
+"depending upon the deployment, there may be no bean which satisfies the type"
+" and qualifiers, or"
 msgstr ""
 
 #. Tag: para
@@ -774,17 +974,21 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "In these situations, the application may obtain an instance of the interface <literal>Instance</literal>, parameterized for the bean type, by injection:"
+msgid ""
+"In these situations, the application may obtain an instance of the interface"
+" <literal>Instance</literal>, parameterized for the bean type, by injection:"
 msgstr "애플리케이션은 삽입에 의해 <literal>Manager</literal> 인터페이스의 인스턴스를 획득할 수 있습니다:  "
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "@Inject Instance&lt;PaymentProcessor&gt; paymentProcessorSource;"
-msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
+msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The <literal>get()</literal> method of <literal>Instance</literal> produces a contextual instance of the bean."
+msgid ""
+"The <literal>get()</literal> method of <literal>Instance</literal> produces "
+"a contextual instance of the bean."
 msgstr "테스트 용 <literal>@Mock</literal> 및 <literal>@Staging</literal> 배치 유형 "
 
 #. Tag: programlisting
@@ -804,8 +1008,12 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "by passing qualifiers to the <literal>select()</literal> of <literal>Event</literal>."
-msgstr "심플 Web Beans는 <literal>@PostConstruct</literal> 및 <literal>@PreDestroy</literal> 콜백 기능만을 지원합니다.    "
+msgid ""
+"by passing qualifiers to the <literal>select()</literal> of "
+"<literal>Event</literal>."
+msgstr ""
+"심플 Web Beans는 <literal>@PostConstruct</literal> 및 "
+"<literal>@PreDestroy</literal> 콜백 기능만을 지원합니다.    "
 
 #. Tag: para
 #, no-c-format
@@ -813,39 +1021,49 @@ msgid "Specifying the qualifiers at the injection point is much, much easier:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
-msgid "@Inject @Asynchronous Instance&lt;PaymentProcessor&gt; paymentProcessorSource;"
-msgstr "<![CDATA[@Asynchronous @PayByCheque PaymentProcessor paymentProcessor]]>"
-
-#. Tag: para
 #, no-c-format
-msgid "Now, the <literal>PaymentProcessor</literal> returned by <literal>get()</literal> will have the qualifier <literal>@Asynchronous</literal>."
+msgid ""
+"@Inject @Asynchronous Instance&lt;PaymentProcessor&gt; "
+"paymentProcessorSource;"
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Alternatively, we can specify the qualifier dynamically. First, we add the <literal>@Any</literal> qualifier to the injection point, to suppress the default qualifier. (All beans have the qualifier <literal>@Any</literal>.)"
+msgid ""
+"Now, the <literal>PaymentProcessor</literal> returned by "
+"<literal>get()</literal> will have the qualifier "
+"<literal>@Asynchronous</literal>."
+msgstr ""
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Alternatively, we can specify the qualifier dynamically. First, we add the "
+"<literal>@Any</literal> qualifier to the injection point, to suppress the "
+"default qualifier. (All beans have the qualifier <literal>@Any</literal>.)"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "@Inject @Any Instance&lt;PaymentProcessor&gt; paymentProcessorSource;"
-msgstr "<![CDATA[@Current PaymentProcessor paymentProcessor]]>"
+msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Next, we need to obtain an instance of our qualifier type. Since annotations are interfaces, we can't just write <literal>new Asynchronous()</literal>. It's also quite tedious to create a concrete implementation of an annotation type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class <literal>AnnotationLiteral</literal>."
+msgid ""
+"Next, we need to obtain an instance of our qualifier type. Since annotations"
+" are interfaces, we can't just write <literal>new Asynchronous()</literal>. "
+"It's also quite tedious to create a concrete implementation of an annotation"
+" type from scratch. Instead, CDI lets us obtain a qualifier instance by "
+"subclassing the helper class <literal>AnnotationLiteral</literal>."
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "abstract class AsynchronousQualifier\n"
 "extends AnnotationLiteral&lt;Asynchronous&gt; implements Asynchronous {}"
 msgstr ""
-"<![CDATA[abstract class CreditCardBinding \n"
-"    extends AnnotationLiteral<CreditCard> \n"
-"    implements CreditCard {}]]>"
 
 #. Tag: para
 #, no-c-format
@@ -853,22 +1071,24 @@ msgid "In some cases, we can use an anonymous class:"
 msgstr ""
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "PaymentProcessor p = paymentProcessorSource\n"
 "   .select(new AnnotationLiteral&lt;Asynchronous&gt;() {});"
 msgstr ""
-"<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, \n"
-"                                               new AnnotationLiteral<CreditCard>(){});]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "However, we can't use an anonymous class to implement a qualifier type with members."
+msgid ""
+"However, we can't use an anonymous class to implement a qualifier type with "
+"members."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, finally, we can pass the qualifier to the <literal>select()</literal> method of <literal>Instance</literal>."
+msgid ""
+"Now, finally, we can pass the qualifier to the <literal>select()</literal> "
+"method of <literal>Instance</literal>."
 msgstr ""
 
 #. Tag: programlisting
@@ -886,33 +1106,52 @@ msgstr "<literal>InjectionPoint</literal> 객체 "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "There are certain kinds of dependent objects (beans with scope <literal>@Dependent</literal>) that need to know something about the object or injection point into which they are injected in order to be able to do what they do. For example:"
-msgstr "특정 종류의 의존성 객체가 있습니다 &#151; <literal>@Dependent</literal> 범위와 함께 Web Beans &#151; 객체 또는 이는 실행 가능하게 되기 위해 삽입되는 삽입 지점에 관해 알아야 합니다. 예:  "
+msgid ""
+"There are certain kinds of dependent objects (beans with scope "
+"<literal>@Dependent</literal>) that need to know something about the object "
+"or injection point into which they are injected in order to be able to do "
+"what they do. For example:"
+msgstr ""
+"특정 종류의 의존성 객체가 있습니다 &#151; <literal>@Dependent</literal> 범위와 함께 Web Beans "
+"&#151; 객체 또는 이는 실행 가능하게 되기 위해 삽입되는 삽입 지점에 관해 알아야 합니다. 예:  "
 
 #. Tag: para
 #, no-c-format
-msgid "The log category for a <literal>Logger</literal> depends upon the class of the object that owns it."
+msgid ""
+"The log category for a <literal>Logger</literal> depends upon the class of "
+"the object that owns it."
 msgstr "<literal>Logger</literal> 용 로그 카테고리는 소유하고 있는 객체 클래스에 의존합니다.  "
 
 #. Tag: para
 #, no-c-format
-msgid "Injection of a HTTP parameter or header value depends upon what parameter or header name was specified at the injection point."
+msgid ""
+"Injection of a HTTP parameter or header value depends upon what parameter or"
+" header name was specified at the injection point."
 msgstr "헤더 값이나 HTTP 매개 변수 삽입은 삽입 지점에서 어떤 매개 변수 또는 헤더 이름을 지정하였는가에 의존합니다. "
 
 #. Tag: para
 #, no-c-format
-msgid "Injection of the result of an EL expression evaluation depends upon the expression that was specified at the injection point."
+msgid ""
+"Injection of the result of an EL expression evaluation depends upon the "
+"expression that was specified at the injection point."
 msgstr "EL 표현식 평가 (expression evaluation) 평가의 삽입은 삽입 지점에서 지정된 표현식에 의존합니다.  "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "A bean with scope <literal>@Dependent</literal> may inject an instance of <literal>InjectionPoint</literal> and access metadata relating to the injection point to which it belongs."
-msgstr "<literal>@Dependent</literal> 범위와 함께 Web Bean은 <literal>InjectionPoint</literal> 인스턴스를 삽입하고 해당 삽입 지점에 관련된 메타데이트를 액세스합니다. "
+msgid ""
+"A bean with scope <literal>@Dependent</literal> may inject an instance of "
+"<literal>InjectionPoint</literal> and access metadata relating to the "
+"injection point to which it belongs."
+msgstr ""
+"<literal>@Dependent</literal> 범위와 함께 Web Bean은 "
+"<literal>InjectionPoint</literal> 인스턴스를 삽입하고 해당 삽입 지점에 관련된 메타데이트를 액세스합니다. "
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Let's look at an example. The following code is verbose, and vulnerable to refactoring problems:"
-msgstr "다음 예를 살펴봅시다. 다음과 같은 코드는 프로그램을 리팩토링하기에 취약하고 장황합니다: "
+#, no-c-format
+msgid ""
+"Let's look at an example. The following code is verbose, and vulnerable to "
+"refactoring problems:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -921,8 +1160,12 @@ msgstr "<![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "This clever little producer method lets you inject a JDK <literal>Logger</literal> without explicitly specifying the log category:"
-msgstr "이와 같이 현명한 생산자 방식은 로그 범주를 명시적으로 지정하지 않고 JDK <literal>Logger</literal>를 삽입하게 합니다:  "
+msgid ""
+"This clever little producer method lets you inject a JDK "
+"<literal>Logger</literal> without explicitly specifying the log category:"
+msgstr ""
+"이와 같이 현명한 생산자 방식은 로그 범주를 명시적으로 지정하지 않고 JDK <literal>Logger</literal>를 삽입하게 "
+"합니다:  "
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -954,9 +1197,11 @@ msgid "@Inject Logger log;"
 msgstr "<![CDATA[@Current Logger log;]]>"
 
 #. Tag: para
-#, fuzzy, no-c-format
-msgid "Not convinced? Then here's a second example. To inject HTTP parameters, we need to define a qualifier type:"
-msgstr "확신하시지 않습니까? 그러시다면 여기에 두 번째 예제가 있습니다. HTTP 매개 변수를 삽입하려면, 바인딩 유형을 정의해야 합니다:  "
+#, no-c-format
+msgid ""
+"Not convinced? Then here's a second example. To inject HTTP parameters, we "
+"need to define a qualifier type:"
+msgstr ""
 
 #. Tag: programlisting
 #, fuzzy, no-c-format
@@ -981,13 +1226,11 @@ msgid "We would use this qualifier type at injection points as follows:"
 msgstr "다음과 같이 삽입 지점에서 이러한 바인딩 유형을 사용할 수 있습니다:  "
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "@HttpParam(\"username\") String username;\n"
 "@HttpParam(\"password\") String password;"
 msgstr ""
-"<![CDATA[@HttpParam(\"username\") String username;\n"
-"@HttpParam(\"password\") String password;]]>"
 
 #. Tag: para
 #, no-c-format
@@ -995,7 +1238,7 @@ msgid "The following producer method does the work:"
 msgstr "다음의 생산자 방식은 다음과 같이 작업합니다:  "
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "class HttpParams\n"
 "\n"
@@ -1007,32 +1250,37 @@ msgid ""
 "\n"
 "}"
 msgstr ""
-"<![CDATA[class HttpParams\n"
-"\n"
-"   @Produces @HttpParam(\"\")\n"
-"   String getParamValue(ServletRequest request, InjectionPoint ip) {\n"
-"      return request.getParameter(ip.getAnnotation(HttpParam.class).value());\n"
-"   }\n"
-"\n"
-"}]]>"
 
 #. Tag: para
 #, no-c-format
-msgid "Note that acquiring of the request in this example is JSF-centric. For a more generic solution you could write your own producer for the request and have it injected as a method parameter."
+msgid ""
+"Note that acquiring of the request in this example is JSF-centric. For a "
+"more generic solution you could write your own producer for the request and "
+"have it injected as a method parameter."
 msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "Note also that the <literal>value()</literal> member of the <literal>HttpParam</literal> annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal>"
-msgstr "<literal>HttpParam</literal> 어노테이션의 <literal>value()</literal> 멤버는<literal>@NonBinding.</literal>을 어노테이션하므로 Web Bean 관리자에 의해 무시됨에 유의하시기 바랍니다.   "
+msgid ""
+"Note also that the <literal>value()</literal> member of the "
+"<literal>HttpParam</literal> annotation is ignored by the container since it"
+" is annotated <literal>@Nonbinding.</literal>"
+msgstr ""
+"<literal>HttpParam</literal> 어노테이션의 <literal>value()</literal> "
+"멤버는<literal>@NonBinding.</literal>을 어노테이션하므로 Web Bean 관리자에 의해 무시됨에 유의하시기 "
+"바랍니다.   "
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "The container provides a built-in bean that implements the <literal>InjectionPoint</literal> interface:"
-msgstr "Web Bean 관리자는 <literal>InjectionPoint</literal> 인터페이스를 구현하는 내장된 Web Bean을 제공합니다:  "
+msgid ""
+"The container provides a built-in bean that implements the "
+"<literal>InjectionPoint</literal> interface:"
+msgstr ""
+"Web Bean 관리자는 <literal>InjectionPoint</literal> 인터페이스를 구현하는 내장된 Web Bean을 "
+"제공합니다:  "
 
 #. Tag: programlisting
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "public interface InjectionPoint { \n"
 "   public Type getType();\n"
@@ -1044,301 +1292,3 @@ msgid ""
 "   public boolean isTransient();\n"
 "}"
 msgstr ""
-"<![CDATA[public interface InjectionPoint { \n"
-"   public Object getInstance(); \n"
-"   public Bean<?> getBean(); \n"
-"   public Member getMember(): \n"
-"   public <T extends Annotation> T getAnnotation(Class<T> annotation); \n"
-"   public Set<T extends Annotation> getAnnotations(); \n"
-"}]]>"
-
-#, fuzzy
-#~ msgid "It's usually very easy to fix an unproxyable dependency problem. Simply add a constructor with no parameters to the injected class, introduce an interface, or, if all else fails, change the scope of the injected bean to <literal>@Dependent</literal>."
-#~ msgstr "<literal>UnproxyableDependencyException</literal>을 수정하기 쉽습니다. 간단하게 삽입된 클래스에 매개 변수가 없는 생성자를 추가하고, 인터페이스를 소개하거나, 삽입된 Web Bean의 범위를 <literal>@Dependent</literal>로 변경합니다.  "
-
-#~ msgid "Web Beans supports three primary mechanisms for dependency injection:"
-#~ msgstr "Web Beans는 의존성 삽입에 대한 세 가지 주요 메카니즘을 지원합니다: "
-
-#~ msgid "Constructor parameter injection:"
-#~ msgstr "생성자 매개 변수 삽입: "
-
-#~ msgid "Constructor parameter injection is not supported for EJB beans, since the EJB is instantiated by the EJB container, not the Web Bean manager."
-#~ msgstr "EJB가 Web Bean 관리자가 아닌 EJB 컨테이너에 의해 인스턴스화된 이래 생성자 매개변수 삽입은 EJB beans을 지원하지 않습니다. "
-
-#~ msgid "Parameters of constructors and initializer methods need not be explicitly annotated when the default binding type <literal>@Current</literal> applies. Injected fields, however, <emphasis>must</emphasis> specify a binding type, even when the default binding type applies. If the field does not specify a binding type, it will not be injected."
-#~ msgstr "기본값 바인딩 유형 <literal>@Current</literal>가 적용되었을 경우 생성자의 매개 변수 및 초기화 방식에서는 명시적으로 어노테이션할 필요가 없습니다. 하지만 삽입된 영역에는 <emphasis>반드시</emphasis> 바인딩 유형을 지정해야 하며, 언제 기본값 바인딩 유형을 적용할 지도 지정해야 합니다. 영역에 바인딩 유형이 지정되어 있지 않을 경우, 이는 삽입되지 않게 됩니다. "
-
-#~ msgid "Producer methods also support parameter injection:"
-#~ msgstr "생산자 방식은 매개 변수 삽입을 지원합니다:  "
-
-#~ msgid "Finally, observer methods (which we'll meet in <xref linkend=\"events\"/>), disposal methods and destructor methods all support parameter injection."
-#~ msgstr "마지막으로 옵저버 방식 (<xref linkend=\"events\"/>에서 살펴보게됨), 폐지 방식 및 소멸자 방식 모두는 매개 변수 삽입을 지원합니다. "
-
-#~ msgid "allow one implementation of an API to override another implementation of the same API at deployment time, without changes to the client, using <emphasis>deployment type precedence</emphasis>."
-#~ msgstr "하나의 API 구현이 클라이언트에 변경하지 않고 <emphasis>배치 유형 우선 순위</emphasis>를 사용하여 배치시 다른 동일한 API 구현을 덮어쓰기하게 합니다.  "
-
-#~ msgid "Let's explore how the Web Beans manager determines a Web Bean to be injected."
-#~ msgstr "Web Beans 관리자가 어떻게 Web Bean을 삽입할 지를 결정하는 방법에 대해 살펴봅시다. "
-
-#~ msgid ""
-#~ "<![CDATA[@PayByCreditCard\n"
-#~ "public class CreditCardPaymentProcessor implements PaymentProcessor {\n"
-#~ "    public void process(Payment payment) { ... }\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@PayByCreditCard\n"
-#~ "public class CreditCardPaymentProcessor implements PaymentProcessor {\n"
-#~ "    public void process(Payment payment) { ... }\n"
-#~ "}]]>"
-
-#~ msgid ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-#~ "@BindingType\n"
-#~ "public @interface PayByCreditCard {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "@Target({TYPE, METHOD, FIELD, PARAMETER})\n"
-#~ "@BindingType\n"
-#~ "public @interface PayByCreditCard {}]]>"
-
-#~ msgid "Binding annotations with members"
-#~ msgstr "멤버와 바인딩 어노테이션 "
-
-#~ msgid "Binding annotations may have members:"
-#~ msgstr "바인딩 어노테이션은 멤버를 갖을 수 있습니다: "
-
-#~ msgid "In which case, the member value is significant:"
-#~ msgstr "이러한 경우, 멤버 값이 중요합니다:   "
-
-#~ msgid ""
-#~ "<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
-#~ "@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
-#~ msgstr ""
-#~ "<![CDATA[@PayBy(CHEQUE) PaymentProcessor chequePaymentProcessor;\n"
-#~ "@PayBy(CREDIT_CARD) PaymentProcessor creditCardPaymentProcessor;]]>"
-
-#~ msgid "Combinations of binding annnotations"
-#~ msgstr "바인딩 어노테이션의 조합 "
-
-#~ msgid "Binding annotations and producer methods"
-#~ msgstr "바인딩 어노테이션 및 생산자 방식 "
-
-#~ msgid "Even producer methods may specify binding annotations:"
-#~ msgstr "생산자 방식은 바인딩 어노테이션을 지정할 수 도 있습니다: "
-
-#~ msgid ""
-#~ "<![CDATA[@Produces \n"
-#~ "@Asynchronous @PayByCheque \n"
-#~ "PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor processor) {\n"
-#~ "    return new AsynchronousPaymentProcessor(processor);\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Produces \n"
-#~ "@Asynchronous @PayByCheque \n"
-#~ "PaymentProcessor createAsyncPaymentProcessor(@PayByCheque PaymentProcessor processor) {\n"
-#~ "    return new AsynchronousPaymentProcessor(processor);\n"
-#~ "}]]>"
-
-#~ msgid "The default binding type"
-#~ msgstr "기본값 바인딩 유형 "
-
-#~ msgid "Web Beans defines a binding type <literal>@Current</literal> that is the default binding type for any injection point or Web Bean that does not explicitly specify a binding type."
-#~ msgstr "Web Beans는 명확하게 바인딩 유형을 지정하지 않은 Web Bean이나 또는 삽입 지점에 대한 기본값 바인딩 유형인 <literal>@Current</literal> 바인딩 유형을 정의합니다.  "
-
-#~ msgid "There are two common circumstances in which it is necessary to explicitly specify <literal>@Current</literal>:"
-#~ msgstr "<literal>@Current</literal>를 지정하기 위해 필요한 일반적인 환경이 두 가지 있습니다:      "
-
-#~ msgid "on a field, in order to declare it as an injected field with the default binding type, and"
-#~ msgstr "기본값 바인딩 유형과 함께 삽입 영역으로 이를 명시하기 위한 영역에서 "
-
-#~ msgid "on a Web Bean which has another binding type in addition to the default binding type."
-#~ msgstr "기본값 바인딩 유형에 더하여 다른 바인딩 유형을 갖는 Web Bean에서 "
-
-#~ msgid "Deployment types"
-#~ msgstr "배치 유형 "
-
-#~ msgid "All Web Beans have a <emphasis>deployment type</emphasis>. Each deployment type identifies a set of Web Beans that should be conditionally installed in some deployments of the system."
-#~ msgstr "모든 Web Beans는 <emphasis>배치 유형</emphasis>을 갖습니다. 각각의 배치 유형은 시스템의 일부 배치에 조건부로 설치되어야 하는 Web Beans 모음을 인식합니다. "
-
-#~ msgid "For example, we could define a deployment type named <literal>@Mock</literal>, which would identify Web Beans that should only be installed when the system executes inside an integration testing environment:"
-#~ msgstr "예를 들어, <literal>@Mock</literal>라는 배치 유형을 정의할 수 있으며, 이는 시스템이 통합적인 테스트 환경 내에서 실행될 때 설치되어야 하는 Web Beans를 인식합니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "  @Target({TYPE, METHOD})\n"
-#~ "  @DeploymentType\n"
-#~ "  public @interface Mock {}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Retention(RUNTIME)\n"
-#~ "  @Target({TYPE, METHOD})\n"
-#~ "  @DeploymentType\n"
-#~ "  public @interface Mock {}]]>"
-
-#~ msgid "Suppose we had some Web Bean that interacted with an external system to process payments:"
-#~ msgstr "지불 절차를 처리하기 위한 외부적 시스템과 상호 작용하는 일부 Web Bean이 있다고 가정합시다:  "
-
-#~ msgid ""
-#~ "<![CDATA[public class ExternalPaymentProcessor {\n"
-#~ "        \n"
-#~ "    public void process(Payment p) {\n"
-#~ "        ...\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[public class ExternalPaymentProcessor {\n"
-#~ "        \n"
-#~ "    public void process(Payment p) {\n"
-#~ "        ...\n"
-#~ "    }\n"
-#~ "    \n"
-#~ "}]]>"
-
-#~ msgid "Since this Web Bean does not explicitly specify a deployment type, it has the default deployment type <literal>@Production</literal>."
-#~ msgstr "이러한 Web Bean이 배치 유형을 명시적을 지정하지 않고 있으므로, 이는 기본값 배치 유형 <literal>@Production</literal>을 갖게 됩니다.  "
-
-#~ msgid "For integration or unit testing, the external system is slow or unavailable. So we would create a mock object:"
-#~ msgstr "통합 또는 단위 테스트를 위해 외부적 시스템은 속도가 느리거나 또는 사용 불가능합니다. 따라서 모의 객체를 생성할 수 있습니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[@Mock \n"
-#~ "public class MockPaymentProcessor implements PaymentProcessor {\n"
-#~ "\n"
-#~ "    @Override\n"
-#~ "    public void process(Payment p) {\n"
-#~ "        p.setSuccessful(true);\n"
-#~ "    }\n"
-#~ "\n"
-#~ "}]]>"
-#~ msgstr ""
-#~ "<![CDATA[@Mock \n"
-#~ "public class MockPaymentProcessor implements PaymentProcessor {\n"
-#~ "\n"
-#~ "    @Override\n"
-#~ "    public void process(Payment p) {\n"
-#~ "        p.setSuccessful(true);\n"
-#~ "    }\n"
-#~ "\n"
-#~ "}]]>"
-
-#~ msgid "But how does the Web Bean manager determine which implementation to use in a particular deployment?"
-#~ msgstr "하지만 Web Bean 관리자가 특정 배치에 어떤 구현을 사용할 지를 어떻게 결정할까요?   "
-
-#~ msgid "Enabling deployment types"
-#~ msgstr "배치 유형 활성화   "
-
-#~ msgid "Web Beans defines two built-in deployment types: <literal>@Production</literal> and <literal>@Standard</literal>. By default, only Web Beans with the built-in deployment types are enabled when the system is deployed. We can identify additional deployment types to be enabled in a particular deployment by listing them in <literal>web-beans.xml</literal>."
-#~ msgstr "Web Beans는 두 개의 내장된 배치 유형을 정의합니다: <literal>@Production</literal> 및 <literal>@Standard</literal>. 시스템이 배치되면 기본값으로 내장된 배치 유형과 함께 Web Beans 만이 활성화됩니다. <literal>web-beans.xml</literal>에서 목록을 나열하여 특정 배치에서 활성화될 추가 배치 유형을 인식할 수 있습니다.    "
-
-#~ msgid "Going back to our example, when we deploy our integration tests, we want all our <literal>@Mock</literal> objects to be installed:"
-#~ msgstr "예제로 다시 돌아가서, 통합적 테스트를 배치할 때, 모든 <literal>@Mock</literal> 객체가 설치되기를 원합니다: "
-
-#~ msgid ""
-#~ "<![CDATA[<WebBeans>\n"
-#~ "    <Deploy>\n"
-#~ "        <Standard/>\n"
-#~ "        <Production/>\n"
-#~ "        <test:Mock/>\n"
-#~ "    </Deploy>\n"
-#~ "</WebBeans>]]>"
-#~ msgstr ""
-#~ "<![CDATA[<WebBeans>\n"
-#~ "    <Deploy>\n"
-#~ "        <Standard/>\n"
-#~ "        <Production/>\n"
-#~ "        <test:Mock/>\n"
-#~ "    </Deploy>\n"
-#~ "</WebBeans>]]>"
-
-#~ msgid "Now the Web Bean manager will identify and install all Web Beans annotated <literal>@Production</literal>, <literal>@Standard</literal> or <literal>@Mock</literal> at deployment time."
-#~ msgstr "이제 Web Bean 관리자는 배치시 <literal>@Production</literal>, <literal>@Standard</literal>, <literal>@Mock</literal> 어노테이션된 모든 Web Beans를 인식 및 설치하게 됩니다.  "
-
-#~ msgid "The deployment type <literal>@Standard</literal> is used only for certain special Web Beans defined by the Web Beans specification. We can't use it for our own Web Beans, and we can't disable it."
-#~ msgstr "<literal>@Standard</literal> 배치 유형은 Web Beans 사양에 의해 정의된 특정 Web Beans에서만 사용됩니다. 자체적 Web Beans에는 이를 사용할 수 없으며 이를 비활성화할 수 없습니다.  "
-
-#~ msgid "The deployment type <literal>@Production</literal> is the default deployment type for Web Beans which don't explicitly declare a deployment type, and may be disabled."
-#~ msgstr "<literal>@Production</literal> 배치 유형은 배치 유형을 명시하지 않은 Web Beans에 대한 기본값 배치 유형으로 비활성화될 수 있습니다.  "
-
-#~ msgid "Deployment type precedence"
-#~ msgstr "배치 유형 우선 순위 "
-
-#~ msgid "If you've been paying attention, you're probably wondering how the Web Bean manager decides which implementation &#151; <literal>ExternalPaymentProcessor</literal> or <literal>MockPaymentProcessor</literal> &#151; to choose. Consider what happens when the manager encounters this injection point:"
-#~ msgstr "관심을 기울이셨다면, Web Bean 관리자가 어떤 구현 &#151; <literal>ExternalPaymentProcessor</literal> 또는 <literal>MockPaymentProcessor</literal> &#151; 을 선택할 지를 어떻게 결정하는지에 대해 궁금해 하셨을 것입니다. 관리자기 이러한 삽입 지점에 이르렀을 때 무엇이 발생할 지를 고려합니다: "
-
-#~ msgid "There are now two Web Beans which satisfy the <literal>PaymentProcessor</literal> contract. Of course, we can't use a binding annotation to disambiguate, since binding annotations are hard-coded into the source at the injection point, and we want the manager to be able to decide at deployment time!"
-#~ msgstr "<literal>PaymentProcessor</literal> 계약을 만족하는 두 개의 Web Beans가 있습니다. 삽입 지점에서 바인딩 어노테이션은 소스로 하드-코드화되어 있으므로, 명확하게 하기 위해 바인딩 어노테이션을 사용할 수 없으며, 관리자가 배치시 결정할 수 있게 하기를 원합니다!  "
-
-#~ msgid "The solution to this problem is that each deployment type has a different <emphasis>precedence</emphasis>. The precedence of the deployment types is determined by the order in which they appear in <literal>web-beans.xml</literal>. In our example, <literal>@Mock</literal> appears later than <literal>@Production</literal> so it has a higher precedence."
-#~ msgstr "이러한 문제의 해결책은 각각의 배치 유형이 다른 <emphasis>우선 순위</emphasis>를 갖게 하는 것입니다. 배치 유형의 우선 순위는 <literal>web-beans.xml</literal>에 나타나는 순서에 의해 결정됩니다. 예에서 <literal>@Mock</literal>는 <literal>@Production</literal> 보다 나중에 나타나므로 보다 높은 우선 순위를 갖습니다. "
-
-#~ msgid "Whenever the manager discovers that more than one Web Bean could satisfy the contract (API type plus binding annotations) specified by an injection point, it considers the relative precedence of the Web Beans. If one has a higher precedence than the others, it chooses the higher precedence Web Bean to inject. So, in our example, the Web Bean manager will inject <literal>MockPaymentProcessor</literal> when executing in our integration testing environment (which is exactly what we want)."
-#~ msgstr "하나 이상의 Web Bean이 삽입 지점에 의해 지정된 계약 (API 유형 및 바인딩 어노테이션)에 만족할 수 있음을 관리자가 발견할 때 마다, 이는 Web Beans의 관련된 우선 순위를 고려합니다. 하나의 Web Bean이 다른 것 보다 높은 우선 순위를 갖을 경우, 삽입될 보다 높은 우선 순위의 Web Bean을 선택합니다. 예에서, 통합 테스트 환경 (실제적으로 원하는 환경)에서 실행할 때 Web Bean 관리자는 <literal>MockPaymentProcessor</literal>를 삽입하게 됩니다.   "
-
-#~ msgid "It's interesting to compare this facility to today's popular manager architectures. Various \"lightweight\" containers also allow conditional deployment of classes that exist in the classpath, but the classes that are to be deployed must be explicity, individually, listed in configuration code or in some XML configuration file. Web Beans does support Web Bean definition and configuration via XML, but in the common case where no complex configuration is required, deployment types allow a whole set of Web Beans to be enabled with a single line of XML. Meanwhile, a developer browsing the code can easily identify what deployment scenarios the Web Bean will be used in."
-#~ msgstr "이러한 기능을 오늘날의 관리자 구조와 비교하는 것은 흥미로운 일입니다. 다양한 \"경량\"의 컨테이너는 classpath에 있는 클래스의 조건부 배치를 허용하지만, 배치될 클래스는 명시적, 개별적이어하며, 설정 코드나 일부 XML 설정 파일에 나열되어 있어야 합니다. Web Beans는 XML을 통한 Web Bean 정의 및 설정을 지원하지만 복잡한 설정을 필요로 하지 않는 대부분의 경우, 배치 유형은 전체 Web Beans 설정이 단일 XML 행으로 활성화되게 합니다. 동시에, 코드를 검색하는 개발자는 어떤 배치 시나리오를 Web Bean이 사용할 지를 쉽게 인식할 수 있습니다.  "
-
-#~ msgid "Example deployment types"
-#~ msgstr "배치 유형 예시 "
-
-#~ msgid "Deployment types are useful for all kinds of things, here's some examples:"
-#~ msgstr "배치 유형은 모든 종류가 유용합니다, 다음에는 일부 예시가 있습니다:       "
-
-#~ msgid "<literal>@AustralianTaxLaw</literal> for site-specific Web Beans"
-#~ msgstr "특정 사이트 Web Beans 용 <literal>@AustralianTaxLaw</literal>  "
-
-#~ msgid "<literal>@SeamFramework</literal>, <literal>@Guice</literal> for third-party frameworks which build on Web Beans"
-#~ msgstr "Web Beans에서 작성되는 제삼자 프레임워크 용 <literal>@SeamFramework</literal>, <literal>@Guice</literal> "
-
-#~ msgid "<literal>@Standard</literal> for standard Web Beans defined by the Web Beans specification"
-#~ msgstr "Web Beans 사양에 의해 정의된 표준 Web Beans 용 <literal>@Standard</literal> "
-
-#~ msgid "I'm sure you can think of more applications..."
-#~ msgstr "더 많은 애플리케이션을 생각하실 수 있을 것입니다..."
-
-#~ msgid "It's usually easy to fix an <literal>UnsatisfiedDependencyException</literal> or <literal>AmbiguousDependencyException</literal>."
-#~ msgstr "<literal>UnsatisfiedDependencyException</literal> 또는 <literal>AmbiguousDependencyException</literal>을 수정하기가 쉽습니다. "
-
-#~ msgid "To fix an <literal>UnsatisfiedDependencyException</literal>, simply provide a Web Bean which implements the API type and has the binding types of the injection point &#151; or enable the deployment type of a Web Bean that already implements the API type and has the binding types."
-#~ msgstr "<literal>UnsatisfiedDependencyException</literal>을 수정하려면, API 유형을 구현하는 Web Bean을 제공하고 삽입 지점의 바인딩 유형을 갖거나 &#151; 또는 API 유형을 이미 구현하고 있는 Web Bean의 배치 유형을 활성화하고 바인딩 유형을 갖습니다.  "
-
-#~ msgid "To fix an <literal>AmbiguousDependencyException</literal>, introduce a binding type to distinguish between the two implementations of the API type, or change the deployment type of one of the implementations so that the Web Bean manager can use deployment type precedence to choose between them. An <literal>AmbiguousDependencyException</literal> can only occur if two Web Beans share a binding type and have exactly the same deployment type."
-#~ msgstr "<literal>AmbiguousDependencyException</literal>을 수정하려면, 두 개의 API 유형 구현 사이에서 구별하기 위해 바인딩 유형을 소개하거나 구현 중 하나의 배치 유형을 변경하여 Web Bean 관리자가 이들 사이에서 선택하기 위해 배치 유형 우선 순위를 사용할 수 있습니다. <literal>AmbiguousDependencyException</literal>은 두 개의 Web Beans가 바인딩 유형을 공유하여 동일한 배치 유형을 갖고 있을 때에만 발생할 수 있습니다.  "
-
-#~ msgid "<![CDATA[@Current Manager manager;]]>"
-#~ msgstr "<![CDATA[@Current Manager manager;]]>"
-
-#~ msgid "The <literal>Manager</literal> object provides a set of methods for obtaining a Web Bean instance programatically."
-#~ msgstr "<literal>Manager</literal> 객체는 프로그램적으로 Web Bean 인스턴스의 획득을 위한 방식 모음을 제공합니다. "
-
-#~ msgid "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class);]]>"
-#~ msgstr "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class);]]>"
-
-#~ msgid "Binding annotations may be specified by subclassing the helper class <literal>AnnotationLiteral</literal>, since it is otherwise difficult to instantiate an annotation type in Java."
-#~ msgstr "바인딩 어노테이션은 <literal>AnnotationLiteral</literal> 도우미 클래스를 하부클래스화하여 지정될 수 있으며, 그렇지 않으면 Java에서 어노테이션 유형을 인스턴스화하기 어렵습니다.  "
-
-#~ msgid "If the binding type has an annotation member, we can't use an anonymous subclass of <literal>AnnotationLiteral</literal> &#151; instead we'll need to create a named subclass:"
-#~ msgstr "바인딩 유형이 어노테이션 멤버를 갖을 경우, <literal>AnnotationLiteral</literal>의 임의의 하부클래스를 사용할 수 없습니다 &#151; 대신 named 하부 클래스를 생성해야 합니다:  "
-
-#~ msgid ""
-#~ "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, \n"
-#~ "                                               new CreditCardBinding() { \n"
-#~ "                                                   public void value() { return paymentType; } \n"
-#~ "                                               } );]]>"
-#~ msgstr ""
-#~ "<![CDATA[PaymentProcessor p = manager.getInstanceByType(PaymentProcessor.class, \n"
-#~ "                                               new CreditCardBinding() { \n"
-#~ "                                                   public void value() { return paymentType; } \n"
-#~ "                                               } );]]>"
-
-#~ msgid "Lifecycle callbacks, <literal>@Resource</literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal>"
-#~ msgstr "수명 주기 콜백, <literal>@Resource</literal>, <literal>@EJB</literal> 및 <literal>@PersistenceContext</literal> "
-
-#~ msgid "Enterprise Web Beans support all the lifecycle callbacks defined by the EJB specification: <literal>@PostConstruct</literal>, <literal>@PreDestroy</literal>, <literal>@PrePassivate</literal> and <literal>@PostActivate</literal>."
-#~ msgstr "Enterprise Web Beans는 EJB 사양에 의해 정의된 모든 수명 주기 콜백을 지원합니다: <literal>@PostConstruct</literal>, <literal>@PreDestroy</literal>, <literal>@PrePassivate</literal> 및 <literal>@PostActivate</literal>. "
-
-#~ msgid "Both enterprise and simple Web Beans support the use of <literal>@Resource</literal>, <literal>@EJB</literal> and <literal>@PersistenceContext</literal> for injection of Java EE resources, EJBs and JPA persistence contexts, respectively. Simple Web Beans do not support the use of <literal>@PersistenceContext(type=EXTENDED)</literal>."
-#~ msgstr "엔터프라이즈 및 심플 Web Beans는 Java EE 리소스 삽입, EJB 및 JPA 영구적 컨텍스에 대해 <literal>@Resource</literal>, <literal>@EJB</literal> 및 <literal>@PersistenceContext</literal>의 사용을 각각 지원합니다. 심플 Web Beans는 <literal>@PersistenceContext(type=EXTENDED)</literal>의 사용을 지원하지 않습니다.    "
-
-#~ msgid "The <literal>@PostConstruct</literal> callback always occurs after all dependencies have been injected."
-#~ msgstr "<literal>@PostConstruct</literal> 콜백은 모든 의존성이 삽입된 후에 나타납니다. "

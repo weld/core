@@ -1,19 +1,17 @@
 # translation of master.po to Traditional Chinese
 # Language zh-TW translations for Introduction_to_Web_Beans package.
-#
+# 
 # Automatically generated, 2009.
 # Terry Chuang <tchuang@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: master\n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2010-12-14T13:35:17\n"
 "PO-Revision-Date: 2009-01-08 10:09+1000\n"
 "Last-Translator: Terry Chuang <tchuang@redhat.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
@@ -24,17 +22,36 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Shortly before the final draft of JSR-299 was submitted, the specification changed its name from &#34;Web Beans&#34; to &#34;Java Contexts and Dependency Injection for the Java EE platform&#34;, abbreviated CDI. For a brief period after the renaming, the reference implementation adopted the name &#34;Web Beans&#34;. However, this ended up causing more confusion than it solved and Red Hat decided to change the name of the reference implementation to &#34;Weld&#34;. You may still find other documentation, blogs, forum posts, etc. that use the old nomenclature. Please update any references you can. The naming game is over."
+msgid ""
+"Shortly before the final draft of JSR-299 was submitted, the specification "
+"changed its name from &#34;Web Beans&#34; to &#34;Java Contexts and "
+"Dependency Injection for the Java EE platform&#34;, abbreviated CDI. For a "
+"brief period after the renaming, the reference implementation adopted the "
+"name &#34;Web Beans&#34;. However, this ended up causing more confusion than"
+" it solved and Red Hat decided to change the name of the reference "
+"implementation to &#34;Weld&#34;. You may still find other documentation, "
+"blogs, forum posts, etc. that use the old nomenclature. Please update any "
+"references you can. The naming game is over."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "You&#39;ll also find that some of the functionality that once existed in the specification is now missing, such as defining beans in XML. These features will be available as portable extensions for CDI in the Weld project, and perhaps other implementations."
+msgid ""
+"You&#39;ll also find that some of the functionality that once existed in the"
+" specification is now missing, such as defining beans in XML. These features"
+" will be available as portable extensions for CDI in the Weld project, and "
+"perhaps other implementations."
 msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Note that this reference guide was started while changes were still being made to the specification. We&#39;ve done our best to update it for accuracy. If you discover a conflict between what is written in this guide and the specification, the specification is the authority—assume it is correct. If you believe you have found an error in the specification, please report it to the JSR-299 EG."
+msgid ""
+"Note that this reference guide was started while changes were still being "
+"made to the specification. We&#39;ve done our best to update it for "
+"accuracy. If you discover a conflict between what is written in this guide "
+"and the specification, the specification is the authority—assume it is "
+"correct. If you believe you have found an error in the specification, please"
+" report it to the JSR-299 EG."
 msgstr ""
 
 #. Tag: title
@@ -61,9 +78,3 @@ msgstr "Web Beans 與 Java EE 應用系統"
 #, no-c-format
 msgid "Weld Reference Guide"
 msgstr ""
-
-#~ msgid "Using contextual objects"
-#~ msgstr "使用概念上的物件"
-
-#~ msgid "Developing loosely-coupled code"
-#~ msgstr "開發鬆散耦合（loosely-coupled）的程式碼"

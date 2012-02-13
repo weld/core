@@ -1,73 +1,92 @@
 # Language fr-FR translations for master.xml package.
 # Automatically generated, 2008.
-#
+# 
+# Julien Herr <julien@herr.fr>, 2011. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: master.xml \n"
-"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"Project-Id-Version: 0\n"
 "POT-Creation-Date: 2012-01-16T16:07:16\n"
 "PO-Revision-Date: 2008-12-19 20:26+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 
 #. Tag: title
 #, no-c-format
 msgid "Stereotypes"
-msgstr ""
+msgstr "Stéréotypes"
 
 #. Tag: para
 #, no-c-format
 msgid "The CDI specification defines a stereotype as follows:"
-msgstr ""
+msgstr "La spécification CDI définit un stéréotype de la façon suivante :"
 
 #. Tag: para
-#, no-c-format
-msgid "In many systems, use of architectural patterns produces a set of recurring bean roles. A stereotype allows a framework developer to identify such a role and declare some common metadata for beans with that role in a central place."
+#, fuzzy, no-c-format
+msgid ""
+"In many systems, use of architectural patterns produces a set of recurring "
+"bean roles. A stereotype allows a framework developer to identify such a "
+"role and declare some common metadata for beans with that role in a central "
+"place."
 msgstr ""
+"Dans de nombreux systèmes, l'utilisation de modèles architecturaux produit "
+"un ensemble de rôles récurrents pour les beans. Un stéréotype permet à un "
+"développeur de framework d'identifier un tel rôle et de déclarer certaines "
+"métadonnées communes pour les beans avec ce rôle dans un endroit central."
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "A stereotype encapsulates any combination of:"
-msgstr ""
+msgstr "Un stéréotype encapsule toute combinaison de :"
 
 #. Tag: para
 #, no-c-format
 msgid "a default scope, and"
-msgstr ""
+msgstr "une portée par défaut, et"
 
 #. Tag: para
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "a set of interceptor bindings."
-msgstr ""
+msgstr "un ensemble de branchements d'interception."
 
 #. Tag: para
 #, no-c-format
 msgid "A stereotype may also specify that:"
-msgstr ""
+msgstr "Un stéréotype peut aussi définir que :"
 
 #. Tag: para
 #, no-c-format
 msgid "all beans with the stereotype have defaulted bean EL names, or that"
-msgstr ""
+msgstr "tous beans avec un stéréotype ont des noms EL par défaut, ou que"
 
 #. Tag: para
 #, no-c-format
 msgid "all beans with the stereotype are alternatives."
-msgstr ""
+msgstr "tous beans avec un stéréotype sont des alternatives."
 
 #. Tag: para
 #, no-c-format
-msgid "A bean may declare zero, one or multiple stereotypes. Stereotype annotations may be applied to a bean class or producer method or field."
+msgid ""
+"A bean may declare zero, one or multiple stereotypes. Stereotype annotations"
+" may be applied to a bean class or producer method or field."
 msgstr ""
+"Un bean peut déclarer zéro, un ou plusieurs stéréotypes. Les annotations "
+"stéréotype peuvent être appliquées sur une classe or méthode de production "
+"ou un attribut."
 
 #. Tag: para
-#, no-c-format
-msgid "A stereotype is an annotation, annotated <literal>@Stereotype</literal>, that packages several other annotations. For instance, the following stereotype identifies action classes in some MVC framework:"
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype is an annotation, annotated <literal>@Stereotype</literal>, "
+"that packages several other annotations. For instance, the following "
+"stereotype identifies action classes in some MVC framework:"
 msgstr ""
+"Un stéréotype est une annotation, annotée <literal>@Stereotype</literal>, "
+"qui encapsule plusieurs autres annotations. Par exemple, le stéréotype "
+"suivant identifie les classes d'action dans certains frameworks MVC :"
 
 #. Tag: programlisting
 #, no-c-format
@@ -82,7 +101,7 @@ msgstr ""
 #. Tag: para
 #, no-c-format
 msgid "We use the stereotype by applying the annotation to a bean."
-msgstr ""
+msgstr "Nous utilisons le stéréotype en appliquant l'annotation à un bean."
 
 #. Tag: programlisting
 #, no-c-format
@@ -93,18 +112,26 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Of course, we need to apply some other annotations to our stereotype or else it wouldn't be adding much value."
+msgid ""
+"Of course, we need to apply some other annotations to our stereotype or else"
+" it wouldn't be adding much value."
 msgstr ""
+"Evidemment, nous devons appliquer d'autres annotations à notre stéréotype ou"
+" sinon il n'ajoutera pas plus de valeur."
 
 #. Tag: title
 #, no-c-format
 msgid "Default scope for a stereotype"
-msgstr ""
+msgstr "Portée par défaut d'un stéréotype"
 
 #. Tag: para
 #, no-c-format
-msgid "A stereotype may specify a default scope for beans annotated with the stereotype. For example:"
+msgid ""
+"A stereotype may specify a default scope for beans annotated with the "
+"stereotype. For example:"
 msgstr ""
+"Un stéréotype peu définir une portée par défaut pour les beans annotés avec "
+"le stéréotype. Par exemple :"
 
 #. Tag: programlisting
 #, no-c-format
@@ -120,6 +147,8 @@ msgstr ""
 #, no-c-format
 msgid "A particular action may still override this default if necessary:"
 msgstr ""
+"Une action particulière peut toujours surcharger cette valeur par défaut, si"
+" nécessaire :"
 
 #. Tag: programlisting
 #, no-c-format
@@ -130,18 +159,27 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Naturally, overriding a single default isn't much use. But remember, stereotypes can define more than just the default scope."
+msgid ""
+"Naturally, overriding a single default isn't much use. But remember, "
+"stereotypes can define more than just the default scope."
 msgstr ""
+"Naturellement, la surcharge d'une seule valeur par défaut n'est pas très "
+"utile. Mais souvenez-vous, les stéréotypes peuvent définir plus simplement "
+"la portée par défaut."
 
 #. Tag: title
 #, no-c-format
 msgid "Interceptor bindings for stereotypes"
-msgstr ""
+msgstr "Branchement d'interception pour les stéréotypes"
 
 #. Tag: para
-#, no-c-format
-msgid "A stereotype may specify a set of interceptor bindings to be inherited by all beans with that stereotype."
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype may specify a set of interceptor bindings to be inherited by "
+"all beans with that stereotype."
 msgstr ""
+"Un stéréotype peut spécifier un ensemble de branchements d'interception qui "
+"sera hérité par tous les beans avec ce stéréotype."
 
 #. Tag: programlisting
 #, no-c-format
@@ -156,19 +194,30 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, no-c-format
-msgid "This helps us get technical concerns, like transactions and security, even further away from the business code!"
+#, fuzzy, no-c-format
+msgid ""
+"This helps us get technical concerns, like transactions and security, even "
+"further away from the business code!"
 msgstr ""
+"Cela nous aide à obtenir des préoccupations techniques, comme les "
+"transactions et la sécurité, encore plus loin dans le code des affaires !"
 
 #. Tag: title
 #, no-c-format
 msgid "Name defaulting with stereotypes"
-msgstr ""
+msgstr "Nom par défaut avec les stéréotypes"
 
 #. Tag: para
 #, no-c-format
-msgid "We can specify that all beans with a certain stereotype have a defaulted EL name when a name is not explicitly defined for that bean. All we need to do is add an empty <literal>@Named</literal> annotation:"
+msgid ""
+"We can specify that all beans with a certain stereotype have a defaulted EL "
+"name when a name is not explicitly defined for that bean. All we need to do "
+"is add an empty <literal>@Named</literal> annotation:"
 msgstr ""
+"Vous pouvez spécifier que tous les beans avec un certain stéréotype ont un "
+"nom EL par défaut quand un nom n'est pas explicitement défini pour ce bean. "
+"Tout ce que nous devons faire est d'ajouter une annotation "
+"<literal>@Named</literal> sans paramètre :"
 
 #. Tag: programlisting
 #, no-c-format
@@ -185,18 +234,29 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Now, the <literal>LoginAction</literal> bean will have the defaulted name <literal>loginAction</literal>."
+msgid ""
+"Now, the <literal>LoginAction</literal> bean will have the defaulted name "
+"<literal>loginAction</literal>."
 msgstr ""
+"Maintenant, le bean <literal>LoginAction</literal> aura "
+"<literal>loginAction</literal> comme nom par défaut."
 
 #. Tag: title
 #, no-c-format
 msgid "Alternative stereotypes"
-msgstr ""
+msgstr "Stéréotypes alternatifs"
 
 #. Tag: para
-#, no-c-format
-msgid "A stereotype can indicate that all beans to which it is applied are <literal>@Alternative</literal>s. An <emphasis>alternative stereotype</emphasis> lets us classify beans by deployment scenario."
+#, fuzzy, no-c-format
+msgid ""
+"A stereotype can indicate that all beans to which it is applied are "
+"<literal>@Alternative</literal>s. An <emphasis>alternative "
+"stereotype</emphasis> lets us classify beans by deployment scenario."
 msgstr ""
+"Un stéréotype peut indiquer que tous les beans auquel il est appliqué sont "
+"des <literal>@Alternative</literal>s. Un <emphasis>stéréotype "
+"alternatif</emphasis> nous permet de trier les beans par scénario de "
+"déploiement."
 
 #. Tag: programlisting
 #, no-c-format
@@ -209,9 +269,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
-#, no-c-format
-msgid "We can apply an alternative stereotype to a whole set of beans, and activate them all with one line of code in <literal>beans.xml</literal>."
+#, fuzzy, no-c-format
+msgid ""
+"We can apply an alternative stereotype to a whole set of beans, and activate"
+" them all with one line of code in <literal>beans.xml</literal>."
 msgstr ""
+"Nous pouvons appliquer un stéréotype alternatif à un ensemble de beans, et "
+"de le leur activer avec une seule ligne de code dans "
+"<literal>beans.xml</literal>."
 
 #. Tag: programlisting
 #, no-c-format
@@ -223,17 +288,31 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Stereotype stacking"
+msgstr "Empilage de stéréotypes"
+
+#. Tag: para
+#, fuzzy, no-c-format
+msgid ""
+"This may blow your mind a bit, but stereotypes may declare other "
+"stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You "
+"may want to do this if you have two distinct stereotypes which are "
+"meaningful on their own, but in other situation may be meaningful when "
+"combined."
 msgstr ""
+"Cela peut un peu vous couper le souffle, mais les stéréotypes peuvent "
+"déclarer d'autres stéréotypes, que nous appellerons <emphasis>empilage de "
+"stéréotypes</emphasis>. Vous pouvez faire cela si vous avez deux stéréotypes"
+" distincts qui sont significatifs, mais dans une autre situation peuvent "
+"être utiles lorsqu'ils sont combinés."
 
 #. Tag: para
 #, no-c-format
-msgid "This may blow your mind a bit, but stereotypes may declare other stereotypes, which we'll call <emphasis>stereotype stacking</emphasis>. You may want to do this if you have two distinct stereotypes which are meaningful on their own, but in other situation may be meaningful when combined."
+msgid ""
+"Here's an example that combines the <literal>@Action</literal> and "
+"<literal>@Auditable</literal> stereotypes:"
 msgstr ""
-
-#. Tag: para
-#, no-c-format
-msgid "Here's an example that combines the <literal>@Action</literal> and <literal>@Auditable</literal> stereotypes:"
-msgstr ""
+"Voici un exemple qui combine les stéréotypes <literal>@Action</literal> et "
+"<literal>@Auditable</literal> :"
 
 #. Tag: programlisting
 #, no-c-format
@@ -249,17 +328,27 @@ msgstr ""
 #. Tag: title
 #, no-c-format
 msgid "Built-in stereotypes"
-msgstr ""
+msgstr "Stéréotypes intégrés"
 
 #. Tag: para
 #, no-c-format
-msgid "We've already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal> and <literal>@Decorator</literal>."
+msgid ""
+"We've already met two standard stereotypes defined by the CDI specification:"
+" <literal>@Interceptor</literal> and <literal>@Decorator</literal>."
 msgstr ""
+"Nous avons déjà rencontré deux stéréotypes standards définis par la "
+"spécification CDI : <literal>@Interceptor</literal> and "
+"<literal>@Decorator</literal>."
 
 #. Tag: para
 #, no-c-format
-msgid "CDI defines one further standard stereotype, <literal>@Model</literal>, which is expected to be used frequently in web applications:"
+msgid ""
+"CDI defines one further standard stereotype, <literal>@Model</literal>, "
+"which is expected to be used frequently in web applications:"
 msgstr ""
+"CDI définit un stéréotype par défaut supplémentaire, "
+"<literal>@Model</literal>, qui devrait être fréquemment utilisé dans les "
+"applications web :"
 
 #. Tag: programlisting
 #, no-c-format
@@ -274,5 +363,9 @@ msgstr ""
 
 #. Tag: para
 #, no-c-format
-msgid "Instead of using JSF managed beans, just annotate a bean <literal>@Model</literal>, and use it directly in your JSF view!"
+msgid ""
+"Instead of using JSF managed beans, just annotate a bean "
+"<literal>@Model</literal>, and use it directly in your JSF view!"
 msgstr ""
+"Au lieu d'utiliser les managed beans de JSF, annotez juste un bean avec "
+"<literal>@Model</literal>, et utilisez le directement dans votre vue JSF !"
