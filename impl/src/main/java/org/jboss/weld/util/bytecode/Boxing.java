@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import javassist.bytecode.Bytecode;
+import org.jboss.classfilewriter.code.CodeAttribute;
 
 /**
- * This class is responsible for generating bytecode fragments to box/unbox
+ * This class is responsible for generating CodeAttribute fragments to box/unbox
  * whatever happens to be on the top of the stack.
  * <p/>
  * It is the calling codes responsibility to make sure that the correct type is
@@ -29,7 +29,7 @@ import javassist.bytecode.Bytecode;
  */
 public class Boxing {
 
-    public static void boxIfNessesary(Bytecode b, String desc) {
+    public static void boxIfNessesary(CodeAttribute b, String desc) {
         if (desc.length() == 1) {
             char type = desc.charAt(0);
             switch (type) {
@@ -63,7 +63,7 @@ public class Boxing {
         }
     }
 
-    public static Bytecode unbox(Bytecode b, String desc) {
+    public static CodeAttribute unbox(CodeAttribute b, String desc) {
         char type = desc.charAt(0);
         switch (type) {
             case 'I':
@@ -86,85 +86,85 @@ public class Boxing {
         throw new RuntimeException("Cannot unbox unkown primitive type: " + type);
     }
 
-    public static void boxInt(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Integer", "valueOf", "(I)Ljava/lang/Integer;");
+    public static void boxInt(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Integer", "valueOf", "(I)Ljava/lang/Integer;");
     }
 
-    public static void boxLong(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Long", "valueOf", "(J)Ljava/lang/Long;");
+    public static void boxLong(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Long", "valueOf", "(J)Ljava/lang/Long;");
     }
 
-    public static void boxShort(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Short", "valueOf", "(S)Ljava/lang/Short;");
+    public static void boxShort(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Short", "valueOf", "(S)Ljava/lang/Short;");
     }
 
-    public static void boxByte(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Byte", "valueOf", "(B)Ljava/lang/Byte;");
+    public static void boxByte(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Byte", "valueOf", "(B)Ljava/lang/Byte;");
     }
 
-    public static void boxFloat(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Float", "valueOf", "(F)Ljava/lang/Float;");
+    public static void boxFloat(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Float", "valueOf", "(F)Ljava/lang/Float;");
     }
 
-    public static void boxDouble(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Double", "valueOf", "(D)Ljava/lang/Double;");
+    public static void boxDouble(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Double", "valueOf", "(D)Ljava/lang/Double;");
     }
 
-    public static void boxChar(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Character", "valueOf", "(C)Ljava/lang/Character;");
+    public static void boxChar(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Character", "valueOf", "(C)Ljava/lang/Character;");
     }
 
-    public static void boxBoolean(Bytecode bc) {
-        bc.addInvokestatic("java.lang.Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
+    public static void boxBoolean(CodeAttribute bc) {
+        bc.invokestatic("java.lang.Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
     }
 
     // unboxing
 
-    public static Bytecode unboxInt(Bytecode bc) {
-        bc.addCheckcast("java.lang.Number");
-        bc.addInvokevirtual("java.lang.Number", "intValue", "()I");
+    public static CodeAttribute unboxInt(CodeAttribute bc) {
+        bc.checkcast("java.lang.Number");
+        bc.invokevirtual("java.lang.Number", "intValue", "()I");
         return bc;
     }
 
-    public static Bytecode unboxLong(Bytecode bc) {
-        bc.addCheckcast("java.lang.Number");
-        bc.addInvokevirtual("java.lang.Number", "longValue", "()J");
+    public static CodeAttribute unboxLong(CodeAttribute bc) {
+        bc.checkcast("java.lang.Number");
+        bc.invokevirtual("java.lang.Number", "longValue", "()J");
         return bc;
     }
 
-    public static Bytecode unboxShort(Bytecode bc) {
-        bc.addCheckcast("java.lang.Number");
-        bc.addInvokevirtual("java.lang.Number", "shortValue", "()S");
+    public static CodeAttribute unboxShort(CodeAttribute bc) {
+        bc.checkcast("java.lang.Number");
+        bc.invokevirtual("java.lang.Number", "shortValue", "()S");
         return bc;
     }
 
-    public static Bytecode unboxByte(Bytecode bc) {
-        bc.addCheckcast("java.lang.Number");
-        bc.addInvokevirtual("java.lang.Number", "byteValue", "()B");
+    public static CodeAttribute unboxByte(CodeAttribute bc) {
+        bc.checkcast("java.lang.Number");
+        bc.invokevirtual("java.lang.Number", "byteValue", "()B");
         return bc;
     }
 
-    public static Bytecode unboxFloat(Bytecode bc) {
-        bc.addCheckcast("java.lang.Number");
-        bc.addInvokevirtual("java.lang.Number", "floatValue", "()F");
+    public static CodeAttribute unboxFloat(CodeAttribute bc) {
+        bc.checkcast("java.lang.Number");
+        bc.invokevirtual("java.lang.Number", "floatValue", "()F");
         return bc;
     }
 
-    public static Bytecode unboxDouble(Bytecode bc) {
-        bc.addCheckcast("java.lang.Number");
-        bc.addInvokevirtual("java.lang.Number", "doubleValue", "()D");
+    public static CodeAttribute unboxDouble(CodeAttribute bc) {
+        bc.checkcast("java.lang.Number");
+        bc.invokevirtual("java.lang.Number", "doubleValue", "()D");
         return bc;
     }
 
-    public static Bytecode unboxChar(Bytecode bc) {
-        bc.addCheckcast("java.lang.Character");
-        bc.addInvokevirtual("java.lang.Character", "charValue", "()C");
+    public static CodeAttribute unboxChar(CodeAttribute bc) {
+        bc.checkcast("java.lang.Character");
+        bc.invokevirtual("java.lang.Character", "charValue", "()C");
         return bc;
     }
 
-    public static Bytecode unboxBoolean(Bytecode bc) {
-        bc.addCheckcast("java.lang.Boolean");
-        bc.addInvokevirtual("java.lang.Boolean", "booleanValue", "()Z");
+    public static CodeAttribute unboxBoolean(CodeAttribute bc) {
+        bc.checkcast("java.lang.Boolean");
+        bc.invokevirtual("java.lang.Boolean", "booleanValue", "()Z");
         return bc;
     }
 

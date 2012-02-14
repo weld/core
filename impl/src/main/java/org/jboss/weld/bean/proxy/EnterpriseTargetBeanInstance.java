@@ -17,7 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-import javassist.util.proxy.MethodHandler;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;

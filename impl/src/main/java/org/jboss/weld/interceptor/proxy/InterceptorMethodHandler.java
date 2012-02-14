@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyObject;
+import org.jboss.weld.bean.proxy.MethodHandler;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
 import org.jboss.weld.interceptor.spi.instance.InterceptorInstantiator;

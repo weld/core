@@ -17,7 +17,7 @@
 
 package org.jboss.weld.interceptor.proxy;
 
-import javassist.util.proxy.MethodHandler;
+import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 
 /**
