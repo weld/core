@@ -16,6 +16,24 @@
  */
 package org.jboss.weld.injection;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import javax.decorator.Delegate;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
@@ -27,23 +45,6 @@ import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.decorator.Delegate;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
@@ -92,6 +93,10 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
 
     public Bean<?> getBean() {
         return declaringBean;
+    }
+
+    public WeldField<T, X> getWeldField() {
+        return field;
     }
 
     @Override
