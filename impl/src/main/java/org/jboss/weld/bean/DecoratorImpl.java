@@ -34,15 +34,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javassist.util.proxy.ProxyObject;
+
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
+import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
+import org.jboss.weld.bean.proxy.ProxyMethodHandler;
+import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.ForwardingInjectionTarget;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.introspector.MethodSignature;
@@ -93,6 +102,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     private WeldClass<?> annotatedDelegateItem;
     private Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods;
     private WeldInjectionPoint<?, ?> delegateInjectionPoint;
+    private FieldInjectionPoint<?, ?> delegateFieldInjectionPoint;
     private Set<Annotation> delegateBindings;
     private Type delegateType;
     private Set<Type> delegateTypes;
@@ -124,6 +134,9 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
     protected void initDelegateInjectionPoint() {
         this.delegateInjectionPoint = getDelegateInjectionPoints().iterator().next();
+        if(delegateInjectionPoint instanceof FieldInjectionPoint) {
+            this.delegateFieldInjectionPoint = (FieldInjectionPoint<?, ?>) delegateInjectionPoint;
+        }
     }
 
 
@@ -199,6 +212,39 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         }
     }
 
+    @Override
+    public InjectionTarget<T> getInjectionTarget() {
+        final InjectionTarget<T> delegate = super.getInjectionTarget();
+        if(delegateFieldInjectionPoint != null) {
+            return new ForwardingInjectionTarget<T>() {
+                @Override
+                protected InjectionTarget<T> delegate() {
+                    return delegate;
+                }
+
+                @Override
+                public void inject(final T instance, final CreationalContext<T> ctx) {
+                    super.inject(instance, ctx);
+
+                    if(delegateFieldInjectionPoint != null) {
+                        if(instance instanceof DecoratorProxy) {
+
+                            //this code is only applicable if the delegate is injected into a field
+                            //as the proxy can't intercept the delegate when setting the field
+                            //we need to now read the delegate from the field
+
+                            //this is only needed for fields, as constructor and method injection are handed
+                            //at injection time
+                            final Object delegate = delegateFieldInjectionPoint.getAnnotated().get(instance);
+                            final ProxyMethodHandler handler = new ProxyMethodHandler(new TargetBeanInstance(delegate), DecoratorImpl.this);
+                            ((ProxyObject)instance).setHandler(handler);
+                        }
+                    }
+                }
+            };
+        }
+        return delegate;
+    }
 
     public Set<Annotation> getDelegateQualifiers() {
         return delegateBindings;
