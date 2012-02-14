@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import javassist.bytecode.AccessFlag;
-
 import java.lang.reflect.Method;
+
+import org.jboss.classfilewriter.AccessFlag;
 
 /**
  * Contains all the data that is needed when working with a method in bytecode

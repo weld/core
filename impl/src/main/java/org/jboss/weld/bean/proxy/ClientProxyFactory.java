@@ -24,6 +24,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,26 +33,20 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.Bean;
 
-import javassist.NotFoundException;
-import javassist.bytecode.AccessFlag;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.DuplicateMemberException;
-import javassist.bytecode.FieldInfo;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Opcode;
-import javassist.util.proxy.MethodHandler;
+import org.jboss.classfilewriter.AccessFlag;
+import org.jboss.classfilewriter.ClassFile;
+import org.jboss.classfilewriter.ClassMethod;
+import org.jboss.classfilewriter.DuplicateMemberException;
+import org.jboss.classfilewriter.code.BranchEnd;
+import org.jboss.classfilewriter.code.CodeAttribute;
+import org.jboss.classfilewriter.code.ExceptionHandler;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.bytecode.BytecodeUtils;
+import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
-import org.jboss.weld.util.bytecode.JumpMarker;
-import org.jboss.weld.util.bytecode.JumpUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.bytecode.MethodUtils;
-import org.jboss.weld.util.bytecode.StaticMethodInformation;
 
 /**
  * Proxy factory that generates client proxies, it uses optimizations that
@@ -85,47 +80,40 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected void addFields(ClassFile proxyClassType, Bytecode initialValueBytecode) {
+    protected void addFields(final ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         super.addFields(proxyClassType, initialValueBytecode);
         if (CACHABLE_SCOPES.contains(getBean().getScope())) {
             try {
-                FieldInfo sfield = new FieldInfo(proxyClassType.getConstPool(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
-                sfield.setAccessFlags(AccessFlag.TRANSIENT | AccessFlag.PRIVATE);
-                proxyClassType.addField(sfield);
-                initialValueBytecode.addAload(0);
-                initialValueBytecode.addNew(ThreadLocal.class.getName());
-                initialValueBytecode.add(Opcode.DUP);
-                initialValueBytecode.addInvokespecial(ThreadLocal.class.getName(), "<init>", "()V");
-                initialValueBytecode.addPutfield(proxyClassType.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+                proxyClassType.addField(AccessFlag.TRANSIENT | AccessFlag.PRIVATE, CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+                initialValueBytecode.add(new DeferredBytecode() {
+                    public void apply(final CodeAttribute codeAttribute) {
+
+                        codeAttribute.aload(0);
+                        codeAttribute.newInstruction(ThreadLocal.class.getName());
+                        codeAttribute.dup();
+                        codeAttribute.invokespecial(ThreadLocal.class.getName(), "<init>", "()V");
+                        codeAttribute.putfield(proxyClassType.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+                    }
+                });
             } catch (DuplicateMemberException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
+    @Override
     protected void addSerializationSupport(ClassFile proxyClassType) {
-        try {
-            Class<?>[] exceptions = new Class[]{ObjectStreamException.class};
-            Bytecode writeReplaceBody = createWriteReplaceBody(proxyClassType);
-            MethodInformation writeReplaceInfo = new StaticMethodInformation("writeReplace", new Class[]{}, Object.class, proxyClassType.getName());
-            proxyClassType.addMethod(MethodUtils.makeMethod(writeReplaceInfo, exceptions, writeReplaceBody, proxyClassType.getConstPool()));
-        } catch (DuplicateMemberException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    /**
-     * creates serialization code that returns a SerializableClientProxy
-     */
-    private Bytecode createWriteReplaceBody(ClassFile proxyClassType) {
-        Bytecode b = new Bytecode(proxyClassType.getConstPool());
-        b.addNew(SerializableClientProxy.class.getName());
-        b.add(Opcode.DUP);
-        b.addLdc(beanId);
-        b.addInvokespecial(SerializableClientProxy.class.getName(), "<init>", "(Ljava/lang/String;)V");
-        b.add(Opcode.ARETURN);
-        b.setMaxLocals(1);
-        return b;
+        final Class<Exception>[] exceptions = new Class[]{ObjectStreamException.class};
+        final ClassMethod writeReplace = proxyClassType.addMethod(AccessFlag.PRIVATE, "writeReplace", "Ljava/lang/Object;");
+        writeReplace.addCheckedExceptions(exceptions);
+
+        CodeAttribute b = writeReplace.getCodeAttribute();
+        b.newInstruction(SerializableClientProxy.class.getName());
+        b.dup();
+        b.ldc(beanId);
+        b.invokespecial(SerializableClientProxy.class.getName(), "<init>", "(Ljava/lang/String;)V");
+        b.returnInstruction();
     }
 
 
@@ -134,7 +122,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      * get the underlying instance. The invocation is then forwarded to
      * this instance with generated bytecode.
      */
-    protected Bytecode createForwardingMethodBody(ClassFile file, MethodInformation methodInfo) throws NotFoundException {
+    @Override
+    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation methodInfo){
         Method method = methodInfo.getMethod();
         // we can only use bytecode based invocation for some methods
         // at the moment we restrict it solely to public methods with public
@@ -147,141 +136,132 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
             }
         }
         if (!bytecodeInvocationAllowed) {
-            return createInterceptorBody(file, methodInfo);
+            createInterceptorBody(classMethod, methodInfo);
+            return;
         }
-        Bytecode b = new Bytecode(file.getConstPool());
-        int localCount = MethodUtils.calculateMaxLocals(method) + 1;
+        final CodeAttribute b = classMethod.getCodeAttribute();
 
         // create a new interceptor invocation context whenever we invoke a method on a client proxy
         // we use a try-catch block in order to make sure that endInterceptorContext() is invoked regardless whether
         // the method has succeeded or not
-        int start = b.currentPc();
-        b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "startInterceptorContext", "()V");
+
+        final ExceptionHandler start = b.exceptionBlockStart(Throwable.class.getName());
+        b.invokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "startInterceptorContext", "()V");
 
         final Class<? extends Annotation> scope = getBean().getScope();
 
         if (CACHABLE_SCOPES.contains(scope)) {
-            loadCachableBeanInstance(file, methodInfo, b);
+            loadCachableBeanInstance(classMethod.getClassFile(), methodInfo, b);
         } else {
-            loadBeanInstance(file, methodInfo, b);
+            loadBeanInstance(classMethod.getClassFile(), methodInfo, b);
         }
         //now we should have the target bean instance on top of the stack
         // we need to dup it so we still have it to compare to the return value
-        b.add(Opcode.DUP);
+        b.dup();
 
         //lets create the method invocation
         String methodDescriptor = methodInfo.getDescriptor();
-        BytecodeUtils.loadParameters(b, methodDescriptor);
+        b.loadMethodParameters();
         if (method.getDeclaringClass().isInterface()) {
-            b.addInvokeinterface(methodInfo.getDeclaringClass(), methodInfo.getName(), methodDescriptor, method.getParameterTypes().length + 1);
+            b.invokeinterface(methodInfo.getDeclaringClass(), methodInfo.getName(), methodDescriptor);
         } else {
-            b.addInvokevirtual(methodInfo.getDeclaringClass(), methodInfo.getName(), methodDescriptor);
+            b.invokevirtual(methodInfo.getDeclaringClass(), methodInfo.getName(), methodDescriptor);
         }
 
         // end the interceptor context, everything was fine
-        b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
+        b.invokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
 
         // jump over the catch block
-        b.addOpcode(Opcode.GOTO);
-        JumpMarker gotoEnd = JumpUtils.addJumpInstruction(b);
+        BranchEnd gotoEnd = b.gotoInstruction();
 
         // create catch block
-        b.addExceptionHandler(start, b.currentPc(), b.currentPc(), 0);
-        b.addInvokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
-        b.add(Opcode.ATHROW);
+        b.exceptionBlockEnd(start);
+        b.exceptionHandlerStart(start);
+        b.invokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
+        b.athrow();
 
         // update the correct address to jump over the catch block
-        gotoEnd.mark();
+        b.branchEnd(gotoEnd);
 
         // if this method returns a primitive we just return
         if (method.getReturnType().isPrimitive()) {
-            BytecodeUtils.addReturnInstruction(b, methodInfo.getReturnType());
+            b.returnInstruction();
         } else {
             // otherwise we have to check that the proxy is not returning 'this;
             // now we need to check if the proxy has return 'this' and if so return
             // an
             // instance of the proxy.
             // currently we have result, beanInstance on the stack.
-            b.add(Opcode.DUP_X1);
+            b.dupX1();
             // now we have result, beanInstance, result
             // we need to compare result and beanInstance
 
             // first we need to build up the inner conditional that just returns
             // the
             // result
-            b.add(Opcode.IF_ACMPEQ);
-            JumpMarker returnInstruction = JumpUtils.addJumpInstruction(b);
-            BytecodeUtils.addReturnInstruction(b, methodInfo.getReturnType());
-            returnInstruction.mark();
+            final BranchEnd returnInstruction = b.ifAcmpeq();
+            b.returnInstruction();
+            b.branchEnd(returnInstruction);
 
             // now add the case where the proxy returns 'this';
-            b.add(Opcode.ALOAD_0);
-            b.addCheckcast(methodInfo.getMethod().getReturnType().getName());
-            BytecodeUtils.addReturnInstruction(b, methodInfo.getReturnType());
+            b.aload(0);
+            b.checkcast(methodInfo.getMethod().getReturnType().getName());
+            b.returnInstruction();
         }
-        if (b.getMaxLocals() < localCount) {
-            b.setMaxLocals(localCount);
-        }
-        return b;
     }
 
     /**
      * If the bean is part of a well known scope then this code caches instances in a thread local for the life of the
      * request, as a performance enhancement.
      */
-    private void loadCachableBeanInstance(ClassFile file, MethodInformation methodInfo, Bytecode b) {
+    private void loadCachableBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         //first we need to see if the scope is active
-        b.addInvokestatic(RequestScopedBeanCache.class.getName(), "isActive", "()Z");
+        b.invokestatic(RequestScopedBeanCache.class.getName(), "isActive", "()Z");
         //if it is not active we just get the bean directly
 
-
-        b.add(Opcode.IFEQ);
-        final JumpMarker returnInstruction = JumpUtils.addJumpInstruction(b);
+        final BranchEnd returnInstruction = b.ifeq();
         //get the bean from the cache
-        b.addAload(0);
-        b.addGetfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
-        b.addInvokevirtual(ThreadLocal.class.getName(), "get", "()Ljava/lang/Object;");
-        b.add(Opcode.DUP);
-        b.add(Opcode.IFNULL);
-        final JumpMarker createNewInstance = JumpUtils.addJumpInstruction(b);
+        b.aload(0);
+        b.getfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+        b.invokevirtual(ThreadLocal.class.getName(), "get", "()Ljava/lang/Object;");
+        b.dup();
+        final BranchEnd createNewInstance = b.ifnull();
         //so we have a not-null bean instance in the cache
-        b.addCheckcast(methodInfo.getDeclaringClass());
-        b.add(Opcode.GOTO);
-        final JumpMarker loadedFromCache = JumpUtils.addJumpInstruction(b);
-        createNewInstance.mark();
+        b.checkcast(methodInfo.getDeclaringClass());
+        final BranchEnd loadedFromCache = b.gotoInstruction();
+        b.branchEnd(createNewInstance);
         //we need to get a bean instance and cache it
         //first clear the null off the top of the stack
-        b.add(Opcode.POP);
+        b.pop();
         loadBeanInstance(file, methodInfo, b);
-        b.add(Opcode.DUP);
-        b.addAload(0);
-        b.addGetfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
-        b.add(Opcode.DUP_X1);
-        b.add(Opcode.SWAP);
-        b.addInvokevirtual(ThreadLocal.class.getName(), "set", "(Ljava/lang/Object;)V");
-        b.addInvokestatic(RequestScopedBeanCache.class.getName(), "addItem", "(Ljava/lang/ThreadLocal;)V");
-        b.add(Opcode.GOTO);
-        final JumpMarker endOfIfStatement = JumpUtils.addJumpInstruction(b);
-        returnInstruction.mark();
+        b.dup();
+        b.aload(0);
+        b.getfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+        b.dupX1();
+        b.swap();
+        b.invokevirtual(ThreadLocal.class.getName(), "set", "(Ljava/lang/Object;)V");
+        b.invokestatic(RequestScopedBeanCache.class.getName(), "addItem", "(Ljava/lang/ThreadLocal;)V");
+        final BranchEnd endOfIfStatement = b.gotoInstruction();
+        b.branchEnd(returnInstruction);
         loadBeanInstance(file, methodInfo, b);
-        endOfIfStatement.mark();
-        loadedFromCache.mark();
+        b.branchEnd(endOfIfStatement);
+        b.branchEnd(loadedFromCache);
     }
 
-    private void loadBeanInstance(ClassFile file, MethodInformation methodInfo, Bytecode b) {
-        b.add(Opcode.ALOAD_0);
-        b.addGetfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+    private void loadBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
+        b.aload(0);
+        b.getfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         //pass null arguments to methodHandler.invoke
-        b.add(Opcode.ALOAD_0);
-        b.add(Opcode.ACONST_NULL);
-        b.add(Opcode.ACONST_NULL);
-        b.add(Opcode.ACONST_NULL);
+        b.aload(0);
+        b.aconstNull();
+        b.aconstNull();
+        b.aconstNull();
 
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.addInvokeinterface(MethodHandler.class.getName(), "invoke", "(Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", 5);
+        b.invokeinterface(MethodHandler.class.getName(), "invoke", "(Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;");
 
-        b.addCheckcast(methodInfo.getDeclaringClass());
+        b.checkcast(methodInfo.getDeclaringClass());
     }
 
     /**
@@ -289,21 +269,15 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      * <code>MyProxyName.class.hashCode()</code>
      */
     @Override
-    protected MethodInfo generateHashCodeMethod(ClassFile proxyClassType) {
-        MethodInfo method = new MethodInfo(proxyClassType.getConstPool(), "hashCode", "()I");
-        method.setAccessFlags(AccessFlag.PUBLIC);
-        Bytecode b = new Bytecode(proxyClassType.getConstPool());
+    protected void generateHashCodeMethod(ClassFile proxyClassType) {
+        final ClassMethod method =proxyClassType.addMethod(AccessFlag.PUBLIC, "hashCode", "I");
+        final CodeAttribute b = method.getCodeAttribute();
         // MyProxyName.class.hashCode()
-        int classLocation = proxyClassType.getConstPool().addClassInfo(proxyClassType.getName());
-        b.addLdc(classLocation);
+        b.loadClass(proxyClassType.getName());
         // now we have the class object on top of the stack
-        b.addInvokevirtual("java.lang.Object", "hashCode", "()I");
+        b.invokevirtual("java.lang.Object", "hashCode", "()I");
         // now we have the hashCode
-        b.add(Opcode.IRETURN);
-        b.setMaxLocals(1);
-        b.setMaxStack(1);
-        method.setCodeAttribute(b.toCodeAttribute());
-        return method;
+        b.returnInstruction();
     }
 
     /**
@@ -314,17 +288,12 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      * </code>
      */
     @Override
-    protected MethodInfo generateEqualsMethod(ClassFile proxyClassType) {
-        MethodInfo method = new MethodInfo(proxyClassType.getConstPool(), "equals", "(Ljava/lang/Object;)Z");
-        method.setAccessFlags(AccessFlag.PUBLIC);
-        Bytecode b = new Bytecode(proxyClassType.getConstPool());
-        b.addAload(1);
-        b.addInstanceof(proxyClassType.getName());
-        b.add(Opcode.IRETURN);
-        b.setMaxLocals(2);
-        b.setMaxStack(1);
-        method.setCodeAttribute(b.toCodeAttribute());
-        return method;
+    protected void generateEqualsMethod(ClassFile proxyClassType) {
+        ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, "equals", "Z", "Ljava/lang/Object;");
+        CodeAttribute b = method.getCodeAttribute();
+        b.aload(1);
+        b.instanceofInstruction(proxyClassType.getName());
+        b.returnInstruction();
     }
 
     @Override

@@ -17,9 +17,8 @@
 
 package org.jboss.weld.bean.proxy;
 
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.Opcode;
+import org.jboss.classfilewriter.ClassMethod;
+import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 
 /**
@@ -32,23 +31,25 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
  */
 public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
 
-    public void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes) {
+
+    public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName, final String[] parameterTypes) {
+        final CodeAttribute code =classMethod.getCodeAttribute();
         BytecodeUtils.pushClassType(code, declaringClass);
         // now we have the class on the stack
-        code.addLdc(methodName);
+        code.ldc(methodName);
         // now we need to load the parameter types into an array
-        code.addIconst(parameterTypes.length);
-        code.addAnewarray("java.lang.Class");
+        code.iconst(parameterTypes.length);
+        code.anewarray("java.lang.Class");
         for (int i = 0; i < parameterTypes.length; ++i) {
-            code.add(Opcode.DUP); // duplicate the array reference
-            code.addIconst(i);
+            code.dup(); // duplicate the array reference
+            code.iconst(i);
             // now load the class object
             String type = parameterTypes[i];
             BytecodeUtils.pushClassType(code, type);
             // and store it in the array
-            code.add(Opcode.AASTORE);
+            code.aastore();
         }
-        code.addInvokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
-    }
+        code.invokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
 
+    }
 }

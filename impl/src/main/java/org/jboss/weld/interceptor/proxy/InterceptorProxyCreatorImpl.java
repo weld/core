@@ -19,7 +19,7 @@ package org.jboss.weld.interceptor.proxy;
 
 import java.lang.reflect.Constructor;
 
-import javassist.util.proxy.MethodHandler;
+import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
 import org.jboss.weld.interceptor.spi.instance.InterceptorInstantiator;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;

@@ -34,8 +34,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javassist.util.proxy.ProxyObject;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -46,6 +44,7 @@ import javax.inject.Inject;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;

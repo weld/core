@@ -16,15 +16,13 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import javassist.bytecode.AccessFlag;
-import javassist.bytecode.BadBytecode;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.DuplicateMemberException;
-import javassist.bytecode.ExceptionsAttribute;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Opcode;
+import java.util.List;
+
+import org.jboss.classfilewriter.AccessFlag;
+import org.jboss.classfilewriter.ClassFile;
+import org.jboss.classfilewriter.ClassMethod;
+import org.jboss.classfilewriter.DuplicateMemberException;
+import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 
 /**
@@ -40,8 +38,8 @@ public class ConstructorUtils {
     /**
      * adds a constructor that calls super()
      */
-    public static void addDefaultConstructor(ClassFile file, Bytecode initialValueBytecode) {
-        addConstructor("()V", new String[0], file, initialValueBytecode);
+    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode) {
+        addConstructor("V", new String[0], new String[0], file, initialValueBytecode);
     }
 
     /**
@@ -51,46 +49,35 @@ public class ConstructorUtils {
      * value. As the object is not properly constructed at this point this
      * bytecode may not reference this (i.e. the variable at location 0)
      *
-     * @param descriptor           the constructor descriptor
+     * @param returnType           the constructor descriptor
      * @param exceptions           any exceptions that are thrown
      * @param file                 the classfile to add the constructor to
      * @param initialValueBytecode bytecode that can be used to set inial values
      */
-    public static void addConstructor(String descriptor, String[] exceptions, ClassFile file, Bytecode initialValueBytecode) {
+    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode) {
         try {
-            MethodInfo ctor = new MethodInfo(file.getConstPool(), "<init>", descriptor);
-            ctor.setAccessFlags(AccessFlag.PUBLIC);
 
-            ExceptionsAttribute exAt = new ExceptionsAttribute(file.getConstPool());
-            exAt.setExceptions(exceptions);
-            ctor.setExceptionsAttribute(exAt);
-            Bytecode b = new Bytecode(file.getConstPool());
-            @SuppressWarnings("unused")
-            String[] params = DescriptorUtils.descriptorStringToParameterArray(descriptor);
+            final ClassMethod ctor = file.addMethod(AccessFlag.PUBLIC, "<init>", returnType, params);
+            ctor.addCheckedExceptions(exceptions);
+            final CodeAttribute b = ctor.getCodeAttribute();
+            for(final DeferredBytecode iv : initialValueBytecode) {
+                iv.apply(b);
+            }
             // we need to generate a constructor with a single invokespecial call
             // to the super constructor
             // to do this we need to push all the arguments on the stack first
             // local variables is the number of parameters +1 for this
             // if some of the parameters are wide this may go up.
-            b.add(Opcode.ALOAD_0);
-            int localVariableCount = BytecodeUtils.loadParameters(b, descriptor);
+            b.aload(0);
+            b.loadMethodParameters();
             // now we have the parameters on the stack
-            b.addInvokespecial(file.getSuperclass(), "<init>", descriptor);
+            b.invokespecial(file.getSuperclass(), "<init>", DescriptorUtils.getMethodDescriptor(params, returnType));
             // now set constructed to true
-            b.addAload(0);
-            b.addIconst(1);
-            b.addPutfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
-            b.addOpcode(Opcode.RETURN);
-            CodeAttribute ca = b.toCodeAttribute();
-            // set the initial field values
-            ca.iterator().insert(initialValueBytecode.get());
-            ctor.setCodeAttribute(ca);
-            ca.setMaxLocals(localVariableCount);
-            ca.computeMaxStack();
-            file.addMethod(ctor);
-        } catch (BadBytecode e) {
-            throw new RuntimeException(e);
-        } catch (DuplicateMemberException e) {
+            b.aload(0);
+            b.iconst(1);
+            b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
+            b.returnInstruction();
+        }  catch (DuplicateMemberException e) {
             throw new RuntimeException(e);
         }
     }

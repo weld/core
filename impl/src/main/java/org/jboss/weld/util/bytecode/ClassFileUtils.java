@@ -16,17 +16,14 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import javassist.CannotCompileException;
-import javassist.bytecode.ClassFile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
+
+import org.jboss.classfilewriter.ClassFile;
 
 /**
  * Utility class for loading a ClassFile into a classloader. This borrows
@@ -77,11 +74,10 @@ public class ClassFileUtils {
      *               this parameter.
      * @param domain the protection domain for the class. If it is null, the
      *               default domain created by <code>java.lang.ClassLoader</code> is
-     *               used.
      */
-    public static Class<?> toClass(ClassFile ct, ClassLoader loader, ProtectionDomain domain) throws CannotCompileException {
+    public static Class<?> toClass(ClassFile ct, ClassLoader loader, ProtectionDomain domain) {
         try {
-            byte[] b = toBytecode(ct);
+            byte[] b = ct.toBytecode();
             java.lang.reflect.Method method;
             Object[] args;
             if (domain == null) {
@@ -96,19 +92,8 @@ public class ClassFileUtils {
         } catch (RuntimeException e) {
             throw e;
         } catch (java.lang.reflect.InvocationTargetException e) {
-            throw new CannotCompileException(e.getTargetException());
+            throw new RuntimeException(e.getTargetException());
         } catch (Exception e) {
-            throw new CannotCompileException(e);
-        }
-    }
-
-    public static byte[] toBytecode(ClassFile file) {
-        try {
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream(bytes);
-            file.write(out);
-            return bytes.toByteArray();
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

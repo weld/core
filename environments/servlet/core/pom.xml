@@ -115,11 +115,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-vfs</artifactId>
             <optional>true</optional>

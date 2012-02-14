@@ -16,23 +16,7 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
-import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.util.Set;
-
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyObject;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -45,6 +29,8 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.interceptor.WeldInterceptorInstantiator;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
+import org.jboss.weld.bean.proxy.MethodHandler;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.CreationalContextImpl;
@@ -71,6 +57,19 @@ import org.jboss.weld.util.reflection.Formats;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
+
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
+import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
+import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Represents a simple bean

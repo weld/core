@@ -16,15 +16,15 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import javassist.util.proxy.MethodHandler;
-import org.jboss.weld.exceptions.NullInstanceException;
-import org.jboss.weld.util.reflection.SecureReflections;
-import org.slf4j.cal10n.LocLogger;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
+
+import org.jboss.weld.bean.proxy.MethodHandler;
+import org.jboss.weld.exceptions.NullInstanceException;
+import org.jboss.weld.util.reflection.SecureReflections;
+import org.slf4j.cal10n.LocLogger;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;

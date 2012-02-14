@@ -17,11 +17,11 @@
 
 package org.jboss.weld.bean.proxy;
 
-import javassist.util.proxy.MethodHandler;
 
-import javax.enterprise.inject.spi.Bean;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+
+import javax.enterprise.inject.spi.Bean;
 
 /**
  * A simple {@link BeanInstance} which always maintains a specific bean instance
@@ -42,7 +42,7 @@ public class TargetBeanInstance extends AbstractBeanInstance implements Serializ
 
     public TargetBeanInstance(Object instance) {
         this.instance = instance;
-        this.instanceType = (Class<?>) instance.getClass();
+        this.instanceType = instance.getClass();
     }
 
     /**

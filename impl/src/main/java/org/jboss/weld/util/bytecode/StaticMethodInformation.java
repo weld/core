@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import javassist.bytecode.AccessFlag;
 
 import java.lang.reflect.Method;
+
+import org.jboss.classfilewriter.AccessFlag;
 
 public class StaticMethodInformation implements MethodInformation {
     private final String name;
