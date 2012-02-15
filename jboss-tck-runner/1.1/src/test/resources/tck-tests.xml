@@ -21,17 +21,6 @@
                     <exclude name="testDestroyForSameCreationalContextOnly" />
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.context.DestroyedInstanceReturnedByGetTest">
-                <methods>
-                    <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
-                </methods>
-            </class>
-            <!-- CDITCK-212 -->
-            <class name="org.jboss.cdi.tck.tests.context.DestroyedInstanceReturnedByGetTest">
-                <methods>
-                    <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
-                </methods>
-            </class>
             <!-- CDITCK-263 -->
             <class name="org.jboss.cdi.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
                 <methods>
@@ -153,6 +142,22 @@
             <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.parameterized.AssignabilityOfRawAndParameterizedTypesTest">
                 <methods>
                     <exclude name="testAssignabilityToRawType"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.lookup.injection.parameterized.ParameterizedTypesInjectionToRawTypeTest">
+                <methods>
+                    <exclude name="testInjection"/>
+                </methods>
+            </class>
+            <!-- WELD-1060 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.parameterized.AssignabilityOfRawAndParameterizedTypesTest">
+                <methods>
+                    <exclude name="testAssignabilityOfParameterizedTypeWithTypeVariablesToParameterizedTypeTypeVariable"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.lookup.injection.parameterized.ParameterizedTypesInjectionToParameterizedWithTypeVariableTest">
+                <methods>
+                    <exclude name="testInjection"/>
                 </methods>
             </class>
             
