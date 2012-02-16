@@ -59,7 +59,8 @@ public final class BeansClosure {
         BeansClosure closure = closureMap.get(beanManager);
         if (closure == null) {
             synchronized (closureMap) {
-                if (closureMap.containsKey(beanManager) == false) {
+                closure = closureMap.get(beanManager);
+                if (closure == null) {
                     closure = new BeansClosure();
                     for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
                         for (BeanManagerImpl accessibleBeanManager : beanManagers) {
@@ -135,7 +136,7 @@ public final class BeansClosure {
 
     public Bean<?> mostSpecialized(Bean<?> bean) {
         Bean most = bean;
-        while(most != null) {
+        while (most != null) {
             Bean<?> temp = most;
             most = specialized.get(bean);
             bean = temp;
