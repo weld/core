@@ -17,10 +17,9 @@
 
 package org.jboss.weld.bean.proxy;
 
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.ClassFile;
-
 import java.lang.reflect.Method;
+
+import org.jboss.classfilewriter.ClassMethod;
 
 /**
  * An object that generates bytecode to resolve a {@link Method} at runtime. The
@@ -29,5 +28,5 @@ import java.lang.reflect.Method;
  * @author Stuart Douglas
  */
 public interface BytecodeMethodResolver {
-    void getDeclaredMethod(ClassFile file, Bytecode code, String declaringClass, String methodName, String[] parameterTypes);
+    void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes);
 }

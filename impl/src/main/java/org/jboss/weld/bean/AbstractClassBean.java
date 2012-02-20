@@ -17,7 +17,6 @@
 package org.jboss.weld.bean;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +38,6 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import javassist.util.proxy.ProxyObject;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
@@ -47,6 +45,7 @@ import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandl
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.InterceptedSubclassFactory;
 import org.jboss.weld.bean.proxy.ProxyFactory;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;

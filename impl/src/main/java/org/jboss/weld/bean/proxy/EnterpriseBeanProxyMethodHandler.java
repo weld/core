@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.exceptions.UnsupportedOperationException;

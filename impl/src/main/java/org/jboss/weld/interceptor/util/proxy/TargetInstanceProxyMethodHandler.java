@@ -3,7 +3,8 @@ package org.jboss.weld.interceptor.util.proxy;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import javassist.util.proxy.MethodHandler;
+import org.jboss.weld.bean.proxy.MethodHandler;
+
 
 /**
  * @author Marius Bogoevici

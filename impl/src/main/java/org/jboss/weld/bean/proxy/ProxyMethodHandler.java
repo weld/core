@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;

@@ -16,8 +16,15 @@
  */
 package org.jboss.weld.environment.servlet;
 
-import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyFactory.ClassLoaderProvider;
+import java.util.Arrays;
+
+import javax.el.ELContextListener;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.jsp.JspApplicationContext;
+import javax.servlet.jsp.JspFactory;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.environment.Container;
@@ -40,14 +47,6 @@ import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.el.ELContextListener;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspFactory;
-import java.util.Arrays;
 
 /**
  * @author Pete Muir
@@ -121,14 +120,6 @@ public class Listener extends ForwardingServletListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        // Make Javassist always use the TCCL to load classes
-        ProxyFactory.classLoaderProvider = new ClassLoaderProvider() {
-
-            public ClassLoader get(ProxyFactory pf) {
-                return Thread.currentThread().getContextClassLoader();
-            }
-
-        };
 
         ClassLoader classLoader = Reflections.getClassLoader();
         ServletContext context = sce.getServletContext();
