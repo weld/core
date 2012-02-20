@@ -13,7 +13,7 @@
             <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m -ea</property>
         </configuration>
         <protocol type="Servlet 3.0">
-            <property name="host">localhost</property>
+            <property name="host">127.0.0.1</property>
             <property name="port">8080</property>
         </protocol>
     </container>
