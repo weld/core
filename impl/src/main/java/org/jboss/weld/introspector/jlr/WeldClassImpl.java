@@ -16,6 +16,29 @@
  */
 package org.jboss.weld.introspector.jlr;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.AnnotatedType;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Sets;
 import org.jboss.weld.introspector.ConstructorSignature;
@@ -35,28 +58,6 @@ import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
-
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Represents an annotated class
@@ -81,8 +82,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     private final ArraySet<WeldField<?, ? super T>> declaredFields;
     // The map from annotation type to abstracted field with annotation
     private final ArrayListMultimap<Class<? extends Annotation>, WeldField<?, ? super T>> declaredAnnotatedFields;
-    // The map from annotation type to abstracted field with meta-annotation
-    private final ArrayListMultimap<Class<? extends Annotation>, WeldField<?, ?>> declaredMetaAnnotatedFields;
 
     // The set of abstracted methods
     private final Set<WeldMethod<?, ? super T>> methods;
@@ -143,8 +142,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
 
         // Assign class field information
         this.declaredAnnotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ? super T>>create();
-        this.declaredMetaAnnotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ?>>create();
-
         Set<WeldField<?, ? super T>> fieldsTemp = null;
         ArrayList<WeldField<?, ? super T>> declaredFieldsTemp = new ArrayList<WeldField<?, ? super T>>();
         if (annotatedType == null) {
@@ -155,9 +152,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
                     declaredFieldsTemp.add(annotatedField);
                     for (Annotation annotation : annotatedField.getAnnotations()) {
                         this.declaredAnnotatedFields.put(annotation.annotationType(), annotatedField);
-                        for (Annotation metaAnnotation : annotation.annotationType().getAnnotations()) {
-                            this.declaredMetaAnnotatedFields.put(metaAnnotation.annotationType(), annotatedField);
-                        }
                     }
                 }
                 fieldsTemp = new ArraySet<WeldField<?, ? super T>>(declaredFieldsTemp).trimToSize();
@@ -179,9 +173,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
                     this.annotatedFields.put(annotation.annotationType(), weldField);
                     if (annotatedField.getDeclaringType().getJavaClass() == rawType) {
                         this.declaredAnnotatedFields.put(annotation.annotationType(), weldField);
-                        for (Annotation metaAnnotation : annotation.annotationType().getAnnotations()) {
-                            this.declaredMetaAnnotatedFields.put(metaAnnotation.annotationType(), weldField);
-                        }
                     }
                 }
             }
@@ -192,7 +183,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
         this.fields = fieldsTemp;
         this.declaredFields.trimToSize();
         this.declaredAnnotatedFields.trimToSize();
-        this.declaredMetaAnnotatedFields.trimToSize();
 
         // Assign constructor information
         this.constructors = new ArraySet<WeldConstructor<T>>();
