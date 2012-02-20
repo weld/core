@@ -17,11 +17,14 @@
 package org.jboss.weld.tests.event.tx;
 
 
+import java.net.URL;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.formatter.Formatters;
@@ -48,6 +51,9 @@ public class TxEventTest extends AbstractHtmlUnit {
         return war;
     }
 
+    @ArquillianResource
+    private URL url;
+
     /*
     * description = "WBRI-401"
     */
@@ -60,7 +66,6 @@ public class TxEventTest extends AbstractHtmlUnit {
     }
 
     protected String getPath(String page) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + page;
+        return url + page;
     }
 }

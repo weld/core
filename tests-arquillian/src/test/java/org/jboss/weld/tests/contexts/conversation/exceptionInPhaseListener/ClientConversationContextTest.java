@@ -41,6 +41,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -49,6 +50,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -78,6 +80,9 @@ public class ClientConversationContextTest {
                 .addAsWebResource(ClientConversationContextTest.class.getPackage(), "thunderstorm.jsf", "thunderstorm.jspx")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
+
+    @ArquillianResource
+    private URL url;
 
     @Test
     public void testExceptionPhaseListener() throws Exception {
@@ -110,13 +115,11 @@ public class ClientConversationContextTest {
     }
 
     protected String getPath(String viewId, String cid) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
+        return getPath(viewId) + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
     }
 
     protected String getPath(String viewId) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + viewId;
+        return url + viewId;
     }
 
     protected String getCid(Page page) {
