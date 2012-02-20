@@ -33,11 +33,14 @@ package org.jboss.weld.tests.jsp;
  * limitations under the License.
  */
 
+import java.net.URL;
+
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -63,6 +66,9 @@ public class JspTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
+    @ArquillianResource
+    private URL url;
+
     @Test
     public void testConversationPropagationToNonExistentConversationLeadsException() throws Exception {
         WebClient client = new WebClient();
@@ -74,7 +80,6 @@ public class JspTest {
     }
 
     protected String getPath(String page) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + page;
+        return url + page;
     }
 }

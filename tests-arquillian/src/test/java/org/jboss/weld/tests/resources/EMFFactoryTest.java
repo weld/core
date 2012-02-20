@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.tests.resources;
 
+import java.net.URL;
+
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
@@ -48,6 +51,9 @@ public class EMFFactoryTest {
                 .addAsResource(PERSISTENCE_XML, "META-INF/persistence.xml")
                 .addAsWebInfResource(EMPTY_BEANS_XML, "beans.xml");
     }
+
+    @ArquillianResource
+    private URL url;
 
     /*
     * description = "WELD-632"
@@ -86,7 +92,6 @@ public class EMFFactoryTest {
     }
 
     protected String getPath(String viewId) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + viewId;
+        return url + viewId;
     }
 }

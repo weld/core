@@ -24,6 +24,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -33,6 +34,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,6 +56,9 @@ public class NamedProducerTest {
                 .addAsWebResource(NamedProducerTest.class.getPackage(), "home.xhtml", "home.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
+
+    @ArquillianResource
+    private URL url;
 
     /*
     * description = "forum post"
@@ -91,8 +96,7 @@ public class NamedProducerTest {
     }
 
     protected String getPath(String page) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + page;
+        return url + page;
     }
 
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {

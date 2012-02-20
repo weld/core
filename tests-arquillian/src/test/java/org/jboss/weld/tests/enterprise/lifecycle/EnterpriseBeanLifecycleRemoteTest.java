@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
+import java.net.URL;
+
 import javax.servlet.http.HttpServletResponse;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -24,6 +26,7 @@ import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -71,6 +74,9 @@ public class EnterpriseBeanLifecycleRemoteTest {
         return ear;
     }
 
+    @ArquillianResource
+    private URL url;
+
     @Test
     public void testDestroyRemovesSFSB() throws Exception {
         WebClient client = new WebClient();
@@ -81,8 +87,7 @@ public class EnterpriseBeanLifecycleRemoteTest {
     }
 
     protected String getPath(String viewId) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + viewId;
+        return url + viewId;
     }
 
 }
