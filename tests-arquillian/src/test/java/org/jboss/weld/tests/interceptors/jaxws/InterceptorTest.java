@@ -22,7 +22,7 @@ public class InterceptorTest {
         return ShrinkWrap.create(WebArchive.class, "echo_service.war")
                 .addPackages(true, "org.jboss.weld.tests.interceptors.jaxws")
                 .addAsWebInfResource(InterceptorTest.class.getPackage(), "web.xml", "web.xml")
-                .addAsWebInfResource(new ByteArrayAsset("<interceptors><class>org.jboss.weld.tests.interceptors.jaxws.TestInterceptorImpl</class></interceptors>".getBytes()), ArchivePaths.create("beans.xml"));
+                .addAsWebInfResource(new ByteArrayAsset("<beans><interceptors><class>org.jboss.weld.tests.interceptors.jaxws.TestInterceptorImpl</class></interceptors></beans>".getBytes()), ArchivePaths.create("beans.xml"));
     }
 
     @Test
