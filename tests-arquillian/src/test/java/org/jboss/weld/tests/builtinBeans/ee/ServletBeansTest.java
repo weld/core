@@ -40,7 +40,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 @Category(Integration.class)
 public class ServletBeansTest {
 
-    @ArquillianResource(Servlet.class)
+    @ArquillianResource
     private URL url;
     
     @Deployment(testable = false)

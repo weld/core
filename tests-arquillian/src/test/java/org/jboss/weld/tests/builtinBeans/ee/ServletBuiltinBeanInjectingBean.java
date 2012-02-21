@@ -50,6 +50,7 @@ public class ServletBuiltinBeanInjectingBean {
 
     public void verifyServletContext() {
         assert context.getAttribute("foo").equals("bar");
-        assert context.getServletRegistrations().size() == 1;
+        assert context.getServletRegistration("testServlet") != null;
+        assert Servlet.class.getName().equals(context.getServletRegistration("testServlet").getClassName());
     }
 }

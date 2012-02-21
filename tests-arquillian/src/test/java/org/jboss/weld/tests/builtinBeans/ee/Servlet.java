@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/")
+@WebServlet(value = "/", name = "testServlet")
 @SuppressWarnings("serial")
 public class Servlet extends HttpServlet {
 
