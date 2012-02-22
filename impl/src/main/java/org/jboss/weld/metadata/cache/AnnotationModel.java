@@ -40,7 +40,7 @@ public abstract class AnnotationModel<T extends Annotation> {
     private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     // The underlying annotation
-    private WeldAnnotation<T> annotatedAnnotation;
+    private final WeldAnnotation<T> annotatedAnnotation;
     // Is the data valid?
     protected boolean valid;
 

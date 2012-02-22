@@ -115,7 +115,7 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     @Override
     public Iterator<AnnotatedType<?>> getAnnotatedTypes() {
-        return cast(deployment.getBeanDeployer().getClasses().iterator());
+        return cast(deployment.getBeanDeployer().getEnvironment().getClasses().iterator());
     }
 
     @Override

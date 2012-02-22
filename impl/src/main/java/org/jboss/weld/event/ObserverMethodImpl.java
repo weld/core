@@ -78,7 +78,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     private final Set<Annotation> bindings;
     private final Type eventType;
-    protected BeanManagerImpl beanManager;
+    protected final BeanManagerImpl beanManager;
     private final Reception reception;
     protected final RIBean<X> declaringBean;
     protected final MethodInjectionPoint<T, ? super X> observerMethod;
@@ -241,7 +241,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     }
 
-    private void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
+    protected void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
         try {
             preNotify(event, receiver);
             if (receiver == null) {

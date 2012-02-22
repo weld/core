@@ -40,16 +40,11 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
 
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-    private AbstractClassBean<X> declaringBean;
+    private final AbstractClassBean<X> declaringBean;
 
     public AbstractReceiverBean(BeanAttributes<T> attributes, String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, idSuffix, beanManager, services);
         this.declaringBean = declaringBean;
-    }
-
-    @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        super.initialize(environment);
     }
 
     /**

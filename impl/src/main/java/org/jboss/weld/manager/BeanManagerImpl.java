@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.manager;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
@@ -33,6 +35,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
@@ -51,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -153,6 +157,7 @@ import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.collect.Iterators;
 
@@ -170,6 +175,8 @@ import com.google.common.collect.Iterators;
 public class BeanManagerImpl implements WeldManager, Serializable {
 
     private static final long serialVersionUID = 3021562879133838561L;
+
+    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     /*
     * Application scoped services
@@ -260,7 +267,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Interception model
      */
-    private final transient Map<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>>();
+    private final transient ConcurrentMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>>();
     private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader();
 
     /**
@@ -410,26 +417,44 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public void addBean(Bean<?> bean) {
-        if (beanSet.contains(bean)) {
-            return;
+        addBean(bean, beans, transitiveBeans);
+    }
+
+    /**
+     * Optimization which modifies CopyOnWrite structures only once instead of once for every bean.
+     * @param beans
+     */
+    public void addBeans(Collection<? extends Bean<?>> beans) {
+        List<Bean<?>> beanList = new ArrayList<Bean<?>>(beans.size());
+        List<Bean<?>> transitiveBeans = new ArrayList<Bean<?>>(beans.size());
+        for (Bean<?> bean : beans) {
+            addBean(bean, beanList, transitiveBeans);
         }
-        if (bean.getClass().equals(SessionBean.class)) {
-            SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
-            enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
-        }
-        if (bean instanceof PassivationCapable) {
-            Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-        }
-        registerBeanNamespace(bean);
+        // optimize so that we do not modify CopyOnWriteLists for each Bean
+        this.beans.addAll(beanList);
+        this.transitiveBeans.addAll(transitiveBeans);
         for (BeanManagerImpl childActivity : childActivities) {
-            childActivity.addBean(bean);
+            childActivity.addBeans(beanList);
         }
-        // New beans (except for SessionBeans) and most built in beans aren't resolvable transtively
-        if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
-            this.transitiveBeans.add(bean);
+    }
+
+    private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
+        if (beanSet.add(bean)) {
+            log.debug(FOUND_BEAN, bean);
+            beanList.add(bean);
+            if (bean instanceof SessionBean) {
+                SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
+                enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
+            }
+            if (bean instanceof PassivationCapable) {
+                Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+            }
+            registerBeanNamespace(bean);
+            // New beans (except for SessionBeans) and most built in beans aren't resolvable transtively
+            if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
+                transitiveBeans.add(bean);
+            }
         }
-        this.beans.add(bean);
-        this.beanSet.add(bean);
     }
 
     public void addDecorator(Decorator<?> bean) {
@@ -1124,7 +1149,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         BeansClosure.removeClosure(this);
     }
 
-    public Map<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> getInterceptorModelRegistry() {
+    public ConcurrentMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> getInterceptorModelRegistry() {
         return interceptorModelRegistry;
     }
 

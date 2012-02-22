@@ -102,26 +102,24 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      * Initializes the bean and its metadata
      */
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        if (!isInitialized()) {
-            super.initialize(environment);
-            checkProducerMethod();
-            setProducer(new AbstractProducer() {
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
+        checkProducerMethod();
+        setProducer(new AbstractProducer() {
 
-                public T produce(CreationalContext<T> creationalContext) {
-                    Object receiver = getReceiver(creationalContext);
-                    if (receiver != null) {
-                        return method.invokeOnInstance(receiver, beanManager, creationalContext, CreationException.class);
-                    } else {
-                        return method.invoke(null, beanManager, creationalContext, CreationException.class);
-                    }
+            public T produce(CreationalContext<T> creationalContext) {
+                Object receiver = getReceiver(creationalContext);
+                if (receiver != null) {
+                    return method.invokeOnInstance(receiver, beanManager, creationalContext, CreationException.class);
+                } else {
+                    return method.invoke(null, beanManager, creationalContext, CreationException.class);
                 }
+            }
 
-                public String toString() {
-                    return method.toString();
-                }
-            });
-        }
+            public String toString() {
+                return method.toString();
+            }
+        });
     }
 
     /**

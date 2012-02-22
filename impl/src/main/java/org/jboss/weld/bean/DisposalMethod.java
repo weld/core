@@ -86,8 +86,8 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        super.initialize(environment);
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
         checkDisposalMethod();
         initDisposesParameter();
         initMetadataParameters();

@@ -132,7 +132,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     // The item representation
-    protected WeldClass<T> annotatedItem;
+    protected final WeldClass<T> annotatedItem;
 
     // The injectable fields of each type in the type hierarchy, with the actual
     // type at the bottom

@@ -23,8 +23,8 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation> {
     }
 
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        super.initialize(environment);
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
         this.conversationContexts = getBeanManager().instance().select(ConversationContext.class);
     }
 

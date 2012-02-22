@@ -27,12 +27,9 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPT
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.BeanMetadataBean;
 import org.jboss.weld.bean.builtin.ContextBean;
@@ -61,9 +58,11 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.enums.EnumService;
+import org.jboss.weld.executor.SingleThreadExecutorServices;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.InjectionTargetValidator;
+import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -132,7 +131,12 @@ public class BeanDeployment {
             // bean is an EJB!
             ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
         }
-        beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+
+        if (services.get(ExecutorServices.class) instanceof SingleThreadExecutorServices) {
+            beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+        } else {
+            beanDeployer = new ConcurrentBeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+        }
 
         // Must at the Manager bean straight away, as it can be injected during startup!
         beanManager.addBean(new BeanManagerBean(beanManager));
@@ -242,6 +246,7 @@ public class BeanDeployment {
         closure.addEnvironment(beanDeployer.getEnvironment());
 
         // TODO Register the context beans
+        beanDeployer.processEnums();
         beanDeployer.createClassBeans();
 
     }
@@ -257,17 +262,9 @@ public class BeanDeployment {
     }
 
     public void afterBeanDiscovery(Environment environment) {
-        doAfterBeanDiscovery(beanManager.getBeans());
-        doAfterBeanDiscovery(beanManager.getDecorators());
-        doAfterBeanDiscovery(beanManager.getInterceptors());
-    }
-
-    private void doAfterBeanDiscovery(List<? extends Bean<?>> beanList) {
-        for (Bean<?> bean : beanList) {
-            if (bean instanceof RIBean<?>) {
-                ((RIBean<?>) bean).initializeAfterBeanDiscovery();
-            }
-        }
+        beanDeployer.doAfterBeanDiscovery(beanManager.getBeans());
+        beanDeployer.doAfterBeanDiscovery(beanManager.getDecorators());
+        beanDeployer.doAfterBeanDiscovery(beanManager.getInterceptors());
     }
 
     public EnabledBuilder getEnabledBuilder() {

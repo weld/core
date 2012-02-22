@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,18 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.manager;
-
-import org.jboss.weld.manager.api.ExecutorServices;
+package org.jboss.weld.executor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
 
 /**
  * @author pmuir
  */
-public class SingleThreadExecutorServices implements ExecutorServices {
+public class SingleThreadExecutorServices extends AbstractExecutorServices {
 
     private final transient ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
 
@@ -39,23 +37,9 @@ public class SingleThreadExecutorServices implements ExecutorServices {
         return taskExecutor;
     }
 
-    public void cleanup() {
-        taskExecutor.shutdown();
-        try {
-            // Wait a while for existing tasks to terminate
-            if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS)) {
-                taskExecutor.shutdownNow(); // Cancel currently executing tasks
-                // Wait a while for tasks to respond to being cancelled
-                if (!taskExecutor.awaitTermination(60, TimeUnit.SECONDS)) {
-                    // Log the error here
-                }
-            }
-        } catch (InterruptedException ie) {
-            // (Re-)Cancel if current thread also interrupted
-            taskExecutor.shutdownNow();
-            // Preserve interrupt status
-            Thread.currentThread().interrupt();
-        }
-    }
 
+    @Override
+    protected int getThreadPoolSize() {
+        return 1;
+    }
 }

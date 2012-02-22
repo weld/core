@@ -96,7 +96,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
 
 public class SessionBean<T> extends AbstractClassBean<T> {
     // The EJB descriptor
-    private InternalEjbDescriptor<T> ejbDescriptor;
+    private final InternalEjbDescriptor<T> ejbDescriptor;
 
     private Class<T> proxyClass;
 
@@ -145,49 +145,47 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * Initializes the bean and its metadata
      */
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        if (!isInitialized()) {
-            checkConstructor();
-            super.initialize(environment);
-            initProxyClass();
-            checkEJBTypeAllowed();
-            checkConflictingRoles();
-            checkObserverMethods();
-            checkScopeAllowed();
-            setInjectionTarget(new InjectionTarget<T>() {
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        checkConstructor();
+        super.internalInitialize(environment);
+        initProxyClass();
+        checkEJBTypeAllowed();
+        checkConflictingRoles();
+        checkObserverMethods();
+        checkScopeAllowed();
+        setInjectionTarget(new InjectionTarget<T>() {
 
-                public void inject(final T instance, final CreationalContext<T> ctx) {
-                    new InjectionContextImpl<T>(getBeanManager(), this, getWeldAnnotated(), instance) {
+            public void inject(final T instance, final CreationalContext<T> ctx) {
+                new InjectionContextImpl<T>(getBeanManager(), this, getWeldAnnotated(), instance) {
 
-                        public void proceed() {
-                            Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
-                        }
+                    public void proceed() {
+                        Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
+                    }
 
-                    }.run();
-                }
+                }.run();
+            }
 
-                public void postConstruct(T instance) {
-                    defaultPostConstruct(instance);
-                }
+            public void postConstruct(T instance) {
+                defaultPostConstruct(instance);
+            }
 
-                public void preDestroy(T instance) {
-                    defaultPreDestroy(instance);
-                }
+            public void preDestroy(T instance) {
+                defaultPreDestroy(instance);
+            }
 
-                public void dispose(T instance) {
-                    // No-op
-                }
+            public void dispose(T instance) {
+                // No-op
+            }
 
-                public Set<InjectionPoint> getInjectionPoints() {
-                    return cast(getWeldInjectionPoints());
-                }
+            public Set<InjectionPoint> getInjectionPoints() {
+                return cast(getWeldInjectionPoints());
+            }
 
-                public T produce(CreationalContext<T> ctx) {
-                    return SessionBean.this.createInstance(ctx);
-                }
+            public T produce(CreationalContext<T> ctx) {
+                return SessionBean.this.createInstance(ctx);
+            }
 
-            });
-        }
+        });
     }
 
     @Override

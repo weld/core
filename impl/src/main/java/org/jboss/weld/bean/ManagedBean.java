@@ -244,15 +244,13 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * Initializes the bean and its metadata
      */
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        if (!isInitialized()) {
-            checkConstructor();
-            super.initialize(environment);
-            initPostConstruct();
-            initPreDestroy();
-            initEEInjectionPoints();
-            setInjectionTarget(new ManagedBeanInjectionTarget<T>(this));
-        }
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        checkConstructor();
+        super.internalInitialize(environment);
+        initPostConstruct();
+        initPreDestroy();
+        initEEInjectionPoints();
+        setInjectionTarget(new ManagedBeanInjectionTarget<T>(this));
     }
 
     protected T createInstance(CreationalContext<T> ctx) {

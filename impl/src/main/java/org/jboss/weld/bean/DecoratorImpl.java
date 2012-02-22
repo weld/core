@@ -112,16 +112,14 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     }
 
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        if (!isInitialized()) {
-            super.initialize(environment);
-            initDelegateInjectionPoint();
-            initDecoratedTypes();
-            initDelegateBindings();
-            initDelegateType();
-            checkDelegateType();
-            checkAbstractMethods();
-        }
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
+        initDelegateInjectionPoint();
+        initDecoratedTypes();
+        initDelegateBindings();
+        initDelegateType();
+        checkDelegateType();
+        checkAbstractMethods();
     }
 
     protected void initDecoratedTypes() {

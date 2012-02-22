@@ -33,9 +33,7 @@ public class InjectionTargetValidator implements Service {
     }
 
     public void validate() {
-        for (InjectionTarget<?> injectionTarget : injectionTargets) {
-            validator.validateInjectionTarget(injectionTarget, beanManager);
-        }
+        validator.validateInjectionTargets(injectionTargets, beanManager);
         injectionTargets.clear();
     }
 

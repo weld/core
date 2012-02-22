@@ -45,7 +45,7 @@ public abstract class CommonBean<T> extends ForwardingBeanAttributes<T> implemen
 
     private final int hashCode;
 
-    private BeanAttributes<T> attributes;
+    private volatile BeanAttributes<T> attributes;
 
     protected CommonBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager) {
         this.attributes = attributes;

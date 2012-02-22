@@ -22,6 +22,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
@@ -35,7 +36,10 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
 
     private static final long serialVersionUID = -8354344628345860324L;
 
-    public static <T, X> ParameterInjectionPointImpl<T, X> special(ParameterInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
+    /**
+     * Creates an injection point without firing the {@link ProcessInjectionPoint} event.
+     */
+    public static <T, X> ParameterInjectionPointImpl<T, X> extension(ParameterInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
         return new ParameterInjectionPointImpl<T, X>(attributes);
     }
 

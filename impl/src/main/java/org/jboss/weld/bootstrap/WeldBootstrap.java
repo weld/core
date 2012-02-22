@@ -94,10 +94,13 @@ import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.executor.ExecutorServicesFactory;
+import org.jboss.weld.executor.SingleThreadExecutorServices;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.InjectionTargetValidator;
+import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
@@ -296,7 +299,6 @@ public class WeldBootstrap implements Bootstrap {
         // Temporary workaround to provide context for building annotated class
         // TODO expose AnnotatedClass on SPI and allow container to provide impl
         // of this via ResourceLoader
-        services.add(Validator.class, new Validator());
         TypeStore typeStore = new TypeStore();
         services.add(TypeStore.class, typeStore);
         ClassTransformer classTransformer = new ClassTransformer(typeStore);
@@ -306,6 +308,15 @@ public class WeldBootstrap implements Bootstrap {
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
+
+        ExecutorServices executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
+        services.add(ExecutorServices.class, executor);
+        if (executor instanceof SingleThreadExecutorServices) {
+            services.add(Validator.class, new Validator());
+        } else {
+            services.add(Validator.class, new ConcurrentValidator(executor));
+        }
+
         return services;
     }
 
@@ -369,13 +380,12 @@ public class WeldBootstrap implements Bootstrap {
             }
             // we must use separate loops, otherwise cyclic specialization would not work
             for (BeanDeployment deployment : beanDeployments.values()) {
-                deployment.getBeanDeployer().processBeans();
+                deployment.getBeanDeployer().processClassBeanAttributes();
                 deployment.getBeanDeployer().createProducersAndObservers();
             }
             for (BeanDeployment deployment : beanDeployments.values()) {
-                deployment.getBeanDeployer().processProducerMethods();
+                deployment.getBeanDeployer().processProducerAttributes();
                 deployment.getBeanDeployer().createNewBeans();
-                deployment.getBeanDeployer().cleanup();
             }
 
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
@@ -440,6 +450,7 @@ public class WeldBootstrap implements Bootstrap {
         }
         for (BeanDeployment deployment : beanDeployments.values()) {
             deployment.getBeanManager().getServices().get(EnumService.class).inject();
+            deployment.getBeanDeployer().cleanup();
         }
         return this;
     }

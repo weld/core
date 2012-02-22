@@ -36,7 +36,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapable {
 
-    private final BeanManagerImpl beanManager;
+    protected final BeanManagerImpl beanManager;
+    private boolean initialized;
 
     protected RIBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager) {
         super(attributes, idSuffix, beanManager);
@@ -55,7 +56,19 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
 
     public abstract void preInitialize();
 
-    public abstract void initialize(BeanDeployerEnvironment environment);
+    /**
+     * Initializes the bean and its metadata. The method is synchronized and guarded by the RIBean object so that the
+     * initialization only occurs once.
+     *
+     */
+    public synchronized void initialize(BeanDeployerEnvironment environment) {
+        if (!initialized) {
+            internalInitialize(environment);
+            initialized = true;
+        }
+    }
+
+    protected abstract void internalInitialize(BeanDeployerEnvironment environment);
 
     /**
      * This method is called after the container is started allowing the bean to

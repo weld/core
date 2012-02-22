@@ -33,10 +33,10 @@ public class WeldExceptionListMessage implements WeldExceptionMessage, Serializa
 
     private static final long serialVersionUID = 3445187707771082346L;
 
-    private List<Throwable> causes;
+    private List<? extends Throwable> causes;
     private String message;
 
-    public WeldExceptionListMessage(List<Throwable> throwables) {
+    public WeldExceptionListMessage(List<? extends Throwable> throwables) {
         this.causes = throwables;
     }
 

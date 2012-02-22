@@ -69,9 +69,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     private ArraySet<WeldInjectionPoint<?, ?>> injectionPoints;
     private ArraySet<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
     private ArraySet<WeldInjectionPoint<?, ?>> newInjectionPoints;
-    protected BeanManagerImpl beanManager;
     private final ServiceRegistry services;
-    private boolean initialized;
     private boolean preInitialized;
     private boolean proxyRequired;
 
@@ -82,7 +80,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      */
     public AbstractBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, idSuffix, beanManager);
-        this.beanManager = beanManager;
         this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
         this.delegateInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
         this.newInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
@@ -102,13 +99,15 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      */
     @Override
     public void preInitialize() {
-        if (isSpecializing() && !preInitialized) {
-            preInitialized = true;
-            preSpecialize();
-            specialize();
-            checkSpecialization();
-            postSpecialize();
-            finishSpecialization();
+        synchronized (this) {
+            if (isSpecializing() && !preInitialized) {
+                preInitialized = true;
+                preSpecialize();
+                specialize();
+                checkSpecialization();
+                postSpecialize();
+                finishSpecialization();
+            }
         }
     }
 
@@ -116,9 +115,8 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * Initializes the bean and its metadata
      */
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
+    public void internalInitialize(BeanDeployerEnvironment environment) {
         preInitialize();
-        initialized = true;
         log.trace(CREATING_BEAN, getType());
         checkDelegateInjectionPoints();
         if (getScope() != null) {
@@ -264,10 +262,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     @Override
     public boolean isSpecializing() {
         return getWeldAnnotated().isAnnotationPresent(Specializes.class);
-    }
-
-    protected boolean isInitialized() {
-        return initialized;
     }
 
     @Override

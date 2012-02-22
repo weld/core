@@ -24,6 +24,7 @@ package org.jboss.weld.event;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.introspector.WeldMethod;
@@ -39,8 +40,11 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
 
+    private final Container containerLifecycleEventDeliveryLock;
+
     protected ExtensionObserverMethodImpl(WeldMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         super(observer, declaringBean, manager);
+        this.containerLifecycleEventDeliveryLock = Container.instance();
     }
 
     @Override
@@ -74,5 +78,12 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     @Override
     protected Object getReceiver(CreationalContext<?> ctx) {
         return getDeclaringBean().create(null);
+    }
+
+    @Override
+    protected void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
+        synchronized (containerLifecycleEventDeliveryLock) {
+            super.sendEvent(event, receiver, creationalContext);
+        }
     }
 }

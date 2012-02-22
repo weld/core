@@ -85,6 +85,7 @@ import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -410,13 +411,25 @@ public class Beans {
         }
     }
 
-    public static <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(WeldCallable<?, X, ?> callable, Bean<?> declaringBean, BeanManagerImpl manager) {
+    public static <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(WeldCallable<?, X, ?> callable, Bean<?> declaringBean, BeanManagerImpl manager, boolean observerOrDisposer) {
         List<ParameterInjectionPoint<?, X>> parameters = new ArrayList<ParameterInjectionPoint<?, X>>();
+
+        /*
+         * bean that the injection point belongs to
+         * this is null for observer and disposer methods
+         */
+        Bean<?> bean = null;
+        if (!observerOrDisposer) {
+            bean = declaringBean;
+        }
+
         for (WeldParameter<?, X> parameter : callable.getWeldParameters()) {
             if (isSpecialParameter(parameter)) {
-                parameters.add(SpecialParameterInjectionPoint.of(parameter, declaringBean));
+                parameters.add(SpecialParameterInjectionPoint.of(parameter, bean));
+            } else if (declaringBean instanceof ExtensionBean) {
+                parameters.add(ParameterInjectionPointImpl.extension(manager.createInjectionPoint(parameter, bean), manager));
             } else {
-                parameters.add(ParameterInjectionPointImpl.of(manager.createInjectionPoint(parameter, declaringBean), manager));
+                parameters.add(ParameterInjectionPointImpl.of(manager.createInjectionPoint(parameter, bean), manager));
             }
         }
         return parameters;

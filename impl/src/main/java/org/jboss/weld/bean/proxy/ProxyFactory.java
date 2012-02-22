@@ -244,7 +244,7 @@ public class ProxyFactory<T> {
     }
 
     /**
-     * Produces or returns the existing proxy class.
+     * Produces or returns the existing proxy class. The operation is thread-safe.
      *
      * @return always the class of the proxy
      */
@@ -277,6 +277,15 @@ public class ProxyFactory<T> {
             }
         }
         return proxyClass;
+    }
+
+    protected Class<T> getCachedProxyClass(String proxyClassName) {
+        try {
+            // Check to see if we already have this proxy class
+            return cast(classLoader.loadClass(proxyClassName));
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 
     /**

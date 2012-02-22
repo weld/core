@@ -96,28 +96,26 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     }
 
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        if (!isInitialized()) {
-            super.initialize(environment);
-            setProducer(new AbstractProducer() {
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
+        setProducer(new AbstractProducer() {
 
-                public T produce(CreationalContext<T> creationalContext) {
-                    // unwrap if we have a proxy
-                    Object receiver = getReceiver(creationalContext);
-                    if (receiver instanceof TargetInstanceProxy) {
-                        receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
-                    }
-                    return field.get(receiver);
+            public T produce(CreationalContext<T> creationalContext) {
+                // unwrap if we have a proxy
+                Object receiver = getReceiver(creationalContext);
+                if (receiver instanceof TargetInstanceProxy) {
+                    receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
                 }
+                return field.get(receiver);
+            }
 
-                @Override
-                public String toString() {
-                    return field.toString();
-                }
+            @Override
+            public String toString() {
+                return field.toString();
+            }
 
-            });
-            checkProducerField();
-        }
+        });
+        checkProducerField();
     }
 
 

@@ -90,11 +90,12 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
         this.methods = Collections.<Class<?>, Method>singletonMap(method.getDeclaringClass(), method);
 
         if (annotatedMethod == null) {
+            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
             for (int i = 0; i < method.getParameterTypes().length; i++) {
-                if (method.getParameterAnnotations()[i].length > 0) {
+                if (parameterAnnotations[i].length > 0) {
                     Class<? extends Object> clazz = method.getParameterTypes()[i];
                     Type parametertype = method.getGenericParameterTypes()[i];
-                    WeldParameter<?, X> parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
+                    WeldParameter<?, X> parameter = WeldParameterImpl.of(parameterAnnotations[i], clazz, parametertype, this, i, classTransformer);
                     this.parameters.add(parameter);
                 } else {
                     Class<? extends Object> clazz = method.getParameterTypes()[i];

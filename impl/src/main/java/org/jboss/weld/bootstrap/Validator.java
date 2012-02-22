@@ -16,79 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.inject.Named;
-import javax.inject.Scope;
-
-import com.google.common.base.Supplier;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
-import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.bean.AbstractProducerBean;
-import org.jboss.weld.bean.DisposalMethod;
-import org.jboss.weld.bean.InterceptorImpl;
-import org.jboss.weld.bean.NewBean;
-import org.jboss.weld.bean.NewManagedBean;
-import org.jboss.weld.bean.NewSessionBean;
-import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.WeldDecorator;
-import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
-import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.exceptions.AmbiguousResolutionException;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.IllegalProductException;
-import org.jboss.weld.exceptions.InconsistentSpecializationException;
-import org.jboss.weld.exceptions.NullableDependencyException;
-import org.jboss.weld.exceptions.UnproxyableResolutionException;
-import org.jboss.weld.exceptions.UnserializableDependencyException;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.literal.DecoratedLiteral;
-import org.jboss.weld.literal.InterceptedLiteral;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
@@ -129,6 +56,82 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEA
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.PassivationCapable;
+import javax.inject.Named;
+import javax.inject.Scope;
+
+import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.bean.DisposalMethod;
+import org.jboss.weld.bean.InterceptorImpl;
+import org.jboss.weld.bean.NewBean;
+import org.jboss.weld.bean.NewManagedBean;
+import org.jboss.weld.bean.NewSessionBean;
+import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.WeldDecorator;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.exceptions.AmbiguousResolutionException;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.IllegalProductException;
+import org.jboss.weld.exceptions.InconsistentSpecializationException;
+import org.jboss.weld.exceptions.NullableDependencyException;
+import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.exceptions.UnserializableDependencyException;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.literal.DecoratedLiteral;
+import org.jboss.weld.literal.InterceptedLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
+
 /**
  * Checks a list of beans for DeploymentExceptions and their subclasses
  *
@@ -142,7 +145,7 @@ public class Validator implements Service {
 
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
-    private void validateBean(Bean<?> bean, BeanManagerImpl beanManager) {
+    protected void validateGeneralBean(Bean<?> bean, BeanManagerImpl beanManager) {
         for (InjectionPoint ij : bean.getInjectionPoints()) {
             validateInjectionPoint(ij, beanManager);
         }
@@ -163,15 +166,15 @@ public class Validator implements Service {
      * @param beanManager      the current manager
      * @param specializedBeans the existing specialized beans
      */
-    private void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans) {
-        validateBean(bean, beanManager);
+    protected void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans) {
+        validateGeneralBean(bean, beanManager);
         if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>)) {
             RIBean<?> abstractBean = bean;
             if (abstractBean.isSpecializing()) {
-                if (specializedBeans.contains(abstractBean.getSpecializedBean())) {
+                boolean added = specializedBeans.add(abstractBean.getSpecializedBean());
+                if (!added) {
                     throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, bean);
                 }
-                specializedBeans.add(abstractBean.getSpecializedBean());
             }
             if ((bean instanceof AbstractClassBean<?>)) {
                 AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
@@ -341,6 +344,12 @@ public class Validator implements Service {
         }
     }
 
+    public void validateInjectionTargets(Collection<InjectionTarget<?>> injectionTargets, BeanManagerImpl beanManager) {
+        for (InjectionTarget<?> injectionTarget : injectionTargets) {
+            validateInjectionTarget(injectionTarget, beanManager);
+        }
+    }
+
     public void validateInjectionTarget(InjectionTarget<?> injectionTarget, BeanManagerImpl beanManager) {
         for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints()) {
             validateInjectionPoint(injectionPoint, beanManager);
@@ -348,11 +357,28 @@ public class Validator implements Service {
     }
 
     private void checkScopeAnnotations(InjectionPoint ij, MetaAnnotationStore metaAnnotationStore) {
-        for (Annotation annotation : ij.getAnnotated().getAnnotations()) {
-            if (hasScopeMetaAnnotation(annotation)) {
-                log.warn(SCOPE_ANNOTATION_ON_INJECTION_POINT, annotation, ij);
+        Annotated annotated = ij.getAnnotated();
+        if (annotated instanceof WeldAnnotated<?, ?>) {
+            WeldAnnotated<?, ?> weldAnnotated = (WeldAnnotated<?, ?>) annotated;
+            Set<Annotation> scopes = weldAnnotated.getMetaAnnotations(Scope.class);
+            Set<Annotation> normalScopes = weldAnnotated.getMetaAnnotations(NormalScope.class);
+            for (Annotation annotation : scopes) {
+                logScopeOnInjectionPointWarning(ij, annotation);
+            }
+            for (Annotation annotation : normalScopes) {
+                logScopeOnInjectionPointWarning(ij, annotation);
+            }
+        } else {
+            for (Annotation annotation : annotated.getAnnotations()) {
+                if (hasScopeMetaAnnotation(annotation)) {
+                    logScopeOnInjectionPointWarning(ij, annotation);
+                }
             }
         }
+    }
+
+    private void logScopeOnInjectionPointWarning(InjectionPoint ij, Annotation annotation) {
+        log.warn(SCOPE_ANNOTATION_ON_INJECTION_POINT, annotation, ij);
     }
 
     private boolean hasScopeMetaAnnotation(Annotation annotation) {
@@ -370,9 +396,9 @@ public class Validator implements Service {
     }
 
     public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment) {
-        validateDecorators(manager.getDecorators(), new ArrayList<RIBean<?>>(), manager);
+        validateDecorators(manager.getDecorators(), manager);
         validateInterceptors(manager.getInterceptors());
-        validateBeans(manager.getBeans(), new ArrayList<RIBean<?>>(), manager);
+        validateBeans(manager.getBeans(), manager);
         validateEnabledDecoratorClasses(manager);
         validateEnabledInterceptorClasses(manager);
         validateEnabledAlternatives(manager);
@@ -381,81 +407,95 @@ public class Validator implements Service {
         validateBeanNames(manager);
     }
 
-    public void validateBeans(Collection<? extends Bean<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
+    public void validateBeans(Collection<? extends Bean<?>> beans, BeanManagerImpl manager) {
         final List<RuntimeException> problems = new ArrayList<RuntimeException>();
+        final Set<RIBean<?>> specializedBeans = new HashSet<RIBean<?>>();
 
         for (Bean<?> bean : beans) {
-            try {
-                if (bean instanceof RIBean<?>) {
-                    validateRIBean((RIBean<?>) bean, manager, specializedBeans);
-                } else {
-                    validateBean(bean, manager);
-                }
-            } catch (RuntimeException e) {
-                problems.add(e);
-            }
+            validateBean(bean, specializedBeans, manager, problems);
         }
         if (!problems.isEmpty()) {
             if (problems.size() == 1) {
                 throw problems.get(0);
             } else {
-                throw new DeploymentException((List) problems);
+                throw new DeploymentException(problems);
             }
+        }
+    }
+
+    protected void validateBean(Bean<?> bean, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager, List<RuntimeException> problems) {
+        try {
+            if (bean instanceof RIBean<?>) {
+                validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+            } else {
+                validateGeneralBean(bean, manager);
+            }
+        } catch (RuntimeException e) {
+            problems.add(e);
         }
     }
 
     public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors) {
         for (Interceptor<?> interceptor : interceptors) {
-            // TODO: confirm that producer methods, fields and disposers can be
-            // only found on Weld interceptors?
-            if (interceptor instanceof InterceptorImpl<?>) {
-                WeldClass<?> annotated = ((InterceptorImpl<?>) interceptor).getWeldAnnotated();
-                while (annotated != null && annotated.getJavaClass() != Object.class) {
-                    if (!annotated.getDeclaredWeldMethods(Produces.class).isEmpty()) {
-                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
-                    }
-                    if (!annotated.getDeclaredWeldFields(Produces.class).isEmpty()) {
-                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS, interceptor);
-                    }
-                    if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
-                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
-                    }
-                    if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
-                        throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
-                    }
-                    annotated = annotated.getWeldSuperclass();
+            validateInterceptor(interceptor);
+        }
+    }
+
+    protected void validateInterceptor(Interceptor<?> interceptor) {
+        // TODO: confirm that producer methods, fields and disposers can be
+        // only found on Weld interceptors?
+        if (interceptor instanceof InterceptorImpl<?>) {
+            WeldClass<?> annotated = ((InterceptorImpl<?>) interceptor).getWeldAnnotated();
+            while (annotated != null && annotated.getJavaClass() != Object.class) {
+                if (!annotated.getDeclaredWeldMethods(Produces.class).isEmpty()) {
+                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
                 }
+                if (!annotated.getDeclaredWeldFields(Produces.class).isEmpty()) {
+                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS, interceptor);
+                }
+                if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
+                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
+                }
+                if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
+                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
+                }
+                annotated = annotated.getWeldSuperclass();
             }
         }
     }
 
-    public void validateDecorators(Collection<? extends Decorator<?>> beans, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
-        for (Bean<?> bean : beans) {
-            if (bean instanceof RIBean<?>) {
-                validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+    public void validateDecorators(Collection<? extends Decorator<?>> decorators, BeanManagerImpl manager) {
+        Set<RIBean<?>> specializedBeans = new HashSet<RIBean<?>>();
+        for (Decorator<?> decorator : decorators) {
+            validateDecorator(decorator, specializedBeans, manager);
+        }
+    }
 
-                if (bean instanceof WeldDecorator<?>) {
-                    WeldClass<?> annotatated = ((WeldDecorator<?>) bean).getWeldAnnotated();
-                    while (annotatated != null && annotatated.getJavaClass() != Object.class) {
-                        if (!annotatated.getDeclaredWeldMethods(Produces.class).isEmpty()) {
-                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, bean);
-                        }
-                        if (!annotatated.getDeclaredWeldFields(Produces.class).isEmpty()) {
-                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, bean);
-                        }
-                        if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
-                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, bean);
-                        }
-                        if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
-                            throw new DefinitionException(DECORATORS_CANNOT_HAVE_OBSERVER_METHODS, bean);
-                        }
-                        annotatated = annotatated.getWeldSuperclass();
+    protected void validateDecorator(Decorator<?> decorator, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
+        if (decorator instanceof RIBean<?>) {
+            validateRIBean((RIBean<?>) decorator, manager, specializedBeans);
+
+            if (decorator instanceof WeldDecorator<?>) {
+                WeldClass<?> annotatated = ((WeldDecorator<?>) decorator).getWeldAnnotated();
+                while (annotatated != null && annotatated.getJavaClass() != Object.class) {
+                    if (!annotatated.getDeclaredWeldMethods(Produces.class).isEmpty()) {
+                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, decorator);
                     }
+                    if (!annotatated.getDeclaredWeldFields(Produces.class).isEmpty()) {
+                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, decorator);
+                    }
+                    if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
+                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, decorator);
+                    }
+                    if (!annotatated.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
+                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_OBSERVER_METHODS, decorator);
+                    }
+                    annotatated = annotatated.getWeldSuperclass();
                 }
-
-            } else {
-                validateBean(bean, manager);
             }
+
+        } else {
+            validateGeneralBean(decorator, manager);
         }
     }
 
@@ -565,7 +605,7 @@ public class Validator implements Service {
         }
     }
 
-    private void validateObserverMethods(Iterable<ObserverMethodImpl<?, ?>> observers, BeanManagerImpl beanManager) {
+    protected void validateObserverMethods(Iterable<ObserverMethodImpl<?, ?>> observers, BeanManagerImpl beanManager) {
         for (ObserverMethodImpl<?, ?> omi : observers) {
             for (InjectionPoint ip : omi.getInjectionPoints())
                 validateInjectionPoint(ip, beanManager);

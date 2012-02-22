@@ -73,7 +73,7 @@ public class DeploymentException extends javax.enterprise.inject.spi.DeploymentE
      *
      * @param errors A list of throwables to use in the message
      */
-    public DeploymentException(List<Throwable> errors) {
+    public DeploymentException(List<? extends Throwable> errors) {
         super(DeploymentException.class.getName()); // the no-args constructor is missing
         this.message = new WeldExceptionListMessage(errors);
     }

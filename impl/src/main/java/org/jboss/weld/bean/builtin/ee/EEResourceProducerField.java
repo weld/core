@@ -109,12 +109,10 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
     }
 
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        if (!isInitialized()) {
-            super.initialize(environment);
-            checkEEResource();
-            proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
-        }
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
+        checkEEResource();
+        proxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
     }
 
     protected void checkEEResource() {

@@ -153,9 +153,9 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * Initializes the bean and its metadata
      */
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
+    public void internalInitialize(BeanDeployerEnvironment environment) {
         getDeclaringBean().initialize(environment);
-        super.initialize(environment);
+        super.internalInitialize(environment);
         checkProducerReturnType();
         initPassivationCapable();
         initDisposalMethod(environment);

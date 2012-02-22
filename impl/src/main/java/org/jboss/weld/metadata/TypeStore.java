@@ -16,16 +16,17 @@
  */
 package org.jboss.weld.metadata;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.jboss.weld.bootstrap.api.Service;
+
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
-import org.jboss.weld.bootstrap.api.Service;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author pmuir
@@ -35,13 +36,13 @@ public class TypeStore implements Service {
     private final SetMultimap<Class<? extends Annotation>, Annotation> extraAnnotations;
 
     public TypeStore() {
-        this.extraAnnotations = Multimaps.synchronizedSetMultimap(Multimaps.newSetMultimap(new HashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>() {
+        this.extraAnnotations = Multimaps.newSetMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>() {
 
             public Set<Annotation> get() {
-                return new HashSet<Annotation>();
+                return new CopyOnWriteArraySet<Annotation>();
             }
 
-        }));
+        });
     }
 
     public Set<Annotation> get(Class<? extends Annotation> annotationType) {

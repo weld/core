@@ -100,13 +100,13 @@ public class MetaAnnotationStore implements Service {
     }
 
     // The stereotype models
-    private ConcurrentMap<Class<Annotation>, StereotypeModel<Annotation>> stereotypes;
+    private final ConcurrentMap<Class<Annotation>, StereotypeModel<Annotation>> stereotypes;
     // The scope models
-    private ConcurrentMap<Class<Annotation>, ScopeModel<Annotation>> scopes;
+    private final ConcurrentMap<Class<Annotation>, ScopeModel<Annotation>> scopes;
     // The binding type models
-    private ConcurrentMap<Class<Annotation>, QualifierModel<Annotation>> qualifiers;
+    private final ConcurrentMap<Class<Annotation>, QualifierModel<Annotation>> qualifiers;
     // the interceptor bindings
-    private ConcurrentMap<Class<Annotation>, InterceptorBindingModel<Annotation>> interceptorBindings;
+    private final ConcurrentMap<Class<Annotation>, InterceptorBindingModel<Annotation>> interceptorBindings;
 
     public MetaAnnotationStore(ClassTransformer classTransformer) {
         MapMaker mapMaker = new MapMaker();
