@@ -824,7 +824,7 @@ msgstr ""
 #. Tag: programlisting
 #, fuzzy, no-c-format
 msgid ""
-"abstract class AsynchronousQualifier\n"
+"class AsynchronousQualifier\n"
 "extends AnnotationLiteral&lt;Asynchronous&gt; implements Asynchronous {}"
 msgstr ""
 "<![CDATA[abstract class CreditCardBinding \n"
