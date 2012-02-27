@@ -1,26 +1,31 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
+        "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
 <chapter id="injection">
-   <title>Dependency injection and programmatic lookup</title>
+    <title>Dependency injection and programmatic lookup</title>
 
-   <para>
-      One of the most significant features of CDI&mdash;certainly the most recognized&mdash;is dependency injection;
-      excuse me, <emphasis>typesafe</emphasis> dependency injection.
-   </para>
+    <para>
+        One of the most significant features of CDI&mdash;certainly the most recognized&mdash;is dependency injection;
+        excuse me,
+        <emphasis>typesafe</emphasis>
+        dependency injection.
+    </para>
 
-   <section>
-      <title>Injection points</title>
+    <section>
+        <title>Injection points</title>
 
-      <para>
-         The <literal>@Inject</literal> annotation lets us define an injection point that is injected during bean 
-         instantiation. Injection can occur via three different mechanisms.
-      </para>
-      
-      <para>
-         <emphasis>Bean constructor</emphasis> parameter injection:
-      </para>
+        <para>
+            The
+            <literal>@Inject</literal>
+            annotation lets us define an injection point that is injected during bean
+            instantiation. Injection can occur via three different mechanisms.
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[public class Checkout {
+        <para>
+            <emphasis>Bean constructor</emphasis>
+            parameter injection:
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[public class Checkout {
         
    private final ShoppingCart cart;
     
@@ -31,15 +36,16 @@
 
 }]]></programlisting>
 
-      <para>
-         A bean can only have one injectable constructor.
-      </para>
+        <para>
+            A bean can only have one injectable constructor.
+        </para>
 
-      <para>
-         <emphasis>Initializer method</emphasis> parameter injection:
-      </para>
+        <para>
+            <emphasis>Initializer method</emphasis>
+            parameter injection:
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[public class Checkout {
+        <programlisting role="JAVA"><![CDATA[public class Checkout {
         
    private ShoppingCart cart;
 
@@ -50,313 +56,361 @@
     
 }]]></programlisting>
 
-      <note>
-         <para>
-            A bean can have multiple initializer methods. If the bean is a session bean, the initializer method 
-            is not required to be a business method of the session bean.
-         </para>
-      </note>
+        <note>
+            <para>
+                A bean can have multiple initializer methods. If the bean is a session bean, the initializer method
+                is not required to be a business method of the session bean.
+            </para>
+        </note>
 
-      <para>
-         And direct field injection:
-      </para>
+        <para>
+            And direct field injection:
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[public class Checkout {
+        <programlisting role="JAVA"><![CDATA[public class Checkout {
 
    private @Inject ShoppingCart cart;
     
 }]]></programlisting>
 
-      <note>
-         <para>
-            Getter and setter methods are not required for field injection to work (unlike with JSF managed beans).
-         </para>
-      </note>
-
-      <para>
-         Dependency injection always occurs when the bean instance is first instantiated by the container.
-         Simplifying just a little, things happen in this order:
-      </para>
-
-      <itemizedlist>
-         <listitem>
+        <note>
             <para>
-               First, the container calls the bean constructor (the default constructor or the one annotated
-               <literal>@Inject</literal>), to obtain an instance of the bean.
+                Getter and setter methods are not required for field injection to work (unlike with JSF managed beans).
             </para>
-         </listitem>
-         <listitem>
-            <para>
-               Next, the container initializes the values of all injected fields of the bean.
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               Next, the container calls all initializer methods of bean (the call order is not portable, don't 
-               rely on it).
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               Finally, the <literal>@PostConstruct</literal> method, if any, is called.
-            </para>
-         </listitem>
-      </itemizedlist>
-      
-      <para>(The only complication is that the container might call initializer methods declared by a superclass 
-      before initializing injected fields declared by a subclass.)</para>
+        </note>
 
-      <note>
-         <para>
-            One major advantage of constructor injection is that it allows the bean to be immutable.
-         </para>
-      </note>
-      
-      <para>
-         CDI also supports parameter injection for some other methods that are invoked by the container. For instance, 
-         parameter injection is supported for producer methods:
-      </para>
+        <para>
+            Dependency injection always occurs when the bean instance is first instantiated by the container.
+            Simplifying just a little, things happen in this order:
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {
+        <itemizedlist>
+            <listitem>
+                <para>
+                    First, the container calls the bean constructor (the default constructor or the one annotated
+                    <literal>@Inject</literal>), to obtain an instance of the bean.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Next, the container initializes the values of all injected fields of the bean.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Next, the container calls all initializer methods of bean (the call order is not portable, don't
+                    rely on it).
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Finally, the
+                    <literal>@PostConstruct</literal>
+                    method, if any, is called.
+                </para>
+            </listitem>
+        </itemizedlist>
+
+        <para>(The only complication is that the container might call initializer methods declared by a superclass
+            before initializing injected fields declared by a subclass.)
+        </para>
+
+        <note>
+            <para>
+                One major advantage of constructor injection is that it allows the bean to be immutable.
+            </para>
+        </note>
+
+        <para>
+            CDI also supports parameter injection for some other methods that are invoked by the container. For
+            instance,
+            parameter injection is supported for producer methods:
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[@Produces Checkout createCheckout(ShoppingCart cart) {
     return new Checkout(cart);
 }]]></programlisting>
 
-      <para>
-        This is a case where the <literal>@Inject</literal> annotation <emphasis>is not</emphasis> required at the
-        injection point. The same is true for observer methods (which we'll meet in <xref linkend="events"/>) and
-        disposer methods.
-      </para>
-   </section>
+        <para>
+            This is a case where the
+            <literal>@Inject</literal>
+            annotation
+            <emphasis>is not</emphasis>
+            required at the
+            injection point. The same is true for observer methods (which we'll meet in<xref linkend="events"/>) and
+            disposer methods.
+        </para>
+    </section>
 
-   <section>
-      <title>What gets injected</title>
+    <section>
+        <title>What gets injected</title>
 
-      <para>
-         The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the container 
-         follows when identifying the bean to inject to an injection point.  This algorithm looks complex at first, but 
-         once you understand it, it's really quite intuitive. Typesafe resolution is performed at system initialization 
-         time, which means that the container will inform the developer immediately if a bean's
-         dependencies cannot be satisfied.
-      </para>
+        <para>
+            The CDI specification defines a procedure, called<emphasis>typesafe resolution</emphasis>, that the
+            container
+            follows when identifying the bean to inject to an injection point. This algorithm looks complex at first,
+            but
+            once you understand it, it's really quite intuitive. Typesafe resolution is performed at system
+            initialization
+            time, which means that the container will inform the developer immediately if a bean's
+            dependencies cannot be satisfied.
+        </para>
 
-      <para>
-         The purpose of this algorithm is to allow multiple beans to implement the same bean type and either:
-      </para>
+        <para>
+            The purpose of this algorithm is to allow multiple beans to implement the same bean type and either:
+        </para>
 
-      <itemizedlist>
-         <listitem>
-            <para>
-               allow the client to select which implementation it requires using a <emphasis>qualifier</emphasis> or
-            </para>
-        </listitem>
-        <listitem>
-            <para>
-               allow the application deployer to select which implementation is appropriate for a particular deployment,
-               without changes to the client, by enabling or disabling an <emphasis>alternative</emphasis>, or
-            </para>
-        </listitem>
-        <listitem>
-            <para>
-               allow the beans to be isolated into separate modules.
-            </para>
-        </listitem>
-      </itemizedlist>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    allow the client to select which implementation it requires using a
+                    <emphasis>qualifier</emphasis>
+                    or
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    allow the application deployer to select which implementation is appropriate for a particular
+                    deployment,
+                    without changes to the client, by enabling or disabling an<emphasis>alternative</emphasis>, or
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    allow the beans to be isolated into separate modules.
+                </para>
+            </listitem>
+        </itemizedlist>
 
-      <para>
-         Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then bean A is
-         going to go into slot A. That's the simplest possible scenario. When you first start your application, you'll
-         likely have lots of those.
-      </para>
-      
-      <para>
-         But then, things start to get complicated. Let's explore how the container determines which bean to inject in
-         more advanced cases. We'll start by taking a closer look at qualifiers.
-      </para>
+        <para>
+            Obviously, if you have exactly one bean of a given type, and an injection point with that same type, then
+            bean A is
+            going to go into slot A. That's the simplest possible scenario. When you first start your application,
+            you'll
+            likely have lots of those.
+        </para>
 
-   </section>
+        <para>
+            But then, things start to get complicated. Let's explore how the container determines which bean to inject
+            in
+            more advanced cases. We'll start by taking a closer look at qualifiers.
+        </para>
 
-   <section>
-      <title>Qualifier annotations</title>
+    </section>
 
-      <para>
-         If we have more than one bean that implements a particular bean type, the injection point can specify exactly
-         which bean should be injected using a qualifier annotation. For example, there might be two implementations of
-         <literal>PaymentProcessor</literal>:
-      </para>
+    <section>
+        <title>Qualifier annotations</title>
 
-      <programlisting role="JAVA"><![CDATA[@Synchronous
+        <para>
+            If we have more than one bean that implements a particular bean type, the injection point can specify
+            exactly
+            which bean should be injected using a qualifier annotation. For example, there might be two implementations
+            of
+            <literal>PaymentProcessor</literal>:
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[@Synchronous
 public class SynchronousPaymentProcessor implements PaymentProcessor {
    public void process(Payment payment) { ... }
-}]]></programlisting>      
+}]]></programlisting>
 
-      <programlisting role="JAVA"><![CDATA[@Asynchronous
+        <programlisting role="JAVA"><![CDATA[@Asynchronous
 public class AsynchronousPaymentProcessor implements PaymentProcessor {
    public void process(Payment payment) { ... }
 }]]></programlisting>
 
-      <para>
-         Where <literal>@Synchronous</literal> and <literal>@Asynchronous</literal> are qualifier annotations:
-      </para>
+        <para>
+            Where
+            <literal>@Synchronous</literal>
+            and
+            <literal>@Asynchronous</literal>
+            are qualifier annotations:
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[@Qualifier
+        <programlisting role="JAVA"><![CDATA[@Qualifier
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface Synchronous {}]]></programlisting>
 
-<programlisting role="JAVA"><![CDATA[@Qualifier
+        <programlisting role="JAVA"><![CDATA[@Qualifier
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface Asynchronous {}]]></programlisting>
 
-      <para>
-         A client bean developer uses the qualifier annotation to specify exactly which bean should be injected.
-      </para>
+        <para>
+            A client bean developer uses the qualifier annotation to specify exactly which bean should be injected.
+        </para>
 
-      <para>Using field injection:</para>
+        <para>Using field injection:</para>
 
-      <programlisting role="JAVA"><![CDATA[@Inject @Synchronous PaymentProcessor syncPaymentProcessor;
+        <programlisting role="JAVA"><![CDATA[@Inject @Synchronous PaymentProcessor syncPaymentProcessor;
 @Inject @Asynchronous PaymentProcessor asyncPaymentProcessor;]]></programlisting>
 
-      <para>Using initializer method injection:</para>
+        <para>Using initializer method injection:</para>
 
-      <programlisting role="JAVA"><![CDATA[@Inject
+        <programlisting role="JAVA"><![CDATA[@Inject
 public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProcessor, 
                                  @Asynchronous PaymentProcessor asyncPaymentProcessor) {
    this.syncPaymentProcessor = syncPaymentProcessor;
    this.asyncPaymentProcessor = asyncPaymentProcessor;
 }]]></programlisting>
 
-      <para>Using constructor injection:</para>
+        <para>Using constructor injection:</para>
 
-     <programlisting role="JAVA"><![CDATA[@Inject
+        <programlisting role="JAVA"><![CDATA[@Inject
 public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, 
                 @Asynchronous PaymentProcessor asyncPaymentProcessor) {
    this.syncPaymentProcessor = syncPaymentProcessor;
    this.asyncPaymentProcessor = asyncPaymentProcessor;
 }]]></programlisting>
 
-      <para>
-         Qualifier annotations can also qualify method arguments of producer, disposer and observer methods. Combining
-         qualified arguments with producer methods is a good way to have an implementation of a bean type
-         selected at runtime based on the state of the system:
-      </para>
+        <para>
+            Qualifier annotations can also qualify method arguments of producer, disposer and observer methods.
+            Combining
+            qualified arguments with producer methods is a good way to have an implementation of a bean type
+            selected at runtime based on the state of the system:
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[@Produces
+        <programlisting role="JAVA"><![CDATA[@Produces
 PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentProcessor,
                                      @Asynchronous PaymentProcessor asyncPaymentProcessor) {
    return isSynchronous() ? syncPaymentProcessor : asyncPaymentProcessor;
-}]]></programlisting> 
-   
-      <para>
-         If an injected field or a parameter of a bean constructor or initializer method is not explicitly annotated 
-         with a qualifier, the default qualifier, <literal>@Default</literal>, is assumed.
-      </para>
+}]]></programlisting>
 
-      <para>
-         Now, you may be thinking, <emphasis>"What's the different between using a qualifier and just specifying the
-         exact implementation class you want?"</emphasis> It's important to understand that a qualifier is like an
-         extension of the interface. It does not create a direct dependency to any particular implementation. There 
-         may be multiple alternative implementations of <literal>@Asynchronous PaymentProcessor</literal>!
-      </para>
+        <para>
+            If an injected field or a parameter of a bean constructor or initializer method is not explicitly annotated
+            with a qualifier, the default qualifier,<literal>@Default</literal>, is assumed.
+        </para>
 
-   </section>
-   
-   <section>
-      <title>The built-in qualifiers <literal>@Default</literal> and <literal>@Any</literal></title>
-      
-      <para>Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the
-      qualifier <literal>@Default</literal>. From time to time, you'll need to declare an injection point without
-      specifying a qualifier. There's a qualifier for that too. All beans have the qualifier <literal>@Any</literal>.
-      Therefore, by explicitly specifying <literal>@Any</literal> at an injection point, you suppress the default
-      qualifier, without otherwise restricting the beans that are eligible for injection.</para>
-      
-      <para>This is especially useful if you want to iterate over all beans with a certain bean type. For example:</para>
-      <programlisting role="JAVA"><![CDATA[@Inject 
+        <para>
+            Now, you may be thinking,
+            <emphasis>"What's the different between using a qualifier and just specifying the
+                exact implementation class you want?"
+            </emphasis>
+            It's important to understand that a qualifier is like an
+            extension of the interface. It does not create a direct dependency to any particular implementation. There
+            may be multiple alternative implementations of<literal>@Asynchronous PaymentProcessor</literal>!
+        </para>
+
+    </section>
+
+    <section>
+        <title>The built-in qualifiers
+            <literal>@Default</literal>
+            and
+            <literal>@Any</literal>
+        </title>
+
+        <para>Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the
+            qualifier<literal>@Default</literal>. From time to time, you'll need to declare an injection point without
+            specifying a qualifier. There's a qualifier for that too. All beans have the qualifier<literal>
+                @Any</literal>.
+            Therefore, by explicitly specifying
+            <literal>@Any</literal>
+            at an injection point, you suppress the default
+            qualifier, without otherwise restricting the beans that are eligible for injection.
+        </para>
+
+        <para>This is especially useful if you want to iterate over all beans with a certain bean type. For example:
+        </para>
+        <programlisting role="JAVA"><![CDATA[@Inject
 void initServices(@Any Instance<Service> services) { 
    for (Service service: services) {
       service.init();
    }
 }]]></programlisting>
-      
-   </section>
 
-      <section>
-         <title>Qualifiers with members</title>
+    </section>
 
-         <para>
-            Java annotations can have members. We can use annotation members to further discriminate a qualifier. This 
-            prevents a potential explosion of new annotations. For example, instead of creating several qualifiers 
+    <section>
+        <title>Qualifiers with members</title>
+
+        <para>
+            Java annotations can have members. We can use annotation members to further discriminate a qualifier. This
+            prevents a potential explosion of new annotations. For example, instead of creating several qualifiers
             representing different payment methods, we could aggregate them into a single annotation with a member:
-         </para>
+        </para>
 
-         <programlisting role="JAVA"><![CDATA[@Qualifier
+        <programlisting role="JAVA"><![CDATA[@Qualifier
 @Retention(RUNTIME)
 @Target({METHOD, FIELD, PARAMETER, TYPE})
 public @interface PayBy {
    PaymentMethod value();
-}]]></programlisting> 
-   
-         <para>
+}]]></programlisting>
+
+        <para>
             Then we select one of the possible member values when applying the qualifier:
-         </para>
+        </para>
 
-         <programlisting role="JAVA"><![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]></programlisting> 
+        <programlisting role="JAVA">
+            <![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]></programlisting>
 
-         <para>
-            We can force the container to ignore a member of a qualifier type by annotating the member 
+        <para>
+            We can force the container to ignore a member of a qualifier type by annotating the member
             <literal>@Nonbinding</literal>.
-         </para>
+        </para>
 
-         <programlisting role="JAVA"><![CDATA[@Qualifier
+        <programlisting role="JAVA"><![CDATA[@Qualifier
 @Retention(RUNTIME)
 @Target({METHOD, FIELD, PARAMETER, TYPE})
 public @interface PayBy {
    PaymentMethod value();
    @Nonbinding String comment() default "";
-}]]></programlisting> 
+}]]></programlisting>
 
-      </section>
+    </section>
 
-      <section>
-         <title>Multiple qualifiers</title>
+    <section>
+        <title>Multiple qualifiers</title>
 
-         <para>
+        <para>
             An injection point may specify multiple qualifiers:
-         </para>
+        </para>
 
-         <programlisting role="JAVA"><![CDATA[@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;]]></programlisting>
+        <programlisting role="JAVA">
+            <![CDATA[@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;]]></programlisting>
 
-         <para>
-            Then only a bean which has <emphasis>both</emphasis> qualifier annotations would be eligible for
+        <para>
+            Then only a bean which has
+            <emphasis>both</emphasis>
+            qualifier annotations would be eligible for
             injection.
-         </para>
+        </para>
 
-         <programlisting role="JAVA"><![CDATA[@Synchronous @Reliable
+        <programlisting role="JAVA"><![CDATA[@Synchronous @Reliable
 public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
    public void process(Payment payment) { ... }
 }]]></programlisting>
 
-      </section>
-   
-   <section id="alternatives">
-      <title>Alternatives</title>
-      
-      <para>Alternatives are beans whose implementation is specific to a particular client module or deployment
-      scenario. This alternative defines a mock implementation of both <literal>@Synchronous PaymentProcessor</literal>
-      and <literal>@Asynchronous PaymentProcessor</literal>, all in one:</para>
-      
-      <programlisting role="JAVA"><![CDATA[@Alternative @Synchronous @Asynchronous
+    </section>
+
+    <section id="alternatives">
+        <title>Alternatives</title>
+
+        <para>Alternatives are beans whose implementation is specific to a particular client module or deployment
+            scenario. This alternative defines a mock implementation of both
+            <literal>@Synchronous PaymentProcessor</literal>
+            and<literal>@Asynchronous PaymentProcessor</literal>, all in one:
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[@Alternative @Synchronous @Asynchronous
 public class MockPaymentProcessor implements PaymentProcessor {
    public void process(Payment payment) { ... }
 }]]></programlisting>
-      
-      <para>
-         By default, <literal>@Alternative</literal> beans are disabled. We need to <emphasis>enable</emphasis> an
-         alternative in the <literal>beans.xml</literal> descriptor of a bean archive to make it available for
-         instantiation and injection. This activation only applies to the beans in that archive.
-      </para>
 
-      <programlisting role="XML"><![CDATA[<beans
+        <para>
+            By default,
+            <literal>@Alternative</literal>
+            beans are disabled. We need to
+            <emphasis>enable</emphasis>
+            an
+            alternative in the
+            <literal>beans.xml</literal>
+            descriptor of a bean archive to make it available for
+            instantiation and injection. This activation only applies to the beans in that archive.
+        </para>
+
+        <programlisting role="XML"><![CDATA[<beans
    xmlns="http://java.sun.com/xml/ns/javaee"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="
@@ -366,344 +420,411 @@ public class MockPaymentProcessor implements PaymentProcessor {
          <class>org.mycompany.mock.MockPaymentProcessor</class>
    </alternatives>
 </beans>]]></programlisting>
-      
-      <para>
-         When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity
-         by looking for an enabled alternative among the beans that could be injected. If there is exactly one
-         enabled alternative, that's the bean that will be injected.
-      </para>
-      
-   </section>
 
-   <section>
-      <title>Fixing unsatisfied and ambiguous dependencies</title>
-  
-      <para>
-         The typesafe resolution algorithm fails when, after considering the qualifier annotations on all beans that
-         implement the bean type of an injection point and filtering out disabled beans (<literal>@Alternative</literal>
-         beans which are not explicitly enabled), the container is unable to identify exactly one bean to inject. The
-         container will abort deployment, informing us of the unsatisfied or ambiguous dependency.
-      </para>
-  
-      <para>
-         During the course of your development, you're going to encounter this situation. Let's learn how to resolve it.
-      </para>
-  
-      <para>
-         To fix an <emphasis>unsatisfied dependency</emphasis>, either: 
-      </para>
-         
-      <itemizedlist>
-         <listitem>      
-            <para>
-               create a bean which implements the bean type and has all the qualifier types of the injection point,
-            </para>
-         </listitem> 
-         <listitem>
-            <para>
-               make sure that the bean you already have is in the classpath of the module with the injection point, or
-            </para>
-         </listitem> 
-         <listitem> 
-            <para>
-               explicitly enable an <literal>@Alternative</literal> bean that implements the bean type and has the 
-               appropriate qualifier types, using <literal>beans.xml</literal>.
-            </para>
-         </listitem> 
-      </itemizedlist>
-      
-      <para>
-         To fix an <emphasis>ambiguous dependency</emphasis>, either: 
-      </para>
+        <para>
+            When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity
+            by looking for an enabled alternative among the beans that could be injected. If there is exactly one
+            enabled alternative, that's the bean that will be injected.
+        </para>
 
-      <itemizedlist>
-         <listitem>      
-            <para>
-               introduce a qualifier to distinguish between the two implementations of the bean type, 
-            </para>
-         </listitem> 
-         <listitem>      
-            <para>
-               disable one of the beans by annotating it <literal>@Alternative</literal>, 
-            </para>
-         </listitem> 
-         <listitem>
-            <para>
-               move one of the implementations to a module that is not in the classpath of the module with the 
-               injection point, or
-            </para>
-         </listitem> 
-         <listitem> 
-            <para>
-               disable one of two <literal>@Alternative</literal> beans that are trying to occupy the same space, 
-               using <literal>beans.xml</literal>.  
-            </para>
-         </listitem> 
-      </itemizedlist>
+    </section>
 
-      <para>
-         See <ulink
-         url="http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType">this
-         FAQ</ulink> for step-by-step instructions for how to resolve an ambiguous resolution exception between a raw
-         bean type and a producer method that returns the same bean type.
-      </para>
-      
-      <para>Just remember: "There can be only one."</para>
-   
-      <para>
-         On the other hand, if you really do have an optional or multivalued injection point, you should change
-         the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend="lookup"/>.
-      </para>
-  
-      <para>
-         Now there's one more issue you need to be aware of when using the dependency injection service.
-      </para>
+    <section>
+        <title>Fixing unsatisfied and ambiguous dependencies</title>
 
-   </section>
+        <para>
+            The typesafe resolution algorithm fails when, after considering the qualifier annotations on all beans that
+            implement the bean type of an injection point and filtering out disabled beans (
+            <literal>@Alternative</literal>
+            beans which are not explicitly enabled), the container is unable to identify exactly one bean to inject. The
+            container will abort deployment, informing us of the unsatisfied or ambiguous dependency.
+        </para>
 
-   <section>
-      <title>Client proxies</title>
-  
-      <para>
-         Clients of an injected bean do not usually hold a direct reference to a bean instance, unless the bean is
-         a dependent object (scope <literal>@Dependent</literal>).
-      </para> 
-  
-      <para>
-         Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request
-         scope. The application-scoped bean is shared between many different requests. However, each request should see
-         a different instance of the request scoped bean&mdash;the current one!
-      </para>
-  
-      <para>
-         Now imagine that a bean bound to the session scope holds a direct reference to a bean bound to the application
-         scope. From time to time, the session context is serialized to disk in order to use memory more efficiently.
-         However, the application scoped bean instance should not be serialized along with the session scoped bean!  It
-         can get that reference any time. No need to hoard it!
-      </para>
-  
-      <para>
-         Therefore, unless a bean has the default scope <literal>@Dependent</literal>, the container must indirect all
-         injected references to the bean through a proxy object. This <emphasis>client proxy</emphasis> is responsible
-         for ensuring that the bean instance that receives a method invocation is the instance that is associated with
-         the current context. The client proxy also allows beans bound to contexts such as the session context to be
-         serialized to disk without recursively serializing other injected beans.
-      </para>
-      
-      <para>
-         Unfortunately, due to limitations of the Java language, some Java types cannot be proxied by the container. 
-         If an injection point declared with one of these types resolves to a bean with any scope other than 
-         <literal>@Dependent</literal>, the container will abort deployment, informing us of the problem.
-      </para>
-  
-      <para>The following Java types cannot be proxied by the container:</para>
-  
-      <itemizedlist>
-         <listitem>
-            <para>classes which don't have a non-private constructor with no parameters, and</para>
-         </listitem>
-         <listitem>
+        <para>
+            During the course of your development, you're going to encounter this situation. Let's learn how to resolve
+            it.
+        </para>
+
+        <para>
+            To fix an<emphasis>unsatisfied dependency</emphasis>, either:
+        </para>
+
+        <itemizedlist>
+            <listitem>
+                <para>
+                    create a bean which implements the bean type and has all the qualifier types of the injection point,
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    make sure that the bean you already have is in the classpath of the module with the injection point,
+                    or
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    explicitly enable an
+                    <literal>@Alternative</literal>
+                    bean that implements the bean type and has the
+                    appropriate qualifier types, using<literal>beans.xml</literal>.
+                </para>
+            </listitem>
+        </itemizedlist>
+
+        <para>
+            To fix an<emphasis>ambiguous dependency</emphasis>, either:
+        </para>
+
+        <itemizedlist>
+            <listitem>
+                <para>
+                    introduce a qualifier to distinguish between the two implementations of the bean type,
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    disable one of the beans by annotating it<literal>@Alternative</literal>,
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    move one of the implementations to a module that is not in the classpath of the module with the
+                    injection point, or
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    disable one of two
+                    <literal>@Alternative</literal>
+                    beans that are trying to occupy the same space,
+                    using<literal>beans.xml</literal>.
+                </para>
+            </listitem>
+        </itemizedlist>
+
+        <para>
+            See
+            <ulink
+                    url="http://sfwk.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType">
+                this
+                FAQ
+            </ulink>
+            for step-by-step instructions for how to resolve an ambiguous resolution exception between a raw
+            bean type and a producer method that returns the same bean type.
+        </para>
+
+        <para>Just remember: "There can be only one."</para>
+
+        <para>
+            On the other hand, if you really do have an optional or multivalued injection point, you should change
+            the type of your injection point to<literal>Instance</literal>, as we'll see in<xref linkend="lookup"/>.
+        </para>
+
+        <para>
+            Now there's one more issue you need to be aware of when using the dependency injection service.
+        </para>
+
+    </section>
+
+    <section>
+        <title>Client proxies</title>
+
+        <para>
+            Clients of an injected bean do not usually hold a direct reference to a bean instance, unless the bean is
+            a dependent object (scope<literal>@Dependent</literal>).
+        </para>
+
+        <para>
+            Imagine that a bean bound to the application scope held a direct reference to a bean bound to the request
+            scope. The application-scoped bean is shared between many different requests. However, each request should
+            see
+            a different instance of the request scoped bean&mdash;the current one!
+        </para>
+
+        <para>
+            Now imagine that a bean bound to the session scope holds a direct reference to a bean bound to the
+            application
+            scope. From time to time, the session context is serialized to disk in order to use memory more efficiently.
+            However, the application scoped bean instance should not be serialized along with the session scoped bean!
+            It
+            can get that reference any time. No need to hoard it!
+        </para>
+
+        <para>
+            Therefore, unless a bean has the default scope<literal>@Dependent</literal>, the container must indirect all
+            injected references to the bean through a proxy object. This
+            <emphasis>client proxy</emphasis>
+            is responsible
+            for ensuring that the bean instance that receives a method invocation is the instance that is associated
+            with
+            the current context. The client proxy also allows beans bound to contexts such as the session context to be
+            serialized to disk without recursively serializing other injected beans.
+        </para>
+
+        <para>
+            Unfortunately, due to limitations of the Java language, some Java types cannot be proxied by the container.
+            If an injection point declared with one of these types resolves to a bean with any scope other than
+            <literal>@Dependent</literal>, the container will abort deployment, informing us of the problem.
+        </para>
+
+        <para>The following Java types cannot be proxied by the container:</para>
+
+        <itemizedlist>
+            <listitem>
+                <para>classes which don't have a non-private constructor with no parameters, and</para>
+            </listitem>
+            <listitem>
+                <para>
+                    classes which are declared
+                    <literal>final</literal>
+                    or have a
+                    <literal>final</literal>
+                    method,
+                </para>
+            </listitem>
+            <listitem>
+                <para>arrays and primitive types.</para>
+            </listitem>
+        </itemizedlist>
+
+        <para>
+            It's usually very easy to fix an unproxyable dependency problem. If an injection point of type
+            <literal>X</literal>
+            results in an unproxyable dependency, simply:
+        </para>
+
+        <itemizedlist>
+            <listitem>
+                <para>
+                    add a constructor with no parameters to<literal>X</literal>,
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    change the type of the injection point to<literal>Instance&lt;X&gt;</literal>,
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    introduce an interface<literal>Y</literal>, implemented by the injected bean, and change
+                    the type of the injection point to<literal>Y</literal>, or
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    if all else fails, change the scope of the injected bean to<literal>@Dependent</literal>.
+                </para>
+            </listitem>
+        </itemizedlist>
+
+        <note>
             <para>
-               classes which are declared <literal>final</literal> or have a <literal>final</literal> method,
+                A future release of Weld will likely support a non-standard workaround for this limitation, using
+                non-portable JVM APIs:
             </para>
-         </listitem>
-         <listitem>
-            <para>arrays and primitive types.</para>
-         </listitem>
-      </itemizedlist>
-  
-      <para>
-         It's usually very easy to fix an unproxyable dependency problem. If an injection point of type
-         <literal>X</literal> results in an unproxyable dependency, simply:
-      </para>
-      
-      <itemizedlist>
-         <listitem>
+
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Sun, IcedTea, Mac:
+                        <literal>Unsafe.allocateInstance()</literal>
+                        (The most efficient)
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        IBM, JRockit:
+                        <literal>ReflectionFactory.newConstructorForSerialization()</literal>
+                    </para>
+                </listitem>
+            </itemizedlist>
+
             <para>
-               add a constructor with no parameters to <literal>X</literal>,
+                But we didn't get around to implementing this yet.
             </para>
-         </listitem>
-         <listitem>
-            <para>
-               change the type of the injection point to <literal>Instance&lt;X&gt;</literal>,
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               introduce an interface <literal>Y</literal>, implemented by the injected bean, and change 
-               the type of the injection point to <literal>Y</literal>, or
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               if all else fails, change the scope of the injected bean to <literal>@Dependent</literal>.
-            </para>
-         </listitem>
-      </itemizedlist>
-      
-      <note>
-      <para>
-         A future release of Weld will likely support a non-standard workaround for this limitation, using
-         non-portable JVM APIs:
-      </para>
+        </note>
 
-      <itemizedlist>
-         <listitem>
-            <para>
-               Sun, IcedTea, Mac: <literal>Unsafe.allocateInstance()</literal> (The most efficient)
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               IBM, JRockit: <literal>ReflectionFactory.newConstructorForSerialization()</literal>
-            </para>
-         </listitem>
-      </itemizedlist>
-      
-      <para>
-         But we didn't get around to implementing this yet.
-      </para>
-      </note>
-  
-   </section>
+    </section>
 
-   <section id="lookup">
+    <section id="lookup">
 
-      <title>Obtaining a contextual instance by programmatic lookup</title>
+        <title>Obtaining a contextual instance by programmatic lookup</title>
 
-      <para>
-         In certain situations, injection is not the most convenient way to obtain a contextual reference. For example,
-         it may not be used when:
-      </para>
+        <para>
+            In certain situations, injection is not the most convenient way to obtain a contextual reference. For
+            example,
+            it may not be used when:
+        </para>
 
-      <itemizedlist>
-         <listitem>
-            <para>
-               the bean type or qualifiers vary dynamically at runtime, or
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               depending upon the deployment, there may be no bean which satisfies the type and qualifiers, or
-            </para>
-         </listitem>
-         <listitem>
-            <para>
-               we would like to iterate over all beans of a certain type.
-            </para>
-         </listitem>
-      </itemizedlist>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    the bean type or qualifiers vary dynamically at runtime, or
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    depending upon the deployment, there may be no bean which satisfies the type and qualifiers, or
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    we would like to iterate over all beans of a certain type.
+                </para>
+            </listitem>
+        </itemizedlist>
 
-      <para>
-         In these situations, the application may obtain an instance of the interface <literal>Instance</literal>, 
-         parameterized for the bean type, by injection:
-      </para>
-  
-      <programlisting role="JAVA"><![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
-  
-      <para>
-         The <literal>get()</literal> method of <literal>Instance</literal> produces a contextual instance of the bean.
-      </para>
-  
-      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]></programlisting>
+        <para>
+            In these situations, the application may obtain an instance of the interface<literal>Instance</literal>,
+            parameterized for the bean type, by injection:
+        </para>
 
-      <para>
-         Qualifiers can be specified in one of two ways:
-      </para>
+        <programlisting role="JAVA">
+            <![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
 
-      <itemizedlist>
-        <listitem>
-          <para>by annotating the <literal>Instance</literal> injection point, or</para>
-        </listitem>
-        <listitem>
-          <para>by passing qualifiers to the <literal>select()</literal> of <literal>Event</literal>.</para>
-        </listitem>
-      </itemizedlist>
+        <para>
+            The
+            <literal>get()</literal>
+            method of
+            <literal>Instance</literal>
+            produces a contextual instance of the bean.
+        </para>
 
-      <para>
-         Specifying the qualifiers at the injection point is much, much easier:
-      </para>
+        <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource.get();]]></programlisting>
 
-      <programlisting role="JAVA"><![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
-      
-      <para>
-         Now, the <literal>PaymentProcessor</literal> returned by <literal>get()</literal> will have the qualifier
-         <literal>@Asynchronous</literal>.
-      </para>
-      
-      <para>
-         Alternatively, we can specify the qualifier dynamically. First, we add the <literal>@Any</literal> qualifier to
-         the injection point, to suppress the default qualifier. (All beans have the qualifier <literal>@Any</literal>.)
-      </para>
+        <para>
+            Qualifiers can be specified in one of two ways:
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
-      
-      <para>
-         Next, we need to obtain an instance of our qualifier type. Since annotations are interfaces, we can't just write
-         <literal>new Asynchronous()</literal>. It's also quite tedious to create a concrete implementation of an annotation 
-         type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class 
-         <literal>AnnotationLiteral</literal>. 
-      </para>
-      
-      <programlisting role="JAVA"><![CDATA[abstract class AsynchronousQualifier
+        <itemizedlist>
+            <listitem>
+                <para>by annotating the
+                    <literal>Instance</literal>
+                    injection point, or
+                </para>
+            </listitem>
+            <listitem>
+                <para>by passing qualifiers to the
+                    <literal>select()</literal>
+                    of<literal>Event</literal>.
+                </para>
+            </listitem>
+        </itemizedlist>
+
+        <para>
+            Specifying the qualifiers at the injection point is much, much easier:
+        </para>
+
+        <programlisting role="JAVA">
+            <![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+
+        <para>
+            Now, the
+            <literal>PaymentProcessor</literal>
+            returned by
+            <literal>get()</literal>
+            will have the qualifier
+            <literal>@Asynchronous</literal>.
+        </para>
+
+        <para>
+            Alternatively, we can specify the qualifier dynamically. First, we add the
+            <literal>@Any</literal>
+            qualifier to
+            the injection point, to suppress the default qualifier. (All beans have the qualifier<literal>@Any</literal>
+            .)
+        </para>
+
+        <programlisting role="JAVA">
+            <![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+
+        <para>
+            Next, we need to obtain an instance of our qualifier type. Since annotations are interfaces, we can't just
+            write
+            <literal>new Asynchronous()</literal>. It's also quite tedious to create a concrete implementation of an
+            annotation
+            type from scratch. Instead, CDI lets us obtain a qualifier instance by subclassing the helper class
+            <literal>AnnotationLiteral</literal>.
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[class AsynchronousQualifier
 extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]></programlisting>
 
-      <para>
-         In some cases, we can use an anonymous class:
-      </para>
+        <para>
+            In some cases, we can use an anonymous class:
+        </para>
 
-      <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource
+        <programlisting role="JAVA"><![CDATA[PaymentProcessor p = paymentProcessorSource
    .select(new AnnotationLiteral<Asynchronous>() {});]]></programlisting>
-   
-      <para>
-         However, we can't use an anonymous class to implement a qualifier type with members.
-      </para>
-               
-      <para>
-         Now, finally, we can pass the qualifier to the <literal>select()</literal> method of <literal>Instance</literal>.
-      </para>
 
-      <programlisting><![CDATA[Annotation qualifier = synchronously ?
+        <para>
+            However, we can't use an anonymous class to implement a qualifier type with members.
+        </para>
+
+        <para>
+            Now, finally, we can pass the qualifier to the
+            <literal>select()</literal>
+            method of<literal>Instance</literal>.
+        </para>
+
+        <programlisting><![CDATA[Annotation qualifier = synchronously ?
       new SynchronousQualifier() : new AsynchronousQualifier();
-PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment);]]></programlisting> 
+PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment);]]></programlisting>
 
-   </section>
+    </section>
 
-<section>
-  <title>The <literal>InjectionPoint</literal> object</title>
-  
-  <para>There are certain kinds of dependent objects (beans with scope <literal>@Dependent</literal>) 
-  that need to know something about the object or injection point into which they are injected in order 
-  to be able to do what they do. For example:</para>
-  
-  <itemizedlist>
-    <listitem>
-      <para>The log category for a <literal>Logger</literal> depends upon the class of the object 
-      that owns it.</para>
-    </listitem>
-    <listitem>
-      <para>Injection of a HTTP parameter or header value depends upon what parameter 
-      or header name was specified at the injection point.</para>
-    </listitem>
-    <listitem>
-      <para>Injection of the result of an EL expression evaluation depends upon the 
-      expression that was specified at the injection point.</para>
-    </listitem>
-  </itemizedlist>
+    <section>
+        <title>The
+            <literal>InjectionPoint</literal>
+            object
+        </title>
 
-  <para>A bean with scope <literal>@Dependent</literal> may inject an instance of 
-  <literal>InjectionPoint</literal> and access metadata relating to the injection point to which 
-  it belongs.</para>
+        <para>There are certain kinds of dependent objects (beans with scope<literal>@Dependent</literal>)
+            that need to know something about the object or injection point into which they are injected in order
+            to be able to do what they do. For example:
+        </para>
 
-  <para>Let's look at an example. The following code is verbose, and vulnerable to refactoring
-  problems:</para>
+        <itemizedlist>
+            <listitem>
+                <para>The log category for a
+                    <literal>Logger</literal>
+                    depends upon the class of the object
+                    that owns it.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Injection of a HTTP parameter or header value depends upon what parameter
+                    or header name was specified at the injection point.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Injection of the result of an EL expression evaluation depends upon the
+                    expression that was specified at the injection point.
+                </para>
+            </listitem>
+        </itemizedlist>
 
-<programlisting role="JAVA"><![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]></programlisting>
+        <para>A bean with scope
+            <literal>@Dependent</literal>
+            may inject an instance of
+            <literal>InjectionPoint</literal>
+            and access metadata relating to the injection point to which
+            it belongs.
+        </para>
 
-  <para>This clever little producer method lets you inject a JDK <literal>Logger</literal> without 
-  explicitly specifying the log category:</para>
+        <para>Let's look at an example. The following code is verbose, and vulnerable to refactoring
+            problems:
+        </para>
 
-<programlisting role="JAVA"><![CDATA[class LogFactory {
+        <programlisting role="JAVA"><![CDATA[Logger log = Logger.getLogger(MyClass.class.getName());]]></programlisting>
+
+        <para>This clever little producer method lets you inject a JDK
+            <literal>Logger</literal>
+            without
+            explicitly specifying the log category:
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[class LogFactory {
 
    @Produces Logger createLogger(InjectionPoint injectionPoint) { 
       return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName()); 
@@ -711,28 +832,29 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
 
 }]]></programlisting>
 
-  <para>We can now write:</para>
+        <para>We can now write:</para>
 
-<programlisting role="JAVA"><![CDATA[@Inject Logger log;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[@Inject Logger log;]]></programlisting>
 
-  <para>Not convinced? Then here's a second example. To inject HTTP parameters, we need to define 
-  a qualifier type:</para>
+        <para>Not convinced? Then here's a second example. To inject HTTP parameters, we need to define
+            a qualifier type:
+        </para>
 
-<programlisting role="JAVA"><![CDATA[@BindingType
+        <programlisting role="JAVA"><![CDATA[@BindingType
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface HttpParam {
    @Nonbinding public String value();
 }]]></programlisting>
 
-  <para>We would use this qualifier type at injection points as follows:</para>
+        <para>We would use this qualifier type at injection points as follows:</para>
 
-<programlisting role="JAVA"><![CDATA[@HttpParam("username") String username;
+        <programlisting role="JAVA"><![CDATA[@HttpParam("username") String username;
 @HttpParam("password") String password;]]></programlisting>
 
-  <para>The following producer method does the work:</para>
+        <para>The following producer method does the work:</para>
 
-<programlisting role="JAVA"><![CDATA[class HttpParams
+        <programlisting role="JAVA"><![CDATA[class HttpParams
 
    @Produces @HttpParam("")
    String getParamValue(InjectionPoint ip) {
@@ -742,16 +864,24 @@ public @interface HttpParam {
 
 }]]></programlisting>
 
-  <para>Note that acquiring of the request in this example is JSF-centric. For a more generic solution
-  you could write your own producer for the request and have it injected as a method parameter.</para>
+        <para>Note that acquiring of the request in this example is JSF-centric. For a more generic solution
+            you could write your own producer for the request and have it injected as a method parameter.
+        </para>
 
-  <para>Note also that the <literal>value()</literal> member of the <literal>HttpParam</literal>
-  annotation is ignored by the container since it is annotated <literal>@Nonbinding.</literal></para>
+        <para>Note also that the
+            <literal>value()</literal>
+            member of the
+            <literal>HttpParam</literal>
+            annotation is ignored by the container since it is annotated
+            <literal>@Nonbinding.</literal>
+        </para>
 
-  <para>The container provides a built-in bean that implements the <literal>InjectionPoint</literal> 
-  interface:</para>
+        <para>The container provides a built-in bean that implements the
+            <literal>InjectionPoint</literal>
+            interface:
+        </para>
 
-<programlisting role="JAVA"><![CDATA[public interface InjectionPoint { 
+        <programlisting role="JAVA"><![CDATA[public interface InjectionPoint {
    public Type getType();
    public Set<Annotation> getQualifiers();
    public Bean<?> getBean();
@@ -761,9 +891,9 @@ public @interface HttpParam {
    public boolean isTransient();
 }]]></programlisting>
 
-</section>
+    </section>
 
-<!--
-vim:et:ts=3:sw=3:tw=120
--->
+    <!--
+    vim:et:ts=3:sw=3:tw=120
+    -->
 </chapter>
