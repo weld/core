@@ -25,8 +25,11 @@ import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldAnnotationImpl;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
+import org.jboss.weld.logging.Category;
+import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.slf4j.Logger;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import java.lang.annotation.Annotation;
@@ -35,7 +38,14 @@ import java.util.concurrent.ConcurrentMap;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+/**
+ * @author Pete Muir
+ * @author Stuart Douglas
+ * @author JBoss Weld Community
+ * @author Ales Justin
+ */
 public class ClassTransformer implements Service {
+    private static Logger log = LoggerFactory.loggerFactory().getLogger(Category.CLASS_LOADING);
 
     private static class TransformTypeToWeldClass implements Function<TypeHolder<?>, WeldClass<?>> {
 
@@ -136,9 +146,13 @@ public class ClassTransformer implements Service {
         try {
             return (WeldClass<T>) classes.get(new TypeHolder<T>(rawType, baseType));
         } catch (ComputationException e) {
-            if (e.getCause() instanceof NoClassDefFoundError || e.getCause() instanceof TypeNotPresentException || e.getCause() instanceof ResourceLoadingException || e.getCause() instanceof LinkageError) {
-                throw new ResourceLoadingException("Error loading class " + rawType.getName(), e.getCause());
+            final Throwable cause = e.getCause();
+            if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
+                throw new ResourceLoadingException("Error loading class " + rawType.getName(), cause);
             } else {
+                if (log.isTraceEnabled()) {
+                    log.trace("Error loading class '" + rawType.getName() + "' : " + cause);
+                }
                 throw e;
             }
         }
@@ -148,9 +162,13 @@ public class ClassTransformer implements Service {
         try {
             return cast(classes.get(new TypeHolder<T>(clazz, clazz)));
         } catch (ComputationException e) {
-            if (e.getCause() instanceof NoClassDefFoundError || e.getCause() instanceof TypeNotPresentException || e.getCause() instanceof ResourceLoadingException || e.getCause() instanceof LinkageError) {
-                throw new ResourceLoadingException("Error loading class " + clazz.getName(), e.getCause());
+            final Throwable cause = e.getCause();
+            if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
+                throw new ResourceLoadingException("Error loading class " + clazz.getName(), cause);
             } else {
+                if (log.isTraceEnabled()) {
+                    log.trace("Error loading class '" + clazz.getName() + "' : " + cause);
+                }
                 throw e;
             }
         }
@@ -163,7 +181,7 @@ public class ClassTransformer implements Service {
     @SuppressWarnings("unchecked")
     public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz) {
         // don't wrap existing weld class, dup instances!
-       if (clazz instanceof WeldClass) {
+        if (clazz instanceof WeldClass) {
             return (WeldClass<T>) clazz;
         } else if (clazz instanceof ForwardingAnnotatedType && ((ForwardingAnnotatedType) clazz).delegate() instanceof WeldClass) {
             ForwardingAnnotatedType fat = (ForwardingAnnotatedType) clazz;
