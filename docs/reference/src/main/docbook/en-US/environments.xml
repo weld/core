@@ -407,8 +407,9 @@ public class HelloWorld
                 </para>
 
                 <programlisting role="JAVA"><![CDATA[public static void main(String[] args) {
-   WeldContainer weld = new Weld().initialize();
-   weld.instance().select(MyApplicationBean.class).get();
+   Weld weld = new Weld();
+   WeldContainer container = weld.initialize();
+   container.select(MyApplicationBean.class).get();
    weld.shutdown();
 }]]></programlisting>
 
@@ -420,8 +421,9 @@ public class HelloWorld
                 </para>
 
                 <programlisting role="JAVA"><![CDATA[public static void main(String[] args) {
-   WeldContainer weld = new Weld().initialize();
-   weld.event().select(MyEvent.class).fire( new MyEvent() );
+   Weld weld = new Weld();
+   WeldContainer container = weld.initialize();
+   container.event().select(MyEvent.class).fire( new MyEvent() );
    weld.shutdown();
 }]]></programlisting>
 
