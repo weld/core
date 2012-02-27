@@ -716,7 +716,7 @@ msgstr ""
 
 #. Tag: programlisting
 #, no-c-format
-msgid "abstract class AsynchronousQualifier\n"
+msgid "class AsynchronousQualifier\n"
 "extends AnnotationLiteral&lt;Asynchronous&gt; implements Asynchronous {}"
 msgstr ""
 

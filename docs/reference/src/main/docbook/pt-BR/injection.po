@@ -1,6 +1,6 @@
 # Language pt-BR translations for Introduction_to_Web_Beans package.
 # Automatically generated, 2009.
-# 
+#
 # Bruno Leonardo Gonçalves <brunolmfg@gmail.com>, 2012. #zanata
 msgid ""
 msgstr ""
@@ -1269,11 +1269,11 @@ msgstr ""
 #. Tag: programlisting
 #, no-c-format
 msgid ""
-"abstract class AsynchronousQualifier\n"
+"class AsynchronousQualifier\n"
 "extends AnnotationLiteral&lt;Asynchronous&gt; implements Asynchronous {}"
 msgstr ""
-"abstract class AsynchronousQualifier\n"
-"extends AnnotationLiteral&lt;Asynchronous&gt; implements Asynchronous {}"
+"<![CDATA[class AsynchronousQualifier\n"
+"extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]>"
 
 #. Tag: para
 #, no-c-format
