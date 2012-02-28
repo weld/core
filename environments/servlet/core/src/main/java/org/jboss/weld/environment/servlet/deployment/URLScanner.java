@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import java.util.zip.ZipFile;
  *
  * @author Pete Muir
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class URLScanner {
     private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
@@ -69,48 +71,6 @@ public class URLScanner {
         }
     }
 
-    /**
-     * Decode the url path.
-     * <p/>
-     * e.g. sub-class migh wanna override this method
-     * with custom decode mechanism
-     *
-     * @param urlPath the current url path
-     * @return decoded url path
-     */
-    protected String decodeURLPath(String urlPath) {
-        // WELD-834, WELD-954
-        StringBuilder builder = new StringBuilder();
-        int length = urlPath.length();
-        for (int i = 0; i < length; i++) {
-            boolean done = false;
-            char ch = urlPath.charAt(i);
-            if (ch == '%') {
-                if (i + 2 < length) {
-                    // ok, it's not %2x
-                    if (urlPath.charAt(i + 1) != '2') {
-                        builder.append("%25");
-                        done = true;
-                    } else {
-                        char ch2 = urlPath.charAt(i + 2);
-                        // it's not %20 or %25
-                        if (ch2 != '0' && ch2 != '5') {
-                            builder.append("%25");
-                            done = true;
-                        }
-                    }
-                }
-            } else if (ch == ' ') {
-                builder.append("%20");
-                done = true;
-            }
-
-            if (done == false)
-                builder.append(ch);
-        }
-        return builder.toString();
-    }
-
     public void scanResources(String[] resources, Set<String> classes, Set<URL> urls) {
         Set<String> paths = new HashSet<String>();
 
@@ -119,8 +79,8 @@ public class URLScanner {
                 Enumeration<URL> urlEnum = classLoader.getResources(resourceName);
 
                 while (urlEnum.hasMoreElements()) {
-                    String urlPath = urlEnum.nextElement().getFile();
-                    urlPath = decodeURLPath(urlPath);
+                    URL url = urlEnum.nextElement();
+                    String urlPath = url.toURI().getSchemeSpecificPart();
 
                     if (urlPath.startsWith("file:")) {
                         urlPath = urlPath.substring(5);
@@ -143,6 +103,8 @@ public class URLScanner {
                 }
             } catch (IOException ioe) {
                 log.warn("could not read: " + resourceName, ioe);
+            } catch (URISyntaxException e) {
+                log.warn("could not read: " + resourceName, e);
             }
         }
 
