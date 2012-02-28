@@ -35,6 +35,7 @@ public class BravoProducer {
     @BravoQualifier
     @Named
     @AlphaStereotype
+    @Alternative
     @Typed(BravoInterface.class)
     public Bravo createBravo() {
         return new Bravo();

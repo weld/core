@@ -186,7 +186,7 @@ public class CreateBeanAttributesTest {
         verifyQualifierTypes(attributes, Any.class, Default.class, Named.class);
         assertEquals(Dependent.class, attributes.getScope());
         assertEquals("volume", attributes.getName());
-        assertTrue(attributes.isAlternative());
+        assertFalse(attributes.isAlternative());
         assertFalse(attributes.isNullable());
     }
 

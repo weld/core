@@ -524,7 +524,7 @@ public class Validator implements Service {
         if (beanManager.getEnabled().getAlternativeClasses().size() > 0) {
             // lookup structure for validation of alternatives
             Multimap<Class<?>, Bean<?>> beansByClass = HashMultimap.create();
-            for (Bean<?> bean : beanManager.getBeans()) {
+            for (Bean<?> bean : beanManager.getAccessibleBeans()) {
                 if (!(bean instanceof NewBean)) {
                     beansByClass.put(bean.getBeanClass(), bean);
                 }
@@ -533,10 +533,15 @@ public class Validator implements Service {
                 if (clazz.getValue().isAnnotation() || clazz.getValue().isInterface()) {
                     throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
                 }
+                // check that the class is a bean class of at least one alternative
+                boolean alternativeBeanFound = false;
                 for (Bean<?> bean : beansByClass.get(clazz.getValue())) {
-                    if (!bean.isAlternative()) {
-                        throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
+                    if (bean.isAlternative()) {
+                        alternativeBeanFound = true;
                     }
+                }
+                if (!alternativeBeanFound) {
+                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
                 }
             }
         }

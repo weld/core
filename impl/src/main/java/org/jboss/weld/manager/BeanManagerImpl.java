@@ -58,7 +58,6 @@ import javax.el.ExpressionFactory;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -84,7 +83,6 @@ import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.SyntheticBeanFactory;
-import org.jboss.weld.bean.SyntheticClassBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
@@ -128,7 +126,6 @@ import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
-import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
@@ -1159,7 +1156,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (services.get(EjbDescriptors.class).contains(type.getJavaClass())) {
             return BeanAttributesFactory.forSessionBean(clazz, services.get(EjbDescriptors.class).getUnique(clazz.getJavaClass()), this);
         }
-        return BeanAttributesFactory.forManagedBean(clazz, this);
+        return BeanAttributesFactory.forBean(clazz, this);
     }
 
     public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> member) {
@@ -1171,10 +1168,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         } else {
             throw new IllegalArgumentException(INCORRECT_PRODUCER_MEMBER, member);
         }
-        WeldClass<?> declaringClass = weldMember.getDeclaringType();
-        // TODO this depends on CDI-202
-        boolean declaringBeanIsAlternative = declaringClass.isAnnotationPresent(Alternative.class) || MergedStereotypes.of(declaringClass, this).isAlternative();
-        return BeanAttributesFactory.forProducerBean(weldMember, declaringBeanIsAlternative, this);
+        return BeanAttributesFactory.forBean(weldMember, this);
     }
 
     public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, InjectionTarget<?> injectionTarget) {

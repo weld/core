@@ -25,6 +25,7 @@ import static org.jboss.weld.tests.util.BeanUtilities.verifyQualifierTypes;
 import static org.jboss.weld.tests.util.BeanUtilities.verifyStereotypes;
 import static org.jboss.weld.tests.util.BeanUtilities.verifyTypes;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -84,7 +85,7 @@ public class VerifyValuesTest {
         assertEquals(RequestScoped.class, attributes.getScope());
         // name
         verifyName(attributes, "createBravo");
-        assertTrue(attributes.isAlternative()); // because alpha is
+        assertTrue(attributes.isAlternative());
         assertTrue(attributes.isNullable());
         verifyStereotypes(attributes, AlphaStereotype.class);
         verifyQualifierTypes(attributes, BravoQualifier.class, Named.class, Any.class);
@@ -99,7 +100,7 @@ public class VerifyValuesTest {
         assertEquals(ApplicationScoped.class, attributes.getScope());
         // name
         verifyName(attributes, "charlie");
-        assertTrue(attributes.isAlternative()); // because alpha is
+        assertFalse(attributes.isAlternative());
         assertTrue(attributes.isNullable());
         verifyStereotypes(attributes, AlphaStereotype.class);
         verifyQualifierTypes(attributes, CharlieQualifier.class, Named.class, Any.class);

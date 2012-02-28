@@ -549,7 +549,11 @@ public class Beans {
                         return true;
                     }
                 }
+                return false;
             }
+        } else if (bean instanceof AbstractReceiverBean<?,?,?>) {
+            AbstractReceiverBean<?, ?, ?> receiverBean = (AbstractReceiverBean<?, ?, ?>) bean;
+            return isBeanEnabled(receiverBean.getDeclaringBean(), enabled);
         } else if (bean instanceof DecoratorImpl<?>) {
             return enabled.getDecorator(bean.getBeanClass()) != null;
         } else if (bean instanceof InterceptorImpl<?>) {
@@ -557,7 +561,6 @@ public class Beans {
         } else {
             return true;
         }
-        return false;
     }
 
     /**

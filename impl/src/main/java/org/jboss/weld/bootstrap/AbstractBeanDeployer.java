@@ -28,7 +28,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.bean.AbstractBean;
@@ -186,13 +185,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, ? super X> annotatedMethod) {
-        BeanAttributes<T> attributes = BeanAttributesFactory.forProducerBean(annotatedMethod, declaringBean, getManager());
+        BeanAttributes<T> attributes = BeanAttributesFactory.forBean(annotatedMethod, getManager());
         ProducerMethod<? super X, T> bean = ProducerMethod.of(attributes, annotatedMethod, declaringBean, manager, services);
         getEnvironment().addProducerMethod(bean);
     }
 
     protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, ? super X> field) {
-        BeanAttributes<T> attributes = BeanAttributesFactory.forProducerBean(field, declaringBean, getManager());
+        BeanAttributes<T> attributes = BeanAttributesFactory.forBean(field, getManager());
         ProducerField<X, T> bean;
         if (isEEResourceProducerField(field)) {
             bean = EEResourceProducerField.of(attributes, field, declaringBean, manager, services);
@@ -223,7 +222,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T> ManagedBean<T> createManagedBean(WeldClass<T> weldClass) {
-        BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
+        BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
         ManagedBean<T> bean = ManagedBean.of(attributes, weldClass, manager, services);
         getEnvironment().addManagedBean(bean);
         return bean;
@@ -235,7 +234,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T> void createDecorator(WeldClass<T> weldClass) {
-        BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
+        BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
         DecoratorImpl<T> bean = DecoratorImpl.of(attributes, weldClass, manager, services);
         // fire ProcessBeanAttributes for decorator
         boolean vetoed = fireProcessBeanAttributes(bean);
@@ -245,7 +244,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T> void createInterceptor(WeldClass<T> weldClass) {
-        BeanAttributes<T> attributes = BeanAttributesFactory.forManagedBean(weldClass, getManager());
+        BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
         InterceptorImpl<T> bean = InterceptorImpl.of(attributes, weldClass, manager, services);
         // fire ProcessBeanAttributes for decorator
         boolean vetoed = fireProcessBeanAttributes(bean);
