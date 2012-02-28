@@ -35,6 +35,7 @@ import org.slf4j.cal10n.LocLogger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
@@ -77,6 +78,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
  * @param <S>
  * @author Gavin King
  * @author David Allen
+ * @author Marko Luksa
  */
 public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S> {
 
@@ -213,9 +215,11 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * @param instance The instance to validate
      */
     protected void checkReturnValue(T instance) {
-        if (instance == null && !isDependent()) {
-            throw new IllegalProductException(NULL_NOT_ALLOWED_FROM_PRODUCER, getProducer());
-        } else if (instance != null) {
+        if (instance == null) {
+            if (!isDependent()) {
+                throw new IllegalProductException(NULL_NOT_ALLOWED_FROM_PRODUCER, getProducer());
+            }
+        } else {
             boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
             boolean instanceSerializable = isTypeSerializable(instance.getClass());
             if (passivating && !instanceSerializable) {
@@ -225,7 +229,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (injectionPoint != null && injectionPoint.getBean() != null) {
                 if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
                     if (injectionPoint.getMember() instanceof Field) {
-                        if (!injectionPoint.isTransient() && instance != null && !instanceSerializable) {
+                        boolean instanceInjectionPoint = Instance.class.isAssignableFrom(((Field)injectionPoint.getMember()).getType());
+                        if (!injectionPoint.isTransient() && !instanceInjectionPoint && !instanceSerializable) {
                             throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
                         }
                     } else if (injectionPoint.getMember() instanceof Method) {
