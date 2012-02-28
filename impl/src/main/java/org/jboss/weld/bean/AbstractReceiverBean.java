@@ -21,7 +21,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.slf4j.cal10n.LocLogger;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -82,11 +81,6 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
      */
     public AbstractClassBean<X> getDeclaringBean() {
         return declaringBean;
-    }
-
-    @Override
-    protected void initAlternative() {
-        super.alternative = Beans.isAlternative(getWeldAnnotated(), getMergedStereotypes()) || getDeclaringBean().isAlternative();
     }
 
     @Override
