@@ -22,7 +22,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,7 +32,7 @@ import org.junit.runner.RunWith;
 public class Weld930Test {
 
     @Deployment
-    @ShouldThrowException(value = DeploymentException.class)
+    @ShouldThrowException(value = Exception.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .alternate(AlternativeProducer.class)
