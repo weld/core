@@ -229,8 +229,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (injectionPoint != null && injectionPoint.getBean() != null) {
                 if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
                     if (injectionPoint.getMember() instanceof Field) {
-                        boolean instanceInjectionPoint = Instance.class.isAssignableFrom(((Field)injectionPoint.getMember()).getType());
-                        if (!injectionPoint.isTransient() && !instanceInjectionPoint && !instanceSerializable) {
+                        if (!injectionPoint.isTransient() && !Instance.class.isAssignableFrom(((Field) injectionPoint.getMember()).getType())) {
                             throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
                         }
                     } else if (injectionPoint.getMember() instanceof Method) {
