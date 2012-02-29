@@ -17,17 +17,57 @@
 package org.jboss.weld.introspector;
 
 import javax.enterprise.inject.spi.AnnotatedType;
+import java.util.Set;
 
 /**
  * A wrapper for annotated types that are modified as part of the discovery process
+ *
+ * @author pmuir
+ * @author alesj
  */
 public class DiscoveredExternalAnnotatedType<X> extends ExternalAnnotatedType<X> {
 
-    public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType) {
-        return new DiscoveredExternalAnnotatedType<X>(annotatedType);
+    private AnnotatedType<?> original;
+
+    public static <X> AnnotatedType<X> of(AnnotatedType<X> annotatedType, AnnotatedType<?> original) {
+        return new DiscoveredExternalAnnotatedType<X>(annotatedType, original);
     }
 
-    private DiscoveredExternalAnnotatedType(AnnotatedType<X> delegate) {
+    private DiscoveredExternalAnnotatedType(AnnotatedType<X> delegate, AnnotatedType<?> original) {
         super(delegate);
+        this.original = original;
+    }
+
+    /**
+     * Did we modify the original.
+     *
+     * @return true if modified, false otherwise
+     */
+    public boolean isModifed() {
+        if (original.getJavaClass().equals(getJavaClass()) == false)
+            return true;
+
+        if (equals(original.getConstructors(), getConstructors()) == false)
+            return true;
+
+        if (equals(original.getFields(), getFields()) == false)
+            return true;
+
+        if (equals(original.getMethods(), getMethods()) == false)
+            return true;
+
+        return false;
+    }
+
+    private static boolean equals(Set original, Set copy) {
+        // original should not be null, hence copy == null is handled here
+        // not the same set instance? --> we modified it
+        if (original != copy)
+            return false;
+
+        if (original.size() != copy.size())
+            return false;
+
+        return original.containsAll(copy);
     }
 }
