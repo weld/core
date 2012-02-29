@@ -59,10 +59,11 @@ public class DiscoveredExternalAnnotatedType<X> extends ExternalAnnotatedType<X>
         return false;
     }
 
+    // TODO -- how to diff between already empty set and explicity empty set
+    // but I guess it doesn't matter, as there is no injection anyway then
     private static boolean equals(Set original, Set copy) {
-        // original should not be null, hence copy == null is handled here
-        // not the same set instance? --> we modified it
-        if (original != copy)
+        // original should not be null
+        if (copy == null)
             return false;
 
         if (original.size() != copy.size())

@@ -67,6 +67,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
  * @param <T> the type of the class
  * @author Pete Muir
  * @author David Allen
+ * @author Ales Justin
  */
 public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> implements WeldClass<T> {
 
