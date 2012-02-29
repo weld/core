@@ -53,7 +53,6 @@
         <jboss.as7.tck-runner.version>1.0.0.CR2</jboss.as7.tck-runner.version>
         <jboss.as7.version>7.1.0.Final</jboss.as7.version>
         <jboss.ejb3.ext-api.version>1.1.1</jboss.ejb3.ext-api.version>
-        <jboss.interceptor.version>2.0.0.CR1</jboss.interceptor.version>
         <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
         <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
         <jboss.shrinkwrap.api.version>1.0.0-cr-1</jboss.shrinkwrap.api.version>
@@ -291,18 +290,6 @@
                 <groupId>org.jboss.ejb3</groupId>
                 <artifactId>jboss-ejb3-ext-api</artifactId>
                 <version>${jboss.ejb3.ext-api.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.interceptor</groupId>
-                <artifactId>jboss-interceptor-spi</artifactId>
-                <version>${jboss.interceptor.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.interceptor</groupId>
-                <artifactId>jboss-interceptor-core</artifactId>
-                <version>${jboss.interceptor.version}</version>
             </dependency>
 
             <dependency>
