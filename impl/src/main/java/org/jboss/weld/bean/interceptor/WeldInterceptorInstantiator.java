@@ -1,9 +1,9 @@
 package org.jboss.weld.bean.interceptor;
 
-import org.jboss.interceptor.spi.instance.InterceptorInstantiator;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.metadata.InterceptorReference;
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.interceptor.spi.instance.InterceptorInstantiator;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorReference;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.reflection.Reflections;

@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import org.jboss.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.SecureReflections;

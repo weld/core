@@ -17,10 +17,6 @@
 package org.jboss.weld.manager;
 
 import com.google.common.collect.Iterators;
-import org.jboss.interceptor.reader.cache.DefaultMetadataCachingReader;
-import org.jboss.interceptor.reader.cache.MetadataCachingReader;
-import org.jboss.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
@@ -49,6 +45,10 @@ import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
+import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
