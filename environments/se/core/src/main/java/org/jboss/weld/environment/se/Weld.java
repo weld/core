@@ -18,18 +18,26 @@ package org.jboss.weld.environment.se;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.api.helpers.ForwardingBootstrap;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
+import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
 import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -49,12 +57,25 @@ import java.util.Arrays;
  *
  * @author Peter Royle
  * @author Pete Muir
+ * @author Ales Justin
  */
 public class Weld {
 
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
 
     private ShutdownManager shutdownManager;
+    private Set<Metadata<Extension>> extensions;
+
+    /**
+     * Add extension explicitly.
+     *
+     * @param extension an extension
+     */
+    public void addExtension(Extension extension) {
+        if (extensions == null)
+            extensions = new HashSet<Metadata<Extension>>();
+        extensions.add(new MetadataImpl<Extension>(extension, "<explicity-added>"));
+    }
 
     /**
      * Boots Weld and creates and returns a WeldContainer instance, through which
@@ -64,18 +85,44 @@ public class Weld {
      */
     public WeldContainer initialize() {
         ResourceLoader resourceLoader = new WeldSEResourceLoader();
-        Bootstrap bootstrap;
+        // check for beans.xml
+        if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null)
+            throw new IllegalStateException("Missing beans.xml file in META-INF!");
+
+        final Bootstrap delegate;
         try {
-            bootstrap = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
+            delegate = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
         } catch (InstantiationException ex) {
             throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
         } catch (IllegalAccessException ex) {
             throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
         }
 
-        // check for beans.xml
-        if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null)
-            throw new IllegalStateException("Missing beans.xml file in META-INF!");
+        Bootstrap bootstrap = new ForwardingBootstrap() {
+            protected Bootstrap delegate() {
+                return delegate;
+            }
+
+            public BeansXml parse(URL url) {
+                return delegate.parse(url);
+            }
+
+            public BeansXml parse(Iterable<URL> urls) {
+                return delegate.parse(urls);
+            }
+
+            public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader) {
+                Iterable<Metadata<Extension>> iter = delegate.loadExtensions(classLoader);
+                if (extensions != null) {
+                    Set<Metadata<Extension>> set = new HashSet<Metadata<Extension>>(extensions);
+                    for (Metadata<Extension> ext : iter)
+                        set.add(ext);
+                    return set;
+                } else {
+                    return iter;
+                }
+            }
+        };
 
         Deployment deployment = createDeployment(resourceLoader, bootstrap);
         // Set up the container
