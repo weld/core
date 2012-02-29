@@ -124,7 +124,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
         boolean modified;
         if (annotatedType instanceof DiscoveredExternalAnnotatedType) {
             discovered = true;
-            modified = true;
+            modified = DiscoveredExternalAnnotatedType.class.cast(annotatedType).isModifed();
         } else if (annotatedType instanceof ExternalAnnotatedType) {
             discovered = false;
             modified = false;

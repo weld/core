@@ -48,6 +48,7 @@ import static org.slf4j.ext.XLogger.Level.INFO;
 
 /**
  * @author pmuir
+ * @author alesj
  */
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> {
 
@@ -95,7 +96,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     if (event.getAnnotatedType() instanceof WeldClass<?>) {
                         classes.add((WeldClass<?>) event.getAnnotatedType());
                     } else {
-                        classes.add(classTransformer.loadClass(DiscoveredExternalAnnotatedType.of(event.getAnnotatedType())));
+                        classes.add(classTransformer.loadClass(DiscoveredExternalAnnotatedType.of(event.getAnnotatedType(), weldClass)));
                     }
                 } else if (weldClass.isDiscovered()) {
                     vetoedClasses.add(weldClass.getJavaClass());
