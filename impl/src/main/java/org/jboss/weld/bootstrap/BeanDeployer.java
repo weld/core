@@ -71,6 +71,7 @@ import com.google.common.collect.Multimap;
 /**
  * @author Pete Muir
  * @author Jozef Hartinger
+ * @author alesj
  */
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> {
 
@@ -161,7 +162,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     if (synthetic) {
                         modifiedType = ExternalAnnotatedType.of(event.getAnnotatedType());
                     } else {
-                        modifiedType = DiscoveredExternalAnnotatedType.of(event.getAnnotatedType());
+                        modifiedType = DiscoveredExternalAnnotatedType.of(event.getAnnotatedType(), weldClass);
                     }
                     weldClass = classTransformer.loadClass(modifiedType);
                 }
