@@ -248,14 +248,15 @@ public class OrderBuilder {
             We can force the conversation to propagate with a non-faces request by including the unique identifier of
             the conversation as a request parameter. The CDI specification reserves the request parameter named
             <literal>cid</literal> for this use. The unique identifier of the conversation may be obtained from the
-            <literal>Conversation</literal> object, which has the EL bean name <literal>conversation</literal>.
+            <literal>Conversation</literal> object, which has the EL bean name 
+            <literal>javax.enterprise.context.conversation</literal>.
          </para>
     
          <para>
             Therefore, the following link propagates the conversation:
          </para>
     
-         <programlisting role="XML"><![CDATA[<a href="/addProduct.jsp?cid=#{conversation.id}">Add Product</a>]]></programlisting>
+         <programlisting role="XML"><![CDATA[<a href="/addProduct.jsp?cid=#{javax.enterprise.context.conversation.id}">Add Product</a>]]></programlisting>
 
          <para>
             It's probably better to use one of the link components in JSF 2:
