@@ -24,8 +24,11 @@ import javax.interceptor.InvocationContext;
 @UltraSynchronized
 public class UltraSynchronizedInterceptor {
 
+    public static int invocationCount;
+
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
+        invocationCount++;
         return ctx.proceed();
     }
 }

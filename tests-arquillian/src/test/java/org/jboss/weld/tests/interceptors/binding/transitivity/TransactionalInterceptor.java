@@ -24,8 +24,11 @@ import javax.interceptor.InvocationContext;
 @Transactional
 public class TransactionalInterceptor {
 
+    public static int invocationCount;
+
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
+        invocationCount++;
         return ctx.proceed();
     }
 }

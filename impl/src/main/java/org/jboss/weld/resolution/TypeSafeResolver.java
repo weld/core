@@ -76,11 +76,11 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
      * @return An unmodifiable set of matching beans
      */
     public Set<T> resolve(R resolvable, boolean cache) {
-        R wrappedResolable = wrap(resolvable);
+        R wrappedResolvable = wrap(resolvable);
         if (cache) {
-            return resolved.get(wrappedResolable);
+            return resolved.get(wrappedResolvable);
         } else {
-            return resolverFunction.apply(wrappedResolable);
+            return resolverFunction.apply(wrappedResolvable);
         }
     }
 
