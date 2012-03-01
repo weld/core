@@ -749,7 +749,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(new InterceptorResolvableBuilder(Object.class).setInterceptionType(type).addQualifiers(interceptorBindings).create(), isCacheable(interceptorBindings)));
+        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class)
+                .setInterceptionType(type)
+                .addQualifiers(interceptorBindings)
+                .create();
+        return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindings)));
     }
 
     /**
