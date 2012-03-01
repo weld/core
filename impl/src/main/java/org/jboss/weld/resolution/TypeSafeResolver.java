@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author Pete Muir
  * @author Marius Bogoevici
+ * @author Ales Justin
  */
 public abstract class TypeSafeResolver<R extends Resolvable, T> {
 
@@ -87,9 +88,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
     /**
      * Gets the matching beans for binding criteria from a list of beans
      *
-     * @param <T>     The type of the beans
-     * @param element The binding criteria
-     * @param beans   The beans to filter
+     * @param resolvable the resolvable
      * @return A set of filtered beans
      */
     private Set<T> findMatching(R resolvable) {
@@ -99,7 +98,9 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
                 result.add(bean);
             }
         }
-        return ImmutableSet.copyOf(result);
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        Iterable<T> iterable = result; // downcast
+        return ImmutableSet.copyOf(iterable);
     }
 
     protected Iterable<? extends T> getAllBeans(R resolvable) {
