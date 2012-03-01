@@ -1,6 +1,6 @@
 package org.jboss.weld.bean.interceptor;
 
-import org.jboss.interceptor.reader.AnnotatedMethodReader;
+import org.jboss.weld.interceptor.reader.AnnotatedMethodReader;
 import org.jboss.weld.introspector.WeldMethod;
 
 import java.lang.annotation.Annotation;

@@ -18,9 +18,9 @@
 package org.jboss.weld.bean.proxy;
 
 import javassist.util.proxy.MethodHandler;
-import org.jboss.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 
