@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -60,13 +61,13 @@
             <artifactId>jboss-ejb-api_3.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
@@ -84,7 +85,7 @@
 
     <build>
         <finalName>weld-login</finalName>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -95,7 +96,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <!-- functional tests -->
     <profiles>
         <profile>
@@ -113,7 +114,31 @@
                 </plugins>
             </build>
         </profile>
-                
+
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <!-- JBoss AS plugin to deploy war -->
+                    <plugin>
+                        <groupId>org.jboss.as.plugins</groupId>
+                        <artifactId>jboss-as-maven-plugin</artifactId>
+                        <version>${jboss.as7.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>arquillian-jbossas-managed-7</id>
         </profile>
@@ -121,12 +146,12 @@
         <profile>
             <id>arquillian-jbossas-remote-7</id>
         </profile>
-       
+
         <profile>
             <id>arquillian-jbossas-managed-6</id>
         </profile>
 
-         <profile>
+        <profile>
             <id>arquillian-jbossas-remote-6</id>
         </profile>
     </profiles>

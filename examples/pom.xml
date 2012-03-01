@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jboss.weld</groupId>
@@ -22,11 +23,21 @@
         <developer>
             <name>Pete Muir</name>
             <roles>
-                <role>Project Lead</role>
+                <role>Project Founder</role>
             </roles>
             <email>pete.muir@jboss.org</email>
             <organization>JBoss, a division of Red Hat</organization>
             <url>http://in.relation.to/Bloggers/Pete</url>
+        </developer>
+
+        <developer>
+            <name>Ales Justin</name>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+            <email>ales.justin@jboss.org</email>
+            <organization>JBoss, a division of Red Hat</organization>
+            <url>http://in.relation.to/Bloggers/Ales</url>
         </developer>
 
         <developer>
@@ -97,7 +108,7 @@
         <!-- Testing deps -->
         <selenium.java.client.version>1.0.1</selenium.java.client.version>
         <ant.junit.version>1.6.2</ant.junit.version>
-        <ftest.version.discriminator />
+        <ftest.version.discriminator/>
         <selenium.browser>*firefoxproxy</selenium.browser>
         <selenium.browser.url>http://localhost:8080</selenium.browser.url>
         <selenium.server.port>14444</selenium.server.port>
@@ -112,14 +123,14 @@
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
         <!-- richfaces-selenium -->
         <browserSessionReuse>true</browserSessionReuse>
-        <cargo.jvmargs.additional />
+        <cargo.jvmargs.additional/>
         <cargo.timeout.deploy>120000</cargo.timeout.deploy>
         <context.host>localhost</context.host>
         <context.root>http://${context.host}:8080/</context.root>
         <context.path>/${project.build.finalName}/</context.path>
         <context.deploy.path>${context.path}</context.deploy.path>
         <jboss.master.configuration>${env.JBOSS_HOME}/server/all</jboss.master.configuration>
-        <deployable.location />
+        <deployable.location/>
         <deployable.type>war</deployable.type>
         <method>*</method>
         <selenium.maximize>false</selenium.maximize>
@@ -510,13 +521,15 @@
                                     <configuration>
                                         <systemPropertyVariables>
                                             <node1.contextPath>${node1.contextPath}</node1.contextPath>
-                                            <node1.managementAddress>${node1.managementAddress}</node1.managementAddress>
+                                            <node1.managementAddress>${node1.managementAddress}
+                                            </node1.managementAddress>
                                             <node1.managementPort>${node1.managementPort}</node1.managementPort>
                                             <node1.jbossHome>${node1.jbossHome}</node1.jbossHome>
                                             <node1.nodeName>${node1.nodeName}</node1.nodeName>
-                                            
+
                                             <node2.contextPath>${node2.contextPath}</node2.contextPath>
-                                            <node2.managementAddress>${node2.managementAddress}</node2.managementAddress>
+                                            <node2.managementAddress>${node2.managementAddress}
+                                            </node2.managementAddress>
                                             <node2.managementPort>${node2.managementPort}</node2.managementPort>
                                             <node2.jbossHome>${node2.jbossHome}</node2.jbossHome>
                                             <node2.nodeName>${node2.nodeName}</node2.nodeName>
@@ -587,7 +600,7 @@
                                             <node1.profileName>${node1.profileName}</node1.profileName>
                                             <node1.partition>${node1.partition}</node1.partition>
                                             <node1.udpGroup>${node1.udpGroup}</node1.udpGroup>
-                                            
+
                                             <node2.contextPath>${node2.contextPath}</node2.contextPath>
                                             <node2.jbossHome>${node2.jbossHome}</node2.jbossHome>
                                             <node2.bindAddress>${node2.bindAddress}</node2.bindAddress>
@@ -610,7 +623,7 @@
                     </plugins>
                 </pluginManagement>
             </build>
-        </profile>  
+        </profile>
 
         <profile>
             <id>jboss-public-repository</id>
