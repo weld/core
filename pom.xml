@@ -408,12 +408,6 @@
 
             <dependency>
                 <groupId>org.jboss.weld</groupId>
-                <artifactId>weld-build-config</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -506,13 +500,6 @@
         </dependencies>
 
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-build-config</artifactId>
-        </dependency>
-    </dependencies>
 
     <build>
         <pluginManagement>
