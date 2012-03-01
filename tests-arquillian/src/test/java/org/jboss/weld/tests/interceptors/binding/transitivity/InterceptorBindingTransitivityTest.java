@@ -44,10 +44,9 @@ import static org.jboss.weld.tests.interceptors.binding.transitivity.UltraTransa
  * Tests interceptor binding transitivity for both normal and extension-provided interceptor bindings.
  * 
  * @author <a href="http://community.jboss.org/people/jharting">Jozef Hartinger</a>
- * 
+ * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
  */
 @RunWith(Arquillian.class)
-@Ignore("WELD-999")
 public class InterceptorBindingTransitivityTest {
 
     @Inject
@@ -74,6 +73,7 @@ public class InterceptorBindingTransitivityTest {
     }
 
     @Test
+    @Ignore("WELD-999")
     public void testTransitivityOfInterceptorBindings() {
         // non-transitive bindings
         assertEquals(1, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new SynchronizedLiteral()).size());
@@ -85,6 +85,44 @@ public class InterceptorBindingTransitivityTest {
         assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSecureLiteral()).size());
         // should resolve UltraTransactionalInterceptor and transitively also TransactionalInterceptor
         assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraTransactionalLiteral()).size());
+    }
+
+    @Test
+    public void testTransitivityOfInterceptorBindings2(InterceptedBean interceptedBean) {
+        resetAllCounters();
+
+        interceptedBean.synchronizedMethod();
+        assertEquals(1, SynchronizedInterceptor.invocationCount);
+
+        interceptedBean.secure();
+        assertEquals(1, SecureInterceptor.invocationCount);
+
+        interceptedBean.transactional();
+        assertEquals(1, TransactionalInterceptor.invocationCount);
+
+        
+        resetAllCounters();
+
+        interceptedBean.ultraSynchronized();
+        assertEquals(1, SynchronizedInterceptor.invocationCount);
+        assertEquals(1, UltraSynchronizedInterceptor.invocationCount);
+
+        interceptedBean.ultraSecure();
+        assertEquals(1, SecureInterceptor.invocationCount);
+        assertEquals(1, UltraSecureInterceptor.invocationCount);
+
+        interceptedBean.ultraTransactional();
+        assertEquals(1, TransactionalInterceptor.invocationCount);
+        assertEquals(1, UltraTransactionalInterceptor.invocationCount);
+    }
+
+    private void resetAllCounters() {
+        SynchronizedInterceptor.invocationCount = 0;
+        UltraSynchronizedInterceptor.invocationCount = 0;
+        SecureInterceptor.invocationCount = 0;
+        UltraSecureInterceptor.invocationCount = 0;
+        TransactionalInterceptor.invocationCount = 0;
+        UltraTransactionalInterceptor.invocationCount = 0;
     }
 
 }
