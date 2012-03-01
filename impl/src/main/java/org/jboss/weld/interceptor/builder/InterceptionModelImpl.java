@@ -128,7 +128,7 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
         for (InterceptorMetadata interceptor : interceptors) {
             if (interceptorsList.contains(interceptor)) {
                 if (interceptionType != null) {
-                    throw new InterceptorException("Duplicate interceptor class definition when binding" + interceptor + " on " + interceptionType.name());
+                    throw new InterceptorException("Duplicate interceptor class definition when binding " + interceptor.getInterceptorClass().getClassName() + " on " + interceptionType.name());
                 }
             }
         }
