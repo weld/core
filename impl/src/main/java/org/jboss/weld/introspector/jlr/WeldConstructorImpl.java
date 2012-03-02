@@ -23,7 +23,6 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
@@ -49,10 +48,12 @@ import java.util.Set;
  * <p/>
  * This class is immutable, and therefore threadsafe
  *
- * @param <T>
+ * @param <T> exact type
  * @author Pete Muir
+ * @author Ales Justin
  */
 public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Constructor<T>> implements WeldConstructor<T> {
+    private static final Annotation[] EMPTY = new Annotation[0];
 
     // The underlying constructor
     private final Constructor<T> constructor;
@@ -92,42 +93,30 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
             }
         }
 
-        // If the class is a (non-static) member class, its constructors
-        // parameterTypes array will prefix the
-        // outer class instance, whilst the genericParameterTypes array isn't
-        // prefix'd
-        int nesting = Reflections.getNesting(declaringClass.getJavaClass());
+        final Class<?>[] parameterTypes = constructor.getParameterTypes();
         if (annotatedConstructor == null) {
-            for (int i = 0; i < constructor.getParameterTypes().length; i++) {
+            final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+            final Type[] genericParameterTypes = constructor.getGenericParameterTypes();
+            // If the class is a (non-static) member class, its constructors
+            // parameterTypes array will prefix the
+            // outer class instance, whilst the genericParameterTypes array isn't
+            // prefix'd -- not always true ...
+            int nesting = Reflections.getNesting(declaringClass.getJavaClass());
+            for (int i = 0; i < parameterTypes.length; i++) {
                 int gi = i - nesting;
-                if (constructor.getParameterAnnotations()[i].length > 0) {
-                    Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-                    Type parameterType;
-                    if (constructor.getGenericParameterTypes().length > gi && gi >= 0) {
-                        parameterType = constructor.getGenericParameterTypes()[gi];
-                    } else {
-                        parameterType = clazz;
-                    }
-                    WeldParameter<?, T> parameter = WeldParameterImpl.of(constructor.getParameterAnnotations()[i], clazz, parameterType, this, i, classTransformer);
-                    this.parameters.add(parameter);
-                } else {
-                    Class<? extends Object> clazz = constructor.getParameterTypes()[i];
-                    Type parameterType;
-                    if (constructor.getGenericParameterTypes().length > gi && gi >= 0) {
-                        parameterType = constructor.getGenericParameterTypes()[gi];
-                    } else {
-                        parameterType = clazz;
-                    }
-                    WeldParameter<?, T> parameter = WeldParameterImpl.of(new Annotation[0], clazz, parameterType, this, i, classTransformer);
-                    this.parameters.add(parameter);
-                }
+
+                Annotation[] annotations = (gi >= 0 && parameterAnnotations[gi].length > 0) ? parameterAnnotations[gi] : EMPTY;
+                Class<?> clazz = parameterTypes[i];
+                Type parameterType = genericParameterTypes[i];
+                WeldParameter<?, T> parameter = WeldParameterImpl.of(annotations, clazz, parameterType, this, i, classTransformer);
+                this.parameters.add(parameter);
             }
         } else {
-            if (annotatedConstructor.getParameters().size() != constructor.getParameterTypes().length) {
-                throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, annotatedConstructor.getParameters().size(), annotatedConstructor, annotatedConstructor.getParameters(), Arrays.asList(constructor.getParameterTypes()));
+            if (annotatedConstructor.getParameters().size() != parameterTypes.length) {
+                throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, annotatedConstructor.getParameters().size(), annotatedConstructor, annotatedConstructor.getParameters(), Arrays.asList(parameterTypes));
             } else {
                 for (AnnotatedParameter<T> annotatedParameter : annotatedConstructor.getParameters()) {
-                    WeldParameter<?, T> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), constructor.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
+                    WeldParameter<?, T> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), parameterTypes[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
                     this.parameters.add(parameter);
                 }
             }
@@ -192,13 +181,13 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
     /**
      * Creates a new instance
      *
-     * @param beanManager The Bean manager
+     * @param parameters the parameters
      * @return An instance
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      * @throws InstantiationException
      * @throws IllegalArgumentException
-     * @see org.jboss.weld.introspector.WeldConstructor#newInstance(BeanManagerImpl)
+     * @see org.jboss.weld.introspector.WeldConstructor#newInstance(Object... params)
      */
     public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
         return SecureReflections.ensureAccessible(getDelegate()).newInstance(parameters);
