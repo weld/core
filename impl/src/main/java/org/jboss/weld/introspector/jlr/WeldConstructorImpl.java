@@ -97,6 +97,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
         if (annotatedConstructor == null) {
             final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
             final Type[] genericParameterTypes = constructor.getGenericParameterTypes();
+            final boolean sameLength = (parameterTypes.length == genericParameterTypes.length);
             // If the class is a (non-static) member class, its constructors
             // parameterTypes array will prefix the
             // outer class instance, whilst the genericParameterTypes array isn't
@@ -107,7 +108,15 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
 
                 Annotation[] annotations = (gi >= 0 && parameterAnnotations[gi].length > 0) ? parameterAnnotations[gi] : EMPTY;
                 Class<?> clazz = parameterTypes[i];
-                Type parameterType = genericParameterTypes[i];
+                Type parameterType;
+                if (sameLength) {
+                    parameterType = genericParameterTypes[i];
+                } else {
+                    if (gi >= 0)
+                        parameterType = genericParameterTypes[gi];
+                    else
+                        parameterType = parameterTypes[i];
+                }
                 WeldParameter<?, T> parameter = WeldParameterImpl.of(annotations, clazz, parameterType, this, i, classTransformer);
                 this.parameters.add(parameter);
             }
