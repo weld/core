@@ -38,7 +38,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,14 +83,6 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
         this.constructor = constructor;
 
         this.parameters = new ArrayList<WeldParameter<?, T>>();
-
-        Map<Integer, AnnotatedParameter<?>> annotatedTypeParameters = new HashMap<Integer, AnnotatedParameter<?>>();
-
-        if (annotatedConstructor != null) {
-            for (AnnotatedParameter<?> annotated : annotatedConstructor.getParameters()) {
-                annotatedTypeParameters.put(annotated.getPosition(), annotated);
-            }
-        }
 
         final Class<?>[] parameterTypes = constructor.getParameterTypes();
         if (annotatedConstructor == null) {
