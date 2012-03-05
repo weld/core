@@ -82,6 +82,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAM_NOT_IN_PARAM_LIST;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -214,7 +215,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         for (Interceptor<?> interceptor : interceptors) {
 
             SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, getServices().get(ContextualStore.class));
-            serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
+            if (interceptor instanceof InterceptorImpl) {
+                serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, WeldInterceptorClassMetadata.of(((InterceptorImpl) interceptor).getWeldAnnotated()))));
+            } else {
+                // TODO - fix custom interception
+                // custom interceptor - read metadata reflectively
+                serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
+            }
         }
         return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
     }
