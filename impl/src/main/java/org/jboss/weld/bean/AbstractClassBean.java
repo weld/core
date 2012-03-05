@@ -68,11 +68,11 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.InterceptorBindingSet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
@@ -97,6 +97,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @param <T> the type of class for the bean
  * @author Pete Muir
  * @author David Allen
+ * @author Marko Luksa
  */
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
@@ -104,25 +105,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     private static <T> InterceptorMetadata<T>[] emptyInterceptorMetadataArray() {
         return cast(EMPTY_INTERCEPTOR_METADATA_ARRAY);
-    }
-
-    /**
-     * Extracts the complete set of interception bindings from a given set of
-     * annotations.
-     *
-     * @param beanManager
-     * @param annotations
-     * @return
-     */
-    protected static Set<Annotation> flattenInterceptorBindings(BeanManagerImpl beanManager, Set<Annotation> annotations) {
-        Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
-        for (Annotation annotation : annotations) {
-            if (beanManager.isInterceptorBinding(annotation.annotationType())) {
-                foundInterceptionBindingTypes.add(annotation);
-                foundInterceptionBindingTypes.addAll(beanManager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
-            }
-        }
-        return foundInterceptionBindingTypes;
     }
 
     private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
@@ -209,16 +191,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         InterceptionModelBuilder<ClassMetadata<?>, ?> builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(classMetadata);
 
         // initialize CDI interceptors
-        Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations());
+        Set<Annotation> classBindingAnnotations = new InterceptorBindingSet(beanManager);
+        classBindingAnnotations.addAll(beanManager.extractInterceptorBindings(getWeldAnnotated().getAnnotations()));
         for (Class<? extends Annotation> annotation : getStereotypes()) {
-            classBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
+            classBindingAnnotations.addAll(beanManager.extractInterceptorBindings(beanManager.getStereotypeDefinition(annotation)));
         }
         if (classBindingAnnotations.size() > 0) {
             if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations)) {
                 throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
             }
 
-            Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[0]);
+            Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[classBindingAnnotations.size()]);
 
             List<Interceptor<?>> resolvedPostConstructInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
             builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
@@ -235,14 +218,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
         for (WeldMethod<?, ?> method : businessMethods) {
-            Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
-            methodBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, method.getAnnotations()));
+            Set<Annotation> methodBindingAnnotations = new InterceptorBindingSet(beanManager);
+            methodBindingAnnotations.addAll(classBindingAnnotations);
+            methodBindingAnnotations.addAll(beanManager.extractInterceptorBindings(method.getAnnotations()));
             if (methodBindingAnnotations.size() > 0) {
                 if (Beans.findInterceptorBindingConflicts(beanManager, methodBindingAnnotations)) {
                     throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
                 }
 
-                List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotations.toArray(new Annotation[]{}));
+                Annotation[] methodBindingAnnotationsArray = methodBindingAnnotations.toArray(new Annotation[methodBindingAnnotations.size()]);
+
+                List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, methodBindingAnnotationsArray);
                 if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                     if (method.isFinal()) {
                         throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
@@ -250,7 +236,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
                     builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                 }
 
-                methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotations.toArray(new Annotation[]{}));
+                methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, methodBindingAnnotationsArray);
                 if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                     if (method.isFinal()) {
                         throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
