@@ -42,14 +42,14 @@ public class SimpleInterceptionChain implements InterceptionChain {
 
     private int currentPosition;
 
-    private final List<InterceptorInvocation.InterceptorMethodInvocation> interceptorMethodInvocations;
+    private final List<InterceptorMethodInvocation> interceptorMethodInvocations;
 
-    public SimpleInterceptionChain(Collection<InterceptorInvocation<?>> interceptorInvocations, Object target, Method targetMethod) {
+    public SimpleInterceptionChain(Collection<InterceptorInvocation> interceptorInvocations, Object target, Method targetMethod) {
         this.target = target;
         this.targetMethod = targetMethod;
         this.currentPosition = 0;
-        interceptorMethodInvocations = new ArrayList<InterceptorInvocation.InterceptorMethodInvocation>();
-        for (InterceptorInvocation<?> interceptorInvocation : interceptorInvocations) {
+        interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
+        for (InterceptorInvocation interceptorInvocation : interceptorInvocations) {
             interceptorMethodInvocations.addAll(interceptorInvocation.getInterceptorMethodInvocations());
         }
     }
@@ -60,25 +60,19 @@ public class SimpleInterceptionChain implements InterceptionChain {
             if (hasNextInterceptor()) {
                 int oldCurrentPosition = currentPosition;
                 try {
-                    InterceptorInvocation.InterceptorMethodInvocation nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
+                    InterceptorMethodInvocation nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
                     if (log.isTraceEnabled()) {
-                        log.trace("Invoking next interceptor in chain:" + nextInterceptorMethodInvocation.method.toString());
+                        log.trace("Invoking next interceptor in chain:" + nextInterceptorMethodInvocation.toString());
                     }
-                    if (nextInterceptorMethodInvocation.method.getJavaMethod().getParameterTypes().length == 1) {
-                        validateInterceptor(nextInterceptorMethodInvocation, invocationContext);
+                    if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
                         return nextInterceptorMethodInvocation.invoke(invocationContext);
-                    } else if (nextInterceptorMethodInvocation.method.getJavaMethod().getParameterTypes().length == 0) {
-                        validateInterceptor(nextInterceptorMethodInvocation, null);
+                    } else {
                         nextInterceptorMethodInvocation.invoke(null);
                         while (hasNextInterceptor()) {
                             nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
-                            validateInterceptor(nextInterceptorMethodInvocation, null);
                             nextInterceptorMethodInvocation.invoke(null);
                         }
                         return null;
-
-                    } else {
-                        throw new IllegalStateException("Impossible state: interceptor method has more than one argument:" + nextInterceptorMethodInvocation.getMethod());
                     }
                 } finally {
                     currentPosition = oldCurrentPosition;
@@ -101,7 +95,7 @@ public class SimpleInterceptionChain implements InterceptionChain {
         }
     }
 
-    private void validateInterceptor(InterceptorInvocation.InterceptorMethodInvocation nextInterceptorMethodInvocation, InvocationContext context) {
+    private void validateInterceptor(SimpleMethodInvocation nextInterceptorMethodInvocation, InvocationContext context) {
         int expectedParameters = context == null ? 0 : 1;
         if (nextInterceptorMethodInvocation.method.getJavaMethod().getParameterTypes().length != expectedParameters) {
             throw new IllegalStateException(

@@ -18,7 +18,6 @@ package org.jboss.weld.bean;
 
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,6 +38,7 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Scope;
 
 import javassist.util.proxy.ProxyObject;
+import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
@@ -130,7 +130,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         for (Interceptor<?> interceptor : interceptors) {
 
             SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, getServices().get(ContextualStore.class));
-            serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
+            if (interceptor instanceof InterceptorImpl) {
+                serializableContextuals.add(((InterceptorImpl) interceptor).getInterceptorMetadata());
+            } else {
+                //custom interceptor
+                serializableContextuals.add(new CustomInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, null), beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass())));
+            }
         }
         return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
     }
