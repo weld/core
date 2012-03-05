@@ -45,6 +45,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.MISSING_BINDING_ON_INT
 
 /**
  * @author Marius Bogoevici
+ * @author Marko Luksa
  */
 public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T> {
 
@@ -63,9 +64,9 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
         this.serializable = type.isSerializable();
         this.interceptorBindingTypes = new HashSet<Annotation>();
-        interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, getWeldAnnotated().getAnnotations()));
+        interceptorBindingTypes.addAll(beanManager.flattenInterceptorBindings(getWeldAnnotated().getAnnotations()));
         for (Class<? extends Annotation> annotation : getStereotypes()) {
-            interceptorBindingTypes.addAll(flattenInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)));
+            interceptorBindingTypes.addAll(beanManager.flattenInterceptorBindings(beanManager.getStereotypeDefinition(annotation)));
         }
         if (this.interceptorBindingTypes.size() == 0) {
             throw new DeploymentException(MISSING_BINDING_ON_INTERCEPTOR, type.getName());

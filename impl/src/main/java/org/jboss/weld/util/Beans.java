@@ -113,6 +113,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @author David Allen
  * @author Marius Bogoevici
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class Beans {
     // TODO Convert messages
@@ -473,8 +474,9 @@ public class Beans {
     }
 
     public static boolean findInterceptorBindingConflicts(BeanManagerImpl manager, Set<Annotation> bindings) {
+        Set<Annotation> flattenedBindings = manager.flattenInterceptorBindings(bindings);
         Map<Class<? extends Annotation>, Annotation> foundAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
-        for (Annotation binding : bindings) {
+        for (Annotation binding : flattenedBindings) {
             if (foundAnnotations.containsKey(binding.annotationType())) {
                 InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(binding.annotationType());
                 if (!bindingType.isEqual(binding, foundAnnotations.get(binding.annotationType()), false)) {

@@ -70,6 +70,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
+import org.jboss.weld.util.InterceptorBindingSet;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
@@ -113,6 +114,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
@@ -137,6 +140,7 @@ import static org.jboss.weld.util.reflection.Reflections.isCacheable;
  * @author Pete Muir
  * @author Marius Bogoevici
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class BeanManagerImpl implements WeldManager, Serializable {
 
@@ -620,7 +624,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private boolean isProxyRequired(Bean<?> bean) {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isProxyRequired();
-        } else if (getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal()) {
+        } else if (getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal()) {
             return true;
         } else {
             return false;
@@ -669,7 +673,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             if (registerInjectionPoint) {
                 currentInjectionPoint.push(injectionPoint);
             }
-            if (getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType())) {
+            if (getMetaAnnotationStore().getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType())) {
                 throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
             }
             // TODO Can we move this logic to getReference?
@@ -707,7 +711,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, resolvable);
         }
 
-        boolean normalScoped = getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+        boolean normalScoped = getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal();
         if (normalScoped && !Beans.isBeanProxyable(bean)) {
             throw Proxies.getUnproxyableTypesException(bean);
         }
@@ -745,15 +749,31 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @param interceptorBindings The binding types to match
      * @return A list of matching interceptors
      * @see javax.enterprise.inject.spi.BeanManager#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType,
-     *      java.lang.annotation.Annotation[])
+     *      java.lang.annotation.Annotation...)
      */
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
-        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
+        if (interceptorBindings.length == 0) {
+            throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
+        }
+        Set<Annotation> interceptorBindingsSet = new InterceptorBindingSet(this);
+        for (Annotation annotation : interceptorBindings) {
+            if (!isInterceptorBinding(annotation.annotationType())) {
+                throw new IllegalArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, annotation);
+            }
+            if (interceptorBindingsSet.contains(annotation)) {
+                throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, annotation);
+            }
+            interceptorBindingsSet.add(annotation);
+        }
+
+        Set<Annotation> flattenedInterceptorBindings = flattenInterceptorBindings(interceptorBindingsSet);
+
         InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class)
                 .setInterceptionType(type)
-                .addQualifiers(interceptorBindings)
+                .addQualifiers(flattenedInterceptorBindings)
                 .create();
-        return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindings)));
+        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
+        return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(interceptorResolvable, isCacheable(flattenedInterceptorBindings)));
     }
 
     /**
@@ -821,7 +841,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType) {
-        if (!getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isNormal()) {
+        if (!getMetaAnnotationStore().getScopeModel(scopeType).isNormal()) {
             throw new IllegalArgumentException(NON_NORMAL_SCOPE, scopeType);
         }
         currentActivities.add(new CurrentActivity(getContext(scopeType), this));
@@ -944,7 +964,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
-        InterceptorBindingModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType);
+        InterceptorBindingModel<? extends Annotation> model = getMetaAnnotationStore().getInterceptorBindingModel(bindingType);
         if (model.isValid()) {
             return model.getMetaAnnotations();
         } else {
@@ -957,7 +977,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
-        final StereotypeModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getStereotype(stereotype);
+        final StereotypeModel<? extends Annotation> model = getMetaAnnotationStore().getStereotype(stereotype);
         if (model.isValid()) {
             return model.getMetaAnnotations();
         } else {
@@ -966,29 +986,33 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public boolean isQualifier(Class<? extends Annotation> annotationType) {
-        return getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid();
+        return getMetaAnnotationStore().getBindingTypeModel(annotationType).isValid();
     }
 
     public boolean isInterceptorBinding(Class<? extends Annotation> annotationType) {
-        return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid();
+        return getMetaAnnotationStore().getInterceptorBindingModel(annotationType).isValid();
     }
 
     public boolean isNormalScope(Class<? extends Annotation> annotationType) {
-        ScopeModel<?> scope = getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType);
+        ScopeModel<?> scope = getMetaAnnotationStore().getScopeModel(annotationType);
         return scope.isValid() && scope.isNormal();
     }
 
     public boolean isPassivatingScope(Class<? extends Annotation> annotationType) {
-        ScopeModel<?> scope = getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType);
+        ScopeModel<?> scope = getMetaAnnotationStore().getScopeModel(annotationType);
         return scope.isValid() && scope.isPassivating();
     }
 
     public boolean isScope(Class<? extends Annotation> annotationType) {
-        return getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType).isValid();
+        return getMetaAnnotationStore().getScopeModel(annotationType).isValid();
     }
 
     public boolean isStereotype(Class<? extends Annotation> annotationType) {
-        return getServices().get(MetaAnnotationStore.class).getStereotype(annotationType).isValid();
+        return getMetaAnnotationStore().getStereotype(annotationType).isValid();
+    }
+
+    public MetaAnnotationStore getMetaAnnotationStore() {
+        return getServices().get(MetaAnnotationStore.class);
     }
 
     public ELResolver getELResolver() {
@@ -1057,6 +1081,38 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType) {
         return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));
+    }
+
+    public Set<Annotation> extractInterceptorBindings(Iterable<Annotation> annotations) {
+        Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
+        for (Annotation annotation : annotations) {
+            if (isInterceptorBinding(annotation.annotationType())) {
+                foundInterceptionBindingTypes.add(annotation);
+            }
+        }
+        return foundInterceptionBindingTypes;
+    }
+
+    /**
+     * Extracts the complete set of interception bindings from a given set of
+     * annotations.
+     *
+     * @param annotations
+     * @return
+     */
+    public Set<Annotation> flattenInterceptorBindings(Set<Annotation> annotations) {
+        MetaAnnotationStore metaAnnotationStore = getMetaAnnotationStore();
+
+        Set<Annotation> foundInterceptionBindingTypes = new InterceptorBindingSet(this);
+        for (Annotation annotation : annotations) {
+            if (isInterceptorBinding(annotation.annotationType())) {
+                foundInterceptionBindingTypes.add(annotation);
+
+                InterceptorBindingModel<? extends Annotation> interceptorBindingModel = metaAnnotationStore.getInterceptorBindingModel(annotation.annotationType());
+                foundInterceptionBindingTypes.addAll(interceptorBindingModel.getInheritedInterceptionBindingTypes());
+            }
+        }
+        return foundInterceptionBindingTypes;
     }
 
     private static class InstanceInjectionPoint implements InjectionPoint, Serializable {
