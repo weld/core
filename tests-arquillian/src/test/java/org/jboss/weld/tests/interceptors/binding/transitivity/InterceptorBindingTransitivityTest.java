@@ -73,7 +73,6 @@ public class InterceptorBindingTransitivityTest {
     }
 
     @Test
-    @Ignore("WELD-999")
     public void testTransitivityOfInterceptorBindings() {
         // non-transitive bindings
         assertEquals(1, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new SynchronizedLiteral()).size());
