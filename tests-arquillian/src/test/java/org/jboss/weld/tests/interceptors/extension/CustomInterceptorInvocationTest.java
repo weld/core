@@ -32,7 +32,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,7 +45,6 @@ import org.junit.runner.RunWith;
  * 
  */
 @RunWith(Arquillian.class)
-@Ignore("WELD-997")
 public class CustomInterceptorInvocationTest {
 
     @Inject
