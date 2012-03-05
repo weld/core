@@ -17,19 +17,17 @@
 
 package org.jboss.weld.bean;
 
-import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
+import org.jboss.weld.interceptor.proxy.SimpleInterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -88,8 +86,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     public Object intercept(InterceptionType type, T instance, InvocationContext ctx) {
         try {
             org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
-            Collection<InterceptorInvocation<?>> invocations = new ArrayList<InterceptorInvocation<?>>();
-            invocations.add(new InterceptorInvocation<T>(instance, interceptorMetadata, interceptionType));
+            Collection<InterceptorInvocation> invocations = new ArrayList<InterceptorInvocation>();
+            invocations.add(new SimpleInterceptorInvocation<T>(instance, interceptorMetadata, interceptionType, false));
             return new SimpleInterceptionChain(invocations, instance, ctx.getMethod()).invokeNextInterceptor(ctx);
         } catch (Throwable e) {
             throw new WeldException(e);
