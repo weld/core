@@ -88,6 +88,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
             Collection<InterceptorInvocation<?>> invocations = new ArrayList<InterceptorInvocation<?>>();
             invocations.add(new InterceptorInvocation<T>(instance, interceptorMetadata, interceptionType));
             return new SimpleInterceptionChain(invocations, instance, ctx.getMethod()).invokeNextInterceptor(ctx);
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Throwable e) {
             throw new WeldException(e);
         }
