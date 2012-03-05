@@ -17,8 +17,10 @@
 
 package org.jboss.weld.bean;
 
+import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
@@ -27,6 +29,7 @@ import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Formats;
 
