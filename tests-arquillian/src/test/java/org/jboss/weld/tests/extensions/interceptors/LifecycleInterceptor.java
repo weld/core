@@ -27,12 +27,10 @@ public class LifecycleInterceptor {
     static private boolean preDestroyCalled = false;
     static private boolean postConstructCalled = false;
 
-    @PreDestroy
     public void preDestroy(InvocationContext ctx) {
         preDestroyCalled = true;
     }
 
-    @PostConstruct
     public void postConstruct(InvocationContext ctx) {
         Object marathon = ctx.getTarget();
         if (marathon instanceof Marathon) {
