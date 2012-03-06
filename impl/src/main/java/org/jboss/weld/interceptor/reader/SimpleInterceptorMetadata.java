@@ -61,10 +61,6 @@ public class SimpleInterceptorMetadata<T> implements InterceptorMetadata<T>, Ser
         return interceptorReference;
     }
 
-    public boolean isTargetClass() {
-        return targetClass;
-    }
-
     public List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType) {
         if (interceptorMethodMap != null) {
             List<MethodMetadata> methods = interceptorMethodMap.get(interceptionType);
@@ -87,6 +83,6 @@ public class SimpleInterceptorMetadata<T> implements InterceptorMetadata<T>, Ser
     }
 
     public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptorMetadata interceptorReference, InterceptionType interceptionType) {
-        return new SimpleInterceptorInvocation(interceptorInstance, interceptorReference, interceptionType, targetClass);
+        return new SimpleInterceptorInvocation(interceptorInstance, interceptionType, getInterceptorMethods(interceptionType), targetClass);
     }
 }

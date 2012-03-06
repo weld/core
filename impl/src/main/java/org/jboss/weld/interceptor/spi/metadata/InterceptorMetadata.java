@@ -39,15 +39,6 @@ public interface InterceptorMetadata<T> extends Serializable {
     ClassMetadata<?> getInterceptorClass();
 
     /**
-     * Returns the list of interceptor methods of this class for a given
-     * interception type.
-     *
-     * @param interceptionType
-     * @return a list of methods
-     */
-    List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType);
-
-    /**
      * Returns true if the interceptor corresponding to this {@link InterceptorMetadata}
      * has interceptor methods for the given <code>interceptionType</code>. Else returns false.
      *
@@ -55,8 +46,6 @@ public interface InterceptorMetadata<T> extends Serializable {
      * @return
      */
     boolean isEligible(InterceptionType interceptionType);
-
-    boolean isTargetClass();
 
     InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptorMetadata interceptorReference, InterceptionType interceptionType);
 }

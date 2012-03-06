@@ -101,8 +101,8 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
         for (InterceptorMetadata interceptorReference : interceptorList) {
             interceptorInvocations.add(interceptorReference.getInterceptorInvocation(interceptorHandlerInstances.get(interceptorReference), interceptorReference, interceptionType));
         }
-        if (targetClassInterceptorMetadata != null && targetClassInterceptorMetadata.getInterceptorMethods(interceptionType) != null && !targetClassInterceptorMetadata.getInterceptorMethods(interceptionType).isEmpty()) {
-            interceptorInvocations.add(new SimpleInterceptorInvocation(isProxy() ? targetInstance : self, targetClassInterceptorMetadata, interceptionType, true));
+        if (targetClassInterceptorMetadata != null && targetClassInterceptorMetadata.isEligible(interceptionType)) {
+            interceptorInvocations.add(targetClassInterceptorMetadata.getInterceptorInvocation(isProxy() ? targetInstance : self, targetClassInterceptorMetadata, interceptionType));
         }
         SimpleInterceptionChain chain = new SimpleInterceptionChain(interceptorInvocations, isProxy() ? targetInstance : self, isProxy() ? thisMethod : proceedingMethod);
         return chain.invokeNextInterceptor(invocationContextFactory.newInvocationContext(chain, isProxy() ? targetInstance : self, isProxy() ? thisMethod : proceedingMethod, args));
