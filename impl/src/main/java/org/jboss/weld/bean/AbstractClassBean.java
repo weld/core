@@ -18,7 +18,6 @@ package org.jboss.weld.bean;
 
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,6 +38,7 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Scope;
 
 import javassist.util.proxy.ProxyObject;
+import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
@@ -85,7 +85,6 @@ import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN
 import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PARAM_NOT_IN_PARAM_LIST;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
@@ -134,9 +133,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             if (interceptor instanceof InterceptorImpl) {
                 serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, WeldInterceptorClassMetadata.of(((InterceptorImpl) interceptor).getWeldAnnotated()))));
             } else {
-                // TODO - fix custom interception
-                // custom interceptor - read metadata reflectively
-                serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()))));
+                //custom interceptor
+                serializableContextuals.add(new CustomInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, null), beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass())));
             }
         }
         return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
@@ -535,7 +533,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     private void initTargetClassInterceptors() {
         if (!Beans.isInterceptor(getWeldAnnotated())) {
             InterceptorMetadata<T> interceptorClassMetadata = beanManager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(getWeldAnnotated()));
-            hasSerializationOrInvocationInterceptorMethods = !interceptorClassMetadata.getInterceptorMethods(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE).isEmpty() || !interceptorClassMetadata.getInterceptorMethods(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE).isEmpty();
+            hasSerializationOrInvocationInterceptorMethods = interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
+                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT)
+                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)
+                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE);
         } else {
             // an interceptor does not have lifecycle methods of its own, but it intercepts the methods of the
             // target class

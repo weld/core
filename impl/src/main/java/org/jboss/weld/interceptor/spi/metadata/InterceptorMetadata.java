@@ -20,6 +20,7 @@ package org.jboss.weld.interceptor.spi.metadata;
 import java.io.Serializable;
 import java.util.List;
 
+import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
@@ -38,15 +39,6 @@ public interface InterceptorMetadata<T> extends Serializable {
     ClassMetadata<?> getInterceptorClass();
 
     /**
-     * Returns the list of interceptor methods of this class for a given
-     * interception type.
-     *
-     * @param interceptionType
-     * @return a list of methods
-     */
-    List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType);
-
-    /**
      * Returns true if the interceptor corresponding to this {@link InterceptorMetadata}
      * has interceptor methods for the given <code>interceptionType</code>. Else returns false.
      *
@@ -55,5 +47,5 @@ public interface InterceptorMetadata<T> extends Serializable {
      */
     boolean isEligible(InterceptionType interceptionType);
 
-    boolean isTargetClass();
+    InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptorMetadata interceptorReference, InterceptionType interceptionType);
 }

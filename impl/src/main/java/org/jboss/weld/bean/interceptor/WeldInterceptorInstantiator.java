@@ -50,7 +50,6 @@ public class WeldInterceptorInstantiator<T> implements InterceptorInstantiator<T
         }
         if (interceptorReference.getInterceptor() instanceof SerializableContextual) {
             try {
-                // this is not a managed instance - assume no-argument constructor exists
                 SerializableContextual<Interceptor<T>, T> serializableContextual = cast(interceptorReference.getInterceptor());
                 return Reflections.<T>cast(manager.getReference(serializableContextual.get(), creationalContext, false));
             } catch (Exception e) {
