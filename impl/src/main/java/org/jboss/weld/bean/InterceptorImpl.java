@@ -87,7 +87,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         try {
             org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
             Collection<InterceptorInvocation> invocations = new ArrayList<InterceptorInvocation>();
-            invocations.add(new SimpleInterceptorInvocation<T>(instance, interceptorMetadata, interceptionType, false));
+            invocations.add(interceptorMetadata.getInterceptorInvocation(instance, interceptorMetadata, interceptionType));
             return new SimpleInterceptionChain(invocations, instance, ctx.getMethod()).invokeNextInterceptor(ctx);
         } catch (Throwable e) {
             throw new WeldException(e);
@@ -95,7 +95,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     }
 
     public boolean intercepts(InterceptionType type) {
-        return interceptorMetadata.getInterceptorMethods(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name())).size() > 0;
+        return interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name()));
     }
 
     public boolean isSerializable() {

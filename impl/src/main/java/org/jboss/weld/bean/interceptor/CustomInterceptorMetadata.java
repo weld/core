@@ -37,16 +37,8 @@ public class CustomInterceptorMetadata implements InterceptorMetadata<Serializab
         return classMetadata;
     }
 
-    public List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType) {
-        return Collections.singletonList(null);
-    }
-
     public boolean isEligible(InterceptionType interceptionType) {
         return reference.getInterceptor().get().intercepts(javax.enterprise.inject.spi.InterceptionType.valueOf(interceptionType.name()));
-    }
-
-    public boolean isTargetClass() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptorMetadata interceptorReference, InterceptionType interceptionType) {

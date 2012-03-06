@@ -29,25 +29,16 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  */
 public class SimpleInterceptorInvocation<T> implements InterceptorInvocation {
 
-    private final T instance;
+    private Collection<InterceptorMethodInvocation> interceptorMethodInvocations;
 
-    private final InterceptorMetadata<?> interceptorMetadata;
-
-    private final InterceptionType interceptionType;
-    private boolean targetClass;
-
-    public SimpleInterceptorInvocation(T instance, InterceptorMetadata<?> interceptorMetadata, InterceptionType interceptionType, boolean targetClass) {
-        this.instance = instance;
-        this.interceptorMetadata = interceptorMetadata;
-        this.interceptionType = interceptionType;
-        this.targetClass = targetClass;
+    public SimpleInterceptorInvocation(T instance, InterceptionType interceptionType, Collection<MethodMetadata> interceptorMethods, boolean targetClass) {
+        interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
+        for (MethodMetadata method : interceptorMethods) {
+            interceptorMethodInvocations.add(new SimpleMethodInvocation(instance, method, targetClass, interceptionType));
+        }
     }
 
     public Collection<InterceptorMethodInvocation> getInterceptorMethodInvocations() {
-        Collection<InterceptorMethodInvocation> interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
-        for (MethodMetadata method : interceptorMetadata.getInterceptorMethods(interceptionType)) {
-            interceptorMethodInvocations.add(new SimpleMethodInvocation(instance, method, targetClass, interceptionType));
-        }
         return interceptorMethodInvocations;
     }
 
