@@ -22,6 +22,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
+import org.jboss.weld.interceptor.proxy.SimpleInterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
@@ -85,8 +86,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     public Object intercept(InterceptionType type, T instance, InvocationContext ctx) {
         try {
             org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
-            Collection<InterceptorInvocation<?>> invocations = new ArrayList<InterceptorInvocation<?>>();
-            invocations.add(new InterceptorInvocation<T>(instance, interceptorMetadata, interceptionType));
+            Collection<InterceptorInvocation> invocations = new ArrayList<InterceptorInvocation>();
+            invocations.add(interceptorMetadata.getInterceptorInvocation(instance, interceptorMetadata, interceptionType));
             return new SimpleInterceptionChain(invocations, instance, ctx.getMethod()).invokeNextInterceptor(ctx);
         } catch (RuntimeException e) {
             throw e;
@@ -96,7 +97,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     }
 
     public boolean intercepts(InterceptionType type) {
-        return interceptorMetadata.getInterceptorMethods(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name())).size() > 0;
+        return interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name()));
     }
 
     public boolean isSerializable() {

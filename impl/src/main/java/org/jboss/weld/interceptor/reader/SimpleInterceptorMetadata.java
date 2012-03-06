@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
+import org.jboss.weld.interceptor.proxy.SimpleInterceptorInvocation;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorReference;
@@ -59,10 +61,6 @@ public class SimpleInterceptorMetadata<T> implements InterceptorMetadata<T>, Ser
         return interceptorReference;
     }
 
-    public boolean isTargetClass() {
-        return targetClass;
-    }
-
     public List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType) {
         if (interceptorMethodMap != null) {
             List<MethodMetadata> methods = interceptorMethodMap.get(interceptionType);
@@ -84,4 +82,7 @@ public class SimpleInterceptorMetadata<T> implements InterceptorMetadata<T>, Ser
         return interceptorMethods != null && interceptorMethods.isEmpty() == false;
     }
 
+    public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptorMetadata interceptorReference, InterceptionType interceptionType) {
+        return new SimpleInterceptorInvocation(interceptorInstance, interceptionType, getInterceptorMethods(interceptionType), targetClass);
+    }
 }
