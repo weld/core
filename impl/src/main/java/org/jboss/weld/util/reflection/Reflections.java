@@ -46,6 +46,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
  * Utility class for static reflection-type operations
  *
  * @author Pete Muir
+ * @author Ales Justin
  */
 public class Reflections {
 
@@ -209,8 +210,8 @@ public class Reflections {
     /**
      * Checks if a method is abstract
      *
-     * @param method
-     * @return
+     * @param method the method
+     * @return true if abstract
      */
     public static boolean isAbstract(Method method) {
         return Modifier.isAbstract(method.getModifiers());
@@ -267,11 +268,7 @@ public class Reflections {
     }
 
     public static boolean isParamerterizedTypeWithWildcard(Class<?> type) {
-        if (isParameterizedType(type)) {
-            return containsWildcards(type.getTypeParameters());
-        } else {
-            return false;
-        }
+        return isParameterizedType(type) && containsWildcards(type.getTypeParameters());
     }
 
     public static boolean containsWildcards(Type[] types) {
@@ -311,7 +308,7 @@ public class Reflections {
      * @param rawType2             the raw type of the class to check
      * @param actualTypeArguments2 the actual type arguements to check, or an
      *                             empty array if not a parameterized type
-     * @return
+     * @return true if assignable, false otherwise
      */
     public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2) {
         return Types.boxedClass(rawType1).isAssignableFrom(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
@@ -503,9 +500,9 @@ public class Reflections {
      * Check the assiginability of a set of <b>flattened</b> types. This
      * algorithm will check whether any of the types1 matches a type in types2
      *
-     * @param types1
-     * @param types2
-     * @return
+     * @param types1 the types1
+     * @param types2 the type2
+     * @return can we assign any type from types1 to types2
      */
     public static boolean isAssignableFrom(Set<Type> types1, Set<Type> types2) {
         for (Type type : types1) {
@@ -519,9 +516,9 @@ public class Reflections {
     /**
      * Check whether whether any of the types1 matches a type in types2
      *
-     * @param types1
-     * @param types2
-     * @return
+     * @param types1 the types1
+     * @param types2 the type2
+     * @return can we assign any type from types1 to types2
      */
     public static boolean matches(Set<Type> types1, Set<Type> types2) {
         for (Type type : types1) {
@@ -536,9 +533,9 @@ public class Reflections {
      * Check the assiginability of a set of <b>flattened</b> types. This
      * algorithm will check whether any of the types1 matches a type in types2
      *
-     * @param types1
-     * @param types2
-     * @return
+     * @param types1 the types1
+     * @param type2  the type2
+     * @return can we assign any type from types1 to type2
      */
     public static boolean isAssignableFrom(Set<Type> types1, Type type2) {
         for (Type type : types1) {
@@ -564,7 +561,7 @@ public class Reflections {
 
     public static boolean isPrimitive(Type type) {
         Class<?> rawType = getRawType(type);
-        return rawType == null ? false : rawType.isPrimitive();
+        return rawType != null && rawType.isPrimitive();
     }
 
     @SuppressWarnings("unchecked")
