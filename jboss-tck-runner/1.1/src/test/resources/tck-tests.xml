@@ -160,6 +160,13 @@
                     <exclude name="testInjection"/>
                 </methods>
             </class>
+            <!-- WELD-1078 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.injectionPoint.CreateInjectionPointTest">
+                <methods>
+                    <exclude name="testInvalidField"/>
+                    <exclude name="testInvalidParameter"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
