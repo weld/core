@@ -20,6 +20,7 @@ package org.jboss.weld.bean.proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -99,11 +100,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     protected void addMethodsFromClass(ClassFile proxyClassType) {
         try {
+            final Set<MethodSignatureImpl> finalMethods = new HashSet<MethodSignatureImpl>();
             // Add all methods from the class heirachy
             Class<?> cls = getBeanType();
             while (cls != null) {
                 for (Method method : cls.getDeclaredMethods()) {
-                    if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(new MethodSignatureImpl(method))) {
+                    final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
+                    if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes(), methodInfo.getReturnType(), proxyClassType.getName());
@@ -114,6 +117,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             // do nothing. This will happen if superclass methods have
                             // been overridden
                         }
+                    } else if(Modifier.isFinal(method.getModifiers())) {
+                        finalMethods.add(methodSignature);
                     }
                 }
                 cls = cls.getSuperclass();
