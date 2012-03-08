@@ -17,10 +17,13 @@
 
 package org.jboss.weld.tests.resolution.weld911;
 
+import javax.enterprise.context.RequestScoped;
+
 /**
  * @author Christian Bauer
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
+@RequestScoped
 public class BarImpl implements Bar {
     public Foo foo() {
         return null;

@@ -198,7 +198,10 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 // Without this, the chaining of decorators will fail as the
                 // incomplete instance will be resolved
                 instance = bean.createInstance(ctx);
-                ctx.push(instance);
+                // Do not keep dependent instances as incomplete
+                if (bean.isDependent() == false) {
+                    ctx.push(instance);
+                }
             } else {
                 instance = new FixInjectionPoint<T>(bean) {
                     @Override

@@ -27,8 +27,6 @@ import javax.enterprise.context.spi.CreationalContext;
  */
 public interface WeldCreationalContext<T> extends CreationalContext<T> {
 
-    void push(T incompleteInstance);
-
     <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual);
 
     <S> S getIncompleteInstance(Contextual<S> bean);

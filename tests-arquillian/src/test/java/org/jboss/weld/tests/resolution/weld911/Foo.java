@@ -25,6 +25,10 @@ import javax.inject.Inject;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class Foo {
+    public Foo() {
+        System.out.println("CTOR FOO");
+    }
+
     @PostConstruct
     void init() {
         System.out.println("INIT FOO");
