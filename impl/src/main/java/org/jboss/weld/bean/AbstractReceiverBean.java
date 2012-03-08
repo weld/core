@@ -34,6 +34,7 @@ import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author pmuir
+ * @author alesj
  */
 public abstract class AbstractReceiverBean<X, T, S extends Member> extends AbstractBean<T, S> {
 
@@ -54,6 +55,7 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
     /**
      * Gets the receiver of the product
      *
+     * @param creationalContext the creational context
      * @return The receiver
      */
     protected Object getReceiver(CreationalContext<?> creationalContext) {
@@ -65,9 +67,10 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
         } else {
             if (creationalContext instanceof WeldCreationalContext<?>) {
                 WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) creationalContext;
-                if (creationalContextImpl.containsIncompleteInstance(getDeclaringBean())) {
+                final X incompleteInstance = creationalContextImpl.getIncompleteInstance(getDeclaringBean());
+                if (incompleteInstance != null) {
                     log.warn(CIRCULAR_CALL, getWeldAnnotated(), getDeclaringBean());
-                    return creationalContextImpl.getIncompleteInstance(getDeclaringBean());
+                    return incompleteInstance;
                 }
             }
             return beanManager.getReference(getDeclaringBean(), creationalContext, true);
