@@ -238,7 +238,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             Set<Annotation> methodBindingAnnotations = new HashSet<Annotation>(classBindingAnnotations);
             methodBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, method.getAnnotations()));
             if (methodBindingAnnotations.size() > 0) {
-                if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations)) {
+                if (Beans.findInterceptorBindingConflicts(beanManager, methodBindingAnnotations)) {
                     throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
                 }
 
