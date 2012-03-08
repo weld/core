@@ -25,7 +25,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.security.AccessControlException;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,32 +39,30 @@ public class HierarchyDiscovery {
 
     private final Type type;
 
-    private BiMap<Type, Class<?>> types;
-    private Map<Class, Type> cache = new HashMap<Class, Type>();
+    // should be ok, as there can be only one class in hierarchy
+    private BiMap<Class<?>, Type> types;
 
     public HierarchyDiscovery(Type type) {
         this.type = type;
     }
 
     protected void add(Class<?> clazz, Type type) {
-        types.forcePut(type, clazz);
-        cache.put(clazz, type);
+        types.forcePut(clazz, type);
     }
 
     public Set<Type> getTypeClosure() {
         if (types == null) {
             init();
-            cache = null;
         }
         // Return an independent set with no ties to the BiMap used
-        return new ArraySet<Type>(types.keySet()).trimToSize();
+        return new ArraySet<Type>(types.values()).trimToSize();
     }
 
     public Map<Class<?>, Type> getTypeMap() {
         if (types == null) {
             init();
         }
-        return types.inverse();
+        return Collections.unmodifiableMap(types);
     }
 
     private void init() {
@@ -191,7 +189,7 @@ public class HierarchyDiscovery {
 
         // step2. generic super class
         Class<?> superClass = actualType.getSuperclass();
-        Type genericSuperType = cache.get(superClass); // did we resolve already
+        Type genericSuperType = types.get(superClass); // did we resolve already
         if (genericSuperType == null)
             genericSuperType = actualType.getGenericSuperclass();
 
@@ -205,7 +203,7 @@ public class HierarchyDiscovery {
             if (interfaceType instanceof ParameterizedType) {
                 Type rawType = ((ParameterizedType) interfaceType).getRawType();
                 if (rawType instanceof Class<?>) {
-                    Type cached = cache.get(Class.class.cast(rawType));
+                    Type cached = types.get(Class.class.cast(rawType));
                     if (cached != null)
                         interfaceType = cached;
                 }
