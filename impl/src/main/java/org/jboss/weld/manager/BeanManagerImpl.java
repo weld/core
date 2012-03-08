@@ -679,8 +679,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             // TODO Can we move this logic to getReference?
             if (creationalContext instanceof WeldCreationalContext<?>) {
                 WeldCreationalContext<?> wbCreationalContext = (WeldCreationalContext<?>) creationalContext;
-                if (wbCreationalContext.containsIncompleteInstance(resolvedBean)) {
-                    return wbCreationalContext.getIncompleteInstance(resolvedBean);
+                final Object incompleteInstance = wbCreationalContext.getIncompleteInstance(resolvedBean);
+                if (incompleteInstance != null) {
+                    return incompleteInstance;
                 } else {
                     return getReference(resolvedBean, wbCreationalContext, delegateInjectionPoint);
                 }
