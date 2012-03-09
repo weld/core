@@ -16,26 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.decorator.Decorator;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Typed;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.interceptor.Interceptor;
-
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
@@ -73,6 +53,25 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.SecureReflections;
 
+import javax.decorator.Decorator;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.interceptor.Interceptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED;
 import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_NULL_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_DECORATOR;
@@ -93,6 +92,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  *
  * @param <T> The type (class) of the bean
  * @author Pete Muir
+ * @author Ales Justin
  */
 public class SessionBean<T> extends AbstractClassBean<T> {
 
@@ -315,9 +315,12 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         T proxy = null;
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
         DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), getDecorators());
-        DecorationHelper.getHelperStack().push(decorationHelper);
-        proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
-        DecorationHelper.getHelperStack().pop();
+        DecorationHelper.push(decorationHelper);
+        try {
+            proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+        } finally {
+            DecorationHelper.pop();
+        }
 
         if (proxy == null) {
             throw new WeldException(PROXY_INSTANTIATION_FAILED, this);

@@ -37,6 +37,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FA
 
 /**
  * @author Marius Bogoevici
+ * @author Ales Justin
  */
 public class DecorationHelper<T> {
     private static ThreadLocal<Stack<DecorationHelper<?>>> helperStackHolder = new ThreadLocal<Stack<DecorationHelper<?>>>() {
@@ -63,7 +64,7 @@ public class DecorationHelper<T> {
     List<Decorator<?>> decorators;
 
     public DecorationHelper(TargetBeanInstance originalInstance, Bean<?> bean, Class<T> proxyClassForDecorator, BeanManagerImpl beanManager, ContextualStore contextualStore, List<Decorator<?>> decorators) {
-        this.originalInstance = Reflections.<T>cast(originalInstance.getInstance());
+        this.originalInstance = Reflections.cast(originalInstance.getInstance());
         this.targetBeanInstance = originalInstance;
         this.beanManager = beanManager;
         this.contextualStore = contextualStore;
@@ -73,8 +74,20 @@ public class DecorationHelper<T> {
         counter = 0;
     }
 
-    public static Stack<DecorationHelper<?>> getHelperStack() {
-        return helperStackHolder.get();
+    public static void push(DecorationHelper<?> helper) {
+        helperStackHolder.get().push(helper);
+    }
+
+    public static DecorationHelper<?> peek() {
+        return helperStackHolder.get().peek();
+    }
+
+    public static void pop() {
+        final Stack<DecorationHelper<?>> stack = helperStackHolder.get();
+        stack.pop();
+        if (stack.isEmpty()) {
+            helperStackHolder.remove();
+        }
     }
 
     public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator) {
