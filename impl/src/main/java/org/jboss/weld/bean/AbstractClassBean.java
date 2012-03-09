@@ -433,9 +433,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         assert hasDecorators() : "Bean does not have decorators";
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
         DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
-        DecorationHelper.getHelperStack().push(decorationHelper);
-        final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
-        DecorationHelper.getHelperStack().pop();
+        DecorationHelper.push(decorationHelper);
+        final T outerDelegate;
+        try {
+            outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+        } finally {
+            DecorationHelper.pop();
+        }
         if (outerDelegate == null) {
             throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
         }
