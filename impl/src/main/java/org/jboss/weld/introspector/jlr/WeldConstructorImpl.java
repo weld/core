@@ -88,28 +88,42 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
         if (annotatedConstructor == null) {
             final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
             final Type[] genericParameterTypes = constructor.getGenericParameterTypes();
-            final boolean sameLength = (parameterTypes.length == genericParameterTypes.length);
-            // If the class is a (non-static) member class, its constructors
-            // parameterTypes array will prefix the
-            // outer class instance, whilst the genericParameterTypes array isn't
-            // prefix'd -- not always true ...
-            int nesting = Reflections.getNesting(declaringClass.getJavaClass());
-            for (int i = 0; i < parameterTypes.length; i++) {
-                int gi = i - nesting;
 
-                Annotation[] annotations = (gi >= 0 && parameterAnnotations[gi].length > 0) ? parameterAnnotations[gi] : EMPTY;
-                Class<?> clazz = parameterTypes[i];
-                Type parameterType;
-                if (sameLength) {
-                    parameterType = genericParameterTypes[i];
-                } else {
-                    if (gi >= 0)
-                        parameterType = genericParameterTypes[gi];
-                    else
-                        parameterType = parameterTypes[i];
+            if (parameterTypes.length == genericParameterTypes.length) {
+                int nesting = Reflections.getNesting(declaringClass.getJavaClass());
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    int gi = i - nesting;
+                    Class<?> clazz = parameterTypes[i];
+
+                    Type parameterType;
+                    if (constructor.getGenericParameterTypes().length > gi && gi >= 0) {
+                        parameterType = constructor.getGenericParameterTypes()[gi];
+                    } else {
+                        parameterType = clazz;
+                    }
+
+                    Annotation[] annotations;
+                    if (gi >= 0 && parameterAnnotations[gi].length > 0) {
+                        annotations = parameterAnnotations[gi];
+                    } else {
+                        annotations = EMPTY;
+                    }
+                    WeldParameter<?, T> parameter = WeldParameterImpl.of(annotations, clazz, parameterType, this, i, classTransformer);
+                    this.parameters.add(parameter);
                 }
-                WeldParameter<?, T> parameter = WeldParameterImpl.of(annotations, clazz, parameterType, this, i, classTransformer);
-                this.parameters.add(parameter);
+            } else {
+                /*
+                 * We are seeing either
+                 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6520205
+                 * or
+                 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5087240
+                 * or both.
+                 *
+                 * It is difficult to detect and adapt to these bugs properly.
+                 * Therefore, we pretend to see a no-args constructor. Although misleading,
+                 * it is quite safe to do that since non-static inner classes are not CDI-managed
+                 * beans anyway and CDI constructor injection into Enums is not supported.
+                 */
             }
         } else {
             if (annotatedConstructor.getParameters().size() != parameterTypes.length) {

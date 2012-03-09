@@ -18,4 +18,18 @@ public class Crasher {
             }
         }
     }
+
+    public enum Enum1 {
+    }
+
+    public enum Enum2 {
+        FOO(1);
+
+        @SuppressWarnings("unused")
+        private final int foo;
+
+        private Enum2(int foo) {
+            this.foo = foo;
+        }
+    }
 }
