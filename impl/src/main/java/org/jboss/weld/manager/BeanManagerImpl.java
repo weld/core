@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS
 import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.INCORRECT_PRODUCER_MEMBER;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
@@ -42,6 +43,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -144,6 +146,7 @@ import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
+import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
@@ -787,7 +790,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     /**
      * Resolves a list of interceptors based on interception type and interceptor
-     * bindings
+     * bindings. Transitive interceptor bindings of the interceptor bindings passed
+     * as a parameter are considered in the resolution process.
      *
      * @param type                The interception type to resolve
      * @param interceptorBindings The binding types to match
@@ -796,11 +800,36 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      *      java.lang.annotation.Annotation[])
      */
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
+        if (interceptorBindings.length == 0) {
+            throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
+        }
+        for (Annotation annotation : interceptorBindings) {
+            if (!isInterceptorBinding(annotation.annotationType())) {
+               throw new IllegalArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, annotation);
+            }
+        }
+        Set<Annotation> flattenedInterceptorBindings = Interceptors.flattenInterceptorBindings(this, Arrays.asList(interceptorBindings), true, true);
+        return resolveInterceptors(type, flattenedInterceptorBindings);
+    }
+
+    /**
+     * Resolves a list of interceptors based on interception type and interceptor
+     * bindings. Transitive interceptor bindings of the interceptor bindings passed
+     * as a parameter are NOT considered in the resolution process. Therefore, the caller
+     * is responsible for filtering of transitive interceptor bindings in order to comply
+     * with interceptor binding inheritance and overriding (See JSR-346 9.5.2).
+     * This is a Weld-specific method.
+     *
+     * @param type                The interception type to resolve
+     * @param interceptorBindings The binding types to match
+     * @return A list of matching interceptors
+     */
+    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Collection<Annotation> interceptorBindings) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class)
-                .setInterceptionType(type)
-                .addQualifiers(interceptorBindings)
-                .create();
+        .setInterceptionType(type)
+        .addQualifiers(interceptorBindings)
+        .create();
         return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindings)));
     }
 

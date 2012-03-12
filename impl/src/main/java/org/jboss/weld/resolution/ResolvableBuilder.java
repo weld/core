@@ -38,6 +38,7 @@ import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -176,7 +177,7 @@ public class ResolvableBuilder {
         return this;
     }
 
-    public ResolvableBuilder addQualifiers(Set<Annotation> qualifiers) {
+    public ResolvableBuilder addQualifiers(Collection<Annotation> qualifiers) {
         for (Annotation qualifier : qualifiers) {
             addQualifier(qualifier);
         }

@@ -35,6 +35,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -73,7 +74,7 @@ public class Reflections {
         return map;
     }
 
-    public static boolean isCacheable(Set<Annotation> annotations) {
+    public static boolean isCacheable(Collection<Annotation> annotations) {
         for (Annotation qualifier : annotations) {
             Class<?> clazz = qualifier.getClass();
             if (clazz.isAnonymousClass() || (clazz.isMemberClass() && isStatic(clazz))) {

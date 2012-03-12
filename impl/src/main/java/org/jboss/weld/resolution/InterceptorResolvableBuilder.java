@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InterceptionType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,7 +72,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     }
 
     @Override
-    public InterceptorResolvableBuilder addQualifiers(Set<Annotation> qualifiers) {
+    public InterceptorResolvableBuilder addQualifiers(Collection<Annotation> qualifiers) {
         super.addQualifiers(qualifiers);
         return this;
     }

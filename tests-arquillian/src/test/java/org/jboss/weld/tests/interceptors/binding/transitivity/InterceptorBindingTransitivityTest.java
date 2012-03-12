@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -29,6 +30,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,7 +75,6 @@ public class InterceptorBindingTransitivityTest {
     }
 
     @Test
-    @Ignore("WELD-999")
     public void testTransitivityOfInterceptorBindings() {
         // non-transitive bindings
         assertEquals(1, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new SynchronizedLiteral()).size());
@@ -81,6 +82,9 @@ public class InterceptorBindingTransitivityTest {
         assertEquals(1, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new TransactionalLiteral()).size());
         // transitive bindings
         assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSynchronizedLiteral()).size());
+        // transitive bindings
+        assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSynchronizedLiteral(), new SynchronizedLiteral()).size());
+        assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<UltraSynchronized>() {}, new AnnotationLiteral<Synchronized>() {}).size());
         // should resolve UltraSecureInterceptor and transitively also SecureInterceptor
         assertEquals(2, manager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new UltraSecureLiteral()).size());
         // should resolve UltraTransactionalInterceptor and transitively also TransactionalInterceptor

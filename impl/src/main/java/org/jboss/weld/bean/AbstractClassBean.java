@@ -16,8 +16,21 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
+import static org.jboss.weld.util.Interceptors.filterInterceptorBindings;
+import static org.jboss.weld.util.Interceptors.flattenInterceptorBindings;
+import static org.jboss.weld.util.Interceptors.mergeBeanInterceptorBindings;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,15 +91,6 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 /**
  * An abstract bean representation common for class-based beans
  *
@@ -104,97 +108,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     /**
-     * Extracts a set of interception bindings from a given set of annotations.
-     *
-     * @param addTopLevelInterceptorBindings add top level interceptor bindings to the result set.
-     * @param addInheritedInterceptorBindings add inherited level interceptor bindings to the result set.
-     * @return
-     */
-    protected static Set<Annotation> filterInterceptorBindings(BeanManagerImpl beanManager, Set<Annotation> annotations,
-            boolean addTopLevelInterceptorBindings, boolean addInheritedInterceptorBindings) {
-        Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
-        for (Annotation annotation : annotations) {
-            if (beanManager.isInterceptorBinding(annotation.annotationType())) {
-                if (addTopLevelInterceptorBindings) {
-                    foundInterceptionBindingTypes.add(annotation);
-                }
-                if (addInheritedInterceptorBindings) {
-                    foundInterceptionBindingTypes.addAll(beanManager.getServices().get(MetaAnnotationStore.class)
-                            .getInterceptorBindingModel(annotation.annotationType()).getInheritedInterceptionBindingTypes());
-                }
-            }
-        }
-        return foundInterceptionBindingTypes;
-    }
-
-    /**
-     * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
-     */
-    protected static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager,
-            WeldClass<?> clazz, Set<Class<? extends Annotation>> stereotypes) {
-        Set<Annotation> classBindingAnnotations = filterInterceptorBindings(beanManager, clazz.getAnnotations(), true, false);
-        Set<Annotation> inheritedBindingAnnotations = new HashSet<Annotation>();
-        inheritedBindingAnnotations.addAll(filterInterceptorBindings(beanManager, clazz.getAnnotations(), false, true));
-        for (Class<? extends Annotation> annotation : stereotypes) {
-            inheritedBindingAnnotations.addAll(filterInterceptorBindings(beanManager,
-                    beanManager.getStereotypeDefinition(annotation), true, true));
-        }
-        try {
-            return mergeBeanInterceptorBindings(beanManager, classBindingAnnotations, inheritedBindingAnnotations);
-        } catch (DeploymentException e) {
-            throw new DefinitionException(CONFLICTING_INTERCEPTOR_BINDINGS, clazz.getJavaClass());
-        }
-    }
-
-    /**
-     * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
-     */
-    protected static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager,
-            Set<Annotation> classBindingAnnotations, Set<Annotation> inheritedBindingAnnotations) {
-
-        Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>();
-        // conflict detection
-        Map<Class<? extends Annotation>, Annotation> acceptedInheritedBindingTypes = new HashMap<Class<? extends Annotation>, Annotation>();
-
-        // add all class-level interceptor bindings (these have precedence)
-        for (Annotation bindingAnnotation : classBindingAnnotations) {
-            if (mergedBeanBindings.containsKey(bindingAnnotation.annotationType())) {
-                // not possible in Java, but we never know what extension-provided AnnotatedType returns
-                throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS);
-            }
-            mergedBeanBindings.put(bindingAnnotation.annotationType(), bindingAnnotation);
-        }
-        // add inherited interceptor bindings
-        for (Annotation bindingAnnotation : inheritedBindingAnnotations) {
-            Class<? extends Annotation> bindingAnnotationType = bindingAnnotation.annotationType();
-            // replace the previous interceptor binding with current binding
-
-            Annotation previousValue = mergedBeanBindings.get(bindingAnnotationType);
-            if (previousValue == null) {
-                mergedBeanBindings.put(bindingAnnotationType, bindingAnnotation);
-                acceptedInheritedBindingTypes.put(bindingAnnotationType, bindingAnnotation);
-            } else {
-                // check for conflicts
-                if (acceptedInheritedBindingTypes.containsKey(bindingAnnotationType)
-                        && !beanManager.getServices().get(MetaAnnotationStore.class)
-                                .getInterceptorBindingModel(bindingAnnotationType)
-                                .isEqual(previousValue, bindingAnnotation, true)) {
-                    throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS);
-                }
-            }
-        }
-        return mergedBeanBindings;
-    }
-
-    /**
      * Merges bean interceptor bindings (including inherited ones) with method interceptor bindings. Method interceptor bindings
      * override bean interceptor bindings. The bean binding map is not modified - a copy is used.
      */
-    protected Map<Class<? extends Annotation>, Annotation> mergeMethodInterceptorBindings(
-            Map<Class<? extends Annotation>, Annotation> beanBindings, Set<Annotation> methodBindingAnnotations) {
+    protected Map<Class<? extends Annotation>, Annotation> mergeMethodInterceptorBindings(Map<Class<? extends Annotation>, Annotation> beanBindings,
+            Collection<Annotation> methodBindingAnnotations) {
 
-        Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>(
-                beanBindings);
+        Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>(beanBindings);
         // conflict detection
         Set<Class<? extends Annotation>> processedBindingTypes = new HashSet<Class<? extends Annotation>>();
 
@@ -302,7 +222,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         Map<Class<? extends Annotation>, Annotation> beanBindingAnnotations = mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes());
 
         if (beanBindingAnnotations.size() > 0) {
-            Annotation[] classBindingAnnotationsArray = beanBindingAnnotations.values().toArray(new Annotation[0]);
+            Collection<Annotation> classBindingAnnotationsArray = beanBindingAnnotations.values();
 
             List<Interceptor<?>> resolvedPostConstructInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
             builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
@@ -320,10 +240,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
         for (WeldMethod<?, ?> method : businessMethods) {
 
-            Set<Annotation> methodBindingAnnotations = filterInterceptorBindings(beanManager, method.getAnnotations(), true, true);
+            Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, method.getAnnotations()), true, true);
             Map<Class<? extends Annotation>, Annotation> mergedMethodBindingAnnotations = mergeMethodInterceptorBindings(beanBindingAnnotations, methodBindingAnnotations);
             if (mergedMethodBindingAnnotations.size() > 0) {
-                List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, mergedMethodBindingAnnotations.values().toArray(new Annotation[]{}));
+                List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, mergedMethodBindingAnnotations.values());
                 if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                     if (method.isFinal()) {
                         throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
@@ -331,7 +251,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
                     builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
                 }
 
-                methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, mergedMethodBindingAnnotations.values().toArray(new Annotation[]{}));
+                methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, mergedMethodBindingAnnotations.values());
                 if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                     if (method.isFinal()) {
                         throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());

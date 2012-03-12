@@ -17,6 +17,9 @@
 
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
+import static org.jboss.weld.logging.messages.BeanMessage.MISSING_BINDING_ON_INTERCEPTOR;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,16 +37,13 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
-import org.jboss.weld.interceptor.proxy.SimpleInterceptorInvocation;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.reflection.Formats;
-
-import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
-import static org.jboss.weld.logging.messages.BeanMessage.MISSING_BINDING_ON_INTERCEPTOR;
 
 /**
  * @author Marius Bogoevici
@@ -64,7 +64,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         super(attributes, type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
         this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
         this.serializable = type.isSerializable();
-        this.interceptorBindingTypes = new HashSet<Annotation>(mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes()).values());
+        this.interceptorBindingTypes = new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes()).values());
 
         if (this.interceptorBindingTypes.size() == 0) {
             throw new DeploymentException(MISSING_BINDING_ON_INTERCEPTOR, type.getName());
