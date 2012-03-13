@@ -25,6 +25,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
  */
 public class InterceptionModelBuilder<T, I> {
 
@@ -54,27 +55,43 @@ public class InterceptionModelBuilder<T, I> {
     }
 
     public MethodInterceptorDescriptor interceptAroundInvoke(Method m) {
-        return new MethodInterceptorDescriptor(m, InterceptionType.AROUND_INVOKE);
+        return intercept(javax.enterprise.inject.spi.InterceptionType.AROUND_INVOKE, m);
     }
 
     public MethodInterceptorDescriptor interceptAroundTimeout(Method m) {
-        return new MethodInterceptorDescriptor(m, InterceptionType.AROUND_TIMEOUT);
+        return intercept(javax.enterprise.inject.spi.InterceptionType.AROUND_TIMEOUT, m);
+    }
+
+    public MethodInterceptorDescriptor intercept(javax.enterprise.inject.spi.InterceptionType interceptionType, Method m) {
+        InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
+        if (weldInterceptionType.isLifecycleCallback()) {
+            throw new IllegalArgumentException("Illegal interception type: " + interceptionType);
+        }
+        return new MethodInterceptorDescriptor(m, weldInterceptionType);
     }
 
     public MethodInterceptorDescriptor interceptPostConstruct() {
-        return new MethodInterceptorDescriptor(null, InterceptionType.POST_CONSTRUCT);
+        return intercept(javax.enterprise.inject.spi.InterceptionType.POST_CONSTRUCT);
     }
 
     public MethodInterceptorDescriptor interceptPreDestroy() {
-        return new MethodInterceptorDescriptor(null, InterceptionType.PRE_DESTROY);
+        return intercept(javax.enterprise.inject.spi.InterceptionType.PRE_DESTROY);
     }
 
     public MethodInterceptorDescriptor interceptPrePassivate() {
-        return new MethodInterceptorDescriptor(null, InterceptionType.PRE_PASSIVATE);
+        return intercept(javax.enterprise.inject.spi.InterceptionType.PRE_PASSIVATE);
     }
 
     public MethodInterceptorDescriptor interceptPostActivate() {
-        return new MethodInterceptorDescriptor(null, InterceptionType.POST_ACTIVATE);
+        return intercept(javax.enterprise.inject.spi.InterceptionType.POST_ACTIVATE);
+    }
+
+    public MethodInterceptorDescriptor intercept(javax.enterprise.inject.spi.InterceptionType interceptionType) {
+        InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
+        if (!weldInterceptionType.isLifecycleCallback()) {
+            throw new IllegalArgumentException("Illegal interception type: " + interceptionType);
+        }
+        return new MethodInterceptorDescriptor(null, weldInterceptionType);
     }
 
     public void ignoreGlobalInterceptors(Method m) {
