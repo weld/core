@@ -45,4 +45,8 @@ public enum InterceptionType {
     public String annotationClassName() {
         return annotationClassName;
     }
+
+    public static InterceptionType valueOf(javax.enterprise.inject.spi.InterceptionType interceptionType) {
+        return valueOf(interceptionType.name());
+    }
 }

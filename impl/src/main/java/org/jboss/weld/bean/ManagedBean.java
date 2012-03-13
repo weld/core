@@ -342,9 +342,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     @Override
     public void initializeAfterBeanDiscovery() {
-        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
-            initInterceptionModelForType();
-        }
+        initInterceptorsIfNeeded();
         if (this.passivationCapableBean && this.hasDecorators()) {
             for (Decorator<?> decorator : this.getDecorators()) {
                 if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
