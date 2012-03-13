@@ -30,7 +30,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -65,7 +64,6 @@ public class SingleInterceptorInstancePerBeanInstanceTest {
     }
 
     @Test
-    @Ignore("WELD-1016")
     public void testSingleInterceptorInstanceUsedForDifferentMethodsWithCdiBinding() {
         assertEquals(tiger.foo(), tiger.bar());
         assertEquals(lion.foo(), lion.bar());
@@ -83,7 +81,6 @@ public class SingleInterceptorInstancePerBeanInstanceTest {
     }
 
     @Test
-    @Ignore("WELD-1016")
     public void testSingleInterceptorInstanceUsedForMethodAndLifecycleCallback() {
         assertEquals(lion.getPostConstructInterceptor(), lion.foo());
     }
