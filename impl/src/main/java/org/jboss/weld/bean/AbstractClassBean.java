@@ -29,6 +29,7 @@ import static org.jboss.weld.util.Interceptors.mergeBeanInterceptorBindings;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -130,21 +131,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         return mergedBeanBindings;
     }
 
-    private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
-        List<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
-        for (Interceptor<?> interceptor : interceptors) {
-
-            SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, getServices().get(ContextualStore.class));
-            if (interceptor instanceof InterceptorImpl) {
-                serializableContextuals.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, WeldInterceptorClassMetadata.of(((InterceptorImpl) interceptor).getWeldAnnotated()))));
-            } else {
-                //custom interceptor
-                serializableContextuals.add(new CustomInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, null), beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass())));
-            }
-        }
-        return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
-    }
-
     // The item representation
     protected WeldClass<T> annotatedItem;
 
@@ -213,107 +199,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
     }
 
-    protected void initInterceptionModelForType() {
-        ClassMetadata<?> classMetadata = beanManager.getInterceptorMetadataReader().getClassMetadata(getType());
-
-        InterceptionModelBuilder<ClassMetadata<?>, ?> builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(classMetadata);
-
-        // initialize CDI interceptors
-        Map<Class<? extends Annotation>, Annotation> beanBindingAnnotations = mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes());
-
-        if (beanBindingAnnotations.size() > 0) {
-            Collection<Annotation> classBindingAnnotationsArray = beanBindingAnnotations.values();
-
-            List<Interceptor<?>> resolvedPostConstructInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
-            builder.interceptPostConstruct().with(toSerializableContextualArray(resolvedPostConstructInterceptors));
-
-            List<Interceptor<?>> resolvedPreDestroyInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray);
-            builder.interceptPreDestroy().with(toSerializableContextualArray(resolvedPreDestroyInterceptors));
-
-            List<Interceptor<?>> resolvedPrePassivateInterceptors = beanManager.resolveInterceptors(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray);
-            builder.interceptPrePassivate().with(toSerializableContextualArray(resolvedPrePassivateInterceptors));
-
-            List<Interceptor<?>> resolvedPostActivateInterceptors = beanManager.resolveInterceptors(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray);
-            builder.interceptPostActivate().with(toSerializableContextualArray(resolvedPostActivateInterceptors));
-
-        }
-        List<WeldMethod<?, ?>> businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
-        for (WeldMethod<?, ?> method : businessMethods) {
-
-            Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, method.getAnnotations()), true, true);
-            Map<Class<? extends Annotation>, Annotation> mergedMethodBindingAnnotations = mergeMethodInterceptorBindings(beanBindingAnnotations, methodBindingAnnotations);
-            if (mergedMethodBindingAnnotations.size() > 0) {
-                List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, mergedMethodBindingAnnotations.values());
-                if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
-                    if (method.isFinal()) {
-                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
-                    }
-                    builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
-                }
-
-                methodBoundInterceptors = beanManager.resolveInterceptors(InterceptionType.AROUND_TIMEOUT, mergedMethodBindingAnnotations.values());
-                if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
-                    if (method.isFinal()) {
-                        throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
-                    }
-                    builder.interceptAroundTimeout(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(toSerializableContextualArray(methodBoundInterceptors));
-                }
-
-            }
-        }
-
-        // initialize EJB3 interceptors
-        Class<?>[] classDeclaredInterceptors = null;
-        if (getWeldAnnotated().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
-            Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
-            classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
-        }
-
-        if (classDeclaredInterceptors != null) {
-            for (Class<?> clazz : classDeclaredInterceptors) {
-                builder.interceptAll().with(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
-            }
-        }
-
-        for (WeldMethod<?, ?> method : businessMethods) {
-            boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
-            Class<?>[] methodDeclaredInterceptors = null;
-            if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
-                methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
-            }
-            if (excludeClassInterceptors) {
-                builder.ignoreGlobalInterceptors(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember());
-            }
-            if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
-                List<InterceptorMetadata<?>> methodDeclaredInterceptorMetadatas = new ArrayList<InterceptorMetadata<?>>();
-                for (Class<?> clazz : methodDeclaredInterceptors) {
-                    methodDeclaredInterceptorMetadatas.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
-                }
-                if (method.isFinal()) {
-                    throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
-                }
-                if (method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS)) {
-                    builder.interceptAroundTimeout(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
-                } else {
-                    builder.interceptAroundInvoke(Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember()).with(methodDeclaredInterceptorMetadatas.toArray(new InterceptorMetadata[]{}));
-                }
-            }
-        }
-        InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
-
-        if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
-            if (getWeldAnnotated().isFinal()) {
-                throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, this);
-            }
-            beanManager.getInterceptorModelRegistry().put(getType(), ((InterceptionModel<ClassMetadata<?>, ?>) interceptionModel));
-        }
-    }
-
     @Override
     public void initializeAfterBeanDiscovery() {
-        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
-            initInterceptionModelForType();
-        }
+        initInterceptorsIfNeeded();
         initDecorators();
         if (this.passivationCapableBean && this.hasDecorators()) {
             for (Decorator<?> decorator : this.getDecorators()) {
@@ -341,6 +229,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
     }
 
+    protected void initInterceptorsIfNeeded() {
+        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
+            new InterceptionModelInitializer().init();
+        }
+    }
+
     public void initDecorators() {
         this.decorators = getBeanManager().resolveDecorators(getTypes(), getQualifiers());
     }
@@ -352,7 +246,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
         assert hasDecorators() : "Bean does not have decorators";
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), decorators);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getContextualStore(), decorators);
         DecorationHelper.push(decorationHelper);
         final T outerDelegate;
         try {
@@ -583,4 +477,174 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         return passivationCapableDependency;
     }
 
+    private ContextualStore getContextualStore() {
+        return getServices().get(ContextualStore.class);
+    }
+
+
+    private class InterceptionModelInitializer {
+
+        private List<WeldMethod<?,?>> businessMethods;
+        private InterceptionModelBuilder<ClassMetadata<?>,?> builder;
+
+        public void init() {
+            businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
+            builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(getClassMetadata());
+
+            initCdiInterceptors();
+            initEjbInterceptors();
+
+            InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
+            if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
+                if (getWeldAnnotated().isFinal()) {
+                    throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, AbstractClassBean.this);
+                }
+                beanManager.getInterceptorModelRegistry().put(getType(), interceptionModel);
+            }
+        }
+
+        private ClassMetadata<T> getClassMetadata() {
+            return beanManager.getInterceptorMetadataReader().getClassMetadata(getType());
+        }
+
+        private void initCdiInterceptors() {
+            Map<Class<? extends Annotation>, Annotation> classBindingAnnotations = getClassInterceptorBindings();
+            initCdiLifecycleInterceptors(classBindingAnnotations);
+            initCdiBusinessMethodInterceptors(classBindingAnnotations);
+        }
+
+        private Map<Class<? extends Annotation>, Annotation> getClassInterceptorBindings() {
+            return mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes());
+        }
+
+        private void initCdiLifecycleInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+            if (classBindingAnnotations.size() == 0) {
+                return;
+            }
+            initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, classBindingAnnotations);
+            initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, classBindingAnnotations);
+            initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, classBindingAnnotations);
+            initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, classBindingAnnotations);
+        }
+
+        private void initLifeCycleInterceptor(InterceptionType interceptionType, Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+            List<Interceptor<?>> resolvedInterceptors = beanManager.resolveInterceptors(interceptionType, classBindingAnnotations.values());
+            builder.intercept(interceptionType).with(toSerializableContextualArray(resolvedInterceptors));
+        }
+
+        private void initCdiBusinessMethodInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+            for (WeldMethod<?, ?> method : businessMethods) {
+                initCdiBusinessMethodInterceptor(method, getMethodBindingAnnotations(classBindingAnnotations, method));
+            }
+        }
+
+        private Collection<Annotation> getMethodBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, WeldMethod<?, ?> method) {
+            Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, method.getAnnotations()), true, true);
+            return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
+        }
+
+        private void initCdiBusinessMethodInterceptor(WeldMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
+            if (methodBindingAnnotations.size() == 0) {
+                return;
+            }
+            initInterceptor(InterceptionType.AROUND_INVOKE, method, methodBindingAnnotations);
+            initInterceptor(InterceptionType.AROUND_TIMEOUT, method, methodBindingAnnotations);
+        }
+
+        private void initInterceptor(InterceptionType interceptionType, WeldMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
+            List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(interceptionType, methodBindingAnnotations);
+            if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
+                if (method.isFinal()) {
+                    throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                }
+                Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
+                builder.intercept(interceptionType, javaMethod).with(toSerializableContextualArray(methodBoundInterceptors));
+            }
+        }
+
+        private void initEjbInterceptors() {
+            initClassDeclaredEjbInterceptors();
+            for (WeldMethod<?, ?> method : businessMethods) {
+                initMethodDeclaredEjbInterceptors(method);
+            }
+        }
+
+        private void initClassDeclaredEjbInterceptors() {
+            Class<?>[] classDeclaredInterceptors = null;
+            if (getWeldAnnotated().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
+                Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
+                classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
+            }
+
+            if (classDeclaredInterceptors != null) {
+                for (Class<?> clazz : classDeclaredInterceptors) {
+                    builder.interceptAll().with(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
+                }
+            }
+        }
+
+        private void initMethodDeclaredEjbInterceptors(WeldMethod<?, ?> method) {
+            Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
+
+            boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
+            if (excludeClassInterceptors) {
+                builder.ignoreGlobalInterceptors(javaMethod);
+            }
+
+            Class<?>[] methodDeclaredInterceptors = getMethodDeclaredInterceptors(method);
+            if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
+                if (method.isFinal()) {
+                    throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
+                }
+
+                InterceptionType interceptionType = isTimeoutAnnotationPresentOn(method)
+                        ? InterceptionType.AROUND_TIMEOUT
+                        : InterceptionType.AROUND_INVOKE;
+                InterceptorMetadata[] interceptors = getMethodDeclaredInterceptorMetadatas(methodDeclaredInterceptors);
+                builder.intercept(interceptionType, javaMethod).with(interceptors);
+            }
+        }
+
+        private InterceptorMetadata[] getMethodDeclaredInterceptorMetadatas(Class<?>[] methodDeclaredInterceptors) {
+            List<InterceptorMetadata<?>> list = new ArrayList<InterceptorMetadata<?>>();
+            for (Class<?> clazz : methodDeclaredInterceptors) {
+                list.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
+            }
+            return list.toArray(new InterceptorMetadata[list.size()]);
+        }
+
+        private boolean isTimeoutAnnotationPresentOn(WeldMethod<?, ?> method) {
+            return method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS);
+        }
+
+        private Class<?>[] getMethodDeclaredInterceptors(WeldMethod<?, ?> method) {
+            Class<?>[] methodDeclaredInterceptors = null;
+            if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
+                methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
+            }
+            return methodDeclaredInterceptors;
+        }
+
+        private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
+            List<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
+            for (Interceptor<?> interceptor : interceptors) {
+                serializableContextuals.add(getInterceptorMetadata(interceptor));
+            }
+            return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
+        }
+
+        private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getInterceptorMetadata(Interceptor<?> interceptor) {
+            SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, getContextualStore());
+            if (interceptor instanceof InterceptorImpl) {
+                InterceptorImpl interceptorImpl = (InterceptorImpl) interceptor;
+                WeldInterceptorClassMetadata classMetadata = WeldInterceptorClassMetadata.of(interceptorImpl.getWeldAnnotated());
+                SerializableContextualInterceptorReference interceptorReference = new SerializableContextualInterceptorReference(contextual, classMetadata);
+                return beanManager.getInterceptorMetadataReader().getInterceptorMetadata(interceptorReference);
+            } else {
+                //custom interceptor
+                ClassMetadata<?> classMetadata = beanManager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass());
+                return new CustomInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, null), classMetadata);
+            }
+        }
+    }
 }

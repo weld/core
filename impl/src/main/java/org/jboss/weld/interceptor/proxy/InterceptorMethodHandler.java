@@ -26,6 +26,7 @@ import org.jboss.weld.interceptor.util.ReflectionUtils;
 
 /**
  * @author Marius Bogoevici
+ * @author Marko Luksa
  */
 public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
@@ -84,14 +85,17 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
                     return proceed.invoke(self, args);
                 }
             }
-            if (InterceptionTypeRegistry.isSupported(InterceptionType.AROUND_TIMEOUT) && thisMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(InterceptionType.AROUND_TIMEOUT))) {
-                return executeInterception(isProxy() ? null : self, thisMethod, thisMethod, args, InterceptionType.AROUND_TIMEOUT);
-            } else {
-                return executeInterception(isProxy() ? null : self, thisMethod, thisMethod, args, InterceptionType.AROUND_INVOKE);
-            }
+            return executeInterception(isProxy() ? null : self, thisMethod, thisMethod, args, getInterceptionType(thisMethod));
         }
         return null;
+    }
 
+    private InterceptionType getInterceptionType(Method thisMethod) {
+        if (InterceptionTypeRegistry.isSupported(InterceptionType.AROUND_TIMEOUT) && thisMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(InterceptionType.AROUND_TIMEOUT))) {
+            return InterceptionType.AROUND_TIMEOUT;
+        } else {
+            return InterceptionType.AROUND_INVOKE;
+        }
     }
 
     private Object executeInterception(Object self, Method proceedingMethod, Method thisMethod, Object[] args, InterceptionType interceptionType) throws Throwable {
