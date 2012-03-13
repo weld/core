@@ -73,8 +73,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.jboss.weld.logging.Category.BEAN;
@@ -466,6 +468,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     private class InterceptionModelInitializer {
 
+        private Map<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
+
         private List<WeldMethod<?,?>> businessMethods;
         private InterceptionModelBuilder<ClassMetadata<?>,?> builder;
 
@@ -627,9 +631,18 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
             List<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
             for (Interceptor<?> interceptor : interceptors) {
-                serializableContextuals.add(getInterceptorMetadata(interceptor));
+                serializableContextuals.add(getCachedInterceptorMetadata(interceptor));
             }
             return serializableContextuals.toArray(AbstractClassBean.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
+        }
+
+        private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getCachedInterceptorMetadata(Interceptor<?> interceptor) {
+            InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> interceptorMetadata = interceptorMetadatas.get(interceptor);
+            if (interceptorMetadata == null) {
+                interceptorMetadata = getInterceptorMetadata(interceptor);
+                interceptorMetadatas.put(interceptor, interceptorMetadata);
+            }
+            return interceptorMetadata;
         }
 
         private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getInterceptorMetadata(Interceptor<?> interceptor) {
