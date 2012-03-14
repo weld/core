@@ -17,6 +17,21 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.security.ProtectionDomain;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+
 import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
@@ -51,20 +66,6 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.inject.spi.Bean;
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.security.ProtectionDomain;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -227,14 +228,15 @@ public class ProxyFactory<T> {
     /**
      * Method to create a new proxy that wraps the bean instance.
      *
+     * @param beanInstance the bean instance
      * @return a new proxy object
      */
-
     public T create(BeanInstance beanInstance) {
-        T proxy = null;
+        T proxy;
         Class<T> proxyClass = getProxyClass();
         try {
-            if (InstantiatorFactory.useInstantiators()) {
+            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            if (factory != null && factory.useInstantiators()) {
                 proxy = SecureReflections.newUnsafeInstance(proxyClass);
             } else {
                 proxy = SecureReflections.newInstance(proxyClass);
@@ -371,7 +373,7 @@ public class ProxyFactory<T> {
 
 
         ProtectionDomain domain = proxiedBeanType.getProtectionDomain();
-        if(proxiedBeanType.getPackage() == null || proxiedBeanType.equals(Object.class)) {
+        if (proxiedBeanType.getPackage() == null || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
         }
         Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
