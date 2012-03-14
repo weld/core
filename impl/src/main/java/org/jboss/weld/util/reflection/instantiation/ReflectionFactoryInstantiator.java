@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import org.jboss.weld.exceptions.WeldException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
+import org.jboss.weld.exceptions.WeldException;
 
 import static org.jboss.weld.logging.messages.ReflectionMessage.REFLECTIONFACTORY_INSTANTIATION_FAILED;
 
@@ -41,16 +41,15 @@ public class ReflectionFactoryInstantiator implements Instantiator {
             reflectionFactoryInstance = accessor.invoke(null);
             generator = reflectionFactory.getMethod("newConstructorForSerialization", new Class[]{Class.class, Constructor.class});
         } catch (Exception e) {
-            // TODO Catch explicit subclasses
             // OK to fail
         }
     }
 
     @SuppressWarnings("unchecked")
     public <T> T instantiate(Class<T> clazz) {
-        T instance = null;
+        T instance;
         try {
-            Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, new Object[]{clazz, Object.class.getDeclaredConstructor()});
+            Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, clazz, Object.class.getDeclaredConstructor());
             instance = instanceConstructor.newInstance();
         } catch (Exception e) {
             throw new WeldException(REFLECTIONFACTORY_INSTANTIATION_FAILED, e, clazz);

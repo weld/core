@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import org.jboss.weld.bean.RIBean;
@@ -50,15 +57,11 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.BeansClosure;
+import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Bean;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
@@ -71,6 +74,7 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPT
 
 /**
  * @author pmuir
+ * @author alesj
  */
 public class BeanDeployment {
 
@@ -84,15 +88,24 @@ public class BeanDeployment {
     public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts) {
         this.beanDeploymentArchive = beanDeploymentArchive;
         EjbDescriptors ejbDescriptors = new EjbDescriptors();
-        beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
-        ResourceLoader resourceLoader = beanDeploymentArchive.getServices().get(ResourceLoader.class);
+
+        ServiceRegistry registry = beanDeploymentArchive.getServices();
+        registry.add(EjbDescriptors.class, ejbDescriptors);
+
+        ResourceLoader resourceLoader = registry.get(ResourceLoader.class);
         if (resourceLoader == null) {
             resourceLoader = DefaultResourceLoader.INSTANCE;
-            beanDeploymentArchive.getServices().add(ResourceLoader.class, resourceLoader);
+            registry.add(ResourceLoader.class, resourceLoader);
         }
+
+        InstantiatorFactory factory = registry.get(InstantiatorFactory.class);
+        if (factory == null) {
+            registry.add(InstantiatorFactory.class, new DefaultInstantiatorFactory());
+        }
+
         ServiceRegistry services = new SimpleServiceRegistry();
         services.addAll(deploymentServices.entrySet());
-        services.addAll(beanDeploymentArchive.getServices().entrySet());
+        services.addAll(registry.entrySet());
 
         services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
         services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
