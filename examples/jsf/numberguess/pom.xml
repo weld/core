@@ -777,6 +777,7 @@
                     <webAppConfig>
                         <contextPath>/${project.build.finalName}</contextPath>
                     </webAppConfig>
+                    <jettyEnvXml>${basedir}/src/main/webapp-jetty/WEB-INF/jetty-env.xml</jettyEnvXml>
                     <!-- if you don't want to use war:inplace, use this path instead -->
                     <!--
                        <webAppSourceDirectory>${project.build.directory}/${project.build.finalName}</webAppSourceDirectory>
