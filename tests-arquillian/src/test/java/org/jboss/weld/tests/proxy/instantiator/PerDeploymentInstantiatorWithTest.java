@@ -20,7 +20,6 @@ package org.jboss.weld.tests.proxy.instantiator;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -35,7 +34,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class PerDeploymentInstantiatorWithTest extends AbstractPerDeploymentInstantiator {
 
-    @Deployment(name = "with")
+    @Deployment
     public static Archive getDeploymentWith() {
         return getDeployment().addAsManifestResource(new StringAsset("foobar"), "org.jboss.weld.enableUnsafeProxies");
     }
@@ -44,7 +43,6 @@ public class PerDeploymentInstantiatorWithTest extends AbstractPerDeploymentInst
     Unproxiable unproxiable;
 
     @Test
-    @OperateOnDeployment("with")
     public void testWith() throws Exception {
         unproxiable.getBm();
     }
