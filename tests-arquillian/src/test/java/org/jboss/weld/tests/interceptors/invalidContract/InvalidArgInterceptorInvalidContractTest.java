@@ -22,7 +22,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,19 +32,19 @@ import org.junit.runner.RunWith;
  * "Around-invoke methods have the following signature:
  * Object <METHOD>(InvocationContext) throws Exception"
  *
- * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
+ * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-public class NoArgInterceptorInvalidContractTest {
+public class InvalidArgInterceptorInvalidContractTest {
 
     // @ShouldThrowException(DefinitionException.class)
     @ShouldThrowException(Exception.class) // AS7-1197
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .intercept(NoArgInterceptor.class)
-                .addClasses(Intercept.class, Service.class, ServiceImpl.class, NoArgInterceptor.class);
+                .intercept(InvalidArgInterceptor.class)
+                .addClasses(Intercept.class, Service.class, ServiceImpl.class, InvalidArgInterceptor.class);
     }
 
     @Test
