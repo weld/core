@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.exceptions.UnproxyableResolutionException;
-import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
-import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-
-import javax.enterprise.inject.spi.Bean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -31,6 +24,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
 import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
@@ -207,7 +209,8 @@ public class Proxies {
         try {
             constructor = SecureReflections.getDeclaredConstructor(clazz);
         } catch (NoSuchMethodException e) {
-            if (!InstantiatorFactory.useInstantiators()) {
+            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            if (factory == null || factory.useInstantiators() == false) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
             } else {
                 return null;
@@ -216,7 +219,8 @@ public class Proxies {
         if (constructor == null) {
             return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
-            if (!InstantiatorFactory.useInstantiators()) {
+            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            if (factory == null || factory.useInstantiators() == false) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor, getDeclaringBeanInfo(declaringBean));
             } else {
                 return null;

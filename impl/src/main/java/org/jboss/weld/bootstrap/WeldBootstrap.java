@@ -16,6 +16,32 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.Category.VERSION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_ARCHIVE_NULL;
+import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_REQUIRED;
+import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
+import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
+import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
+import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
+import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.Weld;
@@ -89,33 +115,10 @@ import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
+import org.jboss.weld.util.reflection.instantiation.LoaderInstantiatorFactory;
 import org.jboss.weld.xml.BeansXmlParser;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.Extension;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.Category.VERSION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_ARCHIVE_NULL;
-import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_REQUIRED;
-import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
-import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
-import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
-import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
-import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -157,13 +160,19 @@ public class WeldBootstrap implements Bootstrap {
             return managerAwareBeanDeploymentArchives;
         }
 
-        private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives, boolean validate) {
+        private <T extends Service> void copyService(BeanDeploymentArchive archive, Class<T> serviceClass) {
             // for certain services we can fall back to deployment-level settings or defaults
-            if (!beanDeploymentArchive.getServices().contains(ResourceLoader.class)) {
-                ResourceLoader loader = deployment.getServices().get(ResourceLoader.class);
-                if (loader != null)
-                    beanDeploymentArchive.getServices().add(ResourceLoader.class, loader);
+            ServiceRegistry registry = archive.getServices();
+            if (registry.contains(serviceClass) == false) {
+                T service = deployment.getServices().get(serviceClass);
+                if (service != null)
+                    registry.add(serviceClass, service);
             }
+        }
+
+        private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives, boolean validate) {
+            copyService(beanDeploymentArchive, ResourceLoader.class);
+            copyService(beanDeploymentArchive, InstantiatorFactory.class);
             // Check that the required services are specified
             if (validate) {
                 verifyServices(beanDeploymentArchive.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
@@ -221,19 +230,23 @@ public class WeldBootstrap implements Bootstrap {
             if (deployment == null) {
                 throw new IllegalArgumentException(DEPLOYMENT_REQUIRED);
             }
-            if (!deployment.getServices().contains(ResourceLoader.class)) {
-                deployment.getServices().add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
+            final ServiceRegistry registry = deployment.getServices();
+            if (!registry.contains(ResourceLoader.class)) {
+                registry.add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
             }
-            if (!deployment.getServices().contains(ScheduledExecutorServiceFactory.class)) {
-                deployment.getServices().add(ScheduledExecutorServiceFactory.class, new SingleThreadScheduledExecutorServiceFactory());
+            if (!registry.contains(InstantiatorFactory.class)) {
+                registry.add(InstantiatorFactory.class, new LoaderInstantiatorFactory());
             }
-            if (!deployment.getServices().contains(ProxyServices.class)) {
-                deployment.getServices().add(ProxyServices.class, new SimpleProxyServices());
+            if (!registry.contains(ScheduledExecutorServiceFactory.class)) {
+                registry.add(ScheduledExecutorServiceFactory.class, new SingleThreadScheduledExecutorServiceFactory());
+            }
+            if (!registry.contains(ProxyServices.class)) {
+                registry.add(ProxyServices.class, new SimpleProxyServices());
             }
 
-            verifyServices(deployment.getServices(), environment.getRequiredDeploymentServices());
+            verifyServices(registry, environment.getRequiredDeploymentServices());
 
-            if (!deployment.getServices().contains(TransactionServices.class)) {
+            if (!registry.contains(TransactionServices.class)) {
                 log.info(JTA_UNAVAILABLE);
             }
             // TODO Reinstate if we can find a good way to detect.
@@ -254,7 +267,7 @@ public class WeldBootstrap implements Bootstrap {
             this.deployment = deployment;
             ServiceRegistry implementationServices = getImplementationServices();
 
-            deployment.getServices().addAll(implementationServices.entrySet());
+            registry.addAll(implementationServices.entrySet());
 
             ServiceRegistry deploymentServices = new SimpleServiceRegistry();
             deploymentServices.add(ClassTransformer.class, implementationServices.get(ClassTransformer.class));
@@ -264,7 +277,7 @@ public class WeldBootstrap implements Bootstrap {
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
 
-            Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
+            Container.initialize(deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(registry));
             Container.instance().setState(ContainerState.STARTING);
 
             this.contexts = createContexts(deploymentServices);

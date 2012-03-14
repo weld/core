@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.SecureReflections;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
 
@@ -44,14 +44,13 @@ public class UnsafeInstantiator implements Instantiator {
             unsafeInstance = accessor.get(null);
             allocateInstanceMethod = unsafe.getDeclaredMethod("allocateInstance", Class.class);
         } catch (Exception e) {
-            // TODO Catch explicit subclasses
             // OK to fail
         }
     }
 
     @SuppressWarnings("unchecked")
     public <T> T instantiate(Class<T> clazz) {
-        T instance = null;
+        T instance;
         try {
             instance = (T) allocateInstanceMethod.invoke(unsafeInstance, clazz);
         } catch (Exception e) {

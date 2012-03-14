@@ -221,14 +221,15 @@ public class ProxyFactory<T> {
     /**
      * Method to create a new proxy that wraps the bean instance.
      *
+     * @param beanInstance the bean instance
      * @return a new proxy object
      */
-
     public T create(BeanInstance beanInstance) {
-        T proxy = null;
+        T proxy;
         Class<T> proxyClass = getProxyClass();
         try {
-            if (InstantiatorFactory.useInstantiators()) {
+            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            if (factory != null && factory.useInstantiators()) {
                 proxy = SecureReflections.newUnsafeInstance(proxyClass);
             } else {
                 proxy = SecureReflections.newInstance(proxyClass);

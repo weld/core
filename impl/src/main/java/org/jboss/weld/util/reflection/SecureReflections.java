@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.util.reflection;
 
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
@@ -26,10 +23,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
+
 import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
 
 /**
  * @author Nicklas Karlsson
+ * @author Ales Justin
  *         <p/>
  *         Utility class for SecurityManager aware reflection operations with
  *         the "weld.reflection" permission
@@ -263,10 +266,8 @@ public class SecureReflections {
             protected T work() throws Exception {
                 Object result = ensureAccessible(method).invoke(instance, parameters);
 
-                @SuppressWarnings("unchecked")
-                T t = (T) result;
-
-                return t;
+                //noinspection unchecked
+                return (T) result;
             }
 
         }.runAsInvocation();
@@ -275,7 +276,7 @@ public class SecureReflections {
     /**
      * Makes an object accessible.
      *
-     * @param accessibleObjects The object to manipulate
+     * @param accessibleObject The object to manipulate
      * @return The accessible object
      */
     public static <T extends AccessibleObject> T ensureAccessible(final T accessibleObject) {
@@ -359,7 +360,9 @@ public class SecureReflections {
         return new SecureReflectionAccess<T>() {
             @Override
             protected T work() throws Exception {
-                return InstantiatorFactory.getInstantiator().instantiate(clazz);
+                ServiceRegistry services = Container.instance().services();
+                InstantiatorFactory factory = services.get(InstantiatorFactory.class);
+                return factory.getInstantiator().instantiate(clazz);
             }
         }.runAsInstantiation();
     }
@@ -393,7 +396,7 @@ public class SecureReflections {
         return new SecureReflectionAccess<Method>() {
 
             private Method lookupMethod(final Class<?> currentClass) throws NoSuchMethodException {
-                for (Class<? extends Object> inspectedClass = currentClass; inspectedClass != null; inspectedClass = inspectedClass.getSuperclass()) {
+                for (Class<?> inspectedClass = currentClass; inspectedClass != null; inspectedClass = inspectedClass.getSuperclass()) {
                     for (Class<?> inspectedInterface : inspectedClass.getInterfaces()) {
                         try {
                             return lookupMethod(inspectedInterface);

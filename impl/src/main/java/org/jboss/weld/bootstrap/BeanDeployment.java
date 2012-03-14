@@ -73,6 +73,8 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
+import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -83,6 +85,7 @@ import com.google.common.base.Predicate;
 /**
  * @author Pete Muir
  * @author Jozef Hartinger
+ * @author alesj
  */
 public class BeanDeployment {
 
@@ -97,15 +100,24 @@ public class BeanDeployment {
     public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts) {
         this.beanDeploymentArchive = beanDeploymentArchive;
         EjbDescriptors ejbDescriptors = new EjbDescriptors();
-        beanDeploymentArchive.getServices().add(EjbDescriptors.class, ejbDescriptors);
-        ResourceLoader resourceLoader = beanDeploymentArchive.getServices().get(ResourceLoader.class);
+
+        ServiceRegistry registry = beanDeploymentArchive.getServices();
+        registry.add(EjbDescriptors.class, ejbDescriptors);
+
+        ResourceLoader resourceLoader = registry.get(ResourceLoader.class);
         if (resourceLoader == null) {
             resourceLoader = DefaultResourceLoader.INSTANCE;
-            beanDeploymentArchive.getServices().add(ResourceLoader.class, resourceLoader);
+            registry.add(ResourceLoader.class, resourceLoader);
         }
+
+        InstantiatorFactory factory = registry.get(InstantiatorFactory.class);
+        if (factory == null) {
+            registry.add(InstantiatorFactory.class, new DefaultInstantiatorFactory());
+        }
+
         ServiceRegistry services = new SimpleServiceRegistry();
         services.addAll(deploymentServices.entrySet());
-        services.addAll(beanDeploymentArchive.getServices().entrySet());
+        services.addAll(registry.entrySet());
 
         services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
         services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
