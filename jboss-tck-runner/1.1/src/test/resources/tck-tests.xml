@@ -173,6 +173,24 @@
                     <exclude name="testInterceptor"/>
                 </methods>
             </class>
+            <!-- WELD-1088 -->
+            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.name.ResourceDefinitionWithNameTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
+            <!-- WELD-1089 -->
+            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ResourceDefinitionWithDifferentTypeTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
+            <!-- WELD-1090 -->
+            <class name="org.jboss.cdi.tck.tests.context.dependent.DependentContextTest">
+                <methods>
+                    <exclude name="testCallingCreationalContextReleaseDestroysDependents"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
