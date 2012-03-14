@@ -27,25 +27,42 @@ import java.util.Map;
  */
 public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory {
 
-    private final Map<ClassLoader, Boolean> enabled = new HashMap<ClassLoader, Boolean>();
+    private volatile Boolean enabled;
+    private final Map<ClassLoader, Boolean> cached = new HashMap<ClassLoader, Boolean>();
 
     public boolean useInstantiators() {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        // TODO
-        synchronized (enabled) {
-            Boolean existing = enabled.get(cl);
+        final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+
+        if (tccl == null) {
+            if (enabled == null) {
+                synchronized (this) {
+                    if (enabled == null) {
+                        boolean tmp = (getClass().getResource(MARKER) != null);
+                        if (tmp) {
+                            tmp = checkInstantiator();
+                        }
+                        enabled = tmp;
+                    }
+                }
+            }
+            return enabled;
+        }
+
+        synchronized (cached) {
+            Boolean existing = cached.get(tccl);
             if (existing == null) {
-                boolean tmp = (cl.getResource(MARKER) != null);
+                boolean tmp = (tccl.getResource(MARKER) != null);
                 if (tmp) {
                     tmp = checkInstantiator();
                 }
                 existing = tmp;
-                enabled.put(cl, existing);
+                cached.put(tccl, existing);
             }
             return existing;
         }
     }
 
     public void cleanup() {
+        cached.clear();
     }
 }

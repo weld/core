@@ -37,7 +37,7 @@ public class DefaultInstantiatorFactory extends AbstractInstantiatorFactory {
                     if (loader == null)
                         loader = DefaultResourceLoader.INSTANCE;
 
-                    boolean tmp = loader.getResource("META-INF/org.jboss.weld.enableUnsafeProxies") != null;
+                    boolean tmp = loader.getResource(MARKER) != null;
 
                     if (tmp) {
                         tmp = checkInstantiator();
