@@ -37,7 +37,6 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-@Ignore
 public class VoidInterceptorInvalidContractTest {
 
     // @ShouldThrowException(DefinitionException.class)
@@ -49,7 +48,6 @@ public class VoidInterceptorInvalidContractTest {
                 .addClasses(Intercept.class, Service.class, ServiceImpl.class, VoidInterceptor.class);
     }
 
-    //WELD-580
     @Test
     public void shouldHaveThrownDefinitionException() throws Exception {
     }
