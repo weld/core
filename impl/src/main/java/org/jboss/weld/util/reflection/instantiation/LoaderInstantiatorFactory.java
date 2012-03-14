@@ -17,8 +17,10 @@
 
 package org.jboss.weld.util.reflection.instantiation;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * Instantiator factory per loader.
@@ -28,7 +30,8 @@ import java.util.Map;
 public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory {
 
     private volatile Boolean enabled;
-    private final Map<ClassLoader, Boolean> cached = new HashMap<ClassLoader, Boolean>();
+    @SuppressWarnings("deprecation")
+    private final Map<ClassLoader, Boolean> cached = new MapMaker().makeComputingMap(new LookupFunction());
 
     public boolean useInstantiators() {
         final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
@@ -48,21 +51,16 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory {
             return enabled;
         }
 
-        synchronized (cached) {
-            Boolean existing = cached.get(tccl);
-            if (existing == null) {
-                boolean tmp = (tccl.getResource(MARKER) != null);
-                if (tmp) {
-                    tmp = checkInstantiator();
-                }
-                existing = tmp;
-                cached.put(tccl, existing);
-            }
-            return existing;
-        }
+        return cached.get(tccl);
     }
 
     public void cleanup() {
         cached.clear();
+    }
+
+    private class LookupFunction implements Function<ClassLoader, Boolean> {
+        public Boolean apply(ClassLoader tccl) {
+            return (tccl.getResource(MARKER) != null) && checkInstantiator();
+        }
     }
 }
