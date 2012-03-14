@@ -20,9 +20,10 @@ package org.jboss.weld.tests.proxy.instantiator;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +35,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstantiator {
 
-    @Deployment(name = "wo")
+    @Deployment
+    @ShouldThrowException(Exception.class)
     public static Archive getDeploymentWO() {
         return getDeployment();
     }
@@ -43,9 +45,8 @@ public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstan
     Unproxiable unproxiable;
 
     @Test
-    @OperateOnDeployment("wo")
     public void testWO() throws Exception {
-        unproxiable.getBm();
+        Assert.assertNull(unproxiable); // TODO -- should the test still execute wrt @STE?
     }
 
 }
