@@ -29,6 +29,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIA
  * An instantiator for sun.misc.Unsafe
  *
  * @author Nicklas Karlsson
+ * @author Ales Justin
  */
 public class UnsafeInstantiator implements Instantiator {
     private static final String REFLECTION_CLASS_NAME = "sun.misc.Unsafe";
@@ -36,7 +37,7 @@ public class UnsafeInstantiator implements Instantiator {
     private Method allocateInstanceMethod = null;
     private Object unsafeInstance = null;
 
-    public UnsafeInstantiator() {
+    private void init() {
         try {
             Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);
             Field accessor = unsafe.getDeclaredField("theUnsafe");
@@ -48,19 +49,17 @@ public class UnsafeInstantiator implements Instantiator {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T instantiate(Class<T> clazz) {
-        T instance;
-        try {
-            instance = (T) allocateInstanceMethod.invoke(unsafeInstance, clazz);
-        } catch (Exception e) {
-            throw new WeldException(UNSAFE_INSTANTIATION_FAILED, e, clazz);
-        }
-        return instance;
-    }
-
     public boolean isAvailable() {
+        init();
         return allocateInstanceMethod != null && unsafeInstance != null;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T instantiate(Class<T> clazz) {
+        try {
+            return (T) allocateInstanceMethod.invoke(unsafeInstance, clazz);
+        } catch (Exception e) {
+            throw new WeldException(UNSAFE_INSTANTIATION_FAILED, e, clazz);
+        }
+    }
 }

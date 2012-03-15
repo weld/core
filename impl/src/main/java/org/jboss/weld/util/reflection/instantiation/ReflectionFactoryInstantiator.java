@@ -27,6 +27,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.REFLECTIONFACTOR
  * A instantiator for sun.reflect.ReflectionFactory
  *
  * @author Nicklas Karlsson
+ * @author Ales Justin
  */
 public class ReflectionFactoryInstantiator implements Instantiator {
     private static final String REFLECTION_CLASS_NAME = "sun.reflect.ReflectionFactory";
@@ -34,7 +35,7 @@ public class ReflectionFactoryInstantiator implements Instantiator {
     private Method generator = null;
     private Object reflectionFactoryInstance = null;
 
-    public ReflectionFactoryInstantiator() {
+    private void init() {
         try {
             Class<?> reflectionFactory = Class.forName(REFLECTION_CLASS_NAME);
             Method accessor = reflectionFactory.getMethod("getReflectionFactory");
@@ -45,20 +46,18 @@ public class ReflectionFactoryInstantiator implements Instantiator {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T instantiate(Class<T> clazz) {
-        T instance;
-        try {
-            Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, clazz, Object.class.getDeclaredConstructor());
-            instance = instanceConstructor.newInstance();
-        } catch (Exception e) {
-            throw new WeldException(REFLECTIONFACTORY_INSTANTIATION_FAILED, e, clazz);
-        }
-        return instance;
-    }
-
     public boolean isAvailable() {
+        init();
         return generator != null && reflectionFactoryInstance != null;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T instantiate(Class<T> clazz) {
+        try {
+            Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, clazz, Object.class.getDeclaredConstructor());
+            return instanceConstructor.newInstance();
+        } catch (Exception e) {
+            throw new WeldException(REFLECTIONFACTORY_INSTANTIATION_FAILED, e, clazz);
+        }
+    }
 }

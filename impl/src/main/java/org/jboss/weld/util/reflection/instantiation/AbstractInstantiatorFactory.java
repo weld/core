@@ -26,14 +26,16 @@ import java.util.List;
  * @author Ales Justin
  */
 public abstract class AbstractInstantiatorFactory implements InstantiatorFactory {
-    private static final List<Instantiator> instantiators = new ArrayList<Instantiator>() {
+    protected static final String MARKER = "META-INF/org.jboss.weld.enableUnsafeProxies";
+
+    // create new instance for every deployment,
+    // making sure isAvailable is properly checked against security, etc
+    private final List<Instantiator> instantiators = new ArrayList<Instantiator>() {
         {
             add(new UnsafeInstantiator());
             add(new ReflectionFactoryInstantiator());
         }
     };
-
-    protected static final String MARKER = "META-INF/org.jboss.weld.enableUnsafeProxies";
 
     protected boolean checkInstantiator() {
         for (Instantiator i : instantiators) {
