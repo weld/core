@@ -45,6 +45,7 @@ import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.interceptor.InterceptorBindingType;
 import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -70,7 +71,6 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
-import org.jboss.weld.util.InterceptorBindingSet;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
@@ -755,25 +755,30 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (interceptorBindings.length == 0) {
             throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
         }
-        Set<Annotation> interceptorBindingsSet = new InterceptorBindingSet(this);
+        Set<InterceptorBindingType> interceptorBindingTypes = new HashSet<InterceptorBindingType>();
         for (Annotation annotation : interceptorBindings) {
             if (!isInterceptorBinding(annotation.annotationType())) {
                 throw new IllegalArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, annotation);
             }
-            if (interceptorBindingsSet.contains(annotation)) {
+            InterceptorBindingType interceptorBindingType = new InterceptorBindingType(this, annotation);
+            if (interceptorBindingTypes.contains(interceptorBindingType)) {
                 throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, annotation);
             }
-            interceptorBindingsSet.add(annotation);
+            interceptorBindingTypes.add(interceptorBindingType);
         }
 
-        Set<Annotation> flattenedInterceptorBindings = flattenInterceptorBindings(interceptorBindingsSet);
+        return resolveInterceptors(type, flattenInterceptorBindings(interceptorBindingTypes));
+    }
+
+    public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Set<InterceptorBindingType> flattenedInterceptorBindings) {
+        Set<Annotation> interceptorBindingAnnotations = InterceptorBindingType.unwrap(flattenedInterceptorBindings);
 
         InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class)
                 .setInterceptionType(type)
-                .addQualifiers(flattenedInterceptorBindings)
+                .addQualifiers(interceptorBindingAnnotations)
                 .create();
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(interceptorResolvable, isCacheable(flattenedInterceptorBindings)));
+        return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindingAnnotations)));
     }
 
     /**
@@ -1083,11 +1088,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));
     }
 
-    public Set<Annotation> extractInterceptorBindings(Iterable<Annotation> annotations) {
-        Set<Annotation> foundInterceptionBindingTypes = new HashSet<Annotation>();
+    public Set<InterceptorBindingType> extractAndFlattenInterceptorBindings(Iterable<Annotation> annotations) {
+        return flattenInterceptorBindings(extractInterceptorBindings(annotations));
+    }
+
+    public Set<InterceptorBindingType> extractInterceptorBindings(Iterable<Annotation> annotations) {
+        Set<InterceptorBindingType> foundInterceptionBindingTypes = new HashSet<InterceptorBindingType>();
         for (Annotation annotation : annotations) {
             if (isInterceptorBinding(annotation.annotationType())) {
-                foundInterceptionBindingTypes.add(annotation);
+                foundInterceptionBindingTypes.add(new InterceptorBindingType(this, annotation));
             }
         }
         return foundInterceptionBindingTypes;
@@ -1095,22 +1104,20 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     /**
      * Extracts the complete set of interception bindings from a given set of
-     * annotations.
+     * interceptorBindingTypes.
      *
-     * @param annotations
+     * @param interceptorBindingTypes
      * @return
      */
-    public Set<Annotation> flattenInterceptorBindings(Set<Annotation> annotations) {
+    public Set<InterceptorBindingType> flattenInterceptorBindings(Set<InterceptorBindingType> interceptorBindingTypes) {
         MetaAnnotationStore metaAnnotationStore = getMetaAnnotationStore();
 
-        Set<Annotation> foundInterceptionBindingTypes = new InterceptorBindingSet(this);
-        for (Annotation annotation : annotations) {
-            if (isInterceptorBinding(annotation.annotationType())) {
-                foundInterceptionBindingTypes.add(annotation);
+        Set<InterceptorBindingType> foundInterceptionBindingTypes = new HashSet<InterceptorBindingType>();
+        for (InterceptorBindingType interceptorBindingType : interceptorBindingTypes) {
+            foundInterceptionBindingTypes.add(interceptorBindingType);
 
-                InterceptorBindingModel<? extends Annotation> interceptorBindingModel = metaAnnotationStore.getInterceptorBindingModel(annotation.annotationType());
-                foundInterceptionBindingTypes.addAll(interceptorBindingModel.getInheritedInterceptionBindingTypes());
-            }
+            InterceptorBindingModel<? extends Annotation> interceptorBindingModel = metaAnnotationStore.getInterceptorBindingModel(interceptorBindingType.annotationType());
+            foundInterceptionBindingTypes.addAll(extractInterceptorBindings(interceptorBindingModel.getInheritedInterceptionBindingTypes()));
         }
         return foundInterceptionBindingTypes;
     }

@@ -35,6 +35,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.interceptor.InterceptorBindingType;
 import org.jboss.weld.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
@@ -51,7 +52,6 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.InterceptorBindingSet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
@@ -494,68 +494,66 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
 
         private void initCdiInterceptors() {
-            Set<Annotation> classBindingAnnotations = getClassInterceptorBindings();
-            initCdiLifecycleInterceptors(classBindingAnnotations);
-            initCdiBusinessMethodInterceptors(classBindingAnnotations);
+            Set<InterceptorBindingType> classBindings = getClassInterceptorBindings();
+            initCdiLifecycleInterceptors(classBindings);
+            initCdiBusinessMethodInterceptors(classBindings);
         }
 
-        private Set<Annotation> getClassInterceptorBindings() {
-            Set<Annotation> classBindingAnnotations = new InterceptorBindingSet(beanManager);
-            classBindingAnnotations.addAll(beanManager.extractInterceptorBindings(getWeldAnnotated().getAnnotations()));
+        private Set<InterceptorBindingType> getClassInterceptorBindings() {
+            Set<InterceptorBindingType> classBindingAnnotations = new HashSet<InterceptorBindingType>();
+            classBindingAnnotations.addAll(beanManager.extractAndFlattenInterceptorBindings(getWeldAnnotated().getAnnotations()));
             for (Class<? extends Annotation> annotation : getStereotypes()) {
-                classBindingAnnotations.addAll(beanManager.extractInterceptorBindings(beanManager.getStereotypeDefinition(annotation)));
+                classBindingAnnotations.addAll(beanManager.extractAndFlattenInterceptorBindings(beanManager.getStereotypeDefinition(annotation)));
             }
             return classBindingAnnotations;
         }
 
-        private void initCdiLifecycleInterceptors(Set<Annotation> classBindingAnnotations) {
-            if (classBindingAnnotations.size() == 0) {
+        private void initCdiLifecycleInterceptors(Set<InterceptorBindingType> classBindings) {
+            if (classBindings.size() == 0) {
                 return;
             }
-            if (Beans.findInterceptorBindingConflicts(beanManager, classBindingAnnotations)) {
+            if (Beans.findInterceptorBindingConflicts(classBindings)) {
                 throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
             }
 
-            Annotation[] classBindingAnnotationsArray = classBindingAnnotations.toArray(new Annotation[classBindingAnnotations.size()]);
-            initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, classBindingAnnotationsArray);
-            initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, classBindingAnnotationsArray);
-            initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, classBindingAnnotationsArray);
-            initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, classBindingAnnotationsArray);
+            initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, classBindings);
+            initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, classBindings);
+            initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, classBindings);
+            initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, classBindings);
         }
 
-        private void initLifeCycleInterceptor(InterceptionType interceptionType, Annotation[] classBindingAnnotationsArray) {
-            List<Interceptor<?>> resolvedInterceptors = beanManager.resolveInterceptors(interceptionType, classBindingAnnotationsArray);
+        private void initLifeCycleInterceptor(InterceptionType interceptionType, Set<InterceptorBindingType> interceptorBindingTypes) {
+            List<Interceptor<?>> resolvedInterceptors = beanManager.resolveInterceptors(interceptionType, interceptorBindingTypes);
             builder.intercept(interceptionType).with(toSerializableContextualArray(resolvedInterceptors));
         }
 
-        private void initCdiBusinessMethodInterceptors(Set<Annotation> classBindingAnnotations) {
+        private void initCdiBusinessMethodInterceptors(Set<InterceptorBindingType> classBindings) {
             for (WeldMethod<?, ?> method : businessMethods) {
-                initCdiBusinessMethodInterceptor(method, getMethodBindingAnnotations(classBindingAnnotations, method));
+                initCdiBusinessMethodInterceptor(method, getMethodInterceptorBindings(classBindings, method));
             }
         }
 
-        private Set<Annotation> getMethodBindingAnnotations(Set<Annotation> classBindingAnnotations, WeldMethod<?, ?> method) {
-            Set<Annotation> methodBindingAnnotations = new InterceptorBindingSet(beanManager);
+        private Set<InterceptorBindingType> getMethodInterceptorBindings(Set<InterceptorBindingType> classBindingAnnotations, WeldMethod<?, ?> method) {
+            Set<InterceptorBindingType> methodBindingAnnotations = new HashSet<InterceptorBindingType>();
             methodBindingAnnotations.addAll(classBindingAnnotations);
-            methodBindingAnnotations.addAll(beanManager.extractInterceptorBindings(method.getAnnotations()));
+            methodBindingAnnotations.addAll(beanManager.extractAndFlattenInterceptorBindings(method.getAnnotations()));
             return methodBindingAnnotations;
         }
 
-        private void initCdiBusinessMethodInterceptor(WeldMethod<?, ?> method, Set<Annotation> methodBindingAnnotations) {
-            if (methodBindingAnnotations.size() == 0) {
+        private void initCdiBusinessMethodInterceptor(WeldMethod<?, ?> method, Set<InterceptorBindingType> methodInterceptorBindings) {
+            if (methodInterceptorBindings.size() == 0) {
                 return;
             }
-            if (Beans.findInterceptorBindingConflicts(beanManager, methodBindingAnnotations)) {
+            if (Beans.findInterceptorBindingConflicts(methodInterceptorBindings)) {
                 throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType() + "." + method.getName() + "()");
             }
 
-            Annotation[] methodBindingAnnotationsArray = methodBindingAnnotations.toArray(new Annotation[methodBindingAnnotations.size()]);
-            initInterceptor(InterceptionType.AROUND_INVOKE, method, methodBindingAnnotationsArray);
-            initInterceptor(InterceptionType.AROUND_TIMEOUT, method, methodBindingAnnotationsArray);
+            initInterceptor(InterceptionType.AROUND_INVOKE, method, methodInterceptorBindings);
+            initInterceptor(InterceptionType.AROUND_TIMEOUT, method, methodInterceptorBindings);
         }
 
-        private void initInterceptor(InterceptionType interceptionType, WeldMethod<?, ?> method, Annotation[] methodBindingAnnotationsArray) {
-            List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(interceptionType, methodBindingAnnotationsArray);
+        private void initInterceptor(InterceptionType interceptionType, WeldMethod<?, ?> method, Set<InterceptorBindingType> interceptorBindingTypes) {
+            List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(interceptionType, interceptorBindingTypes);
             if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                 if (method.isFinal()) {
                     throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
