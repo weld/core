@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,8 +35,8 @@ import org.junit.runner.RunWith;
 public class PerDeploymentInstantiatorWithTest extends AbstractPerDeploymentInstantiator {
 
     @Deployment
-    public static Archive getDeploymentWith() {
-        return getDeployment().addAsManifestResource(new StringAsset("foobar"), "org.jboss.weld.enableUnsafeProxies");
+    public static WebArchive getDeploymentWith() {
+        return getDeployment().addAsWebInfResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies");
     }
 
     @Inject
