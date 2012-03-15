@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import javassist.NotFoundException;
+import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.DuplicateMemberException;
@@ -109,9 +110,9 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes(), methodInfo.getReturnType(), proxyClassType.getName());
-                            proxyClassType.addMethod(MethodUtils.makeMethod(delegatingMethodInfo, method.getExceptionTypes(), createDelegateToSuper(proxyClassType, methodInfo), proxyClassType.getConstPool()));
+                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, method.getParameterTypes(), method.getReturnType(), proxyClassType.getName(), Modifier.PRIVATE | (method.getModifiers() & AccessFlag.BRIDGE));
                             proxyClassType.addMethod(MethodUtils.makeMethod(methodInfo, method.getExceptionTypes(), addConstructedGuardToMethodBody(proxyClassType, createForwardingMethodBody(proxyClassType, methodInfo), methodInfo), proxyClassType.getConstPool()));
+                            proxyClassType.addMethod(MethodUtils.makeMethod(delegatingMethodInfo, method.getExceptionTypes(), createDelegateToSuper(proxyClassType, methodInfo), proxyClassType.getConstPool()));
                             log.trace("Adding method " + method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
