@@ -70,7 +70,7 @@ public class ClassTransformer implements Service {
         }
 
         public WeldAnnotation<?> apply(Class<? extends Annotation> from) {
-            return WeldAnnotationImpl.of(from, classTransformer);
+            return WeldAnnotationImpl.create(from, classTransformer);
         }
 
     }

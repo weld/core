@@ -51,7 +51,8 @@ public class WeldAnnotationImpl<T extends Annotation> extends WeldClassImpl<T> i
     // The set of abstracted members
     private final Set<WeldMethod<?, ?>> members;
 
-    public static <A extends Annotation> WeldAnnotation<A> of(Class<A> annotationType, ClassTransformer classTransformer) {
+    //we can't call this method 'of', cause it won't compile on JDK7
+    public static <A extends Annotation> WeldAnnotation<A> create(Class<A> annotationType, ClassTransformer classTransformer) {
         Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
         annotationMap.putAll(buildAnnotationMap(annotationType.getAnnotations()));
         annotationMap.putAll(buildAnnotationMap(classTransformer.getTypeStore().get(annotationType)));
