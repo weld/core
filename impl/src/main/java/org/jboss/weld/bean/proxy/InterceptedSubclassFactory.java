@@ -107,7 +107,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes(), methodInfo.getReturnType(), proxyClassType.getName());
+                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, method.getParameterTypes(), method.getReturnType(), proxyClassType.getName(), Modifier.PRIVATE | (method.getModifiers() & AccessFlag.BRIDGE));
 
                             ClassMethod delegatingMethod = proxyClassType.addMethod(method.getModifiers() | AccessFlag.SYNTHETIC, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()), DescriptorUtils.getParameterTypes(method.getParameterTypes()));
                             delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
