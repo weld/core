@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.resources;
 
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.util.collections.EnumerationList;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.collections.EnumerationList;
 
 /**
  * A simple resource loader.
@@ -42,8 +42,9 @@ public class DefaultResourceLoader implements ResourceLoader {
     public Class<?> classForName(String name) {
 
         try {
-            if (Thread.currentThread().getContextClassLoader() != null) {
-                return Thread.currentThread().getContextClassLoader().loadClass(name);
+            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            if (tccl != null) {
+                return tccl.loadClass(name);
             } else {
                 return Class.forName(name);
             }
@@ -57,8 +58,9 @@ public class DefaultResourceLoader implements ResourceLoader {
     }
 
     public URL getResource(String name) {
-        if (Thread.currentThread().getContextClassLoader() != null) {
-            return Thread.currentThread().getContextClassLoader().getResource(name);
+        final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        if (tccl != null) {
+            return tccl.getResource(name);
         } else {
             return getClass().getResource(name);
         }
@@ -66,8 +68,9 @@ public class DefaultResourceLoader implements ResourceLoader {
 
     public Collection<URL> getResources(String name) {
         try {
-            if (Thread.currentThread().getContextClassLoader() != null) {
-                return new EnumerationList<URL>(Thread.currentThread().getContextClassLoader().getResources(name));
+            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            if (tccl != null) {
+                return new EnumerationList<URL>(tccl.getResources(name));
             } else {
                 return new EnumerationList<URL>(getClass().getClassLoader().getResources(name));
             }
