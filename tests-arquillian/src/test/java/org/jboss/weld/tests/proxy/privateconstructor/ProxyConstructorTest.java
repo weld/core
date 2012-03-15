@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.proxy.privateconstructor;
 
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -35,13 +37,21 @@ public class ProxyConstructorTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
                 .addPackage(ProxyConstructorTest.class.getPackage())
-                .addAsWebResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsWebResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies")
-                .addAsManifestResource(EmptyAsset.INSTANCE, "org.jboss.weld.enableUnsafeProxies"); // workaround for SW bug?
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies");
     }
 
+    private Holder holder;
+
     @Test
-    public void testProxy(Foo foo) {
-        Assert.assertEquals("ping", foo.ping());
+    public void testProxy() {
+        Assert.assertNotNull("Null holder", holder);
+        Assert.assertNotNull("Null foo", holder.foo);
+        Assert.assertEquals("ping", holder.foo.ping());
+    }
+
+    @Inject
+    public void setHolder(Holder holder) {
+        this.holder = holder;
     }
 }
