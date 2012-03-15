@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,16 +16,14 @@
  */
 package org.jboss.weld.tests.proxy.privateconstructor;
 
-import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 
-@RequestScoped
-public class Foo {
-    public Foo() {
+public class Holder {
+    Foo foo;
 
-    }
-
-    public String ping() {
-        return "ping";
+    @Inject
+    public void setFoo(Foo foo) {
+        this.foo = foo;
     }
 }
