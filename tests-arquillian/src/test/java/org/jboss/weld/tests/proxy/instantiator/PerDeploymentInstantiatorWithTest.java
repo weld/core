@@ -38,7 +38,7 @@ public class PerDeploymentInstantiatorWithTest extends AbstractPerDeploymentInst
     public static WebArchive getDeploymentWith() {
         return getDeployment()
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "classes/META-INF/org.jboss.weld.enableUnsafeProxies")
-                .addAsManifestResource(EmptyAsset.INSTANCE, "org.jboss.weld.enableUnsafeProxies"); // workaround embedded?
+                .addAsManifestResource(EmptyAsset.INSTANCE, "org.jboss.weld.enableUnsafeProxies"); // workaround ARQ-753
     }
 
     @Inject

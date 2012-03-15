@@ -42,23 +42,15 @@ public abstract class Reflections {
     }
 
 
+    @SuppressWarnings("unchecked")
     public static <T> Class<T> classForName(String name) {
 
         try {
-            if (Thread.currentThread().getContextClassLoader() != null) {
-                Class<?> c = Thread.currentThread().getContextClassLoader().loadClass(name);
-
-                @SuppressWarnings("unchecked")
-                Class<T> clazz = (Class<T>) c;
-
-                return clazz;
+            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            if (tccl != null) {
+                return (Class<T>) tccl.loadClass(name);
             } else {
-                Class<?> c = Class.forName(name);
-
-                @SuppressWarnings("unchecked")
-                Class<T> clazz = (Class<T>) c;
-
-                return clazz;
+                return (Class<T>) Class.forName(name);
             }
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Cannot load class for " + name, e);
@@ -130,7 +122,7 @@ public abstract class Reflections {
         StringBuilder message = new StringBuilder(String.format("Exception invoking method [%s] on object [%s], using arguments [", method.getName(), obj));
         if (args != null)
             for (int i = 0; i < args.length; i++)
-                message.append((i > 0 ? "," : "") + args[i]);
+                message.append(i > 0 ? "," : "").append(args[i]);
         message.append("]");
         return message.toString();
     }
@@ -171,8 +163,9 @@ public abstract class Reflections {
     }
 
     public static ClassLoader getClassLoader() {
-        if (Thread.currentThread().getContextClassLoader() != null) {
-            return Thread.currentThread().getContextClassLoader();
+        final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        if (tccl != null) {
+            return tccl;
         } else {
             return Reflections.class.getClassLoader();
         }
