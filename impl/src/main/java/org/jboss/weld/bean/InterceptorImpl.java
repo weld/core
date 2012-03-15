@@ -21,8 +21,8 @@ import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.interceptor.InterceptorBindingType;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
-import org.jboss.weld.interceptor.proxy.SimpleInterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
@@ -51,7 +51,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     private final InterceptorMetadata<?> interceptorMetadata;
 
-    private final Set<Annotation> interceptorBindingTypes;
+    private final Set<InterceptorBindingType> interceptorBindingTypes;
 
     private final boolean serializable;
 
@@ -63,21 +63,21 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         super(type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
         this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
         this.serializable = type.isSerializable();
-        this.interceptorBindingTypes = new HashSet<Annotation>();
-        interceptorBindingTypes.addAll(beanManager.flattenInterceptorBindings(getWeldAnnotated().getAnnotations()));
+        this.interceptorBindingTypes = new HashSet<InterceptorBindingType>();
+        interceptorBindingTypes.addAll(beanManager.extractAndFlattenInterceptorBindings(getWeldAnnotated().getAnnotations()));
         for (Class<? extends Annotation> annotation : getStereotypes()) {
-            interceptorBindingTypes.addAll(beanManager.flattenInterceptorBindings(beanManager.getStereotypeDefinition(annotation)));
+            interceptorBindingTypes.addAll(beanManager.extractAndFlattenInterceptorBindings(beanManager.getStereotypeDefinition(annotation)));
         }
         if (this.interceptorBindingTypes.size() == 0) {
             throw new DeploymentException(MISSING_BINDING_ON_INTERCEPTOR, type.getName());
         }
-        if (Beans.findInterceptorBindingConflicts(beanManager, interceptorBindingTypes)) {
+        if (Beans.findInterceptorBindingConflicts(interceptorBindingTypes)) {
             throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, getType());
         }
     }
 
     public Set<Annotation> getInterceptorBindings() {
-        return interceptorBindingTypes;
+        return InterceptorBindingType.unwrap(interceptorBindingTypes);
     }
 
     public InterceptorMetadata<?> getInterceptorMetadata() {

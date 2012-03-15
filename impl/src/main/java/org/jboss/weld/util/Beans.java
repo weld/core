@@ -36,6 +36,7 @@ import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.interceptor.InterceptorBindingType;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.introspector.MethodSignature;
@@ -457,29 +458,14 @@ public class Beans {
     }
 
     public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings, Set<Annotation> existingBindings, BeanManagerImpl manager) {
-        for (Annotation binding : expectedBindings) {
-            InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(binding.annotationType());
-            boolean matchFound = false;
-            // TODO Something wrong with annotation proxy hashcode in JDK/AnnotationLiteral hashcode, so always do a full check, don't use contains
-            for (Annotation otherBinding : existingBindings) {
-                if (bindingType.isEqual(binding, otherBinding)) {
-                    matchFound = true;
-                }
-            }
-            if (!matchFound) {
-                return false;
-            }
-        }
-        return true;
+        return manager.extractInterceptorBindings(existingBindings).containsAll(manager.extractInterceptorBindings(expectedBindings));
     }
 
-    public static boolean findInterceptorBindingConflicts(BeanManagerImpl manager, Set<Annotation> bindings) {
-        Set<Annotation> flattenedBindings = manager.flattenInterceptorBindings(bindings);
-        Map<Class<? extends Annotation>, Annotation> foundAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
-        for (Annotation binding : flattenedBindings) {
+    public static boolean findInterceptorBindingConflicts(Set<InterceptorBindingType> flattenedBindings) {
+        Map<Class<? extends Annotation>, InterceptorBindingType> foundAnnotations = new HashMap<Class<? extends Annotation>, InterceptorBindingType>();
+        for (InterceptorBindingType binding : flattenedBindings) {
             if (foundAnnotations.containsKey(binding.annotationType())) {
-                InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(binding.annotationType());
-                if (!bindingType.isEqual(binding, foundAnnotations.get(binding.annotationType()), false)) {
+                if (!binding.equals(foundAnnotations.get(binding.annotationType()))) {
                     return true;
                 }
             } else {
