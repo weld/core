@@ -27,11 +27,11 @@ import com.google.common.collect.MapMaker;
  *
  * @author Ales Justin
  */
-public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory {
+public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory implements Function<ClassLoader, Boolean> {
 
     private volatile Boolean enabled;
     @SuppressWarnings("deprecation")
-    private final Map<ClassLoader, Boolean> cached = new MapMaker().makeComputingMap(new LookupFunction());
+    private final Map<ClassLoader, Boolean> cached = new MapMaker().makeComputingMap(this);
 
     public boolean useInstantiators() {
         final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
@@ -58,9 +58,7 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory {
         cached.clear();
     }
 
-    private class LookupFunction implements Function<ClassLoader, Boolean> {
-        public Boolean apply(ClassLoader tccl) {
-            return (tccl.getResource(MARKER) != null) && checkInstantiator();
-        }
+    public Boolean apply(ClassLoader tccl) {
+        return (tccl.getResource(MARKER) != null) && checkInstantiator();
     }
 }
