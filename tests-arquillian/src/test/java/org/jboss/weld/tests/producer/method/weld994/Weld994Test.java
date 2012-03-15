@@ -5,6 +5,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,6 +16,7 @@ import javax.enterprise.inject.Instance;
  * @author Marko Luksa
  */
 @RunWith(Arquillian.class)
+@Ignore("WELD-994")
 public class Weld994Test {
     @Deployment
     public static Archive<?> deploy() {
