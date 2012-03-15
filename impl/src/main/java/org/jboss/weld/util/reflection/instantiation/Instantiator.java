@@ -20,8 +20,16 @@ package org.jboss.weld.util.reflection.instantiation;
  * An interface for instantiating classes using non-portable reflection methods
  *
  * @author Nicklas Karlsson
+ * @author Ales Justin
  */
 public interface Instantiator {
+    /**
+     * Used for checking if this particular instantiation method is available in the environment
+     *
+     * @return true if available, false otherwise
+     */
+    boolean isAvailable();
+
     /**
      * Create a new instance of a class
      *
@@ -30,11 +38,4 @@ public interface Instantiator {
      * @return The created instance
      */
     <T> T instantiate(Class<T> clazz);
-
-    /**
-     * Used for checking if this particular instantiation method is available in the environment
-     *
-     * @return True if available, false otherwise
-     */
-    boolean isAvailable();
 }
