@@ -29,7 +29,7 @@
         <arquillian.version>1.0.0.CR7</arquillian.version>
         <arquillian.ajocado.version>1.0.0.CR2</arquillian.ajocado.version>
         <arquillian.jboss.version>1.0.0.CR4</arquillian.jboss.version>
-        <arquillian.weld.version>1.0.0.CR3</arquillian.weld.version>
+        <arquillian.weld.version>1.0.0.Final-SNAPSHOT</arquillian.weld.version>
         <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
         <arquillian.tomcat7.version>1.0.0.CR2</arquillian.tomcat7.version>
         <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
