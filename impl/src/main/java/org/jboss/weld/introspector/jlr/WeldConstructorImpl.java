@@ -26,7 +26,6 @@ import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -50,6 +49,7 @@ import java.util.Set;
  * @param <T> exact type
  * @author Pete Muir
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Constructor<T>> implements WeldConstructor<T> {
     private static final Annotation[] EMPTY = new Annotation[0];
@@ -86,31 +86,7 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
 
         final Class<?>[] parameterTypes = constructor.getParameterTypes();
         if (annotatedConstructor == null) {
-            final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
-            final Type[] genericParameterTypes = constructor.getGenericParameterTypes();
-            final boolean sameLength = (parameterTypes.length == genericParameterTypes.length);
-            // If the class is a (non-static) member class, its constructors
-            // parameterTypes array will prefix the
-            // outer class instance, whilst the genericParameterTypes array isn't
-            // prefix'd -- not always true ...
-            int nesting = Reflections.getNesting(declaringClass.getJavaClass());
-            for (int i = 0; i < parameterTypes.length; i++) {
-                int gi = i - nesting;
-
-                Annotation[] annotations = (gi >= 0 && parameterAnnotations[gi].length > 0) ? parameterAnnotations[gi] : EMPTY;
-                Class<?> clazz = parameterTypes[i];
-                Type parameterType;
-                if (sameLength) {
-                    parameterType = genericParameterTypes[i];
-                } else {
-                    if (gi >= 0)
-                        parameterType = genericParameterTypes[gi];
-                    else
-                        parameterType = parameterTypes[i];
-                }
-                WeldParameter<?, T> parameter = WeldParameterImpl.of(annotations, clazz, parameterType, this, i, classTransformer);
-                this.parameters.add(parameter);
-            }
+            processParameters(classTransformer, parameterTypes);
         } else {
             if (annotatedConstructor.getParameters().size() != parameterTypes.length) {
                 throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, annotatedConstructor.getParameters().size(), annotatedConstructor, annotatedConstructor.getParameters(), Arrays.asList(parameterTypes));
@@ -123,6 +99,43 @@ public class WeldConstructorImpl<T> extends AbstractWeldCallable<T, T, Construct
 
         }
         this.signature = new ConstructorSignatureImpl(this);
+    }
+
+    private void processParameters(ClassTransformer classTransformer, Class<?>[] parameterTypes) {
+        // If the class is a non-static inner class, the methods behave like this:
+        // - constructor.getParameterTypes() returns the VM signature of the constructor (in the case of non-static inner classes: outer class + the actual parameters)
+        // - constructor.getGenericParameterTypes() is tricky, because the array it returns depends on whether any of
+        //   the constructor's parameters use generics (see http://bugs.sun.com/view_bug.do?bug_id=5087240):
+        //   - if any of the constructor's parameters use generics (e.g. Constructor(List<String> list)):
+        //     constructor.getGenericParameterTypes() returns the outer class + the actual parameters
+        //   - if none of the constructor's parameters use generics (e.g. Constructor(List list):
+        //     constructor.getGenericParameterTypes() returns ONLY the actual parameters
+        // - constructor.getParameterAnnotations() is tricky in the same way as above, but it depends on whether any of
+        //   the parameters has an annotation or not
+
+        final Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
+        final Type[] genericParameterTypes = constructor.getGenericParameterTypes();
+
+        int numberOfMissingGenericParameters = parameterTypes.length - genericParameterTypes.length;
+        int numberOfMissingParameterAnnotations = parameterTypes.length - parameterAnnotations.length;
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Type parameterType;
+            if (i < numberOfMissingGenericParameters) {
+                parameterType = parameterTypes[i];
+            } else {
+                parameterType = genericParameterTypes[i - numberOfMissingGenericParameters];
+            }
+
+            Annotation[] annotations;
+            if (i < numberOfMissingParameterAnnotations) {
+                annotations = EMPTY;
+            } else {
+                annotations = parameterAnnotations[i - numberOfMissingParameterAnnotations];
+            }
+
+            this.parameters.add(WeldParameterImpl.of(annotations, parameterTypes[i], parameterType, this, i, classTransformer));
+        }
     }
 
     /**
