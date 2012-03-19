@@ -100,7 +100,9 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
         String actionUrl = super.getActionURL(facesContext, viewId);
         Conversation conversation = getConversationContext().getCurrentConversation();
         if (!getSource().equals(Source.BOOKMARKABLE) && !conversation.isTransient()) {
-            return new FacesUrlTransformer(actionUrl, facesContext).appendConversationIdIfNecessary(getConversationContext().getParameterName(), conversation.getId()).getUrl();
+            return new FacesUrlTransformer(actionUrl, facesContext)
+                .appendConversationIdIfNecessary(getConversationContext().getParameterName(), conversation.getId())
+                .getUrl();
         } else {
             return actionUrl;
         }

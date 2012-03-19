@@ -25,6 +25,7 @@ import javax.faces.context.FacesContext;
  *
  * @author Nicklas Karlsson
  * @author Dan Allen
+ * @author Marko Luksa
  */
 public class FacesUrlTransformer {
     private static final String HTTP_PROTOCOL_URL_PREFIX = "http://";
@@ -82,7 +83,26 @@ public class FacesUrlTransformer {
     }
 
     public FacesUrlTransformer toActionUrl() {
-        url = context.getApplication().getViewHandler().getActionURL(context, url);
+        String actionUrl = context.getApplication().getViewHandler().getActionURL(context, url);
+
+        int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
+        if (queryStringIndex < 0) {
+            url = actionUrl;
+        } else {
+            String queryParameters = url.substring(queryStringIndex + 1);
+
+            int actionQueryStringIndex = actionUrl.indexOf(QUERY_STRING_DELIMITER);
+            if (actionQueryStringIndex < 0) {
+                url = actionUrl + QUERY_STRING_DELIMITER + queryParameters;
+            } else {
+                String actionQueryParameters = actionUrl.substring(actionQueryStringIndex + 1);
+                if (queryParameters.startsWith(actionQueryParameters)) {
+                    url = actionUrl.substring(0, actionQueryStringIndex) + QUERY_STRING_DELIMITER + queryParameters;
+                } else {
+                    url = actionUrl + PARAMETER_PAIR_DELIMITER + queryParameters;
+                }
+            }
+        }
         return this;
     }
 
