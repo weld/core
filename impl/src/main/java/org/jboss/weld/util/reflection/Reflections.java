@@ -130,11 +130,15 @@ public class Reflections {
     }
 
     public static int getNesting(Class<?> clazz) {
-        if (clazz.isMemberClass() && !isStatic(clazz)) {
+        if (isNonStaticInnerClass(clazz)) {
             return 1 + getNesting(clazz.getDeclaringClass());
         } else {
             return 0;
         }
+    }
+
+    public static boolean isNonStaticInnerClass(Class<?> clazz) {
+        return clazz.isMemberClass() && !isStatic(clazz);
     }
 
     /**
