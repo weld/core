@@ -49,6 +49,7 @@ import static org.slf4j.ext.XLogger.Level.INFO;
 /**
  * @author pmuir
  * @author alesj
+ * @author Marko Luksa
  */
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> {
 
@@ -73,23 +74,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public BeanDeployer addClass(String className) {
-        Class<?> clazz = null;
-        try {
-            clazz = resourceLoader.classForName(className);
-        } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-            xlog.catching(INFO, e);
-        }
-
-        if (clazz != null && !clazz.isAnnotation() && !clazz.isEnum()) {
-            WeldClass<?> weldClass = null;
-            try {
-                weldClass = classTransformer.loadClass(clazz);
-            } catch (ResourceLoadingException e) {
-                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-                xlog.catching(INFO, e);
-            }
-
+        Class<?> clazz = loadClass(className);
+        if (clazz != null && !clazz.isAnnotation() && !clazz.isEnum() && !Reflections.isNonStaticInnerClass(clazz)) {
+            WeldClass<?> weldClass = loadWeldClass(clazz);
             if (weldClass != null) {
                 ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), weldClass);
                 if (!event.isVeto()) {
@@ -104,6 +91,26 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             }
         }
         return this;
+    }
+
+    private Class<?> loadClass(String className) {
+        try {
+            return resourceLoader.classForName(className);
+        } catch (ResourceLoadingException e) {
+            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+            xlog.catching(INFO, e);
+            return null;
+        }
+    }
+
+    private WeldClass<?> loadWeldClass(Class<?> clazz) {
+        try {
+            return classTransformer.loadClass(clazz);
+        } catch (ResourceLoadingException e) {
+            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName());
+            xlog.catching(INFO, e);
+            return null;
+        }
     }
 
     public BeanDeployer addClass(AnnotatedType<?> clazz) {
