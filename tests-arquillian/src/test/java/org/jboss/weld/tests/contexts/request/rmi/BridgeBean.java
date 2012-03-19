@@ -5,7 +5,9 @@ import javax.inject.Inject;
 
 @Stateless
 public class BridgeBean implements Bridge {
-    @Inject @My private Config config;
+    @Inject
+    @My
+    private Config config;
 
     public String doSomething() {
         System.out.println("Bridge.doSomething.");
