@@ -31,13 +31,12 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class DecoratorInjectionTest {
+public class DependentScopeInjectionTest {
 
     @Deployment
     public static Archive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
-                .decorate(BarDecorator.class)
-                .addPackage(DecoratorInjectionTest.class.getPackage());
+                .addClasses(Bar.class, BarImpl.class, Foo.class, Holder.class);
     }
 
     @Test
@@ -45,6 +44,7 @@ public class DecoratorInjectionTest {
         final Foo f1 = holder.foo();
         Assert.assertNotNull(f1);
         final Foo f2 = f1.foo();
+        Assert.assertNotNull(f2);
         Assert.assertTrue(f1 != f2);
     }
 }

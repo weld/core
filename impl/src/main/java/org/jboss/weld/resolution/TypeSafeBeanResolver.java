@@ -16,19 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MapMaker;
-import com.google.common.primitives.Primitives;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.LazyValueHolder;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Provider;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -41,6 +28,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Provider;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MapMaker;
+import com.google.common.primitives.Primitives;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.reflection.Reflections;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -60,6 +61,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
         private BeanDisambiguation() {
         }
 
+        @SuppressWarnings("unchecked")
         public Set<Bean<?>> apply(Set<Bean<?>> from) {
             if (from.size() > 1) {
                 Set<Bean<?>> allBeans = new HashSet<Bean<?>>();
@@ -72,11 +74,11 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
                     allBeans.add(bean);
                 }
                 if (alternativeBeans.isEmpty())
-                    return ImmutableSet.copyOf(allBeans);
+                    return ImmutableSet.copyOf((Iterable) allBeans);
                 else
-                    return ImmutableSet.copyOf(alternativeBeans);
+                    return ImmutableSet.copyOf((Iterable) alternativeBeans);
             } else {
-                return ImmutableSet.copyOf(from);
+                return ImmutableSet.copyOf((Iterable) from);
             }
         }
 
@@ -200,7 +202,8 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
         * We need to defensively copy the beans set as it can be provided by
         * the user in which case this algorithm will have thread safety issues
         */
-        beans = ImmutableSet.copyOf(beans);
+        //noinspection unchecked
+        beans = ImmutableSet.copyOf((Iterable) beans);
         //noinspection SuspiciousMethodCalls
         return cast(disambiguatedBeans.get(beans));
     }

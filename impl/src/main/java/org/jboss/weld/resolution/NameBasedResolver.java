@@ -16,16 +16,17 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.enterprise.inject.spi.Bean;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-
-import javax.enterprise.inject.spi.Bean;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Implementation of name based bean resolution
@@ -51,7 +52,8 @@ public class NameBasedResolver {
                     matchedBeans.add(bean);
                 }
             }
-            return ImmutableSet.copyOf(Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager));
+            //noinspection unchecked
+            return ImmutableSet.copyOf((Iterable) Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager));
         }
 
     }

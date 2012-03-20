@@ -16,6 +16,38 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.PassivationCapable;
+import javax.inject.Named;
+import javax.inject.Scope;
+
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
@@ -56,40 +88,43 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.inject.Named;
-import javax.inject.Scope;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ValidatorMessage.*;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
+import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
+import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_OBSERVER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DISPOSAL_METHODS_WITHOUT_PRODUCER;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_DEPENDENT_BEAN;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_WILDCARD;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_WITH_TYPE_VARIABLE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
+import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
@@ -97,6 +132,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  *
  * @author Nicklas Karlsson
  * @author David Allen
+ * @author Stuart Douglas
+ * @author Ales Justin
  */
 public class Validator implements Service {
 
@@ -144,8 +181,8 @@ public class Validator implements Service {
                 }
             }
             // for each producer method validate its disposer method
-            if (bean instanceof ProducerMethod<?, ?> && ((ProducerMethod<?, ?>)bean).getDisposalMethod() != null) {
-                DisposalMethod<?, ?> disposalMethod = ((ProducerMethod<?, ?>)bean).getDisposalMethod();
+            if (bean instanceof ProducerMethod<?, ?> && ((ProducerMethod<?, ?>) bean).getDisposalMethod() != null) {
+                DisposalMethod<?, ?> disposalMethod = ((ProducerMethod<?, ?>) bean).getDisposalMethod();
                 for (InjectionPoint ip : disposalMethod.getInjectionPoints()) {
                     // pass the producer bean instead of the disposal method bean
                     validateInjectionPoint(ip, bean, beanManager);
@@ -166,7 +203,7 @@ public class Validator implements Service {
 
                         if (passivationCapabilityCheckRequired) {
                             Interceptor<?> interceptor = serializableContextual.get();
-                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable()  : (interceptor instanceof PassivationCapable);
+                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : (interceptor instanceof PassivationCapable);
                             if (isSerializable == false)
                                 throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, interceptor);
                         }
@@ -202,7 +239,7 @@ public class Validator implements Service {
             boolean passivationCapabilityCheckRequired = isPassivationCapabilityCheckRequired(beanManager, classBean);
             for (Decorator<?> decorator : classBean.getDecorators()) {
                 if (passivationCapabilityCheckRequired) {
-                    boolean isSerializable = (decorator instanceof WeldDecorator<?>) ? (((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable())  : (decorator instanceof PassivationCapable);
+                    boolean isSerializable = (decorator instanceof WeldDecorator<?>) ? (((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) : (decorator instanceof PassivationCapable);
                     if (!isSerializable) {
                         throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
                     }
@@ -228,7 +265,7 @@ public class Validator implements Service {
         if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(classBean.getScope()).isPassivating()) {
             return true;
         }
-        if ((classBean instanceof SessionBean<?>) && ((SessionBean<?>)classBean).getEjbDescriptor().isStateful()) {
+        if ((classBean instanceof SessionBean<?>) && ((SessionBean<?>) classBean).getEjbDescriptor().isStateful()) {
             return true;
         }
         return false;
@@ -580,12 +617,30 @@ public class Validator implements Service {
     private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans) {
         Set<Bean<?>> resolved = beanManager.getBeans(ij);
         try {
-            Bean<? extends Object> bean = beanManager.resolve(resolved);
+            Bean<?> bean = beanManager.resolve(resolved);
             if (bean != null) {
                 if (!(bean instanceof AbstractBuiltInBean<?>)) {
-                    boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
-                    if (!normalScoped) {
-                        reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+                    if (ij.isDelegate()) {
+                        boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+                        if (!normalScoped) {
+                            reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+                        }
+                    } else {
+                        List<Decorator<?>> decorators = beanManager.resolveDecorators(bean.getTypes(), bean.getQualifiers());
+                        MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
+                        if (decorators.isEmpty()) {
+                            boolean normalScoped = store.getScopeModel(bean.getScope()).isNormal();
+                            if (!normalScoped) {
+                                reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+                            }
+                        } else {
+                            for (Decorator<?> decorator : decorators) {
+                                boolean normalScoped = store.getScopeModel(decorator.getScope()).isNormal();
+                                if (!normalScoped) {
+                                    reallyValidatePseudoScopedBean(decorator, beanManager, dependencyPath, validatedBeans);
+                                }
+                            }
+                        }
                     }
                 }
             }
