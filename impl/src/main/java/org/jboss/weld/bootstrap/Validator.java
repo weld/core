@@ -135,6 +135,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @author Nicklas Karlsson
  * @author David Allen
  * @author Jozef Hartinger
+ * @author Stuart Douglas
+ * @author Ales Justin
  */
 public class Validator implements Service {
 
@@ -204,7 +206,7 @@ public class Validator implements Service {
 
                         if (passivationCapabilityCheckRequired) {
                             Interceptor<?> interceptor = serializableContextual.get();
-                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable()  : (interceptor instanceof PassivationCapable);
+                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : (interceptor instanceof PassivationCapable);
                             if (isSerializable == false)
                                 throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, interceptor);
                         }
@@ -240,7 +242,7 @@ public class Validator implements Service {
             boolean passivationCapabilityCheckRequired = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(classBean.getScope()).isPassivating();
             for (Decorator<?> decorator : classBean.getDecorators()) {
                 if (passivationCapabilityCheckRequired) {
-                    boolean isSerializable = (decorator instanceof WeldDecorator<?>) ? (((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable())  : (decorator instanceof PassivationCapable);
+                    boolean isSerializable = (decorator instanceof WeldDecorator<?>) ? (((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) : (decorator instanceof PassivationCapable);
                     if (!isSerializable) {
                         throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
                     }
@@ -637,12 +639,30 @@ public class Validator implements Service {
     private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans) {
         Set<Bean<?>> resolved = beanManager.getBeans(ij);
         try {
-            Bean<? extends Object> bean = beanManager.resolve(resolved);
+            Bean<?> bean = beanManager.resolve(resolved);
             if (bean != null) {
                 if (!(bean instanceof AbstractBuiltInBean<?>)) {
-                    boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
-                    if (!normalScoped) {
-                        reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+                    if (ij.isDelegate()) {
+                        boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+                        if (!normalScoped) {
+                            reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+                        }
+                    } else {
+                        List<Decorator<?>> decorators = beanManager.resolveDecorators(bean.getTypes(), bean.getQualifiers());
+                        MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
+                        if (decorators.isEmpty()) {
+                            boolean normalScoped = store.getScopeModel(bean.getScope()).isNormal();
+                            if (!normalScoped) {
+                                reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
+                            }
+                        } else {
+                            for (Decorator<?> decorator : decorators) {
+                                boolean normalScoped = store.getScopeModel(decorator.getScope()).isNormal();
+                                if (!normalScoped) {
+                                    reallyValidatePseudoScopedBean(decorator, beanManager, dependencyPath, validatedBeans);
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -15,42 +15,33 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.decorators.custom;
-
-import javax.enterprise.inject.spi.Extension;
+package org.jboss.weld.tests.resolution.weld911;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.test.util.Utils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * @author Marius Bogoevici
+ * @author Christian Bauer
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class CustomDecoratorTest {
+public class DecoratorCycleTest {
 
     @Deployment
-    public static Archive<?> deployment() {
+    @ShouldThrowException(Exception.class)
+    public static Archive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
-                .decorate(CustomWindowFrame.class)
-                .addAsServiceProvider(Extension.class, CustomDecoratorDeploymentObserver.class)
-                .addPackage(CustomDecoratorTest.class.getPackage())
-                .addClass(Utils.class);
+                .decorate(BarDecorator.class)
+                .addClasses(Bar.class, BarDecorator.class, BarImplDependent.class, Foo.class, Holder.class);
     }
 
     @Test
-    public void testCustomDecoratorAppliedByItself(Window window) {
-        WindowImpl.reset();
-
-        window.draw();
-        Assert.assertTrue(WindowImpl.drawn);
-        Assert.assertTrue(CustomWindowFrame.drawn);
+    public void testFoo() {
     }
-
 }
