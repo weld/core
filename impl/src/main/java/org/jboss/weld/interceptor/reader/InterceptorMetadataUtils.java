@@ -94,7 +94,7 @@ public class InterceptorMetadataUtils {
         }
 
         Class<?>[] exceptionTypes = method.getJavaMethod().getExceptionTypes();
-        if (exceptionTypes.length != 1 && Exception.class.equals(exceptionTypes[0])) {
+        if (exceptionTypes.length != 1 || !Exception.class.equals(exceptionTypes[0])) {
             throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_THROW_EXCEPTION, method.getJavaMethod());
         }
 
