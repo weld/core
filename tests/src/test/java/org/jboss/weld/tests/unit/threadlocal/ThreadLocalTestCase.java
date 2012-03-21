@@ -1,18 +1,19 @@
 package org.jboss.weld.tests.unit.threadlocal;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
-import org.junit.Assert;
-import org.junit.Test;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -105,8 +106,8 @@ public class ThreadLocalTestCase {
             String keyName = String.valueOf(entry.getKey());
             if (keyName != null) {
                 Assert.assertFalse(
-                        "ThreadLocal variable with key [" + keyName + "] with value[" + entry.getValue() + "] found",
-                        keyName.startsWith("org.jboss.weld"));
+                        keyName.startsWith("org.jboss.weld"),
+                        "ThreadLocal variable with key [" + keyName + "] with value[" + entry.getValue() + "] found");
             }
         }
     }

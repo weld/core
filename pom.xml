@@ -52,7 +52,7 @@
         <jbossas.client.version>6.1.0.Final</jbossas.client.version>
         <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
         <jboss.as7.tck-runner.version>1.0.0.CR2</jboss.as7.tck-runner.version>
-        <jboss.as7.version>7.1.0.Final</jboss.as7.version>
+        <jboss.as7.version>7.1.1.Final</jboss.as7.version>
         <jboss.ejb3.ext-api.version>1.1.1</jboss.ejb3.ext-api.version>
         <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>
         <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
@@ -537,34 +537,34 @@
                         </execution>
                     </executions>
                 </plugin>
-                
+
                 <!-- So m2e doesn't throw errors for features it doesn't support in the 
-		        POM -->
-		        <plugin>
-		          <groupId>org.eclipse.m2e</groupId>
-		          <artifactId>lifecycle-mapping</artifactId>
-		          <version>1.0.0</version>
-		          <configuration>
-		            <lifecycleMappingMetadata>
-		              <pluginExecutions>
-		                <pluginExecution>
-		                  <pluginExecutionFilter>
-		                    <groupId>org.apache.maven.plugins</groupId>
-		                    <artifactId>maven-checkstyle-plugin</artifactId>
-		                    <versionRange>[1.0.0,)</versionRange>
-		                    <goals>
-		                      <goal>checkstyle</goal>
-		                    </goals>
-		                  </pluginExecutionFilter>
-		                  <action>
-		                    <execute />
-		                  </action>
-		                </pluginExecution>
-		              </pluginExecutions>
-		            </lifecycleMappingMetadata>
-		          </configuration>
-		        </plugin>
-                
+                    POM -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-checkstyle-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>checkstyle</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+
             </plugins>
 
         </pluginManagement>
@@ -574,10 +574,10 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
             <!-- m2e Config -->
-		    <plugin>
-		        <groupId>org.eclipse.m2e</groupId>
-		        <artifactId>lifecycle-mapping</artifactId>
-		    </plugin>
+            <plugin>
+                <groupId>org.eclipse.m2e</groupId>
+                <artifactId>lifecycle-mapping</artifactId>
+            </plugin>
         </plugins>
     </build>
 

@@ -16,14 +16,7 @@
  */
 package org.jboss.weld.tests.unit.util;
 
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
-import org.jboss.weld.metadata.TypeStore;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
-import org.jboss.weld.util.AnnotatedTypes;
-import org.junit.Assert;
-import org.testng.annotations.Test;
+import java.util.Iterator;
 
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
@@ -31,7 +24,15 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.util.AnnotationLiteral;
-import java.util.Iterator;
+
+import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.introspector.jlr.WeldClassImpl;
+import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
+import org.jboss.weld.util.AnnotatedTypes;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 
 /**
@@ -85,23 +86,20 @@ public class AnnotatedTypesTest {
         AnnotatedType<Chair> chair3 = builder.create();
         AnnotatedField<? super Chair> field = chair3.getFields().iterator().next();
         String id = AnnotatedTypes.createFieldId(field);
-        Assert.assertEquals("wrong id for field :" + id,
-                "org.jboss.weld.tests.unit.util.Chair.legs[@javax.enterprise.inject.Produces()]", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair.legs[@javax.enterprise.inject.Produces()]", id, "wrong id for field :" + id);
 
         builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
         chair3 = builder.create();
         field = chair3.getFields().iterator().next();
         id = AnnotatedTypes.createFieldId(field);
-        Assert.assertEquals("wrong id for field :" + id,
-                "org.jboss.weld.tests.unit.util.Chair.legs", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair.legs", id, "wrong id for field :" + id);
 
         builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
         builder.addToField(Chair.class.getField("legs"), new ComfyChairLiteral());
         chair3 = builder.create();
         field = chair3.getFields().iterator().next();
         id = AnnotatedTypes.createFieldId(field);
-        Assert.assertEquals("wrong id for field :" + id,
-                "org.jboss.weld.tests.unit.util.Chair.legs[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair.legs[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]", id, "wrong id for field :" + id);
     }
 
     @Test
@@ -113,8 +111,7 @@ public class AnnotatedTypesTest {
         AnnotatedMethod<? super Chair> method = it.next();
         while (!method.getJavaMember().getName().equals("sit")) method = it.next();
         String id = AnnotatedTypes.createCallableId(method);
-        Assert.assertEquals("wrong id for method :" + id,
-                "org.jboss.weld.tests.unit.util.Chair.sit[@javax.enterprise.inject.Produces()]()", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair.sit[@javax.enterprise.inject.Produces()]()", id, "wrong id for method :" + id);
 
         builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
         chair3 = builder.create();
@@ -122,8 +119,7 @@ public class AnnotatedTypesTest {
         method = it.next();
         while (!method.getJavaMember().getName().equals("sit")) method = it.next();
         id = AnnotatedTypes.createCallableId(method);
-        Assert.assertEquals("wrong id for method :" + id,
-                "org.jboss.weld.tests.unit.util.Chair.sit()", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair.sit()", id, "wrong id for method :" + id);
 
         builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
         builder.addToMethod(Chair.class.getMethod("sit"), new ComfyChairLiteral());
@@ -132,8 +128,7 @@ public class AnnotatedTypesTest {
         method = it.next();
         while (!method.getJavaMember().getName().equals("sit")) method = it.next();
         id = AnnotatedTypes.createCallableId(method);
-        Assert.assertEquals("wrong id for method :" + id,
-                "org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]()", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]()", id, "wrong id for method :" + id);
     }
 
     @Test
@@ -142,21 +137,18 @@ public class AnnotatedTypesTest {
         builder.addToMethod(Chair.class.getMethod("sit"), new ProducesLiteral());
         AnnotatedType<Chair> chair3 = builder.create();
         String id = AnnotatedTypes.createTypeId(chair3);
-        Assert.assertEquals("wrong id for type :" + id,
-                "org.jboss.weld.tests.unit.util.Chair{org.jboss.weld.tests.unit.util.Chair.sit[@javax.enterprise.inject.Produces()]();}", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair{org.jboss.weld.tests.unit.util.Chair.sit[@javax.enterprise.inject.Produces()]();}", id, "wrong id for type :" + id);
 
         builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
         chair3 = builder.create();
         id = AnnotatedTypes.createTypeId(chair3);
-        Assert.assertEquals("wrong id for type :" + id,
-                "org.jboss.weld.tests.unit.util.Chair{}", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair{}", id, "wrong id for type :" + id);
 
         builder = new TestAnnotatedTypeBuilder<Chair>(Chair.class);
         builder.addToMethod(Chair.class.getMethod("sit"), new ComfyChairLiteral());
         chair3 = builder.create();
         id = AnnotatedTypes.createTypeId(chair3);
-        Assert.assertEquals("wrong id for type :" + id,
-                "org.jboss.weld.tests.unit.util.Chair{org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]();}", id);
+        Assert.assertEquals("org.jboss.weld.tests.unit.util.Chair{org.jboss.weld.tests.unit.util.Chair.sit[@org.jboss.weld.tests.unit.util.ComfyChair(softness=1)]();}", id, "wrong id for type :" + id);
     }
 
     private static class DefaultLiteral extends AnnotationLiteral<Default> implements Default {

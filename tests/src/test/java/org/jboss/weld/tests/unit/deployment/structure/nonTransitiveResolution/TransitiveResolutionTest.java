@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
+
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.FlatDeployment;
@@ -25,20 +31,12 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
-import java.util.Arrays;
-import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.jboss.weld.test.util.Utils.getReference;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 public class TransitiveResolutionTest {
     /*
@@ -183,13 +181,13 @@ public class TransitiveResolutionTest {
         BasicInterceptor.reset();
         Simple simple = getReference(ejbJarBeanManager, Simple.class);
         simple.ping("14");
-        assertNull(BasicInterceptor.getTarget());
+        Assert.assertNull(BasicInterceptor.getTarget());
 
         BasicInterceptor.reset();
         Complex complex = getReference(warBeanManager, Complex.class);
         complex.ping("14");
-        assertNotNull(BasicInterceptor.getTarget());
-        assertTrue(BasicInterceptor.getTarget() instanceof Complex);
+        Assert.assertNotNull(BasicInterceptor.getTarget());
+        Assert.assertTrue(BasicInterceptor.getTarget() instanceof Complex);
         assertEquals("14", ((Complex) BasicInterceptor.getTarget()).getId());
     }
 
