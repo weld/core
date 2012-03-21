@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,8 +32,10 @@ import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.manager.api.WeldManager;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 @SuppressWarnings("unchecked")
 public class BeansXmlTest {

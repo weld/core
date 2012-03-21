@@ -21,7 +21,7 @@
  */
 package org.jboss.weld.tests.unit.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.util.Beans;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class BeansTest {
 

@@ -20,7 +20,7 @@ import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bootstrap.api.Environments;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ContainerStatusTest {

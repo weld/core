@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.resolution;
 
+import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
@@ -32,12 +36,9 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.enterprise.inject.spi.Bean;
-import java.util.Set;
 
 import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
 
