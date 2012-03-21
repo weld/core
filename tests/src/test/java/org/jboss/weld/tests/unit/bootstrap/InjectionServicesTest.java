@@ -16,14 +16,14 @@
  */
 package org.jboss.weld.tests.unit.bootstrap;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.injection.spi.InjectionServices;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
 public class InjectionServicesTest {
 

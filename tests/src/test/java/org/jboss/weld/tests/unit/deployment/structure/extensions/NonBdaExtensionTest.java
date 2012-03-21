@@ -16,16 +16,16 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.extensions;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.test.util.Utils;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.enterprise.inject.spi.BeanManager;
 
 public class NonBdaExtensionTest {
     /*
