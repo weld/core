@@ -25,67 +25,67 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class FiringArrayEventTest {
 
-	@Inject
-	private BeanManager manager;
-	
-	@Inject
-	private ArrayObserverBean observerBean;
-	
-	@Inject
-	private Event<int[]> arrayEvent;
+    @Inject
+    private BeanManager manager;
 
-	@Deployment
-	public static Archive<?> createTestArchive() {
-		return ShrinkWrap.create(JavaArchive.class, "weld_events.jar")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				.addClass(ArrayObserverBean.class);
-	}
-	
-	@Before
-	public void setup(){
-		this.observerBean.reset();
-	}
+    @Inject
+    private ArrayObserverBean observerBean;
 
-	@Test
-	public void injected_not_null() {
-		Assert.assertNotNull("BeanManager should not be null", this.manager);
-		Assert.assertNotNull("ObserverBean should not be null", this.observerBean);
-	}
+    @Inject
+    private Event<int[]> arrayEvent;
 
-	@Test
-	public void test_resolver_array() {
+    @Deployment
+    public static Archive<?> createTestArchive() {
+        return ShrinkWrap.create(JavaArchive.class, "weld_events.jar")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addClass(ArrayObserverBean.class);
+    }
 
-		final Set<ObserverMethod<? super int[]>> observers = this.manager
-				.resolveObserverMethods(new int[]{});
+    @Before
+    public void setup() {
+        this.observerBean.reset();
+    }
 
-		Assert.assertEquals("should have one observer", 1, observers.size());
-		Assert.assertFalse("should have not received update", this.observerBean.isReceivedUpdate());
-		Assert.assertNull("should have not received update", this.observerBean.getData());
+    @Test
+    public void injected_not_null() {
+        Assert.assertNotNull("BeanManager should not be null", this.manager);
+        Assert.assertNotNull("ObserverBean should not be null", this.observerBean);
+    }
 
-		int[] data = new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE};
-		
-		for (final ObserverMethod<? super int[]> observer : observers) {
-			observer.notify(data);
-		}
-		
-		Assert.assertTrue("should have received update", this.observerBean.isReceivedUpdate());
-		Assert.assertArrayEquals("should have received update", this.observerBean.getData(), data);
-		
-	}
-	
-	@Test
-	public void test_event_array() {
+    @Test
+    public void test_resolver_array() {
 
-		Assert.assertFalse("should have not received update", this.observerBean.isReceivedUpdate());
-		Assert.assertNull("should have not received update", this.observerBean.getData());
+        final Set<ObserverMethod<? super int[]>> observers = this.manager
+            .resolveObserverMethods(new int[]{});
 
-		int[] data = new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE};
-		
-		this.arrayEvent.fire(data);
-		// should not fail, this test should behave same as test_resolver_array()
-		Assert.assertTrue("should have received update", this.observerBean.isReceivedUpdate());
-		Assert.assertArrayEquals("should have received update", this.observerBean.getData(), data);
-		
-	}
+        Assert.assertEquals("should have one observer", 1, observers.size());
+        Assert.assertFalse("should have not received update", this.observerBean.isReceivedUpdate());
+        Assert.assertNull("should have not received update", this.observerBean.getData());
+
+        int[] data = new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE};
+
+        for (final ObserverMethod<? super int[]> observer : observers) {
+            observer.notify(data);
+        }
+
+        Assert.assertTrue("should have received update", this.observerBean.isReceivedUpdate());
+        Assert.assertArrayEquals("should have received update", this.observerBean.getData(), data);
+
+    }
+
+    @Test
+    public void test_event_array() {
+
+        Assert.assertFalse("should have not received update", this.observerBean.isReceivedUpdate());
+        Assert.assertNull("should have not received update", this.observerBean.getData());
+
+        int[] data = new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE};
+
+        this.arrayEvent.fire(data);
+        // should not fail, this test should behave same as test_resolver_array()
+        Assert.assertTrue("should have received update", this.observerBean.isReceivedUpdate());
+        Assert.assertArrayEquals("should have received update", this.observerBean.getData(), data);
+
+    }
 
 }

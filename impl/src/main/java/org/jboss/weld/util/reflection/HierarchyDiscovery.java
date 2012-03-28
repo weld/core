@@ -21,6 +21,8 @@ import com.google.common.collect.HashBiMap;
 import org.jboss.weld.util.collections.ArraySet;
 import org.slf4j.ext.XLogger.Level;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -34,6 +36,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.SECURITY_EXCEPTION_SCA
 /**
  * @author Weld Community
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class HierarchyDiscovery {
 
@@ -90,6 +93,14 @@ public class HierarchyDiscovery {
                 Class<?> clazz = (Class<?>) type;
                 add(clazz, resolveType(clazz));
                 discoverFromClass(clazz);
+            } else if (type instanceof GenericArrayType) {
+                GenericArrayType arrayType = (GenericArrayType) type;
+                Type genericComponentType = arrayType.getGenericComponentType();
+                if (genericComponentType instanceof Class<?>) {
+                    Class<?> arrayClass = Array.newInstance((Class<?>) genericComponentType, 0).getClass();
+                    add(arrayClass, resolveType(arrayClass));
+                    discoverFromClass(arrayClass);
+                }
             } else {
                 if (type instanceof ParameterizedType) {
                     Type rawType = ((ParameterizedType) type).getRawType();

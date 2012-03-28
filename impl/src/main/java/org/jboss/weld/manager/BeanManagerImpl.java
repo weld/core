@@ -428,12 +428,25 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return cast(observerResolver.resolve(new ResolvableBuilder(this).addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType)).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
+        Resolvable resolvable = new ResolvableBuilder(this)
+            .addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType))
+            .addType(Object.class)
+            .addQualifiers(qualifiers)
+            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .create();
+        return cast(observerResolver.resolve(resolvable, true));
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return cast(observerResolver.resolve(new ResolvableBuilder(this).addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType)).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
+        Set<Type> typeClosure = services.get(SharedObjectCache.class).getTypeClosure(eventType);
+        Resolvable resolvable = new ResolvableBuilder(this)
+            .addTypes(typeClosure)
+            .addType(Object.class)
+            .addQualifiers(qualifiers)
+            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .create();
+        return cast(observerResolver.resolve(resolvable, true));
     }
 
     /**
