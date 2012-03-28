@@ -266,7 +266,7 @@ public class ProxyFactory<T> {
             // Create the proxy class for this instance
             try {
                 proxyClass = createProxyClass(proxyClassName);
-            } catch (Exception e1) {
+            } catch (Throwable e1) {
                 //attempt to load the class again, just in case another thread
                 //defined it between the check and the create method
                 try {
