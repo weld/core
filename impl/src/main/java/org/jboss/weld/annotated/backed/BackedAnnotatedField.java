@@ -19,6 +19,11 @@ public class BackedAnnotatedField<X> extends BackedAnnotatedMember<X> implements
         return new BackedAnnotatedField<X>(originalField.getBaseType(), originalField.getJavaMember(), downcastDeclaringType);
     }
 
+    public static <X, Y extends X> AnnotatedField<X> of(Field field, AnnotatedType<Y> declaringType) {
+        AnnotatedType<X> downcastDeclaringType = cast(declaringType);
+        return new BackedAnnotatedField<X>(field.getGenericType(), field, downcastDeclaringType);
+    }
+
     private final Field field;
 
     public BackedAnnotatedField(Type baseType, Field field, AnnotatedType<X> declaringType) {

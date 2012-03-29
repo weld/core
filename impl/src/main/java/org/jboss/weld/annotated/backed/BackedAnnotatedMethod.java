@@ -7,6 +7,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,11 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import com.google.common.collect.ImmutableSet;
 
 public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implements AnnotatedMethod<X> {
+
+    public static <X, Y extends X> AnnotatedMethod<X> of(Method method, AnnotatedType<Y> declaringType) {
+        AnnotatedType<X> downcastDeclaringType = cast(declaringType);
+        return new BackedAnnotatedMethod<X>(method, downcastDeclaringType);
+    }
 
     public static <X, Y extends X> AnnotatedMethod<X> of(AnnotatedMethod<X> originalMethod, AnnotatedType<Y> declaringType) {
         AnnotatedType<X> downcastDeclaringType = cast(declaringType);
@@ -34,6 +40,28 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
             parameters.add(new BackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getAnnotations(), originalParameter.getPosition(), this));
         }
         this.parameters = unmodifiableList(parameters);
+    }
+
+    public BackedAnnotatedMethod(Method method, AnnotatedType<X> declaringType) {
+        super(method.getGenericReturnType(), declaringType);
+        this.method = method;
+
+        final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        final Type[] genericParameterTypes = method.getGenericParameterTypes();
+
+        List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(genericParameterTypes.length);
+
+        for (int i = 0; i < genericParameterTypes.length; i++) {
+            Type parameterType = genericParameterTypes[i];
+            Set<Annotation> annotations = null;
+            if (parameterAnnotations[i].length > 0) {
+                annotations = ImmutableSet.copyOf(parameterAnnotations[0]);
+            } else {
+                annotations = Collections.emptySet();
+            }
+            parameters.add(BackedAnnotatedParameter.of(parameterType, annotations, i, this));
+        }
+        this.parameters = Collections.unmodifiableList(parameters);
     }
 
     public Method getJavaMember() {
@@ -55,5 +83,4 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
     public List<AnnotatedParameter<X>> getParameters() {
         return parameters;
     }
-
 }

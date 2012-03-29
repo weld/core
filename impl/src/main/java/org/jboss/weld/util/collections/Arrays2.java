@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.util.collections;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,6 +26,8 @@ import java.util.Set;
  * @author pmuir
  */
 public class Arrays2 {
+
+    public static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
     private Arrays2() {
     }

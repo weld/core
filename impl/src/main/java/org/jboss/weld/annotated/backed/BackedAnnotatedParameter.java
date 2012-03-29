@@ -11,6 +11,10 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X> {
 
+    public static <X> AnnotatedParameter<X> of(Type baseType, Set<Annotation> annotations, int position, AnnotatedCallable<X> declaringCallable) {
+        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable);
+    }
+
     private final int position;
     private final AnnotatedCallable<X> declaringCallable;
     private final Set<Annotation> annotations;
