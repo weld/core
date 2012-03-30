@@ -31,8 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.annotated.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -74,8 +76,8 @@ public class BeanDeployerEnvironment {
      */
     public static BeanDeployerEnvironment newConcurrentEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         return new BeanDeployerEnvironment(
-                Sets.newSetFromMap(new ConcurrentHashMap<WeldClass<?>, Boolean>()),
-                new ConcurrentHashMap<WeldClass<?>, Extension>(),
+                Sets.newSetFromMap(new ConcurrentHashMap<AnnotatedType<?>, Boolean>()),
+                new ConcurrentHashMap<AnnotatedType<?>, Extension>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
                 new ConcurrentHashMap<WeldClass<?>, AbstractClassBean<?>>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
@@ -92,8 +94,8 @@ public class BeanDeployerEnvironment {
                 manager);
     }
 
-    private final Set<WeldClass<?>> weldClasses;
-    private final Map<WeldClass<?>, Extension> weldClassSource;
+    private final Set<AnnotatedType<?>> annotatedTypes;
+    private final Map<AnnotatedType<?>, Extension> annotatedTypeSource;
     private final Set<Class<?>> vetoedClasses;
     private final Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap;
     private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
@@ -111,8 +113,8 @@ public class BeanDeployerEnvironment {
     private final Map<InternalEjbDescriptor<?>, WeldClass<?>> newSessionBeanDescriptorsFromInjectionPoint;
 
     protected BeanDeployerEnvironment(
-            Set<WeldClass<?>> weldClasses,
-            Map<WeldClass<?>, Extension> weldClassSource,
+            Set<AnnotatedType<?>> annotatedTypes,
+            Map<AnnotatedType<?>, Extension> annotatedTypeSource,
             Set<Class<?>> vetoedClasses,
             Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap,
             Set<ProducerField<?, ?>> producerFields,
@@ -127,8 +129,8 @@ public class BeanDeployerEnvironment {
             Set<WeldClass<?>> newManagedBeanClasses,
             Map<InternalEjbDescriptor<?>, WeldClass<?>> newSessionBeanDescriptorsFromInjectionPoint,
             BeanManagerImpl manager) {
-        this.weldClasses = weldClasses;
-        this.weldClassSource = weldClassSource;
+        this.annotatedTypes = annotatedTypes;
+        this.annotatedTypeSource = annotatedTypeSource;
         this.vetoedClasses = vetoedClasses;
         this.classBeanMap = classBeanMap;
         this.producerFields = producerFields;
@@ -148,8 +150,8 @@ public class BeanDeployerEnvironment {
 
     protected BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         this(
-                new HashSet<WeldClass<?>>(),
-                new HashMap<WeldClass<?>, Extension>(),
+                new HashSet<AnnotatedType<?>>(),
+                new HashMap<AnnotatedType<?>, Extension>(),
                 new HashSet<Class<?>>(),
                 new HashMap<WeldClass<?>, AbstractClassBean<?>>(),
                 new HashSet<ProducerField<?, ?>>(),
@@ -166,46 +168,46 @@ public class BeanDeployerEnvironment {
                 manager);
     }
 
-    public void addClass(WeldClass<?> weldClass) {
-        weldClasses.add(weldClass);
+    public void addAnnotatedType(AnnotatedType<?> annotatedType) {
+        this.annotatedTypes.add(annotatedType);
     }
 
-    public void addClasses(Collection<WeldClass<?>> classes) {
-        weldClasses.addAll(classes);
+    public void addAnnotatedTypes(Collection<AnnotatedType<?>> annotatedTypes) {
+        this.annotatedTypes.addAll(annotatedTypes);
     }
 
-    public void addSyntheticClass(WeldClass<?> weldClass, Extension extension) {
-        addClass(weldClass);
-        weldClassSource.put(weldClass, extension);
+    public void addSyntheticAnnotatedType(AnnotatedType<?> annotatedType, Extension extension) {
+        addAnnotatedType(annotatedType);
+        annotatedTypeSource.put(annotatedType, extension);
     }
 
-    public Set<WeldClass<?>> getClasses() {
-        return Collections.unmodifiableSet(weldClasses);
+    public Set<AnnotatedType<?>> getAnnotatedTypes() {
+        return Collections.unmodifiableSet(annotatedTypes);
     }
 
-    public Extension getSource(WeldClass<?> weldClass) {
-        return weldClassSource.get(weldClass);
+    public Extension getAnnotatedTypeSource(AnnotatedType<?> annotatedType) {
+        return annotatedTypeSource.get(annotatedType);
     }
 
-    public void removeClass(WeldClass<?> weldClass) {
-        weldClasses.remove(weldClass);
+    public void removeAnnotatedType(AnnotatedType<?> annotatedType) {
+        annotatedTypes.remove(annotatedType);
     }
 
-    public void removeClasses(Collection<WeldClass<?>> classes) {
-        for (WeldClass<?> clazz : classes) {
-            removeClass(clazz);
+    public void removeAnnotatedTypes(Collection<AnnotatedType<?>> annotatedTypes) {
+        for (AnnotatedType<?> annotatedType : annotatedTypes) {
+            removeAnnotatedType(annotatedType);
         }
     }
 
-    public void vetoJavaClass(WeldClass<?> weldClass) {
-        if (weldClass.isDiscovered()) {
-            vetoedClasses.add(weldClass.getJavaClass());
-        }
+    public void vetoJavaClass(Class<?> javaClass) {
+        vetoedClasses.add(javaClass);
     }
 
-    public void vetoClass(WeldClass<?> weldClass) {
-        vetoJavaClass(weldClass);
-        removeClass(weldClass);
+    public void vetoAnnotatedType(AnnotatedType<?> annotatedType) {
+        if (annotatedType instanceof BackedAnnotatedType<?>) {
+            vetoJavaClass(annotatedType.getJavaClass());
+        }
+        removeAnnotatedType(annotatedType);
     }
 
     public boolean isVetoed(Class<?> clazz) {
@@ -432,8 +434,8 @@ public class BeanDeployerEnvironment {
     }
 
     public void cleanup() {
-        this.weldClasses.clear();
-        this.weldClassSource.clear();
+        this.annotatedTypes.clear();
+        this.annotatedTypeSource.clear();
         this.vetoedClasses.clear();
         this.classBeanMap.clear();
         this.producerMethodBeanMap.clear();

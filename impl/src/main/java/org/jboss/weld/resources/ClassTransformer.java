@@ -19,6 +19,8 @@ package org.jboss.weld.resources;
 import com.google.common.base.Function;
 import com.google.common.collect.ComputationException;
 import com.google.common.collect.MapMaker;
+
+import org.jboss.weld.annotated.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.ForwardingAnnotatedType;
 import org.jboss.weld.introspector.WeldAnnotation;
@@ -180,6 +182,11 @@ public class ClassTransformer implements Service {
 
     @SuppressWarnings("unchecked")
     public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz) {
+        // TODO
+        if (clazz instanceof BackedAnnotatedType<?>) {
+            return loadClass(clazz.getJavaClass());
+        }
+
         // don't wrap existing weld class, dup instances!
         if (clazz instanceof WeldClass) {
             return (WeldClass<T>) clazz;

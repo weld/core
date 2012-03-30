@@ -21,10 +21,10 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -38,16 +38,16 @@ public class ProcessAnnotatedTypeFactory {
     private ProcessAnnotatedTypeFactory() {
     }
 
-    public static <X> ProcessAnnotatedTypeImpl<X> create(BeanManagerImpl beanManager, WeldClass<X> clazz) {
-        return create(beanManager, clazz, null);
+    public static <X> ProcessAnnotatedTypeImpl<X> create(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType) {
+        return create(beanManager, annotatedType, null);
     }
 
-    public static <X> ProcessAnnotatedTypeImpl<X> create(BeanManagerImpl beanManager, WeldClass<X> clazz, Extension source) {
+    public static <X> ProcessAnnotatedTypeImpl<X> create(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, Extension source) {
         if (source == null) {
-            return new ProcessAnnotatedTypeImpl<X>(beanManager, clazz) {
+            return new ProcessAnnotatedTypeImpl<X>(beanManager, annotatedType) {
             };
         } else {
-            return new ProcessSyntheticAnnotatedTypeImpl<X>(beanManager, clazz, source) {
+            return new ProcessSyntheticAnnotatedTypeImpl<X>(beanManager, annotatedType, source) {
             };
         }
     }

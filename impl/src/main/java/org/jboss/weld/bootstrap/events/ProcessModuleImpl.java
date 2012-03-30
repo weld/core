@@ -22,7 +22,6 @@
 package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,11 +39,9 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.MetadataImpl;
-import org.jboss.weld.util.collections.ViewProvider;
 import org.jboss.weld.util.collections.ListView;
 import org.jboss.weld.util.collections.SetView;
-
-;
+import org.jboss.weld.util.collections.ViewProvider;
 
 /**
  *
@@ -115,7 +112,7 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     @Override
     public Iterator<AnnotatedType<?>> getAnnotatedTypes() {
-        return cast(deployment.getBeanDeployer().getEnvironment().getClasses().iterator());
+        return deployment.getBeanDeployer().getEnvironment().getAnnotatedTypes().iterator();
     }
 
     @Override

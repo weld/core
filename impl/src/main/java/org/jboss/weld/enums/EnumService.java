@@ -28,12 +28,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.InjectionTargetValidator;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -57,12 +60,13 @@ public class EnumService implements Service {
         this.instances = new HashSet<EnumInstanceContext<?>>();
     }
 
-    public <T extends Enum<?>> void addEnumClass(WeldClass<T> clazz) {
-        if (injectionTargets.containsKey(clazz.getJavaClass())) {
+    public <T extends Enum<?>> void addEnumClass(AnnotatedType<T> annotatedType) {
+        if (injectionTargets.containsKey(annotatedType.getJavaClass())) {
             return;
         }
-        EnumInjectionTarget<? extends Enum<?>> enumInjectionTarget = EnumInjectionTarget.of(clazz, manager);
-        injectionTargets.put(clazz.getJavaClass(), enumInjectionTarget);
+        WeldClass<T> weldClass = manager.getServices().get(ClassTransformer.class).loadClass(annotatedType);
+        EnumInjectionTarget<? extends Enum<?>> enumInjectionTarget = EnumInjectionTarget.of(weldClass, manager);
+        injectionTargets.put(weldClass.getJavaClass(), enumInjectionTarget);
         manager.getServices().get(InjectionTargetValidator.class).addInjectionTarget(enumInjectionTarget);
     }
 

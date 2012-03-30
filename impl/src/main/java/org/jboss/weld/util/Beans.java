@@ -73,6 +73,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Requires;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -910,15 +911,24 @@ public class Beans {
      * @param clazz The type to inspect
      * @return True if simple Web Bean, false otherwise
      */
-    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(WeldClass<?> clazz) {
-        Class<?> javaClass = clazz.getJavaClass();
-        return !javaClass.isEnum() && !Extension.class.isAssignableFrom(clazz.getJavaClass())
-                && !(clazz.isAnonymousClass() || (clazz.isMemberClass() && !clazz.isStatic())) && !Reflections.isParamerterizedTypeWithWildcard(javaClass)
-                && hasSimpleCdiConstructor(clazz);
+    public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(AnnotatedType<?> annotatedType) {
+        Class<?> javaClass = annotatedType.getJavaClass();
+        return !javaClass.isEnum() && !Extension.class.isAssignableFrom(javaClass)
+                && !(javaClass.isAnonymousClass() || (javaClass.isMemberClass() && !Reflections.isStatic(javaClass)))
+                && !Reflections.isParamerterizedTypeWithWildcard(javaClass)
+                && hasSimpleCdiConstructor(annotatedType);
     }
 
-    public static boolean hasSimpleCdiConstructor(WeldClass<?> type) {
-        return type.getNoArgsWeldConstructor() != null || type.getWeldConstructors(Inject.class).size() > 0;
+    public static boolean hasSimpleCdiConstructor(AnnotatedType<?> type) {
+        for (AnnotatedConstructor<?> constructor : type.getConstructors()) {
+            if (constructor.getParameters().isEmpty()) {
+                return true;
+            }
+            if (constructor.isAnnotationPresent(Inject.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

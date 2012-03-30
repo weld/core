@@ -36,6 +36,7 @@ import javax.interceptor.Interceptor;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
@@ -99,23 +100,15 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
 
         if (clazz != null && !clazz.isAnnotation()) {
-            WeldClass<?> weldClass = null;
-            try {
-                weldClass = classTransformer.loadClass(clazz);
-            } catch (ResourceLoadingException e) {
-                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-                xlog.catching(INFO, e);
-            }
-            if (weldClass != null) {
-                getEnvironment().addClass(weldClass);
-            }
+            AnnotatedType<?> annotatedType = BackedAnnotatedType.of(clazz);
+            getEnvironment().addAnnotatedType(annotatedType);
         }
         return this;
     }
 
-    public BeanDeployer addSyntheticClass(AnnotatedType<?> clazz, Extension extension) {
-        WeldClass<?> weldClass = classTransformer.loadClass(clazz);
-        getEnvironment().addSyntheticClass(weldClass, extension);
+    public <T> BeanDeployer addSyntheticClass(AnnotatedType<T> annotatedType, Extension extension) {
+        AnnotatedType<T> unbacked = UnbackedAnnotatedType.of(annotatedType);
+        getEnvironment().addSyntheticAnnotatedType(unbacked, extension);
         return this;
     }
 
@@ -127,56 +120,58 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void processAnnotatedTypes() {
-        Set<WeldClass<?>> classesToBeAdded = new HashSet<WeldClass<?>>();
-        Set<WeldClass<?>> classesToBeRemoved = new HashSet<WeldClass<?>>();
-        for (WeldClass<?> weldClass : getEnvironment().getClasses()) {
+        Set<AnnotatedType<?>> classesToBeAdded = new HashSet<AnnotatedType<?>>();
+        Set<AnnotatedType<?>> classesToBeRemoved = new HashSet<AnnotatedType<?>>();
+
+        for (AnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
             // fire event
-            boolean synthetic = getEnvironment().getSource(weldClass) != null;
+            boolean synthetic = getEnvironment().getAnnotatedTypeSource(annotatedType) != null;
             ProcessAnnotatedTypeImpl<?> event;
             if (synthetic) {
-                event = ProcessAnnotatedTypeFactory.create(getManager(), weldClass, getEnvironment().getSource(weldClass));
+                event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType, getEnvironment().getAnnotatedTypeSource(annotatedType));
             } else {
-                event = ProcessAnnotatedTypeFactory.create(getManager(), weldClass);
+                event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType);
             }
             event.fire();
             // process the result
             if (event.isVeto()) {
-                getEnvironment().vetoJavaClass(weldClass);
-                classesToBeRemoved.add(weldClass);
+                getEnvironment().vetoJavaClass(annotatedType.getJavaClass());
+                classesToBeRemoved.add(annotatedType);
             } else {
                 boolean dirty = event.isDirty();
                 if (dirty) {
-                    classesToBeRemoved.add(weldClass); // remove the original class
-                    AnnotatedType<?> modifiedType;
-                    if (synthetic) {
-                        modifiedType = ExternalAnnotatedType.of(event.getAnnotatedType());
+                    classesToBeRemoved.add(annotatedType); // remove the original class
+                    AnnotatedType<?> modifiedType = event.getAnnotatedType();
+                    // TODO use a common interface
+                    if (modifiedType instanceof BackedAnnotatedType || modifiedType instanceof UnbackedAnnotatedType) {
+                        annotatedType = modifiedType;
                     } else {
-                        modifiedType = DiscoveredExternalAnnotatedType.of(event.getAnnotatedType(), weldClass);
+                        annotatedType = UnbackedAnnotatedType.of(modifiedType);
                     }
-                    weldClass = classTransformer.loadClass(modifiedType);
                 }
 
                 // vetoed due to @Veto or @Requires
-                boolean vetoed = Beans.isVetoed(weldClass);
+                boolean vetoed = Beans.isVetoed(annotatedType);
 
                 if (dirty && !vetoed) {
-                    classesToBeAdded.add(weldClass); // add a replacement for the removed class
+                    classesToBeAdded.add(annotatedType); // add a replacement for the removed class
                 }
                 if (!dirty && vetoed) {
-                    getEnvironment().vetoJavaClass(weldClass);
-                    classesToBeRemoved.add(weldClass);
+                    getEnvironment().vetoJavaClass(annotatedType.getJavaClass());
+                    classesToBeRemoved.add(annotatedType);
                 }
             }
         }
-        getEnvironment().removeClasses(classesToBeRemoved);
-        getEnvironment().addClasses(classesToBeAdded);
+        getEnvironment().removeAnnotatedTypes(classesToBeRemoved);
+        getEnvironment().addAnnotatedTypes(classesToBeAdded);
     }
 
     public void processEnums() {
         EnumService enumService = getManager().getServices().get(EnumService.class);
-        for (WeldClass<?> clazz : getEnvironment().getClasses()) {
-            if (Reflections.isEnum(clazz.getJavaClass())) {
-                enumService.addEnumClass(Reflections.<WeldClass<Enum<?>>> cast(clazz));
+        for (AnnotatedType<?> annotatedType: getEnvironment().getAnnotatedTypes()) {
+            if (Reflections.isEnum(annotatedType.getJavaClass())) {
+                // TODO
+                enumService.addEnumClass(Reflections.<AnnotatedType<Enum<?>>> cast(annotatedType));
             }
         }
         // add @New injection points from enums
@@ -186,10 +181,10 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createClassBeans() {
-        Multimap<Class<?>, WeldClass<?>> otherWeldClasses = HashMultimap.create();
+        Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses = HashMultimap.create();
 
-        for (WeldClass<?> clazz : getEnvironment().getClasses()) {
-            createClassBean(clazz, otherWeldClasses);
+        for (AnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
+            createClassBean(annotatedType, otherWeldClasses);
         }
         // create session beans
         for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors()) {
@@ -198,8 +193,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             }
             if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {
                 if (otherWeldClasses.containsKey(ejbDescriptor.getBeanClass())) {
-                    for (WeldClass<?> c : otherWeldClasses.get(ejbDescriptor.getBeanClass())) {
-                        createSessionBean(ejbDescriptor, Reflections.<WeldClass> cast(c));
+                    for (AnnotatedType<?> annotatedType : otherWeldClasses.get(ejbDescriptor.getBeanClass())) {
+                        WeldClass<?> weldClass = classTransformer.loadClass(annotatedType);
+                        createSessionBean(ejbDescriptor, Reflections.<WeldClass> cast(weldClass));
                     }
                 } else {
                     createSessionBean(ejbDescriptor);
@@ -208,18 +204,21 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
-    protected void createClassBean(WeldClass<?> weldClass, Multimap<Class<?>, WeldClass<?>> otherWeldClasses) {
-        boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(weldClass.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(weldClass);
-        if (managedBeanOrDecorator && weldClass.isAnnotationPresent(Decorator.class)) {
-            validateDecorator(weldClass);
-            createDecorator(weldClass);
-        } else if (managedBeanOrDecorator && weldClass.isAnnotationPresent(Interceptor.class)) {
-            validateInterceptor(weldClass);
-            createInterceptor(weldClass);
-        } else if (managedBeanOrDecorator && !weldClass.isAbstract()) {
-            createManagedBean(weldClass);
+    protected void createClassBean(AnnotatedType<?> annotatedType, Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses) {
+        boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
+        if (managedBeanOrDecorator) {
+            WeldClass<?> weldClass = classTransformer.loadClass(annotatedType);
+            if (weldClass.isAnnotationPresent(Decorator.class)) {
+                validateDecorator(weldClass);
+                createDecorator(weldClass);
+            } else if (weldClass.isAnnotationPresent(Interceptor.class)) {
+                validateInterceptor(weldClass);
+                createInterceptor(weldClass);
+            } else if (!weldClass.isAbstract()) {
+                createManagedBean(weldClass);
+            }
         } else {
-            otherWeldClasses.put(weldClass.getJavaClass(), weldClass);
+            otherWeldClasses.put(annotatedType.getJavaClass(), annotatedType);
         }
     }
 

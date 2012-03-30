@@ -85,6 +85,7 @@ import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -1106,7 +1107,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> AnnotatedType<T> createAnnotatedType(Class<T> type) {
-        return getServices().get(ClassTransformer.class).loadClass(type);
+        return BackedAnnotatedType.of(type);
     }
 
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
