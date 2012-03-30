@@ -85,7 +85,7 @@
                 </methods>
             </class>
             <!-- WELD-993 --> 
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
+            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.WebServiceResourceTest">
                 <methods>
                     <exclude name="testInjectionIntoWebServiceEndpoint" />
                     <exclude name="testResourceBeanTypes"/>
@@ -104,7 +104,7 @@
                 </methods>
             </class>
             <!-- WELD-1035 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.jms.ContainerEventTest">
+            <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
                 <methods>
                     <exclude name="testProcessInjectionTargetEventFiredForMessageDrivenBean" />
                 </methods>
