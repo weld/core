@@ -197,10 +197,14 @@ public class BeanDeployerEnvironment {
         }
     }
 
-    public void vetoClass(WeldClass<?> weldClass) {
+    public void vetoJavaClass(WeldClass<?> weldClass) {
         if (weldClass.isDiscovered()) {
             vetoedClasses.add(weldClass.getJavaClass());
         }
+    }
+
+    public void vetoClass(WeldClass<?> weldClass) {
+        vetoJavaClass(weldClass);
         removeClass(weldClass);
     }
 

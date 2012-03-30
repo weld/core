@@ -35,6 +35,7 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.interceptor.Interceptor;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
@@ -140,7 +141,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             event.fire();
             // process the result
             if (event.isVeto()) {
-                getEnvironment().vetoClass(weldClass);
+                getEnvironment().vetoJavaClass(weldClass);
                 classesToBeRemoved.add(weldClass);
             } else {
                 boolean dirty = event.isDirty();
@@ -162,7 +163,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     classesToBeAdded.add(weldClass); // add a replacement for the removed class
                 }
                 if (!dirty && vetoed) {
-                    getEnvironment().vetoClass(weldClass);
+                    getEnvironment().vetoJavaClass(weldClass);
                     classesToBeRemoved.add(weldClass);
                 }
             }
