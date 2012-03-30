@@ -146,6 +146,7 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
@@ -154,7 +155,6 @@ import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -475,12 +475,25 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return cast(observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
+        Resolvable resolvable = new ResolvableBuilder()
+            .addTypes(services.get(SharedObjectCache.class).getTypeClosureHolder(eventType).get())
+            .addType(Object.class)
+            .addQualifiers(qualifiers)
+            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .create();
+        return cast(observerResolver.resolve(resolvable, true));
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return cast(observerResolver.resolve(new ResolvableBuilder().addTypes(new HierarchyDiscovery(eventType).getTypeClosure()).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
+        Set<Type> typeClosure = services.get(SharedObjectCache.class).getTypeClosureHolder(eventType).get();
+        Resolvable resolvable = new ResolvableBuilder()
+            .addTypes(typeClosure)
+            .addType(Object.class)
+            .addQualifiers(qualifiers)
+            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .create();
+        return cast(observerResolver.resolve(resolvable, true));
     }
 
     /**
