@@ -123,10 +123,15 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
         WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
-        if (!(getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)) || getWeldAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS)) {
+        if (!(getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS)
+                || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)
+                || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
+                || getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)
+                || getWeldAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))) {
             throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getWeldAnnotated());
         }
     }
+
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
