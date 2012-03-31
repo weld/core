@@ -825,7 +825,7 @@ public class Beans {
     public static Set<Type> getTypes(EnhancedAnnotated<?, ?> annotated) {
         // array and primitive types require special treatment
         if (annotated.getJavaClass().isArray() || annotated.getJavaClass().isPrimitive()) {
-            return new ArraySet<Type>(annotated.getJavaClass(), Object.class);
+            return new ArraySet<Type>(annotated.getBaseType(), Object.class);
         } else {
             if (annotated.isAnnotationPresent(Typed.class)) {
                 return new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()), annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));

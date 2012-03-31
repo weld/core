@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.event.observer.validation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -15,6 +17,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,12 +34,25 @@ public class FiringArrayEventTest {
     private ArrayObserverBean observerBean;
 
     @Inject
+    private StringListObserverBean stringListObserverBean;
+
+    @Inject
+    private StringListArrayObserverBean stringListArrayObserverBean;
+
+    @Inject
     private Event<int[]> arrayEvent;
+
+    @Inject
+    private Event<List<String>> stringListEvent;
+
+    @Inject
+    private Event<List<String>[]> stringListArrayEvent;
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(JavaArchive.class, "weld_events.jar").addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addClass(ArrayObserverBean.class);
+        return ShrinkWrap.create(JavaArchive.class, "weld_events.jar")
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addClasses(ArrayObserverBean.class, StringListObserverBean.class, StringListArrayObserverBean.class);
     }
 
     @Before
@@ -77,6 +93,35 @@ public class FiringArrayEventTest {
         Assert.assertTrue("should have received update", this.observerBean.isReceivedUpdate());
         Assert.assertArrayEquals("should have received update", this.observerBean.getData(), data);
 
+    }
+
+    @Ignore
+    @Test
+    public void testStringListEvent() {
+
+        Assert.assertFalse("should have not received update", this.stringListObserverBean.isReceivedUpdate());
+        Assert.assertNull("should have not received update", this.stringListObserverBean.getData());
+
+        ArrayList<String> data = new ArrayList<String>();
+
+        this.stringListEvent.fire(data);
+        // should not fail, this test should behave same as test_resolver_array()
+        Assert.assertTrue("should have received update", this.stringListObserverBean.isReceivedUpdate());
+        Assert.assertEquals("should have received update", this.stringListObserverBean.getData(), data);
+    }
+
+    @Test
+    public void testStringListArrayEvent() {
+
+        Assert.assertFalse("should have not received update", this.stringListArrayObserverBean.isReceivedUpdate());
+        Assert.assertNull("should have not received update", this.stringListArrayObserverBean.getData());
+
+        ArrayList<String>[] data = new ArrayList[0];
+
+        this.stringListArrayEvent.fire(data);
+        // should not fail, this test should behave same as test_resolver_array()
+        Assert.assertTrue("should have received update", this.stringListArrayObserverBean.isReceivedUpdate());
+        Assert.assertEquals("should have received update", this.stringListArrayObserverBean.getData(), data);
     }
 
 }
