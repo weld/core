@@ -131,7 +131,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     protected void initTypes() {
         if (getType().isArray() || getType().isPrimitive()) {
             Set<Type> types = new HashSet<Type>();
-            types.add(getType());
+            types.add(getProducerReturnType());
             types.add(Object.class);
             super.types = types;
         } else {
@@ -155,8 +155,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * Validates the producer method
      */
     protected void checkProducerReturnType() {
-        if ((getWeldAnnotated().getBaseType() instanceof TypeVariable<?>) || (getWeldAnnotated().getBaseType() instanceof WildcardType)) {
-            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getWeldAnnotated().getBaseType());
+        if ((getProducerReturnType() instanceof TypeVariable<?>) || (getProducerReturnType() instanceof WildcardType)) {
+            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getProducerReturnType());
         } else if (getWeldAnnotated().isParameterizedType()) {
             for (Type type : getWeldAnnotated().getActualTypeArguments()) {
                 if (!Dependent.class.equals(getScope()) && type instanceof TypeVariable<?>) {
@@ -166,6 +166,10 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
                 }
             }
         }
+    }
+
+    private Type getProducerReturnType() {
+        return getWeldAnnotated().getBaseType();
     }
 
     /**

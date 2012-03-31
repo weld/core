@@ -21,6 +21,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -93,7 +94,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     public T get() {
-        Bean<?> bean = getBeanManager().getBean(new ResolvableBuilder(getType()).addQualifiers(getQualifiers()).setDeclaringBean(getInjectionPoint().getBean()).create());
+        Resolvable resolvable = new ResolvableBuilder(getType())
+            .addQualifiers(getQualifiers())
+            .setDeclaringBean(getInjectionPoint().getBean())
+            .create();
+        Bean<?> bean = getBeanManager().getBean(resolvable);
         // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the qualifiers and type
         InjectionPoint ip = new InstanceInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
         CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
