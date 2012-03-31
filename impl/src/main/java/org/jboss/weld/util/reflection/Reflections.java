@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -47,6 +49,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
  *
  * @author Pete Muir
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class Reflections {
 
@@ -60,14 +63,9 @@ public class Reflections {
     public static Map<Class<?>, Type> buildTypeMap(Set<Type> types) {
         Map<Class<?>, Type> map = new HashMap<Class<?>, Type>();
         for (Type type : types) {
-            if (type instanceof Class<?>) {
-                map.put((Class<?>) type, type);
-            } else if (type instanceof ParameterizedType) {
-                if (((ParameterizedType) type).getRawType() instanceof Class<?>) {
-                    map.put((Class<?>) ((ParameterizedType) type).getRawType(), type);
-                }
-            } else if (type instanceof TypeVariable<?>) {
-
+            Class<?> clazz = getRawType(type);
+            if (clazz != null) {
+                map.put(clazz, type);
             }
         }
         return map;
@@ -302,40 +300,6 @@ public class Reflections {
         return isBindingAnnotation;
     }
 
-    /**
-     * Check the assignability of one type to another, taking into account the
-     * actual type arguements
-     *
-     * @param rawType1             the raw type of the class to check
-     * @param actualTypeArguments1 the actual type arguements to check, or an
-     *                             empty array if not a parameterized type
-     * @param rawType2             the raw type of the class to check
-     * @param actualTypeArguments2 the actual type arguements to check, or an
-     *                             empty array if not a parameterized type
-     * @return true if assignable, false otherwise
-     */
-    public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2) {
-        return Types.boxedClass(rawType1).isAssignableFrom(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
-    }
-
-    public static boolean matches(Class<?> rawType1, Type[] actualTypeArguments1, Class<?> rawType2, Type[] actualTypeArguments2) {
-        return Types.boxedClass(rawType1).equals(Types.boxedClass(rawType2)) && isAssignableFrom(actualTypeArguments1, actualTypeArguments2);
-    }
-
-    public static boolean isAssignableFrom(Type[] actualTypeArguments1, Type[] actualTypeArguments2) {
-        for (int i = 0; i < actualTypeArguments1.length; i++) {
-            Type type1 = actualTypeArguments1[i];
-            Type type2 = Object.class;
-            if (actualTypeArguments2.length > i) {
-                type2 = actualTypeArguments2[i];
-            }
-            if (!isAssignableFrom(type1, type2)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static boolean isAssignableFrom(Type type1, Set<? extends Type> types2) {
         for (Type type2 : types2) {
             if (isAssignableFrom(type1, type2)) {
@@ -364,90 +328,52 @@ public class Reflections {
     }
 
     public static boolean isAssignableFrom(Type type1, Type type2) {
-        if (type1 instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type1;
-            if (isAssignableFrom(clazz, EMPTY_TYPES, type2)) {
-                return true;
-            }
+        TypeHolder typeHolder1 = TypeHolder.wrap(type1);
+        if (typeHolder1 != null && typeHolder1.isAssignableFrom(type2)) {
+            return true;
         }
-        if (type1 instanceof ParameterizedType) {
-            ParameterizedType parameterizedType1 = (ParameterizedType) type1;
-            if (parameterizedType1.getRawType() instanceof Class<?>) {
-                if (isAssignableFrom((Class<?>) parameterizedType1.getRawType(), parameterizedType1.getActualTypeArguments(), type2)) {
-                    return true;
-                }
-            }
-        }
-        if (type1 instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) type1;
-            if (isTypeBounded(type2, wildcardType.getLowerBounds(), wildcardType.getUpperBounds())) {
-                return true;
-            }
-        }
-        if (type2 instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) type2;
-            if (isTypeBounded(type1, wildcardType.getUpperBounds(), wildcardType.getLowerBounds())) {
-                return true;
-            }
-        }
-        if (type1 instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) type1;
-            if (isTypeBounded(type2, EMPTY_TYPES, typeVariable.getBounds())) {
-                return true;
-            }
-        }
-        if (type2 instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) type2;
-            if (isTypeBounded(type1, typeVariable.getBounds(), EMPTY_TYPES)) {
-                return true;
-            }
-        }
-        return false;
+
+        return processWildcardTypesAndTypeVariables(type1, type2);
     }
 
     public static boolean matches(Type type1, Type type2) {
-        if (type1 instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type1;
-            if (matches(clazz, EMPTY_TYPES, type2)) {
-                return true;
-            }
+        TypeHolder typeHolder1 = TypeHolder.wrap(type1);
+        if (typeHolder1 != null && typeHolder1.matches(type2)) {
+            return true;
         }
-        if (type1 instanceof ParameterizedType) {
-            ParameterizedType parameterizedType1 = (ParameterizedType) type1;
-            if (parameterizedType1.getRawType() instanceof Class<?>) {
-                if (matches((Class<?>) parameterizedType1.getRawType(), parameterizedType1.getActualTypeArguments(), type2)) {
-                    return true;
-                }
-            }
-        }
+
+        return processWildcardTypesAndTypeVariables(type1, type2);
+    }
+
+    private static boolean processWildcardTypesAndTypeVariables(Type type1, Type type2) {
         if (type1 instanceof WildcardType) {
             WildcardType wildcardType = (WildcardType) type1;
-            if (isTypeBounded(type2, wildcardType.getLowerBounds(), wildcardType.getUpperBounds())) {
+            if (isTypeInsideBounds(type2, wildcardType.getLowerBounds(), wildcardType.getUpperBounds())) {
                 return true;
             }
         }
         if (type2 instanceof WildcardType) {
             WildcardType wildcardType = (WildcardType) type2;
-            if (isTypeBounded(type1, wildcardType.getUpperBounds(), wildcardType.getLowerBounds())) {
+            if (isTypeInsideBounds(type1, wildcardType.getUpperBounds(), wildcardType.getLowerBounds())) {
                 return true;
             }
         }
         if (type1 instanceof TypeVariable<?>) {
             TypeVariable<?> typeVariable = (TypeVariable<?>) type1;
-            if (isTypeBounded(type2, EMPTY_TYPES, typeVariable.getBounds())) {
+            if (isTypeInsideBounds(type2, EMPTY_TYPES, typeVariable.getBounds())) {
                 return true;
             }
         }
         if (type2 instanceof TypeVariable<?>) {
             TypeVariable<?> typeVariable = (TypeVariable<?>) type2;
-            if (isTypeBounded(type1, typeVariable.getBounds(), EMPTY_TYPES)) {
+            if (isTypeInsideBounds(type1, typeVariable.getBounds(), EMPTY_TYPES)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean isTypeBounded(Type type, Type[] lowerBounds, Type[] upperBounds) {
+    public static boolean isTypeInsideBounds(Type type, Type[] lowerBounds, Type[] upperBounds) {
         if (lowerBounds.length > 0) {
             if (!isAssignableFrom(type, lowerBounds)) {
                 return false;
@@ -459,45 +385,6 @@ public class Reflections {
             }
         }
         return true;
-    }
-
-    public static boolean isAssignableFrom(Class<?> rawType1, Type[] actualTypeArguments1, Type type2) {
-        if (type2 instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type2;
-            if (parameterizedType.getRawType() instanceof Class<?>) {
-                if (isAssignableFrom(rawType1, actualTypeArguments1, (Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments())) {
-                    return true;
-                }
-            }
-        } else if (type2 instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type2;
-            if (isAssignableFrom(rawType1, actualTypeArguments1, clazz, EMPTY_TYPES)) {
-                return true;
-            }
-        } else if (type2 instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) type2;
-            if (isTypeBounded(rawType1, actualTypeArguments1, typeVariable.getBounds())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean matches(Class<?> rawType1, Type[] actualTypeArguments1, Type type2) {
-        if (type2 instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type2;
-            if (parameterizedType.getRawType() instanceof Class<?>) {
-                if (matches(rawType1, actualTypeArguments1, (Class<?>) parameterizedType.getRawType(), parameterizedType.getActualTypeArguments())) {
-                    return true;
-                }
-            }
-        } else if (type2 instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type2;
-            if (matches(rawType1, actualTypeArguments1, clazz, EMPTY_TYPES)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -576,6 +463,12 @@ public class Reflections {
             if (((ParameterizedType) type).getRawType() instanceof Class<?>) {
                 return (Class<T>) ((ParameterizedType) type).getRawType();
             }
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) type;
+            Class<Object> rawComponentType = getRawType(arrayType.getGenericComponentType());
+            if (rawComponentType != null) {
+                return (Class<T>) Array.newInstance(rawComponentType, 0).getClass();
+            }
         }
         return null;
     }
@@ -586,6 +479,97 @@ public class Reflections {
             return true;
         } catch (ResourceLoadingException e) {
             return false;
+        }
+    }
+
+    /**
+     * This is a helper class that holds the raw type and the actual type arguments of a Type.
+     * In case of arrays, the raw type is the raw type of the array, while the actualTypeArguments are the actualTypeArguments
+     * of the component type of the array.
+     */
+    private static class TypeHolder {
+
+        private Class<?> rawType;
+        private Type[] actualTypeArguments;
+
+        private TypeHolder(Class<?> rawType, Type[] actualTypeArguments) {
+            this.rawType = rawType;
+            this.actualTypeArguments = actualTypeArguments;
+        }
+
+        public Class<?> getRawType() {
+            return rawType;
+        }
+
+        public Type[] getActualTypeArguments() {
+            return actualTypeArguments;
+        }
+
+        private Class<?> getBoxedRawType() {
+            return Types.boxedClass(getRawType());
+        }
+
+        private boolean isAssignableFrom(Type otherType) {
+            TypeHolder otherTypeHolder = wrap(otherType);
+            if (otherTypeHolder != null) {
+                return this.isAssignableFrom(otherTypeHolder);
+            }
+
+            // TODO: this doesn't look OK!
+            if (otherType instanceof TypeVariable<?>) {
+                TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
+                if (isTypeInsideBounds(getRawType(), getActualTypeArguments(), typeVariable.getBounds())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public boolean isAssignableFrom(TypeHolder otherTypeHolder) {
+            return getBoxedRawType().isAssignableFrom(otherTypeHolder.getBoxedRawType()) && areActualTypeArgumentsAssignableFrom(otherTypeHolder.getActualTypeArguments());
+        }
+
+        private boolean matches(Type otherType) {
+            TypeHolder otherTypeHolder = wrap(otherType);
+            return otherTypeHolder != null && this.matches(otherTypeHolder);
+        }
+
+        public boolean matches(TypeHolder otherTypeHolder) {
+            return getBoxedRawType().equals(otherTypeHolder.getBoxedRawType()) && areActualTypeArgumentsAssignableFrom(otherTypeHolder.getActualTypeArguments());
+        }
+
+        private boolean areActualTypeArgumentsAssignableFrom(Type[] otherActualTypeArguments) {
+            for (int i = 0; i < this.getActualTypeArguments().length; i++) {
+                Type type1 = this.getActualTypeArguments()[i];
+                Type type2 = otherActualTypeArguments.length > i ? otherActualTypeArguments[i] : Object.class;
+                if (!Reflections.isAssignableFrom(type1, type2)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static TypeHolder wrap(Type type) {
+            if (type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                Type rawType = parameterizedType.getRawType();
+                if (rawType instanceof Class<?>) {
+                    Class<?> clazz = (Class<?>) rawType;
+                    return new TypeHolder(clazz, parameterizedType.getActualTypeArguments());
+                }
+            } else if (type instanceof Class<?>) {
+                Class<?> clazz = (Class<?>) type;
+                return new TypeHolder(clazz, EMPTY_TYPES);
+            } else if (type instanceof GenericArrayType) {
+                GenericArrayType arrayType = (GenericArrayType) type;
+                Type genericComponentType = arrayType.getGenericComponentType();
+                Class<?> rawComponentType = Reflections.getRawType(genericComponentType);
+                if (rawComponentType != null) {
+                    Class<?> arrayClass = Array.newInstance(rawComponentType, 0).getClass();
+                    return new TypeHolder(arrayClass, Reflections.getActualTypeArguments(genericComponentType));
+                }
+            }
+            return null;
         }
     }
 

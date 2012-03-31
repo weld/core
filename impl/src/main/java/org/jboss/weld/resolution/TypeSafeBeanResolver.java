@@ -17,6 +17,7 @@
 package org.jboss.weld.resolution;
 
 import java.io.Serializable;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -102,41 +103,47 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
 
             @Override
             protected Map<Type, ArrayList<T>> computeValue() {
-                Map<Type, ArrayList<T>> val = new HashMap<Type, ArrayList<T>>();
+                Map<Type, ArrayList<T>> map = new HashMap<Type, ArrayList<T>>();
                 for (T bean : beans) {
-                    for (Type type : bean.getTypes()) {
-                        if (!val.containsKey(type)) {
-                            val.put(type, new ArrayList<T>());
-                        }
-                        val.get(type).add(bean);
-                        if (type instanceof ParameterizedType) {
-                            // we need to add the raw type as well
-                            Type rawType = ((ParameterizedType) type).getRawType();
-                            if (!val.containsKey(rawType)) {
-                                val.put(rawType, new ArrayList<T>());
-                            }
-                            val.get(rawType).add(bean);
-                        } else if (type instanceof Class<?>) {
-                            // if the type is a primitive we also need to add the bean
-                            // is also resolvable from the boxed class
-                            Class<?> clazz = (Class<?>) type;
-                            if (clazz.isPrimitive()) {
-                                clazz = Primitives.wrap(clazz);
-                                if (!val.containsKey(clazz)) {
-                                    val.put(clazz, new ArrayList<T>());
-                                }
-                                val.get(clazz).add(bean);
-                            }
+                    mapBean(map, bean);
+                }
+                trimArrayListsToSize(map);
+                return Collections.unmodifiableMap(map);
+            }
+
+            private void mapBean(Map<Type, ArrayList<T>> map, T bean) {
+                for (Type type : bean.getTypes()) {
+                    mapTypeToBean(map, type, bean);
+
+                    if (type instanceof ParameterizedType) {
+                        // we need to add the raw type as well
+                        Type rawType = ((ParameterizedType) type).getRawType();
+                        mapTypeToBean(map, rawType, bean);
+                    } else if (type instanceof Class<?>) {
+                        // if the type is a primitive we also need to add the bean
+                        // is also resolvable from the boxed class
+                        Class<?> clazz = (Class<?>) type;
+                        if (clazz.isPrimitive()) {
+                            Class<?> wrapped = Primitives.wrap(clazz);
+                            mapTypeToBean(map, wrapped, bean);
                         }
                     }
                 }
-                for (Entry<Type, ArrayList<T>> entry : val.entrySet()) {
+            }
+
+            private void mapTypeToBean(Map<Type, ArrayList<T>> map, Type type, T bean) {
+                if (!map.containsKey(type)) {
+                    map.put(type, new ArrayList<T>());
+                }
+                map.get(type).add(bean);
+            }
+
+            private void trimArrayListsToSize(Map<Type, ArrayList<T>> map) {
+                for (Entry<Type, ArrayList<T>> entry : map.entrySet()) {
                     entry.getValue().trimToSize();
                 }
-                return Collections.unmodifiableMap(val);
             }
         };
-
     }
 
     @Override
@@ -151,30 +158,30 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
         }
         Set<T> beans = new HashSet<T>();
         for (Type type : resolvable.getTypes()) {
-            List<T> beansForType = beansByType.get().get(type);
-            if (beansForType != null) {
-                beans.addAll(beansForType);
-            }
+            beans.addAll(getBeans(type));
             if (type instanceof ParameterizedType) {
                 // we also need to consider the raw type
                 Type rawType = ((ParameterizedType) type).getRawType();
-                beansForType = beansByType.get().get(rawType);
-                if (beansForType != null) {
-                    beans.addAll(beansForType);
-                }
+                beans.addAll(getBeans(rawType));
             } else if (type instanceof Class<?>) {
                 // primitives
                 Class<?> clazz = (Class<?>) type;
                 if (clazz.isPrimitive()) {
                     clazz = Primitives.wrap(clazz);
-                    beansForType = beansByType.get().get(clazz);
-                    if (beansForType != null) {
-                        beans.addAll(beansForType);
-                    }
+                    beans.addAll(getBeans(clazz));
                 }
+            } else if (type instanceof GenericArrayType) {
+                GenericArrayType arrayType = (GenericArrayType) type;
+                Class<Object> rawArrayType = Reflections.getRawType(arrayType);
+                beans.addAll(getBeans(rawArrayType));
             }
         }
         return beans;
+    }
+
+    private List<T> getBeans(Type type) {
+        List<T> beansForType = beansByType.get().get(type);
+        return beansForType == null ? Collections.<T>emptyList() : beansForType;
     }
 
     /**
