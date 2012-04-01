@@ -309,13 +309,17 @@ public class Reflections {
         return false;
     }
 
-    public static boolean matches(Type type1, Set<? extends Type> types2) {
-        for (Type type2 : types2) {
-            if (matches(type1, type2)) {
+    public static boolean matches(Type requiredType, Set<? extends Type> beanTypes) {
+        for (Type beanType : beanTypes) {
+            if (matches(requiredType, beanType)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static boolean isAssignableTo(Type type1, Type[] types2) {
+        return isAssignableFrom(types2, type1);
     }
 
     public static boolean isAssignableFrom(Type type1, Type[] types2) {
@@ -336,37 +340,37 @@ public class Reflections {
         return processWildcardTypesAndTypeVariables(type1, type2);
     }
 
-    public static boolean matches(Type type1, Type type2) {
-        TypeHolder typeHolder1 = TypeHolder.wrap(type1);
-        if (typeHolder1 != null && typeHolder1.matches(type2)) {
+    public static boolean matches(Type requiredType, Type beanType) {
+        TypeHolder requiredTypeHolder = TypeHolder.wrap(requiredType);
+        if (requiredTypeHolder != null && requiredTypeHolder.matches(beanType)) {
             return true;
         }
 
-        return processWildcardTypesAndTypeVariables(type1, type2);
+        return processWildcardTypesAndTypeVariables(requiredType, beanType);
     }
 
-    private static boolean processWildcardTypesAndTypeVariables(Type type1, Type type2) {
-        if (type1 instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) type1;
-            if (isTypeInsideBounds(type2, wildcardType.getLowerBounds(), wildcardType.getUpperBounds())) {
+    private static boolean processWildcardTypesAndTypeVariables(Type requiredType, Type beanType) {
+        if (requiredType instanceof WildcardType) {
+            WildcardType wildcardType = (WildcardType) requiredType;
+            if (isTypeInsideBounds(beanType, wildcardType.getLowerBounds(), wildcardType.getUpperBounds())) {
                 return true;
             }
         }
-        if (type2 instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) type2;
-            if (isTypeInsideBounds(type1, wildcardType.getUpperBounds(), wildcardType.getLowerBounds())) {
+        if (beanType instanceof WildcardType) {
+            WildcardType wildcardType = (WildcardType) beanType;
+            if (isTypeInsideBounds(requiredType, wildcardType.getUpperBounds(), wildcardType.getLowerBounds())) {
                 return true;
             }
         }
-        if (type1 instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) type1;
-            if (isTypeInsideBounds(type2, EMPTY_TYPES, typeVariable.getBounds())) {
+        if (requiredType instanceof TypeVariable<?>) {
+            TypeVariable<?> typeVariable = (TypeVariable<?>) requiredType;
+            if (isTypeInsideBounds(beanType, EMPTY_TYPES, typeVariable.getBounds())) {
                 return true;
             }
         }
-        if (type2 instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) type2;
-            if (isTypeInsideBounds(type1, typeVariable.getBounds(), EMPTY_TYPES)) {
+        if (beanType instanceof TypeVariable<?>) {
+            TypeVariable<?> typeVariable = (TypeVariable<?>) beanType;
+            if (isTypeInsideBounds(requiredType, typeVariable.getBounds(), EMPTY_TYPES)) {
                 return true;
             }
         }
@@ -374,17 +378,8 @@ public class Reflections {
     }
 
     public static boolean isTypeInsideBounds(Type type, Type[] lowerBounds, Type[] upperBounds) {
-        if (lowerBounds.length > 0) {
-            if (!isAssignableFrom(type, lowerBounds)) {
-                return false;
-            }
-        }
-        if (upperBounds.length > 0) {
-            if (!isAssignableFrom(upperBounds, type)) {
-                return false;
-            }
-        }
-        return true;
+        return (lowerBounds.length == 0 || isAssignableFrom(type, lowerBounds))
+            && (upperBounds.length == 0 || isAssignableTo(type, upperBounds));
     }
 
     /**
@@ -405,15 +400,15 @@ public class Reflections {
     }
 
     /**
-     * Check whether whether any of the types1 matches a type in types2
+     * Check whether whether any of the requiredTypes matches a type in beanTypes
      *
-     * @param types1 the types1
-     * @param types2 the type2
-     * @return can we assign any type from types1 to types2
+     * @param requiredTypes the requiredTypes
+     * @param beanTypes     the beanTypes
+     * @return can we assign any type from requiredTypes to beanTypes
      */
-    public static boolean matches(Set<Type> types1, Set<Type> types2) {
-        for (Type type : types1) {
-            if (matches(type, types2)) {
+    public static boolean matches(Set<Type> requiredTypes, Set<Type> beanTypes) {
+        for (Type requiredType : requiredTypes) {
+            if (matches(requiredType, beanTypes)) {
                 return true;
             }
         }
