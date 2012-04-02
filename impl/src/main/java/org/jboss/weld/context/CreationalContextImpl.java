@@ -16,18 +16,19 @@
  */
 package org.jboss.weld.context;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Pete Muir
@@ -90,9 +91,6 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             // do not destroy contextual again, since it's just being destroyed
             if (contextual == null || (dependentInstance.getContextual().equals(contextual) == false))
                 destroy(dependentInstance);
-        }
-        if (incompleteInstances != null) {
-            incompleteInstances.clear();
         }
     }
 
