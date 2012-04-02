@@ -37,7 +37,7 @@ public class QualifierInstance {
         final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
         final Set<QualifierInstance> ret = new HashSet<QualifierInstance>();
         for(Annotation a : annotations) {
-            ret.add(new QualifierInstance(a, store.getBindingTypeModel(a.annotationType())));
+            ret.add(new QualifierInstance(a, store));
         }
         return ret;
     }
@@ -49,8 +49,9 @@ public class QualifierInstance {
         return qualifiers(beanManager, bean.getQualifiers());
     }
 
-    public QualifierInstance(final Annotation instance, final QualifierModel<?> model) {
+    public QualifierInstance(final Annotation instance, final MetaAnnotationStore store) {
         annotationClass = instance.annotationType();
+        final QualifierModel<? extends Annotation> model = store.getBindingTypeModel(annotationClass);
         final Map<WeldMethod<?,?>, Object> values = new HashMap<WeldMethod<?, ?>, Object>();
         for(final WeldMethod<?, ?> method : model.getAnnotatedAnnotation().getMembers()) {
             if(!model.getNonBindingMembers().contains(method)) {
@@ -89,5 +90,14 @@ public class QualifierInstance {
     @Override
     public int hashCode() {
         return hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return "QualifierInstance{" +
+                "annotationClass=" + annotationClass +
+                ", values=" + values +
+                ", hashCode=" + hashCode +
+                '}';
     }
 }

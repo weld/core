@@ -16,18 +16,18 @@
  */
 package org.jboss.weld.util;
 
-import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
-import org.jboss.weld.util.reflection.Reflections;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
+
+import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.util.reflection.Reflections;
 
 import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
@@ -37,9 +37,10 @@ import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALL
  */
 public class Observers {
 
-    public static void checkEventObjectType(Type eventType) {
+    public static void checkEventObjectType(final BeanManagerImpl beanManager, Type eventType) {
         Type[] types;
-        Type resolvedType = new HierarchyDiscovery(eventType).getResolvedType();
+        final SharedObjectCache cache = beanManager.getServices().get(SharedObjectCache.class);
+        final Type resolvedType = cache.getResolvedType(eventType);
         if (resolvedType instanceof Class<?>) {
             types = new Type[0];
         } else if (resolvedType instanceof ParameterizedType) {
@@ -54,8 +55,8 @@ public class Observers {
         }
     }
 
-    public static void checkEventObjectType(Object event) {
-        checkEventObjectType(event.getClass());
+    public static void checkEventObjectType(final BeanManagerImpl beanManager, Object event) {
+        checkEventObjectType(beanManager, event.getClass());
 
     }
 
