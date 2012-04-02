@@ -16,15 +16,12 @@
  */
 package org.jboss.weld.event;
 
-import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
@@ -41,12 +38,16 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Beans;
 
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
@@ -80,6 +81,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected final MethodInjectionPoint<T, ? super X> observerMethod;
     protected TransactionPhase transactionPhase;
     private final String id;
+    private final boolean lifecycle;
 
     private final Set<WeldInjectionPoint<?, ?>> injectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
@@ -113,6 +115,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
                 injectionPoints.add(injectionPoint);
             }
         }
+        lifecycle = Extension.class.isAssignableFrom(declaringBean.getType());
     }
 
     public Set<WeldInjectionPoint<?, ?>> getInjectionPoints() {
@@ -258,7 +261,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected boolean ignore(T event) {
         Class<?> eventType = event.getClass();
         // This is a container lifeycle event, ensure we are firing to an extension
-        if (AbstractContainerEvent.class.isAssignableFrom(eventType) && !Extension.class.isAssignableFrom(getBeanClass())) {
+        if (AbstractContainerEvent.class.isAssignableFrom(eventType) && !lifecycle) {
             return true;
         } else {
             return false;

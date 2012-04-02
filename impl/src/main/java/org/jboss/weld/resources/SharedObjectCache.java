@@ -16,17 +16,17 @@
  */
 package org.jboss.weld.resources;
 
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
-
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Allows classes to share Maps/Sets to conserve memory.
@@ -59,6 +59,13 @@ public class SharedObjectCache implements Service {
         }
     });
 
+    private final Map<Type, Type> resolvedTypes = new MapMaker().makeComputingMap(new Function<Type, Type>() {
+
+        public Type apply(Type from) {
+            return new HierarchyDiscovery(from).getResolvedType();
+        }
+    });
+
     public <T> Set<T> getSharedSet(Set<T> set) {
         return Reflections.cast(sharedSets.get(set));
     }
@@ -73,6 +80,10 @@ public class SharedObjectCache implements Service {
 
     public Set<Type> getTypeClosure(Type type) {
         return typeClosures.get(type);
+    }
+
+    public Type getResolvedType(Type type) {
+        return resolvedTypes.get(type);
     }
 
     public void cleanup() {

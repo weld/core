@@ -48,11 +48,11 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     private InterceptionType interceptionType;
 
     @Override
-    protected void checkQualifier(Annotation qualifier, Class<? extends  Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier,final QualifierInstance qualifierInstance, Class<? extends  Annotation> annotationType) {
         if (!Container.instance().services().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
         }
-        if (qualifiers.contains(qualifier)) {
+        if (qualifierInstances.contains(qualifierInstance)) {
             throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, qualifiers);
         }
     }
@@ -103,15 +103,15 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
         if (qualifiers.size() == 0) {
             throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
         }
-        return new InterceptorResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, interceptionType, qualifiers(qualifiers));
+        return new InterceptorResolvableImpl(rawType, types, mappedQualifiers, declaringBean, interceptionType, qualifierInstances);
     }
 
 
     private static class InterceptorResolvableImpl extends ResolvableImpl implements InterceptorResolvable {
         private final InterceptionType interceptionType;
 
-        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType, final Set<QualifierInstance> instances) {
-            super(rawType, typeClosure, qualifiers, mappedQualifiers, declaringBean, instances);
+        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType, final Set<QualifierInstance> instances) {
+            super(rawType, typeClosure, mappedQualifiers, declaringBean, instances);
             this.interceptionType = interceptionType;
         }
 

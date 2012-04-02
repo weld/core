@@ -51,6 +51,7 @@ public class ResolvableBuilder {
     protected Class<?> rawType;
     protected final Set<Type> types;
     protected final Set<Annotation> qualifiers;
+    protected final Set<QualifierInstance> qualifierInstances;
     protected final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
     protected Bean<?> declaringBean;
     private final BeanManagerImpl beanManager;
@@ -60,6 +61,7 @@ public class ResolvableBuilder {
         this.types = new HashSet<Type>();
         this.qualifiers = new HashSet<Annotation>();
         this.mappedQualifiers = new HashMap<Class<? extends Annotation>, Annotation>();
+        this.qualifierInstances = new HashSet<QualifierInstance>();
     }
 
     public ResolvableBuilder(Type type, final BeanManagerImpl beanManager) {
@@ -77,12 +79,17 @@ public class ResolvableBuilder {
         this(injectionPoint.getType(), manager);
         addQualifiers(injectionPoint.getQualifiers());
         if (mappedQualifiers.containsKey(Named.class) && injectionPoint.getMember() instanceof Field) {
+            final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
             Named named = (Named) mappedQualifiers.get(Named.class);
+            QualifierInstance qualifierInstance = new QualifierInstance(named, store);
             if (named.value().equals("")) {
                 qualifiers.remove(named);
+                qualifierInstances.remove(qualifierInstance);
                 // This is field injection point with an @Named qualifier, with no value specified, we need to assume the name of the field is the value
                 named = new NamedLiteral(injectionPoint.getMember().getName());
+                qualifierInstance = new QualifierInstance(named, store);
                 qualifiers.add(named);
+                qualifierInstances.add(qualifierInstance);
                 mappedQualifiers.put(Named.class, named);
             }
         }
@@ -106,7 +113,8 @@ public class ResolvableBuilder {
 
     public Resolvable create() {
         if (qualifiers.size() == 0) {
-            this.qualifiers.add(DefaultLiteral.INSTANCE);
+            final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
+            this.qualifierInstances.add(new QualifierInstance(DefaultLiteral.INSTANCE, store));
         }
         if (Reflections.isAssignableFrom(Event.class, types)) {
             return createFacade(Event.class);
@@ -115,19 +123,22 @@ public class ResolvableBuilder {
         } else if (Reflections.isAssignableFrom(Provider.class, types)) {
             return createFacade(Provider.class);
         } else {
-            return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, qualifiers(qualifiers));
+            return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances);
         }
     }
 
     private Resolvable createFacade(Class<?> rawType) {
-        Set<Annotation> qualifiers = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
+        final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
+        Set<QualifierInstance> qualifiers = Collections.<QualifierInstance>singleton(new QualifierInstance(AnyLiteral.INSTANCE, store));
         Set<Type> types = Collections.<Type>singleton(rawType);
-        return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, qualifiers(qualifiers));
+        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifiers);
     }
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
         // Handle the @New qualifier special case
-        final Class<? extends Annotation> annotationType = qualifier.annotationType();
+        final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
+        QualifierInstance qualifierInstance = new QualifierInstance(qualifier, store);
+        final Class<? extends Annotation> annotationType = qualifierInstance.getAnnotationClass();
         if (annotationType.equals(New.class)) {
             New newQualifier = New.class.cast(qualifier);
             if (newQualifier.value().equals(New.class) && rawType == null) {
@@ -143,11 +154,13 @@ public class ResolvableBuilder {
                     }
 
                 };
+                qualifierInstance = new QualifierInstance(qualifier, store);
             }
         }
 
-        checkQualifier(qualifier, annotationType);
+        checkQualifier(qualifier, qualifierInstance, annotationType);
         this.qualifiers.add(qualifier);
+        this.qualifierInstances.add(qualifierInstance);
         this.mappedQualifiers.put(annotationType, qualifier);
         return this;
     }
@@ -173,26 +186,24 @@ public class ResolvableBuilder {
         return this;
     }
 
-    protected void checkQualifier(Annotation qualifier, Class<? extends Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance, Class<? extends Annotation> annotationType) {
         if (!beanManager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
         }
-        if (qualifiers.contains(qualifier)) {
+        if (qualifierInstances.contains(qualifierInstance)) {
             throw new IllegalArgumentException(DUPLICATE_QUALIFIERS, qualifiers);
         }
     }
 
     protected static class ResolvableImpl implements Resolvable {
 
-        private final Set<Annotation> qualifiers;
         private final Set<QualifierInstance> qualifierInstances;
         private final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
         private final Set<Type> typeClosure;
         private final Class<?> rawType;
         private final Bean<?> declaringBean;
 
-        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances) {
-            this.qualifiers = qualifiers;
+        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances) {
             this.mappedQualifiers = mappedQualifiers;
             this.typeClosure = typeClosure;
             this.rawType = rawType;
@@ -249,15 +260,4 @@ public class ResolvableBuilder {
         }
     }
 
-    protected Set<QualifierInstance> qualifiers(Set<Annotation> annotations) {
-        if(annotations.isEmpty()) {
-            return Collections.emptySet();
-        }
-        final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
-        final Set<QualifierInstance> ret = new HashSet<QualifierInstance>();
-        for(Annotation a : annotations) {
-            ret.add(new QualifierInstance(a, store.getBindingTypeModel(a.annotationType())));
-        }
-        return ret;
-    }
 }

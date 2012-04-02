@@ -139,7 +139,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
             final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
             final Set<QualifierInstance> ret = new HashSet<QualifierInstance>();
             for(Annotation a : getQualifiers()) {
-                ret.add(new QualifierInstance(a, store.getBindingTypeModel(a.annotationType())));
+                ret.add(new QualifierInstance(a, store));
             }
             qualifiers = ret;
         }

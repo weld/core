@@ -16,13 +16,12 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.Container;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -37,7 +36,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractBuiltInBean<T> {
     }
 
     public T create(CreationalContext<T> creationalContext) {
-        InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
+        InjectionPoint injectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class).peek();
         if (injectionPoint != null) {
             return newInstance(injectionPoint, creationalContext);
         } else {
