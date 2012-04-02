@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.context;
 
+import java.io.Serializable;
+
+import javax.enterprise.context.spi.Contextual;
+
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.weld.Container;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-
-import javax.enterprise.context.spi.Contextual;
-import java.io.Serializable;
 
 /**
  * A serializable version of contextual that knows how to restore the
@@ -61,7 +62,7 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
             this.serialiazable = contextual;
         } else {
             // otherwise, generate an id (may not be portable between container instances)
-            this.id = getContextualStore().putIfAbsent(contextual);
+            this.id = contextualStore.putIfAbsent(contextual);
         }
         // cache the contextual
         this.cached = contextual;

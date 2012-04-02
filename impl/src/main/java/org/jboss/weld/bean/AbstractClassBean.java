@@ -16,6 +16,30 @@
  */
 package org.jboss.weld.bean;
 
+import java.beans.Introspector;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.inject.Scope;
+
 import javassist.util.proxy.ProxyObject;
 import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
@@ -55,29 +79,6 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Scope;
-import java.beans.Introspector;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -147,6 +148,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      */
     protected ProxyFactory<T> decoratorProxyFactory;
 
+    private boolean hasInterceptors;
+
     /**
      * Constructor
      *
@@ -172,6 +175,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         initTargetClassInterceptors();
     }
 
+
     @Override
     public void initializeAfterBeanDiscovery() {
         initInterceptorsIfNeeded();
@@ -190,6 +194,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
             new InterceptionModelInitializer().init();
         }
+        hasInterceptors = this.isInterceptionCandidate() && (hasSerializationOrInvocationInterceptorMethods || beanManager.getInterceptorModelRegistry().get(getType()) != null);
     }
 
     public void initDecorators() {
@@ -397,7 +402,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     public boolean hasInterceptors() {
-        return this.isInterceptionCandidate() && (hasSerializationOrInvocationInterceptorMethods || beanManager.getInterceptorModelRegistry().get(getType()) != null);
+        return hasInterceptors;
     }
 
     private void initTargetClassInterceptors() {
