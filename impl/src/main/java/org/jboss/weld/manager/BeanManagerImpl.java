@@ -94,6 +94,7 @@ import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.InterceptorResolvableBuilder;
 import org.jboss.weld.resolution.NameBasedResolver;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
@@ -427,12 +428,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return cast(observerResolver.resolve(new ResolvableBuilder().addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType)).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
+        return cast(observerResolver.resolve(new ResolvableBuilder(this).addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType)).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return cast(observerResolver.resolve(new ResolvableBuilder().addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType)).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
+        return cast(observerResolver.resolve(new ResolvableBuilder(this).addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType)).addType(Object.class).addQualifiers(qualifiers).addQualifierIfAbsent(AnyLiteral.INSTANCE).create(), true));
     }
 
     /**
@@ -449,11 +450,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-        return beanResolver.resolve(new ResolvableBuilder(beanType).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+        return beanResolver.resolve(new ResolvableBuilder(beanType, this).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
     }
 
     public Set<Bean<?>> getBeans(Type beanType, Set<Annotation> qualifiers) {
-        return beanResolver.resolve(new ResolvableBuilder(beanType).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+        return beanResolver.resolve(new ResolvableBuilder(beanType, this).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
     }
 
     public Set<Bean<?>> getBeans(InjectionPoint injectionPoint) {
@@ -467,7 +468,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 currentInjectionPoint.push(injectionPoint);
             }
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
-            return beanResolver.resolve(new ResolvableBuilder(injectionPoint).create(), true);
+            return beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
         } finally {
             if (registerInjectionPoint) {
                 currentInjectionPoint.pop();
@@ -698,7 +699,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
         if (!injectionPoint.isDelegate()) {
-            Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint).create());
+            Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint, this).create());
             return getReference(injectionPoint, resolvedBean, creationalContext);
         } else {
             return DecorationHelper.peek().getNextDelegate(injectionPoint, creationalContext);
@@ -726,14 +727,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers) {
         checkResolveDecoratorsArguments(types);
         // TODO Fix this cast and make the resolver return a list
-        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers)));
+        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers)));
     }
 
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> qualifiers) {
         checkResolveDecoratorsArguments(types);
         // TODO Fix this cast and make the resolver return a list
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).create(), true));
+        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true));
     }
 
     private void checkResolveDecoratorsArguments(Set<Type> types) {
@@ -774,7 +775,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Set<InterceptorBindingType> flattenedInterceptorBindings) {
         Set<Annotation> interceptorBindingAnnotations = InterceptorBindingType.unwrap(flattenedInterceptorBindings);
 
-        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class)
+        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class, this)
                 .setInterceptionType(type)
                 .addQualifiers(interceptorBindingAnnotations)
                 .create();
@@ -1103,6 +1104,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return foundInterceptionBindingTypes;
     }
 
+    public Set<QualifierInstance> extractInterceptorBindingsForQualifierInstance(Iterable<QualifierInstance> annotations) {
+        Set<QualifierInstance> foundInterceptionBindingTypes = new HashSet<QualifierInstance>();
+        for (QualifierInstance annotation : annotations) {
+            if (isInterceptorBinding(annotation.getAnnotationClass())) {
+                foundInterceptionBindingTypes.add(annotation);
+            }
+        }
+        return foundInterceptionBindingTypes;
+    }
     /**
      * Extracts the complete set of interception bindings from a given set of
      * interceptorBindingTypes.

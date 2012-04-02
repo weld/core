@@ -16,6 +16,32 @@
  */
 package org.jboss.weld.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.decorator.Decorator;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -51,36 +77,11 @@ import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.decorator.Decorator;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.CreationException;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.jboss.weld.logging.Category.BEAN;
@@ -440,25 +441,13 @@ public class Beans {
      * @param qualifiers         The set of qualifiers to check
      * @return True if all matches, false otherwise
      */
-    public static boolean containsAllQualifiers(Set<Annotation> requiredQualifiers, Set<Annotation> qualifiers, BeanManagerImpl beanManager) {
-        for (Annotation requiredQualifier : requiredQualifiers) {
-            QualifierModel<?> qualifierModel = beanManager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(requiredQualifier.annotationType());
-            boolean matchFound = false;
-            // Do a full check as we need to consider @NonBinding
-            for (Annotation qualifier : qualifiers) {
-                if (qualifierModel.isEqual(requiredQualifier, qualifier)) {
-                    matchFound = true;
-                }
-            }
-            if (!matchFound) {
-                return false;
-            }
-        }
-        return true;
+    public static boolean containsAllQualifiers(Set<QualifierInstance> requiredQualifiers, Set<QualifierInstance> qualifiers, BeanManagerImpl beanManager) {
+        return qualifiers.containsAll(requiredQualifiers);
     }
 
-    public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings, Set<Annotation> existingBindings, BeanManagerImpl manager) {
-        return manager.extractInterceptorBindings(existingBindings).containsAll(manager.extractInterceptorBindings(expectedBindings));
+    public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings, Set<QualifierInstance> existingBindings, BeanManagerImpl manager) {
+        final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(QualifierInstance.qualifiers(manager, expectedBindings));
+        return manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
     }
 
     public static boolean findInterceptorBindingConflicts(Set<InterceptorBindingType> flattenedBindings) {

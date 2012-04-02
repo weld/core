@@ -19,11 +19,16 @@ package org.jboss.weld.bean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.resolution.QualifierInstance;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
+
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -44,6 +49,8 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
     private final String id;
 
     private final int hashCode;
+
+    private volatile Set<QualifierInstance> qualifiers;
 
     protected RIBean(String idSuffix, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
@@ -125,6 +132,18 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
     @Override
     public String toString() {
         return id;
+    }
+
+    public Set<QualifierInstance> getQualifierInstances() {
+        if(qualifiers == null) {
+            final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
+            final Set<QualifierInstance> ret = new HashSet<QualifierInstance>();
+            for(Annotation a : getQualifiers()) {
+                ret.add(new QualifierInstance(a, store.getBindingTypeModel(a.annotationType())));
+            }
+            qualifiers = ret;
+        }
+        return qualifiers;
     }
 
 }

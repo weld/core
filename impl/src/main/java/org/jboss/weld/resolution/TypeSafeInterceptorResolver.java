@@ -17,12 +17,13 @@
 
 package org.jboss.weld.resolution;
 
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
-
-import javax.enterprise.inject.spi.Interceptor;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.enterprise.inject.spi.Interceptor;
+
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Beans;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -32,7 +33,7 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
     private final BeanManagerImpl manager;
 
     public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors) {
-        super(interceptors);
+        super(interceptors, manager);
         this.manager = manager;
     }
 

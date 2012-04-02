@@ -16,22 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.literal.NamedLiteral;
-import org.jboss.weld.literal.NewLiteral;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Named;
-import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -40,6 +24,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Named;
+import javax.inject.Provider;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.literal.NamedLiteral;
+import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.util.reflection.Reflections;
 
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_QUALIFIERS;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
@@ -52,15 +54,17 @@ public class ResolvableBuilder {
     protected final Set<Annotation> qualifiers;
     protected final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
     protected Bean<?> declaringBean;
+    private final BeanManagerImpl beanManager;
 
-    public ResolvableBuilder() {
+    public ResolvableBuilder(final BeanManagerImpl beanManager) {
+        this.beanManager = beanManager;
         this.types = new HashSet<Type>();
         this.qualifiers = new HashSet<Annotation>();
         this.mappedQualifiers = new HashMap<Class<? extends Annotation>, Annotation>();
     }
 
-    public ResolvableBuilder(Type type) {
-        this();
+    public ResolvableBuilder(Type type, final BeanManagerImpl beanManager) {
+        this(beanManager);
         if (type != null) {
             this.rawType = Reflections.getRawType(type);
             if (rawType == null) {
@@ -70,8 +74,8 @@ public class ResolvableBuilder {
         }
     }
 
-    public ResolvableBuilder(InjectionPoint injectionPoint) {
-        this(injectionPoint.getType());
+    public ResolvableBuilder(InjectionPoint injectionPoint, final BeanManagerImpl manager) {
+        this(injectionPoint.getType(), manager);
         addQualifiers(injectionPoint.getQualifiers());
         if (mappedQualifiers.containsKey(Named.class) && injectionPoint.getMember() instanceof Field) {
             Named named = (Named) mappedQualifiers.get(Named.class);
@@ -112,19 +116,20 @@ public class ResolvableBuilder {
         } else if (Reflections.isAssignableFrom(Provider.class, types)) {
             return createFacade(Provider.class);
         } else {
-            return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
+            return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, qualifiers(qualifiers));
         }
     }
 
     private Resolvable createFacade(Class<?> rawType) {
         Set<Annotation> qualifiers = Collections.<Annotation>singleton(AnyLiteral.INSTANCE);
         Set<Type> types = Collections.<Type>singleton(rawType);
-        return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean);
+        return new ResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, qualifiers(qualifiers));
     }
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
         // Handle the @New qualifier special case
-        if (qualifier.annotationType().equals(New.class)) {
+        final Class<? extends Annotation> annotationType = qualifier.annotationType();
+        if (annotationType.equals(New.class)) {
             New newQualifier = New.class.cast(qualifier);
             if (newQualifier.value().equals(New.class) && rawType == null) {
                 throw new IllegalStateException("Cannot transform @New when there is no known raw type");
@@ -142,9 +147,9 @@ public class ResolvableBuilder {
             }
         }
 
-        checkQualifier(qualifier);
+        checkQualifier(qualifier, annotationType);
         this.qualifiers.add(qualifier);
-        this.mappedQualifiers.put(qualifier.annotationType(), qualifier);
+        this.mappedQualifiers.put(annotationType, qualifier);
         return this;
     }
 
@@ -169,8 +174,8 @@ public class ResolvableBuilder {
         return this;
     }
 
-    protected void checkQualifier(Annotation qualifier) {
-        if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid()) {
+    protected void checkQualifier(Annotation qualifier, Class<? extends Annotation> annotationType) {
+        if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
         }
         if (qualifiers.contains(qualifier)) {
@@ -181,21 +186,23 @@ public class ResolvableBuilder {
     protected static class ResolvableImpl implements Resolvable {
 
         private final Set<Annotation> qualifiers;
+        private final Set<QualifierInstance> qualifierInstances;
         private final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
         private final Set<Type> typeClosure;
         private final Class<?> rawType;
         private final Bean<?> declaringBean;
 
-        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean) {
+        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances) {
             this.qualifiers = qualifiers;
             this.mappedQualifiers = mappedQualifiers;
             this.typeClosure = typeClosure;
             this.rawType = rawType;
             this.declaringBean = declaringBean;
+            this.qualifierInstances = qualifierInstances;
         }
 
-        public Set<Annotation> getQualifiers() {
-            return qualifiers;
+        public Set<QualifierInstance> getQualifiers() {
+            return qualifierInstances;
         }
 
         public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -230,17 +237,28 @@ public class ResolvableBuilder {
         public int hashCode() {
             int result = 17;
             result = 31 * result + this.getTypes().hashCode();
-            result = 31 * result + this.getQualifiers().hashCode();
+            result = 31 * result + this.qualifierInstances.hashCode();
             return result;
         }
 
         public boolean equals(Object o) {
             if (o instanceof ResolvableImpl) {
-                Resolvable r = (Resolvable) o;
-                return this.getTypes().equals(r.getTypes()) && this.getQualifiers().equals(r.getQualifiers());
+                ResolvableImpl r = (ResolvableImpl) o;
+                return this.getTypes().equals(r.getTypes()) && this.qualifierInstances.equals(r.qualifierInstances);
             }
             return false;
         }
     }
 
+    protected Set<QualifierInstance> qualifiers(Set<Annotation> annotations) {
+        if(annotations.isEmpty()) {
+            return Collections.emptySet();
+        }
+        final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
+        final Set<QualifierInstance> ret = new HashSet<QualifierInstance>();
+        for(Annotation a : annotations) {
+            ret.add(new QualifierInstance(a, store.getBindingTypeModel(a.annotationType())));
+        }
+        return ret;
+    }
 }
