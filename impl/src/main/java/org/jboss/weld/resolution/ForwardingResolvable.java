@@ -16,16 +16,17 @@
  */
 package org.jboss.weld.resolution;
 
-import javax.enterprise.inject.spi.Bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
 
 public abstract class ForwardingResolvable implements Resolvable {
 
     protected abstract Resolvable delegate();
 
-    public Set<Annotation> getQualifiers() {
+    public Set<QualifierInstance> getQualifiers() {
         return delegate().getQualifiers();
     }
 

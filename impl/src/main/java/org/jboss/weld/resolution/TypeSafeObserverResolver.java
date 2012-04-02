@@ -16,12 +16,13 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.Set;
+
+import javax.enterprise.inject.spi.ObserverMethod;
+
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.inject.spi.ObserverMethod;
-import java.util.Set;
 
 /**
  * @author pmuir
@@ -31,13 +32,13 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     private final BeanManagerImpl manager;
 
     public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<ObserverMethod<?>> observers) {
-        super(observers);
+        super(observers, manager);
         this.manager = manager;
     }
 
     @Override
     protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer) {
-        return Reflections.matches(observer.getObservedType(), resolvable.getTypes()) && Beans.containsAllQualifiers(observer.getObservedQualifiers(), resolvable.getQualifiers(), manager);
+        return Reflections.matches(observer.getObservedType(), resolvable.getTypes()) && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(), observer.getObservedQualifiers()),resolvable.getQualifiers(), manager);
     }
 
     /**

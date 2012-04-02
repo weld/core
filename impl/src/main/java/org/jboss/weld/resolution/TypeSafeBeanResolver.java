@@ -86,7 +86,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
     }
 
     public TypeSafeBeanResolver(BeanManagerImpl beanManager, final Iterable<T> beans) {
-        super(beans);
+        super(beans, beanManager);
         this.beanManager = beanManager;
         this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation());
         // beansByType stores a map of a type to all beans that are assignable to
@@ -148,7 +148,8 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
 
     @Override
     protected boolean matches(Resolvable resolvable, T bean) {
-        return Reflections.matches(resolvable.getTypes(), bean.getTypes()) && Beans.containsAllQualifiers(resolvable.getQualifiers(), bean.getQualifiers(), beanManager);
+
+        return Reflections.matches(resolvable.getTypes(), bean.getTypes()) && Beans.containsAllQualifiers(resolvable.getQualifiers(), QualifierInstance.qualifiers(beanManager, bean), beanManager);
     }
 
     @Override
@@ -221,5 +222,4 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
         this.disambiguatedBeans.clear();
         this.beansByType.clear();
     }
-
 }

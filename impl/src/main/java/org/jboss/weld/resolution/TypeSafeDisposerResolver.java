@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.Set;
+
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
-
-import java.util.Set;
 
 /**
  * @author pmuir
@@ -31,13 +31,13 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
     private final BeanManagerImpl manager;
 
     public TypeSafeDisposerResolver(BeanManagerImpl manager, Iterable<DisposalMethod<?, ?>> disposers) {
-        super(disposers);
+        super(disposers, manager);
         this.manager = manager;
     }
 
     @Override
     protected boolean matches(Resolvable resolvable, DisposalMethod<?, ?> disposer) {
-        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && Reflections.isAssignableFrom(disposer.getType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers(), manager);
+        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && Reflections.isAssignableFrom(disposer.getType(), resolvable.getTypes()) && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(),  disposer), resolvable.getQualifiers(), manager);
     }
 
     @Override

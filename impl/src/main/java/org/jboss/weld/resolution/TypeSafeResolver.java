@@ -19,10 +19,18 @@ package org.jboss.weld.resolution;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
+import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 
 /**
  * Implementation of type safe bean resolution
@@ -52,12 +60,14 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
     // The beans to search
     private final Iterable<? extends T> allBeans;
     private final ResolvableToBeanSet<R, T> resolverFunction;
+    private final BeanManagerImpl beanManager;
 
 
     /**
      * Constructor
      */
-    public TypeSafeResolver(Iterable<? extends T> allBeans) {
+    public TypeSafeResolver(Iterable<? extends T> allBeans, final BeanManagerImpl beanManager) {
+        this.beanManager = beanManager;
         this.resolverFunction = new ResolvableToBeanSet<R, T>(this);
         this.resolved = new MapMaker().makeComputingMap(resolverFunction);
         this.allBeans = allBeans;
@@ -128,6 +138,10 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
         return resolved.containsKey(wrap(resolvable));
     }
 
+    protected BeanManagerImpl getBeanManager() {
+        return beanManager;
+    }
+
     /**
      * Gets a string representation
      *
@@ -140,5 +154,4 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
         buffer.append("Resolved injection points: " + resolved.size() + "\n");
         return buffer.toString();
     }
-
 }

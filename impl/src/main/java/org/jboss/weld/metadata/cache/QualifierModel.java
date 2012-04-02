@@ -16,20 +16,21 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Set;
+
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
+
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.Set;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;

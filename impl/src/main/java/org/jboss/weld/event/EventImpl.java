@@ -16,21 +16,22 @@
  */
 package org.jboss.weld.event;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.TypeLiteral;
+
 import org.jboss.weld.bean.builtin.AbstractFacade;
 import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Formats;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 
 import static org.jboss.weld.logging.messages.EventMessage.PROXY_REQUIRED;
 

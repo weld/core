@@ -121,7 +121,7 @@ public abstract class AnnotationModel<T extends Annotation> {
      *
      * @return The annotation
      */
-    protected WeldAnnotation<T> getAnnotatedAnnotation() {
+    public WeldAnnotation<T> getAnnotatedAnnotation() {
         return annotatedAnnotation;
     }
 

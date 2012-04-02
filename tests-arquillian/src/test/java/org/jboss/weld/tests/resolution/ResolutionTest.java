@@ -61,7 +61,7 @@ public class ResolutionTest {
         };
         assertNotNull(getReference(beanManager, Foo.class, defaultQualifier));
         TypeSafeBeanResolver<?> resolver = beanManager.getBeanResolver();
-        assertFalse(resolver.isCached(new ResolvableBuilder().addType(Foo.class).addQualifier(defaultQualifier).create()));
+        assertFalse(resolver.isCached(new ResolvableBuilder(beanManager).addType(Foo.class).addQualifier(defaultQualifier).create()));
     }
 
     // WELD-873

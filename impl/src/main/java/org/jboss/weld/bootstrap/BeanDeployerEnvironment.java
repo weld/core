@@ -16,6 +16,20 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
+
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -43,19 +57,6 @@ import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 public class BeanDeployerEnvironment {
@@ -73,6 +74,7 @@ public class BeanDeployerEnvironment {
     private final ClassTransformer classTransformer;
     private final Set<WeldClass<?>> newManagedBeanClasses;
     private final Set<InternalEjbDescriptor<?>> newSessionBeanDescriptors;
+    private final BeanManagerImpl beanManager;
 
     public BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         this.classBeanMap = new HashMap<WeldClass<?>, AbstractClassBean<?>>();
@@ -88,6 +90,7 @@ public class BeanDeployerEnvironment {
         this.classTransformer = manager.getServices().get(ClassTransformer.class);
         this.newManagedBeanClasses = new HashSet<WeldClass<?>>();
         this.newSessionBeanDescriptors = new HashSet<InternalEjbDescriptor<?>>();
+        this.beanManager = manager;
     }
 
     public Set<WeldClass<?>> getNewManagedBeanClasses() {
@@ -244,7 +247,7 @@ public class BeanDeployerEnvironment {
      */
     public <X> Set<DisposalMethod<X, ?>> resolveDisposalBeans(Set<Type> types, Set<Annotation> qualifiers, AbstractClassBean<X> declaringBean) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));
+        Set<DisposalMethod<X, ?>> beans = cast(disposalMethodResolver.resolve(new ResolvableBuilder(beanManager).addTypes(types).addQualifiers(qualifiers).setDeclaringBean(declaringBean).create(), true));
         resolvedDisposalBeans.addAll(beans);
         return Collections.unmodifiableSet(beans);
     }
