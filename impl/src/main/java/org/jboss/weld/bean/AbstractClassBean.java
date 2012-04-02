@@ -33,7 +33,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -170,6 +169,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     protected ProxyFactory<T> decoratorProxyFactory;
 
+    private boolean hasInterceptors;
+
     /**
      * Constructor
      *
@@ -240,6 +241,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
             new InterceptionModelInitializer().init();
         }
+        hasInterceptors = this.isInterceptionCandidate() && (hasSerializationOrInvocationInterceptorMethods || beanManager.getInterceptorModelRegistry().get(getType()) != null);
     }
 
     public void initDecorators() {
@@ -421,7 +423,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     public boolean hasInterceptors() {
-        return this.isInterceptionCandidate() && (hasSerializationOrInvocationInterceptorMethods || beanManager.getInterceptorModelRegistry().get(getType()) != null);
+        return hasInterceptors;
     }
 
     private void initTargetClassInterceptors() {

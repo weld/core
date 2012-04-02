@@ -106,9 +106,6 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             if (contextual == null || (dependentInstance.getContextual().equals(contextual) == false))
                 destroy(dependentInstance);
         }
-        if (incompleteInstances != null) {
-            incompleteInstances.clear();
-        }
     }
 
     private static <T> void destroy(ContextualInstance<T> beanInstance) {
