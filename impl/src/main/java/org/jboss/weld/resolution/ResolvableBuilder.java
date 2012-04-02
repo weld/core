@@ -33,7 +33,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
@@ -175,7 +174,7 @@ public class ResolvableBuilder {
     }
 
     protected void checkQualifier(Annotation qualifier, Class<? extends Annotation> annotationType) {
-        if (!Container.instance().services().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid()) {
+        if (!beanManager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
         }
         if (qualifiers.contains(qualifier)) {
