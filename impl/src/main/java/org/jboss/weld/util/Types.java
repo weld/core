@@ -65,6 +65,4 @@ public class Types {
             return type;
         }
     }
-
-
 }

@@ -122,7 +122,7 @@ public abstract class AnnotationModel<T extends Annotation> {
      *
      * @return The annotation
      */
-    protected AnnotatedType<T> getAnnotatedAnnotation() {
+    public AnnotatedType<T> getAnnotatedAnnotation() {
         return annotatedAnnotation;
     }
 

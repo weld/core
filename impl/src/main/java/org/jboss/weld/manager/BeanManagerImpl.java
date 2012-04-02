@@ -137,6 +137,7 @@ import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.InterceptorResolvableBuilder;
 import org.jboss.weld.resolution.NameBasedResolver;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
@@ -475,7 +476,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Resolvable resolvable = new ResolvableBuilder()
+        Resolvable resolvable = new ResolvableBuilder(this)
             .addTypes(services.get(SharedObjectCache.class).getTypeClosureHolder(eventType).get())
             .addType(Object.class)
             .addQualifiers(qualifiers)
@@ -487,7 +488,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         Set<Type> typeClosure = services.get(SharedObjectCache.class).getTypeClosureHolder(eventType).get();
-        Resolvable resolvable = new ResolvableBuilder()
+        Resolvable resolvable = new ResolvableBuilder(this)
             .addTypes(typeClosure)
             .addType(Object.class)
             .addQualifiers(qualifiers)
@@ -514,11 +515,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-        return beanResolver.resolve(new ResolvableBuilder(beanType).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+        Resolvable resolvable = new ResolvableBuilder(beanType, this).addQualifiers(qualifiers).create();
+        return beanResolver.resolve(resolvable, isCacheable(qualifiers));
     }
 
     public Set<Bean<?>> getBeans(Type beanType, Set<Annotation> qualifiers) {
-        return beanResolver.resolve(new ResolvableBuilder(beanType).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+        return beanResolver.resolve(new ResolvableBuilder(beanType, this).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
     }
 
     public Set<Bean<?>> getBeans(InjectionPoint injectionPoint) {
@@ -532,7 +534,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 currentInjectionPoint.push(injectionPoint);
             }
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
-            return beanResolver.resolve(new ResolvableBuilder(injectionPoint).create(), true);
+            return beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
         } finally {
             if (registerInjectionPoint) {
                 currentInjectionPoint.pop();
@@ -781,7 +783,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
         if (!injectionPoint.isDelegate()) {
-            Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint).create());
+            Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint, this).create());
             return getReference(injectionPoint, resolvedBean, creationalContext);
         } else {
             return DecorationHelper.peek().getNextDelegate(injectionPoint, creationalContext);
@@ -809,14 +811,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers) {
         checkResolveDecoratorsArguments(types);
         // TODO Fix this cast and make the resolver return a list
-        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers)));
+        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers)));
     }
 
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> qualifiers) {
         checkResolveDecoratorsArguments(types);
         // TODO Fix this cast and make the resolver return a list
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder().addTypes(types).addQualifiers(qualifiers).create(), true));
+        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true));
     }
 
     private void checkResolveDecoratorsArguments(Set<Type> types) {
@@ -863,7 +865,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Collection<Annotation> interceptorBindings) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class)
+        InterceptorResolvable interceptorResolvable = new InterceptorResolvableBuilder(Object.class, this)
         .setInterceptionType(type)
         .addQualifiers(interceptorBindings)
         .create();
@@ -1175,6 +1177,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType) {
         return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));
+    }
+
+    public Set<QualifierInstance> extractInterceptorBindingsForQualifierInstance(Iterable<QualifierInstance> annotations) {
+        Set<QualifierInstance> foundInterceptionBindingTypes = new HashSet<QualifierInstance>();
+        for (QualifierInstance annotation : annotations) {
+            if (isInterceptorBinding(annotation.getAnnotationClass())) {
+                foundInterceptionBindingTypes.add(annotation);
+            }
+        }
+        return foundInterceptionBindingTypes;
     }
 
     private static class InstanceInjectionPoint implements InjectionPoint, Serializable {

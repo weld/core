@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resolution.QualifierInstance;
 
 /**
  * Abstract base class with functions specific to RI built-in beans
@@ -38,6 +39,7 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
 
     protected final BeanManagerImpl beanManager;
     private boolean initialized;
+    private volatile Set<QualifierInstance> qualifiers;
 
     protected RIBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager) {
         super(attributes, idSuffix, beanManager);
@@ -108,4 +110,10 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
 
     public abstract RIBean<?> getSpecializedBean();
 
+    public Set<QualifierInstance> getQualifierInstances() {
+        if (qualifiers == null) {
+            qualifiers = QualifierInstance.qualifiers(beanManager, getQualifiers());
+        }
+        return qualifiers;
+    }
 }

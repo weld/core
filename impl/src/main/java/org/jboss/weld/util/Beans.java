@@ -119,8 +119,8 @@ import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.collections.ArraySet;
@@ -481,38 +481,13 @@ public class Beans {
      * @param qualifiers         The set of qualifiers to check
      * @return True if all matches, false otherwise
      */
-    public static boolean containsAllQualifiers(Set<Annotation> requiredQualifiers, Set<Annotation> qualifiers, BeanManagerImpl beanManager) {
-        for (Annotation requiredQualifier : requiredQualifiers) {
-            QualifierModel<?> qualifierModel = beanManager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(requiredQualifier.annotationType());
-            boolean matchFound = false;
-            // Do a full check as we need to consider @NonBinding
-            for (Annotation qualifier : qualifiers) {
-                if (qualifierModel.isEqual(requiredQualifier, qualifier)) {
-                    matchFound = true;
-                }
-            }
-            if (!matchFound) {
-                return false;
-            }
-        }
-        return true;
+    public static boolean containsAllQualifiers(Set<QualifierInstance> requiredQualifiers, Set<QualifierInstance> qualifiers, BeanManagerImpl beanManager) {
+        return qualifiers.containsAll(requiredQualifiers);
     }
 
-    public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings, Set<Annotation> existingBindings, BeanManagerImpl manager) {
-        for (Annotation binding : expectedBindings) {
-            InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(binding.annotationType());
-            boolean matchFound = false;
-            // TODO Something wrong with annotation proxy hashcode in JDK/AnnotationLiteral hashcode, so always do a full check, don't use contains
-            for (Annotation otherBinding : existingBindings) {
-                if (bindingType.isEqual(binding, otherBinding)) {
-                    matchFound = true;
-                }
-            }
-            if (!matchFound) {
-                return false;
-            }
-        }
-        return true;
+    public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings, Set<QualifierInstance> existingBindings, BeanManagerImpl manager) {
+        final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(QualifierInstance.qualifiers(manager, expectedBindings));
+        return manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
     }
 
     public static boolean findInterceptorBindingConflicts(BeanManagerImpl manager, Set<Annotation> bindings) {

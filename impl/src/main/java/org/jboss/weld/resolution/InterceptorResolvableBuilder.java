@@ -16,17 +16,19 @@
  */
 package org.jboss.weld.resolution;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InterceptionType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InterceptionType;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
 import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
@@ -34,19 +36,21 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RES
 
 public class InterceptorResolvableBuilder extends ResolvableBuilder {
 
-    public InterceptorResolvableBuilder() {
-        super();
+
+
+    public InterceptorResolvableBuilder(final BeanManagerImpl manager) {
+        super(manager);
     }
 
-    public InterceptorResolvableBuilder(Type type) {
-        super(type);
+    public InterceptorResolvableBuilder(Type type, final BeanManagerImpl manager) {
+        super(type, manager);
     }
 
     private InterceptionType interceptionType;
 
     @Override
-    protected void checkQualifier(Annotation qualifier) {
-        if (!Container.instance().services().get(MetaAnnotationStore.class).getInterceptorBindingModel(qualifier.annotationType()).isValid()) {
+    protected void checkQualifier(Annotation qualifier, Class<? extends  Annotation> annotationType) {
+        if (!Container.instance().services().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
         }
         if (qualifiers.contains(qualifier)) {
@@ -100,15 +104,15 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
         if (qualifiers.size() == 0) {
             throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
         }
-        return new InterceptorResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, interceptionType);
+        return new InterceptorResolvableImpl(rawType, types, qualifiers, mappedQualifiers, declaringBean, interceptionType, qualifiers(qualifiers));
     }
 
 
     private static class InterceptorResolvableImpl extends ResolvableImpl implements InterceptorResolvable {
         private final InterceptionType interceptionType;
 
-        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType) {
-            super(rawType, typeClosure, qualifiers, mappedQualifiers, declaringBean);
+        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Set<Annotation> qualifiers, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType, final Set<QualifierInstance> instances) {
+            super(rawType, typeClosure, mappedQualifiers, declaringBean, instances);
             this.interceptionType = interceptionType;
         }
 
