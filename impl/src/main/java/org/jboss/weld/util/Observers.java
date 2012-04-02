@@ -50,7 +50,7 @@ import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -83,9 +83,10 @@ public class Observers {
         CONTAINER_LIFECYCLE_EVENT_TYPES = Collections.unmodifiableSet(types);
     }
 
-    public static void checkEventObjectType(Type eventType) {
+    public static void checkEventObjectType(final BeanManagerImpl beanManager, Type eventType) {
         Type[] types;
-        Type resolvedType = new HierarchyDiscovery(eventType).getResolvedType();
+        final SharedObjectCache cache = beanManager.getServices().get(SharedObjectCache.class);
+        final Type resolvedType = cache.getResolvedType(eventType);
         if (resolvedType instanceof Class<?>) {
             types = new Type[0];
         } else if (resolvedType instanceof ParameterizedType) {
@@ -100,8 +101,8 @@ public class Observers {
         }
     }
 
-    public static void checkEventObjectType(Object event) {
-        checkEventObjectType(event.getClass());
+    public static void checkEventObjectType(final BeanManagerImpl beanManager, Object event) {
+        checkEventObjectType(beanManager, event.getClass());
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {

@@ -229,6 +229,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             }
         }
         super.initializeAfterBeanDiscovery();
+        subclassed = !Reflections.isFinal(getType()) && (hasDecorators() || hasInterceptors());
         if (isSubclassed()) {
             initEnhancedSubclass();
         }
@@ -236,7 +237,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             decoratorProxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
             decoratorProxyFactory.getProxyClass(); //eagerly generate the proxy class
         }
-        subclassed = !Reflections.isFinal(getType()) && (hasDecorators() || hasInterceptors());
     }
 
     protected void initInterceptorsIfNeeded() {

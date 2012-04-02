@@ -73,6 +73,13 @@ public class SharedObjectCache implements Service {
         }
     });
 
+    private final Map<Type, Type> resolvedTypes = new MapMaker().makeComputingMap(new Function<Type, Type>() {
+
+        public Type apply(Type from) {
+            return new HierarchyDiscovery(from).getResolvedType();
+        }
+    });
+
     public <T> Set<T> getSharedSet(Set<T> set) {
         return Reflections.cast(sharedSets.get(set));
     }
@@ -87,6 +94,10 @@ public class SharedObjectCache implements Service {
 
     public LazyValueHolder<Set<Type>> getTypeClosureHolder(Type type) {
         return typeClosureHolders.get(type);
+    }
+
+    public Type getResolvedType(Type type) {
+        return resolvedTypes.get(type);
     }
 
     public void cleanup() {

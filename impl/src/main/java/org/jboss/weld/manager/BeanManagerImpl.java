@@ -464,7 +464,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        Observers.checkEventObjectType(event);
+        Observers.checkEventObjectType(this, event);
         return this.<T>resolveObserverMethods(event.getClass(), bindings);
     }
 
@@ -627,14 +627,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
-        Observers.checkEventObjectType(event);
+        Observers.checkEventObjectType(this, event);
         Set<Annotation> qualifierSet = new HashSet<Annotation>(Arrays.asList(qualifiers));
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
         notifyObservers(event, qualifierSet, resolveObserverMethods(eventType, qualifiers));
     }
 
     public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers) {
-        Observers.checkEventObjectType(event);
+        Observers.checkEventObjectType(this, event);
         notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
     }
 
