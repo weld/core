@@ -18,6 +18,7 @@ package org.jboss.weld.manager;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
@@ -115,7 +116,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
-                    method.invoke(instance);
+                    RuntimeAnnotatedMembers.invokeMethod(method, instance);
                 } catch (Exception e) {
                     throw new WeldException(INVOCATION_ERROR, e, method, instance);
                 }
@@ -128,7 +129,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
-                    method.invoke(instance);
+                    RuntimeAnnotatedMembers.invokeMethod(method, instance);
                 } catch (Exception e) {
                     throw new WeldException(INVOCATION_ERROR, e, method, instance);
                 }

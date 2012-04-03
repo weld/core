@@ -28,6 +28,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -54,7 +55,7 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
         try {
-            return getAnnotated().newInstance(getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
+            return RuntimeAnnotatedMembers.newInstance(getAnnotated(), getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (InstantiationException e) {

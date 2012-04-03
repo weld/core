@@ -20,6 +20,7 @@ package org.jboss.weld.bean;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
@@ -39,7 +40,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
     private Decorator<T> delegate;
     private EnhancedAnnotatedType<T> weldClass;
 
-    private Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods;
+    private Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods;
 
     public static <T> CustomDecoratorWrapper<T> of(Decorator<T> delegate, BeanManagerImpl beanManager) {
         return new CustomDecoratorWrapper<T>(delegate, beanManager);
@@ -60,7 +61,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
         return weldClass;
     }
 
-    public EnhancedAnnotatedMethod<?, ?> getDecoratorMethod(Method method) {
+    public InvokableAnnotatedMethod<?> getDecoratorMethod(Method method) {
         return Decorators.findDecoratorMethod(this, decoratorMethods, method);
     }
 }

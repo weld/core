@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,26 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.annotated.enhanced;
+package org.jboss.weld.util.annotated;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedCallable;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 
 /**
- * Represents a Class Constructor
+ * Forwarding implementation of {@link AnnotatedCallable}.
  *
- * @author Pete Muir
+ * @author Jozef Hartinger
  */
-public interface EnhancedAnnotatedConstructor<T> extends EnhancedAnnotatedCallable<T, T, Constructor<T>>, AnnotatedConstructor<T> {
+public abstract class ForwardingAnnotatedCallable<X> extends ForwardingAnnotatedMember<X> implements AnnotatedCallable<X> {
 
-    ConstructorSignature getSignature();
+    @Override
+    public List<AnnotatedParameter<X>> getParameters() {
+        return delegate().getParameters();
+    }
 
-    /**
-     * Returns a lightweight implementation of {@link AnnotatedConstructor} with minimal memory footprint.
-     * @return the slim version of this {@link AnnotatedConstructor}
-     */
-    AnnotatedConstructor<T> slim();
-
+    @Override
+    protected abstract AnnotatedCallable<X> delegate();
 }

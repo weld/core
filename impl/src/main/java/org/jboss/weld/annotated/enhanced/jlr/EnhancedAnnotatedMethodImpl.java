@@ -17,12 +17,10 @@
 package org.jboss.weld.annotated.enhanced.jlr;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +34,6 @@ import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Represents an annotated method
@@ -55,8 +52,6 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     private final String propertyName;
 
     private final MethodSignature signature;
-
-    private volatile Map<Class<?>, Method> methods;
 
     private final AnnotatedMethod<X> slim;
 
@@ -78,7 +73,6 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
         super(annotatedMethod, annotationMap, declaredAnnotationMap, classTransformer, declaringClass);
         this.slim = annotatedMethod;
         this.parameters = new ArrayList<EnhancedAnnotatedParameter<?, X>>(annotatedMethod.getParameters().size());
-        this.methods = Collections.<Class<?>, Method>singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(), annotatedMethod.getJavaMember());
 
         validateParameterCount(annotatedMethod);
         for (AnnotatedParameter<X> annotatedParameter : annotatedMethod.getParameters()) {
@@ -125,26 +119,6 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     }
 
 
-    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        final Map<Class<?>, Method> methods = this.methods;
-        Method method = methods.get(instance.getClass());
-        if (method == null) {
-            //the same method may be written to the map twice, but that is ok
-            //lookupMethod is very slow
-            method = SecureReflections.lookupMethod(instance.getClass(), getName(), getParameterTypesAsArray());
-            synchronized (this) {
-                final Map<Class<?>, Method> newMethods = new HashMap<Class<?>, Method>(methods);
-                newMethods.put(instance.getClass(), method);
-                this.methods = Collections.unmodifiableMap(newMethods);
-            }
-        }
-        return SecureReflections.<T>invoke(instance, method, parameters);
-    }
-
-    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        return SecureReflections.<T>invoke(instance, slim.getJavaMember(), parameters);
-    }
-
     public String getPropertyName() {
         return propertyName;
     }
@@ -169,5 +143,5 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     @Override
     public AnnotatedMethod<X> slim() {
         return slim;
-        }
+    }
 }

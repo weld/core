@@ -60,6 +60,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedConstructorImpl;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
@@ -387,7 +388,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
-                    method.invoke(instance);
+                    RuntimeAnnotatedMembers.invokeMethod(method, instance);
                 } catch (Exception e) {
                     throw new WeldException(INVOCATION_ERROR, e, method, instance);
                 }
@@ -400,7 +401,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
-                    method.invoke(instance);
+                    RuntimeAnnotatedMembers.invokeMethod(method, instance);
                 } catch (Exception e) {
                     throw new WeldException(INVOCATION_ERROR, e, method, instance);
                 }

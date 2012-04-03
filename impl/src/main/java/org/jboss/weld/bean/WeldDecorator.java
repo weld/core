@@ -17,11 +17,12 @@
 
 package org.jboss.weld.bean;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Decorator;
-import java.lang.reflect.Method;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 
 
 /**
@@ -42,6 +43,6 @@ public interface WeldDecorator<T> extends Decorator<T> {
      * @param method
      * @return
      */
-    EnhancedAnnotatedMethod<?, ?> getDecoratorMethod(Method method);
+    InvokableAnnotatedMethod<?> getDecoratorMethod(Method method);
 
 }

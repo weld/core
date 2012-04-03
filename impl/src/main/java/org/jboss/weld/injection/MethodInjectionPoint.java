@@ -28,6 +28,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -38,7 +39,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> {
 
-    private final EnhancedAnnotatedMethod<T, X> method;
+    private final InvokableAnnotatedMethod<X> method;
+    private final EnhancedAnnotatedMethod<T, X> enhancedMethod; // TODO remove
 
     public static <T, X> MethodInjectionPoint<T, X> of(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
         return new MethodInjectionPoint<T, X>(method, declaringBean, false, manager);
@@ -48,14 +50,15 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
         return new MethodInjectionPoint<T, X>(method, declaringBean, true, manager);
     }
 
-    protected MethodInjectionPoint(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
-        super(method, declaringBean, observerOrDisposer, manager);
-        this.method = method;
+    protected MethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
+        super(enhancedMethod, declaringBean, observerOrDisposer, manager);
+        this.method = new InvokableAnnotatedMethod<X>(enhancedMethod.slim());
+        this.enhancedMethod = enhancedMethod;
     }
 
     public T invoke(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
         try {
-            return getAnnotated().invoke(declaringInstance, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
+            return method.invoke(declaringInstance, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (IllegalAccessException e) {
@@ -69,7 +72,7 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
     public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager,
             CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
         try {
-            return getAnnotated().invoke(declaringInstance, getParameterValues(getParameterInjectionPoints(), annotatedParameter, parameter, manager, creationalContext));
+            return method.invoke(declaringInstance, getParameterValues(getParameterInjectionPoints(), annotatedParameter, parameter, manager, creationalContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (IllegalAccessException e) {
@@ -82,7 +85,7 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
 
     public T invokeOnInstance(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
         try {
-            return getAnnotated().invokeOnInstance(declaringInstance, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
+            return method.invokeOnInstance(declaringInstance, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {
@@ -100,7 +103,7 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
     public T invokeOnInstanceWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager,
             CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
         try {
-            return getAnnotated().invokeOnInstance(declaringInstance, getParameterValues(getParameterInjectionPoints(), annotatedParameter, parameter, manager, creationalContext));
+            return method.invokeOnInstance(declaringInstance, getParameterValues(getParameterInjectionPoints(), annotatedParameter, parameter, manager, creationalContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (SecurityException e) {
@@ -117,7 +120,7 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
 
     public void inject(Object declaringInstance, Object value) {
         try {
-            getAnnotated().invoke(declaringInstance, value);
+            method.invoke(declaringInstance, value);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {
@@ -150,6 +153,6 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
     }
 
     public EnhancedAnnotatedMethod<T, X> getAnnotated() {
-        return method;
+        return enhancedMethod;
     }
 }

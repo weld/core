@@ -85,12 +85,10 @@ import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.annotated.enhanced.ExternalAnnotatedType;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
-import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;

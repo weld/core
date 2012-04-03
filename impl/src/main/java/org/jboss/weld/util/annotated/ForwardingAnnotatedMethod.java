@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,26 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.annotated.enhanced;
+package org.jboss.weld.util.annotated;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 
 /**
- * Represents a Class Constructor
+ * Forwarding implementation of {@link AnnotatedMethod}.
  *
- * @author Pete Muir
+ * @author Jozef Hartinger
  */
-public interface EnhancedAnnotatedConstructor<T> extends EnhancedAnnotatedCallable<T, T, Constructor<T>>, AnnotatedConstructor<T> {
+public abstract class ForwardingAnnotatedMethod<X> extends ForwardingAnnotatedCallable<X> implements AnnotatedMethod<X> {
 
-    ConstructorSignature getSignature();
+    @Override
+    public Method getJavaMember() {
+        return delegate().getJavaMember();
+    }
 
-    /**
-     * Returns a lightweight implementation of {@link AnnotatedConstructor} with minimal memory footprint.
-     * @return the slim version of this {@link AnnotatedConstructor}
-     */
-    AnnotatedConstructor<T> slim();
-
+    @Override
+    protected abstract AnnotatedMethod<X> delegate();
 }

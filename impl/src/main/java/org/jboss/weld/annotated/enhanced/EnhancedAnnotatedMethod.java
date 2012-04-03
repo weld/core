@@ -17,7 +17,6 @@
 package org.jboss.weld.annotated.enhanced;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -35,25 +34,6 @@ public interface EnhancedAnnotatedMethod<T, X> extends EnhancedAnnotatedCallable
      * Get the parameter types as an array
      */
     Class<?>[] getParameterTypesAsArray();
-
-    /**
-     * Invokes the method
-     *
-     * @param instance   The instance to invoke
-     * @param parameters The method parameters
-     * @return A reference to the instance
-     */
-    T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
-
-    /**
-     * Invokes the method on the class of the passed instance, not the declaring
-     * class. Useful with proxies
-     *
-     * @param instance The instance to invoke
-     * @param manager  The Bean manager
-     * @return A reference to the instance
-     */
-    T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException;
 
     /**
      * Gets the property name

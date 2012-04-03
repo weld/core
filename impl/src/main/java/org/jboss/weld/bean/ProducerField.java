@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -106,7 +107,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
                 if (receiver instanceof TargetInstanceProxy) {
                     receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
                 }
-                return field.get(receiver);
+                return RuntimeAnnotatedMembers.getFieldValue(field, receiver);
             }
 
             @Override

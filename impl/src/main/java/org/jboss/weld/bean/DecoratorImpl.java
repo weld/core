@@ -44,6 +44,8 @@ import javax.inject.Inject;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
@@ -98,8 +100,8 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         return new DecoratorImpl<T>(attributes, clazz, beanManager, services);
     }
 
-    private EnhancedAnnotatedType<?> annotatedDelegateItem;
-    private Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods;
+    private EnhancedAnnotatedType<?> enhancedAnnotatedType;
+    private Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods;
     private WeldInjectionPoint<?, ?> delegateInjectionPoint;
     private FieldInjectionPoint<?, ?> delegateFieldInjectionPoint;
     private Set<Annotation> delegateBindings;
@@ -193,7 +195,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
                 }
             }
         }
-        annotatedDelegateItem = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.getRawType(delegateInjectionPoint.getType()));
+        enhancedAnnotatedType = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.getRawType(delegateInjectionPoint.getType()));
     }
 
     private void checkAbstractMethods() {
@@ -201,7 +203,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
             for (EnhancedAnnotatedMethod<?, ?> method : getEnhancedAnnotated().getEnhancedMethods()) {
                 if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
                     MethodSignature methodSignature = method.getSignature();
-                    if (this.annotatedDelegateItem.getEnhancedMethod(methodSignature) == null) {
+                    if (this.enhancedAnnotatedType.getEnhancedMethod(methodSignature) == null) {
                         throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE, method.getSignature(), this, getEnhancedAnnotated().getName());
                     }
                 }
@@ -232,7 +234,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
                             //this is only needed for fields, as constructor and method injection are handed
                             //at injection time
-                            final Object delegate = delegateFieldInjectionPoint.getAnnotated().get(instance);
+                            final Object delegate = RuntimeAnnotatedMembers.getFieldValue(delegateFieldInjectionPoint.getAnnotated(), instance);
                             final ProxyMethodHandler handler = new ProxyMethodHandler(new TargetBeanInstance(delegate), DecoratorImpl.this);
                             ((ProxyObject)instance).setHandler(handler);
                         }
@@ -264,8 +266,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         // No-op, decorators can't have decorators
     }
 
-
-    public EnhancedAnnotatedMethod<?, ?> getDecoratorMethod(Method method) {
+    public InvokableAnnotatedMethod<?> getDecoratorMethod(Method method) {
         return Decorators.findDecoratorMethod(this, decoratorMethods, method);
     }
 

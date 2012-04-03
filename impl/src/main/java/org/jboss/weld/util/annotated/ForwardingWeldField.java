@@ -28,10 +28,6 @@ public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, 
     @Override
     protected abstract EnhancedAnnotatedField<T, X> delegate();
 
-    public T get(Object instance) {
-        return delegate().get(instance);
-    }
-
     @Override
     public EnhancedAnnotatedType<X> getDeclaringType() {
         return delegate().getDeclaringType();
@@ -39,10 +35,6 @@ public abstract class ForwardingWeldField<T, X> extends ForwardingWeldMember<T, 
 
     public String getPropertyName() {
         return delegate().getPropertyName();
-    }
-
-    public void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException {
-        delegate().set(declaringInstance, value);
     }
 
     public boolean isTransient() {

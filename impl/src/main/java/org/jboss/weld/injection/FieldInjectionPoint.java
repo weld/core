@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
@@ -72,7 +73,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
                 }
                 objectToInject = manager.getReference(this, cachedBean, creationalContext);
             }
-            getAnnotated().set(instanceToInject, objectToInject);
+            RuntimeAnnotatedMembers.setFieldValue(getAnnotated(), instanceToInject, objectToInject);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {
@@ -88,7 +89,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
                 if (instanceToInject instanceof TargetInstanceProxy)
                     instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
             }
-            getAnnotated().set(instanceToInject, value);
+            RuntimeAnnotatedMembers.setFieldValue(getAnnotated(), instanceToInject, value);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {

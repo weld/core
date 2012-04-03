@@ -16,19 +16,20 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.enterprise.inject.spi.Decorator;
+import javax.inject.Inject;
+
+import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.SecureReflections;
-
-import javax.enterprise.inject.spi.Decorator;
-import javax.inject.Inject;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
 
 /**
  * Method handler for decorated beans
@@ -72,7 +73,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
         if (beanInstance.getContextual().get() instanceof WeldDecorator<?>) {
             WeldDecorator<?> decorator = (WeldDecorator<?>) beanInstance.getContextual().get();
             if (!method.isAnnotationPresent(Inject.class)) {
-                EnhancedAnnotatedMethod<?, ?> decoratorMethod = decorator.getDecoratorMethod(method);
+                InvokableAnnotatedMethod<?> decoratorMethod = decorator.getDecoratorMethod(method);
                 if (decoratorMethod != null) {
                     try {
                         return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);

@@ -29,16 +29,6 @@ import javax.enterprise.inject.spi.AnnotatedField;
 public interface EnhancedAnnotatedField<T, X> extends EnhancedAnnotatedMember<T, X, Field>, AnnotatedField<X> {
 
     /**
-     * Injects an instance
-     *
-     * @param declaringInstance The instance to inject into
-     * @param value             The value to inject
-     */
-    void set(Object declaringInstance, Object value) throws IllegalArgumentException, IllegalAccessException;
-
-    T get(Object instance);
-
-    /**
      * Gets the property name of the field
      *
      * @return The name

@@ -17,7 +17,6 @@
 package org.jboss.weld.util.annotated;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -47,14 +46,6 @@ public abstract class ForwardingWeldMethod<T, X> extends ForwardingWeldMember<T,
 
     public String getPropertyName() {
         return delegate().getPropertyName();
-    }
-
-    public T invoke(Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        return delegate().invoke(instance, parameters);
-    }
-
-    public T invokeOnInstance(Object instance, Object... parameters) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        return delegate().invokeOnInstance(instance, parameters);
     }
 
     public boolean isEquivalent(Method method) {

@@ -19,6 +19,7 @@ package org.jboss.weld.metadata.cache;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.resources.ClassTransformer;
@@ -142,8 +143,8 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
             for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
                 if (includeNonBindingTypes || !nonBindingTypes.contains(annotatedMethod)) {
                     try {
-                        Object thisValue = annotatedMethod.invoke(instance);
-                        Object thatValue = annotatedMethod.invoke(other);
+                        Object thisValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, instance);
+                        Object thatValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, other);
                         if (!thisValue.equals(thatValue)) {
                             return false;
                         }

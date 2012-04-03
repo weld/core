@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -26,11 +24,9 @@ import javax.enterprise.inject.spi.AnnotatedField;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Represents an annotated field
@@ -75,22 +71,6 @@ public class EnhancedAnnotatedFieldImpl<T, X> extends AbstractEnhancedAnnotatedM
     @Override
     public Field getDelegate() {
         return slim.getJavaMember();
-    }
-
-    public void set(Object instance, Object value) throws IllegalArgumentException, IllegalAccessException {
-        SecureReflections.ensureAccessible(slim.getJavaMember()).set(instance, value);
-    }
-
-    public void setOnInstance(Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
-        SecureReflections.getField(instance.getClass(), getName()).set(instance, value);
-    }
-
-    public T get(Object instance) {
-        try {
-            return Reflections.<T>cast(SecureReflections.ensureAccessible(getDelegate()).get(instance));
-        } catch (Exception e) {
-            throw new WeldException(ACCESS_ERROR_ON_FIELD, e, getDelegate().getName(), getDelegate().getDeclaringClass());
-        }
     }
 
     /**

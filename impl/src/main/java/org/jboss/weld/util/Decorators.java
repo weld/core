@@ -17,13 +17,7 @@
 
 package org.jboss.weld.util;
 
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
-import org.jboss.weld.bean.WeldDecorator;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
+import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -34,7 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
+import org.jboss.weld.bean.WeldDecorator;
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Helper class for {@link javax.enterprise.inject.spi.Decorator} inspections.
@@ -43,14 +44,14 @@ import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
  */
 public class Decorators {
 
-    public static Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> getDecoratorMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes, EnhancedAnnotatedType<?> decoratorClass) {
+    public static Map<MethodSignature, InvokableAnnotatedMethod<?>> getDecoratorMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes, EnhancedAnnotatedType<?> decoratorClass) {
         List<EnhancedAnnotatedMethod<?, ?>> decoratedMethods = Decorators.getDecoratedMethods(beanManager, decoratedTypes);
-        Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods = new HashMap<MethodSignature, EnhancedAnnotatedMethod<?, ?>>();
+        Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods = new HashMap<MethodSignature, InvokableAnnotatedMethod<?>>();
         for (EnhancedAnnotatedMethod<?, ?> method : decoratorClass.getEnhancedMethods()) {
             MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
             for (EnhancedAnnotatedMethod<?, ?> decoratedMethod : decoratedMethods) {
                 if (new MethodSignatureImpl(decoratedMethod).equals(methodSignature)) {
-                    decoratorMethods.put(methodSignature, method);
+                    decoratorMethods.put(methodSignature, InvokableAnnotatedMethod.of(decoratedMethod.slim()));
                 }
             }
         }
@@ -80,20 +81,20 @@ public class Decorators {
         throw new IllegalStateException(UNABLE_TO_PROCESS, type);
     }
 
-    public static <T> EnhancedAnnotatedMethod<?, ?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods, Method method) {
+    public static <T> InvokableAnnotatedMethod<?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods, Method method) {
         // try the signature first, might be simpler
         MethodSignature key = new MethodSignatureImpl(method);
-        EnhancedAnnotatedMethod<?, ?> weldMethod = decoratorMethods.get(key);
-        if (weldMethod != null) {
-            return weldMethod;
+        InvokableAnnotatedMethod<?> foundMethod = decoratorMethods.get(key);
+        if (foundMethod != null) {
+            return foundMethod;
         }
         // try all methods
-        for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : decoratorMethods.values()) {
+        for (InvokableAnnotatedMethod<?> decoratorMethod : decoratorMethods.values()) {
             if (method.getParameterTypes().length == decoratorMethod.getParameters().size()
-                    && method.getName().equals(decoratorMethod.getName())) {
+                    && method.getName().equals(decoratorMethod.getJavaMember().getName())) {
                 boolean parameterMatch = true;
                 for (int i = 0; parameterMatch && i < method.getParameterTypes().length; i++) {
-                    parameterMatch = parameterMatch && decoratorMethod.getParameterTypesAsArray()[i].isAssignableFrom(method.getParameterTypes()[i]);
+                    parameterMatch = parameterMatch && decoratorMethod.getJavaMember().getParameterTypes()[i].isAssignableFrom(method.getParameterTypes()[i]);
                 }
                 if (parameterMatch) {
                     return decoratorMethod;

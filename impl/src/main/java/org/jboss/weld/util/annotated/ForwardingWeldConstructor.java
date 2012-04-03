@@ -18,7 +18,6 @@ package org.jboss.weld.util.annotated;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -45,10 +44,6 @@ public abstract class ForwardingWeldConstructor<T> extends ForwardingWeldMember<
 
     public List<? extends EnhancedAnnotatedParameter<?, T>> getEnhancedParameters() {
         return delegate().getEnhancedParameters();
-    }
-
-    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        return delegate().newInstance(parameters);
     }
 
     public ConstructorSignature getSignature() {
