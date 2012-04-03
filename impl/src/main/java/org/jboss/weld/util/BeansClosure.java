@@ -24,13 +24,16 @@ package org.jboss.weld.util;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
+import org.jboss.weld.util.reflection.Reflections;
 
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import java.util.Collections;
 import java.util.HashMap;
@@ -153,9 +156,9 @@ public final class BeansClosure {
         return false;
     }
 
-    public Bean<?> getClassBean(EnhancedAnnotatedType<?> clazz) {
+    public Bean<?> getClassBean(AnnotatedType<?> annotatedType) {
         for (BeanDeployerEnvironment bde : envs.keySet()) {
-            AbstractClassBean<?> classBean = bde.getClassBean(clazz);
+            AbstractClassBean<?> classBean = bde.getClassBean(annotatedType);
             if (classBean != null)
                 return classBean;
         }

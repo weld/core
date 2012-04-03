@@ -34,8 +34,10 @@ import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.logging.LoggerFactory;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.Logger;
 
 import com.google.common.base.Function;
@@ -49,19 +51,31 @@ import com.google.common.collect.MapMaker;
  * @author Ales Justin
  */
 public class ClassTransformer implements Service {
+
+    public static ClassTransformer instance(BeanManagerImpl manager) {
+        return manager.getServices().get(ClassTransformer.class);
+    }
+
     private static Logger log = LoggerFactory.loggerFactory().getLogger(Category.CLASS_LOADING);
 
     private class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, EnhancedAnnotation<?>> {
         @Override
         public EnhancedAnnotation<?> apply(Class<? extends Annotation> from) {
-            return EnhancedAnnotationImpl.create(BackedAnnotatedType.of(from), ClassTransformer.this);
+            return EnhancedAnnotationImpl.create(BackedAnnotatedType.of(from, ClassTransformer.this), ClassTransformer.this);
         }
     }
 
-    private static class TransformClassToSlimAnnotatedType implements Function<TypeHolder<?>, SlimAnnotatedType<?>> {
+    private class TransformClassToSlimAnnotatedType implements Function<TypeHolder<?>, SlimAnnotatedType<?>> {
         @Override
         public SlimAnnotatedType<?> apply(TypeHolder<?> typeHolder) {
-            return BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType());
+            return BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), ClassTransformer.this);
+        }
+    }
+
+    private static class TransformExternalAnnotatedTypeToSlimAnnotatedType implements Function<AnnotatedType<?>, SlimAnnotatedType<?>> {
+        @Override
+        public SlimAnnotatedType<?> apply(AnnotatedType<?> input) {
+            return UnbackedAnnotatedType.of(input);
         }
     }
 
@@ -111,14 +125,16 @@ public class ClassTransformer implements Service {
         }
     }
 
-    private final ConcurrentMap<TypeHolder<?>, SlimAnnotatedType<?>> slimAnnotatedTypes;
+    private final ConcurrentMap<TypeHolder<?>, SlimAnnotatedType<?>> discoveredSlimAnnotatedTypes;
+    private final ConcurrentMap<AnnotatedType<?>, SlimAnnotatedType<?>> externalSlimAnnotatedTypes;
     private final ConcurrentMap<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
     private final ConcurrentMap<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
     private final TypeStore typeStore;
 
     public ClassTransformer(TypeStore typeStore) {
         MapMaker maker = new MapMaker();
-        this.slimAnnotatedTypes = maker.makeComputingMap(new TransformClassToSlimAnnotatedType());
+        this.discoveredSlimAnnotatedTypes = maker.makeComputingMap(new TransformClassToSlimAnnotatedType());
+        this.externalSlimAnnotatedTypes = maker.makeComputingMap(new TransformExternalAnnotatedTypeToSlimAnnotatedType());
         this.enhancedAnnotatedTypes = maker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
@@ -126,9 +142,9 @@ public class ClassTransformer implements Service {
 
     // Slim AnnotatedTypes
 
-    public <T> SlimAnnotatedType<T> getAnnotatedType(final Class<T> rawType, final Type baseType) {
+    public <T> BackedAnnotatedType<T> getAnnotatedType(final Class<T> rawType, final Type baseType) {
         try {
-            return cast(slimAnnotatedTypes.get(new TypeHolder<T>(rawType, baseType)));
+            return cast(discoveredSlimAnnotatedTypes.get(new TypeHolder<T>(rawType, baseType)));
         } catch (ComputationException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
@@ -142,8 +158,18 @@ public class ClassTransformer implements Service {
         }
     }
 
-    public <T> SlimAnnotatedType<T> getAnnotatedType(final Class<T> rawType) {
+    public <T> BackedAnnotatedType<T> getAnnotatedType(final Class<T> rawType) {
         return getAnnotatedType(rawType, rawType);
+    }
+
+    public <T> SlimAnnotatedType<T> getAnnotatedType(final AnnotatedType<T> type) {
+        if (type instanceof SlimAnnotatedType<?>) {
+            return cast(type);
+        }
+        if (type instanceof EnhancedAnnotatedType<?>) {
+            return cast(Reflections.<EnhancedAnnotatedType<T>>cast(type).slim());
+        }
+        return cast(externalSlimAnnotatedTypes.get(type));
     }
 
     // Enhanced AnnotatedTypes
@@ -166,8 +192,6 @@ public class ClassTransformer implements Service {
         return cast(enhancedAnnotatedTypes.get(UnbackedAnnotatedType.of(annotatedType)));
     }
 
-
-
     @SuppressWarnings("unchecked")
     public <T extends Annotation> EnhancedAnnotation<T> loadAnnotation(final Class<T> clazz) {
         return (EnhancedAnnotation<T>) annotations.get(clazz);
@@ -183,8 +207,7 @@ public class ClassTransformer implements Service {
 
     public void cleanup() {
         this.annotations.clear();
-        this.slimAnnotatedTypes.clear();
+        this.discoveredSlimAnnotatedTypes.clear();
         this.enhancedAnnotatedTypes.clear();
     }
-
 }

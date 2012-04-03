@@ -1,8 +1,11 @@
 package org.jboss.weld.annotated.slim.backed;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -13,6 +16,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -22,12 +26,12 @@ import com.google.common.collect.ImmutableSet;
 
 public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnotatedType<X> {
 
-    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass) {
-        return new BackedAnnotatedType<X>(javaClass, javaClass);
+    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, ClassTransformer classTransformer) {
+        return of(javaClass, javaClass, classTransformer);
     }
 
-    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, Type baseType) {
-        return new BackedAnnotatedType<X>(javaClass, baseType);
+    public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, Type baseType, ClassTransformer classTransformer) {
+        return new BackedAnnotatedType<X>(javaClass, baseType, classTransformer);
     }
 
     private final Class<X> javaClass;
@@ -35,7 +39,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private final Set<AnnotatedMethod<? super X>> methods;
     private final Set<AnnotatedField<? super X>> fields;
 
-    public BackedAnnotatedType(Class<X> rawType, Type baseType) {
+    public BackedAnnotatedType(Class<X> rawType, Type baseType, ClassTransformer classTransformer) {
         super(baseType);
         this.javaClass = rawType;
         // TODO this all should be initialized lazily so that we can serialize the AnnotatedType
@@ -52,16 +56,24 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         Class<? super X> clazz = javaClass;
         while (clazz != Object.class && clazz != null) {
             for (Method method : SecureReflections.getDeclaredMethods(clazz)) {
-                methods.add(BackedAnnotatedMethod.of(method, this));
+                methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, classTransformer)));
             }
             for (Field field : SecureReflections.getDeclaredFields(clazz)) {
-                fields.add(BackedAnnotatedField.of(field, this));
+                fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, classTransformer)));
             }
             clazz = clazz.getSuperclass();
         }
         this.constructors = Collections.unmodifiableSet(constructors.trimToSize());
         this.methods = Collections.unmodifiableSet(methods.trimToSize());
         this.fields = Collections.unmodifiableSet(fields.trimToSize());
+    }
+
+    private <T> BackedAnnotatedType<T> getDeclaringAnnotatedType(Member member, ClassTransformer transformer) {
+        if (member.getDeclaringClass().equals(getJavaClass())) {
+            return cast(this);
+        } else {
+            return transformer.getAnnotatedType(Reflections.<Class<T>>cast(member.getDeclaringClass()));
+        }
     }
 
     public Class<X> getJavaClass() {
@@ -90,6 +102,31 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return javaClass.isAnnotationPresent(annotationType);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getBaseType() == null) ? 0 : getBaseType().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BackedAnnotatedType<?> other = (BackedAnnotatedType<?>) obj;
+        if (getBaseType() == null) {
+            if (other.getBaseType() != null)
+                return false;
+        } else if (!getBaseType().equals(other.getBaseType()))
+            return false;
+        return true;
     }
 
     @Override

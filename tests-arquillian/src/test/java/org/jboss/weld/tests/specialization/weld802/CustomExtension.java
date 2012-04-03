@@ -36,11 +36,11 @@ import org.jboss.weld.util.annotated.ForwardingWeldClass;
  */
 public class CustomExtension implements Extension {
     public void registerBeans(@Observes BeforeBeanDiscovery event, final BeanManager manager) {
-        final EnhancedAnnotatedType<Foo> foo = getFooWeldClass(manager);
+        final EnhancedAnnotatedType<Foo> foo = getEnhancedAnnotatedType(manager, Foo.class);
         final EnhancedAnnotatedType<Bar> bar = new ForwardingWeldClass<Bar>() {
             @Override
             protected EnhancedAnnotatedType<Bar> delegate() {
-                return (EnhancedAnnotatedType<Bar>) manager.createAnnotatedType(Bar.class);
+                return getEnhancedAnnotatedType(manager, Bar.class);
             }
 
             @Override
@@ -52,13 +52,13 @@ public class CustomExtension implements Extension {
         event.addAnnotatedType(bar);
     }
 
-    protected EnhancedAnnotatedType<Foo> getFooWeldClass(BeanManager manager) {
+    protected <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(BeanManager manager, Class<T> javaClass) {
         if (manager instanceof BeanManagerImpl) {
             BeanManagerImpl bmi = (BeanManagerImpl) manager;
             ClassTransformer ct = bmi.getServices().get(ClassTransformer.class);
-            return ct.getEnhancedAnnotatedType(Foo.class);
+            return ct.getEnhancedAnnotatedType(javaClass);
         } else {
-            return (EnhancedAnnotatedType<Foo>) manager.createAnnotatedType(Foo.class);
+            throw new IllegalStateException();
         }
     }
 }

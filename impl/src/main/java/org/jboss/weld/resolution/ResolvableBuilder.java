@@ -38,6 +38,7 @@ import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class ResolvableBuilder {
         this();
         if (type != null) {
             this.rawType = Reflections.getRawType(type);
-            if (rawType == null) {
+            if (rawType == null || type instanceof TypeVariable<?>) {
                 throw new IllegalArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
             }
             this.types.add(type);

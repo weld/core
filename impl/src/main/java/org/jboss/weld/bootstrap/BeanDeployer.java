@@ -36,6 +36,7 @@ import javax.interceptor.Interceptor;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
@@ -98,15 +99,23 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
 
         if (clazz != null && !clazz.isAnnotation()) {
-            AnnotatedType<?> annotatedType = BackedAnnotatedType.of(clazz);
-            getEnvironment().addAnnotatedType(annotatedType);
+            AnnotatedType<?> annotatedType = null;
+            try {
+                annotatedType = classTransformer.getAnnotatedType(clazz);
+            } catch (ResourceLoadingException e) {
+                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+                xlog.catching(INFO, e);
+            }
+            if (annotatedType != null) {
+                getEnvironment().addAnnotatedType(annotatedType);
+            }
         }
         return this;
     }
 
     public <T> BeanDeployer addSyntheticClass(AnnotatedType<T> annotatedType, Extension extension) {
-        AnnotatedType<T> unbacked = UnbackedAnnotatedType.of(annotatedType);
-        getEnvironment().addSyntheticAnnotatedType(unbacked, extension);
+        SlimAnnotatedType<T> slim = ClassTransformer.instance(getManager()).getAnnotatedType(annotatedType);
+        getEnvironment().addSyntheticAnnotatedType(slim, extension);
         return this;
     }
 
@@ -144,7 +153,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     if (modifiedType instanceof BackedAnnotatedType || modifiedType instanceof UnbackedAnnotatedType) {
                         annotatedType = modifiedType;
                     } else {
-                        annotatedType = UnbackedAnnotatedType.of(modifiedType);
+                        annotatedType = classTransformer.getAnnotatedType(modifiedType);
                     }
                 }
 

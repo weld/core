@@ -46,7 +46,7 @@ public class WeldClassTest {
     @Test
     @Ignore // Broken
     public void testMemberClassWithGenericTypes() {
-        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Kangaroo().procreate().getClass()), transformer);
+        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Kangaroo().procreate().getClass(), transformer), transformer);
         EnhancedAnnotatedTypeImpl.of(UnbackedAnnotatedType.of(at), transformer);
     }
 
@@ -62,7 +62,7 @@ public class WeldClassTest {
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */
     public void testLocalClassWithGenericTypes() {
-        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Koala().procreate().getClass()), transformer);
+        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Koala().procreate().getClass(), transformer), transformer);
         EnhancedAnnotatedTypeImpl.of(UnbackedAnnotatedType.of(at), transformer);
     }
 
@@ -78,7 +78,7 @@ public class WeldClassTest {
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */
     public void testAnonymousClassWithGenericTypes() {
-        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Possum().procreate().getClass()), transformer);
+        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Possum().procreate().getClass(), transformer), transformer);
         EnhancedAnnotatedTypeImpl.of(UnbackedAnnotatedType.of(at), transformer);
     }
 

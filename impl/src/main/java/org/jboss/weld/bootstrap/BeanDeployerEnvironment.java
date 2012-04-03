@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -79,7 +80,7 @@ public class BeanDeployerEnvironment {
                 Sets.newSetFromMap(new ConcurrentHashMap<AnnotatedType<?>, Boolean>()),
                 new ConcurrentHashMap<AnnotatedType<?>, Extension>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
-                new ConcurrentHashMap<EnhancedAnnotatedType<?>, AbstractClassBean<?>>(),
+                new ConcurrentHashMap<AnnotatedType<?>, AbstractClassBean<?>>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
                 new ConcurrentHashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
@@ -97,7 +98,7 @@ public class BeanDeployerEnvironment {
     private final Set<AnnotatedType<?>> annotatedTypes;
     private final Map<AnnotatedType<?>, Extension> annotatedTypeSource;
     private final Set<Class<?>> vetoedClasses;
-    private final Map<EnhancedAnnotatedType<?>, AbstractClassBean<?>> classBeanMap;
+    private final Map<AnnotatedType<?>, AbstractClassBean<?>> classBeanMap;
     private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
     private final Set<ProducerField<?, ?>> producerFields;
     private final Set<RIBean<?>> beans;
@@ -116,7 +117,7 @@ public class BeanDeployerEnvironment {
             Set<AnnotatedType<?>> annotatedTypes,
             Map<AnnotatedType<?>, Extension> annotatedTypeSource,
             Set<Class<?>> vetoedClasses,
-            Map<EnhancedAnnotatedType<?>, AbstractClassBean<?>> classBeanMap,
+            Map<AnnotatedType<?>, AbstractClassBean<?>> classBeanMap,
             Set<ProducerField<?, ?>> producerFields,
             Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap,
             Set<RIBean<?>> beans,
@@ -153,7 +154,7 @@ public class BeanDeployerEnvironment {
                 new HashSet<AnnotatedType<?>>(),
                 new HashMap<AnnotatedType<?>, Extension>(),
                 new HashSet<Class<?>>(),
-                new HashMap<EnhancedAnnotatedType<?>, AbstractClassBean<?>>(),
+                new HashMap<AnnotatedType<?>, AbstractClassBean<?>>(),
                 new HashSet<ProducerField<?, ?>>(),
                 new HashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
                 new HashSet<RIBean<?>>(),
@@ -176,7 +177,7 @@ public class BeanDeployerEnvironment {
         this.annotatedTypes.addAll(annotatedTypes);
     }
 
-    public void addSyntheticAnnotatedType(AnnotatedType<?> annotatedType, Extension extension) {
+    public void addSyntheticAnnotatedType(SlimAnnotatedType<?> annotatedType, Extension extension) {
         addAnnotatedType(annotatedType);
         annotatedTypeSource.put(annotatedType, extension);
     }
@@ -231,8 +232,12 @@ public class BeanDeployerEnvironment {
         return cast(bean);
     }
 
-    public AbstractClassBean<?> getClassBean(EnhancedAnnotatedType<?> clazz) {
-        AbstractClassBean<?> bean = classBeanMap.get(clazz);
+    public AbstractClassBean<?> getClassBean(AnnotatedType<?> clazz) {
+        AnnotatedType<?> type = clazz;
+        if (clazz instanceof EnhancedAnnotatedType<?>) {
+            type = Reflections.<EnhancedAnnotatedType<?>>cast(clazz).slim();
+        }
+        AbstractClassBean<?> bean = classBeanMap.get(type);
         if (bean != null) {
             bean.preInitialize();
         }
@@ -259,7 +264,7 @@ public class BeanDeployerEnvironment {
 
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
         if (!(bean instanceof NewBean)) {
-            classBeanMap.put(bean.getEnhancedAnnotated(), bean);
+            classBeanMap.put(bean.getEnhancedAnnotated().slim(), bean);
         }
         addAbstractBean(bean);
     }
@@ -405,7 +410,7 @@ public class BeanDeployerEnvironment {
     public void vetoBean(AbstractBean<?, ?> bean) {
         beans.remove(bean);
         if (bean instanceof AbstractClassBean<?>) {
-            classBeanMap.remove(bean.getEnhancedAnnotated());
+            classBeanMap.remove(bean.getEnhancedAnnotated().slim());
             if (bean instanceof InterceptorImpl<?>) {
                 interceptors.remove(bean);
             }
@@ -421,7 +426,7 @@ public class BeanDeployerEnvironment {
         }
     }
 
-    public Map<EnhancedAnnotatedType<?>, AbstractClassBean<?>> getClassBeanMap() {
+    public Map<AnnotatedType<?>, AbstractClassBean<?>> getClassBeanMap() {
         return Collections.unmodifiableMap(classBeanMap);
     }
 

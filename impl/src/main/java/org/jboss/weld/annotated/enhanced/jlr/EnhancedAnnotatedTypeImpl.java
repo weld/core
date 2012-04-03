@@ -101,7 +101,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     private final AnnotatedType<T> slim;
 
     public static <T> EnhancedAnnotatedType<T> of(SlimAnnotatedType<T> annotatedType, ClassTransformer classTransformer) {
-        return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(annotatedType.getAnnotations()), classTransformer);
+        if (annotatedType instanceof BackedAnnotatedType<?>) {
+            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(annotatedType.getJavaClass().getDeclaredAnnotations()), classTransformer);
+        } else {
+            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(annotatedType.getAnnotations()), classTransformer);
+        }
     }
 
     protected EnhancedAnnotatedTypeImpl(SlimAnnotatedType<T> annotatedType, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
@@ -218,14 +222,20 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             this.annotatedMethods = ArrayListMultimap.<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ?>> create();
             methodsTemp = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
             for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
+                EnhancedAnnotatedMethod<?, ? super T> enhancedMethod = EnhancedAnnotatedMethodImpl.of(method, this, classTransformer);
+                methodsTemp.add(enhancedMethod);
                 if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
-                    EnhancedAnnotatedMethod<?, ? super T> enhancedMethod = EnhancedAnnotatedMethodImpl.of(method, this, classTransformer);
                     declaredMethodsTemp.add(enhancedMethod);
-                    for (Annotation annotation : enhancedMethod.getAnnotations()) {
+                }
+                for (Annotation annotation : enhancedMethod.getAnnotations()) {
+                    annotatedMethods.put(annotation.annotationType(), enhancedMethod);
+                    if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
                         this.declaredAnnotatedMethods.put(annotation.annotationType(), enhancedMethod);
                     }
-                    for (Class<? extends Annotation> annotationType : EnhancedAnnotatedMethod.MAPPED_PARAMETER_ANNOTATIONS) {
-                        if (enhancedMethod.getEnhancedParameters(annotationType).size() > 0) {
+                }
+                for (Class<? extends Annotation> annotationType : EnhancedAnnotatedMethod.MAPPED_PARAMETER_ANNOTATIONS) {
+                    if (enhancedMethod.getEnhancedParameters(annotationType).size() > 0) {
+                        if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
                             this.declaredMethodsByAnnotatedParameters.put(annotationType, enhancedMethod);
                         }
                     }

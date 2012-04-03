@@ -134,7 +134,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     // The item representation
-    protected final AnnotatedType<T> slimAnnotatedType;
+    protected final AnnotatedType<T> annotatedType;
     protected volatile EnhancedAnnotatedType<T> enhancedAnnotatedItem;
 
     // The injectable fields of each type in the type hierarchy, with the actual
@@ -178,7 +178,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     protected AbstractClassBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, idSuffix, beanManager, services);
         this.enhancedAnnotatedItem = type;
-        this.slimAnnotatedType = type.slim();
+        this.annotatedType = type.slim();
     }
 
     /**

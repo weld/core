@@ -40,7 +40,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
             Type parameterType = genericParameterTypes[i];
             Set<Annotation> annotations = null;
             if (parameterAnnotations[i].length > 0) {
-                annotations = ImmutableSet.copyOf(parameterAnnotations[0]);
+                annotations = ImmutableSet.copyOf(parameterAnnotations[i]);
             } else {
                 annotations = Collections.emptySet();
             }

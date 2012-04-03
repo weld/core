@@ -97,7 +97,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
             throw new IllegalStateException("BeforeBeanDiscovery receiver is not an extension");
         }
         BeanDeployer deployer = getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer();
-        deployer.addSyntheticClass(UnbackedAnnotatedType.of(type), (Extension) receiver);
+        deployer.addSyntheticClass(type, (Extension) receiver);
     }
 
 }
