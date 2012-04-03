@@ -37,7 +37,7 @@ public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProduc
     }
 
     public Annotated getAnnotated() {
-        return bean.getWeldAnnotated();
+        return bean.getEnhancedAnnotated();
     }
 
     public B getBean() {

@@ -18,7 +18,6 @@ package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
@@ -29,6 +28,9 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanAttributes;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -60,9 +62,6 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
@@ -182,38 +181,38 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
      */
     protected <T> void createObserversProducersDisposers(AbstractClassBean<T> bean) {
         if (bean instanceof ManagedBean<?> || bean instanceof SessionBean<?>) {
-            createProducerMethods(bean, bean.getWeldAnnotated());
-            createProducerFields(bean, bean.getWeldAnnotated());
+            createProducerMethods(bean, bean.getEnhancedAnnotated());
+            createProducerFields(bean, bean.getEnhancedAnnotated());
             if (manager.isBeanEnabled(bean)) {
-                createObserverMethods(bean, bean.getWeldAnnotated());
+                createObserverMethods(bean, bean.getEnhancedAnnotated());
             }
-            createDisposalMethods(bean, bean.getWeldAnnotated());
+            createDisposalMethods(bean, bean.getEnhancedAnnotated());
         }
     }
 
-    protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
-        for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethods(Produces.class)) {
+    protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> annotatedClass) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : annotatedClass.getDeclaredEnhancedMethods(Produces.class)) {
             // create method for now
             // specialization and PBA processing is handled later
             createProducerMethod(declaringBean, method);
         }
     }
 
-    protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
-        for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class)) {
+    protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> annotatedClass) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : annotatedClass.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class)) {
             DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
             disposalBean.initialize(getEnvironment());
             getEnvironment().addDisposesMethod(disposalBean);
         }
     }
 
-    protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, WeldMethod<T, ? super X> annotatedMethod) {
+    protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> annotatedMethod) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(annotatedMethod, getManager());
         ProducerMethod<? super X, T> bean = ProducerMethod.of(attributes, annotatedMethod, declaringBean, manager, services);
         getEnvironment().addProducerMethod(bean);
     }
 
-    protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, WeldField<T, ? super X> field) {
+    protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, EnhancedAnnotatedField<T, ? super X> field) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(field, getManager());
         ProducerField<X, T> bean;
         if (isEEResourceProducerField(field)) {
@@ -224,51 +223,51 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         getEnvironment().addProducerField(bean);
     }
 
-    protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
-        for (WeldField<?, ? super X> field : annotatedClass.getDeclaredWeldFields(Produces.class)) {
+    protected <X> void createProducerFields(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> annotatedClass) {
+        for (EnhancedAnnotatedField<?, ? super X> field : annotatedClass.getDeclaredEnhancedFields(Produces.class)) {
             createProducerField(declaringBean, field);
         }
     }
 
-    protected <X> void createObserverMethods(RIBean<X> declaringBean, WeldClass<? super X> annotatedClass) {
-        for (WeldMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass)) {
+    protected <X> void createObserverMethods(RIBean<X> declaringBean, EnhancedAnnotatedType<? super X> annotatedClass) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, method);
         }
     }
 
-    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, WeldMethod<T, ? super X> method) {
+    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> method) {
         ObserverMethodImpl<T, ? super X> observer = ObserverFactory.create(method, declaringBean, manager);
         getEnvironment().addObserverMethod(observer);
     }
 
-    protected <T> ManagedBean<T> createManagedBean(WeldClass<T> weldClass) {
+    protected <T> ManagedBean<T> createManagedBean(EnhancedAnnotatedType<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
         ManagedBean<T> bean = ManagedBean.of(attributes, weldClass, manager, services);
         getEnvironment().addManagedBean(bean);
         return bean;
     }
 
-    protected <T> void createNewManagedBean(WeldClass<T> annotatedClass) {
+    protected <T> void createNewManagedBean(EnhancedAnnotatedType<T> annotatedClass) {
         // TODO resolve existing beans first
         getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass), annotatedClass, manager, services));
     }
 
-    protected <T> void createDecorator(WeldClass<T> weldClass) {
+    protected <T> void createDecorator(EnhancedAnnotatedType<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
         DecoratorImpl<T> bean = DecoratorImpl.of(attributes, weldClass, manager, services);
         getEnvironment().addDecorator(bean);
     }
 
-    protected <T> void createInterceptor(WeldClass<T> weldClass) {
+    protected <T> void createInterceptor(EnhancedAnnotatedType<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
         InterceptorImpl<T> bean = InterceptorImpl.of(attributes, weldClass, manager, services);
         getEnvironment().addInterceptor(bean);
     }
 
     protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor) {
-        return createSessionBean(descriptor, services.get(ClassTransformer.class).loadClass(descriptor.getBeanClass()));
+        return createSessionBean(descriptor, services.get(ClassTransformer.class).getEnhancedAnnotatedType(descriptor.getBeanClass()));
     }
-    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, WeldClass<T> weldClass) {
+    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, EnhancedAnnotatedType<T> weldClass) {
         // TODO Don't create enterprise bean if it has no local interfaces!
         BeanAttributes<T> attributes = BeanAttributesFactory.forSessionBean(weldClass, descriptor, getManager());
         SessionBean<T> bean = SessionBean.of(attributes, descriptor, manager, weldClass, services);
@@ -281,7 +280,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         getEnvironment().addSessionBean(NewSessionBean.of(attributes, ejbDescriptor, manager, services));
     }
 
-    protected boolean isEEResourceProducerField(WeldField<?, ?> field) {
+    protected boolean isEEResourceProducerField(EnhancedAnnotatedField<?, ?> field) {
         EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
         WSApiAbstraction wsApiAbstraction = manager.getServices().get(WSApiAbstraction.class);
@@ -297,7 +296,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             return false;
         }
 
-        ProcessBeanAttributesImpl<T> event = ProcessBeanAttributesImpl.fire(getManager(), bean, bean.getWeldAnnotated(), bean.getType());
+        ProcessBeanAttributesImpl<T> event = ProcessBeanAttributesImpl.fire(getManager(), bean, bean.getEnhancedAnnotated(), bean.getType());
         if (event.isVeto()) {
             return true;
         }

@@ -22,12 +22,12 @@
 
 package org.jboss.weld.util;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.EjbDescriptors;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
 
@@ -144,7 +144,7 @@ public final class BeansClosure {
         return bean;
     }
 
-    public boolean isEJB(WeldClass<?> clazz) {
+    public boolean isEJB(EnhancedAnnotatedType<?> clazz) {
         for (BeanDeployerEnvironment bde : envs.keySet()) {
             EjbDescriptors ed = bde.getEjbDescriptors();
             if (ed.contains(clazz.getJavaClass()))
@@ -153,7 +153,7 @@ public final class BeansClosure {
         return false;
     }
 
-    public Bean<?> getClassBean(WeldClass<?> clazz) {
+    public Bean<?> getClassBean(EnhancedAnnotatedType<?> clazz) {
         for (BeanDeployerEnvironment bde : envs.keySet()) {
             AbstractClassBean<?> classBean = bde.getClassBean(clazz);
             if (classBean != null)
@@ -162,7 +162,7 @@ public final class BeansClosure {
         return null;
     }
 
-    public ProducerMethod<?, ?> getProducerMethod(WeldMethod<?, ?> superClassMethod) {
+    public ProducerMethod<?, ?> getProducerMethod(EnhancedAnnotatedMethod<?, ?> superClassMethod) {
         for (BeanDeployerEnvironment bde : envs.keySet()) {
             ProducerMethod<?, ?> pm = bde.getProducerMethod(superClassMethod);
             if (pm != null)

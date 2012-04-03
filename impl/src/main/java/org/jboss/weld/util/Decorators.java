@@ -17,12 +17,12 @@
 
 package org.jboss.weld.util;
 
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import java.lang.reflect.Method;
@@ -43,12 +43,12 @@ import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
  */
 public class Decorators {
 
-    public static Map<MethodSignature, WeldMethod<?, ?>> getDecoratorMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes, WeldClass<?> decoratorClass) {
-        List<WeldMethod<?, ?>> decoratedMethods = Decorators.getDecoratedMethods(beanManager, decoratedTypes);
-        Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods = new HashMap<MethodSignature, WeldMethod<?, ?>>();
-        for (WeldMethod<?, ?> method : decoratorClass.getWeldMethods()) {
+    public static Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> getDecoratorMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes, EnhancedAnnotatedType<?> decoratorClass) {
+        List<EnhancedAnnotatedMethod<?, ?>> decoratedMethods = Decorators.getDecoratedMethods(beanManager, decoratedTypes);
+        Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods = new HashMap<MethodSignature, EnhancedAnnotatedMethod<?, ?>>();
+        for (EnhancedAnnotatedMethod<?, ?> method : decoratorClass.getEnhancedMethods()) {
             MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
-            for (WeldMethod<?, ?> decoratedMethod : decoratedMethods) {
+            for (EnhancedAnnotatedMethod<?, ?> decoratedMethod : decoratedMethods) {
                 if (new MethodSignatureImpl(decoratedMethod).equals(methodSignature)) {
                     decoratorMethods.put(methodSignature, method);
                 }
@@ -57,11 +57,11 @@ public class Decorators {
         return decoratorMethods;
     }
 
-    public static List<WeldMethod<?, ?>> getDecoratedMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes) {
-        List<WeldMethod<?, ?>> methods = new ArrayList<WeldMethod<?, ?>>();
+    public static List<EnhancedAnnotatedMethod<?, ?>> getDecoratedMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes) {
+        List<EnhancedAnnotatedMethod<?, ?>> methods = new ArrayList<EnhancedAnnotatedMethod<?, ?>>();
         for (Type type : decoratedTypes) {
-            WeldClass<?> weldClass = getWeldClassOfDecoratedType(beanManager, type);
-            for (WeldMethod<?, ?> method : weldClass.getWeldMethods()) {
+            EnhancedAnnotatedType<?> weldClass = getWeldClassOfDecoratedType(beanManager, type);
+            for (EnhancedAnnotatedMethod<?, ?> method : weldClass.getEnhancedMethods()) {
                 if (!methods.contains(method)) {
                     methods.add(method);
                 }
@@ -70,25 +70,25 @@ public class Decorators {
         return methods;
     }
 
-    public static WeldClass<?> getWeldClassOfDecoratedType(BeanManagerImpl beanManager, Type type) {
+    public static EnhancedAnnotatedType<?> getWeldClassOfDecoratedType(BeanManagerImpl beanManager, Type type) {
         if (type instanceof Class<?>) {
-            return (WeldClass<?>) beanManager.createAnnotatedType((Class<?>) type);
+            return beanManager.createEnhancedAnnotatedType((Class<?>) type);
         }
         if (type instanceof ParameterizedType && (((ParameterizedType) type).getRawType() instanceof Class)) {
-            return (WeldClass<?>) beanManager.createAnnotatedType((Class<?>) ((ParameterizedType) type).getRawType());
+            return beanManager.createEnhancedAnnotatedType((Class<?>) ((ParameterizedType) type).getRawType());
         }
         throw new IllegalStateException(UNABLE_TO_PROCESS, type);
     }
 
-    public static <T> WeldMethod<?, ?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods, Method method) {
+    public static <T> EnhancedAnnotatedMethod<?, ?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods, Method method) {
         // try the signature first, might be simpler
         MethodSignature key = new MethodSignatureImpl(method);
-        WeldMethod<?, ?> weldMethod = decoratorMethods.get(key);
+        EnhancedAnnotatedMethod<?, ?> weldMethod = decoratorMethods.get(key);
         if (weldMethod != null) {
             return weldMethod;
         }
         // try all methods
-        for (WeldMethod<?, ?> decoratorMethod : decoratorMethods.values()) {
+        for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : decoratorMethods.values()) {
             if (method.getParameterTypes().length == decoratorMethod.getParameters().size()
                     && method.getName().equals(decoratorMethod.getName())) {
                 boolean parameterMatch = true;

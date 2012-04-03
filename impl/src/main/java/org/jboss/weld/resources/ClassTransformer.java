@@ -16,29 +16,31 @@
  */
 package org.jboss.weld.resources;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ComputationException;
-import com.google.common.collect.MapMaker;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import org.jboss.weld.annotated.backed.BackedAnnotatedType;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.enterprise.inject.spi.AnnotatedType;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedTypeImpl;
+import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotationImpl;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.introspector.ForwardingAnnotatedType;
-import org.jboss.weld.introspector.WeldAnnotation;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.jlr.WeldAnnotationImpl;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.slf4j.Logger;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.concurrent.ConcurrentMap;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import com.google.common.base.Function;
+import com.google.common.collect.ComputationException;
+import com.google.common.collect.MapMaker;
 
 /**
  * @author Pete Muir
@@ -49,48 +51,27 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 public class ClassTransformer implements Service {
     private static Logger log = LoggerFactory.loggerFactory().getLogger(Category.CLASS_LOADING);
 
-    private static class TransformTypeToWeldClass implements Function<TypeHolder<?>, WeldClass<?>> {
-
-        private final ClassTransformer classTransformer;
-
-        private TransformTypeToWeldClass(ClassTransformer classTransformer) {
-            this.classTransformer = classTransformer;
+    private class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, EnhancedAnnotation<?>> {
+        @Override
+        public EnhancedAnnotation<?> apply(Class<? extends Annotation> from) {
+            return EnhancedAnnotationImpl.create(BackedAnnotatedType.of(from), ClassTransformer.this);
         }
-
-        public WeldClass<?> apply(TypeHolder<?> from) {
-            return WeldClassImpl.of(from.getRawType(), from.getBaseType(), classTransformer);
-        }
-
     }
 
-    private static class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, WeldAnnotation<?>> {
-
-        private final ClassTransformer classTransformer;
-
-        private TransformClassToWeldAnnotation(ClassTransformer classTransformer) {
-            this.classTransformer = classTransformer;
+    private static class TransformClassToSlimAnnotatedType implements Function<TypeHolder<?>, SlimAnnotatedType<?>> {
+        @Override
+        public SlimAnnotatedType<?> apply(TypeHolder<?> typeHolder) {
+            return BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType());
         }
-
-        public WeldAnnotation<?> apply(Class<? extends Annotation> from) {
-            return WeldAnnotationImpl.create(from, classTransformer);
-        }
-
     }
 
-    private static class TransformAnnotatedTypeToWeldClass implements Function<AnnotatedType<?>, WeldClass<?>> {
-
-        private final ClassTransformer classTransformer;
-
-        private TransformAnnotatedTypeToWeldClass(ClassTransformer classTransformer) {
-            super();
-            this.classTransformer = classTransformer;
+    private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType implements Function<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
+        @Override
+        public EnhancedAnnotatedType<?> apply(SlimAnnotatedType<?> annotatedType) {
+            return EnhancedAnnotatedTypeImpl.of(annotatedType, ClassTransformer.this);
         }
-
-        public WeldClass<?> apply(AnnotatedType<?> from) {
-            return WeldClassImpl.of(from, classTransformer);
-        }
-
     }
+
 
     private static final class TypeHolder<T> {
         private final Class<T> rawType;
@@ -130,23 +111,24 @@ public class ClassTransformer implements Service {
         }
     }
 
-    private final ConcurrentMap<TypeHolder<?>, WeldClass<?>> classes;
-    private final ConcurrentMap<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
-    private final ConcurrentMap<Class<? extends Annotation>, WeldAnnotation<?>> annotations;
+    private final ConcurrentMap<TypeHolder<?>, SlimAnnotatedType<?>> slimAnnotatedTypes;
+    private final ConcurrentMap<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
+    private final ConcurrentMap<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
     private final TypeStore typeStore;
 
     public ClassTransformer(TypeStore typeStore) {
         MapMaker maker = new MapMaker();
-        this.classes = maker.makeComputingMap(new TransformTypeToWeldClass(this));
-        this.annotatedTypes = maker.makeComputingMap(new TransformAnnotatedTypeToWeldClass(this));
-        this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation(this));
+        this.slimAnnotatedTypes = maker.makeComputingMap(new TransformClassToSlimAnnotatedType());
+        this.enhancedAnnotatedTypes = maker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
+        this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> WeldClass<T> loadClass(final Class<T> rawType, final Type baseType) {
+    // Slim AnnotatedTypes
+
+    public <T> SlimAnnotatedType<T> getAnnotatedType(final Class<T> rawType, final Type baseType) {
         try {
-            return (WeldClass<T>) classes.get(new TypeHolder<T>(rawType, baseType));
+            return cast(slimAnnotatedTypes.get(new TypeHolder<T>(rawType, baseType)));
         } catch (ComputationException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
@@ -160,47 +142,39 @@ public class ClassTransformer implements Service {
         }
     }
 
-    public <T> WeldClass<T> loadClass(final Class<T> clazz) {
-        try {
-            return cast(classes.get(new TypeHolder<T>(clazz, clazz)));
-        } catch (ComputationException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
-                throw new ResourceLoadingException("Error loading class " + clazz.getName(), cause);
-            } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Error loading class '" + clazz.getName() + "' : " + cause);
-                }
-                throw e;
-            }
+    public <T> SlimAnnotatedType<T> getAnnotatedType(final Class<T> rawType) {
+        return getAnnotatedType(rawType, rawType);
+    }
+
+    // Enhanced AnnotatedTypes
+
+    public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(Class<T> rawType) {
+        return getEnhancedAnnotatedType(getAnnotatedType(rawType));
+    }
+
+    public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(Class<T> rawType, Type baseType) {
+        return getEnhancedAnnotatedType(getAnnotatedType(rawType, baseType));
+    }
+
+    public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(AnnotatedType<T> annotatedType) {
+        if (annotatedType instanceof EnhancedAnnotatedType<?>) {
+            return cast(annotatedType);
         }
+        if (annotatedType instanceof SlimAnnotatedType<?>) {
+            return cast(enhancedAnnotatedTypes.get(annotatedType));
+        }
+        return cast(enhancedAnnotatedTypes.get(UnbackedAnnotatedType.of(annotatedType)));
+    }
+
+
+
+    @SuppressWarnings("unchecked")
+    public <T extends Annotation> EnhancedAnnotation<T> loadAnnotation(final Class<T> clazz) {
+        return (EnhancedAnnotation<T>) annotations.get(clazz);
     }
 
     public void clearAnnotationData(Class<? extends Annotation> annotationClass) {
         annotations.remove(annotationClass);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> WeldClass<T> loadClass(final AnnotatedType<T> clazz) {
-        // TODO
-        if (clazz instanceof BackedAnnotatedType<?>) {
-            return loadClass(clazz.getJavaClass());
-        }
-
-        // don't wrap existing weld class, dup instances!
-        if (clazz instanceof WeldClass) {
-            return (WeldClass<T>) clazz;
-        } else if (clazz instanceof ForwardingAnnotatedType && ((ForwardingAnnotatedType<?>) clazz).delegate() instanceof WeldClass) {
-            ForwardingAnnotatedType<?> fat = (ForwardingAnnotatedType<?>) clazz;
-            return (WeldClass<T>) fat.delegate();
-        } else {
-            return (WeldClass<T>) annotatedTypes.get(clazz);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Annotation> WeldAnnotation<T> loadAnnotation(final Class<T> clazz) {
-        return (WeldAnnotation<T>) annotations.get(clazz);
     }
 
     public TypeStore getTypeStore() {
@@ -208,9 +182,9 @@ public class ClassTransformer implements Service {
     }
 
     public void cleanup() {
-        this.annotatedTypes.clear();
         this.annotations.clear();
-        this.classes.clear();
+        this.slimAnnotatedTypes.clear();
+        this.enhancedAnnotatedTypes.clear();
     }
 
 }

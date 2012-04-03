@@ -21,6 +21,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedTypeImpl;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
@@ -28,8 +30,6 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.ejb.EjbDescriptors;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -57,7 +57,7 @@ public class AccessibleManagerResolutionTest {
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {
-        WeldClass<T> clazz = WeldClassImpl.of(c, classTransformer);
+        EnhancedAnnotatedType<T> clazz = classTransformer.getEnhancedAnnotatedType(c);
         RIBean<?> bean = ManagedBean.of(BeanAttributesFactory.forBean(clazz, manager), clazz, manager, services);
         manager.addBean(bean);
         manager.getBeanResolver().clear();

@@ -27,7 +27,7 @@ import java.util.List;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -38,17 +38,17 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> {
 
-    private final WeldMethod<T, X> method;
+    private final EnhancedAnnotatedMethod<T, X> method;
 
-    public static <T, X> MethodInjectionPoint<T, X> of(WeldMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
+    public static <T, X> MethodInjectionPoint<T, X> of(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
         return new MethodInjectionPoint<T, X>(method, declaringBean, false, manager);
     }
 
-    public static <T, X> MethodInjectionPoint<T, X> ofObserverOrDisposerMethod(WeldMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
+    public static <T, X> MethodInjectionPoint<T, X> ofObserverOrDisposerMethod(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
         return new MethodInjectionPoint<T, X>(method, declaringBean, true, manager);
     }
 
-    protected MethodInjectionPoint(WeldMethod<T, X> method, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
+    protected MethodInjectionPoint(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
         super(method, declaringBean, observerOrDisposer, manager);
         this.method = method;
     }
@@ -149,7 +149,7 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
         return parameterValues;
     }
 
-    public WeldMethod<T, X> getAnnotated() {
+    public EnhancedAnnotatedMethod<T, X> getAnnotated() {
         return method;
     }
 }

@@ -23,10 +23,10 @@ package org.jboss.weld.injection.attributes;
 
 import java.lang.reflect.Field;
 
-import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 
 public interface FieldInjectionPointAttributes<T, X> extends WeldInjectionPointAttributes<T, Field> {
 
     @Override
-    WeldField<T, X> getAnnotated();
+    EnhancedAnnotatedField<T, X> getAnnotated();
 }

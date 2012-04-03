@@ -16,16 +16,14 @@
  */
 package org.jboss.weld.tests.unit.reflection.method;
 
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
-import org.jboss.weld.introspector.jlr.WeldMethodImpl;
+import javax.enterprise.util.TypeLiteral;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.junit.Assert;
 import org.junit.Test;
-
-import javax.enterprise.util.TypeLiteral;
 
 public class WeldMethodTest {
 
@@ -39,8 +37,8 @@ public class WeldMethodTest {
     */
     @Test
     public void testMethodReturnsGenericTypeOfClass() throws Exception {
-        WeldClass<Choice<?, ?>> clazz = WeldClassImpl.of(CHOICE_LITERAL, transformer);
-        WeldMethod<Choice<?, ?>, Choice<?, ?>> method = WeldMethodImpl.of(Choice.class.getMethod("aMethod"), clazz, transformer);
+        EnhancedAnnotatedType<Choice<?, ?>> clazz = transformer.getEnhancedAnnotatedType(CHOICE_LITERAL);
+        EnhancedAnnotatedMethod<?, ?> method = clazz.getEnhancedMethod(Choice.class.getMethod("aMethod"));
         Assert.assertEquals(3, method.getTypeClosure().size());
     }
 

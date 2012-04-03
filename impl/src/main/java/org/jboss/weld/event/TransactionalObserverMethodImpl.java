@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.event;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
@@ -36,7 +36,7 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
      * @param observerBean The bean declaring the observer method
      * @param manager      The JCDI manager in use
      */
-    protected TransactionalObserverMethodImpl(WeldMethod<T, ? super X> observer, RIBean<X> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager) {
+    protected TransactionalObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> observerBean, TransactionPhase transactionPhase, BeanManagerImpl manager) {
         super(observer, observerBean, manager);
         this.transactionPhase = transactionPhase;
     }

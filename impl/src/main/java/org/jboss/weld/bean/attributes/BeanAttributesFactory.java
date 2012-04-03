@@ -39,13 +39,13 @@ import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.introspector.WeldAnnotated;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
@@ -64,27 +64,27 @@ public class BeanAttributesFactory {
     /**
      * Creates new {@link BeanAttributes} to represent a managed bean.
      */
-    public static <T> BeanAttributes<T> forBean(WeldAnnotated<T, ?> annotated, BeanManagerImpl manager) {
+    public static <T> BeanAttributes<T> forBean(EnhancedAnnotated<T, ?> annotated, BeanManagerImpl manager) {
         return new BeanAttributesBuilder<T>(annotated, null, manager).build();
     }
 
     /**
      * Creates new {@link BeanAttributes} to represent a session bean.
      */
-    public static <T> BeanAttributes<T> forSessionBean(WeldClass<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
+    public static <T> BeanAttributes<T> forSessionBean(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
         return new BeanAttributesBuilder<T>(annotated, Reflections.<InternalEjbDescriptor<T>> cast(descriptor), manager).build();
     }
 
     /**
      * Creates new {@link BeanAttributes} to represent a disposer method.
      */
-    public static <T, X> BeanAttributes<T> forDisposerMethod(WeldMethod<T, ? super X> annotated, BeanManagerImpl manager) {
+    public static <T, X> BeanAttributes<T> forDisposerMethod(EnhancedAnnotatedMethod<T, ? super X> annotated, BeanManagerImpl manager) {
         BeanAttributesBuilder<T> builder = new BeanAttributesBuilder<T>();
-        WeldParameter<?, ?> disposerParameter = null;
-        if (annotated.getWeldParameters(Disposes.class).isEmpty()) {
+        EnhancedAnnotatedParameter<?, ?> disposerParameter = null;
+        if (annotated.getEnhancedParameters(Disposes.class).isEmpty()) {
             throw new IllegalArgumentException("Not a disposer method");
         }
-        disposerParameter = annotated.getWeldParameters().get(0);
+        disposerParameter = annotated.getEnhancedParameters().get(0);
         builder.nullable = false; // not relevant
         builder.initStereotypes(annotated, manager);
         builder.initAlternative(annotated);
@@ -100,7 +100,7 @@ public class BeanAttributesFactory {
                 Dependent.class);
     }
 
-    public static <T> BeanAttributes<T> forNewManagedBean(WeldClass<T> weldClass) {
+    public static <T> BeanAttributes<T> forNewManagedBean(EnhancedAnnotatedType<T> weldClass) {
         return forNewBean(Beans.isNullable(weldClass), Beans.getTypes(weldClass));
     }
 
@@ -121,7 +121,7 @@ public class BeanAttributesFactory {
         private BeanAttributesBuilder() {
         }
 
-        private BeanAttributesBuilder(WeldAnnotated<T, ?> annotated, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
+        private BeanAttributesBuilder(EnhancedAnnotated<T, ?> annotated, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
             initNullable(annotated);
             initStereotypes(annotated, manager);
             initAlternative(annotated);
@@ -135,22 +135,22 @@ public class BeanAttributesFactory {
             }
         }
 
-        protected void initNullable(WeldAnnotated<?, ?> annotated) {
+        protected void initNullable(EnhancedAnnotated<?, ?> annotated) {
             this.nullable = !annotated.isPrimitive();
         }
 
-        protected <S> void initStereotypes(WeldAnnotated<T, S> annotated, BeanManagerImpl manager) {
+        protected <S> void initStereotypes(EnhancedAnnotated<T, S> annotated, BeanManagerImpl manager) {
             this.mergedStereotypes = MergedStereotypes.of(annotated, manager);
         }
 
-        protected void initAlternative(WeldAnnotated<T, ?> annotated) {
+        protected void initAlternative(EnhancedAnnotated<T, ?> annotated) {
             this.alternative = Beans.isAlternative(annotated, mergedStereotypes);
         }
 
         /**
          * Initializes the name
          */
-        protected void initName(WeldAnnotated<T, ?> annotated) {
+        protected void initName(EnhancedAnnotated<T, ?> annotated) {
             boolean beanNameDefaulted = false;
             if (annotated.isAnnotationPresent(Named.class)) {
                 String javaName = annotated.getAnnotation(Named.class).value();
@@ -171,13 +171,13 @@ public class BeanAttributesFactory {
          *
          * @return The default name
          */
-        protected String getDefaultName(WeldAnnotated<?, ?> annotated) {
-            if (annotated instanceof WeldClass<?>) {
-                return Introspector.decapitalize(((WeldClass<?>) annotated).getSimpleName());
-            } else if (annotated instanceof WeldField<?, ?>) {
-                return ((WeldField<?, ?>) annotated).getPropertyName();
-            } else if (annotated instanceof WeldMethod<?, ?>) {
-                return ((WeldMethod<?, ?>) annotated).getPropertyName();
+        protected String getDefaultName(EnhancedAnnotated<?, ?> annotated) {
+            if (annotated instanceof EnhancedAnnotatedType<?>) {
+                return Introspector.decapitalize(((EnhancedAnnotatedType<?>) annotated).getSimpleName());
+            } else if (annotated instanceof EnhancedAnnotatedField<?, ?>) {
+                return ((EnhancedAnnotatedField<?, ?>) annotated).getPropertyName();
+            } else if (annotated instanceof EnhancedAnnotatedMethod<?, ?>) {
+                return ((EnhancedAnnotatedMethod<?, ?>) annotated).getPropertyName();
             } else {
                 return null;
             }
@@ -189,7 +189,7 @@ public class BeanAttributesFactory {
             applyDefaultQualifiers(this.qualifiers, name);
         }
 
-        protected void initQualifiers(WeldAnnotated<?, ?> annotated) {
+        protected void initQualifiers(EnhancedAnnotated<?, ?> annotated) {
             initQualifiers(annotated.getMetaAnnotations(Qualifier.class));
         }
 
@@ -209,11 +209,11 @@ public class BeanAttributesFactory {
             }
         }
 
-        protected void initScope(WeldAnnotated<T, ?> annotated) {
+        protected void initScope(EnhancedAnnotated<T, ?> annotated) {
             // class bean
-            if (annotated instanceof WeldClass<?>) {
-                WeldClass<?> weldClass = (WeldClass<?>) annotated;
-                for (WeldClass<?> clazz = weldClass; clazz != null; clazz = clazz.getWeldSuperclass()) {
+            if (annotated instanceof EnhancedAnnotatedType<?>) {
+                EnhancedAnnotatedType<?> weldClass = (EnhancedAnnotatedType<?>) annotated;
+                for (EnhancedAnnotatedType<?> clazz = weldClass; clazz != null; clazz = clazz.getEnhancedSuperclass()) {
                     Set<Annotation> scopes = new HashSet<Annotation>();
                     scopes.addAll(clazz.getDeclaredMetaAnnotations(Scope.class));
                     scopes.addAll(clazz.getDeclaredMetaAnnotations(NormalScope.class));
@@ -245,7 +245,7 @@ public class BeanAttributesFactory {
             }
         }
 
-        protected void validateScopeSet(Set<Annotation> scopes, WeldAnnotated<T, ?> annotated) {
+        protected void validateScopeSet(Set<Annotation> scopes, EnhancedAnnotated<T, ?> annotated) {
             if (scopes.size() > 1) {
                 throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, annotated);
             }

@@ -30,10 +30,10 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
@@ -48,7 +48,7 @@ import org.jboss.weld.util.collections.ArraySet;
  */
 public class EnumInjectionTarget<T extends Enum<?>> implements InjectionTarget<T> {
 
-    public static <T extends Enum<?>> EnumInjectionTarget<T> of(WeldClass<T> clazz, BeanManagerImpl manager) {
+    public static <T extends Enum<?>> EnumInjectionTarget<T> of(EnhancedAnnotatedType<T> clazz, BeanManagerImpl manager) {
         return new EnumInjectionTarget<T>(clazz, manager);
     }
 
@@ -69,11 +69,11 @@ public class EnumInjectionTarget<T extends Enum<?>> implements InjectionTarget<T
     private final ArraySet<WeldInjectionPoint<?, ?>> injectionPoints;
     private final ArraySet<WeldInjectionPoint<?, ?>> newInjectionPoints;
 
-    private final WeldClass<T> weldClass;
+    private final EnhancedAnnotatedType<T> weldClass;
 
     private final BeanManagerImpl manager;
 
-    public EnumInjectionTarget(WeldClass<T> weldClass, BeanManagerImpl manager) {
+    public EnumInjectionTarget(EnhancedAnnotatedType<T> weldClass, BeanManagerImpl manager) {
         this.manager = manager;
         this.weldClass = weldClass;
         this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();

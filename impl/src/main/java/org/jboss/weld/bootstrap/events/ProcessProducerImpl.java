@@ -31,7 +31,7 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
 
     public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean) {
         if (beanManager.isBeanEnabled(bean)) {
-            new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>>cast(bean.getWeldAnnotated()), bean) {
+            new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>>cast(bean.getEnhancedAnnotated()), bean) {
             }.fire();
         }
     }
@@ -40,7 +40,7 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
     private AbstractProducerBean<T, X, ?> bean;
 
     public ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean) {
-        super(beanManager, ProcessProducer.class, new Type[]{bean.getWeldAnnotated().getDeclaringType().getBaseType(), bean.getWeldAnnotated().getBaseType()});
+        super(beanManager, ProcessProducer.class, new Type[]{bean.getEnhancedAnnotated().getDeclaringType().getBaseType(), bean.getEnhancedAnnotated().getBaseType()});
         this.bean = bean;
         this.annotatedMember = annotatedMember;
     }

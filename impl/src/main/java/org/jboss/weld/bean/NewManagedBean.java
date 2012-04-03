@@ -23,8 +23,8 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -42,7 +42,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean {
      * @param beanManager The Bean manager
      * @return a new NewSimpleBean instance
      */
-    public static <T> NewManagedBean<T> of(BeanAttributes<T> attributes, WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> NewManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
         if (clazz.isDiscovered()) {
             return new NewManagedBean<T>(attributes, clazz, createSimpleId(NewManagedBean.class.getSimpleName(), clazz), beanManager, services);
         } else {
@@ -58,7 +58,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean {
      * @param type        An annotated class
      * @param beanManager The Bean manager
      */
-    protected NewManagedBean(BeanAttributes<T> attributes, final WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+    protected NewManagedBean(BeanAttributes<T> attributes, final EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, type, idSuffix, beanManager, services);
         this.bindings = new HashSet<Annotation>();
         this.bindings.add(new NewLiteral() {

@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.introspector.WeldAnnotation;
 import org.jboss.weld.logging.messages.MetadataMessage;
 import org.jboss.weld.resources.ClassTransformer;
 import org.slf4j.cal10n.LocLogger;
@@ -40,7 +40,7 @@ public abstract class AnnotationModel<T extends Annotation> {
     private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     // The underlying annotation
-    private final WeldAnnotation<T> annotatedAnnotation;
+    private final EnhancedAnnotation<T> annotatedAnnotation;
     // Is the data valid?
     protected boolean valid;
 
@@ -121,7 +121,7 @@ public abstract class AnnotationModel<T extends Annotation> {
      *
      * @return The annotation
      */
-    protected WeldAnnotation<T> getAnnotatedAnnotation() {
+    protected EnhancedAnnotation<T> getAnnotatedAnnotation() {
         return annotatedAnnotation;
     }
 

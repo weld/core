@@ -27,8 +27,8 @@ import java.util.List;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -41,13 +41,13 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint<T, T, Constructor<T>> {
 
-    private final WeldConstructor<T> constructor;
+    private final EnhancedAnnotatedConstructor<T> constructor;
 
-    public static <T> ConstructorInjectionPoint<T> of(WeldConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
+    public static <T> ConstructorInjectionPoint<T> of(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
         return new ConstructorInjectionPoint<T>(constructor, declaringBean, manager);
     }
 
-    protected ConstructorInjectionPoint(WeldConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
+    protected ConstructorInjectionPoint(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
         super(constructor, declaringBean, false, manager);
         this.constructor = constructor;
     }
@@ -93,7 +93,7 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         return parameterValues;
     }
 
-    public WeldConstructor<T> getAnnotated() {
+    public EnhancedAnnotatedConstructor<T> getAnnotated() {
         return constructor;
     }
 }

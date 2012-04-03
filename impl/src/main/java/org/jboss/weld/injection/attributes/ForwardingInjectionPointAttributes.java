@@ -23,13 +23,13 @@ package org.jboss.weld.injection.attributes;
 
 import java.lang.annotation.Annotation;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
-import org.jboss.weld.introspector.WeldAnnotated;
 
 public abstract class ForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint implements WeldInjectionPointAttributes<T, S> {
 
     @Override
-    public WeldAnnotated<T, S> getAnnotated() {
+    public EnhancedAnnotated<T, S> getAnnotated() {
         return delegate().getAnnotated();
     }
 

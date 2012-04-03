@@ -34,14 +34,14 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMember;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -49,14 +49,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 
 /**
- * Transforms a given {@link AnnotatedMember} into its richer counterpart {@link WeldMember}.
+ * Transforms a given {@link AnnotatedMember} into its richer counterpart {@link EnhancedAnnotatedMember}.
  *
  * @author Jozef Hartinger
  *
  */
 public class MemberTransformer implements Service {
 
-    private final ConcurrentMap<AnnotatedMember<?>, WeldMember<?, ?, ?>> memberCache;
+    private final ConcurrentMap<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> memberCache;
     private final ClassTransformer transformer;
     private final FieldLoader fieldLoader;
     private final MethodLoader methodLoader;
@@ -70,43 +70,43 @@ public class MemberTransformer implements Service {
         this.memberCache = new MapMaker().makeComputingMap(new TransformationFunction());
     }
 
-    public <T, X> WeldField<T, X> load(AnnotatedField<X> field) {
-        if (field instanceof WeldField<?, ?>) {
+    public <T, X> EnhancedAnnotatedField<T, X> load(AnnotatedField<X> field) {
+        if (field instanceof EnhancedAnnotatedField<?, ?>) {
             return Reflections.cast(field);
         }
         return Reflections.cast(memberCache.get(field));
     }
 
-    public <T, X> WeldMethod<T, X> load(AnnotatedMethod<X> method) {
-        if (method instanceof WeldMethod<?, ?>) {
+    public <T, X> EnhancedAnnotatedMethod<T, X> load(AnnotatedMethod<X> method) {
+        if (method instanceof EnhancedAnnotatedMethod<?, ?>) {
             return Reflections.cast(method);
         }
         return Reflections.cast(memberCache.get(method));
     }
 
-    public <T> WeldConstructor<T> load(AnnotatedConstructor<T> constructor) {
-        if (constructor instanceof WeldConstructor<?>) {
+    public <T> EnhancedAnnotatedConstructor<T> load(AnnotatedConstructor<T> constructor) {
+        if (constructor instanceof EnhancedAnnotatedConstructor<?>) {
             return Reflections.cast(constructor);
         }
         return Reflections.cast(memberCache.get(constructor));
     }
 
-    public <T, X> WeldParameter<T, X> load(AnnotatedParameter<X> parameter) {
-        if (parameter instanceof WeldParameter<?, ?>) {
+    public <T, X> EnhancedAnnotatedParameter<T, X> load(AnnotatedParameter<X> parameter) {
+        if (parameter instanceof EnhancedAnnotatedParameter<?, ?>) {
             return Reflections.cast(parameter);
         }
         if (parameter.getDeclaringCallable() instanceof AnnotatedMethod<?>) {
-            return Reflections.cast(load((AnnotatedMethod<?>) parameter.getDeclaringCallable()).getWeldParameters().get(parameter.getPosition()));
+            return Reflections.cast(load((AnnotatedMethod<?>) parameter.getDeclaringCallable()).getEnhancedParameters().get(parameter.getPosition()));
         } else if (parameter.getDeclaringCallable() instanceof AnnotatedConstructor<?>) {
-            return Reflections.cast(load((AnnotatedConstructor<?>) parameter.getDeclaringCallable()).getWeldParameters().get(parameter.getPosition()));
+            return Reflections.cast(load((AnnotatedConstructor<?>) parameter.getDeclaringCallable()).getEnhancedParameters().get(parameter.getPosition()));
         } else {
             throw new IllegalArgumentException(INVALID_ANNOTATED_CALLABLE, parameter.getDeclaringCallable());
         }
     }
 
-    private class TransformationFunction implements Function<AnnotatedMember<?>, WeldMember<?, ?, ?>> {
+    private class TransformationFunction implements Function<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> {
         @Override
-        public WeldMember<?, ?, ?> apply(AnnotatedMember<?> from) {
+        public EnhancedAnnotatedMember<?, ?, ?> apply(AnnotatedMember<?> from) {
             if (from instanceof AnnotatedField<?>) {
                 return fieldLoader.load(Reflections.<AnnotatedField<?>> cast(from));
             }
@@ -120,7 +120,7 @@ public class MemberTransformer implements Service {
         }
     }
 
-    private abstract class AbstractMemberLoader<A extends AnnotatedMember<?>, W extends WeldMember<?, ?, ?>> {
+    private abstract class AbstractMemberLoader<A extends AnnotatedMember<?>, W extends EnhancedAnnotatedMember<?, ?, ?>> {
 
         public W load(A source) {
             return findMatching(getMembersOfDeclaringType(source), source);
@@ -140,39 +140,39 @@ public class MemberTransformer implements Service {
         public abstract Collection<W> getMembersOfDeclaringType(A source);
     }
 
-    private class FieldLoader extends AbstractMemberLoader<AnnotatedField<?>, WeldField<?, ?>> {
+    private class FieldLoader extends AbstractMemberLoader<AnnotatedField<?>, EnhancedAnnotatedField<?, ?>> {
         @Override
-        public boolean equals(WeldField<?, ?> member1, AnnotatedField<?> member2) {
+        public boolean equals(EnhancedAnnotatedField<?, ?> member1, AnnotatedField<?> member2) {
             return AnnotatedTypes.compareAnnotatedField(member1, member2);
         }
 
         @Override
-        public Collection<WeldField<?, ?>> getMembersOfDeclaringType(AnnotatedField<?> source) {
-            return Reflections.cast(transformer.loadClass(source.getDeclaringType()).getDeclaredWeldFields());
+        public Collection<EnhancedAnnotatedField<?, ?>> getMembersOfDeclaringType(AnnotatedField<?> source) {
+            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getDeclaredEnhancedFields());
         }
     }
 
-    private class MethodLoader extends AbstractMemberLoader<AnnotatedMethod<?>, WeldMethod<?, ?>> {
+    private class MethodLoader extends AbstractMemberLoader<AnnotatedMethod<?>, EnhancedAnnotatedMethod<?, ?>> {
         @Override
-        public boolean equals(WeldMethod<?, ?> member1, AnnotatedMethod<?> member2) {
+        public boolean equals(EnhancedAnnotatedMethod<?, ?> member1, AnnotatedMethod<?> member2) {
             return AnnotatedTypes.compareAnnotatedCallable(member1, member2);
         }
 
         @Override
-        public Collection<WeldMethod<?, ?>> getMembersOfDeclaringType(AnnotatedMethod<?> source) {
-            return Reflections.cast(transformer.loadClass(source.getDeclaringType()).getDeclaredWeldMethods());
+        public Collection<EnhancedAnnotatedMethod<?, ?>> getMembersOfDeclaringType(AnnotatedMethod<?> source) {
+            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getDeclaredEnhancedMethods());
         }
     }
 
-    private class ConstructorLoader extends AbstractMemberLoader<AnnotatedConstructor<?>, WeldConstructor<?>> {
+    private class ConstructorLoader extends AbstractMemberLoader<AnnotatedConstructor<?>, EnhancedAnnotatedConstructor<?>> {
         @Override
-        public boolean equals(WeldConstructor<?> member1, AnnotatedConstructor<?> member2) {
+        public boolean equals(EnhancedAnnotatedConstructor<?> member1, AnnotatedConstructor<?> member2) {
             return AnnotatedTypes.compareAnnotatedCallable(member1, member2);
         }
 
         @Override
-        public Collection<WeldConstructor<?>> getMembersOfDeclaringType(AnnotatedConstructor<?> source) {
-            return Reflections.cast(transformer.loadClass(source.getDeclaringType()).getWeldConstructors());
+        public Collection<EnhancedAnnotatedConstructor<?>> getMembersOfDeclaringType(AnnotatedConstructor<?> source) {
+            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getEnhancedConstructors());
         }
     }
 

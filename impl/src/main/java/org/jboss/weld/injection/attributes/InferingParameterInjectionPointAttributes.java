@@ -25,7 +25,7 @@ import java.lang.reflect.Member;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.serialization.DiscoveredWeldParameterSerializableHolder;
 import org.jboss.weld.serialization.NoopSerializableHolder;
 import org.jboss.weld.serialization.SerializableHolder;
@@ -33,7 +33,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link WeldParameter}.
+ * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link EnhancedAnnotatedParameter}.
  *
  * @author Jozef Hartinger
  *
@@ -42,13 +42,13 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
 
     private static final long serialVersionUID = 1237037554422642608L;
 
-    public static <T, X> InferingParameterInjectionPointAttributes<T, X> of(WeldParameter<T, X> parameter, Bean<?> bean) {
+    public static <T, X> InferingParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
         return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean);
     }
 
-    private SerializableHolder<WeldParameter<T, X>> parameter;
+    private SerializableHolder<EnhancedAnnotatedParameter<T, X>> parameter;
 
-    protected InferingParameterInjectionPointAttributes(WeldParameter<T, X> parameter, Bean<?> bean) {
+    protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
         super(bean);
         if (parameter.getDeclaringType().isDiscovered()) {
             this.parameter = new DiscoveredWeldParameterSerializableHolder<T, X>(parameter);
@@ -63,7 +63,7 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
     }
 
     @Override
-    public WeldParameter<T, X> getAnnotated() {
+    public EnhancedAnnotatedParameter<T, X> getAnnotated() {
         return parameter.get();
     }
 
@@ -75,7 +75,7 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof InferingParameterInjectionPointAttributes<?, ?>) {
-            WeldParameter<?, ?> parameter = Reflections.<InferingParameterInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
+            EnhancedAnnotatedParameter<?, ?> parameter = Reflections.<InferingParameterInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
             return AnnotatedTypes.compareAnnotatedParameters(getAnnotated(), parameter);
         }
         return false;

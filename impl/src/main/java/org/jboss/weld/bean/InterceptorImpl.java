@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -39,7 +40,6 @@ import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Interceptors;
@@ -56,15 +56,15 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     private final boolean serializable;
 
-    public static <T> InterceptorImpl<T> of(BeanAttributes<T> attributes, WeldClass<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> InterceptorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
         return new InterceptorImpl<T>(attributes, type, beanManager, services);
     }
 
-    protected InterceptorImpl(BeanAttributes<T> attributes, WeldClass<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
+    protected InterceptorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
         this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
         this.serializable = type.isSerializable();
-        this.interceptorBindingTypes = new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes()).values());
+        this.interceptorBindingTypes = new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values());
 
         if (this.interceptorBindingTypes.size() == 0) {
             throw new DeploymentException(MISSING_BINDING_ON_INTERCEPTOR, type.getName());

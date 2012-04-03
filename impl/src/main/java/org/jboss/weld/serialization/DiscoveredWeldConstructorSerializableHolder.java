@@ -24,9 +24,9 @@ package org.jboss.weld.serialization;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import org.jboss.weld.annotated.enhanced.ConstructorSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.introspector.ConstructorSignature;
-import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -36,18 +36,18 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public class DiscoveredWeldConstructorSerializableHolder<T> extends AbstractWeldAnnotatedHolder<T> implements SerializableHolder<WeldConstructor<T>> {
+public class DiscoveredWeldConstructorSerializableHolder<T> extends AbstractWeldAnnotatedHolder<T> implements SerializableHolder<EnhancedAnnotatedConstructor<T>> {
 
-    public static <T> DiscoveredWeldConstructorSerializableHolder<T> of(WeldConstructor<T> constructor) {
+    public static <T> DiscoveredWeldConstructorSerializableHolder<T> of(EnhancedAnnotatedConstructor<T> constructor) {
         return new DiscoveredWeldConstructorSerializableHolder<T>(constructor);
     }
 
     private static final long serialVersionUID = -3994479067557140156L;
 
     private final ConstructorSignature signature;
-    private transient WeldConstructor<T> constructor;
+    private transient EnhancedAnnotatedConstructor<T> constructor;
 
-    public DiscoveredWeldConstructorSerializableHolder(WeldConstructor<T> constructor) {
+    public DiscoveredWeldConstructorSerializableHolder(EnhancedAnnotatedConstructor<T> constructor) {
         super(constructor.getDeclaringType().getJavaClass());
         this.constructor = constructor;
         this.signature = constructor.getSignature();
@@ -55,14 +55,14 @@ public class DiscoveredWeldConstructorSerializableHolder<T> extends AbstractWeld
 
     private void readObject(ObjectInputStream is) throws ClassNotFoundException, IOException {
         is.defaultReadObject();
-        this.constructor = Reflections.cast(getDeclaringWeldClass().getDeclaredWeldConstructor(signature));
+        this.constructor = Reflections.cast(getDeclaringWeldClass().getDeclaredEnhancedConstructor(signature));
         if (constructor == null) {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringWeldClass(), signature);
         }
     }
 
     @Override
-    public WeldConstructor<T> get() {
+    public EnhancedAnnotatedConstructor<T> get() {
         return constructor;
     }
 }

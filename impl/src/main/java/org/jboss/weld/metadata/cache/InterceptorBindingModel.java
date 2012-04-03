@@ -17,10 +17,10 @@
 
 package org.jboss.weld.metadata.cache;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.introspector.WeldAnnotation;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
@@ -48,7 +48,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.TARGET_TYPE_METH
 public class InterceptorBindingModel<T extends Annotation> extends AnnotationModel<T> {
     private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(InterceptorBinding.class);
     private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
-    private Set<WeldMethod<?, ?>> nonBindingTypes;
+    private Set<EnhancedAnnotatedMethod<?, ?>> nonBindingTypes;
     private Set<Annotation> inheritedInterceptionBindingTypes;
     private Set<Annotation> metaAnnotations;
 
@@ -97,7 +97,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
         }
     }
 
-    private static boolean isValidTargetType(WeldAnnotation<?> annotation) {
+    private static boolean isValidTargetType(EnhancedAnnotation<?> annotation) {
         Target target = annotation.getAnnotation(Target.class);
         return target != null && (Arrays2.unorderedEquals(target.value(), ElementType.TYPE, ElementType.METHOD) || Arrays2.unorderedEquals(target.value(), ElementType.TYPE));
     }
@@ -115,7 +115,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
     }
 
     private void checkArrayAndAnnotationValuedMembers() {
-        for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
+        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
             if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod)) {
                 throw new DefinitionException(NON_BINDING_MEMBER_TYPE, annotatedMethod);
             }
@@ -139,7 +139,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
 
     public boolean isEqual(Annotation instance, Annotation other, boolean includeNonBindingTypes) {
         if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType())) {
-            for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
+            for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
                 if (includeNonBindingTypes || !nonBindingTypes.contains(annotatedMethod)) {
                     try {
                         Object thisValue = annotatedMethod.invoke(instance);

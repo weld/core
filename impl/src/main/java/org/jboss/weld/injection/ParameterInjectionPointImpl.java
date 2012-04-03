@@ -24,11 +24,11 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -80,7 +80,7 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
         return objectToInject;
     }
 
-    public WeldParameter<T, X> getAnnotated() {
+    public EnhancedAnnotatedParameter<T, X> getAnnotated() {
         return attributes.getAnnotated();
     }
 }

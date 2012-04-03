@@ -25,10 +25,10 @@ import java.lang.reflect.Member;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanAttributes;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
-import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
 
@@ -57,14 +57,14 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
         // This is a bit dangerous, as it means that producer methods can end up
         // executing on partially constructed instances. Also, it's not required
         // by the spec...
-        if (getWeldAnnotated().isStatic()) {
+        if (getEnhancedAnnotated().isStatic()) {
             return null;
         } else {
             if (creationalContext instanceof WeldCreationalContext<?>) {
                 WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) creationalContext;
                 final X incompleteInstance = creationalContextImpl.getIncompleteInstance(getDeclaringBean());
                 if (incompleteInstance != null) {
-                    log.warn(CIRCULAR_CALL, getWeldAnnotated(), getDeclaringBean());
+                    log.warn(CIRCULAR_CALL, getEnhancedAnnotated(), getDeclaringBean());
                     return incompleteInstance;
                 }
             }
@@ -83,6 +83,6 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
     }
 
     @Override
-    public abstract WeldMember<T, ?, S> getWeldAnnotated();
+    public abstract EnhancedAnnotatedMember<T, ?, S> getEnhancedAnnotated();
 
 }

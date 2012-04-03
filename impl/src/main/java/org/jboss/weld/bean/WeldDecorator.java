@@ -17,8 +17,8 @@
 
 package org.jboss.weld.bean;
 
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 
 import javax.enterprise.inject.spi.Decorator;
 import java.lang.reflect.Method;
@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  */
 public interface WeldDecorator<T> extends Decorator<T> {
 
-    WeldClass<?> getWeldAnnotated();
+    EnhancedAnnotatedType<?> getEnhancedAnnotated();
 
     /**
      * Returns the decorated method that can decorate a particular method, if one exists
@@ -42,6 +42,6 @@ public interface WeldDecorator<T> extends Decorator<T> {
      * @param method
      * @return
      */
-    WeldMethod<?, ?> getDecoratorMethod(Method method);
+    EnhancedAnnotatedMethod<?, ?> getDecoratorMethod(Method method);
 
 }

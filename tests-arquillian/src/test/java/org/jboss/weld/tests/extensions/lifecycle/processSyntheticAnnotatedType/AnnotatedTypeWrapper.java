@@ -28,7 +28,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
-import org.jboss.weld.introspector.ForwardingAnnotatedType;
+import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class AnnotatedTypeWrapper<T> extends ForwardingAnnotatedType<T> {

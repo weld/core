@@ -41,6 +41,9 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
@@ -53,9 +56,6 @@ import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionTarget;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
@@ -94,12 +94,12 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
      * @param beanManager the current manager
      * @return a Bean
      */
-    public static <T> DecoratorImpl<T> of(BeanAttributes<T> attributes, WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> DecoratorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
         return new DecoratorImpl<T>(attributes, clazz, beanManager, services);
     }
 
-    private WeldClass<?> annotatedDelegateItem;
-    private Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods;
+    private EnhancedAnnotatedType<?> annotatedDelegateItem;
+    private Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods;
     private WeldInjectionPoint<?, ?> delegateInjectionPoint;
     private FieldInjectionPoint<?, ?> delegateFieldInjectionPoint;
     private Set<Annotation> delegateBindings;
@@ -107,7 +107,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     private Set<Type> delegateTypes;
     private Set<Type> decoratedTypes;
 
-    protected DecoratorImpl(BeanAttributes<T> attributes, WeldClass<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
+    protected DecoratorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
     }
 
@@ -123,10 +123,10 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     }
 
     protected void initDecoratedTypes() {
-        this.decoratedTypes = new HashSet<Type>(getWeldAnnotated().getInterfaceClosure());
+        this.decoratedTypes = new HashSet<Type>(getEnhancedAnnotated().getInterfaceClosure());
         decoratedTypes.retainAll(getTypes());
         this.decoratedTypes.remove(Serializable.class);
-        this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, decoratedTypes, getWeldAnnotated());
+        this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, decoratedTypes, getEnhancedAnnotated());
     }
 
     protected void initDelegateInjectionPoint() {
@@ -138,12 +138,12 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
 
     protected Class<T> createEnhancedSubclass() {
-        return new DecoratorProxyFactory<T>(getWeldAnnotated().getJavaClass(), delegateInjectionPoint, this).getProxyClass();
+        return new DecoratorProxyFactory<T>(getEnhancedAnnotated().getJavaClass(), delegateInjectionPoint, this).getProxyClass();
     }
 
     @Override
     protected boolean isSubclassed() {
-        return getWeldAnnotated().isAbstract();
+        return getEnhancedAnnotated().isAbstract();
     }
 
     @Override
@@ -154,9 +154,9 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
             }
         }
         if (getDelegateInjectionPoints().size() == 0) {
-            throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, getWeldAnnotated());
+            throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, getEnhancedAnnotated());
         } else if (getDelegateInjectionPoints().size() > 1) {
-            throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, getWeldAnnotated());
+            throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, getEnhancedAnnotated());
         }
     }
 
@@ -172,7 +172,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     }
 
     protected void checkDelegateType() {
-        Set<Type> mostSpecificDecoratedTypes = new HashSet<Type>(Arrays.asList(getWeldAnnotated().getJavaClass().getGenericInterfaces()));
+        Set<Type> mostSpecificDecoratedTypes = new HashSet<Type>(Arrays.asList(getEnhancedAnnotated().getJavaClass().getGenericInterfaces()));
         mostSpecificDecoratedTypes.remove(Serializable.class);
         for (Type decoratedType : mostSpecificDecoratedTypes) {
             if (decoratedType instanceof Class<?>) {
@@ -193,16 +193,16 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
                 }
             }
         }
-        annotatedDelegateItem = beanManager.getServices().get(ClassTransformer.class).loadClass(Reflections.getRawType(delegateInjectionPoint.getType()));
+        annotatedDelegateItem = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.getRawType(delegateInjectionPoint.getType()));
     }
 
     private void checkAbstractMethods() {
         if (isSubclassed()) {
-            for (WeldMethod<?, ?> method : getWeldAnnotated().getWeldMethods()) {
+            for (EnhancedAnnotatedMethod<?, ?> method : getEnhancedAnnotated().getEnhancedMethods()) {
                 if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
                     MethodSignature methodSignature = method.getSignature();
-                    if (this.annotatedDelegateItem.getWeldMethod(methodSignature) == null) {
-                        throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE, method.getSignature(), this, getWeldAnnotated().getName());
+                    if (this.annotatedDelegateItem.getEnhancedMethod(methodSignature) == null) {
+                        throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE, method.getSignature(), this, getEnhancedAnnotated().getName());
                     }
                 }
             }
@@ -265,7 +265,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     }
 
 
-    public WeldMethod<?, ?> getDecoratorMethod(Method method) {
+    public EnhancedAnnotatedMethod<?, ?> getDecoratorMethod(Method method) {
         return Decorators.findDecoratorMethod(this, decoratorMethods, method);
     }
 

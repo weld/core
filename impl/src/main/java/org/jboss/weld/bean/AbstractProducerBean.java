@@ -49,6 +49,7 @@ import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -56,7 +57,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.introspector.WeldMember;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
@@ -111,7 +111,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     @Override
-    public abstract WeldMember<T, ? super X, S> getWeldAnnotated();
+    public abstract EnhancedAnnotatedMember<T, ? super X, S> getEnhancedAnnotated();
 
     @Override
     // Overriden to provide the class of the bean that declares the producer
@@ -125,10 +125,10 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      */
     protected void initType() {
         try {
-            this.type = getWeldAnnotated().getJavaClass();
+            this.type = getEnhancedAnnotated().getJavaClass();
         } catch (ClassCastException e) {
             Type type = Beans.getDeclaredBeanType(getClass());
-            throw new WeldException(PRODUCER_CAST_ERROR, e, getWeldAnnotated().getJavaClass(), (type == null ? " unknown " : type));
+            throw new WeldException(PRODUCER_CAST_ERROR, e, getEnhancedAnnotated().getJavaClass(), (type == null ? " unknown " : type));
         }
     }
 
@@ -136,14 +136,14 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * Validates the producer method
      */
     protected void checkProducerReturnType() {
-        if ((getWeldAnnotated().getBaseType() instanceof TypeVariable<?>) || (getWeldAnnotated().getBaseType() instanceof WildcardType)) {
-            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getWeldAnnotated().getBaseType());
-        } else if (getWeldAnnotated().isParameterizedType()) {
-            for (Type type : getWeldAnnotated().getActualTypeArguments()) {
+        if ((getEnhancedAnnotated().getBaseType() instanceof TypeVariable<?>) || (getEnhancedAnnotated().getBaseType() instanceof WildcardType)) {
+            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, getEnhancedAnnotated().getBaseType());
+        } else if (getEnhancedAnnotated().isParameterizedType()) {
+            for (Type type : getEnhancedAnnotated().getActualTypeArguments()) {
                 if (!Dependent.class.equals(getScope()) && type instanceof TypeVariable<?>) {
-                    throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, getWeldAnnotated());
+                    throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, getEnhancedAnnotated());
                 } else if (type instanceof WildcardType) {
-                    throw new DefinitionException(PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE, getWeldAnnotated());
+                    throw new DefinitionException(PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE, getEnhancedAnnotated());
                 }
             }
         }
@@ -163,7 +163,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     private void initPassivationCapable() {
-        if (getWeldAnnotated().isFinal() && !Serializable.class.isAssignableFrom(getWeldAnnotated().getJavaClass())) {
+        if (getEnhancedAnnotated().isFinal() && !Serializable.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass())) {
             this.passivationCapableBean = false;
         } else {
             this.passivationCapableBean = true;

@@ -17,6 +17,8 @@
 package org.jboss.weld.bootstrap;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -24,8 +26,6 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
@@ -62,7 +62,7 @@ public class ExtensionBeanDeployer {
     public ExtensionBeanDeployer deployBeans() {
         ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
         for (Metadata<Extension> extension : extensions) {
-            WeldClass<Extension> clazz = cast(classTransformer.loadClass(extension.getValue().getClass()));
+            EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass()));
 
             // Locate the BeanDeployment for this extension
             BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass());
@@ -90,13 +90,13 @@ public class ExtensionBeanDeployer {
         this.extensions.add(extension);
     }
 
-    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldClass<? super X> annotatedClass, Set<ObserverMethodImpl<?, ?>> observerMethods) {
-        for (WeldMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass)) {
+    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass, Set<ObserverMethodImpl<?, ?>> observerMethods) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, beanManager, method, observerMethods);
         }
     }
 
-    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, WeldMethod<T, ? super X> method, Set<ObserverMethodImpl<?, ?>> observerMethods) {
+    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method, Set<ObserverMethodImpl<?, ?>> observerMethods) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
         observerMethods.add(observer);
     }

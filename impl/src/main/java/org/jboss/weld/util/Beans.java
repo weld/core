@@ -82,6 +82,14 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
@@ -104,14 +112,6 @@ import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldAnnotated;
-import org.jboss.weld.introspector.WeldCallable;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
@@ -207,19 +207,19 @@ public class Beans {
         }
     }
 
-    public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
+    public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
-        WeldClass<?> t = type;
+        EnhancedAnnotatedType<?> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
             ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
             injectableFieldsList.add(0, fields);
-            for (WeldField<?, ?> annotatedField : t.getDeclaredWeldFields(Inject.class)) {
+            for (EnhancedAnnotatedField<?, ?> annotatedField : t.getDeclaredEnhancedFields(Inject.class)) {
                 if (!annotatedField.isStatic()) {
                     addFieldInjectionPoint(annotatedField, fields, declaringBean, manager);
                 }
             }
             fields.trimToSize();
-            t = t.getWeldSuperclass();
+            t = t.getEnhancedSuperclass();
         }
         return injectableFieldsList;
     }
@@ -232,26 +232,26 @@ public class Beans {
         return injectionPoints.trimToSize();
     }
 
-    public static <T> List<WeldMethod<?, ? super T>> getPostConstructMethods(WeldClass<T> type) {
-        WeldClass<?> t = type;
-        List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
+    public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getPostConstructMethods(EnhancedAnnotatedType<T> type) {
+        EnhancedAnnotatedType<?> t = type;
+        List<EnhancedAnnotatedMethod<?, ? super T>> methods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<WeldMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredWeldMethods(PostConstruct.class));
+            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredEnhancedMethods(PostConstruct.class));
             log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
             } else if (declaredMethods.size() == 1) {
-                WeldMethod<?, ? super T> method = declaredMethods.iterator().next();
+                EnhancedAnnotatedMethod<?, ? super T> method = declaredMethods.iterator().next();
                 log.trace(FOUND_ONE_POST_CONSTRUCT_METHOD, method, type);
                 methods.add(0, method);
             }
-            t = t.getWeldSuperclass();
+            t = t.getEnhancedSuperclass();
         }
         return methods;
     }
 
-    public static <T> List<WeldMethod<?, ? super T>> getObserverMethods(WeldClass<T> type) {
-        List<WeldMethod<?, ? super T>> observerMethods = new ArrayList<WeldMethod<?, ? super T>>();
+    public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(EnhancedAnnotatedType<T> type) {
+        List<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
         // Keep track of all seen methods so we can ignore overridden methods
         Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>() {
 
@@ -260,40 +260,40 @@ public class Beans {
             }
 
         });
-        WeldClass<? super T> t = type;
+        EnhancedAnnotatedType<? super T> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
-            for (WeldMethod<?, ? super T> method : t.getDeclaredWeldMethods()) {
-                if (!isOverridden(method, seenMethods) && !method.getWeldParameters(Observes.class).isEmpty()) {
+            for (EnhancedAnnotatedMethod<?, ? super T> method : t.getDeclaredEnhancedMethods()) {
+                if (!isOverridden(method, seenMethods) && !method.getEnhancedParameters(Observes.class).isEmpty()) {
                     observerMethods.add(method);
                 }
                 seenMethods.put(method.getSignature(), method.getPackage());
             }
-            t = t.getWeldSuperclass();
+            t = t.getEnhancedSuperclass();
         }
         return observerMethods;
     }
 
-    public static <T> List<WeldMethod<?, ? super T>> getPreDestroyMethods(WeldClass<T> type) {
-        WeldClass<?> t = type;
-        List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
+    public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getPreDestroyMethods(EnhancedAnnotatedType<T> type) {
+        EnhancedAnnotatedType<?> t = type;
+        List<EnhancedAnnotatedMethod<?, ? super T>> methods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<WeldMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredWeldMethods(PreDestroy.class));
+            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredEnhancedMethods(PreDestroy.class));
             log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
             } else if (declaredMethods.size() == 1) {
-                WeldMethod<?, ? super T> method = declaredMethods.iterator().next();
+                EnhancedAnnotatedMethod<?, ? super T> method = declaredMethods.iterator().next();
                 log.trace(FOUND_ONE_PRE_DESTROY_METHOD, method, type);
                 methods.add(0, method);
             }
-            t = t.getWeldSuperclass();
+            t = t.getEnhancedSuperclass();
         }
         return methods;
     }
 
-    public static List<WeldMethod<?, ?>> getInterceptableMethods(WeldClass<?> type) {
-        List<WeldMethod<?, ?>> annotatedMethods = new ArrayList<WeldMethod<?, ?>>();
-        for (WeldMethod<?, ?> annotatedMethod : type.getWeldMethods()) {
+    public static List<EnhancedAnnotatedMethod<?, ?>> getInterceptableMethods(EnhancedAnnotatedType<?> type) {
+        List<EnhancedAnnotatedMethod<?, ?>> annotatedMethods = new ArrayList<EnhancedAnnotatedMethod<?, ?>>();
+        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : type.getEnhancedMethods()) {
             boolean businessMethod = !annotatedMethod.isStatic()
                     && !annotatedMethod.isAnnotationPresent(Inject.class)
                     && !annotatedMethod.getJavaMember().isBridge();
@@ -311,11 +311,11 @@ public class Beans {
         return annotatedMethods;
     }
 
-    public static Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
+    public static Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         if (manager.getServices().contains(EjbInjectionServices.class)) {
             Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
             ArraySet<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-            for (WeldField<?, ?> field : type.getWeldFields(ejbAnnotationType)) {
+            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(ejbAnnotationType)) {
                 ejbInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return ejbInjectionPoints.trimToSize();
@@ -324,11 +324,11 @@ public class Beans {
         }
     }
 
-    public static Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
+    public static Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         if (manager.getServices().contains(JpaInjectionServices.class)) {
             ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
             Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-            for (WeldField<?, ?> field : type.getWeldFields(persistenceContextAnnotationType)) {
+            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(persistenceContextAnnotationType)) {
                 jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return jpaInjectionPoints.trimToSize();
@@ -337,11 +337,11 @@ public class Beans {
         }
     }
 
-    public static Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
+    public static Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         if (manager.getServices().contains(JpaInjectionServices.class)) {
             ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
             Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
-            for (WeldField<?, ?> field : type.getWeldFields(persistenceUnitAnnotationType)) {
+            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(persistenceUnitAnnotationType)) {
                 jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return jpaInjectionPoints.trimToSize();
@@ -350,11 +350,11 @@ public class Beans {
         }
     }
 
-    public static Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
+    public static Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         if (manager.getServices().contains(ResourceInjectionServices.class)) {
             Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
             ArraySet<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-            for (WeldField<?, ?> field : type.getWeldFields(resourceAnnotationType)) {
+            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(resourceAnnotationType)) {
                 resourceInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
             return resourceInjectionPoints.trimToSize();
@@ -363,7 +363,7 @@ public class Beans {
         }
     }
 
-    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
+    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         List<Set<MethodInjectionPoint<?, ?>>> initializerMethodsList = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
         // Keep track of all seen methods so we can ignore overridden methods
         Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>() {
@@ -373,17 +373,17 @@ public class Beans {
             }
 
         });
-        WeldClass<?> t = type;
+        EnhancedAnnotatedType<?> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
             ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
             initializerMethodsList.add(0, initializerMethods);
-            for (WeldMethod<?, ?> method : t.getDeclaredWeldMethods()) {
+            for (EnhancedAnnotatedMethod<?, ?> method : t.getDeclaredEnhancedMethods()) {
                 if (method.isAnnotationPresent(Inject.class) && !method.isStatic()) {
                     if (method.getAnnotation(Produces.class) != null) {
                         throw new DefinitionException(INITIALIZER_CANNOT_BE_PRODUCER, method, type);
-                    } else if (method.getWeldParameters(Disposes.class).size() > 0) {
+                    } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
                         throw new DefinitionException(INITIALIZER_CANNOT_BE_DISPOSAL_METHOD, method, type);
-                    } else if (method.getWeldParameters(Observes.class).size() > 0) {
+                    } else if (method.getEnhancedParameters(Observes.class).size() > 0) {
                         throw new DefinitionException(INVALID_INITIALIZER, method);
                     } else if (method.isGeneric()) {
                         throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
@@ -397,12 +397,12 @@ public class Beans {
                 seenMethods.put(method.getSignature(), method.getPackage());
             }
             initializerMethods.trimToSize();
-            t = t.getWeldSuperclass();
+            t = t.getEnhancedSuperclass();
         }
         return initializerMethodsList;
     }
 
-    private static boolean isOverridden(WeldMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods) {
+    private static boolean isOverridden(EnhancedAnnotatedMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods) {
         if (method.isPrivate()) {
             return false;
         } else if (method.isPackagePrivate() && seenMethods.containsKey(method.getSignature())) {
@@ -412,7 +412,7 @@ public class Beans {
         }
     }
 
-    public static <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(WeldCallable<?, X, ?> callable, Bean<?> declaringBean, BeanManagerImpl manager, boolean observerOrDisposer) {
+    public static <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(EnhancedAnnotatedCallable<?, X, ?> callable, Bean<?> declaringBean, BeanManagerImpl manager, boolean observerOrDisposer) {
         List<ParameterInjectionPoint<?, X>> parameters = new ArrayList<ParameterInjectionPoint<?, X>>();
 
         /*
@@ -424,7 +424,7 @@ public class Beans {
             bean = declaringBean;
         }
 
-        for (WeldParameter<?, X> parameter : callable.getWeldParameters()) {
+        for (EnhancedAnnotatedParameter<?, X> parameter : callable.getEnhancedParameters()) {
             if (isSpecialParameter(parameter)) {
                 parameters.add(SpecialParameterInjectionPoint.of(parameter, bean));
             } else if (declaringBean instanceof ExtensionBean) {
@@ -447,7 +447,7 @@ public class Beans {
         return filtered.trimToSize();
     }
 
-    public static boolean isSpecialParameter(WeldParameter<?, ?> parameter) {
+    public static boolean isSpecialParameter(EnhancedAnnotatedParameter<?, ?> parameter) {
         return parameter.isAnnotationPresent(Disposes.class) || parameter.isAnnotationPresent(Observes.class);
     }
 
@@ -463,7 +463,7 @@ public class Beans {
         return injectionPoints.trimToSize();
     }
 
-    private static void addFieldInjectionPoint(WeldField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, BeanManagerImpl manager) {
+    private static void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, BeanManagerImpl manager) {
         if (!annotatedField.isAnnotationPresent(Produces.class)) {
             if (annotatedField.isFinal()) {
                 throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
@@ -599,7 +599,7 @@ public class Beans {
      * @param mergedStereotypes merged stereotypes
      * @return true if alternative, false otherwise
      */
-    public static boolean isAlternative(WeldAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
+    public static boolean isAlternative(EnhancedAnnotated<?, ?> annotated, MergedStereotypes<?, ?> mergedStereotypes) {
         return annotated.isAnnotationPresent(Alternative.class) || mergedStereotypes.isAlternative();
     }
 
@@ -608,7 +608,7 @@ public class Beans {
      *
      * @return true if nullable, false otherwise
      */
-    public static boolean isNullable(WeldAnnotated<?, ?> annotated) {
+    public static boolean isNullable(EnhancedAnnotated<?, ?> annotated) {
         return !annotated.isPrimitive();
     }
 
@@ -653,9 +653,9 @@ public class Beans {
         return false;
     }
 
-    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type, BeanManagerImpl manager) {
+    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
         ConstructorInjectionPoint<T> constructor = null;
-        Collection<WeldConstructor<T>> initializerAnnotatedConstructors = type.getWeldConstructors(Inject.class);
+        Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type.getEnhancedConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
         if (initializerAnnotatedConstructors.size() > 1) {
             if (initializerAnnotatedConstructors.size() > 1) {
@@ -664,9 +664,9 @@ public class Beans {
         } else if (initializerAnnotatedConstructors.size() == 1) {
             constructor = ConstructorInjectionPoint.of(initializerAnnotatedConstructors.iterator().next(), declaringBean, manager);
             log.trace(FOUND_ONE_INJECTABLE_CONSTRUCTOR, constructor, type);
-        } else if (type.getNoArgsWeldConstructor() != null) {
+        } else if (type.getNoArgsEnhancedConstructor() != null) {
 
-            constructor = ConstructorInjectionPoint.of(type.getNoArgsWeldConstructor(), declaringBean, manager);
+            constructor = ConstructorInjectionPoint.of(type.getNoArgsEnhancedConstructor(), declaringBean, manager);
             log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
         }
 
@@ -795,11 +795,11 @@ public class Beans {
         }
     }
 
-    public static <T> boolean isInterceptor(WeldClass<T> annotatedItem) {
+    public static <T> boolean isInterceptor(EnhancedAnnotatedType<T> annotatedItem) {
         return annotatedItem.isAnnotationPresent(javax.interceptor.Interceptor.class);
     }
 
-    public static <T> boolean isDecorator(WeldClass<T> annotatedItem) {
+    public static <T> boolean isDecorator(EnhancedAnnotatedType<T> annotatedItem) {
         return annotatedItem.isAnnotationPresent(Decorator.class);
     }
 
@@ -849,7 +849,7 @@ public class Beans {
     /**
      * Bean types from an annotated element
      */
-    public static Set<Type> getTypes(WeldAnnotated<?, ?> annotated) {
+    public static Set<Type> getTypes(EnhancedAnnotated<?, ?> annotated) {
         Set<Type> types = new HashSet<Type>();
         // array and primitive types require special treatment
         if (annotated.getJavaClass().isArray() || annotated.getJavaClass().isPrimitive()) {
@@ -872,7 +872,7 @@ public class Beans {
     /**
      * Bean types of a session bean.
      */
-    public static <T> Set<Type> getTypes(WeldAnnotated<T, ?> annotated, EjbDescriptor<T> ejbDescriptor) {
+    public static <T> Set<Type> getTypes(EnhancedAnnotated<T, ?> annotated, EjbDescriptor<T> ejbDescriptor) {
         Set<Type> types = new HashSet<Type>();
         // session beans
         Map<Class<?>, Type> typeMap = new LinkedHashMap<Class<?>, Type>();

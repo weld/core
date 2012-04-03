@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.unit.reflection.clazz;
 
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedTypeImpl;
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -44,8 +46,8 @@ public class WeldClassTest {
     @Test
     @Ignore // Broken
     public void testMemberClassWithGenericTypes() {
-        AnnotatedType<?> at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
-        WeldClassImpl.of(at, transformer);
+        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Kangaroo().procreate().getClass()), transformer);
+        EnhancedAnnotatedTypeImpl.of(UnbackedAnnotatedType.of(at), transformer);
     }
 
     /*
@@ -60,8 +62,8 @@ public class WeldClassTest {
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */
     public void testLocalClassWithGenericTypes() {
-        AnnotatedType<?> at = WeldClassImpl.of(new Koala().procreate().getClass(), transformer);
-        WeldClassImpl.of(at, transformer);
+        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Koala().procreate().getClass()), transformer);
+        EnhancedAnnotatedTypeImpl.of(UnbackedAnnotatedType.of(at), transformer);
     }
 
     /*
@@ -76,13 +78,13 @@ public class WeldClassTest {
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */
     public void testAnonymousClassWithGenericTypes() {
-        AnnotatedType<?> at = WeldClassImpl.of(new Possum().procreate().getClass(), transformer);
-        WeldClassImpl.of(at, transformer);
+        AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Possum().procreate().getClass()), transformer);
+        EnhancedAnnotatedTypeImpl.of(UnbackedAnnotatedType.of(at), transformer);
     }
 
     @Test
     public void testDeclaredAnnotations() {
-        WeldClass<Order> annotatedElement = WeldClassImpl.of(Order.class, transformer);
+        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class);
         Assert.assertEquals(1, annotatedElement.getAnnotations().size());
         Assert.assertNotNull(annotatedElement.getAnnotation(Random.class));
         Assert.assertEquals(Order.class, annotatedElement.getJavaClass());
@@ -90,7 +92,7 @@ public class WeldClassTest {
 
     @Test
     public void testMetaAnnotations() {
-        WeldClass<Order> annotatedElement = WeldClassImpl.of(Order.class, transformer);
+        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class);
         Set<Annotation> annotations = annotatedElement.getMetaAnnotations(Qualifier.class);
         Assert.assertEquals(1, annotations.size());
         Iterator<Annotation> it = annotations.iterator();
@@ -100,10 +102,10 @@ public class WeldClassTest {
 
     @Test
     public void testEmpty() {
-        WeldClass<Order> annotatedElement = WeldClassImpl.of(Order.class, transformer);
+        EnhancedAnnotatedType<Order> annotatedElement = transformer.getEnhancedAnnotatedType(Order.class);
         Assert.assertNull(annotatedElement.getAnnotation(Stereotype.class));
         Assert.assertEquals(0, annotatedElement.getMetaAnnotations(Stereotype.class).size());
-        WeldClass<Antelope> classWithNoAnnotations = WeldClassImpl.of(Antelope.class, transformer);
+        EnhancedAnnotatedType<Antelope> classWithNoAnnotations = transformer.getEnhancedAnnotatedType(Antelope.class);
         Assert.assertEquals(0, classWithNoAnnotations.getAnnotations().size());
     }
 

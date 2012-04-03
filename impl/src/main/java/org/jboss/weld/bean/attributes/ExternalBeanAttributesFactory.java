@@ -38,7 +38,6 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 
 /**
  * Creates {@link BeanAttributes} based on BeanAttributes provided by an extension. This class handles creating a safe copy as

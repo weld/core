@@ -36,12 +36,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
@@ -50,28 +50,28 @@ import org.jboss.weld.util.reflection.SecureReflections;
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     protected MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
-    private WeldParameter<?, ? super X> disposesParameter;
+    private EnhancedAnnotatedParameter<?, ? super X> disposesParameter;
     // indicates whether a given type of metadata is required by the disposal method
     private boolean injectionPointMetadataParameter = false;
     private boolean beanMetadataParameter = false;
 
-    public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
+    public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
         return new DisposalMethod<X, T>(manager, method, declaringBean);
     }
 
-    protected DisposalMethod(BeanManagerImpl beanManager, WeldMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean) {
-        super(BeanAttributesFactory.forDisposerMethod(disposalMethod, beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, beanManager.getServices());
+    protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean) {
+        super(BeanAttributesFactory.forDisposerMethod(disposalMethod, beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getEnhancedAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, beanManager.getServices());
         this.disposalMethodInjectionPoint = MethodInjectionPoint.ofObserverOrDisposerMethod(disposalMethod, this, beanManager);
         initType();
         addInjectionPoints(Beans.filterOutSpecialParameterInjectionPoints(disposalMethodInjectionPoint.getParameterInjectionPoints()));
     }
 
     private void initDisposesParameter() {
-        this.disposesParameter = getWeldAnnotated().getWeldParameters(Disposes.class).get(0);
+        this.disposesParameter = getEnhancedAnnotated().getEnhancedParameters(Disposes.class).get(0);
     }
 
     private void initMetadataParameters() {
-        for (Class<?> type : getWeldAnnotated().getParameterTypesAsArray()) {
+        for (Class<?> type : getEnhancedAnnotated().getParameterTypesAsArray()) {
             if (InjectionPoint.class.equals(type)) {
                 injectionPointMetadataParameter = true;
             }
@@ -81,7 +81,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         }
     }
 
-    public WeldParameter<?, ? super X> getDisposesParameter() {
+    public EnhancedAnnotatedParameter<?, ? super X> getDisposesParameter() {
         return disposesParameter;
     }
 
@@ -94,11 +94,11 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     protected void initType() {
-        this.type = cast(disposalMethodInjectionPoint.getAnnotated().getWeldParameters(Disposes.class).get(0).getJavaClass());
+        this.type = cast(disposalMethodInjectionPoint.getAnnotated().getEnhancedParameters(Disposes.class).get(0).getJavaClass());
     }
 
     @Override
-    public WeldMethod<T, ? super X> getWeldAnnotated() {
+    public EnhancedAnnotatedMethod<T, ? super X> getEnhancedAnnotated() {
         return disposalMethodInjectionPoint.getAnnotated();
     }
 
@@ -134,13 +134,13 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     private void checkDisposalMethod() {
-        if (!disposalMethodInjectionPoint.getAnnotated().getWeldParameters().get(0).isAnnotationPresent(Disposes.class)) {
+        if (!disposalMethodInjectionPoint.getAnnotated().getEnhancedParameters().get(0).isAnnotationPresent(Disposes.class)) {
             throw new DefinitionException(DISPOSE_NOT_FIRST_PARAM, disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getAnnotated().getWeldParameters(Disposes.class).size() > 1) {
+        if (disposalMethodInjectionPoint.getAnnotated().getEnhancedParameters(Disposes.class).size() > 1) {
             throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getAnnotated().getWeldParameters(Observes.class).size() > 0) {
+        if (disposalMethodInjectionPoint.getAnnotated().getEnhancedParameters(Observes.class).size() > 0) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", "@Disposes", disposalMethodInjectionPoint);
         }
         if (disposalMethodInjectionPoint.getAnnotated().getAnnotation(Inject.class) != null) {
@@ -162,7 +162,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
                 }
             }
             if (!methodDeclaredOnTypes) {
-                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, getWeldAnnotated(), getDeclaringBean());
+                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, getEnhancedAnnotated(), getDeclaringBean());
             }
         }
     }

@@ -26,7 +26,7 @@ import java.lang.reflect.Member;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.introspector.WeldField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.serialization.DiscoveredWeldFieldSerializableHolder;
 import org.jboss.weld.serialization.NoopSerializableHolder;
 import org.jboss.weld.serialization.SerializableHolder;
@@ -34,7 +34,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link WeldField}.
+ * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link EnhancedAnnotatedField}.
  *
  * @author Jozef Hartinger
  *
@@ -43,13 +43,13 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
 
     private static final long serialVersionUID = -3099189770772787108L;
 
-    public static <T, X> InferingFieldInjectionPointAttributes<T, X> of(WeldField<T, X> field, Bean<?> bean) {
+    public static <T, X> InferingFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
         return new InferingFieldInjectionPointAttributes<T, X>(field, bean);
     }
 
-    private SerializableHolder<WeldField<T, X>> field;
+    private SerializableHolder<EnhancedAnnotatedField<T, X>> field;
 
-    protected InferingFieldInjectionPointAttributes(WeldField<T, X> field, Bean<?> bean) {
+    protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
         super(bean);
         if (field.getDeclaringType().isDiscovered()) {
             this.field = new DiscoveredWeldFieldSerializableHolder<T, X>(field);
@@ -64,7 +64,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     }
 
     @Override
-    public WeldField<T, X> getAnnotated() {
+    public EnhancedAnnotatedField<T, X> getAnnotated() {
         return field.get();
     }
 
@@ -76,7 +76,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof InferingFieldInjectionPointAttributes<?, ?>) {
-            WeldField<?, ?> field = Reflections.<InferingFieldInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
+            EnhancedAnnotatedField<?, ?> field = Reflections.<InferingFieldInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
             return AnnotatedTypes.compareAnnotatedField(getAnnotated(), field);
         }
         return false;

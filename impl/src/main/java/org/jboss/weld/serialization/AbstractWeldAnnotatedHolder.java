@@ -24,7 +24,7 @@ package org.jboss.weld.serialization;
 import java.io.Serializable;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
 
 public abstract class AbstractWeldAnnotatedHolder<X> implements Serializable {
@@ -37,7 +37,7 @@ public abstract class AbstractWeldAnnotatedHolder<X> implements Serializable {
         this.declaringClass = declaringClass;
     }
 
-    protected WeldClass<X> getDeclaringWeldClass() {
-        return Container.instance().services().get(ClassTransformer.class).loadClass(declaringClass);
+    protected EnhancedAnnotatedType<X> getDeclaringWeldClass() {
+        return Container.instance().services().get(ClassTransformer.class).getEnhancedAnnotatedType(declaringClass);
     }
 }

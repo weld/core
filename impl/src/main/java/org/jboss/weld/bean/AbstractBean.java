@@ -40,12 +40,12 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.inject.Named;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.BeansClosure;
@@ -181,8 +181,8 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      */
     public void checkSpecialization() {
         if (isSpecializing()) {
-            if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
-                throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
+            if (getEnhancedAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
+                throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getEnhancedAnnotated());
             }
             for (Type type : getSpecializedBean().getTypes()) {
                 if (!getTypes().contains(type)) {
@@ -226,7 +226,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      *
      * @return The annotated item
      */
-    public abstract WeldAnnotated<T, S> getWeldAnnotated();
+    public abstract EnhancedAnnotated<T, S> getEnhancedAnnotated();
 
     @Override
     public abstract AbstractBean<?, ?> getSpecializedBean();
@@ -261,7 +261,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     @Override
     public boolean isSpecializing() {
-        return getWeldAnnotated().isAnnotationPresent(Specializes.class);
+        return getEnhancedAnnotated().isAnnotationPresent(Specializes.class);
     }
 
     @Override

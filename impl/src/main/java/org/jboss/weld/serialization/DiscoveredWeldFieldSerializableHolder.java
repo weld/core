@@ -24,8 +24,8 @@ package org.jboss.weld.serialization;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -35,14 +35,14 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public class DiscoveredWeldFieldSerializableHolder<T, X> extends AbstractWeldAnnotatedHolder<X> implements SerializableHolder<WeldField<T, X>> {
+public class DiscoveredWeldFieldSerializableHolder<T, X> extends AbstractWeldAnnotatedHolder<X> implements SerializableHolder<EnhancedAnnotatedField<T, X>> {
 
     private static final long serialVersionUID = -5186616992990718551L;
 
     private final String name;
-    private transient WeldField<T, X> field;
+    private transient EnhancedAnnotatedField<T, X> field;
 
-    public DiscoveredWeldFieldSerializableHolder(WeldField<T, X> field) {
+    public DiscoveredWeldFieldSerializableHolder(EnhancedAnnotatedField<T, X> field) {
         super(field.getDeclaringType().getJavaClass());
         this.field = field;
         this.name = field.getName();
@@ -50,14 +50,14 @@ public class DiscoveredWeldFieldSerializableHolder<T, X> extends AbstractWeldAnn
 
     private void readObject(ObjectInputStream is) throws ClassNotFoundException, IOException {
         is.defaultReadObject();
-        field = Reflections.cast(getDeclaringWeldClass().getDeclaredWeldField(name));
+        field = Reflections.cast(getDeclaringWeldClass().getDeclaredEnhancedField(name));
         if (field == null) {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringWeldClass(), name);
         }
     }
 
     @Override
-    public WeldField<T, X> get() {
+    public EnhancedAnnotatedField<T, X> get() {
         return field;
     }
 }

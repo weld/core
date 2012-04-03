@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-import org.jboss.weld.introspector.ForwardingAnnotatedType;
+import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
 public class ModifyingExtension implements Extension {
 

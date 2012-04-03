@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.ejb;
 
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

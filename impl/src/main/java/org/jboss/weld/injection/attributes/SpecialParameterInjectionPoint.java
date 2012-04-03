@@ -24,8 +24,8 @@ package org.jboss.weld.injection.attributes;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.injection.ParameterInjectionPoint;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -36,13 +36,13 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Object> implements ParameterInjectionPoint<T, X> {
 
-    public static <T, X> ParameterInjectionPoint<T, X> of(WeldParameter<T, X> parameter, Bean<?> bean) {
+    public static <T, X> ParameterInjectionPoint<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
         return new SpecialParameterInjectionPoint<T, X>(parameter, bean);
     }
 
     private final ParameterInjectionPointAttributes<T, X> attributes;
 
-    protected SpecialParameterInjectionPoint(WeldParameter<T, X> parameter, Bean<?> bean) {
+    protected SpecialParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
         this.attributes = InferingParameterInjectionPointAttributes.of(parameter, bean);
     }
 
@@ -52,7 +52,7 @@ public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPoi
     }
 
     @Override
-    public WeldParameter<T, X> getAnnotated() {
+    public EnhancedAnnotatedParameter<T, X> getAnnotated() {
         return attributes.getAnnotated();
     }
 

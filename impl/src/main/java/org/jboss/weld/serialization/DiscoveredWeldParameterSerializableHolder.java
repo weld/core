@@ -24,14 +24,15 @@ package org.jboss.weld.serialization;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import org.jboss.weld.introspector.ConstructorSignature;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import static org.jboss.weld.logging.messages.BeanMessage.*;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import org.jboss.weld.annotated.enhanced.ConstructorSignature;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.exceptions.IllegalStateException;
 
 /**
@@ -40,55 +41,55 @@ import org.jboss.weld.exceptions.IllegalStateException;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public class DiscoveredWeldParameterSerializableHolder<T, X> extends AbstractWeldAnnotatedHolder<X> implements SerializableHolder<WeldParameter<T, X>> {
+public class DiscoveredWeldParameterSerializableHolder<T, X> extends AbstractWeldAnnotatedHolder<X> implements SerializableHolder<EnhancedAnnotatedParameter<T, X>> {
 
     private static final long serialVersionUID = -2947624534504847812L;
 
     private final int position;
     private final MethodSignature methodSignature;
     private final ConstructorSignature constructorSignature;
-    private transient WeldParameter<T, X> parameter;
+    private transient EnhancedAnnotatedParameter<T, X> parameter;
 
-    public DiscoveredWeldParameterSerializableHolder(WeldParameter<T, X> parameter) {
+    public DiscoveredWeldParameterSerializableHolder(EnhancedAnnotatedParameter<T, X> parameter) {
         super(parameter.getDeclaringType().getJavaClass());
         this.parameter = parameter;
         this.position = parameter.getPosition();
-        if (parameter.getDeclaringWeldCallable() instanceof WeldMethod<?, ?>) {
-            this.methodSignature = ((WeldMethod<?, ?>) parameter.getDeclaringWeldCallable()).getSignature();
+        if (parameter.getDeclaringEnhancedCallable() instanceof EnhancedAnnotatedMethod<?, ?>) {
+            this.methodSignature = ((EnhancedAnnotatedMethod<?, ?>) parameter.getDeclaringEnhancedCallable()).getSignature();
             this.constructorSignature = null;
-        } else if (parameter.getDeclaringWeldCallable() instanceof WeldConstructor<?>) {
+        } else if (parameter.getDeclaringEnhancedCallable() instanceof EnhancedAnnotatedConstructor<?>) {
             this.methodSignature = null;
-            this.constructorSignature = ((WeldConstructor<?>) parameter.getDeclaringWeldCallable()).getSignature();
+            this.constructorSignature = ((EnhancedAnnotatedConstructor<?>) parameter.getDeclaringEnhancedCallable()).getSignature();
         } else {
             throw new IllegalStateException(IP_NOT_CONSTRUCTOR_OR_METHOD, parameter);
         }
     }
 
     @Override
-    public WeldParameter<T, X> get() {
+    public EnhancedAnnotatedParameter<T, X> get() {
         return parameter;
     }
 
     private void readObject(ObjectInputStream is) throws ClassNotFoundException, IOException {
         is.defaultReadObject();
-        parameter = getWeldParameter();
+        parameter = getEnhancedParameter();
         if (parameter == null) {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringWeldClass(), methodSignature, position);
         }
     }
 
-    protected WeldParameter<T, X> getWeldParameter() {
+    protected EnhancedAnnotatedParameter<T, X> getEnhancedParameter() {
         if (methodSignature != null) {
-            WeldMethod<?, ?> method = getDeclaringWeldClass().getDeclaredWeldMethod(methodSignature);
+            EnhancedAnnotatedMethod<?, ?> method = getDeclaringWeldClass().getDeclaredEnhancedMethod(methodSignature);
             if (method.getParameters().size() > position) {
-                return cast(method.getWeldParameters().get(position));
+                return cast(method.getEnhancedParameters().get(position));
             } else {
                 throw new IllegalStateException(PARAM_NOT_IN_PARAM_LIST, position, method.getParameters());
             }
         } else if (constructorSignature != null) {
-            WeldConstructor<?> constructor = getDeclaringWeldClass().getDeclaredWeldConstructor(constructorSignature);
+            EnhancedAnnotatedConstructor<?> constructor = getDeclaringWeldClass().getDeclaredEnhancedConstructor(constructorSignature);
             if (constructor.getParameters().size() > position) {
-                return cast(constructor.getWeldParameters().get(position));
+                return cast(constructor.getEnhancedParameters().get(position));
             } else {
                 throw new IllegalStateException(PARAM_NOT_IN_PARAM_LIST, position, constructor.getParameters());
             }

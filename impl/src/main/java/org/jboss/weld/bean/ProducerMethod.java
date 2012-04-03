@@ -29,13 +29,13 @@ import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.BeanAttributes;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeansClosure;
@@ -64,12 +64,12 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      * @param beanManager   the current manager
      * @return A producer Web Bean
      */
-    public static <X, T> ProducerMethod<X, T> of(BeanAttributes<T> attributes, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <X, T> ProducerMethod<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         return new ProducerMethod<X, T>(attributes, method, declaringBean, beanManager, services);
     }
 
-    protected ProducerMethod(BeanAttributes<T> attributes, WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(attributes, new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getWeldAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
+    protected ProducerMethod(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getEnhancedAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
         this.id = createId(method, declaringBean);
         this.method = MethodInjectionPoint.of(method, this, beanManager);
         initType();
@@ -77,13 +77,13 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
     }
 
-    protected String createId(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
-        if (declaringBean.getWeldAnnotated().isDiscovered()) {
+    protected String createId(EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
+        if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
             StringBuilder sb = new StringBuilder();
             sb.append(BEAN_ID_PREFIX);
             sb.append(ProducerMethod.class.getSimpleName());
             sb.append(BEAN_ID_SEPARATOR);
-            sb.append(declaringBean.getWeldAnnotated().getName());
+            sb.append(declaringBean.getEnhancedAnnotated().getName());
             sb.append(method.getSignature().toString());
             return sb.toString();
         } else {
@@ -91,7 +91,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             sb.append(BEAN_ID_PREFIX);
             sb.append(ProducerMethod.class.getSimpleName());
             sb.append(BEAN_ID_SEPARATOR);
-            sb.append(AnnotatedTypes.createTypeId(declaringBean.getWeldAnnotated()));
+            sb.append(AnnotatedTypes.createTypeId(declaringBean.getEnhancedAnnotated()));
             sb.append(AnnotatedTypes.createCallableId(method));
             return sb.toString();
         }
@@ -135,16 +135,16 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      * Validates the producer method
      */
     protected void checkProducerMethod() {
-        if (getWeldAnnotated().getWeldParameters(Observes.class).size() > 0) {
+        if (getEnhancedAnnotated().getEnhancedParameters(Observes.class).size() > 0) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Observes");
-        } else if (getWeldAnnotated().getWeldParameters(Disposes.class).size() > 0) {
+        } else if (getEnhancedAnnotated().getEnhancedParameters(Disposes.class).size() > 0) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes");
         } else if (getDeclaringBean() instanceof SessionBean<?>) {
             boolean methodDeclaredOnTypes = false;
             // TODO use annotated item?
             for (Type type : getDeclaringBean().getTypes()) {
                 if (type instanceof Class<?>) {
-                    if (SecureReflections.isMethodExists((Class<?>) type, getWeldAnnotated().getName(), getWeldAnnotated().getParameterTypesAsArray())) {
+                    if (SecureReflections.isMethodExists((Class<?>) type, getEnhancedAnnotated().getName(), getEnhancedAnnotated().getParameterTypesAsArray())) {
                         methodDeclaredOnTypes = true;
                         continue;
                     }
@@ -162,7 +162,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      * @return The annotated item
      */
     @Override
-    public WeldMethod<T, ? super X> getWeldAnnotated() {
+    public EnhancedAnnotatedMethod<T, ? super X> getEnhancedAnnotated() {
         return method.getAnnotated();
     }
 
@@ -173,7 +173,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     @Override
     protected void preSpecialize() {
-        if (getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getDeclaredWeldMethod(getWeldAnnotated().getJavaMember()) == null) {
+        if (getDeclaringBean().getEnhancedAnnotated().getEnhancedSuperclass().getDeclaredEnhancedMethod(getEnhancedAnnotated().getJavaMember()) == null) {
             throw new DefinitionException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
         }
     }
@@ -181,7 +181,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     @Override
     protected void specialize() {
         BeansClosure closure = BeansClosure.getClosure(beanManager);
-        WeldMethod<?, ?> superClassMethod = getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getWeldMethod(getWeldAnnotated().getJavaMember());
+        EnhancedAnnotatedMethod<?, ?> superClassMethod = getDeclaringBean().getEnhancedAnnotated().getEnhancedSuperclass().getEnhancedMethod(getEnhancedAnnotated().getJavaMember());
         ProducerMethod<?, ?> check = closure.getProducerMethod(superClassMethod);
         if (check == null) {
             throw new IllegalStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
@@ -196,7 +196,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     @Override
     public String toString() {
-        return "Producer Method [" + Formats.formatType(getWeldAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getWeldAnnotated() + "]";
+        return "Producer Method [" + Formats.formatType(getEnhancedAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getEnhancedAnnotated() + "]";
     }
 
     @Override

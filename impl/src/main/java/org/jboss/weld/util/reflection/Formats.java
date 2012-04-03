@@ -16,21 +16,28 @@
  */
 package org.jboss.weld.util.reflection;
 
-import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
-import org.jboss.weld.introspector.WeldParameter;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.AnnotatedType;
+
+import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 
 /**
  * Utility class to produce friendly names e.g. for debugging
  *
  * @author Pete Muir
  * @author Nicklas Karlsson
+ * @author Jozef Hartinger
  */
 public class Formats {
 
@@ -133,14 +140,18 @@ public class Formats {
         }
     }
 
-    public static String formatAsFormalParameterList(Iterable<? extends WeldParameter<?, ?>> parameters) {
-        return "(" + formatIterable(parameters, new Function<WeldParameter<?, ?>>() {
+    public static String formatAsFormalParameterList(Iterable<? extends AnnotatedParameter<?>> parameters) {
+        return "(" + formatIterable(parameters, new Function<AnnotatedParameter<?>>() {
 
-            public String apply(WeldParameter<?, ?> from, int position) {
-                return commaDelimiterFunction().apply(formatType(from.getBaseType()), position);
+            public String apply(AnnotatedParameter<?> from, int position) {
+                return commaDelimiterFunction().apply(formatParameter(from), position);
             }
 
         }) + ")";
+    }
+
+    public static String formatParameter(AnnotatedParameter<?> parameter) {
+        return addSpaceIfNeeded(formatAnnotations(parameter.getAnnotations())) + formatType(parameter.getBaseType());
     }
 
     public static String formatModifiers(int modifiers) {
@@ -215,6 +226,13 @@ public class Formats {
             result.add("interface");
         }
         return result;
+    }
+
+    public static String formatActualTypeArguments(Type type) {
+        if (type instanceof ParameterizedType) {
+            return formatActualTypeArguments(ParameterizedType.class.cast(type).getActualTypeArguments());
+        }
+        return "";
     }
 
     public static String formatActualTypeArguments(Type[] actualTypeArguments) {
@@ -317,5 +335,41 @@ public class Formats {
             builder.append(")");
         }
         return builder.toString();
+    }
+
+    public static String formatSimpleClassName(Object object) {
+        return formatSimpleClassName(object.getClass());
+    }
+
+    public static String formatSimpleClassName(Class<?> javaClass) {
+        String simpleName = javaClass.getSimpleName();
+        StringBuilder builder = new StringBuilder(simpleName.length() + 2);
+        builder.append("[");
+        builder.append(simpleName);
+        builder.append("]");
+        return builder.toString();
+    }
+
+    public static String formatAnnotatedType(AnnotatedType<?> type) {
+        return Formats.formatSimpleClassName(type) + " " + Formats.addSpaceIfNeeded(Formats.formatModifiers(type.getJavaClass().getModifiers()))
+                + Formats.formatAnnotations(type.getAnnotations()) + " class " + type.getJavaClass().getName() + Formats.formatActualTypeArguments(type.getBaseType());
+    }
+
+    public static String formatAnnotatedConstructor(AnnotatedConstructor<?> constructor) {
+        return Formats.formatSimpleClassName(constructor) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(constructor.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(constructor.getJavaMember().getModifiers())) + constructor.getDeclaringType().getJavaClass().getName()
+                + Formats.formatAsFormalParameterList(constructor.getParameters());
+    }
+
+    public static String formatAnnotatedField(AnnotatedField<?> field) {
+        return Formats.formatSimpleClassName(field) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(field.getJavaMember().getModifiers())) + field.getDeclaringType().getJavaClass().getName() + "."
+                + field.getJavaMember().getName();
+    }
+
+    public static String formatAnnotatedMethod(AnnotatedMethod<?> method) {
+        return Formats.formatSimpleClassName(method) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers())) + method.getDeclaringType().getJavaClass().getName() + "."
+                + method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters());
     }
 }

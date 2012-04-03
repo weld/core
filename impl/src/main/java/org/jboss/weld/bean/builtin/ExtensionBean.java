@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Proxies;
 
@@ -35,12 +35,12 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
 
     private static final String ID_PREFIX = "Extension";
 
-    private final WeldClass<Extension> clazz;
+    private final EnhancedAnnotatedType<Extension> clazz;
     private final Metadata<Extension> instance;
     private final boolean passivationCapable;
     private final boolean proxiable;
 
-    public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Metadata<Extension> instance) {
+    public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<Extension> clazz, Metadata<Extension> instance) {
         super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager, clazz.getJavaClass());
         this.clazz = clazz;
         this.instance = instance;

@@ -30,7 +30,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.introspector.WeldCallable;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
@@ -40,7 +40,7 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
     private final Bean<?> declaringBean;
     private final List<ParameterInjectionPoint<?, X>> parameters;
 
-    protected AbstractCallableInjectionPoint(WeldCallable<T, X, S> callable, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
+    protected AbstractCallableInjectionPoint(EnhancedAnnotatedCallable<T, X, S> callable, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
         this.declaringBean = declaringBean;
         this.parameters = Collections.unmodifiableList(Beans.getParameterInjectionPoints(callable, declaringBean, manager, observerOrDisposer));
     }
@@ -86,7 +86,7 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
     }
 
     @Override
-    public abstract WeldCallable<T, X, S> getAnnotated();
+    public abstract EnhancedAnnotatedCallable<T, X, S> getAnnotated();
 
     public List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints() {
         return parameters;

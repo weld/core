@@ -44,6 +44,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -53,6 +54,12 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedConstructorImpl;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
@@ -77,12 +84,6 @@ import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldConstructor;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
-import org.jboss.weld.introspector.jlr.WeldConstructorImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
@@ -132,7 +133,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     // The item representation
-    protected final WeldClass<T> annotatedItem;
+    protected final AnnotatedType<T> slimAnnotatedType;
+    protected volatile EnhancedAnnotatedType<T> enhancedAnnotatedItem;
 
     // The injectable fields of each type in the type hierarchy, with the actual
     // type at the bottom
@@ -149,17 +151,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     private boolean hasSerializationOrInvocationInterceptorMethods;
 
     // Bean callback methods
-    private List<WeldMethod<?, ? super T>> postConstructMethods;
-    private List<WeldMethod<?, ? super T>> preDestroyMethods;
+    private List<EnhancedAnnotatedMethod<?, ? super T>> postConstructMethods;
+    private List<EnhancedAnnotatedMethod<?, ? super T>> preDestroyMethods;
 
     // Injection target for the bean
     private InjectionTarget<T> injectionTarget;
 
     private ConstructorInjectionPoint<T> constructor;
 
-    protected WeldClass<T> enhancedSubclass;
+    protected EnhancedAnnotatedType<T> enhancedSubclass;
 
-    protected WeldConstructor<T> constructorForEnhancedSubclass;
+    protected EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass;
 
     private boolean passivationCapableBean;
     private boolean passivationCapableDependency;
@@ -172,9 +174,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * @param type        The type
      * @param beanManager The Bean manager
      */
-    protected AbstractClassBean(BeanAttributes<T> attributes, WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+    protected AbstractClassBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, idSuffix, beanManager, services);
-        this.annotatedItem = type;
+        this.enhancedAnnotatedItem = type;
+        this.slimAnnotatedType = type.slim();
     }
 
     /**
@@ -189,7 +192,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     private void initPassivationCapable() {
-        this.passivationCapableBean = getWeldAnnotated().isSerializable();
+        this.passivationCapableBean = getEnhancedAnnotated().isSerializable();
         if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
             this.passivationCapableDependency = true;
         } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
@@ -205,7 +208,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         initDecorators();
         if (this.passivationCapableBean && this.hasDecorators()) {
             for (Decorator<?> decorator : this.getDecorators()) {
-                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
+                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getEnhancedAnnotated().isSerializable()) {
                     this.passivationCapableBean = false;
                     break;
                 }
@@ -270,14 +273,14 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the bean type
      */
     protected void initType() {
-        this.type = getWeldAnnotated().getJavaClass();
+        this.type = getEnhancedAnnotated().getJavaClass();
     }
 
     /**
      * Initializes the injection points
      */
     protected void initInjectableFields(BeanManagerImpl manager) {
-        injectableFields = Beans.getFieldInjectionPoints(this, annotatedItem, manager);
+        injectableFields = Beans.getFieldInjectionPoints(this, enhancedAnnotatedItem, manager);
         addInjectionPoints(Beans.flattenInjectionPoints(injectableFields));
     }
 
@@ -285,7 +288,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the initializer methods
      */
     protected void initInitializerMethods(BeanManagerImpl manager) {
-        initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated(), manager);
+        initializerMethods = Beans.getInitializerMethods(this, getEnhancedAnnotated(), manager);
         addInjectionPoints(Beans.flattenParameterInjectionPoints(initializerMethods));
     }
 
@@ -298,7 +301,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     @Override
     protected void preSpecialize() {
         super.preSpecialize();
-        if (getWeldAnnotated().getWeldSuperclass() == null || getWeldAnnotated().getWeldSuperclass().getJavaClass().equals(Object.class)) {
+        if (getEnhancedAnnotated().getEnhancedSuperclass() == null || getEnhancedAnnotated().getEnhancedSuperclass().getJavaClass().equals(Object.class)) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
     }
@@ -309,8 +312,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * @return The annotated item
      */
     @Override
-    public WeldClass<T> getWeldAnnotated() {
-        return annotatedItem;
+    public EnhancedAnnotatedType<T> getEnhancedAnnotated() {
+        if (enhancedAnnotatedItem == null) {
+            throw new IllegalStateException();
+        }
+        return enhancedAnnotatedItem;
     }
 
     /**
@@ -333,14 +339,14 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the post-construct method
      */
     protected void initPostConstruct() {
-        this.postConstructMethods = Beans.getPostConstructMethods(getWeldAnnotated());
+        this.postConstructMethods = Beans.getPostConstructMethods(getEnhancedAnnotated());
     }
 
     /**
      * Initializes the pre-destroy method
      */
     protected void initPreDestroy() {
-        this.preDestroyMethods = Beans.getPreDestroyMethods(getWeldAnnotated());
+        this.preDestroyMethods = Beans.getPreDestroyMethods(getEnhancedAnnotated());
     }
 
     /**
@@ -348,7 +354,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      *
      * @return The post-construct method
      */
-    public List<WeldMethod<?, ? super T>> getPostConstruct() {
+    public List<EnhancedAnnotatedMethod<?, ? super T>> getPostConstruct() {
         return postConstructMethods;
     }
 
@@ -357,7 +363,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      *
      * @return The pre-destroy method
      */
-    public List<WeldMethod<?, ? super T>> getPreDestroy() {
+    public List<EnhancedAnnotatedMethod<?, ? super T>> getPreDestroy() {
         return preDestroyMethods;
     }
 
@@ -377,7 +383,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected void defaultPreDestroy(T instance) {
-        for (WeldMethod<?, ? super T> method : getPreDestroy()) {
+        for (EnhancedAnnotatedMethod<?, ? super T> method : getPreDestroy()) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
@@ -390,7 +396,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected void defaultPostConstruct(T instance) {
-        for (WeldMethod<?, ? super T> method : getPostConstruct()) {
+        for (EnhancedAnnotatedMethod<?, ? super T> method : getPostConstruct()) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
@@ -407,8 +413,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     private void initTargetClassInterceptors() {
-        if (!Beans.isInterceptor(getWeldAnnotated())) {
-            InterceptorMetadata<T> interceptorClassMetadata = beanManager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(getWeldAnnotated()));
+        if (!Beans.isInterceptor(getEnhancedAnnotated())) {
+            InterceptorMetadata<T> interceptorClassMetadata = beanManager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(getEnhancedAnnotated()));
             hasSerializationOrInvocationInterceptorMethods = interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
                     || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT)
                     || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)
@@ -421,10 +427,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected void checkConstructor() {
-        if (!constructor.getAnnotated().getWeldParameters(Disposes.class).isEmpty()) {
+        if (!constructor.getAnnotated().getEnhancedParameters(Disposes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
         }
-        if (!constructor.getAnnotated().getWeldParameters(Observes.class).isEmpty()) {
+        if (!constructor.getAnnotated().getEnhancedParameters(Observes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
         }
     }
@@ -433,7 +439,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the constructor
      */
     protected void initConstructor(BeanManagerImpl manager) {
-        this.constructor = Beans.getBeanConstructor(this, getWeldAnnotated(), manager);
+        this.constructor = Beans.getBeanConstructor(this, getEnhancedAnnotated(), manager);
         addInjectionPoints(constructor.getParameterInjectionPoints());
     }
 
@@ -452,16 +458,16 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     protected void initEnhancedSubclass() {
         final ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
-        enhancedSubclass = transformer.loadClass(createEnhancedSubclass());
-        constructorForEnhancedSubclass = WeldConstructorImpl.of(
-                enhancedSubclass.getDeclaredWeldConstructor(getConstructor().getAnnotated().getSignature()),
+        enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass());
+        constructorForEnhancedSubclass = EnhancedAnnotatedConstructorImpl.of(
+                enhancedSubclass.getDeclaredEnhancedConstructor(getConstructor().getAnnotated().getSignature()),
                 enhancedSubclass,
                 transformer);
     }
 
     protected Class<T> createEnhancedSubclass() {
         Set<MethodSignature> enhancedMethodSignatures = new HashSet<MethodSignature>();
-        for (WeldMethod<?, ?> method : Beans.getInterceptableMethods(this.getWeldAnnotated())) {
+        for (EnhancedAnnotatedMethod<?, ?> method : Beans.getInterceptableMethods(this.getEnhancedAnnotated())) {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
         }
         return new InterceptedSubclassFactory<T>(getType(), getTypes(), this, enhancedMethodSignatures).getProxyClass();
@@ -481,16 +487,15 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         return getServices().get(ContextualStore.class);
     }
 
-
     private class InterceptionModelInitializer {
 
         private Map<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
 
-        private List<WeldMethod<?,?>> businessMethods;
+        private List<EnhancedAnnotatedMethod<?,?>> businessMethods;
         private InterceptionModelBuilder<ClassMetadata<?>,?> builder;
 
         public void init() {
-            businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
+            businessMethods = Beans.getInterceptableMethods(getEnhancedAnnotated());
             builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(getClassMetadata());
 
             initCdiInterceptors();
@@ -498,7 +503,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
             InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
             if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
-                if (getWeldAnnotated().isFinal()) {
+                if (getEnhancedAnnotated().isFinal()) {
                     throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, AbstractClassBean.this);
                 }
                 beanManager.getInterceptorModelRegistry().put(getType(), interceptionModel);
@@ -516,7 +521,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
 
         private Map<Class<? extends Annotation>, Annotation> getClassInterceptorBindings() {
-            return mergeBeanInterceptorBindings(beanManager, getWeldAnnotated(), getStereotypes());
+            return mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes());
         }
 
         private void initCdiLifecycleInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
@@ -535,17 +540,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
 
         private void initCdiBusinessMethodInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-            for (WeldMethod<?, ?> method : businessMethods) {
+            for (EnhancedAnnotatedMethod<?, ?> method : businessMethods) {
                 initCdiBusinessMethodInterceptor(method, getMethodBindingAnnotations(classBindingAnnotations, method));
             }
         }
 
-        private Collection<Annotation> getMethodBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, WeldMethod<?, ?> method) {
+        private Collection<Annotation> getMethodBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, EnhancedAnnotatedMethod<?, ?> method) {
             Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, method.getAnnotations()), true, true);
             return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
         }
 
-        private void initCdiBusinessMethodInterceptor(WeldMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
+        private void initCdiBusinessMethodInterceptor(EnhancedAnnotatedMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
             if (methodBindingAnnotations.size() == 0) {
                 return;
             }
@@ -553,7 +558,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             initInterceptor(InterceptionType.AROUND_TIMEOUT, method, methodBindingAnnotations);
         }
 
-        private void initInterceptor(InterceptionType interceptionType, WeldMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
+        private void initInterceptor(InterceptionType interceptionType, EnhancedAnnotatedMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
             List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(interceptionType, methodBindingAnnotations);
             if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
                 if (method.isFinal()) {
@@ -566,14 +571,14 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
         private void initEjbInterceptors() {
             initClassDeclaredEjbInterceptors();
-            for (WeldMethod<?, ?> method : businessMethods) {
+            for (EnhancedAnnotatedMethod<?, ?> method : businessMethods) {
                 initMethodDeclaredEjbInterceptors(method);
             }
         }
 
         private void initClassDeclaredEjbInterceptors() {
             Class<?>[] classDeclaredInterceptors = null;
-            if (getWeldAnnotated().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
+            if (getEnhancedAnnotated().isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
                 Annotation interceptorsAnnotation = getType().getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
                 classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
             }
@@ -585,7 +590,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             }
         }
 
-        private void initMethodDeclaredEjbInterceptors(WeldMethod<?, ?> method) {
+        private void initMethodDeclaredEjbInterceptors(EnhancedAnnotatedMethod<?, ?> method) {
             Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
 
             boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
@@ -615,11 +620,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             return list.toArray(new InterceptorMetadata[list.size()]);
         }
 
-        private boolean isTimeoutAnnotationPresentOn(WeldMethod<?, ?> method) {
+        private boolean isTimeoutAnnotationPresentOn(EnhancedAnnotatedMethod<?, ?> method) {
             return method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS);
         }
 
-        private Class<?>[] getMethodDeclaredInterceptors(WeldMethod<?, ?> method) {
+        private Class<?>[] getMethodDeclaredInterceptors(EnhancedAnnotatedMethod<?, ?> method) {
             Class<?>[] methodDeclaredInterceptors = null;
             if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
                 methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
@@ -648,7 +653,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, getContextualStore());
             if (interceptor instanceof InterceptorImpl) {
                 InterceptorImpl interceptorImpl = (InterceptorImpl) interceptor;
-                WeldInterceptorClassMetadata classMetadata = WeldInterceptorClassMetadata.of(interceptorImpl.getWeldAnnotated());
+                WeldInterceptorClassMetadata classMetadata = WeldInterceptorClassMetadata.of(interceptorImpl.getEnhancedAnnotated());
                 SerializableContextualInterceptorReference interceptorReference = new SerializableContextualInterceptorReference(contextual, classMetadata);
                 return beanManager.getInterceptorMetadataReader().getInterceptorMetadata(interceptorReference);
             } else {

@@ -24,9 +24,9 @@ package org.jboss.weld.serialization;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -36,18 +36,18 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public class DiscoveredWeldMethodSerializableHolder<T, X> extends AbstractWeldAnnotatedHolder<X> implements SerializableHolder<WeldMethod<T, X>> {
+public class DiscoveredWeldMethodSerializableHolder<T, X> extends AbstractWeldAnnotatedHolder<X> implements SerializableHolder<EnhancedAnnotatedMethod<T, X>> {
 
-    public static <T, X> DiscoveredWeldMethodSerializableHolder<T, X> of(WeldMethod<T, X> method) {
+    public static <T, X> DiscoveredWeldMethodSerializableHolder<T, X> of(EnhancedAnnotatedMethod<T, X> method) {
         return new DiscoveredWeldMethodSerializableHolder<T, X>(method);
     }
 
     private static final long serialVersionUID = 1742767397227399280L;
 
     private final MethodSignature signature;
-    private transient WeldMethod<T, X> method;
+    private transient EnhancedAnnotatedMethod<T, X> method;
 
-    private DiscoveredWeldMethodSerializableHolder(WeldMethod<T, X> method) {
+    private DiscoveredWeldMethodSerializableHolder(EnhancedAnnotatedMethod<T, X> method) {
         super(method.getDeclaringType().getJavaClass());
         this.method = method;
         this.signature = method.getSignature();
@@ -55,14 +55,14 @@ public class DiscoveredWeldMethodSerializableHolder<T, X> extends AbstractWeldAn
 
     private void readObject(ObjectInputStream is) throws ClassNotFoundException, IOException {
         is.defaultReadObject();
-        this.method = Reflections.cast(getDeclaringWeldClass().getDeclaredWeldMethod(signature));
+        this.method = Reflections.cast(getDeclaringWeldClass().getDeclaredEnhancedMethod(signature));
         if (method == null) {
             throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringWeldClass(), signature);
         }
     }
 
     @Override
-    public WeldMethod<T, X> get() {
+    public EnhancedAnnotatedMethod<T, X> get() {
         return method;
     }
 }

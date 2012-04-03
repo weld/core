@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.manager;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
@@ -24,8 +26,6 @@ import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.util.Beans;
 
@@ -45,19 +45,19 @@ import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
 
     private final BeanManagerImpl beanManager;
-    private final WeldClass<T> type;
+    private final EnhancedAnnotatedType<T> type;
     private final ConstructorInjectionPoint<T> constructor;
     private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
     private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
-    private final List<WeldMethod<?, ? super T>> postConstructMethods;
-    private final List<WeldMethod<?, ? super T>> preDestroyMethods;
+    private final List<EnhancedAnnotatedMethod<?, ? super T>> postConstructMethods;
+    private final List<EnhancedAnnotatedMethod<?, ? super T>> preDestroyMethods;
     private final Set<InjectionPoint> injectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
-    public SimpleInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager) {
+    public SimpleInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.type = type;
         this.injectionPoints = new HashSet<InjectionPoint>();
@@ -111,7 +111,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
     }
 
     public void postConstruct(T instance) {
-        for (WeldMethod<?, ? super T> method : postConstructMethods) {
+        for (EnhancedAnnotatedMethod<?, ? super T> method : postConstructMethods) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
@@ -124,7 +124,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
     }
 
     public void preDestroy(T instance) {
-        for (WeldMethod<?, ? super T> method : preDestroyMethods) {
+        for (EnhancedAnnotatedMethod<?, ? super T> method : preDestroyMethods) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
@@ -144,7 +144,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
         return injectionPoints;
     }
 
-    protected WeldClass<T> getType() {
+    protected EnhancedAnnotatedType<T> getType() {
         return type;
     }
 

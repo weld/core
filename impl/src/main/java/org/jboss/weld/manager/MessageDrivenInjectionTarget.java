@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.manager;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.injection.InjectionContextImpl;
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.util.Beans;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -29,7 +29,7 @@ import javax.enterprise.context.spi.CreationalContext;
  */
 public class MessageDrivenInjectionTarget<T> extends SimpleInjectionTarget<T> {
 
-    public MessageDrivenInjectionTarget(WeldClass<T> type, BeanManagerImpl beanManager) {
+    public MessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
         super(type, beanManager);
     }
 

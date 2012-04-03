@@ -35,8 +35,9 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.interceptor.Interceptor;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.annotated.backed.BackedAnnotatedType;
-import org.jboss.weld.annotated.unbacked.UnbackedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
@@ -50,9 +51,6 @@ import org.jboss.weld.enums.EnumInjectionTarget;
 import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.introspector.DiscoveredExternalAnnotatedType;
-import org.jboss.weld.introspector.ExternalAnnotatedType;
-import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -194,8 +192,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {
                 if (otherWeldClasses.containsKey(ejbDescriptor.getBeanClass())) {
                     for (AnnotatedType<?> annotatedType : otherWeldClasses.get(ejbDescriptor.getBeanClass())) {
-                        WeldClass<?> weldClass = classTransformer.loadClass(annotatedType);
-                        createSessionBean(ejbDescriptor, Reflections.<WeldClass> cast(weldClass));
+                        EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
+                        createSessionBean(ejbDescriptor, Reflections.<EnhancedAnnotatedType> cast(weldClass));
                     }
                 } else {
                     createSessionBean(ejbDescriptor);
@@ -207,7 +205,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     protected void createClassBean(AnnotatedType<?> annotatedType, Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses) {
         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
-            WeldClass<?> weldClass = classTransformer.loadClass(annotatedType);
+            EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
             if (weldClass.isAnnotationPresent(Decorator.class)) {
                 validateDecorator(weldClass);
                 createDecorator(weldClass);
@@ -285,10 +283,10 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createNewBeans() {
-        for (WeldClass<?> clazz : getEnvironment().getNewManagedBeanClasses()) {
+        for (EnhancedAnnotatedType<?> clazz : getEnvironment().getNewManagedBeanClasses()) {
             createNewManagedBean(clazz);
         }
-        for (Entry<InternalEjbDescriptor<?>, WeldClass<?>> entry : getEnvironment().getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
+        for (Entry<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> entry : getEnvironment().getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
             InternalEjbDescriptor<?> descriptor = entry.getKey();
             createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()));
         }
@@ -302,13 +300,13 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         deployObserverMethods();
     }
 
-    protected void validateInterceptor(WeldClass<?> weldClass) {
+    protected void validateInterceptor(EnhancedAnnotatedType<?> weldClass) {
         if (weldClass.isAnnotationPresent(Decorator.class)) {
             throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
         }
     }
 
-    protected void validateDecorator(WeldClass<?> weldClass) {
+    protected void validateDecorator(EnhancedAnnotatedType<?> weldClass) {
         if (weldClass.isAnnotationPresent(Interceptor.class)) {
             throw new DefinitionException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
         }

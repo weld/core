@@ -34,7 +34,9 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.annotated.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -54,8 +56,6 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
@@ -79,7 +79,7 @@ public class BeanDeployerEnvironment {
                 Sets.newSetFromMap(new ConcurrentHashMap<AnnotatedType<?>, Boolean>()),
                 new ConcurrentHashMap<AnnotatedType<?>, Extension>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
-                new ConcurrentHashMap<WeldClass<?>, AbstractClassBean<?>>(),
+                new ConcurrentHashMap<EnhancedAnnotatedType<?>, AbstractClassBean<?>>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
                 new ConcurrentHashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
@@ -89,15 +89,15 @@ public class BeanDeployerEnvironment {
                 Sets.newSetFromMap(new ConcurrentHashMap<DecoratorImpl<?>, Boolean>()),
                 Sets.newSetFromMap(new ConcurrentHashMap<InterceptorImpl<?>, Boolean>()),
                 ejbDescriptors,
-                Sets.newSetFromMap(new ConcurrentHashMap<WeldClass<?>, Boolean>()),
-                new ConcurrentHashMap<InternalEjbDescriptor<?>, WeldClass<?>>(),
+                Sets.newSetFromMap(new ConcurrentHashMap<EnhancedAnnotatedType<?>, Boolean>()),
+                new ConcurrentHashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
                 manager);
     }
 
     private final Set<AnnotatedType<?>> annotatedTypes;
     private final Map<AnnotatedType<?>, Extension> annotatedTypeSource;
     private final Set<Class<?>> vetoedClasses;
-    private final Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap;
+    private final Map<EnhancedAnnotatedType<?>, AbstractClassBean<?>> classBeanMap;
     private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
     private final Set<ProducerField<?, ?>> producerFields;
     private final Set<RIBean<?>> beans;
@@ -109,14 +109,14 @@ public class BeanDeployerEnvironment {
     private final EjbDescriptors ejbDescriptors;
     private final TypeSafeDisposerResolver disposalMethodResolver;
     private final ClassTransformer classTransformer;
-    private final Set<WeldClass<?>> newManagedBeanClasses;
-    private final Map<InternalEjbDescriptor<?>, WeldClass<?>> newSessionBeanDescriptorsFromInjectionPoint;
+    private final Set<EnhancedAnnotatedType<?>> newManagedBeanClasses;
+    private final Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint;
 
     protected BeanDeployerEnvironment(
             Set<AnnotatedType<?>> annotatedTypes,
             Map<AnnotatedType<?>, Extension> annotatedTypeSource,
             Set<Class<?>> vetoedClasses,
-            Map<WeldClass<?>, AbstractClassBean<?>> classBeanMap,
+            Map<EnhancedAnnotatedType<?>, AbstractClassBean<?>> classBeanMap,
             Set<ProducerField<?, ?>> producerFields,
             Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap,
             Set<RIBean<?>> beans,
@@ -126,8 +126,8 @@ public class BeanDeployerEnvironment {
             Set<DecoratorImpl<?>> decorators,
             Set<InterceptorImpl<?>> interceptors,
             EjbDescriptors ejbDescriptors,
-            Set<WeldClass<?>> newManagedBeanClasses,
-            Map<InternalEjbDescriptor<?>, WeldClass<?>> newSessionBeanDescriptorsFromInjectionPoint,
+            Set<EnhancedAnnotatedType<?>> newManagedBeanClasses,
+            Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint,
             BeanManagerImpl manager) {
         this.annotatedTypes = annotatedTypes;
         this.annotatedTypeSource = annotatedTypeSource;
@@ -153,7 +153,7 @@ public class BeanDeployerEnvironment {
                 new HashSet<AnnotatedType<?>>(),
                 new HashMap<AnnotatedType<?>, Extension>(),
                 new HashSet<Class<?>>(),
-                new HashMap<WeldClass<?>, AbstractClassBean<?>>(),
+                new HashMap<EnhancedAnnotatedType<?>, AbstractClassBean<?>>(),
                 new HashSet<ProducerField<?, ?>>(),
                 new HashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
                 new HashSet<RIBean<?>>(),
@@ -163,8 +163,8 @@ public class BeanDeployerEnvironment {
                 new HashSet<DecoratorImpl<?>>(),
                 new HashSet<InterceptorImpl<?>>(),
                 ejbDescriptors,
-                new HashSet<WeldClass<?>>(),
-                new HashMap<InternalEjbDescriptor<?>, WeldClass<?>>(),
+                new HashSet<EnhancedAnnotatedType<?>>(),
+                new HashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
                 manager);
     }
 
@@ -214,15 +214,15 @@ public class BeanDeployerEnvironment {
         return vetoedClasses.contains(clazz);
     }
 
-    public Set<WeldClass<?>> getNewManagedBeanClasses() {
+    public Set<EnhancedAnnotatedType<?>> getNewManagedBeanClasses() {
         return newManagedBeanClasses;
     }
 
-    public Map<InternalEjbDescriptor<?>, WeldClass<?>> getNewSessionBeanDescriptorsFromInjectionPoint() {
+    public Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> getNewSessionBeanDescriptorsFromInjectionPoint() {
         return newSessionBeanDescriptorsFromInjectionPoint;
     }
 
-    public <X, T> ProducerMethod<X, T> getProducerMethod(WeldMethod<X, T> method) {
+    public <X, T> ProducerMethod<X, T> getProducerMethod(EnhancedAnnotatedMethod<X, T> method) {
         WeldMethodKey<X, T> key = new WeldMethodKey<X, T>(method);
         ProducerMethod<?, ?> bean = producerMethodBeanMap.get(key);
         if (bean != null) {
@@ -231,7 +231,7 @@ public class BeanDeployerEnvironment {
         return cast(bean);
     }
 
-    public AbstractClassBean<?> getClassBean(WeldClass<?> clazz) {
+    public AbstractClassBean<?> getClassBean(EnhancedAnnotatedType<?> clazz) {
         AbstractClassBean<?> bean = classBeanMap.get(clazz);
         if (bean != null) {
             bean.preInitialize();
@@ -240,7 +240,7 @@ public class BeanDeployerEnvironment {
     }
 
     public void addProducerMethod(ProducerMethod<?, ?> bean) {
-        producerMethodBeanMap.put(WeldMethodKey.of(bean.getWeldAnnotated()), bean);
+        producerMethodBeanMap.put(WeldMethodKey.of(bean.getEnhancedAnnotated()), bean);
         addAbstractBean(bean);
     }
 
@@ -259,7 +259,7 @@ public class BeanDeployerEnvironment {
 
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
         if (!(bean instanceof NewBean)) {
-            classBeanMap.put(bean.getWeldAnnotated(), bean);
+            classBeanMap.put(bean.getEnhancedAnnotated(), bean);
         }
         addAbstractBean(bean);
     }
@@ -326,9 +326,9 @@ public class BeanDeployerEnvironment {
     private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType) {
         if (getEjbDescriptors().contains(rawType)) {
             InternalEjbDescriptor<?> descriptor = getEjbDescriptors().getUnique(rawType);
-            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.loadClass(rawType, baseType));
+            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.getEnhancedAnnotatedType(rawType, baseType));
         } else {
-            newManagedBeanClasses.add(classTransformer.loadClass(rawType, baseType));
+            newManagedBeanClasses.add(classTransformer.getEnhancedAnnotatedType(rawType, baseType));
         }
     }
 
@@ -377,13 +377,13 @@ public class BeanDeployerEnvironment {
 
     protected static class WeldMethodKey<T, X> {
 
-        static <T, X> WeldMethodKey<T, X> of(WeldMethod<T, X> method) {
+        static <T, X> WeldMethodKey<T, X> of(EnhancedAnnotatedMethod<T, X> method) {
             return new WeldMethodKey<T, X>(method);
         }
 
-        final WeldMethod<T, X> method;
+        final EnhancedAnnotatedMethod<T, X> method;
 
-        WeldMethodKey(WeldMethod<T, X> meth) {
+        WeldMethodKey(EnhancedAnnotatedMethod<T, X> meth) {
             this.method = meth;
         }
 
@@ -405,7 +405,7 @@ public class BeanDeployerEnvironment {
     public void vetoBean(AbstractBean<?, ?> bean) {
         beans.remove(bean);
         if (bean instanceof AbstractClassBean<?>) {
-            classBeanMap.remove(bean.getWeldAnnotated());
+            classBeanMap.remove(bean.getEnhancedAnnotated());
             if (bean instanceof InterceptorImpl<?>) {
                 interceptors.remove(bean);
             }
@@ -414,14 +414,14 @@ public class BeanDeployerEnvironment {
             }
         }
         if (bean instanceof ProducerMethod<?, ?>) {
-            producerMethodBeanMap.remove(WeldMethodKey.of(Reflections.<ProducerMethod<?, ?>>cast(bean).getWeldAnnotated()));
+            producerMethodBeanMap.remove(WeldMethodKey.of(Reflections.<ProducerMethod<?, ?>>cast(bean).getEnhancedAnnotated()));
         }
         if (bean instanceof ProducerField<?, ?>) {
             producerFields.remove(bean);
         }
     }
 
-    public Map<WeldClass<?>, AbstractClassBean<?>> getClassBeanMap() {
+    public Map<EnhancedAnnotatedType<?>, AbstractClassBean<?>> getClassBeanMap() {
         return Collections.unmodifiableMap(classBeanMap);
     }
 

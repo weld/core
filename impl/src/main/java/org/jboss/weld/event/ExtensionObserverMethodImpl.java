@@ -25,9 +25,9 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -42,7 +42,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     private final Container containerLifecycleEventDeliveryLock;
 
-    protected ExtensionObserverMethodImpl(WeldMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
+    protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         super(observer, declaringBean, manager);
         this.containerLifecycleEventDeliveryLock = Container.instance();
     }

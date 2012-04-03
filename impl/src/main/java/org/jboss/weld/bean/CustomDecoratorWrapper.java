@@ -17,9 +17,9 @@
 
 package org.jboss.weld.bean;
 
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
@@ -37,9 +37,9 @@ import java.util.Map;
  */
 public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements WeldDecorator<T> {
     private Decorator<T> delegate;
-    private WeldClass<T> weldClass;
+    private EnhancedAnnotatedType<T> weldClass;
 
-    private Map<MethodSignature, WeldMethod<?, ?>> decoratorMethods;
+    private Map<MethodSignature, EnhancedAnnotatedMethod<?, ?>> decoratorMethods;
 
     public static <T> CustomDecoratorWrapper<T> of(Decorator<T> delegate, BeanManagerImpl beanManager) {
         return new CustomDecoratorWrapper<T>(delegate, beanManager);
@@ -47,7 +47,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
 
     private CustomDecoratorWrapper(Decorator<T> delegate, BeanManagerImpl beanManager) {
         this.delegate = delegate;
-        this.weldClass = beanManager.getServices().get(ClassTransformer.class).loadClass(Reflections.<Class<T>>cast(delegate.getBeanClass()));
+        this.weldClass = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.<Class<T>>cast(delegate.getBeanClass()));
         this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, delegate.getDecoratedTypes(), this.weldClass);
     }
 
@@ -56,11 +56,11 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
         return delegate;
     }
 
-    public WeldClass<?> getWeldAnnotated() {
+    public EnhancedAnnotatedType<?> getEnhancedAnnotated() {
         return weldClass;
     }
 
-    public WeldMethod<?, ?> getDecoratorMethod(Method method) {
+    public EnhancedAnnotatedMethod<?, ?> getDecoratorMethod(Method method) {
         return Decorators.findDecoratorMethod(this, decoratorMethods, method);
     }
 }

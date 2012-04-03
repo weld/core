@@ -47,14 +47,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
 
@@ -96,14 +96,14 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      * @param declaringBean The observer bean
      * @param manager       The Bean manager
      */
-    protected ObserverMethodImpl(final WeldMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
+    protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
         this.observerMethod = MethodInjectionPoint.ofObserverOrDisposerMethod(observer, declaringBean, manager);
-        this.eventType = observerMethod.getAnnotated().getWeldParameters(Observes.class).get(0).getBaseType();
+        this.eventType = observerMethod.getAnnotated().getEnhancedParameters(Observes.class).get(0).getBaseType();
         this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
-        this.bindings = new HashSet<Annotation>(observerMethod.getAnnotated().getWeldParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
-        Observes observesAnnotation = observerMethod.getAnnotated().getWeldParameters(Observes.class).get(0).getAnnotation(Observes.class);
+        this.bindings = new HashSet<Annotation>(observerMethod.getAnnotated().getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
+        Observes observesAnnotation = observerMethod.getAnnotated().getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = TransactionPhase.IN_PROGRESS;
 
@@ -134,7 +134,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      */
     private void checkObserverMethod() {
         // Make sure exactly one and only one parameter is annotated with Observes
-        List<?> eventObjects = this.observerMethod.getAnnotated().getWeldParameters(Observes.class);
+        List<?> eventObjects = this.observerMethod.getAnnotated().getEnhancedParameters(Observes.class);
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
             throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
         }
@@ -142,7 +142,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
         }
         // Check for parameters annotated with @Disposes
-        List<?> disposeParams = this.observerMethod.getAnnotated().getWeldParameters(Disposes.class);
+        List<?> disposeParams = this.observerMethod.getAnnotated().getEnhancedParameters(Disposes.class);
         if (disposeParams.size() > 0) {
             throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
         }
@@ -155,7 +155,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             throw new DefinitionException(INVALID_INITIALIZER, this);
         }
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
-        for (WeldParameter<?, ?> parameter : getMethod().getAnnotated().getWeldParameters()) {
+        for (EnhancedAnnotatedParameter<?, ?> parameter : getMethod().getAnnotated().getEnhancedParameters()) {
             if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals("")) {
                 throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
             }

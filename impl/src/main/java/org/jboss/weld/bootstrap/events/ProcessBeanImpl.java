@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.introspector.WeldAnnotated;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
@@ -35,12 +35,12 @@ public abstract class ProcessBeanImpl<X> extends AbstractDefinitionContainerEven
     }
 
     private final Bean<X> bean;
-    private final WeldAnnotated<?, ?> annotated;
+    private final EnhancedAnnotated<?, ?> annotated;
 
     public ProcessBeanImpl(BeanManagerImpl beanManager, Bean<X> bean) {
         super(beanManager, ProcessBean.class, new Type[]{bean.getBeanClass()});
         this.bean = bean;
-        this.annotated = beanManager.getServices().get(ClassTransformer.class).loadClass(bean.getBeanClass());
+        this.annotated = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(bean.getBeanClass());
     }
 
     public void addDefinitionError(Throwable t) {

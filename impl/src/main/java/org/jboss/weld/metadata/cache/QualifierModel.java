@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
@@ -52,7 +52,7 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
     private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Qualifier.class);
 
     // The non-binding types
-    private Set<WeldMethod<?, ?>> nonBindingMembers;
+    private Set<EnhancedAnnotatedMethod<?, ?>> nonBindingMembers;
 
 
     /**
@@ -76,7 +76,7 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
     @Override
     protected void initValid() {
         super.initValid();
-        for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
+        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
             if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingMembers.contains(annotatedMethod)) {
                 log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
                 super.valid = false;
@@ -124,7 +124,7 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
      * @return A set of non-binding types, or an empty set if there are none
      *         present
      */
-    public Set<WeldMethod<?, ?>> getNonBindingMembers() {
+    public Set<EnhancedAnnotatedMethod<?, ?>> getNonBindingMembers() {
         return nonBindingMembers;
     }
 
@@ -144,7 +144,7 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
      */
     public boolean isEqual(Annotation instance, Annotation other) {
         if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType())) {
-            for (WeldMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
+            for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
                 if (!nonBindingMembers.contains(annotatedMethod)) {
                     try {
                         Object thisValue = annotatedMethod.invoke(instance);

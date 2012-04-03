@@ -37,7 +37,7 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
     }
 
     public ProcessProducerMethodImpl(BeanManagerImpl beanManager, ProducerMethod<T, X> bean) {
-        super(beanManager, ProcessProducerMethod.class, new Type[]{bean.getWeldAnnotated().getBaseType(), bean.getWeldAnnotated().getDeclaringType().getBaseType()}, bean);
+        super(beanManager, ProcessProducerMethod.class, new Type[]{bean.getEnhancedAnnotated().getBaseType(), bean.getEnhancedAnnotated().getDeclaringType().getBaseType()}, bean);
     }
 
     public AnnotatedParameter<T> getAnnotatedDisposedParameter() {
@@ -49,8 +49,8 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
     }
 
     public AnnotatedMethod<T> getAnnotatedProducerMethod() {
-        if (getBean().getWeldAnnotated() != null) {
-            return cast(getBean().getWeldAnnotated());
+        if (getBean().getEnhancedAnnotated() != null) {
+            return cast(getBean().getEnhancedAnnotated());
         } else {
             return null;
         }

@@ -49,6 +49,10 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.interceptor.Interceptor;
 
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
@@ -73,10 +77,6 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -110,7 +110,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * @param type        the AnnotatedType to use
      * @return An Enterprise Web Bean
      */
-    public static <T> SessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, WeldClass<T> type, ServiceRegistry services) {
+    public static <T> SessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, EnhancedAnnotatedType<T> type, ServiceRegistry services) {
         return new SessionBean<T>(attributes, type, ejbDescriptor, createId(SessionBean.class.getSimpleName(), ejbDescriptor, type), beanManager, services);
     }
 
@@ -118,7 +118,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).toString();
     }
 
-    protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor, WeldClass<?> type) {
+    protected static String createId(String beanType, InternalEjbDescriptor<?> ejbDescriptor, EnhancedAnnotatedType<?> type) {
         if (type.isDiscovered()) {
             return createId(beanType, ejbDescriptor);
         } else {
@@ -132,7 +132,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * @param type    The type of the bean
      * @param manager The Bean manager
      */
-    protected SessionBean(BeanAttributes<T> attributes, WeldClass<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager, ServiceRegistry services) {
+    protected SessionBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, type, idSuffix, manager, services);
         initType();
         this.ejbDescriptor = ejbDescriptor;
@@ -156,7 +156,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         setInjectionTarget(new InjectionTarget<T>() {
 
             public void inject(final T instance, final CreationalContext<T> ctx) {
-                new InjectionContextImpl<T>(getBeanManager(), this, getWeldAnnotated(), instance) {
+                new InjectionContextImpl<T>(getBeanManager(), this, getEnhancedAnnotated(), instance) {
 
                     public void proceed() {
                         Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
@@ -199,7 +199,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     protected void initProxyClass() {
-        this.proxyClass = new EnterpriseProxyFactory<T>(getWeldAnnotated().getJavaClass(), this).getProxyClass();
+        this.proxyClass = new EnterpriseProxyFactory<T>(getEnhancedAnnotated().getJavaClass(), this).getProxyClass();
     }
 
     /**
@@ -235,7 +235,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         super.preSpecialize();
         // We appear to check this twice?
         BeansClosure closure = BeansClosure.getClosure(beanManager);
-        if (closure.isEJB(getWeldAnnotated().getWeldSuperclass()) == false) {
+        if (closure.isEJB(getEnhancedAnnotated().getEnhancedSuperclass()) == false) {
             throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
         }
     }
@@ -243,7 +243,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     @Override
     protected void specialize() {
         BeansClosure closure = BeansClosure.getClosure(beanManager);
-        Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
+        Bean<?> specializedBean = closure.getClassBean(getEnhancedAnnotated().getEnhancedSuperclass());
         if (specializedBean == null) {
             throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
         }
@@ -263,7 +263,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         try {
             T instance = SecureReflections.newInstance(proxyClass);
             creationalContext.push(instance);
-            ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getWeldAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)), this);
+            ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getEnhancedAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)), this);
             if (hasDecorators()) {
                 instance = applyDecorators(instance, creationalContext, null);
             }
@@ -321,7 +321,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     @Override
     protected void checkType() {
-        if (!getScope().equals(Dependent.class) && getWeldAnnotated().isGeneric()) {
+        if (!getScope().equals(Dependent.class) && getEnhancedAnnotated().isGeneric()) {
             throw new DefinitionException(GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT, this);
         }
         boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
@@ -348,7 +348,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * methods.
      */
     protected void checkObserverMethods() {
-        List<WeldMethod<?, ? super T>> observerMethods = Beans.getObserverMethods(this.getWeldAnnotated());
+        List<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = Beans.getObserverMethods(this.getEnhancedAnnotated());
 
         if (!observerMethods.isEmpty()) {
             Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
@@ -363,9 +363,9 @@ public class SessionBean<T> extends AbstractClassBean<T> {
                 }
             }
 
-            for (WeldMethod<?, ? super T> observerMethod : observerMethods) {
+            for (EnhancedAnnotatedMethod<?, ? super T> observerMethod : observerMethods) {
                 if (!observerMethod.isStatic() && !businessMethodSignatures.contains(new MethodSignatureImpl(observerMethod))) {
-                    throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, observerMethod, getWeldAnnotated());
+                    throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, observerMethod, getEnhancedAnnotated());
                 }
             }
         }

@@ -17,12 +17,11 @@
 
 package org.jboss.weld.tests.decorators.custom;
 
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
-import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.metadata.TypeStore;
-import org.jboss.weld.resources.ClassTransformer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -32,11 +31,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.resources.ClassTransformer;
 
 /**
  * @author Marius Bogoevici
@@ -110,13 +110,13 @@ public class CustomDecorator implements Decorator<Object> {
     }
 
     class CustomInjectionPoint implements InjectionPoint {
-        private final WeldClass<?> targetClass;
-        private final WeldField<CustomWindowFrame, ?> windowField;
+        private final EnhancedAnnotatedType<?> targetClass;
+        private final EnhancedAnnotatedField<CustomWindowFrame, ?> windowField;
 
         public CustomInjectionPoint() {
             ClassTransformer transformer = new ClassTransformer(new TypeStore());
-            targetClass = WeldClassImpl.of(CustomWindowFrame.class, transformer);
-            windowField = targetClass.getDeclaredWeldField("window");
+            targetClass = transformer.getEnhancedAnnotatedType(CustomWindowFrame.class);
+            windowField = targetClass.getDeclaredEnhancedField("window");
         }
 
         public Type getType() {

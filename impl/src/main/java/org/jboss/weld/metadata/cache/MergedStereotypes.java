@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
@@ -47,7 +47,7 @@ public class MergedStereotypes<T, E> {
 
     private final BeanManagerImpl manager;
 
-    public static <T, E> MergedStereotypes<T, E> of(WeldAnnotated<T, E> annotated, BeanManagerImpl manager) {
+    public static <T, E> MergedStereotypes<T, E> of(EnhancedAnnotated<T, E> annotated, BeanManagerImpl manager) {
         return of(annotated.getMetaAnnotations(Stereotype.class), manager);
     }
 

@@ -85,7 +85,12 @@ import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.annotated.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.ExternalAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -124,11 +129,6 @@ import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.introspector.ExternalAnnotatedType;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMember;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
@@ -1010,13 +1010,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        InjectionTarget<T> injectionTarget = new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).loadClass(type), this);
+        InjectionTarget<T> injectionTarget = new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type), this);
         getServices().get(InjectionTargetValidator.class).addInjectionTarget(injectionTarget);
         return injectionTarget;
     }
 
     private <T> InjectionTarget<T> createMessageDrivenInjectionTarget(AnnotatedType<T> type) {
-        return new MessageDrivenInjectionTarget<T>(getServices().get(ClassTransformer.class).loadClass(type), this);
+        return new MessageDrivenInjectionTarget<T>(getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type), this);
     }
 
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
@@ -1107,7 +1107,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> AnnotatedType<T> createAnnotatedType(Class<T> type) {
-        return BackedAnnotatedType.of(type);
+        return getServices().get(ClassTransformer.class).getAnnotatedType(type);
+    }
+
+    public <T> EnhancedAnnotatedType<T> createEnhancedAnnotatedType(Class<T> type) {
+        return getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
     }
 
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
@@ -1211,7 +1215,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
-        WeldClass<T> clazz = services.get(ClassTransformer.class).loadClass(ExternalAnnotatedType.of(type));
+        EnhancedAnnotatedType<T> clazz = services.get(ClassTransformer.class).getEnhancedAnnotatedType(type);
         if (services.get(EjbDescriptors.class).contains(type.getJavaClass())) {
             return BeanAttributesFactory.forSessionBean(clazz, services.get(EjbDescriptors.class).getUnique(clazz.getJavaClass()), this);
         }
@@ -1219,7 +1223,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> member) {
-        WeldMember<?, ?, ? extends Member> weldMember = null;
+        EnhancedAnnotatedMember<?, ?, ? extends Member> weldMember = null;
         if (member instanceof AnnotatedField<?>) {
             weldMember = services.get(MemberTransformer.class).load((AnnotatedField<?>) member);
         } else if (member instanceof AnnotatedMethod<?>) {
@@ -1239,7 +1243,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public FieldInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedField<?> field, Bean<?> bean) {
-        WeldField<?, ?> weldField = services.get(MemberTransformer.class).load(field);
+        EnhancedAnnotatedField<?, ?> weldField = services.get(MemberTransformer.class).load(field);
         return InferingFieldInjectionPointAttributes.of(weldField, bean);
     }
 
@@ -1249,7 +1253,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> ParameterInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedParameter<X> parameter, Bean<?> bean) {
-        WeldParameter<?, X> weldParameter = services.get(MemberTransformer.class).load(parameter);
+        EnhancedAnnotatedParameter<?, X> weldParameter = services.get(MemberTransformer.class).load(parameter);
         return InferingParameterInjectionPointAttributes.of(weldParameter, bean);
     }
 

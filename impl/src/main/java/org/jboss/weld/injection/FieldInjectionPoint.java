@@ -24,12 +24,12 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -102,7 +102,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
     }
 
     @Override
-    public WeldField<T, X> getAnnotated() {
+    public EnhancedAnnotatedField<T, X> getAnnotated() {
         return attributes.getAnnotated();
     }
 }

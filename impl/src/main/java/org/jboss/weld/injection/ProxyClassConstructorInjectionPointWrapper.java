@@ -23,12 +23,12 @@ import java.util.List;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.bean.proxy.BeanInstance;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
-import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -50,7 +50,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     private boolean decorator;
     private final Bean<?> bean;
 
-    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
+    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, EnhancedAnnotatedConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
         super(weldConstructor, declaringBean, manager);
         this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
         this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;

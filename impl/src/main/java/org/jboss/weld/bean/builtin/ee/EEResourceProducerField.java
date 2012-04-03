@@ -28,6 +28,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;
@@ -41,7 +42,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -95,7 +95,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
      * @param manager       the current manager
      * @return A producer field
      */
-    public static <X, T> EEResourceProducerField<X, T> of(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
+    public static <X, T> EEResourceProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         return new EEResourceProducerField<X, T>(attributes, field, declaringBean, manager, services);
     }
 
@@ -103,7 +103,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     private ProxyFactory<T> proxyFactory;
 
-    protected EEResourceProducerField(BeanAttributes<T> attributes, WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
+    protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, field, declaringBean, manager, services);
         this.injectionPoint = FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager);
     }
@@ -122,14 +122,14 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
         WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
-        if (!(getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || getWeldAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)) || getWeldAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS)) {
-            throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getWeldAnnotated());
+        if (!(getEnhancedAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || getEnhancedAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)) || getEnhancedAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS)) {
+            throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getEnhancedAnnotated());
         }
     }
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        if (Reflections.isFinal(getWeldAnnotated().getJavaClass()) || Serializable.class.isAssignableFrom(getWeldAnnotated().getJavaClass())) {
+        if (Reflections.isFinal(getEnhancedAnnotated().getJavaClass()) || Serializable.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass())) {
             return createUnderlying(creationalContext);
         } else {
             BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)));
@@ -142,7 +142,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
      */
     private T createUnderlying(CreationalContext<T> creationalContext) {
         // Treat static fields as a special case, as they won't be injected, as the no bean is resolved, and normally there is no injection on static fields
-        if (getWeldAnnotated().isStatic()) {
+        if (getEnhancedAnnotated().isStatic()) {
             return Reflections.<T>cast(Beans.resolveEEResource(getBeanManager(), injectionPoint));
         } else {
             return super.create(creationalContext);

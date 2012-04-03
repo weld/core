@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.event;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
-import org.jboss.weld.introspector.WeldMethod;
-import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
@@ -41,7 +41,7 @@ public class ObserverFactory {
      * @param manager       The Bean manager
      * @return An observer implementation built from the method abstraction
      */
-    public static <T, X> ObserverMethodImpl<T, X> create(WeldMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager) {
+    public static <T, X> ObserverMethodImpl<T, X> create(EnhancedAnnotatedMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager) {
         ObserverMethodImpl<T, X> result = null;
         TransactionPhase transactionPhase = getTransactionalPhase(method);
         if (declaringBean instanceof ExtensionBean) {
@@ -60,8 +60,8 @@ public class ObserverFactory {
      * @param observer The observer method
      * @return true if the observer method is annotated as transactional
      */
-    public static TransactionPhase getTransactionalPhase(WeldMethod<?, ?> observer) {
-        WeldParameter<?, ?> parameter = observer.getWeldParameters(Observes.class).iterator().next();
+    public static TransactionPhase getTransactionalPhase(EnhancedAnnotatedMethod<?, ?> observer) {
+        EnhancedAnnotatedParameter<?, ?> parameter = observer.getEnhancedParameters(Observes.class).iterator().next();
         return parameter.getAnnotation(Observes.class).during();
     }
 }

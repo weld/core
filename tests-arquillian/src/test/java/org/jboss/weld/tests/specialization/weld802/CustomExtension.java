@@ -21,31 +21,30 @@
  */
 package org.jboss.weld.tests.specialization.weld802;
 
-import org.jboss.weld.introspector.ForwardingWeldClass;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.jlr.WeldClassImpl;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.ClassTransformer;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.annotated.ForwardingWeldClass;
 
 /**
  * @author Ales Justin
  */
 public class CustomExtension implements Extension {
     public void registerBeans(@Observes BeforeBeanDiscovery event, final BeanManager manager) {
-        final WeldClass<Foo> foo = getFooWeldClass(manager);
-        final WeldClass<Bar> bar = new ForwardingWeldClass<Bar>() {
+        final EnhancedAnnotatedType<Foo> foo = getFooWeldClass(manager);
+        final EnhancedAnnotatedType<Bar> bar = new ForwardingWeldClass<Bar>() {
             @Override
-            protected WeldClass<Bar> delegate() {
-                return (WeldClass<Bar>) manager.createAnnotatedType(Bar.class);
+            protected EnhancedAnnotatedType<Bar> delegate() {
+                return (EnhancedAnnotatedType<Bar>) manager.createAnnotatedType(Bar.class);
             }
 
             @Override
-            public WeldClass<? super Bar> getWeldSuperclass() {
+            public EnhancedAnnotatedType<? super Bar> getEnhancedSuperclass() {
                 return foo;
             }
         };
@@ -53,13 +52,13 @@ public class CustomExtension implements Extension {
         event.addAnnotatedType(bar);
     }
 
-    protected WeldClass<Foo> getFooWeldClass(BeanManager manager) {
+    protected EnhancedAnnotatedType<Foo> getFooWeldClass(BeanManager manager) {
         if (manager instanceof BeanManagerImpl) {
             BeanManagerImpl bmi = (BeanManagerImpl) manager;
             ClassTransformer ct = bmi.getServices().get(ClassTransformer.class);
-            return WeldClassImpl.of(Foo.class, ct);
+            return ct.getEnhancedAnnotatedType(Foo.class);
         } else {
-            return (WeldClass<Foo>) manager.createAnnotatedType(Foo.class);
+            return (EnhancedAnnotatedType<Foo>) manager.createAnnotatedType(Foo.class);
         }
     }
 }

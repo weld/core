@@ -3,28 +3,28 @@ package org.jboss.weld.bean.interceptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.interceptor.reader.AnnotatedMethodReader;
-import org.jboss.weld.introspector.WeldMethod;
 
 /**
  * @author Marius Bogoevici
  */
-public class WeldAnnotatedMethodReader implements AnnotatedMethodReader<WeldMethod<?, ?>> {
+public class WeldAnnotatedMethodReader implements AnnotatedMethodReader<EnhancedAnnotatedMethod<?, ?>> {
 
     private static WeldAnnotatedMethodReader INSTANCE = new WeldAnnotatedMethodReader();
 
     private WeldAnnotatedMethodReader() {
     }
 
-    public static AnnotatedMethodReader<WeldMethod<?, ?>> getInstance() {
+    public static AnnotatedMethodReader<EnhancedAnnotatedMethod<?, ?>> getInstance() {
         return INSTANCE;
     }
 
-    public Annotation getAnnotation(Class<? extends Annotation> annotationClass, WeldMethod<?, ?> methodReference) {
+    public Annotation getAnnotation(Class<? extends Annotation> annotationClass, EnhancedAnnotatedMethod<?, ?> methodReference) {
         return methodReference.getAnnotation(annotationClass);
     }
 
-    public Method getJavaMethod(WeldMethod<?, ?> methodReference) {
+    public Method getJavaMethod(EnhancedAnnotatedMethod<?, ?> methodReference) {
         return methodReference.getJavaMember();
     }
 }

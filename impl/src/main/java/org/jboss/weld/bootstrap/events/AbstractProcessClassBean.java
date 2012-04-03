@@ -37,7 +37,7 @@ public abstract class AbstractProcessClassBean<X, B extends AbstractClassBean<X>
     }
 
     public Annotated getAnnotated() {
-        return bean.getWeldAnnotated();
+        return bean.getEnhancedAnnotated();
     }
 
     public B getBean() {

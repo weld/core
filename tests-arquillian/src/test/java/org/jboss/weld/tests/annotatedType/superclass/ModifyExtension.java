@@ -1,6 +1,6 @@
 package org.jboss.weld.tests.annotatedType.superclass;
 
-import org.jboss.weld.introspector.ForwardingAnnotatedType;
+import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedField;

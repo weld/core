@@ -16,13 +16,22 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Map;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
+
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployer;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.introspector.ExternalAnnotatedType;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.QualifierLiteral;
@@ -33,15 +42,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.Map;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery {
 
@@ -97,7 +97,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
             throw new IllegalStateException("BeforeBeanDiscovery receiver is not an extension");
         }
         BeanDeployer deployer = getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer();
-        deployer.addSyntheticClass(ExternalAnnotatedType.of(type), (Extension) receiver);
+        deployer.addSyntheticClass(UnbackedAnnotatedType.of(type), (Extension) receiver);
     }
 
 }

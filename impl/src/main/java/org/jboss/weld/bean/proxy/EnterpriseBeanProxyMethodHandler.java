@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.bean.proxy;
 
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.jboss.weld.introspector.MethodSignature;
-import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 

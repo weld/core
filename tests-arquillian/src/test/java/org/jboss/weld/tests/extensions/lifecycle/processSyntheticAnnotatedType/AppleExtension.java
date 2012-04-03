@@ -27,7 +27,7 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.introspector.ForwardingAnnotatedType;
+import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
 public class AppleExtension implements Extension {
 

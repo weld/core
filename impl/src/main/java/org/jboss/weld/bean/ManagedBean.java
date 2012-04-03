@@ -26,6 +26,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.interceptor.WeldInterceptorInstantiator;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
@@ -44,9 +47,6 @@ import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.weld.interceptor.proxy.InterceptorProxyCreatorImpl;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
-import org.jboss.weld.introspector.WeldClass;
-import org.jboss.weld.introspector.WeldField;
-import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
@@ -94,7 +94,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
 
         public void inject(final T instance, final CreationalContext<T> ctx) {
-            new InjectionContextImpl<T>(bean.getBeanManager(), ManagedBeanInjectionTarget.this, getBean().getWeldAnnotated(), instance) {
+            new InjectionContextImpl<T>(bean.getBeanManager(), ManagedBeanInjectionTarget.this, getBean().getEnhancedAnnotated(), instance) {
                 public void proceed() {
                     Beans.injectEEFields(instance, bean.getBeanManager(), bean.ejbInjectionPoints, bean.persistenceContextInjectionPoints, bean.persistenceUnitInjectionPoints, bean.resourceInjectionPoints);
                     Beans.injectFieldsAndInitializers(instance, ctx, bean.getBeanManager(), bean.getInjectableFields(), bean.getInitializerMethods());
@@ -173,7 +173,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @param beanManager the current manager
      * @return A Web Bean
      */
-    public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, WeldClass<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
         if (clazz.isDiscovered()) {
             return new ManagedBean<T>(attributes, clazz, createSimpleId(ManagedBean.class.getSimpleName(), clazz), beanManager, services);
         } else {
@@ -181,7 +181,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
     }
 
-    protected static String createSimpleId(String beanType, WeldClass<?> clazz) {
+    protected static String createSimpleId(String beanType, EnhancedAnnotatedType<?> clazz) {
         return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(clazz.getBaseType()).toString();
     }
 
@@ -189,7 +189,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * create a more complete id for types that have been added through the SPI
      * to prevent duplicate id's
      */
-    protected static String createId(String beanType, WeldClass<?> clazz) {
+    protected static String createId(String beanType, EnhancedAnnotatedType<?> clazz) {
         return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(AnnotatedTypes.createTypeId(clazz)).toString();
     }
 
@@ -199,7 +199,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @param type        The type of the bean
      * @param beanManager The Bean manager
      */
-    protected ManagedBean(BeanAttributes<T> attributes, WeldClass<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+    protected ManagedBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, type, idSuffix, beanManager, services);
         initType();
         initConstructor(beanManager);
@@ -263,10 +263,10 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     private void initEEInjectionPoints() {
-        this.ejbInjectionPoints = Beans.getEjbInjectionPoints(this, getWeldAnnotated(), getBeanManager());
-        this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(this, getWeldAnnotated(), getBeanManager());
-        this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(this, getWeldAnnotated(), getBeanManager());
-        this.resourceInjectionPoints = Beans.getResourceInjectionPoints(this, getWeldAnnotated(), beanManager);
+        this.ejbInjectionPoints = Beans.getEjbInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
+        this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
+        this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
+        this.resourceInjectionPoints = Beans.getResourceInjectionPoints(this, getEnhancedAnnotated(), beanManager);
     }
 
     /**
@@ -274,10 +274,10 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      */
     @Override
     protected void checkType() {
-        if (getWeldAnnotated().isAnonymousClass() || (getWeldAnnotated().isMemberClass() && !getWeldAnnotated().isStatic())) {
+        if (getEnhancedAnnotated().isAnonymousClass() || (getEnhancedAnnotated().isMemberClass() && !getEnhancedAnnotated().isStatic())) {
             throw new DefinitionException(SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED, type);
         }
-        if (!isDependent() && getWeldAnnotated().isParameterizedType()) {
+        if (!isDependent() && getEnhancedAnnotated().isParameterizedType()) {
             throw new DefinitionException(BEAN_MUST_BE_DEPENDENT, type);
         }
         boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
@@ -285,22 +285,22 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
             throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
         }
         if (hasDecorators()) {
-            if (getWeldAnnotated().isFinal()) {
+            if (getEnhancedAnnotated().isFinal()) {
                 throw new DeploymentException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
             }
             for (Decorator<?> decorator : getDecorators()) {
-                WeldClass<?> decoratorClass;
+                EnhancedAnnotatedType<?> decoratorClass;
                 if (decorator instanceof DecoratorImpl<?>) {
                     DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
-                    decoratorClass = decoratorBean.getWeldAnnotated();
+                    decoratorClass = decoratorBean.getEnhancedAnnotated();
                 } else if (decorator instanceof CustomDecoratorWrapper<?>) {
-                    decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getWeldAnnotated();
+                    decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getEnhancedAnnotated();
                 } else {
                     throw new IllegalStateException(NON_CONTAINER_DECORATOR, decorator);
                 }
 
-                for (WeldMethod<?, ?> decoratorMethod : decoratorClass.getWeldMethods()) {
-                    WeldMethod<?, ?> method = getWeldAnnotated().getWeldMethod(decoratorMethod.getSignature());
+                for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : decoratorClass.getEnhancedMethods()) {
+                    EnhancedAnnotatedMethod<?, ?> method = getEnhancedAnnotated().getEnhancedMethod(decoratorMethod.getSignature());
                     if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal()) {
                         throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);
                     }
@@ -313,9 +313,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     protected void checkBeanImplementation() {
         super.checkBeanImplementation();
         if (isNormalScoped()) {
-            for (WeldField<?, ?> field : getWeldAnnotated().getWeldFields()) {
+            for (EnhancedAnnotatedField<?, ?> field : getEnhancedAnnotated().getEnhancedFields()) {
                 if (field.isPublic() && !field.isStatic()) {
-                    throw new DefinitionException(PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED, getWeldAnnotated());
+                    throw new DefinitionException(PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED, getEnhancedAnnotated());
                 }
             }
         }
@@ -325,7 +325,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     protected void preSpecialize() {
         super.preSpecialize();
         BeansClosure closure = BeansClosure.getClosure(beanManager);
-        if (closure.isEJB(getWeldAnnotated().getWeldSuperclass())) {
+        if (closure.isEJB(getEnhancedAnnotated().getEnhancedSuperclass())) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
     }
@@ -333,7 +333,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     protected void specialize() {
         BeansClosure closure = BeansClosure.getClosure(beanManager);
-        Bean<?> specializedBean = closure.getClassBean(getWeldAnnotated().getWeldSuperclass());
+        Bean<?> specializedBean = closure.getClassBean(getEnhancedAnnotated().getEnhancedSuperclass());
         if (specializedBean == null) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
@@ -351,14 +351,14 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     @Override
     protected boolean isInterceptionCandidate() {
-        return !Beans.isInterceptor(getWeldAnnotated()) && !Beans.isDecorator(getWeldAnnotated());
+        return !Beans.isInterceptor(getEnhancedAnnotated()) && !Beans.isDecorator(getEnhancedAnnotated());
     }
 
     protected T applyInterceptors(T instance, final CreationalContext<T> creationalContext) {
         try {
             WeldInterceptorInstantiator<T> interceptorInstantiator = new WeldInterceptorInstantiator<T>(beanManager, creationalContext);
             InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptorInstantiator, new DefaultInvocationContextFactory(), beanManager.getInterceptorModelRegistry().get(getType()));
-            MethodHandler methodHandler = interceptorProxyCreator.createSubclassingMethodHandler(null, WeldInterceptorClassMetadata.of(getWeldAnnotated()));
+            MethodHandler methodHandler = interceptorProxyCreator.createSubclassingMethodHandler(null, WeldInterceptorClassMetadata.of(getEnhancedAnnotated()));
             CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
             wrapperMethodHandler.setInterceptorMethodHandler(methodHandler);
         } catch (Exception e) {

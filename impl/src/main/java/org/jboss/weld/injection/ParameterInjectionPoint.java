@@ -23,13 +23,13 @@ package org.jboss.weld.injection;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.introspector.WeldParameter;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public interface ParameterInjectionPoint<T, X> extends WeldInjectionPoint<T, Object> {
 
     @Override
-    WeldParameter<T, X> getAnnotated();
+    EnhancedAnnotatedParameter<T, X> getAnnotated();
 
     T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext);
 }
