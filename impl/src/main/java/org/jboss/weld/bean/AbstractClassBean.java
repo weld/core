@@ -307,6 +307,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
     }
 
+    @Override
+    public AnnotatedType<T> getAnnotated() {
+        return annotatedType;
+    }
+
     /**
      * Gets the annotated item
      *
@@ -428,10 +433,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected void checkConstructor() {
-        if (!constructor.getAnnotated().getEnhancedParameters(Disposes.class).isEmpty()) {
+        if (!constructor.getEnhancedAnnotated().getEnhancedParameters(Disposes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
         }
-        if (!constructor.getAnnotated().getEnhancedParameters(Observes.class).isEmpty()) {
+        if (!constructor.getEnhancedAnnotated().getEnhancedParameters(Observes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
         }
     }
@@ -461,7 +466,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         final ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
         enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass());
         constructorForEnhancedSubclass = EnhancedAnnotatedConstructorImpl.of(
-                enhancedSubclass.getDeclaredEnhancedConstructor(getConstructor().getAnnotated().getSignature()),
+                enhancedSubclass.getDeclaredEnhancedConstructor(getConstructor().getEnhancedAnnotated().getSignature()),
                 enhancedSubclass,
                 transformer);
     }

@@ -35,6 +35,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.inject.Named;
@@ -224,6 +225,15 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     /**
      * Returns the annotated item the bean represents
      *
+     * @return The annotated item
+     */
+    public abstract Annotated getAnnotated();
+
+    /**
+     * Returns the weld-enhanced annotated item the bean represents. The item is only available during bootstrap.
+     * The method throws {@link IllegalStateException} at runtime.
+     *
+     * @throws IllegalStateException when invoked at runtime
      * @return The annotated item
      */
     public abstract EnhancedAnnotated<T, S> getEnhancedAnnotated();

@@ -29,8 +29,8 @@ import org.jboss.weld.injection.ForwardingInjectionPoint;
 public abstract class ForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint implements WeldInjectionPointAttributes<T, S> {
 
     @Override
-    public EnhancedAnnotated<T, S> getAnnotated() {
-        return delegate().getAnnotated();
+    public EnhancedAnnotated<T, S> getEnhancedAnnotated() {
+        return delegate().getEnhancedAnnotated();
     }
 
     @Override

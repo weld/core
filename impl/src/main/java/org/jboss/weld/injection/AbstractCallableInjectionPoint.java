@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
@@ -52,7 +53,7 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return getAnnotated().getQualifiers();
+        return getEnhancedAnnotated().getQualifiers();
     }
 
     @Override
@@ -86,7 +87,7 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
     }
 
     @Override
-    public abstract EnhancedAnnotatedCallable<T, X, S> getAnnotated();
+    public abstract AnnotatedCallable<X> getAnnotated();
 
     public List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints() {
         return parameters;

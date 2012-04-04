@@ -41,8 +41,7 @@ import org.jboss.weld.injection.WeldInjectionPoint;
  */
 public interface WeldInjectionPointAttributes<T, S> extends InjectionPoint {
 
-    @Override
-    EnhancedAnnotated<T, S> getAnnotated();
+    EnhancedAnnotated<T, S> getEnhancedAnnotated();
 
     /**
      * Returns an instance of a given qualifier annotation or null if a given qualifier is not present on the injection point.

@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
@@ -94,7 +95,12 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         return parameterValues;
     }
 
-    public EnhancedAnnotatedConstructor<T> getAnnotated() {
+    public AnnotatedConstructor<T> getAnnotated() {
+        return constructor.slim();
+    }
+
+    @Override
+    public EnhancedAnnotatedConstructor<T> getEnhancedAnnotated() {
         return constructor;
     }
 }

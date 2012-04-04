@@ -83,7 +83,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
     }
 
     @Override
-    protected AnnotatedMethod<T> delegate() {
+    public AnnotatedMethod<T> delegate() {
         return annotatedMethod;
     }
 }

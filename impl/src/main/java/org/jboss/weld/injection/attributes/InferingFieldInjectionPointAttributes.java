@@ -24,6 +24,7 @@ package org.jboss.weld.injection.attributes;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
@@ -64,7 +65,12 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     }
 
     @Override
-    public EnhancedAnnotatedField<T, X> getAnnotated() {
+    public AnnotatedField<X> getAnnotated() {
+        return field.get().slim();
+    }
+
+    @Override
+    public EnhancedAnnotatedField<T, X> getEnhancedAnnotated() {
         return field.get();
     }
 
@@ -76,7 +82,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof InferingFieldInjectionPointAttributes<?, ?>) {
-            EnhancedAnnotatedField<?, ?> field = Reflections.<InferingFieldInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
+            AnnotatedField<?> field = Reflections.<InferingFieldInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
             return AnnotatedTypes.compareAnnotatedField(getAnnotated(), field);
         }
         return false;

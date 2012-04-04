@@ -100,10 +100,10 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
         this.observerMethod = MethodInjectionPoint.ofObserverOrDisposerMethod(observer, declaringBean, manager);
-        this.eventType = observerMethod.getAnnotated().getEnhancedParameters(Observes.class).get(0).getBaseType();
+        this.eventType = observer.getEnhancedParameters(Observes.class).get(0).getBaseType();
         this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
-        this.bindings = new HashSet<Annotation>(observerMethod.getAnnotated().getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
-        Observes observesAnnotation = observerMethod.getAnnotated().getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);
+        this.bindings = new HashSet<Annotation>(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
+        Observes observesAnnotation = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = TransactionPhase.IN_PROGRESS;
 
@@ -134,7 +134,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      */
     private void checkObserverMethod() {
         // Make sure exactly one and only one parameter is annotated with Observes
-        List<?> eventObjects = this.observerMethod.getAnnotated().getEnhancedParameters(Observes.class);
+        List<?> eventObjects = this.observerMethod.getEnhancedAnnotated().getEnhancedParameters(Observes.class);
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
             throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
         }
@@ -142,7 +142,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
         }
         // Check for parameters annotated with @Disposes
-        List<?> disposeParams = this.observerMethod.getAnnotated().getEnhancedParameters(Disposes.class);
+        List<?> disposeParams = this.observerMethod.getEnhancedAnnotated().getEnhancedParameters(Disposes.class);
         if (disposeParams.size() > 0) {
             throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
         }
@@ -155,7 +155,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             throw new DefinitionException(INVALID_INITIALIZER, this);
         }
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
-        for (EnhancedAnnotatedParameter<?, ?> parameter : getMethod().getAnnotated().getEnhancedParameters()) {
+        for (EnhancedAnnotatedParameter<?, ?> parameter : getMethod().getEnhancedAnnotated().getEnhancedParameters()) {
             if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals("")) {
                 throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
             }

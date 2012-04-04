@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -152,7 +153,13 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
         return parameterValues;
     }
 
-    public EnhancedAnnotatedMethod<T, X> getAnnotated() {
+    @Override
+    public EnhancedAnnotatedMethod<T, X> getEnhancedAnnotated() {
         return enhancedMethod;
+    }
+
+    @Override
+    public AnnotatedMethod<X> getAnnotated() {
+        return method.delegate();
     }
 }

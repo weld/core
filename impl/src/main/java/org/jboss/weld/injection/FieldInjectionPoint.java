@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.injection;
 
+import static org.jboss.weld.injection.Exceptions.rethrowException;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -33,8 +36,6 @@ import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
-
-import static org.jboss.weld.injection.Exceptions.rethrowException;
 
 public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPoint<T, Field>, Serializable {
 
@@ -51,8 +52,8 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
 
     protected FieldInjectionPoint(FieldInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;
-        this.cacheable = !attributes.isDelegate() && !InjectionPoint.class.isAssignableFrom(getAnnotated().getJavaClass())
-                && !Instance.class.isAssignableFrom(getAnnotated().getJavaClass());
+        this.cacheable = !attributes.isDelegate() && !InjectionPoint.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass())
+                && !Instance.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass());
     }
 
     public void inject(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
@@ -103,7 +104,12 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
     }
 
     @Override
-    public EnhancedAnnotatedField<T, X> getAnnotated() {
+    public EnhancedAnnotatedField<T, X> getEnhancedAnnotated() {
+        return attributes.getEnhancedAnnotated();
+    }
+
+    @Override
+    public AnnotatedField<X> getAnnotated() {
         return attributes.getAnnotated();
     }
 }

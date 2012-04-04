@@ -23,10 +23,10 @@ import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
 import java.lang.reflect.Member;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -81,6 +81,9 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
     public AbstractClassBean<X> getDeclaringBean() {
         return declaringBean;
     }
+
+    @Override
+    public abstract AnnotatedMember<? super X> getAnnotated();
 
     @Override
     public abstract EnhancedAnnotatedMember<T, ?, S> getEnhancedAnnotated();

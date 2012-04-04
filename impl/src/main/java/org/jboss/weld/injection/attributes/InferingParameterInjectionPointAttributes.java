@@ -23,6 +23,7 @@ package org.jboss.weld.injection.attributes;
 
 import java.lang.reflect.Member;
 
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
@@ -63,8 +64,13 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
     }
 
     @Override
-    public EnhancedAnnotatedParameter<T, X> getAnnotated() {
+    public EnhancedAnnotatedParameter<T, X> getEnhancedAnnotated() {
         return parameter.get();
+    }
+
+    @Override
+    public AnnotatedParameter<X> getAnnotated() {
+        return getEnhancedAnnotated().slim();
     }
 
     @Override
@@ -75,7 +81,7 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof InferingParameterInjectionPointAttributes<?, ?>) {
-            EnhancedAnnotatedParameter<?, ?> parameter = Reflections.<InferingParameterInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
+            AnnotatedParameter<?> parameter = Reflections.<InferingParameterInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
             return AnnotatedTypes.compareAnnotatedParameters(getAnnotated(), parameter);
         }
         return false;

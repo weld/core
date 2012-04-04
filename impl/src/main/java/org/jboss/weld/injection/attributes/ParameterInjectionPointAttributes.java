@@ -21,10 +21,15 @@
  */
 package org.jboss.weld.injection.attributes;
 
+import javax.enterprise.inject.spi.AnnotatedParameter;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 
 public interface ParameterInjectionPointAttributes<T, X> extends WeldInjectionPointAttributes<T, Object> {
 
     @Override
-    EnhancedAnnotatedParameter<T, X> getAnnotated();
+    AnnotatedParameter<X> getAnnotated();
+
+    @Override
+    EnhancedAnnotatedParameter<T, X> getEnhancedAnnotated();
 }

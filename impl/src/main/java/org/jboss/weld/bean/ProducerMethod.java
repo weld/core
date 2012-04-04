@@ -27,6 +27,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -156,6 +157,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         }
     }
 
+    @Override
+    public AnnotatedMethod<? super X> getAnnotated() {
+        return method.getEnhancedAnnotated();
+    }
+
     /**
      * Gets the annotated item representing the method
      *
@@ -163,7 +169,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      */
     @Override
     public EnhancedAnnotatedMethod<T, ? super X> getEnhancedAnnotated() {
-        return method.getAnnotated();
+        return method.getEnhancedAnnotated();
     }
 
     @Override
@@ -203,5 +209,4 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     public boolean isProxyable() {
         return proxiable;
     }
-
 }

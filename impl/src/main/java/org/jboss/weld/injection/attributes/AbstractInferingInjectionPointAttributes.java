@@ -30,7 +30,6 @@ import java.util.Set;
 import javax.decorator.Delegate;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -51,7 +50,7 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return getAnnotated().getQualifiers();
+        return getEnhancedAnnotated().getQualifiers();
     }
 
     @Override
@@ -71,9 +70,6 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
     @Override
     public abstract Member getMember();
-
-    @Override
-    public abstract EnhancedAnnotated<T, S> getAnnotated();
 
     @Override
     public String toString() {

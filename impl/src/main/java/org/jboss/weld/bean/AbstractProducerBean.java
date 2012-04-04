@@ -49,7 +49,6 @@ import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -109,9 +108,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         super(attributes, idSuffix, declaringBean, beanManager, services);
         serializationCheckCache = new MapMaker().makeComputingMap(SERIALIZABLE_CHECK);
     }
-
-    @Override
-    public abstract EnhancedAnnotatedMember<T, ? super X, S> getEnhancedAnnotated();
 
     @Override
     // Overriden to provide the class of the bean that declares the producer

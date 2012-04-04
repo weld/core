@@ -26,7 +26,6 @@ import java.lang.annotation.Annotation;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 
 public abstract class AbstractForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint implements WeldInjectionPointAttributes<T, S>, Serializable {
@@ -44,9 +43,6 @@ public abstract class AbstractForwardingInjectionPointAttributes<T, S> extends F
     protected InjectionPoint delegate() {
         return delegate;
     }
-
-    @Override
-    public abstract EnhancedAnnotated<T, S> getAnnotated();
 
     @Override
     public <A extends Annotation> A getQualifier(Class<A> annotationType) {

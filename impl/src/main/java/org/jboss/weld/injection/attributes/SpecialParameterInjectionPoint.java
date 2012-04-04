@@ -22,6 +22,7 @@
 package org.jboss.weld.injection.attributes;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
@@ -52,8 +53,13 @@ public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPoi
     }
 
     @Override
-    public EnhancedAnnotatedParameter<T, X> getAnnotated() {
+    public AnnotatedParameter<X> getAnnotated() {
         return attributes.getAnnotated();
+    }
+
+    @Override
+    public EnhancedAnnotatedParameter<T, X> getEnhancedAnnotated() {
+        return attributes.getEnhancedAnnotated();
     }
 
     @Override

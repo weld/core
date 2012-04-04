@@ -69,7 +69,12 @@ public class ForwardingParameterInjectionPointAttributes<T, X> extends AbstractF
     }
 
     @Override
-    public EnhancedAnnotatedParameter<T, X> getAnnotated() {
+    public AnnotatedParameter<X> getAnnotated() {
+        return getEnhancedAnnotated().slim();
+    }
+
+    @Override
+    public EnhancedAnnotatedParameter<T, X> getEnhancedAnnotated() {
         return parameter.get();
     }
 }

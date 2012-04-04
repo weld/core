@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
@@ -54,7 +55,7 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
 
     private ParameterInjectionPointImpl(ParameterInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;
-        this.cacheable = !isDelegate() && !InjectionPoint.class.isAssignableFrom(getAnnotated().getJavaClass()) && !Instance.class.isAssignableFrom(getAnnotated().getJavaClass());
+        this.cacheable = !isDelegate() && !InjectionPoint.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass()) && !Instance.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass());
     }
 
     @Override
@@ -80,7 +81,13 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
         return objectToInject;
     }
 
-    public EnhancedAnnotatedParameter<T, X> getAnnotated() {
+    @Override
+    public AnnotatedParameter<X> getAnnotated() {
         return attributes.getAnnotated();
+    }
+
+    @Override
+    public EnhancedAnnotatedParameter<T, X> getEnhancedAnnotated() {
+        return attributes.getEnhancedAnnotated();
     }
 }

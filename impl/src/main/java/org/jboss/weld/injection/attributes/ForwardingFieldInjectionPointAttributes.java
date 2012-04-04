@@ -71,7 +71,12 @@ public class ForwardingFieldInjectionPointAttributes<T, X> extends AbstractForwa
     }
 
     @Override
-    public EnhancedAnnotatedField<T, X> getAnnotated() {
+    public AnnotatedField<X> getAnnotated() {
+        return field.get().slim();
+    }
+
+    @Override
+    public EnhancedAnnotatedField<T, X> getEnhancedAnnotated() {
         return field.get();
     }
 }

@@ -30,5 +30,5 @@ public interface WeldInjectionPoint<T, S> extends WeldInjectionPointAttributes<T
     void inject(Object declaringInstance, Object value);
 
     @Override
-    EnhancedAnnotated<T, S> getAnnotated();
+    EnhancedAnnotated<T, S> getEnhancedAnnotated();
 }
