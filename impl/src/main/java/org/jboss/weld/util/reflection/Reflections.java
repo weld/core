@@ -534,7 +534,7 @@ public class Reflections {
             // TODO: this doesn't look OK!
             if (otherType instanceof TypeVariable<?>) {
                 TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
-                if (isTypeInsideBounds(getRawType(), getActualTypeArguments(), typeVariable.getBounds())) {
+                if (isTypeInsideBounds(getRawType(), EMPTY_TYPES, typeVariable.getBounds())) {
                     return true;
                 }
             }
