@@ -209,7 +209,7 @@
                     <exclude name="testUserTransactionInjection"/>
                 </methods>
             </class>
-            
+
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
             <class name="org.jboss.cdi.tck.tests.context.jms.MessageListenerContextTest">
