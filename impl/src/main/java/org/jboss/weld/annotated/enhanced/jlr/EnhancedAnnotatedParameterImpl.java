@@ -29,6 +29,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * Represents a parameter
@@ -118,7 +119,7 @@ public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnota
      */
     @Override
     public String toString() {
-        return "[parameter " + (getPosition() + 1) + "] of " + getDeclaringEnhancedCallable().toString();
+        return Formats.formatAnnotatedParameter(this);
     }
 
     public AnnotatedCallable<X> getDeclaringCallable() {

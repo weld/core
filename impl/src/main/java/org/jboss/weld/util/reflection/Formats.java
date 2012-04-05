@@ -372,4 +372,8 @@ public class Formats {
                 + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers())) + method.getDeclaringType().getJavaClass().getName() + "."
                 + method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters());
     }
+
+    public static String formatAnnotatedParameter(AnnotatedParameter<?> parameter) {
+        return Formats.formatSimpleClassName(parameter) + " Parameter " + (parameter.getPosition() + 1) + " of " + parameter.getDeclaringCallable().toString();
+    }
 }

@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.jboss.weld.util.reflection.Formats;
+
 public class UnbackedAnnotatedParameter<X> extends UnbackedAnnotated implements AnnotatedParameter<X> {
 
     private final int position;
@@ -26,4 +28,8 @@ public class UnbackedAnnotatedParameter<X> extends UnbackedAnnotated implements 
         return declaringCallable;
     }
 
+    @Override
+    public String toString() {
+        return Formats.formatAnnotatedParameter(this);
+    }
 }

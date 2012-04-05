@@ -9,6 +9,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.jboss.weld.util.reflection.Formats;
+
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X> {
 
     public static <X> AnnotatedParameter<X> of(Type baseType, Set<Annotation> annotations, int position, AnnotatedCallable<X> declaringCallable) {
@@ -49,5 +51,10 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return getAnnotation(annotationType) != null;
+    }
+
+    @Override
+    public String toString() {
+        return Formats.formatAnnotatedParameter(this);
     }
 }
