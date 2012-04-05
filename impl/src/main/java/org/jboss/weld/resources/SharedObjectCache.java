@@ -79,5 +79,6 @@ public class SharedObjectCache implements Service {
         sharedSets.clear();
         sharedMaps.clear();
         sharedMultiMaps.clear();
+        typeClosures.clear();
     }
 }

@@ -263,7 +263,7 @@ public class BeanDeployerEnvironment {
 
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
         if (!(bean instanceof NewBean)) {
-            classBeanMap.put(bean.getEnhancedAnnotated().slim(), bean);
+            classBeanMap.put(bean.getAnnotated(), bean);
         }
         addAbstractBean(bean);
     }
@@ -409,7 +409,7 @@ public class BeanDeployerEnvironment {
     public void vetoBean(AbstractBean<?, ?> bean) {
         beans.remove(bean);
         if (bean instanceof AbstractClassBean<?>) {
-            classBeanMap.remove(bean.getEnhancedAnnotated().slim());
+            classBeanMap.remove(bean.getAnnotated());
             if (bean instanceof InterceptorImpl<?>) {
                 interceptors.remove(bean);
             }

@@ -47,15 +47,15 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
         return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean);
     }
 
-    private SerializableHolder<EnhancedAnnotatedParameter<T, X>> parameter;
+    private SerializableHolder<AnnotatedParameter<X>> parameter;
 
     protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
         super(bean, parameter.getQualifiers());
-        if (parameter.getDeclaringType().isDiscovered()) {
-            this.parameter = new DiscoveredWeldParameterSerializableHolder<T, X>(parameter);
-        } else {
-            this.parameter = NoopSerializableHolder.of(parameter);
-        }
+//        if (parameter.getDeclaringType().isDiscovered()) {
+//            this.parameter = new DiscoveredWeldParameterSerializableHolder<T, X>(parameter);
+//        } else {
+        this.parameter = NoopSerializableHolder.of(parameter.slim());
+//        }
     }
 
     @Override
@@ -65,7 +65,7 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
 
     @Override
     public AnnotatedParameter<X> getAnnotated() {
-        return parameter.get().slim();
+        return parameter.get();
     }
 
     @Override

@@ -48,15 +48,15 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
         return new InferingFieldInjectionPointAttributes<T, X>(field, bean);
     }
 
-    private SerializableHolder<EnhancedAnnotatedField<T, X>> field;
+    private SerializableHolder<AnnotatedField<X>> field;
 
     protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
         super(bean, field.getQualifiers());
-        if (field.getDeclaringType().isDiscovered()) {
-            this.field = new DiscoveredWeldFieldSerializableHolder<T, X>(field);
-        } else {
-            this.field = NoopSerializableHolder.of(field);
-        }
+//        if (field.getDeclaringType().isDiscovered()) {
+//            this.field = new DiscoveredWeldFieldSerializableHolder<T, X>(field);
+//        } else {
+            this.field = NoopSerializableHolder.of(field.slim());
+//        }
     }
 
     @Override
@@ -66,7 +66,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
 
     @Override
     public AnnotatedField<X> getAnnotated() {
-        return field.get().slim();
+        return field.get();
     }
 
     @Override

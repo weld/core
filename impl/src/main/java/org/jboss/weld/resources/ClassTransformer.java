@@ -205,9 +205,14 @@ public class ClassTransformer implements Service {
         return typeStore;
     }
 
+    public void cleanupAfterBoot() {
+        this.enhancedAnnotatedTypes.clear();
+    }
+
     public void cleanup() {
+        cleanupAfterBoot();
         this.annotations.clear();
         this.discoveredSlimAnnotatedTypes.clear();
-        this.enhancedAnnotatedTypes.clear();
+        this.externalSlimAnnotatedTypes.clear();
     }
 }

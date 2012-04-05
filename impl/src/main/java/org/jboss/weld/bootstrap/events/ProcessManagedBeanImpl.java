@@ -33,7 +33,7 @@ public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, Manag
     }
 
     public ProcessManagedBeanImpl(BeanManagerImpl beanManager, ManagedBean<X> bean) {
-        super(beanManager, ProcessManagedBean.class, new Type[]{bean.getEnhancedAnnotated().getBaseType()}, bean);
+        super(beanManager, ProcessManagedBean.class, new Type[]{bean.getAnnotated().getBaseType()}, bean);
     }
 
     public AnnotatedType<X> getAnnotatedBeanClass() {

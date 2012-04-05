@@ -16,31 +16,39 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.ClassTransformer;
+import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ProcessBean;
-import java.lang.reflect.Type;
+
+import org.jboss.weld.bean.AbstractBean;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public abstract class ProcessBeanImpl<X> extends AbstractDefinitionContainerEvent implements ProcessBean<X> {
 
+    public static <X> void fire(BeanManagerImpl beanManager, AbstractBean<X, ?> bean) {
+        fire(beanManager, bean, bean.getAnnotated());
+    }
+
     public static <X> void fire(BeanManagerImpl beanManager, Bean<X> bean) {
+        fire(beanManager, bean, null);
+    }
+
+    private static <X> void fire(BeanManagerImpl beanManager, Bean<X> bean, Annotated annotated) {
         if (beanManager.isBeanEnabled(bean)) {
-            new ProcessBeanImpl<X>(beanManager, bean) {
+            new ProcessBeanImpl<X>(beanManager, bean, annotated) {
             }.fire();
         }
     }
 
     private final Bean<X> bean;
-    private final EnhancedAnnotated<?, ?> annotated;
+    private final Annotated annotated;
 
-    public ProcessBeanImpl(BeanManagerImpl beanManager, Bean<X> bean) {
+    public ProcessBeanImpl(BeanManagerImpl beanManager, Bean<X> bean, Annotated annotated) {
         super(beanManager, ProcessBean.class, new Type[]{bean.getBeanClass()});
         this.bean = bean;
-        this.annotated = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(bean.getBeanClass());
+        this.annotated = annotated;
     }
 
     public void addDefinitionError(Throwable t) {

@@ -40,11 +40,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.Weld;
+import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.ContextBean;
@@ -439,10 +443,23 @@ public class WeldBootstrap implements Bootstrap {
                 beanManager.getBeanResolver().clear();
                 beanManager.getObserverResolver().clear();
                 beanManager.getDecoratorResolver().clear();
+                // clean up beans
                 for (Bean<?> bean : beanManager.getBeans()) {
                     if (bean instanceof RIBean<?>) {
                         RIBean<?> riBean = (RIBean<?>) bean;
                         riBean.cleanupAfterBoot();
+                    }
+                }
+                // clean up decorators
+                for (Decorator<?> decorator : beanManager.getDecorators()) {
+                    if (decorator instanceof DecoratorImpl<?>) {
+                        Reflections.<DecoratorImpl<?>>cast(decorator).cleanupAfterBoot();
+                    }
+                }
+                // clean up interceptors
+                for (Interceptor<?> interceptor : beanManager.getInterceptors()) {
+                    if (interceptor instanceof InterceptorImpl<?>) {
+                        Reflections.<InterceptorImpl<?>>cast(interceptor).cleanupAfterBoot();
                     }
                 }
                 BeansClosure.getClosure(beanManager).clear();
@@ -452,6 +469,8 @@ public class WeldBootstrap implements Bootstrap {
             deployment.getBeanManager().getServices().get(EnumService.class).inject();
             deployment.getBeanDeployer().cleanup();
         }
+        ClassTransformer.instance(deploymentManager).cleanupAfterBoot();
+        Container.instance().services().get(SharedObjectCache.class).cleanup();
         return this;
     }
 
