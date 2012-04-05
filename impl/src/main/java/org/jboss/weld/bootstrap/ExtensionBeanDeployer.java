@@ -68,12 +68,12 @@ public class ExtensionBeanDeployer {
             BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass());
 
             ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
-            Set<ObserverMethodImpl<?, ?>> observerMethods = new HashSet<ObserverMethodImpl<?, ?>>();
-            createObserverMethods(bean, beanDeployment.getBeanManager(), clazz, observerMethods);
+            Set<ObserverInitializationContext<?, ?>> observerMethodInitializers = new HashSet<ObserverInitializationContext<?, ?>>();
+            createObserverMethods(bean, beanDeployment.getBeanManager(), clazz, observerMethodInitializers);
             beanDeployment.getBeanManager().addBean(bean);
-            for (ObserverMethodImpl<?, ?> observerMethod : observerMethods) {
-                observerMethod.initialize();
-                beanDeployment.getBeanManager().addObserver(observerMethod);
+            for (ObserverInitializationContext<?, ?> observerMethodInitializer : observerMethodInitializers) {
+                observerMethodInitializer.initialize();
+                beanDeployment.getBeanManager().addObserver(observerMethodInitializer.getObserver());
             }
         }
         return this;
@@ -90,15 +90,16 @@ public class ExtensionBeanDeployer {
         this.extensions.add(extension);
     }
 
-    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass, Set<ObserverMethodImpl<?, ?>> observerMethods) {
+    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass, Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
         for (EnhancedAnnotatedMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass)) {
-            createObserverMethod(declaringBean, beanManager, method, observerMethods);
+            createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers);
         }
     }
 
-    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method, Set<ObserverMethodImpl<?, ?>> observerMethods) {
+    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method, Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
-        observerMethods.add(observer);
+        ObserverInitializationContext<T, X> observerMethodInitializer = ObserverInitializationContext.of(observer, method);
+        observerMethodInitializers.add(observerMethodInitializer);
     }
 
 }

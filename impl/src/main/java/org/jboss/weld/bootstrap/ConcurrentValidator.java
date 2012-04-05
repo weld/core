@@ -39,7 +39,6 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -106,10 +105,10 @@ public class ConcurrentValidator extends Validator {
     }
 
     @Override
-    protected void validateObserverMethods(Iterable<ObserverMethodImpl<?, ?>> observers, final BeanManagerImpl beanManager) {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<ObserverMethodImpl<?, ?>>(observers) {
-            protected void doWork(ObserverMethodImpl<?, ?> observerMethod) {
-                for (InjectionPoint ip : observerMethod.getInjectionPoints()) {
+    protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers, final BeanManagerImpl beanManager) {
+        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<ObserverInitializationContext<?, ?>>(observers) {
+            protected void doWork(ObserverInitializationContext<?, ?> observerMethod) {
+                for (InjectionPoint ip : observerMethod.getObserver().getInjectionPoints()) {
                     validateInjectionPoint(ip, beanManager);
                 }
             }

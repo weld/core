@@ -154,9 +154,9 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     public AbstractBeanDeployer<E> initializeObserverMethods() {
-        for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers()) {
-            if (Observers.isObserverMethodEnabled(observer, manager)) {
-                observer.initialize();
+        for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
+            if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
+                observerInitializer.initialize();
             }
         }
         return this;
@@ -164,11 +164,11 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     public AbstractBeanDeployer<E> deployObserverMethods() {
         // TODO -- why do observers have to be the last?
-        for (ObserverMethodImpl<?, ?> observer : getEnvironment().getObservers()) {
-            if (Observers.isObserverMethodEnabled(observer, manager)) {
-                log.debug(FOUND_OBSERVER_METHOD, observer);
-                ProcessObserverMethodImpl.fire(manager, observer);
-                manager.addObserver(observer);
+        for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
+            if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
+                log.debug(FOUND_OBSERVER_METHOD, observerInitializer.getObserver());
+                ProcessObserverMethodImpl.fire(manager, observerInitializer.getObserver());
+                manager.addObserver(observerInitializer.getObserver());
             }
         }
         return this;
@@ -236,8 +236,9 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T, X> void createObserverMethod(RIBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> method) {
-        ObserverMethodImpl<T, ? super X> observer = ObserverFactory.create(method, declaringBean, manager);
-        getEnvironment().addObserverMethod(observer);
+        ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, manager);
+        ObserverInitializationContext<T, ? super X> observerInitializer = ObserverInitializationContext.of(observer, method);
+        getEnvironment().addObserverMethod(observerInitializer);
     }
 
     protected <T> ManagedBean<T> createManagedBean(EnhancedAnnotatedType<T> weldClass) {

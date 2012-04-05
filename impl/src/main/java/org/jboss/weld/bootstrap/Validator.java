@@ -103,7 +103,6 @@ import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -605,9 +604,9 @@ public class Validator implements Service {
         }
     }
 
-    protected void validateObserverMethods(Iterable<ObserverMethodImpl<?, ?>> observers, BeanManagerImpl beanManager) {
-        for (ObserverMethodImpl<?, ?> omi : observers) {
-            for (InjectionPoint ip : omi.getInjectionPoints())
+    protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers, BeanManagerImpl beanManager) {
+        for (ObserverInitializationContext<?, ?> omi : observers) {
+            for (InjectionPoint ip : omi.getObserver().getInjectionPoints())
                 validateInjectionPoint(ip, beanManager);
         }
     }

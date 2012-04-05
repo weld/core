@@ -34,8 +34,8 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
@@ -55,7 +55,6 @@ import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -84,7 +83,7 @@ public class BeanDeployerEnvironment {
                 Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
                 new ConcurrentHashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<ObserverMethodImpl<?, ?>, Boolean>()),
+                Sets.newSetFromMap(new ConcurrentHashMap<ObserverInitializationContext<?, ?>, Boolean>()),
                 Sets.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
                 Sets.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
                 Sets.newSetFromMap(new ConcurrentHashMap<DecoratorImpl<?>, Boolean>()),
@@ -102,7 +101,7 @@ public class BeanDeployerEnvironment {
     private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
     private final Set<ProducerField<?, ?>> producerFields;
     private final Set<RIBean<?>> beans;
-    private final Set<ObserverMethodImpl<?, ?>> observers;
+    private final Set<ObserverInitializationContext<?, ?>> observers;
     private final Set<DisposalMethod<?, ?>> allDisposalBeans;
     private final Set<DisposalMethod<?, ?>> resolvedDisposalBeans;
     private final Set<DecoratorImpl<?>> decorators;
@@ -121,7 +120,7 @@ public class BeanDeployerEnvironment {
             Set<ProducerField<?, ?>> producerFields,
             Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap,
             Set<RIBean<?>> beans,
-            Set<ObserverMethodImpl<?, ?>> observers,
+            Set<ObserverInitializationContext<?, ?>> observers,
             Set<DisposalMethod<?, ?>> allDisposalBeans,
             Set<DisposalMethod<?, ?>> resolvedDisposalBeans,
             Set<DecoratorImpl<?>> decorators,
@@ -158,7 +157,7 @@ public class BeanDeployerEnvironment {
                 new HashSet<ProducerField<?, ?>>(),
                 new HashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
                 new HashSet<RIBean<?>>(),
-                new HashSet<ObserverMethodImpl<?, ?>>(),
+                new HashSet<ObserverInitializationContext<?, ?>>(),
                 new HashSet<DisposalMethod<?, ?>>(),
                 new HashSet<DisposalMethod<?, ?>>(),
                 new HashSet<DecoratorImpl<?>>(),
@@ -302,9 +301,9 @@ public class BeanDeployerEnvironment {
         addNewBeansFromInjectionPoints(bean);
     }
 
-    public void addObserverMethod(ObserverMethodImpl<?, ?> observer) {
-        this.observers.add(observer);
-        addNewBeansFromInjectionPoints(observer.getNewInjectionPoints());
+    public void addObserverMethod(ObserverInitializationContext<?, ?> observerInitializer) {
+        this.observers.add(observerInitializer);
+        addNewBeansFromInjectionPoints(observerInitializer.getObserver().getNewInjectionPoints());
     }
 
     public void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean) {
@@ -349,7 +348,7 @@ public class BeanDeployerEnvironment {
         return Collections.unmodifiableSet(interceptors);
     }
 
-    public Set<ObserverMethodImpl<?, ?>> getObservers() {
+    public Set<ObserverInitializationContext<?, ?>> getObservers() {
         return Collections.unmodifiableSet(observers);
     }
 

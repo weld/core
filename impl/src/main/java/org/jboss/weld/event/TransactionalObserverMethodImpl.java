@@ -42,11 +42,6 @@ class TransactionalObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
     }
 
     @Override
-    public void initialize() {
-        super.initialize();
-    }
-
-    @Override
     public void notify(T event) {
         TransactionServices txs = beanManager.getServices().get(TransactionServices.class);
         if (txs != null && txs.isTransactionActive()) {

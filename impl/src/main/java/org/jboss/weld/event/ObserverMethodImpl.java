@@ -56,7 +56,6 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 
 /**
@@ -89,8 +88,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     private final Set<WeldInjectionPoint<?, ?>> injectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
 
-    private volatile EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod;
-
     /**
      * Creates an Observer which describes and encapsulates an observer method
      * (8.5).
@@ -102,7 +99,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
-        this.enhancedAnnotatedMethod = observer;
         this.observerMethod = MethodInjectionPoint.ofObserverOrDisposerMethod(observer, declaringBean, manager);
         this.eventType = observer.getEnhancedParameters(Observes.class).get(0).getBaseType();
         this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
@@ -136,9 +132,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      * Performs validation of the observer method for compliance with the
      * specifications.
      */
-    private void checkObserverMethod() {
+    private void checkObserverMethod(EnhancedAnnotatedMethod<T, ? super X> annotated) {
         // Make sure exactly one and only one parameter is annotated with Observes
-        List<?> eventObjects = getEnhancedAnnotated().getEnhancedParameters(Observes.class);
+        List<?> eventObjects = annotated.getEnhancedParameters(Observes.class);
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
             throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
         }
@@ -146,7 +142,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
         }
         // Check for parameters annotated with @Disposes
-        List<?> disposeParams = getEnhancedAnnotated().getEnhancedParameters(Disposes.class);
+        List<?> disposeParams = annotated.getEnhancedParameters(Disposes.class);
         if (disposeParams.size() > 0) {
             throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
         }
@@ -159,7 +155,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             throw new DefinitionException(INVALID_INITIALIZER, this);
         }
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
-        for (EnhancedAnnotatedParameter<?, ?> parameter : getEnhancedAnnotated().getEnhancedParameters()) {
+        for (EnhancedAnnotatedParameter<?, ?> parameter : annotated.getEnhancedParameters()) {
             if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals("")) {
                 throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
             }
@@ -206,20 +202,12 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         return observerMethod;
     }
 
-    public EnhancedAnnotatedMethod<T, ? super X> getEnhancedAnnotated() {
-        return Beans.checkEnhancedAnnotatedAvailable(enhancedAnnotatedMethod);
-    }
-
-    public void cleanupAfterBoot() {
-        this.enhancedAnnotatedMethod = null;
-    }
-
     /**
      * Completes initialization of the observer and allows derived types to
      * override behavior.
      */
-    public void initialize() {
-        checkObserverMethod();
+    public void initialize(EnhancedAnnotatedMethod<T, ? super X> annotated) {
+        checkObserverMethod(annotated);
     }
 
     public void notify(final T event) {
