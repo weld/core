@@ -62,7 +62,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
     }
 
     public AnnotatedType<Object> getAnnotatedBeanClass() {
-        return getBean().getEnhancedAnnotated();
+        return getBean().getAnnotated();
     }
 
 }

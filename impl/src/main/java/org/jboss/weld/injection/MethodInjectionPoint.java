@@ -41,7 +41,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> {
 
     private final InvokableAnnotatedMethod<X> method;
-    private final EnhancedAnnotatedMethod<T, X> enhancedMethod; // TODO remove
 
     public static <T, X> MethodInjectionPoint<T, X> of(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
         return new MethodInjectionPoint<T, X>(method, declaringBean, false, manager);
@@ -54,7 +53,6 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
     protected MethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
         super(enhancedMethod, declaringBean, observerOrDisposer, manager);
         this.method = new InvokableAnnotatedMethod<X>(enhancedMethod.slim());
-        this.enhancedMethod = enhancedMethod;
     }
 
     public T invoke(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
@@ -151,11 +149,6 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
             }
         }
         return parameterValues;
-    }
-
-    @Override
-    public EnhancedAnnotatedMethod<T, X> getEnhancedAnnotated() {
-        return enhancedMethod;
     }
 
     @Override

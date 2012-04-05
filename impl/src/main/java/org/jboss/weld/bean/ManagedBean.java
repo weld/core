@@ -84,9 +84,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     private static class ManagedBeanInjectionTarget<T> implements InjectionTarget<T> {
 
         private final ManagedBean<T> bean;
+        private final WeldInterceptorClassMetadata<T> weldInterceptorClassMetadata;
 
-        private ManagedBeanInjectionTarget(ManagedBean<T> bean) {
+        private ManagedBeanInjectionTarget(ManagedBean<T> bean, EnhancedAnnotatedType<T> type) {
             this.bean = bean;
+            this.weldInterceptorClassMetadata = WeldInterceptorClassMetadata.of(type);
         }
 
         protected ManagedBean<T> getBean() {
@@ -94,7 +96,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
 
         public void inject(final T instance, final CreationalContext<T> ctx) {
-            new InjectionContextImpl<T>(bean.getBeanManager(), ManagedBeanInjectionTarget.this, getBean().getEnhancedAnnotated(), instance) {
+            new InjectionContextImpl<T>(bean.getBeanManager(), ManagedBeanInjectionTarget.this, getBean().getAnnotated(), instance) {
                 public void proceed() {
                     Beans.injectEEFields(instance, bean.getBeanManager(), bean.ejbInjectionPoints, bean.persistenceContextInjectionPoints, bean.persistenceUnitInjectionPoints, bean.resourceInjectionPoints);
                     Beans.injectFieldsAndInitializers(instance, ctx, bean.getBeanManager(), bean.getInjectableFields(), bean.getInitializerMethods());
@@ -142,7 +144,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 instance = bean.applyDecorators(undecoratedInstance, ctx, Container.instance().services().get(CurrentInjectionPoint.class).peek());
             }
             if (bean.hasInterceptors()) {
-                return bean.applyInterceptors(instance, ctx);
+                return bean.applyInterceptors(instance, ctx, weldInterceptorClassMetadata);
             } else {
                 return instance;
             }
@@ -201,8 +203,6 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      */
     protected ManagedBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, type, idSuffix, beanManager, services);
-        initType();
-        initConstructor(beanManager);
         initInitializerMethods(beanManager);
         initInjectableFields(beanManager);
         this.proxiable = Proxies.isTypesProxyable(type.getTypeClosure());
@@ -245,12 +245,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      */
     @Override
     public void internalInitialize(BeanDeployerEnvironment environment) {
-        checkConstructor();
         super.internalInitialize(environment);
         initPostConstruct();
         initPreDestroy();
         initEEInjectionPoints();
-        setInjectionTarget(new ManagedBeanInjectionTarget<T>(this));
+        setInjectionTarget(new ManagedBeanInjectionTarget<T>(this, getEnhancedAnnotated()));
     }
 
     protected T createInstance(CreationalContext<T> ctx) {
@@ -351,14 +350,14 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     @Override
     protected boolean isInterceptionCandidate() {
-        return !Beans.isInterceptor(getEnhancedAnnotated()) && !Beans.isDecorator(getEnhancedAnnotated());
+        return !((this instanceof InterceptorImpl<?>) || (this instanceof DecoratorImpl<?>));
     }
 
-    protected T applyInterceptors(T instance, final CreationalContext<T> creationalContext) {
+    protected T applyInterceptors(T instance, final CreationalContext<T> creationalContext, WeldInterceptorClassMetadata<T> weldInterceptorClassMetadata) {
         try {
             WeldInterceptorInstantiator<T> interceptorInstantiator = new WeldInterceptorInstantiator<T>(beanManager, creationalContext);
             InterceptorProxyCreatorImpl interceptorProxyCreator = new InterceptorProxyCreatorImpl(interceptorInstantiator, new DefaultInvocationContextFactory(), beanManager.getInterceptorModelRegistry().get(getType()));
-            MethodHandler methodHandler = interceptorProxyCreator.createSubclassingMethodHandler(null, WeldInterceptorClassMetadata.of(getEnhancedAnnotated()));
+            MethodHandler methodHandler = interceptorProxyCreator.createSubclassingMethodHandler(null, weldInterceptorClassMetadata);
             CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
             wrapperMethodHandler.setInterceptorMethodHandler(methodHandler);
         } catch (Exception e) {

@@ -26,7 +26,6 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.injection.WeldInjectionPoint;
 
 /**
@@ -40,8 +39,6 @@ import org.jboss.weld.injection.WeldInjectionPoint;
  * @param <X>
  */
 public interface WeldInjectionPointAttributes<T, S> extends InjectionPoint {
-
-    EnhancedAnnotated<T, S> getEnhancedAnnotated();
 
     /**
      * Returns an instance of a given qualifier annotation or null if a given qualifier is not present on the injection point.

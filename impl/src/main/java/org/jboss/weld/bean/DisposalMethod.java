@@ -33,12 +33,12 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -51,10 +51,12 @@ import org.jboss.weld.util.reflection.SecureReflections;
 public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     protected MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
-    private EnhancedAnnotatedParameter<?, ? super X> disposesParameter;
+    private AnnotatedParameter<? super X> disposesParameter;
     // indicates whether a given type of metadata is required by the disposal method
     private boolean injectionPointMetadataParameter = false;
     private boolean beanMetadataParameter = false;
+
+    private volatile EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod;
 
     public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
         return new DisposalMethod<X, T>(manager, method, declaringBean);
@@ -63,12 +65,13 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean) {
         super(BeanAttributesFactory.forDisposerMethod(disposalMethod, beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getEnhancedAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, beanManager.getServices());
         this.disposalMethodInjectionPoint = MethodInjectionPoint.ofObserverOrDisposerMethod(disposalMethod, this, beanManager);
-        initType();
+        this.enhancedAnnotatedMethod = disposalMethod;
+        initType(disposalMethod);
         addInjectionPoints(Beans.filterOutSpecialParameterInjectionPoints(disposalMethodInjectionPoint.getParameterInjectionPoints()));
     }
 
     private void initDisposesParameter() {
-        this.disposesParameter = getEnhancedAnnotated().getEnhancedParameters(Disposes.class).get(0);
+        this.disposesParameter = getEnhancedAnnotated().getEnhancedParameters(Disposes.class).get(0).slim();
     }
 
     private void initMetadataParameters() {
@@ -82,7 +85,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         }
     }
 
-    public EnhancedAnnotatedParameter<?, ? super X> getDisposesParameter() {
+    public AnnotatedParameter<? super X> getDisposesParameter() {
         return disposesParameter;
     }
 
@@ -94,8 +97,8 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         initMetadataParameters();
     }
 
-    protected void initType() {
-        this.type = cast(disposalMethodInjectionPoint.getEnhancedAnnotated().getEnhancedParameters(Disposes.class).get(0).getJavaClass());
+    protected void initType(EnhancedAnnotatedMethod<T, ? super X> method) {
+        this.type = cast(method.getEnhancedParameters(Disposes.class).get(0).getJavaClass());
     }
 
     @Override
@@ -105,7 +108,13 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     @Override
     public EnhancedAnnotatedMethod<T, ? super X> getEnhancedAnnotated() {
-        return disposalMethodInjectionPoint.getEnhancedAnnotated();
+        return Beans.checkEnhancedAnnotatedAvailable(enhancedAnnotatedMethod);
+    }
+
+    @Override
+    public void cleanupAfterBoot() {
+        super.cleanupAfterBoot();
+        this.enhancedAnnotatedMethod = null;
     }
 
     @Override
@@ -140,19 +149,19 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     private void checkDisposalMethod() {
-        if (!disposalMethodInjectionPoint.getEnhancedAnnotated().getEnhancedParameters().get(0).isAnnotationPresent(Disposes.class)) {
+        if (!getEnhancedAnnotated().getEnhancedParameters().get(0).isAnnotationPresent(Disposes.class)) {
             throw new DefinitionException(DISPOSE_NOT_FIRST_PARAM, disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getEnhancedAnnotated().getEnhancedParameters(Disposes.class).size() > 1) {
+        if (getEnhancedAnnotated().getEnhancedParameters(Disposes.class).size() > 1) {
             throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getEnhancedAnnotated().getEnhancedParameters(Observes.class).size() > 0) {
+        if (getEnhancedAnnotated().getEnhancedParameters(Observes.class).size() > 0) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getEnhancedAnnotated().getAnnotation(Inject.class) != null) {
+        if (getEnhancedAnnotated().getAnnotation(Inject.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Intitializer", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (disposalMethodInjectionPoint.getEnhancedAnnotated().getAnnotation(Produces.class) != null) {
+        if (getEnhancedAnnotated().getAnnotation(Produces.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes", disposalMethodInjectionPoint);
         }
         if (getDeclaringBean() instanceof SessionBean<?>) {
@@ -161,7 +170,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
             for (Type type : getDeclaringBean().getTypes()) {
                 if (type instanceof Class<?>) {
                     Class<?> clazz = (Class<?>) type;
-                    if (SecureReflections.isMethodExists(clazz, disposalMethodInjectionPoint.getEnhancedAnnotated().getName(), disposalMethodInjectionPoint.getEnhancedAnnotated().getParameterTypesAsArray())) {
+                    if (SecureReflections.isMethodExists(clazz, getEnhancedAnnotated().getName(), getEnhancedAnnotated().getParameterTypesAsArray())) {
                         methodDeclaredOnTypes = true;
                         continue;
                     }

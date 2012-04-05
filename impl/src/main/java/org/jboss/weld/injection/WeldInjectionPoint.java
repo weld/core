@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 
 public interface WeldInjectionPoint<T, S> extends WeldInjectionPointAttributes<T, S> {
@@ -28,7 +27,4 @@ public interface WeldInjectionPoint<T, S> extends WeldInjectionPointAttributes<T
      * @param value The value to inject
      */
     void inject(Object declaringInstance, Object value);
-
-    @Override
-    EnhancedAnnotated<T, S> getEnhancedAnnotated();
 }

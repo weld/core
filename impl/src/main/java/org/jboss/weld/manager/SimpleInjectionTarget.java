@@ -67,7 +67,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
         }
         ConstructorInjectionPoint<T> constructor = null;
         try {
-            constructor = Beans.getBeanConstructor(null, type, beanManager);
+            constructor = Beans.getBeanConstructorInjectionPoint(null, type, beanManager);
             this.injectionPoints.addAll(constructor.getParameterInjectionPoints());
         } catch (Exception e) {
             // this means the bean of a type that cannot be produce()d, but that is
@@ -92,7 +92,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             // this means we couldn't find a constructor on instantiation, which
             // means there isn't one that's spec-compliant
             // try again so the correct DefinitionException is thrown
-            Beans.getBeanConstructor(null, type, beanManager);
+            Beans.getBeanConstructorInjectionPoint(null, type, beanManager);
             // should not be reached
             throw new IllegalStateException(MISSING_BEAN_CONSTRUCTOR_FOUND);
         }

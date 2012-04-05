@@ -38,9 +38,11 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
     private static final long serialVersionUID = 7820718127728549436L;
 
     private final BeanHolder<?> bean;
+    private final Set<Annotation> qualifiers;
 
-    public AbstractInferingInjectionPointAttributes(Bean<?> bean) {
+    public AbstractInferingInjectionPointAttributes(Bean<?> bean, Set<Annotation> qualifiers) {
         this.bean = BeanHolder.of(bean);
+        this.qualifiers = qualifiers;
     }
 
     @Override
@@ -50,7 +52,7 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return getEnhancedAnnotated().getQualifiers();
+        return qualifiers;
     }
 
     @Override

@@ -58,11 +58,6 @@ public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPoi
     }
 
     @Override
-    public EnhancedAnnotatedParameter<T, X> getEnhancedAnnotated() {
-        return attributes.getEnhancedAnnotated();
-    }
-
-    @Override
     public T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
         throw new UnsupportedOperationException();
     }

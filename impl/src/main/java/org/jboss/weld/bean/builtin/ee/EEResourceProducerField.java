@@ -103,8 +103,11 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     private ProxyFactory<T> proxyFactory;
 
+    private final Class<T> rawType;
+
     protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, field, declaringBean, manager, services);
+        this.rawType = field.getJavaClass();
         this.injectionPoint = FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager);
     }
 
@@ -129,7 +132,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        if (Reflections.isFinal(getEnhancedAnnotated().getJavaClass()) || Serializable.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass())) {
+        if (Reflections.isFinal(rawType) || Serializable.class.isAssignableFrom(rawType)) {
             return createUnderlying(creationalContext);
         } else {
             BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)));
@@ -142,7 +145,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
      */
     private T createUnderlying(CreationalContext<T> creationalContext) {
         // Treat static fields as a special case, as they won't be injected, as the no bean is resolved, and normally there is no injection on static fields
-        if (getEnhancedAnnotated().isStatic()) {
+        if (getAnnotated().isStatic()) {
             return Reflections.<T>cast(Beans.resolveEEResource(getBeanManager(), injectionPoint));
         } else {
             return super.create(creationalContext);

@@ -27,12 +27,12 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
@@ -52,8 +52,15 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
 
     protected FieldInjectionPoint(FieldInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;
-        this.cacheable = !attributes.isDelegate() && !InjectionPoint.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass())
-                && !Instance.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass());
+        this.cacheable = isCacheableInjectionPoint(attributes);
+    }
+
+    protected static boolean isCacheableInjectionPoint(WeldInjectionPointAttributes<?, ?> attributes) {
+        if (attributes.isDelegate()) {
+            return false;
+        }
+        Class<?> rawType = Reflections.getRawType(attributes.getType());
+        return !InjectionPoint.class.isAssignableFrom(rawType) && !Instance.class.isAssignableFrom(rawType);
     }
 
     public void inject(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
@@ -101,11 +108,6 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
     @Override
     protected FieldInjectionPointAttributes<T, X> delegate() {
         return attributes;
-    }
-
-    @Override
-    public EnhancedAnnotatedField<T, X> getEnhancedAnnotated() {
-        return attributes.getEnhancedAnnotated();
     }
 
     @Override

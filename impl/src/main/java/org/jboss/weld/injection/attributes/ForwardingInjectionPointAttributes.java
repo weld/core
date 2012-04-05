@@ -23,15 +23,9 @@ package org.jboss.weld.injection.attributes;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 
 public abstract class ForwardingInjectionPointAttributes<T, S> extends ForwardingInjectionPoint implements WeldInjectionPointAttributes<T, S> {
-
-    @Override
-    public EnhancedAnnotated<T, S> getEnhancedAnnotated() {
-        return delegate().getEnhancedAnnotated();
-    }
 
     @Override
     public <X extends Annotation> X getQualifier(Class<X> annotationType) {

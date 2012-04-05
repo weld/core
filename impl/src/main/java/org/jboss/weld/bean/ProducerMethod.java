@@ -39,6 +39,7 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
@@ -57,6 +58,8 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     private final String id;
     private final boolean proxiable;
 
+    private volatile EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod;
+
     /**
      * Creates a producer method Web Bean
      *
@@ -72,6 +75,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     protected ProducerMethod(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getEnhancedAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
         this.id = createId(method, declaringBean);
+        this.enhancedAnnotatedMethod = method;
         this.method = MethodInjectionPoint.of(method, this, beanManager);
         initType();
         initProducerMethodInjectableParameters();
@@ -159,7 +163,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     @Override
     public AnnotatedMethod<? super X> getAnnotated() {
-        return method.getEnhancedAnnotated();
+        return method.getAnnotated();
     }
 
     /**
@@ -169,7 +173,13 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
      */
     @Override
     public EnhancedAnnotatedMethod<T, ? super X> getEnhancedAnnotated() {
-        return method.getEnhancedAnnotated();
+        return Beans.checkEnhancedAnnotatedAvailable(enhancedAnnotatedMethod);
+    }
+
+    @Override
+    public void cleanupAfterBoot() {
+        super.cleanupAfterBoot();
+        this.enhancedAnnotatedMethod = null;
     }
 
     @Override
@@ -202,7 +212,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     @Override
     public String toString() {
-        return "Producer Method [" + Formats.formatType(getEnhancedAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getEnhancedAnnotated() + "]";
+        return "Producer Method [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
     }
 
     @Override

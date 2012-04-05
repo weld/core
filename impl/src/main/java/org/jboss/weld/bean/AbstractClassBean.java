@@ -158,7 +158,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     // Injection target for the bean
     private InjectionTarget<T> injectionTarget;
 
-    private ConstructorInjectionPoint<T> constructor;
+    private final ConstructorInjectionPoint<T> constructor;
 
     protected EnhancedAnnotatedType<T> enhancedSubclass;
 
@@ -179,6 +179,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         super(attributes, idSuffix, beanManager, services);
         this.enhancedAnnotatedItem = type;
         this.annotatedType = type.slim();
+        initType();
+        this.constructor = initConstructor(beanManager);
     }
 
     /**
@@ -281,7 +283,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the injection points
      */
     protected void initInjectableFields(BeanManagerImpl manager) {
-        injectableFields = Beans.getFieldInjectionPoints(this, enhancedAnnotatedItem, manager);
+        injectableFields = Beans.getFieldInjectionPoints(this, getEnhancedAnnotated(), manager);
         addInjectionPoints(Beans.flattenInjectionPoints(injectableFields));
     }
 
@@ -319,10 +321,13 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      */
     @Override
     public EnhancedAnnotatedType<T> getEnhancedAnnotated() {
-        if (enhancedAnnotatedItem == null) {
-            throw new IllegalStateException();
-        }
-        return enhancedAnnotatedItem;
+        return Beans.checkEnhancedAnnotatedAvailable(enhancedAnnotatedItem);
+    }
+
+    @Override
+    public void cleanupAfterBoot() {
+        super.cleanupAfterBoot();
+        this.enhancedAnnotatedItem = null;
     }
 
     /**
@@ -432,11 +437,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
     }
 
-    protected void checkConstructor() {
-        if (!constructor.getEnhancedAnnotated().getEnhancedParameters(Disposes.class).isEmpty()) {
+    protected void checkConstructor(EnhancedAnnotatedConstructor<T> enhancedAnnotated) {
+        if (!enhancedAnnotated.getEnhancedParameters(Disposes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
         }
-        if (!constructor.getEnhancedAnnotated().getEnhancedParameters(Observes.class).isEmpty()) {
+        if (!enhancedAnnotated.getEnhancedParameters(Observes.class).isEmpty()) {
             throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
         }
     }
@@ -444,9 +449,12 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     /**
      * Initializes the constructor
      */
-    protected void initConstructor(BeanManagerImpl manager) {
-        this.constructor = Beans.getBeanConstructor(this, getEnhancedAnnotated(), manager);
-        addInjectionPoints(constructor.getParameterInjectionPoints());
+    protected ConstructorInjectionPoint<T> initConstructor(BeanManagerImpl manager) {
+        EnhancedAnnotatedConstructor<T> enhancedAnnotated = Beans.getBeanConstructor(getEnhancedAnnotated());
+        checkConstructor(enhancedAnnotated);
+        ConstructorInjectionPoint<T> injectionPoint = ConstructorInjectionPoint.of(enhancedAnnotated, this, manager);
+        addInjectionPoints(injectionPoint.getParameterInjectionPoints());
+        return injectionPoint;
     }
 
     /**
@@ -466,7 +474,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         final ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
         enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass());
         constructorForEnhancedSubclass = EnhancedAnnotatedConstructorImpl.of(
-                enhancedSubclass.getDeclaredEnhancedConstructor(getConstructor().getEnhancedAnnotated().getSignature()),
+                enhancedSubclass.getDeclaredEnhancedConstructor(getConstructor().getSignature()),
                 enhancedSubclass,
                 transformer);
     }

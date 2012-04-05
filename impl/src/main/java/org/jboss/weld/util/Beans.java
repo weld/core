@@ -653,28 +653,26 @@ public class Beans {
         return false;
     }
 
-    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
-        ConstructorInjectionPoint<T> constructor = null;
+    public static <T> ConstructorInjectionPoint<T> getBeanConstructorInjectionPoint(Bean<T> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
+        EnhancedAnnotatedConstructor<T> constructor = getBeanConstructor(type);
+        return ConstructorInjectionPoint.of(constructor, declaringBean, manager);
+    }
+
+    public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {
         Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type.getEnhancedConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
         if (initializerAnnotatedConstructors.size() > 1) {
-            if (initializerAnnotatedConstructors.size() > 1) {
-                throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type, initializerAnnotatedConstructors);
-            }
+            throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type, initializerAnnotatedConstructors);
         } else if (initializerAnnotatedConstructors.size() == 1) {
-            constructor = ConstructorInjectionPoint.of(initializerAnnotatedConstructors.iterator().next(), declaringBean, manager);
+            EnhancedAnnotatedConstructor<T> constructor = initializerAnnotatedConstructors.iterator().next();
             log.trace(FOUND_ONE_INJECTABLE_CONSTRUCTOR, constructor, type);
+            return constructor;
         } else if (type.getNoArgsEnhancedConstructor() != null) {
-
-            constructor = ConstructorInjectionPoint.of(type.getNoArgsEnhancedConstructor(), declaringBean, manager);
+            EnhancedAnnotatedConstructor<T> constructor = type.getNoArgsEnhancedConstructor();
             log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
-        }
-
-        if (constructor == null) {
-            throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
-        } else {
             return constructor;
         }
+        throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
     }
 
     /**
@@ -1042,5 +1040,12 @@ public class Beans {
         public int compare(Type o1, Type o2) {
             return createTypeId(o1).compareTo(createTypeId(o2));
         }
+    }
+
+    public static <T, S, X extends EnhancedAnnotated<T, S>> X checkEnhancedAnnotatedAvailable(X enhancedAnnotated) {
+        if (enhancedAnnotated == null) {
+            throw new IllegalStateException("Enhanced metadata should not be used at runtime.");
+        }
+        return enhancedAnnotated;
     }
 }

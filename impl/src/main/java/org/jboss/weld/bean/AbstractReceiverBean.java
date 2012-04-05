@@ -57,14 +57,14 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
         // This is a bit dangerous, as it means that producer methods can end up
         // executing on partially constructed instances. Also, it's not required
         // by the spec...
-        if (getEnhancedAnnotated().isStatic()) {
+        if (getAnnotated().isStatic()) {
             return null;
         } else {
             if (creationalContext instanceof WeldCreationalContext<?>) {
                 WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) creationalContext;
                 final X incompleteInstance = creationalContextImpl.getIncompleteInstance(getDeclaringBean());
                 if (incompleteInstance != null) {
-                    log.warn(CIRCULAR_CALL, getEnhancedAnnotated(), getDeclaringBean());
+                    log.warn(CIRCULAR_CALL, getAnnotated(), getDeclaringBean());
                     return incompleteInstance;
                 }
             }

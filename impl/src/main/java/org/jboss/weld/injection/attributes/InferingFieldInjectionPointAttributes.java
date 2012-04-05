@@ -51,7 +51,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     private SerializableHolder<EnhancedAnnotatedField<T, X>> field;
 
     protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
-        super(bean);
+        super(bean, field.getQualifiers());
         if (field.getDeclaringType().isDiscovered()) {
             this.field = new DiscoveredWeldFieldSerializableHolder<T, X>(field);
         } else {
@@ -67,11 +67,6 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     @Override
     public AnnotatedField<X> getAnnotated() {
         return field.get().slim();
-    }
-
-    @Override
-    public EnhancedAnnotatedField<T, X> getEnhancedAnnotated() {
-        return field.get();
     }
 
     @Override

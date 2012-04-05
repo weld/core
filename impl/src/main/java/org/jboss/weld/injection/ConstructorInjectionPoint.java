@@ -28,6 +28,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
@@ -43,7 +44,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint<T, T, Constructor<T>> {
 
-    private final EnhancedAnnotatedConstructor<T> constructor;
+    private final AnnotatedConstructor<T> constructor;
+    private final ConstructorSignature signature;
 
     public static <T> ConstructorInjectionPoint<T> of(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
         return new ConstructorInjectionPoint<T>(constructor, declaringBean, manager);
@@ -51,7 +53,8 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
 
     protected ConstructorInjectionPoint(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
         super(constructor, declaringBean, false, manager);
-        this.constructor = constructor;
+        this.constructor = constructor.slim();
+        this.signature = constructor.getSignature();
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
@@ -96,11 +99,10 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
     }
 
     public AnnotatedConstructor<T> getAnnotated() {
-        return constructor.slim();
+        return constructor;
     }
 
-    @Override
-    public EnhancedAnnotatedConstructor<T> getEnhancedAnnotated() {
-        return constructor;
+    public ConstructorSignature getSignature() {
+        return signature;
     }
 }

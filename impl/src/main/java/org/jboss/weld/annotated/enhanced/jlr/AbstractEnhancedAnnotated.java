@@ -231,7 +231,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         if (getMetaAnnotations(Qualifier.class).size() > 0) {
             return Collections.unmodifiableSet(getMetaAnnotations(Qualifier.class));
         } else {
-            return Collections.unmodifiableSet(DEFAULT_QUALIFIERS);
+            return DEFAULT_QUALIFIERS;
         }
     }
 

@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.inject.Inject;
 
@@ -35,6 +34,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -111,12 +111,12 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
                 if (receiver instanceof TargetInstanceProxy) {
                     receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
                 }
-                return RuntimeAnnotatedMembers.getFieldValue(enhancedAnnotatedField, receiver);
+                return RuntimeAnnotatedMembers.getFieldValue(getAnnotated(), receiver);
             }
 
             @Override
             public String toString() {
-                return enhancedAnnotatedField.toString();
+                return getAnnotated().toString();
             }
 
         });
@@ -128,7 +128,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         if (getEnhancedAnnotated().isAnnotationPresent(Inject.class)) {
             throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, getEnhancedAnnotated(), getEnhancedAnnotated().getDeclaringType());
         }
-        if (getDeclaringBean() instanceof SessionBean<?> && !enhancedAnnotatedField.isStatic()) {
+        if (getDeclaringBean() instanceof SessionBean<?> && !getEnhancedAnnotated().isStatic()) {
             throw new DefinitionException(PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC, getEnhancedAnnotated(), getEnhancedAnnotated().getDeclaringType());
         }
     }
@@ -145,8 +145,15 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
      */
     @Override
     public EnhancedAnnotatedField<T, ? super X> getEnhancedAnnotated() {
-        return enhancedAnnotatedField;
+        return Beans.checkEnhancedAnnotatedAvailable(enhancedAnnotatedField);
     }
+
+    @Override
+    public void cleanupAfterBoot() {
+        super.cleanupAfterBoot();
+        this.enhancedAnnotatedField = null;
+    }
+
 
     @Override
     public AbstractBean<?, ?> getSpecializedBean() {
@@ -160,7 +167,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
 
     @Override
     public String toString() {
-        return "Producer Field [" + Formats.formatType(getEnhancedAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getEnhancedAnnotated() + "]";
+        return "Producer Field [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
     }
 
     @Override

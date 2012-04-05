@@ -16,16 +16,15 @@
  */
 package org.jboss.weld.injection;
 
+import static org.jboss.weld.injection.FieldInjectionPoint.isCacheableInjectionPoint;
+
 import java.io.Serializable;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
@@ -55,7 +54,7 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
 
     private ParameterInjectionPointImpl(ParameterInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;
-        this.cacheable = !isDelegate() && !InjectionPoint.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass()) && !Instance.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass());
+        this.cacheable = isCacheableInjectionPoint(attributes);
     }
 
     @Override
@@ -84,10 +83,5 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
     @Override
     public AnnotatedParameter<X> getAnnotated() {
         return attributes.getAnnotated();
-    }
-
-    @Override
-    public EnhancedAnnotatedParameter<T, X> getEnhancedAnnotated() {
-        return attributes.getEnhancedAnnotated();
     }
 }

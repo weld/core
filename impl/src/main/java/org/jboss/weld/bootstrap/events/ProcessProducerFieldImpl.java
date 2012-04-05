@@ -40,8 +40,8 @@ public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<
     }
 
     public AnnotatedField<T> getAnnotatedProducerField() {
-        if (getBean().getEnhancedAnnotated() != null) {
-            return cast(getBean().getEnhancedAnnotated());
+        if (getBean().getAnnotated() != null) {
+            return cast(getBean().getAnnotated());
         } else {
             return null;
         }

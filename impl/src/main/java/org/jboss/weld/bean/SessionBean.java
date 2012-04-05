@@ -134,11 +134,9 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      */
     protected SessionBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, type, idSuffix, manager, services);
-        initType();
         this.ejbDescriptor = ejbDescriptor;
         initInitializerMethods(beanManager);
         initInjectableFields(beanManager);
-        initConstructor(beanManager);
     }
 
     /**
@@ -146,7 +144,6 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      */
     @Override
     public void internalInitialize(BeanDeployerEnvironment environment) {
-        checkConstructor();
         super.internalInitialize(environment);
         initProxyClass();
         checkEJBTypeAllowed();
@@ -156,7 +153,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         setInjectionTarget(new InjectionTarget<T>() {
 
             public void inject(final T instance, final CreationalContext<T> ctx) {
-                new InjectionContextImpl<T>(getBeanManager(), this, getEnhancedAnnotated(), instance) {
+                new InjectionContextImpl<T>(getBeanManager(), this, getAnnotated(), instance) {
 
                     public void proceed() {
                         Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
@@ -263,7 +260,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         try {
             T instance = SecureReflections.newInstance(proxyClass);
             creationalContext.push(instance);
-            ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getEnhancedAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)), this);
+            ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)), this);
             if (hasDecorators()) {
                 instance = applyDecorators(instance, creationalContext, null);
             }

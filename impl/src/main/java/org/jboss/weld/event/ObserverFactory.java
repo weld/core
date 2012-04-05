@@ -16,16 +16,15 @@
  */
 package org.jboss.weld.event;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.Observers;
-
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 
 /**
  * Bound factory class that produces implicit observers for observer methods.

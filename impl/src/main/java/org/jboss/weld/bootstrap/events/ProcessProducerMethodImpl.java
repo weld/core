@@ -49,8 +49,8 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
     }
 
     public AnnotatedMethod<T> getAnnotatedProducerMethod() {
-        if (getBean().getEnhancedAnnotated() != null) {
-            return cast(getBean().getEnhancedAnnotated());
+        if (getBean().getAnnotated() != null) {
+            return cast(getBean().getAnnotated());
         } else {
             return null;
         }

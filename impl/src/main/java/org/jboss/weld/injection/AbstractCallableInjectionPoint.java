@@ -32,6 +32,7 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
@@ -53,7 +54,7 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return getEnhancedAnnotated().getQualifiers();
+        throw new UnsupportedOperationException();
     }
 
     @Override

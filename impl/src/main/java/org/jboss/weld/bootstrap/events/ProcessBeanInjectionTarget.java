@@ -28,7 +28,7 @@ public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarge
     private final AbstractClassBean<X> classBean;
 
     public ProcessBeanInjectionTarget(BeanManagerImpl beanManager, AbstractClassBean<X> bean) {
-        super(beanManager, bean.getEnhancedAnnotated());
+        super(beanManager, bean.getAnnotated());
         this.classBean = bean;
     }
 
