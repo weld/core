@@ -223,6 +223,11 @@
                     <exclude name="testApplicationContextActiveOnError" />
                 </methods>
             </class>
+            <class name="org.jboss.cdi.tck.tests.context.request.async.RequestContextAsyncListenerTest">
+                <methods>
+                    <exclude name="testRequestContextActiveOnError" />
+                </methods>
+            </class>
 
             <!-- JBAS-8306 -->
             <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
