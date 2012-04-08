@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.interceptor.builder.MethodReference;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
@@ -22,8 +21,10 @@ import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.interceptor.util.InterceptorMetadataException;
 import org.jboss.weld.interceptor.util.ReflectionUtils;
 import org.jboss.weld.logging.messages.ValidatorMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.cal10n.LocLogger;
+
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
 /**
  * @author Marius Bogoevici
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class InterceptorMetadataUtils {
     protected static final String OBJECT_CLASS_NAME = Object.class.getName();
 
-    private static final Logger LOG = LoggerFactory.getLogger(InterceptorMetadataUtils.class);
+    private static final LocLogger LOG = loggerFactory().getLogger(REFLECTION);
 
 
     public static InterceptorMetadata readMetadataForInterceptorClass(InterceptorReference<?> interceptorReference) {
@@ -90,22 +91,22 @@ public class InterceptorMetadataUtils {
 
     private static boolean isValidBusinessMethodInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
         if (!Object.class.equals(method.getReturnType())) {
-            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT, method.getJavaMethod());
+            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT, method.getJavaMethod());
         }
 
         Class<?>[] exceptionTypes = method.getJavaMethod().getExceptionTypes();
         if (exceptionTypes.length != 1 || !Exception.class.equals(exceptionTypes[0])) {
-            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_THROW_EXCEPTION, method.getJavaMethod());
+            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_THROW_EXCEPTION, method.getJavaMethod());
         }
 
         Class<?>[] parameterTypes = method.getJavaMethod().getParameterTypes();
 
         if (parameterTypes.length != 1) {
-            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_ARGUMENT, method.getJavaMethod());
+            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_ARGUMENT, method.getJavaMethod());
         }
 
         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_ARGUMENT, method.getJavaMethod(), InvocationContext.class.getName());
+            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_ARGUMENT, method.getJavaMethod(), InvocationContext.class.getName());
         }
         return true;
     }
