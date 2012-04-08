@@ -16,21 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.ForwardingInjectionPoint;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resolution.Resolvable;
-import org.jboss.weld.resolution.ResolvableBuilder;
-import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -52,6 +37,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
