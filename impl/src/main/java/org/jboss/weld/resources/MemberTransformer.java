@@ -21,10 +21,13 @@
  */
 package org.jboss.weld.resources;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_CALLABLE;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_MEMBER;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
@@ -34,11 +37,14 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedMember;
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -56,71 +62,131 @@ import com.google.common.collect.MapMaker;
  */
 public class MemberTransformer implements Service {
 
-    private final ConcurrentMap<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> memberCache;
     private final ClassTransformer transformer;
-    private final FieldLoader fieldLoader;
-    private final MethodLoader methodLoader;
-    private final ConstructorLoader constructorLoader;
+
+    private final ConcurrentMap<Member, AnnotatedMember<?>> backedMemberCache;
+    private final BackedFieldLoader backedFieldLoader;
+    private final BackedMethodLoader backedMethodLoader;
+    private final BackedConstructorLoader backedConstructorLoader;
+
+    private final ConcurrentMap<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> enhancedMemberCache;
+    private final EnhancedFieldLoader enhancedFieldLoader;
+    private final EnhancedMethodLoader enhancedMethodLoader;
+    private final EnhancedConstructorLoader enhancedConstructorLoader;
 
     public MemberTransformer(ClassTransformer transformer) {
         this.transformer = transformer;
-        this.fieldLoader = new FieldLoader();
-        this.methodLoader = new MethodLoader();
-        this.constructorLoader = new ConstructorLoader();
-        this.memberCache = new MapMaker().makeComputingMap(new TransformationFunction());
+        this.backedFieldLoader = new BackedFieldLoader();
+        this.backedMethodLoader = new BackedMethodLoader();
+        this.backedConstructorLoader = new BackedConstructorLoader();
+        this.backedMemberCache = new MapMaker().makeComputingMap(new BackedMemberLoaderFunction());
+        this.enhancedFieldLoader = new EnhancedFieldLoader();
+        this.enhancedMethodLoader = new EnhancedMethodLoader();
+        this.enhancedConstructorLoader = new EnhancedConstructorLoader();
+        this.enhancedMemberCache = new MapMaker().makeComputingMap(new EnhancedMemberLoaderFunction());
     }
 
-    public <T, X> EnhancedAnnotatedField<T, X> load(AnnotatedField<X> field) {
-        if (field instanceof EnhancedAnnotatedField<?, ?>) {
-            return Reflections.cast(field);
+    // Backed members
+
+    public AnnotatedMember<?> loadBackedMember(Member member) {
+        return Reflections.cast(backedMemberCache.get(member));
+    }
+
+    private class BackedMemberLoaderFunction implements Function<Member, AnnotatedMember<?>> {
+        @Override
+        public AnnotatedMember<?> apply(Member member) {
+            if (member instanceof Field) {
+                return backedFieldLoader.load(Reflections.<Field> cast(member));
+            }
+            if (member instanceof Method) {
+                return backedMethodLoader.load(Reflections.<Method> cast(member));
+            }
+            if (member instanceof Constructor<?>) {
+                return backedConstructorLoader.load(Reflections.<Constructor<?>> cast(member));
+            }
+            throw new IllegalArgumentException(INVALID_ANNOTATED_MEMBER, member);
         }
-        return Reflections.cast(memberCache.get(field));
     }
 
-    public <T, X> EnhancedAnnotatedMethod<T, X> load(AnnotatedMethod<X> method) {
-        if (method instanceof EnhancedAnnotatedMethod<?, ?>) {
-            return Reflections.cast(method);
+    /**
+     * Iterates over members of a given {@link BackedAnnotatedType} to find a {@link BackedAnnotatedMember} implementation representing given member.
+     *
+     * @author Jozef Hartinger
+     */
+    private abstract class AbstractBackedMemberLoader<M extends Member, A extends AnnotatedMember<?>> {
+
+        public A load(M member) {
+            BackedAnnotatedType<?> type = transformer.getAnnotatedType(member.getDeclaringClass());
+            return findMatching(getMembersOfDeclaringType(type), member);
         }
-        return Reflections.cast(memberCache.get(method));
-    }
 
-    public <T> EnhancedAnnotatedConstructor<T> load(AnnotatedConstructor<T> constructor) {
-        if (constructor instanceof EnhancedAnnotatedConstructor<?>) {
-            return Reflections.cast(constructor);
+        public <X> A findMatching(Collection<? extends A> members, M member) {
+            for (A annotatedMember : members) {
+                if (member.equals(annotatedMember.getJavaMember())) {
+                    return annotatedMember;
+                }
+            }
+            throw new IllegalStateException(UNABLE_TO_LOAD_MEMBER, member);
         }
-        return Reflections.cast(memberCache.get(constructor));
+
+        public abstract Collection<? extends A> getMembersOfDeclaringType(BackedAnnotatedType<?> type);
     }
 
-    public <T, X> EnhancedAnnotatedParameter<T, X> load(AnnotatedParameter<X> parameter) {
+    private class BackedFieldLoader extends AbstractBackedMemberLoader<Field, AnnotatedField<?>> {
+        @Override
+        public Collection<? extends AnnotatedField<?>> getMembersOfDeclaringType(BackedAnnotatedType<?> type) {
+            return type.getFields();
+        }
+    }
+
+    private class BackedMethodLoader extends AbstractBackedMemberLoader<Method, AnnotatedMethod<?>> {
+        @Override
+        public Collection<? extends AnnotatedMethod<?>> getMembersOfDeclaringType(BackedAnnotatedType<?> type) {
+            return type.getMethods();
+        }
+    }
+
+    private class BackedConstructorLoader extends AbstractBackedMemberLoader<Constructor<?>, AnnotatedConstructor<?>> {
+        @Override
+        public Collection<? extends AnnotatedConstructor<?>> getMembersOfDeclaringType(BackedAnnotatedType<?> type) {
+            return type.getConstructors();
+        }
+    }
+
+    // Enhanced members
+
+    public <X, A extends EnhancedAnnotatedMember<?, X, ? extends Member>> A loadEnhancedMember(AnnotatedMember<X> member) {
+        if (member instanceof EnhancedAnnotatedMember<?, ?, ?>) {
+            return Reflections.cast(member);
+        }
+        return Reflections.cast(enhancedMemberCache.get(member));
+    }
+
+    public <X> EnhancedAnnotatedParameter<?, X> load(AnnotatedParameter<X> parameter) {
         if (parameter instanceof EnhancedAnnotatedParameter<?, ?>) {
             return Reflections.cast(parameter);
         }
-        if (parameter.getDeclaringCallable() instanceof AnnotatedMethod<?>) {
-            return Reflections.cast(load((AnnotatedMethod<?>) parameter.getDeclaringCallable()).getEnhancedParameters().get(parameter.getPosition()));
-        } else if (parameter.getDeclaringCallable() instanceof AnnotatedConstructor<?>) {
-            return Reflections.cast(load((AnnotatedConstructor<?>) parameter.getDeclaringCallable()).getEnhancedParameters().get(parameter.getPosition()));
-        } else {
-            throw new IllegalArgumentException(INVALID_ANNOTATED_CALLABLE, parameter.getDeclaringCallable());
-        }
+        EnhancedAnnotatedCallable<?, X, Member> callable = loadEnhancedMember(parameter.getDeclaringCallable());
+        return callable.getEnhancedParameters().get(parameter.getPosition());
     }
 
-    private class TransformationFunction implements Function<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> {
+    private class EnhancedMemberLoaderFunction implements Function<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> {
         @Override
         public EnhancedAnnotatedMember<?, ?, ?> apply(AnnotatedMember<?> from) {
             if (from instanceof AnnotatedField<?>) {
-                return fieldLoader.load(Reflections.<AnnotatedField<?>> cast(from));
+                return enhancedFieldLoader.load(Reflections.<AnnotatedField<?>> cast(from));
             }
             if (from instanceof AnnotatedMethod<?>) {
-                return methodLoader.load(Reflections.<AnnotatedMethod<?>> cast(from));
+                return enhancedMethodLoader.load(Reflections.<AnnotatedMethod<?>> cast(from));
             }
             if (from instanceof AnnotatedConstructor<?>) {
-                return constructorLoader.load(Reflections.<AnnotatedConstructor<?>> cast(from));
+                return enhancedConstructorLoader.load(Reflections.<AnnotatedConstructor<?>> cast(from));
             }
             throw new IllegalArgumentException(INVALID_ANNOTATED_MEMBER, from);
         }
     }
 
-    private abstract class AbstractMemberLoader<A extends AnnotatedMember<?>, W extends EnhancedAnnotatedMember<?, ?, ?>> {
+    private abstract class AbstractEnhancedMemberLoader<A extends AnnotatedMember<?>, W extends EnhancedAnnotatedMember<?, ?, ?>> {
 
         public W load(A source) {
             return findMatching(getMembersOfDeclaringType(source), source);
@@ -140,7 +206,7 @@ public class MemberTransformer implements Service {
         public abstract Collection<W> getMembersOfDeclaringType(A source);
     }
 
-    private class FieldLoader extends AbstractMemberLoader<AnnotatedField<?>, EnhancedAnnotatedField<?, ?>> {
+    private class EnhancedFieldLoader extends AbstractEnhancedMemberLoader<AnnotatedField<?>, EnhancedAnnotatedField<?, ?>> {
         @Override
         public boolean equals(EnhancedAnnotatedField<?, ?> member1, AnnotatedField<?> member2) {
             return AnnotatedTypes.compareAnnotatedField(member1, member2);
@@ -152,7 +218,7 @@ public class MemberTransformer implements Service {
         }
     }
 
-    private class MethodLoader extends AbstractMemberLoader<AnnotatedMethod<?>, EnhancedAnnotatedMethod<?, ?>> {
+    private class EnhancedMethodLoader extends AbstractEnhancedMemberLoader<AnnotatedMethod<?>, EnhancedAnnotatedMethod<?, ?>> {
         @Override
         public boolean equals(EnhancedAnnotatedMethod<?, ?> member1, AnnotatedMethod<?> member2) {
             return AnnotatedTypes.compareAnnotatedCallable(member1, member2);
@@ -164,7 +230,7 @@ public class MemberTransformer implements Service {
         }
     }
 
-    private class ConstructorLoader extends AbstractMemberLoader<AnnotatedConstructor<?>, EnhancedAnnotatedConstructor<?>> {
+    private class EnhancedConstructorLoader extends AbstractEnhancedMemberLoader<AnnotatedConstructor<?>, EnhancedAnnotatedConstructor<?>> {
         @Override
         public boolean equals(EnhancedAnnotatedConstructor<?> member1, AnnotatedConstructor<?> member2) {
             return AnnotatedTypes.compareAnnotatedCallable(member1, member2);
@@ -176,8 +242,13 @@ public class MemberTransformer implements Service {
         }
     }
 
+    public void cleanupAfterBoot() {
+        enhancedMemberCache.clear();
+    }
+
     @Override
     public void cleanup() {
-        memberCache.clear();
+        cleanupAfterBoot();
+        backedMemberCache.clear();
     }
 }

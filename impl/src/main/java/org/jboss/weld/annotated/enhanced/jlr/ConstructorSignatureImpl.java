@@ -20,6 +20,7 @@ import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.util.collections.Arrays2;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
 public class ConstructorSignatureImpl implements ConstructorSignature {
@@ -33,7 +34,14 @@ public class ConstructorSignatureImpl implements ConstructorSignature {
         for (int i = 0; i < method.getEnhancedParameters().size(); i++) {
             parameterTypes[i] = method.getEnhancedParameters().get(i).getJavaClass().getName();
         }
+    }
 
+    public ConstructorSignatureImpl(Constructor<?> constructor) {
+        Class<?>[] parameterTypes = constructor.getParameterTypes();
+        this.parameterTypes = new String[parameterTypes.length];
+        for (int i = 0; i < parameterTypes.length; i++) {
+            this.parameterTypes[i] = parameterTypes[i].getName();
+        }
     }
 
     @Override

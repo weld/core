@@ -21,9 +21,6 @@
  */
 package org.jboss.weld.serialization;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
@@ -36,19 +33,18 @@ import org.jboss.weld.serialization.spi.ContextualStore;
  *
  * @param <T> bean type
  */
-public class BeanHolder<T> implements SerializableHolder<Bean<T>> {
+public class BeanHolder<T> extends AbstractSerializableHolder<Bean<T>> {
+
+    private static final long serialVersionUID = 6039992808930111222L;
 
     public static <T> BeanHolder<T> of(Bean<T> bean) {
         return new BeanHolder<T>(bean);
     }
 
-    private static final long serialVersionUID = -3726981726872809169L;
-
-    private transient Bean<T> bean;
     private final String beanId;
 
     public BeanHolder(Bean<T> bean) {
-        this.bean = bean;
+        super(bean);
         if (bean == null) {
             beanId = null;
         } else {
@@ -56,15 +52,11 @@ public class BeanHolder<T> implements SerializableHolder<Bean<T>> {
         }
     }
 
-    // Serialization
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        stream.defaultReadObject();
-        if (beanId != null) {
-            bean = Container.instance().services().get(ContextualStore.class).<Bean<T>, T> getContextual(beanId);
+    @Override
+    protected Bean<T> initialize() {
+        if (beanId == null) {
+            return null;
         }
-    }
-
-    public Bean<T> get() {
-        return bean;
+        return Container.instance().services().get(ContextualStore.class).<Bean<T>, T> getContextual(beanId);
     }
 }

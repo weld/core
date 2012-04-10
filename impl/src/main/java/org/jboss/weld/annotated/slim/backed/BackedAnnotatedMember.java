@@ -23,5 +23,4 @@ public abstract class BackedAnnotatedMember<X> extends BackedAnnotated implement
     public AnnotatedType<X> getDeclaringType() {
         return declaringType;
     }
-
 }

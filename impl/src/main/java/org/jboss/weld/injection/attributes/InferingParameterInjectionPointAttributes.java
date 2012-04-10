@@ -27,9 +27,6 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
-import org.jboss.weld.serialization.DiscoveredWeldParameterSerializableHolder;
-import org.jboss.weld.serialization.NoopSerializableHolder;
-import org.jboss.weld.serialization.SerializableHolder;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -47,15 +44,11 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
         return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean);
     }
 
-    private SerializableHolder<AnnotatedParameter<X>> parameter;
+    private final AnnotatedParameter<X> parameter;
 
     protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
         super(bean, parameter.getQualifiers());
-//        if (parameter.getDeclaringType().isDiscovered()) {
-//            this.parameter = new DiscoveredWeldParameterSerializableHolder<T, X>(parameter);
-//        } else {
-        this.parameter = NoopSerializableHolder.of(parameter.slim());
-//        }
+        this.parameter = parameter.slim();
     }
 
     @Override
@@ -65,7 +58,7 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
 
     @Override
     public AnnotatedParameter<X> getAnnotated() {
-        return parameter.get();
+        return parameter;
     }
 
     @Override

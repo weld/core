@@ -24,13 +24,8 @@ package org.jboss.weld.injection.attributes;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.logging.messages.BeanMessage;
-import org.jboss.weld.resources.MemberTransformer;
-import org.jboss.weld.serialization.AbstractSerializableHolder;
-import org.jboss.weld.serialization.SerializableHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -52,24 +47,14 @@ public class ForwardingParameterInjectionPointAttributes<T, X> extends AbstractF
         return new ForwardingParameterInjectionPointAttributes<T, X>(ip);
     }
 
-    private static final long serialVersionUID = 8260917883838776113L;
-
-    private SerializableHolder<EnhancedAnnotatedParameter<T, X>> parameter;
+    private static final long serialVersionUID = 6109999203440035470L;
 
     protected ForwardingParameterInjectionPointAttributes(InjectionPoint delegate) {
         super(delegate);
-        this.parameter = new AbstractSerializableHolder<EnhancedAnnotatedParameter<T, X>>() {
-            private static final long serialVersionUID = -3395800281110533770L;
-
-            @Override
-            protected EnhancedAnnotatedParameter<T, X> initialize() {
-                return Container.instance().services().get(MemberTransformer.class).load(Reflections.<AnnotatedParameter<X>> cast(delegate().getAnnotated()));
-            }
-        };
     }
 
     @Override
     public AnnotatedParameter<X> getAnnotated() {
-        return parameter.get().slim();
+        return Reflections.cast(delegate().getAnnotated()); // checked in initializer
     }
 }

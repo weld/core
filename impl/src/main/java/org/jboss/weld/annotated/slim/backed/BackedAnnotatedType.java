@@ -1,7 +1,11 @@
 package org.jboss.weld.annotated.slim.backed;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -15,7 +19,9 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
@@ -24,7 +30,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.collect.ImmutableSet;
 
-public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnotatedType<X> {
+public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
     public static <X> BackedAnnotatedType<X> of(Class<X> javaClass, ClassTransformer classTransformer) {
         return of(javaClass, javaClass, classTransformer);
@@ -72,7 +78,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         if (member.getDeclaringClass().equals(getJavaClass())) {
             return cast(this);
         } else {
-            return transformer.getAnnotatedType(Reflections.<Class<T>>cast(member.getDeclaringClass()));
+            return transformer.getAnnotatedType(Reflections.<Class<T>> cast(member.getDeclaringClass()));
         }
     }
 
@@ -132,5 +138,29 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     @Override
     public String toString() {
         return Formats.formatAnnotatedType(this);
+    }
+
+    // Serialization
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new SerializationProxy<X>(javaClass);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
+    }
+
+    private static class SerializationProxy<X> implements Serializable {
+
+        private static final long serialVersionUID = 6346909556206514705L;
+        private final Class<X> javaClass;
+
+        public SerializationProxy(Class<X> javaClass) {
+            this.javaClass = javaClass;
+        }
+
+        private Object readResolve() {
+            return Container.instance().services().get(ClassTransformer.class).getAnnotatedType(javaClass);
+        }
     }
 }

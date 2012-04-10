@@ -21,8 +21,7 @@
  */
 package org.jboss.weld.serialization;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 
 public abstract class AbstractSerializableHolder<V> implements SerializableHolder<V> {
 
@@ -34,12 +33,16 @@ public abstract class AbstractSerializableHolder<V> implements SerializableHolde
         this.value = initialize();
     }
 
+    public AbstractSerializableHolder(V value) {
+        this.value = value;
+    }
+
     protected abstract V initialize();
 
     // Deserialization
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        stream.defaultReadObject();
+    protected Object readResolve() throws ObjectStreamException {
         this.value = initialize();
+        return this;
     }
 
     @Override

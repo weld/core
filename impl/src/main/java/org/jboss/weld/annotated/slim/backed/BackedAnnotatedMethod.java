@@ -1,7 +1,11 @@
 package org.jboss.weld.annotated.slim.backed;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -13,11 +17,15 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.util.reflection.Formats;
 
 import com.google.common.collect.ImmutableSet;
 
-public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implements AnnotatedMethod<X> {
+public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implements AnnotatedMethod<X>, Serializable {
 
     public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
@@ -72,5 +80,29 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
     @Override
     public String toString() {
         return Formats.formatAnnotatedMethod(this);
+    }
+
+    // Serialization
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new SerializationProxy(method);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
+    }
+
+    private static class SerializationProxy implements Serializable {
+
+        private static final long serialVersionUID = 8008578690970722095L;
+        private final MethodHolder method;
+
+        public SerializationProxy(Method method) {
+            this.method = new MethodHolder(method);
+        }
+
+        private Object readResolve() {
+            return Container.instance().services().get(MemberTransformer.class).loadBackedMember(method.get());
+        }
     }
 }

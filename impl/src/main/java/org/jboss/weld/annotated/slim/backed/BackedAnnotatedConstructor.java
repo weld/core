@@ -1,5 +1,10 @@
 package org.jboss.weld.annotated.slim.backed;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
@@ -11,13 +16,17 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.serialization.ConstructorHolder;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.ImmutableSet;
 
-public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> implements AnnotatedConstructor<X> {
+public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> implements AnnotatedConstructor<X>, Serializable {
 
     public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType) {
         return new BackedAnnotatedConstructor<X>(constructor, declaringType);
@@ -93,5 +102,29 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
     @Override
     public String toString() {
         return Formats.formatAnnotatedConstructor(this);
+    }
+
+    // Serialization
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new SerializationProxy<X>(constructor);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
+    }
+
+    private static class SerializationProxy<X> implements Serializable {
+
+        private static final long serialVersionUID = -2726172060851333254L;
+        private final ConstructorHolder<X> constructor;
+
+        public SerializationProxy(Constructor<X> constructor) {
+            this.constructor = new ConstructorHolder<X>(constructor);
+        }
+
+        private Object readResolve() {
+            return Container.instance().services().get(MemberTransformer.class).loadBackedMember(constructor.get());
+        }
     }
 }

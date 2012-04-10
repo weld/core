@@ -1221,11 +1221,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> member) {
-        EnhancedAnnotatedMember<?, ?, ? extends Member> weldMember = null;
-        if (member instanceof AnnotatedField<?>) {
-            weldMember = services.get(MemberTransformer.class).load((AnnotatedField<?>) member);
-        } else if (member instanceof AnnotatedMethod<?>) {
-            weldMember = services.get(MemberTransformer.class).load((AnnotatedMethod<?>) member);
+        return internalCreateBeanAttributes(member);
+    }
+
+    public <X> BeanAttributes<?> internalCreateBeanAttributes(AnnotatedMember<X> member) {
+        EnhancedAnnotatedMember<?, X, Member> weldMember = null;
+        if (member instanceof AnnotatedField<?> || member instanceof AnnotatedMethod<?>) {
+            weldMember = services.get(MemberTransformer.class).loadEnhancedMember(member);
         } else {
             throw new IllegalArgumentException(INCORRECT_PRODUCER_MEMBER, member);
         }
@@ -1240,8 +1242,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return SyntheticBeanFactory.create(attributes, beanClass, producer, this);
     }
 
-    public FieldInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedField<?> field, Bean<?> bean) {
-        EnhancedAnnotatedField<?, ?> weldField = services.get(MemberTransformer.class).load(field);
+    public <X> FieldInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedField<X> field, Bean<?> bean) {
+        EnhancedAnnotatedField<?, X> weldField = services.get(MemberTransformer.class).loadEnhancedMember(field);
         return InferingFieldInjectionPointAttributes.of(weldField, bean);
     }
 

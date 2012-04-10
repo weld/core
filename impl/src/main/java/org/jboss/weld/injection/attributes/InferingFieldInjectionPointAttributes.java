@@ -28,9 +28,6 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
-import org.jboss.weld.serialization.DiscoveredWeldFieldSerializableHolder;
-import org.jboss.weld.serialization.NoopSerializableHolder;
-import org.jboss.weld.serialization.SerializableHolder;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -48,15 +45,11 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
         return new InferingFieldInjectionPointAttributes<T, X>(field, bean);
     }
 
-    private SerializableHolder<AnnotatedField<X>> field;
+    private final AnnotatedField<X> field;
 
     protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
         super(bean, field.getQualifiers());
-//        if (field.getDeclaringType().isDiscovered()) {
-//            this.field = new DiscoveredWeldFieldSerializableHolder<T, X>(field);
-//        } else {
-            this.field = NoopSerializableHolder.of(field.slim());
-//        }
+        this.field = field.slim();
     }
 
     @Override
@@ -66,7 +59,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
 
     @Override
     public AnnotatedField<X> getAnnotated() {
-        return field.get();
+        return field;
     }
 
     @Override
