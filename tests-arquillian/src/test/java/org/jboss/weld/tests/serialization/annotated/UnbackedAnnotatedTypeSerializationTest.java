@@ -17,27 +17,26 @@
 package org.jboss.weld.tests.serialization.annotated;
 
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.junit.Ignore;
+import org.jboss.weld.util.reflection.Reflections;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Ignore // for now
 public class UnbackedAnnotatedTypeSerializationTest extends BackedAnnotatedTypeSerializationTest {
 
+    @Inject
+    private BeanManager manager;
+    
     @Override
     public AnnotatedType<Foo> getAnnotatedType() {
-        ClassTransformer transformer = new ClassTransformer(new TypeStore());
+        ClassTransformer transformer = Reflections.<BeanManagerImpl>cast(manager).getServices().get(ClassTransformer.class);
         final AnnotatedType<Foo> delegate = transformer.getAnnotatedType(Foo.class);
-        final AnnotatedType<Foo> wrapped = new ForwardingAnnotatedType<Foo>() {
-            @Override
-            protected AnnotatedType<Foo> delegate() {
-                return delegate;
-            }
-        };
+        final AnnotatedType<Foo> wrapped = new ForwardingAnnotatedType<Foo>(delegate);
         AnnotatedType<Foo> unbackedAnnotatedType = transformer.getAnnotatedType(wrapped);
         return unbackedAnnotatedType;
     }

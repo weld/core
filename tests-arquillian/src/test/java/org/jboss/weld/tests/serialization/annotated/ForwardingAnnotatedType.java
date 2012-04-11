@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.serialization.annotated;
 
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -26,11 +25,25 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
-public abstract class ForwardingAnnotatedType<X> implements Serializable, AnnotatedType<X> {
+/**
+ * {@link org.jboss.weld.util.annotated.ForwardingAnnotatedType} is not used intentionally to simulate extension-provided
+ * implementation that we have no control of.
+ *
+ * @author Jozef Hartinger
+ *
+ * @param <X>
+ */
+public class ForwardingAnnotatedType<X> implements AnnotatedType<X> {
 
-    private static final long serialVersionUID = 2275419107981076759L;
+    private AnnotatedType<X> delegate;
 
-    protected abstract AnnotatedType<X> delegate();
+    public ForwardingAnnotatedType(AnnotatedType<X> delegate) {
+        this.delegate = delegate;
+    }
+
+    protected AnnotatedType<X> delegate() {
+        return delegate;
+    }
 
     public Type getBaseType() {
         return delegate().getBaseType();

@@ -20,6 +20,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -37,6 +38,7 @@ import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.Logger;
 
@@ -72,10 +74,12 @@ public class ClassTransformer implements Service {
         }
     }
 
-    private static class TransformExternalAnnotatedTypeToSlimAnnotatedType implements Function<AnnotatedType<?>, SlimAnnotatedType<?>> {
+    private class TransformExternalAnnotatedTypeToSlimAnnotatedType implements Function<AnnotatedType<?>, SlimAnnotatedType<?>> {
         @Override
         public SlimAnnotatedType<?> apply(AnnotatedType<?> input) {
-            return UnbackedAnnotatedType.of(input);
+            UnbackedAnnotatedType<?> type = UnbackedAnnotatedType.of(input);
+            externalSlimAnnotatedTypesById.put(AnnotatedTypes.createTypeId(type), type);
+            return type;
         }
     }
 
@@ -127,6 +131,7 @@ public class ClassTransformer implements Service {
 
     private final ConcurrentMap<TypeHolder<?>, SlimAnnotatedType<?>> discoveredSlimAnnotatedTypes;
     private final ConcurrentMap<AnnotatedType<?>, SlimAnnotatedType<?>> externalSlimAnnotatedTypes;
+    private final ConcurrentMap<String, UnbackedAnnotatedType<?>> externalSlimAnnotatedTypesById;
     private final ConcurrentMap<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
     private final ConcurrentMap<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
     private final TypeStore typeStore;
@@ -135,6 +140,7 @@ public class ClassTransformer implements Service {
         MapMaker maker = new MapMaker();
         this.discoveredSlimAnnotatedTypes = maker.makeComputingMap(new TransformClassToSlimAnnotatedType());
         this.externalSlimAnnotatedTypes = maker.makeComputingMap(new TransformExternalAnnotatedTypeToSlimAnnotatedType());
+        this.externalSlimAnnotatedTypesById = new ConcurrentHashMap<String, UnbackedAnnotatedType<?>>();
         this.enhancedAnnotatedTypes = maker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
@@ -172,6 +178,10 @@ public class ClassTransformer implements Service {
         return cast(externalSlimAnnotatedTypes.get(type));
     }
 
+    public UnbackedAnnotatedType<?> getUnbackedAnnotatedType(String id) {
+        return externalSlimAnnotatedTypesById.get(id);
+    }
+
     // Enhanced AnnotatedTypes
 
     public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(Class<T> rawType) {
@@ -189,7 +199,7 @@ public class ClassTransformer implements Service {
         if (annotatedType instanceof SlimAnnotatedType<?>) {
             return cast(enhancedAnnotatedTypes.get(annotatedType));
         }
-        return cast(enhancedAnnotatedTypes.get(UnbackedAnnotatedType.of(annotatedType)));
+        return cast(enhancedAnnotatedTypes.get(getAnnotatedType(annotatedType)));
     }
 
     @SuppressWarnings("unchecked")
@@ -214,5 +224,6 @@ public class ClassTransformer implements Service {
         this.annotations.clear();
         this.discoveredSlimAnnotatedTypes.clear();
         this.externalSlimAnnotatedTypes.clear();
+        this.externalSlimAnnotatedTypesById.clear();
     }
 }

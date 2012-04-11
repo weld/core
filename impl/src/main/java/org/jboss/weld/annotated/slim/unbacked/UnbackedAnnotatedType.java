@@ -1,5 +1,10 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -11,10 +16,24 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
 
-public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimAnnotatedType<X> {
+/**
+ * Wrapper for extension-provided {@link AnnotatedType}. This may seem unnecessary, however it does mean we are providing a
+ * consistent view for debugging, error reporting etc. This implementation is also serializable no matter if the original
+ * extension-provided {@link AnnotatedType} implementation is.
+ *
+ * @author Pete Muir
+ * @author Jozef Hartinger
+ *
+ * @param <X> the type
+ */
+public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
     public static <X> UnbackedAnnotatedType<X> of(AnnotatedType<X> originalType) {
         return new UnbackedAnnotatedType<X>(originalType.getBaseType(), originalType.getTypeClosure(), originalType.getAnnotations(), originalType.getJavaClass(),
@@ -66,5 +85,29 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     @Override
     public String toString() {
         return Formats.formatAnnotatedType(this);
+    }
+
+    // Serialization
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new SerializationProxy<X>(this);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
+    }
+
+    private static class SerializationProxy<X> implements Serializable {
+
+        private static final long serialVersionUID = 402976292268601274L;
+        private final String id;
+
+        public SerializationProxy(UnbackedAnnotatedType<X> annotatedType) {
+            this.id = AnnotatedTypes.createTypeId(annotatedType);
+        }
+
+        private Object readResolve() {
+            return Container.instance().services().get(ClassTransformer.class).getUnbackedAnnotatedType(id);
+        }
     }
 }

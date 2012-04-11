@@ -23,6 +23,7 @@ package org.jboss.weld.resources;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_MEMBER;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -45,9 +46,13 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedMember;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedMember;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedMemberIdentifier;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -55,7 +60,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 
 /**
- * Transforms a given {@link AnnotatedMember} into its richer counterpart {@link EnhancedAnnotatedMember}.
+ * Serves several functions. Firstly, transforms a given {@link AnnotatedMember} into its richer counterpart
+ * {@link EnhancedAnnotatedMember}. Secondly, a {@link BackedAnnotatedMember} or {@link UnbackedAnnotatedMember} can be looked
+ * up.
  *
  * @author Jozef Hartinger
  *
@@ -68,6 +75,7 @@ public class MemberTransformer implements Service {
     private final BackedFieldLoader backedFieldLoader;
     private final BackedMethodLoader backedMethodLoader;
     private final BackedConstructorLoader backedConstructorLoader;
+    private final ConcurrentMap<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> unbackedAnnotatedMembersById;
 
     private final ConcurrentMap<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> enhancedMemberCache;
     private final EnhancedFieldLoader enhancedFieldLoader;
@@ -80,6 +88,7 @@ public class MemberTransformer implements Service {
         this.backedMethodLoader = new BackedMethodLoader();
         this.backedConstructorLoader = new BackedConstructorLoader();
         this.backedMemberCache = new MapMaker().makeComputingMap(new BackedMemberLoaderFunction());
+        this.unbackedAnnotatedMembersById = new MapMaker().makeComputingMap(new UnbackedMemberById());
         this.enhancedFieldLoader = new EnhancedFieldLoader();
         this.enhancedMethodLoader = new EnhancedMethodLoader();
         this.enhancedConstructorLoader = new EnhancedConstructorLoader();
@@ -150,6 +159,42 @@ public class MemberTransformer implements Service {
         @Override
         public Collection<? extends AnnotatedConstructor<?>> getMembersOfDeclaringType(BackedAnnotatedType<?> type) {
             return type.getConstructors();
+        }
+    }
+
+    // Unbacked members
+
+    public <X> UnbackedAnnotatedMember<X> getUnbackedMember(UnbackedMemberIdentifier<X> identifier) {
+        return cast(unbackedAnnotatedMembersById.get(identifier));
+    }
+
+    /**
+     * If an unbacked member is being deserialized it is looked in all the members of the declaring type and cached.
+     */
+    private class UnbackedMemberById implements Function<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> {
+
+        @Override
+        public UnbackedAnnotatedMember<?> apply(UnbackedMemberIdentifier<?> identifier) {
+            return findMatchingMember(identifier.getType(), identifier.getMemberId());
+        }
+
+        private <T> UnbackedAnnotatedMember<T> findMatchingMember(UnbackedAnnotatedType<T> type, String id) {
+            for (AnnotatedField<? super T> field : type.getFields()) {
+                if (id.equals(AnnotatedTypes.createFieldId(field))) {
+                    return cast(field);
+                }
+            }
+            for (AnnotatedMethod<? super T> method : type.getMethods()) {
+                if (id.equals(AnnotatedTypes.createMethodId(method.getJavaMember(), method.getAnnotations(), method.getParameters()))) {
+                    return Reflections.cast(method);
+                }
+            }
+            for (AnnotatedConstructor<T> constructor : type.getConstructors()) {
+                if (id.equals(AnnotatedTypes.createConstructorId(constructor.getJavaMember(), constructor.getAnnotations(), constructor.getParameters()))) {
+                    return cast(constructor);
+                }
+            }
+            throw new WeldException(UNABLE_TO_LOAD_MEMBER, id);
         }
     }
 
@@ -250,5 +295,6 @@ public class MemberTransformer implements Service {
     public void cleanup() {
         cleanupAfterBoot();
         backedMemberCache.clear();
+        unbackedAnnotatedMembersById.clear();
     }
 }

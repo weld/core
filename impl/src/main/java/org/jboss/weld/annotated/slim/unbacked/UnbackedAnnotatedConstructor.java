@@ -1,7 +1,11 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
 import static java.util.Collections.unmodifiableList;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
@@ -11,13 +15,14 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
 
-public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> implements AnnotatedConstructor<X> {
+public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> implements AnnotatedConstructor<X>, Serializable {
 
-    public static <X> AnnotatedConstructor<X> of(AnnotatedConstructor<X> originalConstructor, AnnotatedType<X> declaringType) {
+    public static <X> AnnotatedConstructor<X> of(AnnotatedConstructor<X> originalConstructor, UnbackedAnnotatedType<X> declaringType) {
         return new UnbackedAnnotatedConstructor<X>(originalConstructor.getBaseType(), originalConstructor.getTypeClosure(), originalConstructor.getAnnotations(), declaringType,
                 originalConstructor.getParameters(), originalConstructor.getJavaMember());
     }
@@ -25,7 +30,7 @@ public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> 
     private final Constructor<X> constructor;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public UnbackedAnnotatedConstructor(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, AnnotatedType<X> declaringType,
+    public UnbackedAnnotatedConstructor(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, UnbackedAnnotatedType<X> declaringType,
             List<AnnotatedParameter<X>> originalParameters, Constructor<X> constructor) {
         super(baseType, typeClosure, annotations, declaringType);
         this.constructor = constructor;
@@ -48,5 +53,15 @@ public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> 
     @Override
     public String toString() {
         return Formats.formatAnnotatedConstructor(this);
+    }
+
+    // Serialization
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new UnbackedMemberIdentifier<X>(getDeclaringType(), AnnotatedTypes.createConstructorId(constructor, getAnnotations(), getParameters()));
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
     }
 }

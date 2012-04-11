@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.serialization.annotated;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -49,27 +51,32 @@ public class BackedAnnotatedTypeSerializationTest {
 
     @Test
     public void testType() throws Exception {
-        Utils.deserialize(Utils.serialize(getAnnotatedType()));
+        AnnotatedType<?> type = Utils.deserialize(Utils.serialize(getAnnotatedType()));
+        assertEquals(1, type.getAnnotations().size());
     }
 
     @Test
     public void testFields() throws Exception {
         for (AnnotatedField<?> field : getAnnotatedType().getFields()) {
-            Utils.deserialize(Utils.serialize(field));
+            AnnotatedField<?> deserialized = Utils.deserialize(Utils.serialize(field));
+            assertEquals(1, deserialized.getAnnotations().size());
         }
     }
 
     @Test
     public void testMethods() throws Exception {
         for (AnnotatedMethod<?> method : getAnnotatedType().getMethods()) {
-            Utils.deserialize(Utils.serialize(method));
+            AnnotatedMethod<?> deserialized = Utils.deserialize(Utils.serialize(method));
+            assertEquals(1, deserialized.getAnnotations().size());
+            assertEquals(3, deserialized.getParameters().size());
         }
     }
 
     @Test
     public void testConstructors() throws Exception {
         for (AnnotatedConstructor<?> constructor : getAnnotatedType().getConstructors()) {
-            Utils.deserialize(Utils.serialize(constructor));
+            AnnotatedConstructor<?> deserialized = Utils.deserialize(Utils.serialize(constructor));
+            assertEquals(2, deserialized.getParameters().size());
         }
     }
 

@@ -1,8 +1,12 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
 import static java.util.Collections.unmodifiableList;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -12,14 +16,15 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
 
-public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> implements AnnotatedMethod<X> {
+public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> implements AnnotatedMethod<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedMethod<X> of(AnnotatedMethod<X> originalMethod, AnnotatedType<Y> declaringType) {
-        AnnotatedType<X> downcastDeclaringType = cast(declaringType);
+    public static <X, Y extends X> AnnotatedMethod<X> of(AnnotatedMethod<X> originalMethod, UnbackedAnnotatedType<Y> declaringType) {
+        UnbackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
         return new UnbackedAnnotatedMethod<X>(originalMethod.getBaseType(), originalMethod.getTypeClosure(), originalMethod.getAnnotations(), downcastDeclaringType,
                 originalMethod.getParameters(), originalMethod.getJavaMember());
     }
@@ -27,7 +32,7 @@ public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> imple
     private final Method method;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public UnbackedAnnotatedMethod(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, AnnotatedType<X> declaringType,
+    public UnbackedAnnotatedMethod(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, UnbackedAnnotatedType<X> declaringType,
             List<AnnotatedParameter<X>> originalParameters, Method method) {
         super(baseType, typeClosure, annotations, declaringType);
         this.method = method;
@@ -50,5 +55,15 @@ public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> imple
     @Override
     public String toString() {
         return Formats.formatAnnotatedMethod(this);
+    }
+
+    // Serialization
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new UnbackedMemberIdentifier<X>(getDeclaringType(), AnnotatedTypes.createMethodId(method, getAnnotations(), getParameters()));
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
     }
 }
