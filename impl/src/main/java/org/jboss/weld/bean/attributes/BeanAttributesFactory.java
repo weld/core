@@ -40,10 +40,10 @@ import javax.inject.Qualifier;
 import javax.inject.Scope;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.literal.AnyLiteral;
@@ -51,7 +51,9 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
+import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -60,6 +62,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  */
 public class BeanAttributesFactory {
+
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.unmodifiableSet(new ArraySet<Annotation>(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE).trimToSize());
 
     /**
      * Creates new {@link BeanAttributes} to represent a managed bean.
@@ -184,29 +188,26 @@ public class BeanAttributesFactory {
         }
 
         protected void initQualifiers(Set<Annotation> qualifiers) {
-            this.qualifiers = new HashSet<Annotation>();
-            this.qualifiers.addAll(qualifiers);
-            applyDefaultQualifiers(this.qualifiers, name);
+            if (qualifiers.isEmpty()) {
+                this.qualifiers = DEFAULT_QUALIFIERS;
+            } else {
+                ArraySet<Annotation> normalizedQualifiers = new ArraySet<Annotation>(qualifiers.size() + 2);
+                if (qualifiers.size() == 1) {
+                    if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
+                        normalizedQualifiers.add(DefaultLiteral.INSTANCE);
+                    }
+                }
+                normalizedQualifiers.addAll(qualifiers);
+                normalizedQualifiers.add(AnyLiteral.INSTANCE);
+                if (name != null && normalizedQualifiers.remove(NamedLiteral.DEFAULT)) {
+                    normalizedQualifiers.add(new NamedLiteral(name));
+                }
+                this.qualifiers = SharedObjectFacade.wrap(normalizedQualifiers.trimToSize());
+            }
         }
 
         protected void initQualifiers(EnhancedAnnotated<?, ?> annotated) {
             initQualifiers(annotated.getMetaAnnotations(Qualifier.class));
-        }
-
-        public static void applyDefaultQualifiers(Set<Annotation> qualifiers, String name) {
-            if (qualifiers.size() == 0) {
-                qualifiers.add(DefaultLiteral.INSTANCE);
-            }
-            if (qualifiers.size() == 1) {
-                if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
-                    qualifiers.add(DefaultLiteral.INSTANCE);
-                }
-            }
-            qualifiers.add(AnyLiteral.INSTANCE);
-
-            if (name != null && qualifiers.remove(NamedLiteral.DEFAULT)) {
-                qualifiers.add(new NamedLiteral(name));
-            }
         }
 
         protected void initScope(EnhancedAnnotated<T, ?> annotated) {

@@ -848,30 +848,26 @@ public class Beans {
      * Bean types from an annotated element
      */
     public static Set<Type> getTypes(EnhancedAnnotated<?, ?> annotated) {
-        Set<Type> types = new HashSet<Type>();
         // array and primitive types require special treatment
         if (annotated.getJavaClass().isArray() || annotated.getJavaClass().isPrimitive()) {
-            types.add(annotated.getJavaClass());
-            types.add(Object.class);
-            return types;
+            return new ArraySet<Type>(annotated.getJavaClass(), Object.class).trimToSize();
         } else {
             if (annotated.isAnnotationPresent(Typed.class)) {
-                types = new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()), annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
+                return new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()), annotated.getJavaClass(), annotated.getAnnotation(Typed.class))).trimToSize();
             } else {
                 if (annotated.getJavaClass().isInterface()) {
-                    types.add(Object.class);
+                    return new ArraySet<Type>(annotated.getTypeClosure(), Object.class).trimToSize();
                 }
-                types.addAll(annotated.getTypeClosure());
+                return annotated.getTypeClosure();
             }
         }
-        return types;
     }
 
     /**
      * Bean types of a session bean.
      */
     public static <T> Set<Type> getTypes(EnhancedAnnotated<T, ?> annotated, EjbDescriptor<T> ejbDescriptor) {
-        Set<Type> types = new HashSet<Type>();
+        ArraySet<Type> types = new ArraySet<Type>();
         // session beans
         Map<Class<?>, Type> typeMap = new LinkedHashMap<Class<?>, Type>();
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
@@ -883,7 +879,7 @@ public class Beans {
             typeMap.put(Object.class, Object.class);
             types.addAll(typeMap.values());
         }
-        return types;
+        return types.trimToSize();
     }
 
     /**

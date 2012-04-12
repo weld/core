@@ -65,6 +65,17 @@ public class ArraySet<E> implements Set<E>, Serializable {
         this(5);
     }
 
+    public ArraySet(E... initialElements) {
+        this(initialElements.length);
+        addAll(initialElements);
+    }
+
+    public ArraySet(Collection<E> initialElements, E... initialElements2) {
+        this(initialElements.size() + initialElements2.length);
+        addAll(initialElements);
+        addAll(initialElements2);
+    }
+
     public boolean add(E e) {
         if (contains(e)) {
             return false;
@@ -86,6 +97,14 @@ public class ArraySet<E> implements Set<E>, Serializable {
             }
         }
         elements.trimToSize();
+        return modified;
+    }
+
+    public boolean addAll(E... elements) {
+        boolean modified = false;
+        for (E element : elements) {
+            modified = modified | add(element);
+        }
         return modified;
     }
 

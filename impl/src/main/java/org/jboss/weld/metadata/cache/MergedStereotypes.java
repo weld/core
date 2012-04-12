@@ -19,6 +19,7 @@ package org.jboss.weld.metadata.cache;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -67,7 +68,11 @@ public class MergedStereotypes<T, E> {
         merge(stereotypeAnnotations);
         this.possibleScopeTypes.trimToSize();
         Reflections.<ArraySet<?>>cast(this.stereotypes).trimToSize();
-        this.stereotypes = Collections.unmodifiableSet(stereotypes);
+        if (stereotypes.isEmpty()) {
+            this.stereotypes = Collections.emptySet();
+        } else {
+            this.stereotypes = SharedObjectFacade.wrap(stereotypes);
+        }
     }
 
     /**
