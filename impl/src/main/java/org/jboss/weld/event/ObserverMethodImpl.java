@@ -23,6 +23,7 @@ import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
 import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -107,17 +108,19 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = TransactionPhase.IN_PROGRESS;
 
-        this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-        this.newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+        Set<WeldInjectionPoint<?, ?>> injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+        Set<WeldInjectionPoint<?, ?>> newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
         for (ParameterInjectionPoint<?, ?> injectionPoint : observerMethod.getParameterInjectionPoints()) {
             if (injectionPoint instanceof SpecialParameterInjectionPoint) {
                 continue;
             }
             if (injectionPoint.getQualifier(New.class) != null) {
-                this.newInjectionPoints.add(injectionPoint);
+                newInjectionPoints.add(injectionPoint);
             }
             injectionPoints.add(injectionPoint);
         }
+        this.injectionPoints = immutableSet(injectionPoints);
+        this.newInjectionPoints = immutableSet(newInjectionPoints);
     }
 
     public Set<WeldInjectionPoint<?, ?>> getInjectionPoints() {

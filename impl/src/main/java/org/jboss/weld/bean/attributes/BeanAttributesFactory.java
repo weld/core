@@ -105,7 +105,7 @@ public class BeanAttributesFactory {
     }
 
     public static <T> BeanAttributes<T> forNewManagedBean(EnhancedAnnotatedType<T> weldClass) {
-        return forNewBean(Beans.isNullable(weldClass), Beans.getTypes(weldClass));
+        return forNewBean(Beans.isNullable(weldClass), SharedObjectFacade.wrap(Beans.getTypes(weldClass)));
     }
 
     public static <T> BeanAttributes<T> forNewSessionBean(BeanAttributes<T> originalAttributes) {
@@ -133,9 +133,9 @@ public class BeanAttributesFactory {
             initQualifiers(annotated);
             initScope(annotated);
             if (descriptor == null) {
-                types = Beans.getTypes(annotated);
+                types = SharedObjectFacade.wrap(Beans.getTypes(annotated));
             } else {
-                types = Beans.getTypes(annotated, descriptor);
+                types = SharedObjectFacade.wrap(Beans.getTypes(annotated, descriptor));
             }
         }
 

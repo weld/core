@@ -1,5 +1,7 @@
 package org.jboss.weld.interceptor.reader;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -152,6 +154,6 @@ public class InterceptorMetadataUtils {
             currentClass = currentClass.getSuperclass();
         }
         while (currentClass != null && !OBJECT_CLASS_NAME.equals(currentClass.getJavaClass()));
-        return methodMap;
+        return immutableMap(methodMap);
     }
 }

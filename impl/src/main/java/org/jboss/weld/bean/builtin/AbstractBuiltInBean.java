@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -115,7 +117,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
         private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
 
         public BuiltInBeanAttributes(Class<T> type) {
-            super(true, Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, Sets.<Type> newHashSet(type, Object.class), Dependent.class);
+            super(true, Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, immutableSet(Sets.<Type> newHashSet(type, Object.class)), Dependent.class);
         }
     }
 

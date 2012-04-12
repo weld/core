@@ -45,7 +45,6 @@ public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnota
         return new EnhancedAnnotatedParameterImpl<T, X>(annotatedParameter, declaringMember, buildAnnotationMap(annotatedParameter.getAnnotations()), classTransformer);
     }
 
-    private final int position;
     private final EnhancedAnnotatedCallable<?, X, ?> declaringMember;
     private final AnnotatedParameter<X> slim;
 
@@ -59,7 +58,6 @@ public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnota
         super(annotatedParameter, annotationMap, annotationMap, classTransformer);
         this.slim = annotatedParameter;
         this.declaringMember = declaringMember;
-        this.position = slim.getPosition();
     }
 
     /**
@@ -131,7 +129,7 @@ public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnota
     }
 
     public int getPosition() {
-        return position;
+        return slim.getPosition();
     }
 
     @Override

@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents an annotated constructor
@@ -69,13 +69,13 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
         super(annotatedConstructor, annotationMap, declaredAnnotationMap, classTransformer, declaringClass);
         this.slim = annotatedConstructor;
 
-        this.parameters = new ArrayList<EnhancedAnnotatedParameter<?, T>>();
-
+        ArrayList<EnhancedAnnotatedParameter<?, T>> parameters = new ArrayList<EnhancedAnnotatedParameter<?, T>>();
         validateParameterCount(annotatedConstructor);
         for (AnnotatedParameter<T> annotatedParameter : annotatedConstructor.getParameters()) {
             EnhancedAnnotatedParameter<?, T> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this, classTransformer);
-            this.parameters.add(parameter);
+            parameters.add(parameter);
         }
+        this.parameters = immutableList(parameters);
         this.signature = new ConstructorSignatureImpl(this);
     }
 
@@ -107,7 +107,7 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
      * @see org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor#getEnhancedParameters()
      */
     public List<EnhancedAnnotatedParameter<?, T>> getEnhancedParameters() {
-        return Collections.unmodifiableList(parameters);
+        return parameters;
     }
 
     /**
@@ -130,21 +130,6 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
             }
         }
         return ret;
-    }
-
-    /**
-     * Creates a new instance
-     *
-     * @param parameters the parameters
-     * @return An instance
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws IllegalArgumentException
-     * @see org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor#newInstance(Object... params)
-     */
-    public T newInstance(Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        return SecureReflections.ensureAccessible(getDelegate()).newInstance(parameters);
     }
 
     /**
@@ -186,7 +171,7 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
     }
 
     public List<AnnotatedParameter<T>> getParameters() {
-        return Collections.<AnnotatedParameter<T>>unmodifiableList(parameters);
+        return Reflections.cast(parameters);
     }
 
     public boolean isGeneric() {

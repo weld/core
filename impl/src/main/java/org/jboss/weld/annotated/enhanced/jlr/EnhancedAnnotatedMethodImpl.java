@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotatedCallable<T, X, Method> implements EnhancedAnnotatedMethod<T, X> {
 
     // The abstracted parameters
-    private final ArrayList<EnhancedAnnotatedParameter<?, X>> parameters;
+    private final List<EnhancedAnnotatedParameter<?, X>> parameters;
 
     // The property name
     private final String propertyName;
@@ -72,14 +74,14 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     private EnhancedAnnotatedMethodImpl(AnnotatedMethod<X> annotatedMethod, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, EnhancedAnnotatedType<X> declaringClass, ClassTransformer classTransformer) {
         super(annotatedMethod, annotationMap, declaredAnnotationMap, classTransformer, declaringClass);
         this.slim = annotatedMethod;
-        this.parameters = new ArrayList<EnhancedAnnotatedParameter<?, X>>(annotatedMethod.getParameters().size());
 
+        ArrayList<EnhancedAnnotatedParameter<?, X>> parameters = new ArrayList<EnhancedAnnotatedParameter<?, X>>(annotatedMethod.getParameters().size());
         validateParameterCount(annotatedMethod);
         for (AnnotatedParameter<X> annotatedParameter : annotatedMethod.getParameters()) {
             EnhancedAnnotatedParameter<?, X> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this, classTransformer);
-            this.parameters.add(parameter);
+            parameters.add(parameter);
         }
-        this.parameters.trimToSize();
+        this.parameters = immutableList(parameters);
 
         String propertyName = Reflections.getPropertyName(getDelegate());
         if (propertyName == null) {

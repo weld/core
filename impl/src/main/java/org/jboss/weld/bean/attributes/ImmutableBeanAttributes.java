@@ -23,7 +23,6 @@ package org.jboss.weld.bean.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -50,11 +49,11 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
     public ImmutableBeanAttributes(boolean nullable, Set<Class<? extends Annotation>> stereotypes, boolean alternative, String name, Set<Annotation> qualifiers, Set<Type> types,
             Class<? extends Annotation> scope) {
         this.nullable = nullable;
-        this.stereotypes = Collections.unmodifiableSet(stereotypes);
+        this.stereotypes = stereotypes;
         this.alternative = alternative;
         this.name = name;
-        this.qualifiers = Collections.unmodifiableSet(qualifiers);
-        this.types = Collections.unmodifiableSet(types);
+        this.qualifiers = qualifiers;
+        this.types = types;
         this.scope = scope;
     }
 

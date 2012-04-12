@@ -23,6 +23,7 @@ package org.jboss.weld.bean;
 
 import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -55,7 +56,7 @@ public class SyntheticDecorator<T> extends SyntheticClassBean<T> implements Deco
     public SyntheticDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> producer, BeanManagerImpl manager) {
         super(attributes, beanClass, producer, manager);
         this.delegate = identifyDelegateInjectionPoint(getInjectionPoints());
-        this.decoratedTypes = Collections.unmodifiableSet(getDecoratedTypes(attributes.getTypes()));
+        this.decoratedTypes = immutableSet((getDecoratedTypes(attributes.getTypes())));
     }
 
     protected InjectionPoint identifyDelegateInjectionPoint(Set<InjectionPoint> injectionPoints) {

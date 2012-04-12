@@ -36,7 +36,6 @@ import javax.inject.Qualifier;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.collections.ArraySet;
@@ -117,8 +116,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
 
     private final Class<T> rawType;
     private final Type[] actualTypeArguments;
-    private final Type type;
-    private final Set<Type> typeClosure;
+    private final Annotated delegate;
 
     /**
      * Constructor
@@ -129,14 +127,12 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
      * @param annotationMap A map of annotation to register
      */
     public AbstractEnhancedAnnotated(Annotated annotated, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
+        this.delegate = annotated;
         if (annotated instanceof AnnotatedType<?>) {
             this.rawType = Reflections.<AnnotatedType<T>>cast(annotated).getJavaClass();
         } else {
             this.rawType = Reflections.getRawType(annotated.getBaseType());
         }
-
-        this.type = annotated.getBaseType();
-        this.typeClosure = annotated.getTypeClosure();
 
         if (annotationMap == null) {
             throw new WeldException(ANNOTATION_MAP_NULL);
@@ -153,33 +149,11 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         if (declaredAnnotationMap == null) {
             throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
         }
-        if (type instanceof ParameterizedType) {
-            this.actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+        if (delegate.getBaseType() instanceof ParameterizedType) {
+            this.actualTypeArguments = ((ParameterizedType) delegate.getBaseType()).getActualTypeArguments();
         } else {
-            this.actualTypeArguments = new Type[0];
+            this.actualTypeArguments = Arrays2.EMPTY_TYPE_ARRAY;
         }
-    }
-
-    protected AbstractEnhancedAnnotated(Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, TypeStore typeStore) {
-        if (annotationMap == null) {
-            throw new WeldException(ANNOTATION_MAP_NULL);
-        }
-        this.annotationMap = annotationMap;
-        this.metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
-        for (Annotation annotation : annotationMap.values()) {
-            addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
-            addMetaAnnotations(metaAnnotationMap, annotation, typeStore.get(annotation.annotationType()), false);
-            this.annotationMap.put(annotation.annotationType(), annotation);
-        }
-        metaAnnotationMap.trimToSize();
-
-        if (declaredAnnotationMap == null) {
-            throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
-        }
-        this.rawType = null;
-        this.type = null;
-        this.actualTypeArguments = new Type[0];
-        this.typeClosure = null;
     }
 
     public Class<T> getJavaClass() {
@@ -211,11 +185,11 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     }
 
     public Type getBaseType() {
-        return type;
+        return delegate.getBaseType();
     }
 
     public Set<Type> getTypeClosure() {
-        return typeClosure;
+        return delegate.getTypeClosure();
     }
 
     public Set<Annotation> getAnnotations() {

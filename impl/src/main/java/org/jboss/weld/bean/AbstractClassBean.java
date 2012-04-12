@@ -337,14 +337,14 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * @return The set of annotated methods
      */
     public List<? extends Set<? extends MethodInjectionPoint<?, ?>>> getInitializerMethods() {
-        return Collections.unmodifiableList(initializerMethods);
+        return initializerMethods;
     }
 
     /**
      * @return the injectableFields
      */
     public List<? extends Set<FieldInjectionPoint<?, ?>>> getInjectableFields() {
-        return Collections.unmodifiableList(injectableFields);
+        return injectableFields;
     }
 
     /**

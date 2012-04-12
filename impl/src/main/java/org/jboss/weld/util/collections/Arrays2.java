@@ -18,6 +18,7 @@ package org.jboss.weld.util.collections;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +29,7 @@ import java.util.Set;
 public class Arrays2 {
 
     public static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
+    public static final Type[] EMPTY_TYPE_ARRAY = new Type[0];
 
     private Arrays2() {
     }
