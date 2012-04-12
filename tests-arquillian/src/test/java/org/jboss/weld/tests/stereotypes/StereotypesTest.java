@@ -42,7 +42,7 @@ public class StereotypesTest {
 
     @Test
     public void testAnimalStereotype() {
-        StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(AnimalStereotype.class, transformer);
+        StereotypeModel<AnimalStereotype> animalStereotype = new StereotypeModel<AnimalStereotype>(transformer.getEnhancedAnnotation(AnimalStereotype.class));
         Assert.assertEquals(RequestScoped.class, animalStereotype.getDefaultScopeType().annotationType());
         Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
         Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
@@ -51,7 +51,7 @@ public class StereotypesTest {
 
     @Test
     public void testAnimalOrderStereotype() {
-        StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(AnimalOrderStereotype.class, transformer);
+        StereotypeModel<AnimalOrderStereotype> animalStereotype = new StereotypeModel<AnimalOrderStereotype>(transformer.getEnhancedAnnotation(AnimalOrderStereotype.class));
         Assert.assertNull(animalStereotype.getDefaultScopeType());
         Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
         Assert.assertFalse(animalStereotype.isBeanNameDefaulted());
@@ -60,7 +60,7 @@ public class StereotypesTest {
 
     @Test
     public void testRequestScopedAnimalStereotype() {
-        StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(RequestScopedAnimalStereotype.class, transformer);
+        StereotypeModel<RequestScopedAnimalStereotype> animalStereotype = new StereotypeModel<RequestScopedAnimalStereotype>(transformer.getEnhancedAnnotation(RequestScopedAnimalStereotype.class));
         Assert.assertNull(animalStereotype.getDefaultScopeType());
         Assert.assertEquals(0, animalStereotype.getInterceptorBindings().size());
         Assert.assertFalse(animalStereotype.isBeanNameDefaulted());

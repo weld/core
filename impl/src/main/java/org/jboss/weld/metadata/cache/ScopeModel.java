@@ -16,16 +16,6 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.Arrays2;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.NormalScope;
-import javax.inject.Scope;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Target;
-import java.util.Set;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -33,6 +23,17 @@ import static org.jboss.weld.logging.Category.REFLECTION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_TYPE;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
+import java.util.Set;
+
+import javax.enterprise.context.NormalScope;
+import javax.inject.Scope;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.util.collections.Arrays2;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Model of a scope
@@ -53,11 +54,11 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T> {
      *
      * @param scope The scope type
      */
-    public ScopeModel(Class<T> scope, ClassTransformer classTransformer) {
-        super(scope, classTransformer);
+    public ScopeModel(EnhancedAnnotation<T> enhancedAnnotatedAnnotation) {
+        super(enhancedAnnotatedAnnotation);
         if (isValid()) {
-            if (getAnnotatedAnnotation().isAnnotationPresent(NormalScope.class)) {
-                this.passivating = getAnnotatedAnnotation().getAnnotation(NormalScope.class).passivating();
+            if (enhancedAnnotatedAnnotation.isAnnotationPresent(NormalScope.class)) {
+                this.passivating = enhancedAnnotatedAnnotation.getAnnotation(NormalScope.class).passivating();
                 this.normal = true;
             } else {
                 this.normal = false;
@@ -70,13 +71,13 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T> {
     }
 
     @Override
-    protected void check() {
-        super.check();
+    protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
+        super.check(annotatedAnnotation);
         if (isValid()) {
-            if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, getAnnotatedAnnotation());
-            } else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE)) {
-                log.debug(MISSING_TARGET_METHOD_FIELD_TYPE, getAnnotatedAnnotation());
+            if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
+                log.debug(MISSING_TARGET, annotatedAnnotation);
+            } else if (!Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD, TYPE)) {
+                log.debug(MISSING_TARGET_METHOD_FIELD_TYPE, annotatedAnnotation);
             }
         }
     }

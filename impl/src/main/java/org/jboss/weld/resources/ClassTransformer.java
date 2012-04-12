@@ -63,7 +63,7 @@ public class ClassTransformer implements Service {
     private class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, EnhancedAnnotation<?>> {
         @Override
         public EnhancedAnnotation<?> apply(Class<? extends Annotation> from) {
-            return EnhancedAnnotationImpl.create(BackedAnnotatedType.of(from, ClassTransformer.this), ClassTransformer.this);
+            return EnhancedAnnotationImpl.create(getAnnotatedType(from), ClassTransformer.this);
         }
     }
 
@@ -203,7 +203,7 @@ public class ClassTransformer implements Service {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Annotation> EnhancedAnnotation<T> loadAnnotation(final Class<T> clazz) {
+    public <T extends Annotation> EnhancedAnnotation<T> getEnhancedAnnotation(final Class<T> clazz) {
         return (EnhancedAnnotation<T>) annotations.get(clazz);
     }
 

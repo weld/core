@@ -58,7 +58,7 @@ public class MetaAnnotationStore implements Service {
         }
 
         public StereotypeModel<Annotation> apply(Class<Annotation> from) {
-            return new StereotypeModel<Annotation>(from, getClassTransformer());
+            return new StereotypeModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
     }
@@ -70,7 +70,7 @@ public class MetaAnnotationStore implements Service {
         }
 
         public ScopeModel<Annotation> apply(Class<Annotation> from) {
-            return new ScopeModel<Annotation>(from, getClassTransformer());
+            return new ScopeModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
     }
@@ -82,7 +82,7 @@ public class MetaAnnotationStore implements Service {
         }
 
         public QualifierModel<Annotation> apply(Class<Annotation> from) {
-            return new QualifierModel<Annotation>(from, getClassTransformer());
+            return new QualifierModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
     }
@@ -94,7 +94,7 @@ public class MetaAnnotationStore implements Service {
         }
 
         public InterceptorBindingModel<Annotation> apply(Class<Annotation> from) {
-            return new InterceptorBindingModel<Annotation>(from, getClassTransformer());
+            return new InterceptorBindingModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
     }

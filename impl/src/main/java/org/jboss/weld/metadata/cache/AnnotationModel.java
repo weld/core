@@ -16,20 +16,21 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.logging.messages.MetadataMessage;
-import org.jboss.weld.resources.ClassTransformer;
-import org.slf4j.cal10n.LocLogger;
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_RETENTION;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Set;
 
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_RETENTION;
+import javax.enterprise.inject.spi.AnnotatedType;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.messages.MetadataMessage;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Abstract representation of an annotation model
@@ -40,7 +41,7 @@ public abstract class AnnotationModel<T extends Annotation> {
     private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     // The underlying annotation
-    private final EnhancedAnnotation<T> annotatedAnnotation;
+    private final AnnotatedType<T> annotatedAnnotation;
     // Is the data valid?
     protected boolean valid;
 
@@ -49,24 +50,24 @@ public abstract class AnnotationModel<T extends Annotation> {
      *
      * @param type The annotation type
      */
-    public AnnotationModel(Class<T> type, ClassTransformer transformer) {
-        this.annotatedAnnotation = transformer.loadAnnotation(type);
-        init();
+    public AnnotationModel(EnhancedAnnotation<T> enhancedAnnotatedAnnotation) {
+        this.annotatedAnnotation = enhancedAnnotatedAnnotation.slim();
+        init(enhancedAnnotatedAnnotation);
     }
 
     /**
      * Initializes the type and validates it
      */
-    protected void init() {
-        initType();
-        initValid();
-        check();
+    protected void init(EnhancedAnnotation<T> annotatedAnnotation) {
+        initType(annotatedAnnotation);
+        initValid(annotatedAnnotation);
+        check(annotatedAnnotation);
     }
 
     /**
      * Initializes the type
      */
-    protected void initType() {
+    protected void initType(EnhancedAnnotation<T> annotatedAnnotation) {
         if (!Annotation.class.isAssignableFrom(getRawType())) {
             throw new DefinitionException(MetadataMessage.META_ANNOTATION_ON_WRONG_TYPE, getMetaAnnotationTypes(), getRawType());
         }
@@ -75,7 +76,7 @@ public abstract class AnnotationModel<T extends Annotation> {
     /**
      * Validates the data for correct annotation
      */
-    protected void initValid() {
+    protected void initValid(EnhancedAnnotation<T> annotatedAnnotation) {
         this.valid = false;
         for (Class<? extends Annotation> annotationType : getMetaAnnotationTypes()) {
             if (annotatedAnnotation.isAnnotationPresent(annotationType)) {
@@ -84,7 +85,7 @@ public abstract class AnnotationModel<T extends Annotation> {
         }
     }
 
-    protected void check() {
+    protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
         if (valid && (!annotatedAnnotation.isAnnotationPresent(Retention.class) || annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))) {
             this.valid = false;
             log.debug(MISSING_RETENTION, annotatedAnnotation);
@@ -121,7 +122,7 @@ public abstract class AnnotationModel<T extends Annotation> {
      *
      * @return The annotation
      */
-    protected EnhancedAnnotation<T> getAnnotatedAnnotation() {
+    protected AnnotatedType<T> getAnnotatedAnnotation() {
         return annotatedAnnotation;
     }
 

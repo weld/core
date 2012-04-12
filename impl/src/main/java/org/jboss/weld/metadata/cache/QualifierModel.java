@@ -16,22 +16,6 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.Arrays2;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.Set;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -42,43 +26,47 @@ import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.inject.Qualifier;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
+
 /**
  * Model of a binding type
  *
  * @author Pete Muir
  */
-public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
+public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T> {
     private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Qualifier.class);
-
-    // The non-binding types
-    private Set<EnhancedAnnotatedMethod<?, ?>> nonBindingMembers;
-
 
     /**
      * Constructor
      *
      * @param type The type
      */
-    public QualifierModel(Class<T> type, ClassTransformer transformer) {
-        super(type, transformer);
-    }
-
-    /**
-     * Initializes the non-binding types and validates the members
-     */
-    @Override
-    protected void init() {
-        initNonBindingMembers();
-        super.init();
+    public QualifierModel(EnhancedAnnotation<T> enhancedAnnotatedAnnotation) {
+        super(enhancedAnnotatedAnnotation);
     }
 
     @Override
-    protected void initValid() {
-        super.initValid();
-        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
-            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingMembers.contains(annotatedMethod)) {
+    protected void initValid(EnhancedAnnotation<T> annotatedAnnotation) {
+        super.initValid(annotatedAnnotation);
+        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : annotatedAnnotation.getMembers()) {
+            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !getNonBindingMembers().contains(annotatedMethod.slim())) {
                 log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
                 super.valid = false;
             }
@@ -88,14 +76,14 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
     /**
      * Validates the members
      */
-    protected void check() {
-        super.check();
+    protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
+        super.check(annotatedAnnotation);
         if (isValid()) {
 
-            if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, getAnnotatedAnnotation());
-            } else if (!Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE)) {
-                log.debug(MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE, getAnnotatedAnnotation());
+            if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
+                log.debug(MISSING_TARGET, annotatedAnnotation);
+            } else if (!Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE)) {
+                log.debug(MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE, annotatedAnnotation);
             }
         }
     }
@@ -116,24 +104,7 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
      * @return True if present, false otherwise
      */
     public boolean hasNonBindingMembers() {
-        return nonBindingMembers.size() > 0;
-    }
-
-    /**
-     * Gets the non-binding types
-     *
-     * @return A set of non-binding types, or an empty set if there are none
-     *         present
-     */
-    public Set<EnhancedAnnotatedMethod<?, ?>> getNonBindingMembers() {
-        return nonBindingMembers;
-    }
-
-    /**
-     * Initializes the non-binding types
-     */
-    protected void initNonBindingMembers() {
-        nonBindingMembers = getAnnotatedAnnotation().getMembers(Nonbinding.class);
+        return getNonBindingMembers().size() > 0;
     }
 
     /**
@@ -145,8 +116,8 @@ public class QualifierModel<T extends Annotation> extends AnnotationModel<T> {
      */
     public boolean isEqual(Annotation instance, Annotation other) {
         if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType())) {
-            for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
-                if (!nonBindingMembers.contains(annotatedMethod)) {
+            for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMethods()) {
+                if (!getNonBindingMembers().contains(annotatedMethod)) {
                     try {
                         Object thisValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, instance);
                         Object thatValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, other);

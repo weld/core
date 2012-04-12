@@ -17,25 +17,6 @@
 
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.Arrays2;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.util.Nonbinding;
-import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.Set;
-
 import static org.jboss.weld.logging.Category.REFLECTION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
@@ -43,29 +24,46 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE;
 import static org.jboss.weld.logging.messages.ReflectionMessage.TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.interceptor.InterceptorBinding;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
+
 /**
  * @author Marius Bogoevici
  */
-public class InterceptorBindingModel<T extends Annotation> extends AnnotationModel<T> {
+public class InterceptorBindingModel<T extends Annotation> extends AbstractBindingModel<T> {
     private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(InterceptorBinding.class);
     private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
-    private Set<EnhancedAnnotatedMethod<?, ?>> nonBindingTypes;
     private Set<Annotation> inheritedInterceptionBindingTypes;
     private Set<Annotation> metaAnnotations;
 
-    public InterceptorBindingModel(Class<T> type, ClassTransformer transformer) {
-        super(type, transformer);
+    public InterceptorBindingModel(EnhancedAnnotation<T> enhancedAnnotatedAnnotation) {
+        super(enhancedAnnotatedAnnotation);
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void init(EnhancedAnnotation<T> annotatedAnnotation) {
+        super.init(annotatedAnnotation);
         if (isValid()) {
-            initNonBindingTypes();
-            initInterceptionBindingTypes();
-            checkArrayAndAnnotationValuedMembers();
-            checkMetaAnnotations();
-            this.metaAnnotations = getAnnotatedAnnotation().getAnnotations();
+            initInterceptionBindingTypes(annotatedAnnotation);
+            checkArrayAndAnnotationValuedMembers(annotatedAnnotation);
+            checkMetaAnnotations(annotatedAnnotation);
+            this.metaAnnotations = annotatedAnnotation.getAnnotations();
         }
     }
 
@@ -78,22 +76,18 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
         return metaAnnotations;
     }
 
-    protected void initNonBindingTypes() {
-        nonBindingTypes = getAnnotatedAnnotation().getMembers(Nonbinding.class);
+    protected void initInterceptionBindingTypes(EnhancedAnnotation<T> annotatedAnnotation) {
+        inheritedInterceptionBindingTypes = annotatedAnnotation.getMetaAnnotations(InterceptorBinding.class);
     }
 
-    protected void initInterceptionBindingTypes() {
-        inheritedInterceptionBindingTypes = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBinding.class);
-    }
-
-    protected void check() {
-        super.check();
+    protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
+        super.check(annotatedAnnotation);
         if (isValid()) {
-            if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+            if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
+                log.debug(MISSING_TARGET, annotatedAnnotation);
             }
-            if (!isValidTargetType(getAnnotatedAnnotation())) {
-                log.debug(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, getAnnotatedAnnotation());
+            if (!isValidTargetType(annotatedAnnotation)) {
+                log.debug(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, annotatedAnnotation);
             }
         }
     }
@@ -103,21 +97,21 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
         return target != null && (Arrays2.unorderedEquals(target.value(), ElementType.TYPE, ElementType.METHOD) || Arrays2.unorderedEquals(target.value(), ElementType.TYPE));
     }
 
-    private void checkMetaAnnotations() {
-        Target target = getAnnotatedAnnotation().getAnnotation(Target.class);
+    private void checkMetaAnnotations(EnhancedAnnotation<T> annotatedAnnotation) {
+        Target target = annotatedAnnotation.getAnnotation(Target.class);
         if (target != null && Arrays2.containsAll(target.value(), ElementType.METHOD)) {
             for (Annotation inheritedBinding : getInheritedInterceptionBindingTypes()) {
                 target = inheritedBinding.annotationType().getAnnotation(Target.class);
                 if (target != null && !Arrays2.containsAll(target.value(), ElementType.METHOD)) {
-                    log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, getAnnotatedAnnotation(), inheritedBinding);
+                    log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, annotatedAnnotation, inheritedBinding);
                 }
             }
         }
     }
 
-    private void checkArrayAndAnnotationValuedMembers() {
-        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
-            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !nonBindingTypes.contains(annotatedMethod)) {
+    private void checkArrayAndAnnotationValuedMembers(EnhancedAnnotation<T> annotatedAnnotation) {
+        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : annotatedAnnotation.getMembers()) {
+            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !getNonBindingMembers().contains(annotatedMethod.slim())) {
                 throw new DefinitionException(NON_BINDING_MEMBER_TYPE, annotatedMethod);
             }
         }
@@ -140,8 +134,8 @@ public class InterceptorBindingModel<T extends Annotation> extends AnnotationMod
 
     public boolean isEqual(Annotation instance, Annotation other, boolean includeNonBindingTypes) {
         if (instance.annotationType().equals(getRawType()) && other.annotationType().equals(getRawType())) {
-            for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : getAnnotatedAnnotation().getMembers()) {
-                if (includeNonBindingTypes || !nonBindingTypes.contains(annotatedMethod)) {
+            for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMethods()) {
+                if (includeNonBindingTypes || !getNonBindingMembers().contains(annotatedMethod)) {
                     try {
                         Object thisValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, instance);
                         Object thatValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, other);

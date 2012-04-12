@@ -16,24 +16,6 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.Arrays2;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Stereotype;
-import javax.inject.Named;
-import javax.inject.Qualifier;
-import javax.inject.Scope;
-import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Target;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -44,6 +26,25 @@ import static org.jboss.weld.logging.messages.MetadataMessage.QUALIFIER_ON_STERE
 import static org.jboss.weld.logging.messages.MetadataMessage.VALUE_ON_NAMED_STEREOTYPE;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Stereotype;
+import javax.inject.Named;
+import javax.inject.Qualifier;
+import javax.inject.Scope;
+import javax.interceptor.InterceptorBinding;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.util.collections.Arrays2;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to
@@ -73,26 +74,33 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
      *
      * @param sterotype The stereotype
      */
-    public StereotypeModel(Class<T> sterotype, ClassTransformer transformer) {
-        super(sterotype, transformer);
-        initAlternative();
-        initDefaultScopeType();
-        initBeanNameDefaulted();
-        initInterceptorBindings();
-        initInheritedStereotypes();
-        checkBindings();
-        this.metaAnnotations = getAnnotatedAnnotation().getAnnotations();
+    public StereotypeModel(EnhancedAnnotation<T> enhancedAnnotatedAnnotation) {
+        super(enhancedAnnotatedAnnotation);
     }
+
+    @Override
+    protected void init(EnhancedAnnotation<T> annotatedAnnotation) {
+        super.init(annotatedAnnotation);
+        initAlternative(annotatedAnnotation);
+        initDefaultScopeType(annotatedAnnotation);
+        initBeanNameDefaulted(annotatedAnnotation);
+        initInterceptorBindings(annotatedAnnotation);
+        initInheritedStereotypes(annotatedAnnotation);
+        checkBindings(annotatedAnnotation);
+        this.metaAnnotations = annotatedAnnotation.getAnnotations();
+    }
+
+
 
     /**
      * Validates the binding types
      */
-    private void checkBindings() {
-        Set<Annotation> bindings = getAnnotatedAnnotation().getMetaAnnotations(Qualifier.class);
+    private void checkBindings(EnhancedAnnotation<T> annotatedAnnotation) {
+        Set<Annotation> bindings = annotatedAnnotation.getMetaAnnotations(Qualifier.class);
         if (bindings.size() > 0) {
             for (Annotation annotation : bindings) {
                 if (!annotation.annotationType().equals(Named.class)) {
-                    throw new DefinitionException(QUALIFIER_ON_STEREOTYPE, getAnnotatedAnnotation());
+                    throw new DefinitionException(QUALIFIER_ON_STEREOTYPE, annotatedAnnotation);
                 }
             }
         }
@@ -101,21 +109,21 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     /**
      * Initializes the interceptor bindings
      */
-    private void initInterceptorBindings() {
-        interceptorBindings = getAnnotatedAnnotation().getMetaAnnotations(InterceptorBinding.class);
+    private void initInterceptorBindings(EnhancedAnnotation<T> annotatedAnnotation) {
+        interceptorBindings = annotatedAnnotation.getMetaAnnotations(InterceptorBinding.class);
     }
 
-    private void initInheritedStereotypes() {
-        this.inheritedSterotypes = getAnnotatedAnnotation().getMetaAnnotations(Stereotype.class);
+    private void initInheritedStereotypes(EnhancedAnnotation<T> annotatedAnnotation) {
+        this.inheritedSterotypes = annotatedAnnotation.getMetaAnnotations(Stereotype.class);
     }
 
     /**
      * Initializes the bean name defaulted
      */
-    private void initBeanNameDefaulted() {
-        if (getAnnotatedAnnotation().isAnnotationPresent(Named.class)) {
-            if (!"".equals(getAnnotatedAnnotation().getAnnotation(Named.class).value())) {
-                throw new DefinitionException(VALUE_ON_NAMED_STEREOTYPE, getAnnotatedAnnotation());
+    private void initBeanNameDefaulted(EnhancedAnnotation<T> annotatedAnnotation) {
+        if (annotatedAnnotation.isAnnotationPresent(Named.class)) {
+            if (!"".equals(annotatedAnnotation.getAnnotation(Named.class).value())) {
+                throw new DefinitionException(VALUE_ON_NAMED_STEREOTYPE, annotatedAnnotation);
             }
             beanNameDefaulted = true;
         }
@@ -124,12 +132,12 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     /**
      * Initializes the default scope type
      */
-    private void initDefaultScopeType() {
+    private void initDefaultScopeType(EnhancedAnnotation<T> annotatedAnnotation) {
         Set<Annotation> scopeTypes = new HashSet<Annotation>();
-        scopeTypes.addAll(getAnnotatedAnnotation().getMetaAnnotations(Scope.class));
-        scopeTypes.addAll(getAnnotatedAnnotation().getMetaAnnotations(NormalScope.class));
+        scopeTypes.addAll(annotatedAnnotation.getMetaAnnotations(Scope.class));
+        scopeTypes.addAll(annotatedAnnotation.getMetaAnnotations(NormalScope.class));
         if (scopeTypes.size() > 1) {
-            throw new DefinitionException(MULTIPLE_SCOPES, getAnnotatedAnnotation());
+            throw new DefinitionException(MULTIPLE_SCOPES, annotatedAnnotation);
         } else if (scopeTypes.size() == 1) {
             this.defaultScopeType = scopeTypes.iterator().next();
         }
@@ -138,26 +146,26 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     /**
      * Initializes the default deployment type
      */
-    private void initAlternative() {
-        if (getAnnotatedAnnotation().isAnnotationPresent(Alternative.class)) {
+    private void initAlternative(EnhancedAnnotation<T> annotatedAnnotation) {
+        if (annotatedAnnotation.isAnnotationPresent(Alternative.class)) {
             this.alternative = true;
         }
     }
 
     @Override
-    protected void check() {
-        super.check();
+    protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
+        super.check(annotatedAnnotation);
         if (isValid()) {
-            if (!getAnnotatedAnnotation().isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, getAnnotatedAnnotation());
+            if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
+                log.debug(MISSING_TARGET, annotatedAnnotation);
             } else if (!(
-                    Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, FIELD, TYPE) ||
-                            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), TYPE) ||
-                            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD) ||
-                            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), FIELD) ||
-                            Arrays2.unorderedEquals(getAnnotatedAnnotation().getAnnotation(Target.class).value(), METHOD, TYPE)
+                    Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD, TYPE) ||
+                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), TYPE) ||
+                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD) ||
+                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), FIELD) ||
+                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, TYPE)
             )) {
-                log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, getAnnotatedAnnotation());
+                log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, annotatedAnnotation);
             }
         }
     }
