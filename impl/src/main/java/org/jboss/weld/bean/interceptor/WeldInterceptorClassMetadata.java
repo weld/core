@@ -17,12 +17,14 @@
 
 package org.jboss.weld.bean.interceptor;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.interceptor.reader.DefaultMethodMetadata;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
@@ -41,13 +43,14 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
 
     private WeldInterceptorClassMetadata(EnhancedAnnotatedType<T> weldClass) {
         this.clazz = weldClass.getJavaClass();
-        methodMetadatas = new ArrayList<MethodMetadata>();
+        ArrayList<MethodMetadata> methodMetadatas = new ArrayList<MethodMetadata>();
         for (EnhancedAnnotatedMethod<?, ?> method : weldClass.getDeclaredEnhancedMethods()) {
             MethodMetadata methodMetadata = DefaultMethodMetadata.of(method, WeldAnnotatedMethodReader.getInstance());
             if (methodMetadata.getSupportedInterceptionTypes() != null && methodMetadata.getSupportedInterceptionTypes().size() != 0) {
                 methodMetadatas.add(methodMetadata);
             }
         }
+        this.methodMetadatas = immutableList(methodMetadatas);
         if (weldClass.getEnhancedSuperclass() != null) {
             this.superclass = WeldInterceptorClassMetadata.of(weldClass.getEnhancedSuperclass());
         }

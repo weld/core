@@ -44,7 +44,7 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
 
     protected AbstractCallableInjectionPoint(EnhancedAnnotatedCallable<T, X, S> callable, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
         this.declaringBean = declaringBean;
-        this.parameters = Collections.unmodifiableList(Beans.getParameterInjectionPoints(callable, declaringBean, manager, observerOrDisposer));
+        this.parameters = Beans.getParameterInjectionPoints(callable, declaringBean, manager, observerOrDisposer);
     }
 
     @Override

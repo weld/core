@@ -26,6 +26,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST
 import static org.jboss.weld.util.Interceptors.filterInterceptorBindings;
 import static org.jboss.weld.util.Interceptors.flattenInterceptorBindings;
 import static org.jboss.weld.util.Interceptors.mergeBeanInterceptorBindings;
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -242,7 +243,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     public void initDecorators() {
-        this.decorators = getBeanManager().resolveDecorators(getTypes(), getQualifiers());
+        this.decorators = immutableList(getBeanManager().resolveDecorators(getTypes(), getQualifiers()));
     }
 
     public boolean hasDecorators() {
@@ -269,7 +270,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     public List<Decorator<?>> getDecorators() {
-        return Collections.unmodifiableList(decorators);
+        return decorators;
     }
 
     /**

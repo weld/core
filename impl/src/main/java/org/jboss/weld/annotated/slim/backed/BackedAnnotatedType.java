@@ -1,6 +1,7 @@
 package org.jboss.weld.annotated.slim.backed;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -12,7 +13,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -69,9 +69,9 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             }
             clazz = clazz.getSuperclass();
         }
-        this.constructors = Collections.unmodifiableSet(constructors.trimToSize());
-        this.methods = Collections.unmodifiableSet(methods.trimToSize());
-        this.fields = Collections.unmodifiableSet(fields.trimToSize());
+        this.constructors = immutableSet(constructors.trimToSize());
+        this.methods = immutableSet(methods.trimToSize());
+        this.fields = immutableSet(fields.trimToSize());
     }
 
     private <T> BackedAnnotatedType<T> getDeclaringAnnotatedType(Member member, ClassTransformer transformer) {

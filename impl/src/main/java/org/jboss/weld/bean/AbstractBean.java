@@ -24,6 +24,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORA
 import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -67,9 +68,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
     protected Class<T> type;
 
-    private ArraySet<WeldInjectionPoint<?, ?>> injectionPoints;
-    private ArraySet<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
-    private ArraySet<WeldInjectionPoint<?, ?>> newInjectionPoints;
+    private Set<WeldInjectionPoint<?, ?>> injectionPoints;
+    private Set<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
+    private Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
     private final ServiceRegistry services;
     private boolean preInitialized;
     private boolean proxyRequired;
@@ -89,9 +90,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     @Override
     public void cleanupAfterBoot() {
-        injectionPoints.trimToSize();
-        delegateInjectionPoints.trimToSize();
-        newInjectionPoints.trimToSize();
+        injectionPoints = immutableSet(injectionPoints);
+        delegateInjectionPoints = immutableSet(delegateInjectionPoints);
+        newInjectionPoints = immutableSet(newInjectionPoints);
     }
 
     /**

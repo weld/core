@@ -39,6 +39,8 @@ import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -82,14 +84,14 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
@@ -212,16 +214,15 @@ public class Beans {
         EnhancedAnnotatedType<?> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
             ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
-            injectableFieldsList.add(0, fields);
             for (EnhancedAnnotatedField<?, ?> annotatedField : t.getDeclaredEnhancedFields(Inject.class)) {
                 if (!annotatedField.isStatic()) {
                     addFieldInjectionPoint(annotatedField, fields, declaringBean, manager);
                 }
             }
-            fields.trimToSize();
+            injectableFieldsList.add(0, immutableSet(fields));
             t = t.getEnhancedSuperclass();
         }
-        return injectableFieldsList;
+        return immutableList(injectableFieldsList);
     }
 
     public static <T extends WeldInjectionPoint<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
@@ -247,7 +248,7 @@ public class Beans {
             }
             t = t.getEnhancedSuperclass();
         }
-        return methods;
+        return immutableList(methods);
     }
 
     public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(EnhancedAnnotatedType<T> type) {
@@ -288,7 +289,7 @@ public class Beans {
             }
             t = t.getEnhancedSuperclass();
         }
-        return methods;
+        return immutableList(methods);
     }
 
     public static List<EnhancedAnnotatedMethod<?, ?>> getInterceptableMethods(EnhancedAnnotatedType<?> type) {
@@ -318,7 +319,7 @@ public class Beans {
             for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(ejbAnnotationType)) {
                 ejbInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
-            return ejbInjectionPoints.trimToSize();
+            return immutableSet(ejbInjectionPoints);
         } else {
             return Collections.emptySet();
         }
@@ -331,7 +332,7 @@ public class Beans {
             for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(persistenceContextAnnotationType)) {
                 jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
-            return jpaInjectionPoints.trimToSize();
+            return immutableSet(jpaInjectionPoints);
         } else {
             return Collections.emptySet();
         }
@@ -344,7 +345,7 @@ public class Beans {
             for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(persistenceUnitAnnotationType)) {
                 jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
-            return jpaInjectionPoints.trimToSize();
+            return immutableSet(jpaInjectionPoints);
         } else {
             return Collections.emptySet();
         }
@@ -357,7 +358,7 @@ public class Beans {
             for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(resourceAnnotationType)) {
                 resourceInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
             }
-            return resourceInjectionPoints.trimToSize();
+            return immutableSet(resourceInjectionPoints);
         } else {
             return Collections.emptySet();
         }
@@ -376,7 +377,6 @@ public class Beans {
         EnhancedAnnotatedType<?> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
             ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
-            initializerMethodsList.add(0, initializerMethods);
             for (EnhancedAnnotatedMethod<?, ?> method : t.getDeclaredEnhancedMethods()) {
                 if (method.isAnnotationPresent(Inject.class) && !method.isStatic()) {
                     if (method.getAnnotation(Produces.class) != null) {
@@ -396,10 +396,10 @@ public class Beans {
                 }
                 seenMethods.put(method.getSignature(), method.getPackage());
             }
-            initializerMethods.trimToSize();
+            initializerMethodsList.add(0, immutableSet(initializerMethods));
             t = t.getEnhancedSuperclass();
         }
-        return initializerMethodsList;
+        return immutableList(initializerMethodsList);
     }
 
     private static boolean isOverridden(EnhancedAnnotatedMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods) {
@@ -433,7 +433,7 @@ public class Beans {
                 parameters.add(ParameterInjectionPointImpl.of(manager.createInjectionPoint(parameter, bean), manager));
             }
         }
-        return parameters;
+        return immutableList(parameters);
     }
 
     public static <X> Set<ParameterInjectionPoint<?, X>> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {
@@ -879,7 +879,7 @@ public class Beans {
             typeMap.put(Object.class, Object.class);
             types.addAll(typeMap.values());
         }
-        return types.trimToSize();
+        return immutableSet(types);
     }
 
     /**

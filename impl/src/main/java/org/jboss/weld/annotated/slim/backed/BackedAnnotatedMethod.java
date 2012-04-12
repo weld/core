@@ -1,6 +1,7 @@
 package org.jboss.weld.annotated.slim.backed;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -10,7 +11,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +47,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
             Type parameterType = genericParameterTypes[i];
             parameters.add(BackedAnnotatedParameter.of(parameterType, i, this));
         }
-        this.parameters = Collections.unmodifiableList(parameters);
+        this.parameters = immutableList(parameters);
     }
 
     public Method getJavaMember() {

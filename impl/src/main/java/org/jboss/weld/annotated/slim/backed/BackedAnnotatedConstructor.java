@@ -1,6 +1,7 @@
 package org.jboss.weld.annotated.slim.backed;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
@@ -20,7 +21,6 @@ import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.serialization.ConstructorHolder;
-import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -57,7 +57,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
                 }
                 parameters.add(new BackedAnnotatedParameter<X>(parameterType, i, this));
             }
-            this.parameters = Collections.unmodifiableList(parameters);
+            this.parameters = immutableList(parameters);
         } else {
             /*
              * We are seeing either http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6520205 or

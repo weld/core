@@ -16,38 +16,38 @@
  */
 package org.jboss.weld.resources;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MapMaker;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
+
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.collections.ArraySetMultimap;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 /**
  * Allows classes to share Maps/Sets to conserve memory.
  *
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
+ * @author Jozef Hartinger
  */
 public class SharedObjectCache implements Service {
+
     private final Map<Set<?>, Set<?>> sharedSets = new MapMaker().makeComputingMap(new Function<Set<?>, Set<?>>() {
         public Set<?> apply(Set<?> from) {
-            if (from instanceof ImmutableSet<?>) {
-                return from;
-            } else {
-                return Collections.unmodifiableSet(from);
-            }
+            return WeldCollections.immutableSet(from);
         }
     });
 
     private final Map<Map<?, ?>, Map<?, ?>> sharedMaps = new MapMaker().makeComputingMap(new Function<Map<?, ?>, Map<?, ?>>() {
         public Map<?, ?> apply(Map<?, ?> from) {
-            return Collections.unmodifiableMap(from);
+            return WeldCollections.immutableMap(from);
         }
     });
 
@@ -60,7 +60,7 @@ public class SharedObjectCache implements Service {
     private final Map<Type, Set<Type>> typeClosures = new MapMaker().makeComputingMap(new Function<Type, Set<Type>>() {
 
         public Set<Type> apply(Type from) {
-            return Collections.unmodifiableSet(new HierarchyDiscovery(from).getTypeClosure());
+            return immutableSet((new HierarchyDiscovery(from).getTypeClosure()));
         }
     });
 

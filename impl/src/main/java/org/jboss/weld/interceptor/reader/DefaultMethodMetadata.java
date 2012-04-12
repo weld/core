@@ -20,13 +20,14 @@ package org.jboss.weld.interceptor.reader;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.weld.interceptor.builder.MethodReference;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
+import org.jboss.weld.resources.SharedObjectFacade;
+import org.jboss.weld.util.collections.ArraySet;
 
 /**
  * Represents information about an interceptor method
@@ -42,13 +43,14 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
     private final Set<InterceptionType> supportedInterceptorTypes;
 
     private DefaultMethodMetadata(M methodReference, AnnotatedMethodReader<M> annotationReader) {
-        supportedInterceptorTypes = new HashSet<InterceptionType>();
         this.javaMethod = annotationReader.getJavaMethod(methodReference);
+        ArraySet<InterceptionType> supportedInterceptorTypes = new ArraySet<InterceptionType>();
         for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
             if (annotationReader.getAnnotation(InterceptionTypeRegistry.getAnnotationClass(interceptionType), methodReference) != null) {
                 supportedInterceptorTypes.add(interceptionType);
             }
         }
+        this.supportedInterceptorTypes = SharedObjectFacade.wrap(supportedInterceptorTypes);
     }
 
     private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodReference methodReference) {

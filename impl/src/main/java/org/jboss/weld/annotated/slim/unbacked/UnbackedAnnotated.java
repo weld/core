@@ -1,6 +1,5 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static java.util.Collections.unmodifiableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -8,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import org.jboss.weld.annotated.slim.BaseAnnotated;
+import org.jboss.weld.resources.SharedObjectFacade;
 
 public class UnbackedAnnotated extends BaseAnnotated {
 
@@ -17,7 +17,7 @@ public class UnbackedAnnotated extends BaseAnnotated {
     public UnbackedAnnotated(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations) {
         super(baseType);
         this.typeClosure = typeClosure;
-        this.annotations = unmodifiableSet(annotations);
+        this.annotations = SharedObjectFacade.wrap(annotations);
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {

@@ -1,13 +1,13 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,17 +53,17 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
         for (AnnotatedConstructor<X> originalConstructor : originalConstructors) {
             constructors.add(UnbackedAnnotatedConstructor.of(originalConstructor, this));
         }
-        this.constructors = Collections.unmodifiableSet(constructors);
+        this.constructors = immutableSet(constructors);
         Set<AnnotatedMethod<? super X>> methods = new HashSet<AnnotatedMethod<? super X>>(originalMethods.size());
         for (AnnotatedMethod<? super X> originalMethod : originalMethods) {
             methods.add(UnbackedAnnotatedMethod.of(originalMethod, this));
         }
-        this.methods = Collections.unmodifiableSet(methods);
+        this.methods = immutableSet(methods);
         Set<AnnotatedField<? super X>> fields = new HashSet<AnnotatedField<? super X>>(originalFields.size());
         for (AnnotatedField<? super X> originalField : originalFields) {
             fields.add(UnbackedAnnotatedField.of(originalField, this));
         }
-        this.fields = Collections.unmodifiableSet(fields);
+        this.fields = immutableSet(fields);
     }
 
     public Class<X> getJavaClass() {
