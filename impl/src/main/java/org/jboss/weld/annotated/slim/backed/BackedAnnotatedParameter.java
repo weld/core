@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -14,23 +17,26 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.collect.ImmutableSet;
 
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, Serializable {
 
-    public static <X> AnnotatedParameter<X> of(Type baseType, Set<Annotation> annotations, int position, AnnotatedCallable<X> declaringCallable) {
-        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable);
+    public static <X> AnnotatedParameter<X> of(Type baseType, int position, AnnotatedCallable<X> declaringCallable) {
+        return new BackedAnnotatedParameter<X>(baseType, position, declaringCallable);
     }
 
     private final int position;
     private final AnnotatedCallable<X> declaringCallable;
-    private final Set<Annotation> annotations;
+    private transient Set<Annotation> cachedAnnotations;
 
-    public BackedAnnotatedParameter(Type baseType, Set<Annotation> annotations, int position, AnnotatedCallable<X> declaringCallable) {
+    public BackedAnnotatedParameter(Type baseType, int position, AnnotatedCallable<X> declaringCallable) {
         super(baseType);
         this.position = position;
         this.declaringCallable = declaringCallable;
-        this.annotations = annotations;
     }
 
     public int getPosition() {
@@ -42,7 +48,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        for (Annotation annotation : annotations) {
+        for (Annotation annotation : getAnnotations()) {
             if (annotation.annotationType().equals(annotationType)) {
                 return cast(annotation);
             }
@@ -51,7 +57,25 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
     }
 
     public Set<Annotation> getAnnotations() {
-        return annotations;
+        if (cachedAnnotations == null) {
+            synchronized(this) {
+                if (cachedAnnotations == null) {
+                    this.cachedAnnotations = buildAnnotationSet();
+                }
+            }
+        }
+        return cachedAnnotations;
+    }
+
+    private Set<Annotation> buildAnnotationSet() {
+        Member member = declaringCallable.getJavaMember();
+        Annotation[] annotations = null;
+        if (member instanceof Method) {
+            annotations = Reflections.<Method>cast(member).getParameterAnnotations()[position];
+        } else {
+            annotations = Reflections.<Constructor<?>>cast(member).getParameterAnnotations()[position];
+        }
+        return SharedObjectFacade.wrap(ImmutableSet.copyOf(annotations));
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {

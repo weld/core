@@ -39,20 +39,13 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
         super(method.getGenericReturnType(), declaringType);
         this.method = method;
 
-        final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         final Type[] genericParameterTypes = method.getGenericParameterTypes();
 
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(genericParameterTypes.length);
 
         for (int i = 0; i < genericParameterTypes.length; i++) {
             Type parameterType = genericParameterTypes[i];
-            Set<Annotation> annotations = null;
-            if (parameterAnnotations[i].length > 0) {
-                annotations = ImmutableSet.copyOf(parameterAnnotations[i]);
-            } else {
-                annotations = Collections.emptySet();
-            }
-            parameters.add(BackedAnnotatedParameter.of(parameterType, annotations, i, this));
+            parameters.add(BackedAnnotatedParameter.of(parameterType, i, this));
         }
         this.parameters = Collections.unmodifiableList(parameters);
     }

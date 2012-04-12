@@ -17,6 +17,7 @@
 package org.jboss.weld.resources;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.collections.ArraySetMultimap;
@@ -36,7 +37,11 @@ import java.util.Set;
 public class SharedObjectCache implements Service {
     private final Map<Set<?>, Set<?>> sharedSets = new MapMaker().makeComputingMap(new Function<Set<?>, Set<?>>() {
         public Set<?> apply(Set<?> from) {
-            return Collections.unmodifiableSet(from);
+            if (from instanceof ImmutableSet<?>) {
+                return from;
+            } else {
+                return Collections.unmodifiableSet(from);
+            }
         }
     });
 
