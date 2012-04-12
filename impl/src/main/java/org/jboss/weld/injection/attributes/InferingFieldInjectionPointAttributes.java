@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -48,7 +49,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     private final AnnotatedField<X> field;
 
     protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
-        super(bean, field.getQualifiers());
+        super(bean, SharedObjectFacade.wrap(field.getQualifiers()));
         this.field = field.slim();
     }
 
