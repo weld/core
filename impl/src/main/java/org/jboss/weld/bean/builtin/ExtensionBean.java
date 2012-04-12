@@ -23,6 +23,7 @@ import org.jboss.weld.util.Proxies;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -35,21 +36,21 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
 
     private static final String ID_PREFIX = "Extension";
 
-    private final EnhancedAnnotatedType<Extension> clazz;
+    private final AnnotatedType<Extension> annotatedType;
     private final Metadata<Extension> instance;
     private final boolean passivationCapable;
     private final boolean proxiable;
 
     public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<Extension> clazz, Metadata<Extension> instance) {
         super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager, clazz.getJavaClass());
-        this.clazz = clazz;
+        this.annotatedType = clazz.slim();
         this.instance = instance;
         this.passivationCapable = clazz.isSerializable();
         this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType());
     }
 
     public Set<Type> getTypes() {
-        return clazz.getTypeClosure();
+        return annotatedType.getTypeClosure();
     }
 
     @Override

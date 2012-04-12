@@ -217,11 +217,11 @@ public class ClassTransformer implements Service {
 
     public void cleanupAfterBoot() {
         this.enhancedAnnotatedTypes.clear();
+        this.annotations.clear();
     }
 
     public void cleanup() {
         cleanupAfterBoot();
-        this.annotations.clear();
         this.discoveredSlimAnnotatedTypes.clear();
         this.externalSlimAnnotatedTypes.clear();
         this.externalSlimAnnotatedTypesById.clear();

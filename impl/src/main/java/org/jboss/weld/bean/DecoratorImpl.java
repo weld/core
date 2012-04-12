@@ -100,7 +100,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         return new DecoratorImpl<T>(attributes, clazz, beanManager, services);
     }
 
-    private EnhancedAnnotatedType<?> enhancedAnnotatedType;
     private Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods;
     private WeldInjectionPoint<?, ?> delegateInjectionPoint;
     private FieldInjectionPoint<?, ?> delegateFieldInjectionPoint;
@@ -198,15 +197,15 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
                 }
             }
         }
-        enhancedAnnotatedType = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.getRawType(delegateInjectionPoint.getType()));
     }
 
     private void checkAbstractMethods() {
         if (isSubclassed()) {
+            EnhancedAnnotatedType<?> delegateInjectionPointEnhancedAnnotatedType = ClassTransformer.instance(beanManager).getEnhancedAnnotatedType(Reflections.getRawType(delegateInjectionPoint.getType()));
             for (EnhancedAnnotatedMethod<?, ?> method : getEnhancedAnnotated().getEnhancedMethods()) {
                 if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
                     MethodSignature methodSignature = method.getSignature();
-                    if (this.enhancedAnnotatedType.getEnhancedMethod(methodSignature) == null) {
+                    if (delegateInjectionPointEnhancedAnnotatedType.getEnhancedMethod(methodSignature) == null) {
                         throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE, method.getSignature(), this, getEnhancedAnnotated().getName());
                     }
                 }
