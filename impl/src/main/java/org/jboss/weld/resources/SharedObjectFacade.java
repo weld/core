@@ -17,6 +17,8 @@
 package org.jboss.weld.resources;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
@@ -59,12 +61,12 @@ public class SharedObjectFacade {
         return map;
     }
 
-    public static Set<Type> getTypeClosure(Type type) {
+    public static LazyValueHolder<Set<Type>> getTypeClosureHolder(Type type) {
         SharedObjectCache cache = getSharedObjectCache();
         if (cache != null) {
-            return Container.instance().services().get(SharedObjectCache.class).getTypeClosure(type);
+            return Container.instance().services().get(SharedObjectCache.class).getTypeClosureHolder(type);
         }
-        return new HierarchyDiscovery(type).getTypeClosure();
+        return new TypeClosureLazyValueHolder(type);
     }
 
     // this may return null in a test environment

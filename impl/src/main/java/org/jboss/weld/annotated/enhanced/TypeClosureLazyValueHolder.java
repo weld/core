@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.annotated.enhanced;
 
-import org.jboss.weld.resources.SharedObjectFacade;
-import org.jboss.weld.util.LazyValueHolder;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.reflect.Type;
 import java.util.Set;
+
+import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * {@link LazyValueHolder} that calculates a type closue. In many cases this
@@ -49,7 +51,7 @@ public class TypeClosureLazyValueHolder extends LazyValueHolder<Set<Type>> {
         if (types != null) {
             return types;
         }
-        return SharedObjectFacade.getTypeClosure(type);
+        return immutableSet(new HierarchyDiscovery(type).getTypeClosure());
     }
 
 }

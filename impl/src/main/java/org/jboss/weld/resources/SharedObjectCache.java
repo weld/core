@@ -22,7 +22,9 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -64,6 +66,13 @@ public class SharedObjectCache implements Service {
         }
     });
 
+    private final Map<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = new MapMaker().makeComputingMap(new Function<Type, LazyValueHolder<Set<Type>>>() {
+        @Override
+        public LazyValueHolder<Set<Type>> apply(Type input) {
+            return new TypeClosureLazyValueHolder(input);
+        }
+    });
+
     public <T> Set<T> getSharedSet(Set<T> set) {
         return Reflections.cast(sharedSets.get(set));
     }
@@ -76,8 +85,8 @@ public class SharedObjectCache implements Service {
         return Reflections.cast(sharedMultiMaps.get(map));
     }
 
-    public Set<Type> getTypeClosure(Type type) {
-        return typeClosures.get(type);
+    public LazyValueHolder<Set<Type>> getTypeClosureHolder(Type type) {
+        return typeClosureHolders.get(type);
     }
 
     public void cleanup() {
