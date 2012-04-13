@@ -137,12 +137,14 @@ public class ClassTransformer implements Service {
     private final TypeStore typeStore;
 
     public ClassTransformer(TypeStore typeStore) {
-        MapMaker maker = new MapMaker();
-        this.discoveredSlimAnnotatedTypes = maker.makeComputingMap(new TransformClassToSlimAnnotatedType());
-        this.externalSlimAnnotatedTypes = maker.makeComputingMap(new TransformExternalAnnotatedTypeToSlimAnnotatedType());
+        MapMaker defaultMaker = new MapMaker();
+        MapMaker weakValuesMaker = new MapMaker().weakValues();
+        // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop it immediately
+        this.discoveredSlimAnnotatedTypes = weakValuesMaker.makeComputingMap(new TransformClassToSlimAnnotatedType());
+        this.externalSlimAnnotatedTypes = weakValuesMaker.makeComputingMap(new TransformExternalAnnotatedTypeToSlimAnnotatedType());
         this.externalSlimAnnotatedTypesById = new ConcurrentHashMap<String, UnbackedAnnotatedType<?>>();
-        this.enhancedAnnotatedTypes = maker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
-        this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation());
+        this.enhancedAnnotatedTypes = defaultMaker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
+        this.annotations = defaultMaker.makeComputingMap(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
     }
 
