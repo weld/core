@@ -132,12 +132,11 @@ public class BeanDeployment {
             ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
         }
 
-//        if (services.get(ExecutorServices.class) instanceof SingleThreadExecutorServices) {
-//            beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
-//        } else {
-//            beanDeployer = new ConcurrentBeanDeployer(beanManager, ejbDescriptors, deploymentServices);
-//        }
-          beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+        if (services.get(ExecutorServices.class) instanceof SingleThreadExecutorServices) {
+            beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+        } else {
+            beanDeployer = new ConcurrentBeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+        }
 
         // Must at the Manager bean straight away, as it can be injected during startup!
         beanManager.addBean(new BeanManagerBean(beanManager));

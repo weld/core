@@ -61,7 +61,7 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
      * initialization only occurs once.
      *
      */
-    public synchronized void initialize(BeanDeployerEnvironment environment) {
+    public final synchronized void initialize(BeanDeployerEnvironment environment) {
         if (!initialized) {
             internalInitialize(environment);
             initialized = true;

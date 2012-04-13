@@ -188,8 +188,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the bean and its metadata
      */
     @Override
-    public void initialize(BeanDeployerEnvironment environment) {
-        super.initialize(environment);
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
         checkBeanImplementation();
         initPassivationCapable();
         initTargetClassInterceptors();

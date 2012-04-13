@@ -149,8 +149,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 if (dirty) {
                     classesToBeRemoved.add(annotatedType); // remove the original class
                     AnnotatedType<?> modifiedType = event.getAnnotatedType();
-                    // TODO use a common interface
-                    if (modifiedType instanceof BackedAnnotatedType || modifiedType instanceof UnbackedAnnotatedType) {
+                    if (modifiedType instanceof SlimAnnotatedType<?>) {
                         annotatedType = modifiedType;
                     } else {
                         annotatedType = classTransformer.getAnnotatedType(modifiedType);
