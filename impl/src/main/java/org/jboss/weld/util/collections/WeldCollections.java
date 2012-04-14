@@ -81,6 +81,9 @@ public class WeldCollections {
         if (map instanceof ImmutableMap<?, ?>) {
             return map;
         }
+        if (map instanceof ArraySetMultimap<?, ?>) {
+            ArraySetMultimap.class.cast(map).trimToSize();
+        }
         return Collections.unmodifiableMap(map);
     }
 }

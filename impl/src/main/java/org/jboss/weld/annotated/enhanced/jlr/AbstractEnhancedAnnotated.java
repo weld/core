@@ -18,6 +18,7 @@ package org.jboss.weld.annotated.enhanced.jlr;
 
 import static org.jboss.weld.logging.messages.ReflectionMessage.ANNOTATION_MAP_NULL;
 import static org.jboss.weld.logging.messages.ReflectionMessage.DECLARED_ANNOTATION_MAP_NULL;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
@@ -26,6 +27,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -112,7 +114,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     private final Map<Class<? extends Annotation>, Annotation> annotationMap;
     // The meta-annotation map (annotation type -> set of annotations containing
     // meta-annotation) of the item
-    private final ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
+    private final Map<Class<? extends Annotation>, List<Annotation>> metaAnnotationMap;
 
     private final Class<T> rawType;
     private final Type[] actualTypeArguments;
@@ -143,8 +145,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
             addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
             addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
         }
-        metaAnnotationMap.trimToSize();
-        this.metaAnnotationMap = SharedObjectFacade.wrap(metaAnnotationMap);
+        this.metaAnnotationMap = immutableMap(metaAnnotationMap);
 
         if (declaredAnnotationMap == null) {
             throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
