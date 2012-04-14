@@ -1,12 +1,12 @@
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,6 +20,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
+import org.jboss.weld.util.collections.ArraySet;
 
 /**
  * Optmized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
@@ -37,11 +38,11 @@ public class QualifierInstance {
 
 
     public static Set<QualifierInstance> qualifiers(final BeanManagerImpl beanManager, Set<Annotation> annotations) {
-        if(annotations.isEmpty()) {
+        if (annotations.isEmpty()) {
             return Collections.emptySet();
         }
         final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
-        final Set<QualifierInstance> ret = new HashSet<QualifierInstance>();
+        final Set<QualifierInstance> ret = new ArraySet<QualifierInstance>();
         for(Annotation a : annotations) {
             ret.add(new QualifierInstance(a, store));
         }
@@ -87,7 +88,7 @@ public class QualifierInstance {
                 }
             }
         }
-        return Collections.unmodifiableMap(values);
+        return immutableMap(values);
     }
 
     @Override
