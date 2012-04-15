@@ -60,7 +60,7 @@ public class ExtensionBeanDeployer {
     }
 
     public ExtensionBeanDeployer deployBeans() {
-        ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
+        ClassTransformer classTransformer = beanManager.getServices().get(ClassTransformer.class);
         for (Metadata<Extension> extension : extensions) {
             EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass()));
 

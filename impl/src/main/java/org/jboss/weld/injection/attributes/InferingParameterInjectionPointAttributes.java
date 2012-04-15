@@ -27,7 +27,8 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
-import org.jboss.weld.resources.SharedObjectFacade;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -41,14 +42,14 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
 
     private static final long serialVersionUID = 1237037554422642608L;
 
-    public static <T, X> InferingParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
-        return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean);
+    public static <T, X> InferingParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, BeanManagerImpl manager) {
+        return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean, manager);
     }
 
     private final AnnotatedParameter<X> parameter;
 
-    protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
-        super(bean, SharedObjectFacade.wrap(parameter.getQualifiers()));
+    protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, BeanManagerImpl manager) {
+        super(bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()));
         this.parameter = parameter.slim();
     }
 

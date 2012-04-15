@@ -34,7 +34,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
@@ -102,7 +101,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         Bean<?> bean = getBeanManager().getBean(resolvable);
         // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the qualifiers and type
         InjectionPoint ip = new InstanceInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
-        CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+        CurrentInjectionPoint currentInjectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class);
         try {
             currentInjectionPoint.push(ip);
             return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));

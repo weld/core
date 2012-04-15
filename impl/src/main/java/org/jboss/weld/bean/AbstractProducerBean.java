@@ -48,7 +48,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -155,7 +154,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         checkProducerReturnType();
         initPassivationCapable();
         initDisposalMethod(environment);
-        currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+        currentInjectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class);
     }
 
     private void initPassivationCapable() {
@@ -164,7 +163,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         } else {
             this.passivationCapableBean = true;
         }
-        if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
+        if (getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
             this.passivationCapableDependency = true;
         } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
             this.passivationCapableDependency = true;

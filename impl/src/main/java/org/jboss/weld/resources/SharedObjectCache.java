@@ -22,8 +22,11 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
@@ -40,6 +43,10 @@ import com.google.common.collect.MapMaker;
  * @author Jozef Hartinger
  */
 public class SharedObjectCache implements Service {
+
+    public static SharedObjectCache instance(BeanManagerImpl manager) {
+        return manager.getServices().get(SharedObjectCache.class);
+    }
 
     private final Map<Set<?>, Set<?>> sharedSets = new MapMaker().makeComputingMap(new Function<Set<?>, Set<?>>() {
         public Set<?> apply(Set<?> from) {

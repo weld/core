@@ -53,7 +53,6 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -199,7 +198,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     private void initPassivationCapable() {
         this.passivationCapableBean = getEnhancedAnnotated().isSerializable();
-        if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
+        if (getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
             this.passivationCapableDependency = true;
         } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
             this.passivationCapableDependency = true;

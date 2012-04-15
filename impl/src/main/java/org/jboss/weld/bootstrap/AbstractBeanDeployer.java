@@ -250,7 +250,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     protected <T> void createNewManagedBean(EnhancedAnnotatedType<T> annotatedClass) {
         // TODO resolve existing beans first
-        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass), annotatedClass, manager, services));
+        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass, manager), annotatedClass, manager, services));
     }
 
     protected <T> void createDecorator(EnhancedAnnotatedType<T> weldClass) {

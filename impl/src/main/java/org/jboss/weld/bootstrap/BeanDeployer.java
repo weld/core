@@ -86,7 +86,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services, BeanDeployerEnvironment environment) {
         super(manager, services, environment);
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
-        this.classTransformer = Container.instance().services().get(ClassTransformer.class);
+        this.classTransformer = manager.getServices().get(ClassTransformer.class);
     }
 
     public BeanDeployer addClass(String className) {

@@ -273,4 +273,7 @@ public class ResolvableBuilder {
         }
     }
 
+    protected BeanManagerImpl getBeanManager() {
+        return beanManager;
+    }
 }

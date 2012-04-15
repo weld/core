@@ -34,6 +34,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.testng.Assert;
@@ -54,6 +55,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         this.services.add(ContextualStore.class, new ContextualStoreImpl());
         this.services.add(ClassTransformer.class, classTransformer);
+        this.services.add(SharedObjectCache.class, new SharedObjectCache());
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {

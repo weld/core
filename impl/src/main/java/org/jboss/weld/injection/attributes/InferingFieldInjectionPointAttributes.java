@@ -28,7 +28,8 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
-import org.jboss.weld.resources.SharedObjectFacade;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -42,14 +43,14 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
 
     private static final long serialVersionUID = -3099189770772787108L;
 
-    public static <T, X> InferingFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
-        return new InferingFieldInjectionPointAttributes<T, X>(field, bean);
+    public static <T, X> InferingFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean, BeanManagerImpl manager) {
+        return new InferingFieldInjectionPointAttributes<T, X>(field, bean, manager);
     }
 
     private final AnnotatedField<X> field;
 
-    protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
-        super(bean, SharedObjectFacade.wrap(field.getQualifiers()));
+    protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean, BeanManagerImpl manager) {
+        super(bean, SharedObjectCache.instance(manager).getSharedSet(field.getQualifiers()));
         this.field = field.slim();
     }
 

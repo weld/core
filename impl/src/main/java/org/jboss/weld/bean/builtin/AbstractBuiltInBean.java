@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -56,7 +55,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
     @Override
     public void internalInitialize(BeanDeployerEnvironment environment) {
         if (getScope() != null) {
-            proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+            proxyRequired = getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
         } else {
             proxyRequired = false;
         }

@@ -16,15 +16,11 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.Arrays2;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.reflect.Type;
-import java.util.Set;
+
+import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Bean for InjectionPoint metadata
@@ -47,7 +43,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
     }
 
     public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext) {
-        return Container.instance().services().get(CurrentInjectionPoint.class).peek();
+        return getBeanManager().getServices().get(CurrentInjectionPoint.class).peek();
     }
 
     public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {

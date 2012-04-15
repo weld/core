@@ -60,6 +60,7 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.reflection.Formats;
@@ -131,7 +132,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         Set<Type> decoratedTypes = new HashSet<Type>(getEnhancedAnnotated().getInterfaceClosure());
         decoratedTypes.retainAll(getTypes());
         decoratedTypes.remove(Serializable.class);
-        this.decoratedTypes = SharedObjectFacade.wrap(decoratedTypes);
+        this.decoratedTypes = SharedObjectCache.instance(beanManager).getSharedSet(decoratedTypes);
         this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, decoratedTypes, getEnhancedAnnotated());
     }
 

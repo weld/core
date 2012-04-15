@@ -17,13 +17,15 @@
 package org.jboss.weld.bean;
 
 import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.*;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
+import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
@@ -41,7 +43,6 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.inject.Named;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -122,7 +123,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         log.trace(CREATING_BEAN, getType());
         checkDelegateInjectionPoints();
         if (getScope() != null) {
-            proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+            proxyRequired = getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
         } else {
             proxyRequired = false;
         }
@@ -267,7 +268,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     public boolean isNormalScoped() {
-        return Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+        return getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
     }
 
     @Override

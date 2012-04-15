@@ -37,14 +37,14 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Object> implements ParameterInjectionPoint<T, X> {
 
-    public static <T, X> ParameterInjectionPoint<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
-        return new SpecialParameterInjectionPoint<T, X>(parameter, bean);
+    public static <T, X> ParameterInjectionPoint<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, BeanManagerImpl manager) {
+        return new SpecialParameterInjectionPoint<T, X>(parameter, bean, manager);
     }
 
     private final ParameterInjectionPointAttributes<T, X> attributes;
 
-    protected SpecialParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
-        this.attributes = InferingParameterInjectionPointAttributes.of(parameter, bean);
+    protected SpecialParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, BeanManagerImpl manager) {
+        this.attributes = InferingParameterInjectionPointAttributes.of(parameter, bean, manager);
     }
 
     @Override

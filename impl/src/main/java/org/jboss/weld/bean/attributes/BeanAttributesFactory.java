@@ -51,7 +51,7 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
-import org.jboss.weld.resources.SharedObjectFacade;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
@@ -104,8 +104,8 @@ public class BeanAttributesFactory {
                 Dependent.class);
     }
 
-    public static <T> BeanAttributes<T> forNewManagedBean(EnhancedAnnotatedType<T> weldClass) {
-        return forNewBean(Beans.isNullable(weldClass), SharedObjectFacade.wrap(Beans.getTypes(weldClass)));
+    public static <T> BeanAttributes<T> forNewManagedBean(EnhancedAnnotatedType<T> weldClass, BeanManagerImpl manager) {
+        return forNewBean(Beans.isNullable(weldClass), SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(weldClass)));
     }
 
     public static <T> BeanAttributes<T> forNewSessionBean(BeanAttributes<T> originalAttributes) {
@@ -121,11 +121,13 @@ public class BeanAttributesFactory {
         private Set<Annotation> qualifiers;
         private Set<Type> types;
         private Class<? extends Annotation> scope;
+        private BeanManagerImpl manager;
 
         private BeanAttributesBuilder() {
         }
 
         private BeanAttributesBuilder(EnhancedAnnotated<T, ?> annotated, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
+            this.manager = manager;
             initNullable(annotated);
             initStereotypes(annotated, manager);
             initAlternative(annotated);
@@ -133,9 +135,9 @@ public class BeanAttributesFactory {
             initQualifiers(annotated);
             initScope(annotated);
             if (descriptor == null) {
-                types = SharedObjectFacade.wrap(Beans.getTypes(annotated));
+                types = SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(annotated));
             } else {
-                types = SharedObjectFacade.wrap(Beans.getTypes(annotated, descriptor));
+                types = SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(annotated, descriptor));
             }
         }
 
@@ -202,7 +204,7 @@ public class BeanAttributesFactory {
                 if (name != null && normalizedQualifiers.remove(NamedLiteral.DEFAULT)) {
                     normalizedQualifiers.add(new NamedLiteral(name));
                 }
-                this.qualifiers = SharedObjectFacade.wrap(normalizedQualifiers.trimToSize());
+                this.qualifiers = SharedObjectCache.instance(manager).getSharedSet(normalizedQualifiers);
             }
         }
 

@@ -16,20 +16,19 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.SharedObjectFacade;
-import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.util.reflection.Reflections;
+import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
 
-import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Meta model for the merged stereotype for a bean
@@ -68,11 +67,7 @@ public class MergedStereotypes<T, E> {
         merge(stereotypeAnnotations);
         this.possibleScopeTypes.trimToSize();
         Reflections.<ArraySet<?>>cast(this.stereotypes).trimToSize();
-        if (stereotypes.isEmpty()) {
-            this.stereotypes = Collections.emptySet();
-        } else {
-            this.stereotypes = SharedObjectFacade.wrap(stereotypes);
-        }
+        this.stereotypes = SharedObjectCache.instance(manager).getSharedSet(stereotypes);
     }
 
     /**

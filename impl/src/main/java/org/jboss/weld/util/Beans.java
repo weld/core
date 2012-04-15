@@ -426,7 +426,7 @@ public class Beans {
 
         for (EnhancedAnnotatedParameter<?, X> parameter : callable.getEnhancedParameters()) {
             if (isSpecialParameter(parameter)) {
-                parameters.add(SpecialParameterInjectionPoint.of(parameter, bean));
+                parameters.add(SpecialParameterInjectionPoint.of(parameter, bean, manager));
             } else if (declaringBean instanceof ExtensionBean) {
                 parameters.add(ParameterInjectionPointImpl.extension(manager.createInjectionPoint(parameter, bean), manager));
             } else {

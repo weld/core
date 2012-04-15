@@ -27,7 +27,6 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanAttributes;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerField;
@@ -70,7 +69,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
         public T call() throws Exception {
             if (instance == null) {
-                Contextual<T> contextual = Container.instance().services().get(ContextualStore.class).<Contextual<T>, T>getContextual(beanId);
+                Contextual<T> contextual = getBeanManager().getServices().get(ContextualStore.class).<Contextual<T>, T>getContextual(beanId);
                 if (contextual instanceof EEResourceProducerField<?, ?>) {
                     this.instance = Reflections.<EEResourceProducerField<?, T>>cast(contextual).createUnderlying(creationalContext);
                 } else {
