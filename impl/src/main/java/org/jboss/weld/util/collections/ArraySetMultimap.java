@@ -62,10 +62,11 @@ public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>> {
         return result;
     }
 
-    public void trimToSize() {
+    public ArraySetMultimap<K, V> trimToSize() {
         for (Map.Entry<K, List<V>> entry : this.entrySet()) {
             ((ArrayList<V>) entry.getValue()).trimToSize();
         }
+        return this;
     }
 
     @Override

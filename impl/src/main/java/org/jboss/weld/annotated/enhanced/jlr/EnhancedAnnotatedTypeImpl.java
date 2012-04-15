@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -25,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,7 +45,6 @@ import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.Formats;
@@ -94,7 +96,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     // The meta-annotation map (annotation type -> set of annotations containing
     // meta-annotation) of the item
-    private final ArraySetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap;
+    private final Map<Class<? extends Annotation>, List<Annotation>> declaredMetaAnnotationMap;
 
     private final boolean discovered;
 
@@ -257,8 +259,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getTypeStore().get(declaredAnnotation.annotationType()), true);
             declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
         }
-        declaredMetaAnnotationMap.trimToSize();
-        this.declaredMetaAnnotationMap = SharedObjectFacade.wrap(declaredMetaAnnotationMap);
+        this.declaredMetaAnnotationMap = immutableMap(declaredMetaAnnotationMap);
     }
 
     /**

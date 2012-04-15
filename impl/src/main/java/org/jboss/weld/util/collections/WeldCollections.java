@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.weld.util.reflection.Reflections;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -33,6 +35,8 @@ import com.google.common.collect.ImmutableSet;
  *
  */
 public class WeldCollections {
+
+    public static final Map<Object, List<Object>> EMPTY_ARRAY_SET_MULTIMAP = Collections.unmodifiableMap(new ArraySetMultimap<Object, Object>().trimToSize());
 
     private WeldCollections() {
     }
@@ -76,6 +80,9 @@ public class WeldCollections {
      */
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
         if (map.isEmpty()) {
+            if (map instanceof ArraySetMultimap<?, ?>) {
+                return Reflections.cast(EMPTY_ARRAY_SET_MULTIMAP);
+            }
             return Collections.emptyMap();
         }
         if (map instanceof ImmutableMap<?, ?>) {

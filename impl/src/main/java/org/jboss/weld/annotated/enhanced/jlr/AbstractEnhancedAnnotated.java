@@ -18,6 +18,7 @@ package org.jboss.weld.annotated.enhanced.jlr;
 
 import static org.jboss.weld.logging.messages.ReflectionMessage.ANNOTATION_MAP_NULL;
 import static org.jboss.weld.logging.messages.ReflectionMessage.DECLARED_ANNOTATION_MAP_NULL;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
@@ -137,7 +138,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         if (annotationMap == null) {
             throw new WeldException(ANNOTATION_MAP_NULL);
         }
-        this.annotationMap = SharedObjectFacade.wrap(annotationMap);
+        this.annotationMap = immutableMap(annotationMap);
         ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
         for (Annotation annotation : annotationMap.values()) {
             addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
