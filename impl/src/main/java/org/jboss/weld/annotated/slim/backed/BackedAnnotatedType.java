@@ -23,6 +23,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -41,37 +42,20 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     }
 
     private final Class<X> javaClass;
-    private final Set<AnnotatedConstructor<X>> constructors;
-    private final Set<AnnotatedMethod<? super X>> methods;
-    private final Set<AnnotatedField<? super X>> fields;
+    private final LazyValueHolder<Set<AnnotatedConstructor<X>>> constructors;
+    private final LazyValueHolder<Set<AnnotatedMethod<? super X>>> methods;
+    private final LazyValueHolder<Set<AnnotatedField<? super X>>> fields;
+    private final ClassTransformer transformer;
 
     public BackedAnnotatedType(Class<X> rawType, Type baseType, ClassTransformer classTransformer) {
         super(baseType);
         this.javaClass = rawType;
+        this.transformer = classTransformer;
         // TODO this all should be initialized lazily so that we can serialize the AnnotatedType
 
-        Constructor<?>[] declaredConstructors = SecureReflections.getDeclaredConstructors(javaClass);
-        ArraySet<AnnotatedConstructor<X>> constructors = new ArraySet<AnnotatedConstructor<X>>(declaredConstructors.length);
-        ArraySet<AnnotatedMethod<? super X>> methods = new ArraySet<AnnotatedMethod<? super X>>();
-        ArraySet<AnnotatedField<? super X>> fields = new ArraySet<AnnotatedField<? super X>>();
-
-        for (Constructor<?> constructor : declaredConstructors) {
-            Constructor<X> c = Reflections.cast(constructor);
-            constructors.add(BackedAnnotatedConstructor.of(c, this));
-        }
-        Class<? super X> clazz = javaClass;
-        while (clazz != Object.class && clazz != null) {
-            for (Method method : SecureReflections.getDeclaredMethods(clazz)) {
-                methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, classTransformer)));
-            }
-            for (Field field : SecureReflections.getDeclaredFields(clazz)) {
-                fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, classTransformer)));
-            }
-            clazz = clazz.getSuperclass();
-        }
-        this.constructors = immutableSet(constructors.trimToSize());
-        this.methods = immutableSet(methods.trimToSize());
-        this.fields = immutableSet(fields.trimToSize());
+        this.constructors = new BackedAnnotatedConstructors();
+        this.fields = new BackedAnnotatedFields();
+        this.methods = new BackedAnnotatedMethods();
     }
 
     private <T> BackedAnnotatedType<T> getDeclaringAnnotatedType(Member member, ClassTransformer transformer) {
@@ -87,15 +71,15 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     }
 
     public Set<AnnotatedConstructor<X>> getConstructors() {
-        return constructors;
+        return constructors.get();
     }
 
     public Set<AnnotatedMethod<? super X>> getMethods() {
-        return methods;
+        return methods.get();
     }
 
     public Set<AnnotatedField<? super X>> getFields() {
-        return fields;
+        return fields.get();
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
@@ -140,6 +124,12 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         return Formats.formatAnnotatedType(this);
     }
 
+    public void clear() {
+        this.constructors.clear();
+        this.fields.clear();
+        this.methods.clear();
+    }
+
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
@@ -161,6 +151,59 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
 
         private Object readResolve() {
             return Container.instance().services().get(ClassTransformer.class).getAnnotatedType(javaClass);
+        }
+    }
+
+    // Lazy initialization
+
+    // Initialize eagerly since we want to discover CNFE at bootstrap
+    // After bootstrap, these holders are reset to conserve memory
+    private abstract class EagerlyInitializedLazyValueHolder<T> extends LazyValueHolder<T> {
+        public EagerlyInitializedLazyValueHolder() {
+            this.get();
+        }
+    }
+
+    private class BackedAnnotatedConstructors extends EagerlyInitializedLazyValueHolder<Set<AnnotatedConstructor<X>>> {
+        @Override
+        protected Set<AnnotatedConstructor<X>> computeValue() {
+            Constructor<?>[] declaredConstructors = SecureReflections.getDeclaredConstructors(javaClass);
+            ArraySet<AnnotatedConstructor<X>> constructors = new ArraySet<AnnotatedConstructor<X>>(declaredConstructors.length);
+            for (Constructor<?> constructor : declaredConstructors) {
+                Constructor<X> c = Reflections.cast(constructor);
+                constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this));
+            }
+            return immutableSet(constructors);
+        }
+    }
+
+    private class BackedAnnotatedFields extends EagerlyInitializedLazyValueHolder<Set<AnnotatedField<? super X>>> {
+        @Override
+        protected Set<AnnotatedField<? super X>> computeValue() {
+            ArraySet<AnnotatedField<? super X>> fields = new ArraySet<AnnotatedField<? super X>>();
+            Class<? super X> clazz = javaClass;
+            while (clazz != Object.class && clazz != null) {
+                for (Field field : SecureReflections.getDeclaredFields(clazz)) {
+                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, transformer)));
+                }
+                clazz = clazz.getSuperclass();
+            }
+            return immutableSet(fields);
+        }
+    }
+
+    private class BackedAnnotatedMethods extends EagerlyInitializedLazyValueHolder<Set<AnnotatedMethod<? super X>>> {
+        @Override
+        protected Set<AnnotatedMethod<? super X>> computeValue() {
+            ArraySet<AnnotatedMethod<? super X>> methods = new ArraySet<AnnotatedMethod<? super X>>();
+            Class<? super X> clazz = javaClass;
+            while (clazz != Object.class && clazz != null) {
+                for (Method method : SecureReflections.getDeclaredMethods(clazz)) {
+                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, transformer)));
+                }
+                clazz = clazz.getSuperclass();
+            }
+            return immutableSet(methods);
         }
     }
 }

@@ -92,6 +92,31 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((constructor == null) ? 0 : constructor.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BackedAnnotatedConstructor<?> other = (BackedAnnotatedConstructor<?>) obj;
+        if (constructor == null) {
+            if (other.constructor != null)
+                return false;
+        } else if (!constructor.equals(other.constructor))
+            return false;
+        return true;
+    }
+
+    @Override
     public String toString() {
         return Formats.formatAnnotatedConstructor(this);
     }

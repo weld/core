@@ -67,16 +67,16 @@ public class ClassTransformer implements Service {
         }
     }
 
-    private class TransformClassToSlimAnnotatedType implements Function<TypeHolder<?>, SlimAnnotatedType<?>> {
+    private class TransformClassToSlimAnnotatedType implements Function<TypeHolder<?>, BackedAnnotatedType<?>> {
         @Override
-        public SlimAnnotatedType<?> apply(TypeHolder<?> typeHolder) {
+        public BackedAnnotatedType<?> apply(TypeHolder<?> typeHolder) {
             return BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), ClassTransformer.this);
         }
     }
 
-    private class TransformExternalAnnotatedTypeToSlimAnnotatedType implements Function<AnnotatedType<?>, SlimAnnotatedType<?>> {
+    private class TransformExternalAnnotatedTypeToSlimAnnotatedType implements Function<AnnotatedType<?>, UnbackedAnnotatedType<?>> {
         @Override
-        public SlimAnnotatedType<?> apply(AnnotatedType<?> input) {
+        public UnbackedAnnotatedType<?> apply(AnnotatedType<?> input) {
             UnbackedAnnotatedType<?> type = UnbackedAnnotatedType.of(input);
             externalSlimAnnotatedTypesById.put(AnnotatedTypes.createTypeId(type), type);
             return type;
@@ -129,8 +129,8 @@ public class ClassTransformer implements Service {
         }
     }
 
-    private final ConcurrentMap<TypeHolder<?>, SlimAnnotatedType<?>> discoveredSlimAnnotatedTypes;
-    private final ConcurrentMap<AnnotatedType<?>, SlimAnnotatedType<?>> externalSlimAnnotatedTypes;
+    private final ConcurrentMap<TypeHolder<?>, BackedAnnotatedType<?>> discoveredSlimAnnotatedTypes;
+    private final ConcurrentMap<AnnotatedType<?>, UnbackedAnnotatedType<?>> externalSlimAnnotatedTypes;
     private final ConcurrentMap<String, UnbackedAnnotatedType<?>> externalSlimAnnotatedTypesById;
     private final ConcurrentMap<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
     private final ConcurrentMap<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
@@ -220,6 +220,9 @@ public class ClassTransformer implements Service {
     public void cleanupAfterBoot() {
         this.enhancedAnnotatedTypes.clear();
         this.annotations.clear();
+        for (BackedAnnotatedType<?> annotatedType : discoveredSlimAnnotatedTypes.values()) {
+            annotatedType.clear();
+        }
     }
 
     public void cleanup() {

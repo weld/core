@@ -66,7 +66,8 @@ public class SharedObjectCache implements Service {
         }
     });
 
-    private final Map<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = new MapMaker().makeComputingMap(new Function<Type, LazyValueHolder<Set<Type>>>() {
+    // we use weak values because the result is either retained by a Bean / InjectionPoint or is not needed at all
+    private final Map<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = new MapMaker().weakValues().makeComputingMap(new Function<Type, LazyValueHolder<Set<Type>>>() {
         @Override
         public LazyValueHolder<Set<Type>> apply(Type input) {
             return new TypeClosureLazyValueHolder(input);
