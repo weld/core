@@ -54,6 +54,7 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
@@ -84,11 +85,16 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     private static class ManagedBeanInjectionTarget<T> implements InjectionTarget<T> {
 
         private final ManagedBean<T> bean;
-        private final WeldInterceptorClassMetadata<T> weldInterceptorClassMetadata;
+        private volatile WeldInterceptorClassMetadata<T> weldInterceptorClassMetadata;
 
-        private ManagedBeanInjectionTarget(ManagedBean<T> bean, EnhancedAnnotatedType<T> type) {
+        private ManagedBeanInjectionTarget(ManagedBean<T> bean) {
             this.bean = bean;
-            this.weldInterceptorClassMetadata = WeldInterceptorClassMetadata.of(type);
+        }
+
+        private void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> type) {
+            if (bean.hasInterceptors()) {
+                this.weldInterceptorClassMetadata = WeldInterceptorClassMetadata.of(type);
+            }
         }
 
         protected ManagedBean<T> getBean() {
@@ -249,7 +255,15 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         initPostConstruct();
         initPreDestroy();
         initEEInjectionPoints();
-        setInjectionTarget(new ManagedBeanInjectionTarget<T>(this, getEnhancedAnnotated()));
+        setInjectionTarget(new ManagedBeanInjectionTarget<T>(this));
+    }
+
+    @Override
+    public void initializeAfterBeanDiscovery() {
+        super.initializeAfterBeanDiscovery();
+        if (getInjectionTarget() instanceof ManagedBeanInjectionTarget<?>) {
+            Reflections.<ManagedBeanInjectionTarget<T>>cast(getInjectionTarget()).initializeAfterBeanDiscovery(getEnhancedAnnotated());
+        }
     }
 
     protected T createInstance(CreationalContext<T> ctx) {
