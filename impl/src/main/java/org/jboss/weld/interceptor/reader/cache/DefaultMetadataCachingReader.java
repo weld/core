@@ -93,5 +93,7 @@ public class DefaultMetadataCachingReader implements MetadataCachingReader {
         }
     }
 
-
+    public void cleanAfterBoot() {
+        classMetadataInterceptorMetadataCache.clear();
+    }
 }
