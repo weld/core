@@ -66,7 +66,6 @@ import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
@@ -605,7 +604,17 @@ public class Validator implements Service {
         }
         dependencyPath.add(bean);
         for (InjectionPoint injectionPoint : bean.getInjectionPoints()) {
-            validatePseudoScopedInjectionPoint(injectionPoint, beanManager, dependencyPath, validatedBeans);
+            if (!injectionPoint.isDelegate()) {
+                validatePseudoScopedInjectionPoint(injectionPoint, beanManager, dependencyPath, validatedBeans);
+            }
+        }
+        if (bean instanceof AbstractClassBean) {
+            if (((AbstractClassBean) bean).hasDecorators()) {
+                final List<Decorator<?>> decorators = ((AbstractClassBean) bean).getDecorators();
+                for (final Decorator<?> decorator : decorators) {
+                    reallyValidatePseudoScopedBean(decorator, beanManager, dependencyPath, validatedBeans);
+                }
+            }
         }
         validatedBeans.add(bean);
         dependencyPath.remove(bean);
@@ -616,36 +625,16 @@ public class Validator implements Service {
      */
     private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans) {
         Set<Bean<?>> resolved = beanManager.getBeans(ij);
-        try {
-            Bean<?> bean = beanManager.resolve(resolved);
-            if (bean != null) {
-                if (!(bean instanceof AbstractBuiltInBean<?>)) {
-                    if (ij.isDelegate()) {
-                        boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
-                        if (!normalScoped) {
-                            reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
-                        }
-                    } else {
-                        List<Decorator<?>> decorators = beanManager.resolveDecorators(bean.getTypes(), bean.getQualifiers());
-                        MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
-                        if (decorators.isEmpty()) {
-                            boolean normalScoped = store.getScopeModel(bean.getScope()).isNormal();
-                            if (!normalScoped) {
-                                reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
-                            }
-                        } else {
-                            for (Decorator<?> decorator : decorators) {
-                                boolean normalScoped = store.getScopeModel(decorator.getScope()).isNormal();
-                                if (!normalScoped) {
-                                    reallyValidatePseudoScopedBean(decorator, beanManager, dependencyPath, validatedBeans);
-                                }
-                            }
-                        }
+        Bean<?> bean = beanManager.resolve(resolved);
+        if (bean != null) {
+            if (!(bean instanceof AbstractBuiltInBean<?>)) {
+                if (!ij.isDelegate()) {
+                    boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+                    if (!normalScoped) {
+                        reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
                     }
                 }
             }
-        } catch (AmbiguousResolutionException e) {
-            // this is handled by another validator
         }
     }
 
