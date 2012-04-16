@@ -115,33 +115,34 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             super.initialize(environment);
             checkProducerMethod();
             initDisposalMethod(environment);
-            setProducer(new Producer<T>() {
+            setProducer(new ProducerMethodProducer() );
+        }
+    }
 
-                public void dispose(T instance) {
-                    if (disposalMethodBean != null) {
-                        disposalMethodBean.invokeDisposeMethod(instance);
-                    }
-                }
+    private class ProducerMethodProducer implements Producer<T> {
 
-                public Set<InjectionPoint> getInjectionPoints() {
-                    return cast(getWeldInjectionPoints());
-                }
+        public void dispose(T instance) {
+            if (disposalMethodBean != null) {
+                disposalMethodBean.invokeDisposeMethod(instance);
+            }
+        }
 
-                public T produce(CreationalContext<T> creationalContext) {
-                    Object receiver = getReceiver(creationalContext);
-                    if (receiver != null) {
-                        return method.invokeOnInstance(receiver, beanManager, creationalContext, CreationException.class);
-                    } else {
-                        return method.invoke(null, beanManager, creationalContext, CreationException.class);
-                    }
-                }
+        public Set<InjectionPoint> getInjectionPoints() {
+            return cast(getWeldInjectionPoints());
+        }
 
-                @Override
-                public String toString() {
-                    return method.toString();
-                }
+        public T produce(CreationalContext<T> creationalContext) {
+            Object receiver = getReceiver(creationalContext);
+            if (receiver != null) {
+                return method.invokeOnInstance(receiver, beanManager, creationalContext, CreationException.class);
+            } else {
+                return method.invoke(null, beanManager, creationalContext, CreationException.class);
+            }
+        }
 
-            });
+        @Override
+        public String toString() {
+            return method.toString();
         }
     }
 
@@ -267,6 +268,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     @Override
     public boolean isProxyable() {
         return proxiable;
+    }
+
+    @Override
+    public boolean hasDefaultProducer() {
+        return getProducer() instanceof ProducerMethod.ProducerMethodProducer;
     }
 
 }

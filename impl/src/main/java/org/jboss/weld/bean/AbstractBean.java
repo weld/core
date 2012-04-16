@@ -16,6 +16,39 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES;
+import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
+import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
+import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.decorator.Delegate;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.New;
+import javax.enterprise.inject.Specializes;
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Producer;
+import javax.inject.Named;
+import javax.inject.Qualifier;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -33,36 +66,6 @@ import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.decorator.Delegate;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
-import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.Typed;
-import javax.inject.Named;
-import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES;
-import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
-import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
-import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_NAME;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_QUALIFIER;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
 
 /**
  * An abstract bean representation common for all beans
@@ -446,4 +449,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return services;
     }
 
+    /**
+     * Returns true if the bean uses the default {@link Producer} ( or {@link InjectionTarget}). The method returns false if the
+     * producer of the bean was replaced by an extension.
+     */
+    public abstract boolean hasDefaultProducer();
 }

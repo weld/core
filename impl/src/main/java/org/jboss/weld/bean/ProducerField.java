@@ -104,32 +104,33 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     public void initialize(BeanDeployerEnvironment environment) {
         if (!isInitialized()) {
             super.initialize(environment);
-            setProducer(new Producer<T>() {
-
-                public void dispose(T instance) {
-                    defaultDispose(instance);
-                }
-
-                public Set<InjectionPoint> getInjectionPoints() {
-                    return cast(getWeldInjectionPoints());
-                }
-
-                public T produce(CreationalContext<T> creationalContext) {
-                    // unwrap if we have a proxy
-                    Object receiver = getReceiver(creationalContext);
-                    if (receiver instanceof TargetInstanceProxy) {
-                        receiver = Reflections.<TargetInstanceProxy<T>>cast(receiver).getTargetInstance();
-                    }
-                    return field.get(receiver);
-                }
-
-                @Override
-                public String toString() {
-                    return field.toString();
-                }
-
-            });
+            setProducer(new ProducerFieldProducer());
             checkProducerField();
+        }
+    }
+
+    private class ProducerFieldProducer implements Producer<T> {
+
+        public void dispose(T instance) {
+            defaultDispose(instance);
+        }
+
+        public Set<InjectionPoint> getInjectionPoints() {
+            return cast(getWeldInjectionPoints());
+        }
+
+        public T produce(CreationalContext<T> creationalContext) {
+            // unwrap if we have a proxy
+            Object receiver = getReceiver(creationalContext);
+            if (receiver instanceof TargetInstanceProxy) {
+                receiver = Reflections.<TargetInstanceProxy<T>>cast(receiver).getTargetInstance();
+            }
+            return field.get(receiver);
+        }
+
+        @Override
+        public String toString() {
+            return field.toString();
         }
     }
 
@@ -189,6 +190,12 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     @Override
     public boolean isProxyable() {
         return proxiable;
+    }
+
+
+    @Override
+    public boolean hasDefaultProducer() {
+        return getProducer() instanceof ProducerField.ProducerFieldProducer;
     }
 
 }
