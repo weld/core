@@ -377,4 +377,9 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             return cast(getWeldInjectionPoints());
         }
     }
+
+    @Override
+    public boolean hasDefaultProducer() {
+        return getProducer() instanceof AbstractProducerBean.AbstractProducer;
+    }
 }

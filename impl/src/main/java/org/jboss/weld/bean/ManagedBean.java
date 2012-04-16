@@ -390,4 +390,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         return proxiable;
     }
 
+    @Override
+    public boolean hasDefaultProducer() {
+        return getInjectionTarget() instanceof ManagedBean.ManagedBeanInjectionTarget;
+    }
+
 }

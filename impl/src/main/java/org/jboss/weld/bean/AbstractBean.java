@@ -40,7 +40,9 @@ import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import javax.enterprise.inject.spi.Producer;
 import javax.inject.Named;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
@@ -284,4 +286,10 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     protected ServiceRegistry getServices() {
         return services;
     }
+
+    /**
+     * Returns true if the bean uses the default {@link Producer} ( or {@link InjectionTarget}). The method returns false if the
+     * producer of the bean was replaced by an extension.
+     */
+    public abstract boolean hasDefaultProducer();
 }

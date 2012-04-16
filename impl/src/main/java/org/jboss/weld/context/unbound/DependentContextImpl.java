@@ -22,17 +22,20 @@
  */
 package org.jboss.weld.context.unbound;
 
-import org.jboss.weld.context.DependentContext;
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
-import org.jboss.weld.context.WeldCreationalContext;
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.serialization.spi.ContextualStore;
+import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import java.lang.annotation.Annotation;
+
+import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.bean.ManagedBean;
+import org.jboss.weld.context.DependentContext;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
  * The dependent context
@@ -60,14 +63,38 @@ public class DependentContextImpl implements DependentContext {
         if (creationalContext != null) {
             T instance = contextual.create(creationalContext);
             if (creationalContext instanceof WeldCreationalContext<?>) {
-                WeldCreationalContext<T> creationalContextImpl = (WeldCreationalContext<T>) creationalContext;
-                ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
-                creationalContextImpl.addDependentInstance(beanInstance);
+                addDependentInstance(instance, contextual, (WeldCreationalContext<T>) creationalContext);
             }
             return instance;
         } else {
             return null;
         }
+    }
+
+    protected <T> void addDependentInstance(T instance, Contextual<T> contextual, WeldCreationalContext<T> creationalContext) {
+        // by this we are making sure that the dependent instance has no transitive dependency with @PreDestroy / disposal method
+        if (creationalContext.getDependentInstances().isEmpty()) {
+            if (contextual instanceof ManagedBean<?>) {
+                ManagedBean<?> bean = (ManagedBean<?>) contextual;
+                if (bean.getPreDestroy().isEmpty() && !bean.hasInterceptors() && bean.hasDefaultProducer()) {
+                    // there is no @PreDestroy callback to call when destroying this dependent instance
+                    // therefore, we do not need to keep the reference
+                    return;
+                }
+            }
+            if (contextual instanceof AbstractProducerBean<?, ?, ?>) {
+                AbstractProducerBean<?, ?, ?> producer = (AbstractProducerBean<?, ?, ?>) contextual;
+                if (producer.getDisposalMethod() == null && producer.hasDefaultProducer()) {
+                    // there is no disposal method to call when destroying this dependent instance
+                    // therefore, we do not need to keep the reference
+                    return;
+                }
+            }
+        }
+
+        // Only add the dependent instance if none of the conditions above is met
+        ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
+        creationalContext.addDependentInstance(beanInstance);
     }
 
     public <T> T get(Contextual<T> contextual) {
