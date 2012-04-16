@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.context;
 
+import java.util.List;
+
 import org.jboss.weld.context.api.ContextualInstance;
 
 import javax.enterprise.context.spi.Contextual;
@@ -37,4 +39,8 @@ public interface WeldCreationalContext<T> extends CreationalContext<T> {
 
     void release();
 
+    /**
+     * Returns an unmodifiable list of dependent instances.
+     */
+    List<ContextualInstance<?>> getDependentInstances();
 }

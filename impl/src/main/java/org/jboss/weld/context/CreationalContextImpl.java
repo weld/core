@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.context;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -96,5 +98,39 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private static <T> void destroy(ContextualInstance<T> beanInstance) {
         beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
+    }
+
+    public List<ContextualInstance<?>> getDependentInstances() {
+        return Collections.unmodifiableList(dependentInstances);
+    }
+
+    // Serialization
+    protected Object writeReplace() throws ObjectStreamException {
+        for (Iterator<ContextualInstance<?>> iterator = dependentInstances.iterator(); iterator.hasNext(); ) {
+            ContextualInstance<?> instance = iterator.next();
+            if (!(instance.getInstance() instanceof Serializable)) {
+                /*
+                 * This non-serializable instance is a dependency of a passivation capable enclosing bean. This means that:
+                 *
+                 * 1) The dependency was injected into a transient field, constructor or initializer injection point of the
+                 * enclosing bean instance (otherwise it would not pass deployment validation) and is no longer retained by the
+                 * enclosing bean instance. In that case we can safely destroy the dependent instance now.
+                 *
+                 * 2) Same as above but the enclosing bean instance retained a reference in a field that Weld has no control of.
+                 * If that is the case and the bean class does not implement serialization properly, serialization of the bean
+                 * instance is going to fail anyway so it is safe to destroy the dependent instance now.
+                 *
+                 * 3) Same as above but the bean class implements serialization properly (writeObject) so that it is able to
+                 * reconstruct the state of the injected dependency on activation. If that's the case we would probably won't be
+                 * able to destroy the dependency later on anyway since the identity of the dependent instance would change.
+                 * Destroying it now may be risky in certain circumstances.
+                 *
+                 * @see https://issues.jboss.org/browse/WELD-1076
+                 */
+                destroy(instance);
+                iterator.remove();
+            }
+        }
+        return this;
     }
 }
