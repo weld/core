@@ -167,39 +167,40 @@ public class SessionBean<T> extends AbstractClassBean<T> {
             checkConflictingRoles();
             checkObserverMethods();
             checkScopeAllowed();
-            setInjectionTarget(new InjectionTarget<T>() {
+            setInjectionTarget(new SessionBeanInjectionTarget());
+        }
+    }
 
-                public void inject(final T instance, final CreationalContext<T> ctx) {
-                    new InjectionContextImpl<T>(getBeanManager(), this, getWeldAnnotated(), instance) {
+    private class SessionBeanInjectionTarget implements InjectionTarget<T> {
 
-                        public void proceed() {
-                            Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
-                        }
+        public void inject(final T instance, final CreationalContext<T> ctx) {
+            new InjectionContextImpl<T>(getBeanManager(), this, getWeldAnnotated(), instance) {
 
-                    }.run();
+                public void proceed() {
+                    Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
                 }
 
-                public void postConstruct(T instance) {
-                    defaultPostConstruct(instance);
-                }
+            }.run();
+        }
 
-                public void preDestroy(T instance) {
-                    defaultPreDestroy(instance);
-                }
+        public void postConstruct(T instance) {
+            defaultPostConstruct(instance);
+        }
 
-                public void dispose(T instance) {
-                    // No-op
-                }
+        public void preDestroy(T instance) {
+            defaultPreDestroy(instance);
+        }
 
-                public Set<InjectionPoint> getInjectionPoints() {
-                    return cast(getWeldInjectionPoints());
-                }
+        public void dispose(T instance) {
+            // No-op
+        }
 
-                public T produce(CreationalContext<T> ctx) {
-                    return SessionBean.this.createInstance(ctx);
-                }
+        public Set<InjectionPoint> getInjectionPoints() {
+            return cast(getWeldInjectionPoints());
+        }
 
-            });
+        public T produce(CreationalContext<T> ctx) {
+            return SessionBean.this.createInstance(ctx);
         }
     }
 
@@ -437,6 +438,11 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     @Override
     public boolean isProxyable() {
         return true;
+    }
+
+    @Override
+    public boolean hasDefaultProducer() {
+        return getInjectionTarget() instanceof SessionBean.SessionBeanInjectionTarget;
     }
 }
 

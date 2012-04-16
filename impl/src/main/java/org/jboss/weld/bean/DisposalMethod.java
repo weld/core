@@ -234,5 +234,8 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         return "Disposer method [" + getDisposesParameter().getDeclaringCallable() + "]";
     }
 
-
+    @Override
+    public boolean hasDefaultProducer() {
+        return true; // cannot be replaced by an extension
+    }
 }
