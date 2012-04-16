@@ -16,13 +16,9 @@
  */
 package org.jboss.weld.resources;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
-
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
-
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.bootstrap.api.Service;
@@ -66,15 +62,7 @@ public class SharedObjectCache implements Service {
         }
     });
 
-    private final Map<Type, Set<Type>> typeClosures = new MapMaker().makeComputingMap(new Function<Type, Set<Type>>() {
-
-        public Set<Type> apply(Type from) {
-            return immutableSet((new HierarchyDiscovery(from).getTypeClosure()));
-        }
-    });
-
-    // we use weak values because the result is either retained by a Bean / InjectionPoint or is not needed at all
-    private final Map<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = new MapMaker().weakValues().makeComputingMap(new Function<Type, LazyValueHolder<Set<Type>>>() {
+    private final Map<Type, LazyValueHolder<Set<Type>>> typeClosureHolders = new MapMaker().makeComputingMap(new Function<Type, LazyValueHolder<Set<Type>>>() {
         @Override
         public LazyValueHolder<Set<Type>> apply(Type input) {
             return new TypeClosureLazyValueHolder(input);
@@ -108,10 +96,15 @@ public class SharedObjectCache implements Service {
         return resolvedTypes.get(type);
     }
 
-    public void cleanup() {
+    public void cleanupAfterBoot() {
         sharedSets.clear();
         sharedMaps.clear();
         sharedMultiMaps.clear();
-        typeClosures.clear();
+        typeClosureHolders.clear();
+    }
+
+    public void cleanup() {
+        cleanupAfterBoot();
+        resolvedTypes.clear();
     }
 }

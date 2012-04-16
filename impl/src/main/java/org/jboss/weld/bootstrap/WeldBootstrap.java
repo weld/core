@@ -473,7 +473,7 @@ public class WeldBootstrap implements Bootstrap {
             deployment.getBeanDeployer().cleanup();
         }
         ClassTransformer.instance(deploymentManager).cleanupAfterBoot();
-        Container.instance().services().get(SharedObjectCache.class).cleanup();
+        Container.instance().services().get(SharedObjectCache.class).cleanupAfterBoot();
         return this;
     }
 
