@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.context;
 
+import java.util.List;
+
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 
@@ -67,4 +69,9 @@ public interface WeldCreationalContext<T> extends CreationalContext<T> {
      * instead.
      */
     InjectionPoint loadInjectionPoint();
+
+    /**
+     * Returns an unmodifiable list of dependent instances.
+     */
+    List<ContextualInstance<?>> getDependentInstances();
 }
