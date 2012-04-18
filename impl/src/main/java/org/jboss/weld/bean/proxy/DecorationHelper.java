@@ -101,19 +101,23 @@ public class DecorationHelper<T> {
             previousDelegate = originalInstance;
             return originalInstance;
         } else {
-            try {
-                T proxy = SecureReflections.newInstance(proxyClassForDecorator);
-                TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
-                newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, Reflections.<Decorator<Object>>cast(decorators.get(counter++))));
-                ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
-                previousDelegate = proxy;
-                return proxy;
-            } catch (InstantiationException e) {
-                throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-            } catch (IllegalAccessException e) {
-                throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
-            }
+            T proxy = createProxy(injectionPoint, creationalContext);
+            previousDelegate = proxy;
+            return proxy;
+        }
+    }
 
+    private T createProxy(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
+        try {
+            T proxy = SecureReflections.newInstance(proxyClassForDecorator);
+            TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
+            newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, Reflections.<Decorator<Object>>cast(decorators.get(counter++))));
+            ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
+            return proxy;
+        } catch (InstantiationException e) {
+            throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
+        } catch (IllegalAccessException e) {
+            throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
         }
     }
 
