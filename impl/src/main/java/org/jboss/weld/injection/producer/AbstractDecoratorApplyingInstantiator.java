@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.injection.producer;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -31,7 +33,6 @@ import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.producer.ejb.ProxyDecoratorApplyingSessionBeanInstantiator;
-import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
@@ -71,16 +72,15 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> implements Instan
         TargetBeanInstance beanInstance = new TargetBeanInstance(bean, instance);
         DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, proxyClass, manager, manager.getServices().get(ContextualStore.class), decorators);
         DecorationHelper.push(decorationHelper);
-        final T outerDelegate;
         try {
-            outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+            final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+            if (outerDelegate == null) {
+                throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
+            }
+            return outerDelegate;
         } finally {
             DecorationHelper.pop();
         }
-        if (outerDelegate == null) {
-            throw new WeldException(BeanMessage.PROXY_INSTANTIATION_FAILED, this);
-        }
-        return outerDelegate;
     }
 
     protected void registerOuterDecorator(ProxyObject instance, T outerDelegate) {

@@ -111,7 +111,9 @@ public class DecorationHelper<T> {
         try {
             T proxy = SecureReflections.newInstance(proxyClassForDecorator);
             TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
-            newTargetBeanInstance.setInterceptorsHandler(createMethodHandler(injectionPoint, creationalContext, Reflections.<Decorator<Object>>cast(decorators.get(counter++))));
+            Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
+            DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
+            newTargetBeanInstance.setInterceptorsHandler(methodHandler);
             ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
             return proxy;
         } catch (InstantiationException e) {
