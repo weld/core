@@ -477,11 +477,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
             currentInjectionPoint = services.get(CurrentInjectionPoint.class);
+            currentInjectionPoint.push(injectionPoint);
         }
         try {
-            if (registerInjectionPoint) {
-                currentInjectionPoint.push(injectionPoint);
-            }
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
             return beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
         } finally {
@@ -641,7 +639,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private boolean isProxyRequired(Bean<?> bean) {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isProxyRequired();
-        } else if (getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal()) {
+        } else if (isNormalScoped(bean)) {
             return true;
         } else {
             return false;
@@ -680,17 +678,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (creationalContext == null) {
             throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
         }
-        boolean registerInjectionPoint = (injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class));
+        boolean registerInjectionPoint = injectionPoint != null && !injectionPoint.getType().equals(InjectionPoint.class);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
+
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
             currentInjectionPoint = services.get(CurrentInjectionPoint.class);
+            currentInjectionPoint.push(injectionPoint);
         }
         try {
-            if (registerInjectionPoint) {
-                currentInjectionPoint.push(injectionPoint);
-            }
-            if (getMetaAnnotationStore().getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType())) {
+            if (isNormalScoped(resolvedBean) && !Proxies.isTypeProxyable(injectionPoint.getType())) {
                 throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
             }
             // TODO Can we move this logic to getReference?
@@ -728,11 +725,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, resolvable);
         }
 
-        boolean normalScoped = getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal();
-        if (normalScoped && !Beans.isBeanProxyable(bean)) {
+        if (isNormalScoped(bean) && !Beans.isBeanProxyable(bean)) {
             throw Proxies.getUnproxyableTypesException(bean);
         }
         return bean;
+    }
+
+    private boolean isNormalScoped(Bean<?> bean) {
+        return getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal();
     }
 
     public Set<Bean<?>> getBeans(String name) {
