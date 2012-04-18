@@ -90,12 +90,6 @@ public class DecorationHelper<T> {
         }
     }
 
-    public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator) {
-        Object decoratorInstance = beanManager.getReference(injectionPoint, decorator, creationalContext);
-        SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(decorator, decoratorInstance, null, contextualStore);
-        return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);
-    }
-
     public T getNextDelegate(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
         if (counter == decorators.size()) {
             previousDelegate = originalInstance;
@@ -121,6 +115,12 @@ public class DecorationHelper<T> {
         } catch (IllegalAccessException e) {
             throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
         }
+    }
+
+    public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator) {
+        Object decoratorInstance = beanManager.getReference(injectionPoint, decorator, creationalContext);
+        SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(decorator, decoratorInstance, null, contextualStore);
+        return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);
     }
 
 }

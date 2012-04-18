@@ -41,12 +41,6 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
 
     private final SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance;
 
-    /**
-     * Constructor
-     *
-     * @param removeMethods
-     * @param proxy         The generic proxy
-     */
     public DecoratorProxyMethodHandler(SerializableContextualInstance<Decorator<Object>, Object> decoratorInstance, Object delegateInstance) {
         super(delegateInstance, delegateInstance.getClass());
         this.decoratorInstance = decoratorInstance;
@@ -68,23 +62,26 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
      */
     @Override
     protected Object doInvoke(Object self, Method method, Method proceed, Object[] args) throws Throwable {
-        SerializableContextualInstance<Decorator<Object>, Object> beanInstance = decoratorInstance;
-        if (beanInstance.getContextual().get() instanceof WeldDecorator<?>) {
-            WeldDecorator<?> decorator = (WeldDecorator<?>) beanInstance.getContextual().get();
-            if (!method.isAnnotationPresent(Inject.class)) {
-                WeldMethod<?, ?> decoratorMethod = decorator.getDecoratorMethod(method);
-                if (decoratorMethod != null) {
-                    try {
-                        return decoratorMethod.invokeOnInstance(beanInstance.getInstance(), args);
-                    } catch (InvocationTargetException e) {
-                        throw e.getCause();
-                    }
+        Decorator<Object> decorator = decoratorInstance.getContextual().get();
+        if (decorator instanceof WeldDecorator<?>) {
+            WeldDecorator<?> weldDecorator = (WeldDecorator<?>) decorator;
+            return doInvoke(weldDecorator, decoratorInstance.getInstance(), method, args);
+        } else {
+            throw new IllegalStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, decorator);
+        }
+    }
+
+    private Object doInvoke(WeldDecorator<?> weldDecorator, Object decoratorInstance, Method method, Object[] args) throws Throwable {
+        if (!method.isAnnotationPresent(Inject.class)) {
+            WeldMethod<?, ?> decoratorMethod = weldDecorator.getDecoratorMethod(method);
+            if (decoratorMethod != null) {
+                try {
+                    return decoratorMethod.invokeOnInstance(decoratorInstance, args);
+                } catch (InvocationTargetException e) {
+                    throw e.getCause();
                 }
             }
-        } else {
-            throw new IllegalStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, beanInstance.getContextual().get());
         }
-
         return SecureReflections.invoke(getTargetInstance(), method, args);
     }
 }
