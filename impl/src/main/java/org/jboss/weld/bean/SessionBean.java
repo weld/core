@@ -291,7 +291,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         try {
             T instance = SecureReflections.newInstance(proxyClass);
             creationalContext.push(instance);
-            ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getWeldAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)), this);
+            ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(creationalContext), this);
             if (hasDecorators()) {
                 instance = applyDecorators(instance, creationalContext, null);
             }
@@ -304,6 +304,12 @@ public class SessionBean<T> extends AbstractClassBean<T> {
             throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
         }
 
+    }
+
+    private EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance(CreationalContext<T> creationalContext) {
+        return new EnterpriseTargetBeanInstance(
+            getWeldAnnotated().getJavaClass(),
+            new EnterpriseBeanProxyMethodHandler<T>(this, creationalContext));
     }
 
     @Override

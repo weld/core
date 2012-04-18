@@ -710,11 +710,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
-        if (!injectionPoint.isDelegate()) {
+        if (injectionPoint.isDelegate()) {
+            return DecorationHelper.peek().getNextDelegate(injectionPoint, creationalContext);
+        } else {
             Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint, this).create());
             return getReference(injectionPoint, resolvedBean, creationalContext);
-        } else {
-            return DecorationHelper.peek().getNextDelegate(injectionPoint, creationalContext);
         }
     }
 
