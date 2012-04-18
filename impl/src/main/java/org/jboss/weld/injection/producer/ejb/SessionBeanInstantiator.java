@@ -54,7 +54,7 @@ public class SessionBeanInstantiator<T> implements Instantiator<T> {
         try {
             T instance = SecureReflections.newInstance(proxyClass);
             ctx.push(instance);
-            ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean, ctx)), bean);
+            ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(ctx), bean);
             return instance;
         } catch (InstantiationException e) {
             throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
@@ -63,6 +63,10 @@ public class SessionBeanInstantiator<T> implements Instantiator<T> {
         } catch (Exception e) {
             throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
         }
+    }
+
+    protected EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance(CreationalContext<T> creationalContext) {
+        return new EnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean, creationalContext));
     }
 
     @Override
