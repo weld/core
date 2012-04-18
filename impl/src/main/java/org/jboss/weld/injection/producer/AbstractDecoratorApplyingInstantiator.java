@@ -23,10 +23,17 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
+import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.ProxyFactory;
+import org.jboss.weld.bean.proxy.ProxyObject;
+import org.jboss.weld.bean.proxy.TargetBeanInstance;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.producer.ejb.ProxyDecoratorApplyingSessionBeanInstantiator;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
  * Common functionality for an instantiator capable of applying decorators to a given instance.
@@ -59,6 +66,27 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> implements Instan
     }
 
     protected abstract T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager);
+
+    protected T getOuterDelegate(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager) {
+        TargetBeanInstance beanInstance = new TargetBeanInstance(bean, instance);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, proxyClass, manager, manager.getServices().get(ContextualStore.class), decorators);
+        DecorationHelper.push(decorationHelper);
+        final T outerDelegate;
+        try {
+            outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+        } finally {
+            DecorationHelper.pop();
+        }
+        if (outerDelegate == null) {
+            throw new WeldException(BeanMessage.PROXY_INSTANTIATION_FAILED, this);
+        }
+        return outerDelegate;
+    }
+
+    protected void registerOuterDecorator(ProxyObject instance, T outerDelegate) {
+        CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) instance.getHandler();
+        wrapperMethodHandler.setOuterDecorator(outerDelegate);
+    }
 
     public Instantiator<T> getDelegate() {
         return delegate;

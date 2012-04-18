@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer.ejb;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -25,13 +23,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.bean.proxy.DecorationHelper;
-import org.jboss.weld.bean.proxy.TargetBeanInstance;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.producer.AbstractDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.serialization.spi.ContextualStore;
 
 public class ProxyDecoratorApplyingSessionBeanInstantiator<T> extends AbstractDecoratorApplyingInstantiator<T> {
 
@@ -41,20 +35,7 @@ public class ProxyDecoratorApplyingSessionBeanInstantiator<T> extends AbstractDe
 
     @Override
     protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager) {
-        //for EJBs, we apply decorators through a proxy
-        T proxy = null;
-        TargetBeanInstance beanInstance = new TargetBeanInstance(getBean(), instance);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, getBean(), getProxyClass(), manager, manager.getServices().get(ContextualStore.class), getDecorators());
-        DecorationHelper.push(decorationHelper);
-        try {
-            proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
-        } finally {
-            DecorationHelper.pop();
-        }
-
-        if (proxy == null) {
-            throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
-        }
-        return proxy;
+      //for EJBs, we apply decorators through a proxy
+        return getOuterDelegate(instance, creationalContext, originalInjectionPoint, manager);
     }
 }
