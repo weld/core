@@ -14,6 +14,10 @@ public class BeansXml implements Asset {
     private List<Class<?>> decorators = new ArrayList<Class<?>>();
     private List<Class<?>> stereotypes = new ArrayList<Class<?>>();
 
+    public BeansXml() {
+
+    }
+
     public BeansXml alternatives(Class<?>... alternatives) {
         this.alternatives.addAll(Arrays.asList(alternatives));
         return this;
