@@ -28,6 +28,8 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ManagedBean;
@@ -74,7 +76,7 @@ public class DependentContextImpl implements DependentContext {
     protected <T> void addDependentInstance(T instance, Contextual<T> contextual, WeldCreationalContext<T> creationalContext) {
         // by this we are making sure that the dependent instance has no transitive dependency with @PreDestroy / disposal method
         if (creationalContext.getDependentInstances().isEmpty()) {
-            if (contextual instanceof ManagedBean<?>) {
+            if (contextual instanceof ManagedBean<?> && ! isInterceptorOrDecorator(contextual)) {
                 ManagedBean<?> bean = (ManagedBean<?>) contextual;
                 if (bean.getPreDestroy().isEmpty() && !bean.hasInterceptors() && bean.hasDefaultProducer()) {
                     // there is no @PreDestroy callback to call when destroying this dependent instance
@@ -95,6 +97,10 @@ public class DependentContextImpl implements DependentContext {
         // Only add the dependent instance if none of the conditions above is met
         ContextualInstance<T> beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, contextualStore);
         creationalContext.addDependentInstance(beanInstance);
+    }
+
+    private boolean isInterceptorOrDecorator(Contextual<?> contextual) {
+        return contextual instanceof Interceptor<?> || contextual instanceof Decorator<?>;
     }
 
     public <T> T get(Contextual<T> contextual) {
