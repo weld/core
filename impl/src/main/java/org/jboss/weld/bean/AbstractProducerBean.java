@@ -255,15 +255,9 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     public T create(final CreationalContext<T> creationalContext) {
         storeMetadata(creationalContext);
 
-        try {
-            T instance = getProducer().produce(creationalContext);
-            checkReturnValue(instance);
-            return instance;
-        } finally {
-            if (getDeclaringBean().isDependent()) {
-                creationalContext.release();
-            }
-        }
+        T instance = getProducer().produce(creationalContext);
+        checkReturnValue(instance);
+        return instance;
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
@@ -278,8 +272,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             currentInjectionPoint.push(ip);
         }
         try {
-            if (AbstractProducer.class.isAssignableFrom(producer.getClass())) {
-                ((AbstractProducer) producer).dispose(instance, creationalContext);
+            if (producer instanceof AbstractProducerBean.AbstractProducer) {
+                Reflections.<AbstractProducer>cast(producer).dispose(instance, creationalContext);
             } else {
                 producer.dispose(instance);
             }
@@ -376,6 +370,20 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         public Set<InjectionPoint> getInjectionPoints() {
             return cast(getWeldInjectionPoints());
         }
+
+        @Override
+        public T produce(CreationalContext<T> ctx) {
+            CreationalContext<X> receiverCreationalContext = beanManager.createCreationalContext(getDeclaringBean());
+            Object receiver = getReceiver(ctx, receiverCreationalContext);
+
+            try {
+                return produce(receiver, ctx);
+            } finally {
+                receiverCreationalContext.release();
+            }
+        }
+
+        protected abstract T produce(Object receiver, CreationalContext<T> ctx);
     }
 
     @Override

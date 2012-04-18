@@ -112,8 +112,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         checkProducerMethod();
         setProducer(new AbstractProducer() {
 
-            public T produce(CreationalContext<T> creationalContext) {
-                Object receiver = getReceiver(creationalContext);
+            public T produce(Object receiver, CreationalContext<T> creationalContext) {
                 if (receiver != null) {
                     return method.invokeOnInstance(receiver, beanManager, creationalContext, CreationException.class);
                 } else {

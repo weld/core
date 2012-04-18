@@ -48,27 +48,29 @@ public abstract class AbstractReceiverBean<X, T, S extends Member> extends Abstr
     }
 
     /**
-     * Gets the receiver of the product
+     * Gets the receiver of the product. The two creational contexts need to be separated because the receiver only serves the product
+     * creation (it is not a dependent instance of the created instance).
      *
-     * @param creationalContext the creational context
+     * @param productCreationalContext the creational context of the produced instance
+     * @param receiverCreationalCOntext the creational context of the receiver
      * @return The receiver
      */
-    protected Object getReceiver(CreationalContext<?> creationalContext) {
+    protected Object getReceiver(CreationalContext<?> productCreationalContext, CreationalContext<?> receiverCreationalContext) {
         // This is a bit dangerous, as it means that producer methods can end up
         // executing on partially constructed instances. Also, it's not required
         // by the spec...
         if (getAnnotated().isStatic()) {
             return null;
         } else {
-            if (creationalContext instanceof WeldCreationalContext<?>) {
-                WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) creationalContext;
+            if (productCreationalContext instanceof WeldCreationalContext<?>) {
+                WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) productCreationalContext;
                 final X incompleteInstance = creationalContextImpl.getIncompleteInstance(getDeclaringBean());
                 if (incompleteInstance != null) {
                     log.warn(CIRCULAR_CALL, getAnnotated(), getDeclaringBean());
                     return incompleteInstance;
                 }
             }
-            return beanManager.getReference(getDeclaringBean(), creationalContext, true);
+            return beanManager.getReference(getDeclaringBean(), receiverCreationalContext, true);
         }
     }
 
