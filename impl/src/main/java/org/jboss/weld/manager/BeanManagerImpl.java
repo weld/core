@@ -687,7 +687,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             currentInjectionPoint.push(injectionPoint);
         }
         try {
-            if (isNormalScoped(resolvedBean) && !Proxies.isTypeProxyable(injectionPoint.getType())) {
+            if (injectionPoint != null && isNormalScoped(resolvedBean) && !Proxies.isTypeProxyable(injectionPoint.getType())) {
                 throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
             }
             // TODO Can we move this logic to getReference?
