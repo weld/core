@@ -24,14 +24,15 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
+import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 /**
@@ -97,18 +98,21 @@ public class EnterpriseBeanLifecycleTest {
         bean.destroy(instance, creationalContext);
     }
 
-    @Inject
-    @MassProduced
-    Instance<ChickenHutch> chickenHutchInstance;
-
     @Test
     // WELD-556
-    public void testDecoratedSFSBsAreRemoved() {
+    public void testDecoratedSFSBsAreRemoved(BeanManager manager) {
         StandardChickenHutch.reset();
         AlarmedChickenHutch.reset();
-        chickenHutchInstance.get();
+
+        Bean<ChickenHutch> bean = Reflections.cast(manager.resolve(manager.getBeans(ChickenHutch.class)));
+        CreationalContext<ChickenHutch> cc = manager.createCreationalContext(bean);
+        ChickenHutch instance = bean.create(cc);
+
+        instance.ping();
         assert StandardChickenHutch.isPing();
         assert AlarmedChickenHutch.isPing();
+
+        bean.destroy(instance, cc);
         assert StandardChickenHutch.isPredestroy();
     }
 

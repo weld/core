@@ -151,7 +151,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     public void invokeDisposeMethod(Object instance) {
         CreationalContext<T> creationalContext = beanManager.createCreationalContext(this);
-        Object receiverInstance = getReceiver(creationalContext);
+        Object receiverInstance = getReceiver(creationalContext, creationalContext);
         if (receiverInstance == null) {
             disposalMethodInjectionPoint.invokeWithSpecialValue(null, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
         } else {
