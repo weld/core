@@ -109,19 +109,14 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         }
     }
 
-    private class ProducerFieldProducer implements Producer<T> {
+    private class ProducerFieldProducer extends AbstractProducer {
 
         public void dispose(T instance) {
             defaultDispose(instance);
         }
 
-        public Set<InjectionPoint> getInjectionPoints() {
-            return cast(getWeldInjectionPoints());
-        }
-
-        public T produce(CreationalContext<T> creationalContext) {
+        public T produce(Object receiver, CreationalContext<T> creationalContext) {
             // unwrap if we have a proxy
-            Object receiver = getReceiver(creationalContext);
             if (receiver instanceof TargetInstanceProxy) {
                 receiver = Reflections.<TargetInstanceProxy<T>>cast(receiver).getTargetInstance();
             }

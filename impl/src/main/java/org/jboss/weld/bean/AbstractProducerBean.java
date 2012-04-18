@@ -69,6 +69,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_T
 import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * The implicit producer bean
@@ -303,15 +304,28 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * @returns The instance
      */
     public T create(final CreationalContext<T> creationalContext) {
-        try {
-            T instance = getProducer().produce(creationalContext);
-            checkReturnValue(instance);
-            return instance;
-        } finally {
-            if (getDeclaringBean().isDependent()) {
-                creationalContext.release();
-            }
-        }
+        T instance = getProducer().produce(creationalContext);
+        checkReturnValue(instance);
+        return instance;
     }
 
+    protected abstract class AbstractProducer implements Producer<T> {
+
+        @Override
+        public T produce(CreationalContext<T> ctx) {
+            CreationalContext<X> receiverCreationalContext = beanManager.createCreationalContext(getDeclaringBean());
+            Object receiver = getReceiver(ctx, receiverCreationalContext);
+            try {
+                return produce(receiver, ctx);
+            } finally {
+                receiverCreationalContext.release();
+            }
+        }
+
+        public Set<InjectionPoint> getInjectionPoints() {
+            return cast(getWeldInjectionPoints());
+        }
+
+        protected abstract T produce(Object receiver, CreationalContext<T> ctx);
+    }
 }

@@ -119,7 +119,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         }
     }
 
-    private class ProducerMethodProducer implements Producer<T> {
+    private class ProducerMethodProducer extends AbstractProducer {
 
         public void dispose(T instance) {
             if (disposalMethodBean != null) {
@@ -131,8 +131,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             return cast(getWeldInjectionPoints());
         }
 
-        public T produce(CreationalContext<T> creationalContext) {
-            Object receiver = getReceiver(creationalContext);
+        public T produce(Object receiver, CreationalContext<T> creationalContext) {
             if (receiver != null) {
                 return method.invokeOnInstance(receiver, beanManager, creationalContext, CreationException.class);
             } else {
