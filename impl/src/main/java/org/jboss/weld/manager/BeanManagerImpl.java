@@ -1268,8 +1268,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> FieldInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedField<X> field, Bean<?> bean) {
-        EnhancedAnnotatedField<?, X> weldField = services.get(MemberTransformer.class).loadEnhancedMember(field);
-        return InferingFieldInjectionPointAttributes.of(weldField, bean, this);
+        return createInjectionPoint(services.get(MemberTransformer.class).<X, EnhancedAnnotatedField<?, X>>loadEnhancedMember(field), bean);
+    }    
+
+    public <T, X> FieldInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
+        return InferingFieldInjectionPointAttributes.of(field, bean, this);
     }
 
     @Override
@@ -1278,8 +1281,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> ParameterInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedParameter<X> parameter, Bean<?> bean) {
-        EnhancedAnnotatedParameter<?, X> weldParameter = services.get(MemberTransformer.class).load(parameter);
-        return InferingParameterInjectionPointAttributes.of(weldParameter, bean, this);
+        return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean);
+    }
+
+    public <T, X> ParameterInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
+        return InferingParameterInjectionPointAttributes.of(parameter, bean, this);
     }
 
     @Override
