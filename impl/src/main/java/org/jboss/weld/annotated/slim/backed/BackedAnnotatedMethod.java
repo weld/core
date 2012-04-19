@@ -43,9 +43,10 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
 
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(genericParameterTypes.length);
 
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         for (int i = 0; i < genericParameterTypes.length; i++) {
             Type parameterType = genericParameterTypes[i];
-            parameters.add(BackedAnnotatedParameter.of(parameterType, i, this));
+            parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this));
         }
         this.parameters = immutableList(parameters);
     }

@@ -41,8 +41,9 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
 
         final Class<?>[] parameterTypes = constructor.getParameterTypes();
         final Type[] genericParameterTypes = constructor.getGenericParameterTypes();
+        Annotation[][] parameterAnnotations = constructor.getParameterAnnotations();
 
-        if (parameterTypes.length == genericParameterTypes.length) {
+        if (parameterTypes.length == genericParameterTypes.length && genericParameterTypes.length == parameterAnnotations.length) {
             List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(parameterTypes.length);
             int nesting = Reflections.getNesting(declaringType.getJavaClass());
             for (int i = 0; i < parameterTypes.length; i++) {
@@ -50,12 +51,15 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
                 Class<?> clazz = parameterTypes[i];
 
                 Type parameterType;
+                int position;
                 if (constructor.getGenericParameterTypes().length > gi && gi >= 0) {
                     parameterType = constructor.getGenericParameterTypes()[gi];
+                    position = gi;
                 } else {
                     parameterType = clazz;
+                    position = i;
                 }
-                parameters.add(new BackedAnnotatedParameter<X>(parameterType, i, this));
+                parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this));
             }
             this.parameters = immutableList(parameters);
         } else {
