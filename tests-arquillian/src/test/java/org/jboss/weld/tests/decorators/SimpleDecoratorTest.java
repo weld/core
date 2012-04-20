@@ -34,32 +34,35 @@ public class SimpleDecoratorTest {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .decorate(SimpleDecorator1.class, SimpleDecorator2.class)
-                .addPackage(SimpleDecoratorTest.class.getPackage());
+            .decorate(SimpleDecorator1.class, SimpleDecorator2.class)
+            .addPackage(SimpleDecoratorTest.class.getPackage());
     }
 
     @Test
     public void testSimpleDecorator(SimpleBean simpleBean) {
         resetDecorators();
+        simpleBean.resetInvokedFlag();
         Assert.assertEquals(1, simpleBean.echo1(1));
-        assertDecorators(true, false, false);
+        assertDecoratorsInvoked(true, false, false, false);
         Assert.assertTrue(simpleBean.isInvoked());
 
         resetDecorators();
+        simpleBean.resetInvokedFlag();
         Assert.assertEquals(2, simpleBean.echo2(2));
-        assertDecorators(false, true, false);
+        assertDecoratorsInvoked(false, false, true, false);
         Assert.assertTrue(simpleBean.isInvoked());
 
-        //Only SimpleDecorator1 gets invoked, although I think SimpleDecorator2 should get invoked too
         resetDecorators();
+        simpleBean.resetInvokedFlag();
         Assert.assertEquals(3, simpleBean.echo3(3));
-        assertDecorators(false, false, true);
+        assertDecoratorsInvoked(false, true, false, true);
 
         Assert.assertTrue(simpleBean.isInvoked());
 
         resetDecorators();
+        simpleBean.resetInvokedFlag();
         Assert.assertEquals(4, simpleBean.echo4(4));
-        assertDecorators(false, false, false);
+        assertDecoratorsInvoked(false, false, false, false);
 
         Assert.assertTrue(simpleBean.isInvoked());
     }
@@ -69,9 +72,10 @@ public class SimpleDecoratorTest {
         SimpleDecorator2.reset();
     }
 
-    private void assertDecorators(boolean echo1, boolean echo2, boolean echo3) {
-        Assert.assertEquals(echo1, SimpleDecorator1.echo1);
-        Assert.assertEquals(echo2, SimpleDecorator2.echo2);
-        Assert.assertEquals(echo3, SimpleDecorator2.echo3);
+    private void assertDecoratorsInvoked(boolean decorator1Echo1, boolean decorator1Echo3, boolean decorator2Echo2, boolean decorator2Echo3) {
+        Assert.assertEquals(decorator1Echo1, SimpleDecorator1.echo1);
+        Assert.assertEquals(decorator1Echo3, SimpleDecorator1.echo3);
+        Assert.assertEquals(decorator2Echo2, SimpleDecorator2.echo2);
+        Assert.assertEquals(decorator2Echo3, SimpleDecorator2.echo3);
     }
 }
