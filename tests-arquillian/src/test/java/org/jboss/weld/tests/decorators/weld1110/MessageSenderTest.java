@@ -1,7 +1,11 @@
 package org.jboss.weld.tests.decorators.weld1110;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 
+import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -22,7 +26,7 @@ public class MessageSenderTest {
 	@Deployment(testable = false)
 	public static WebArchive create() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackage(Message.class.getPackage())
+				.addPackage(MessageSenderTest.class.getPackage())
 				.setWebXML(new StringAsset(
 						"<web-app>" +
 						"<display-name>jax</display-name>" +
@@ -37,10 +41,26 @@ public class MessageSenderTest {
 
 	@ArquillianResource
 	private URL base;
-	
+
 	@Test
-	public void shouldBeAbleToDecorateEJB() throws Exception {
-		// should probably assert on 'osomething'
-		new URL(base, "rest/message").openStream();
-	}
+	public void testImpl() throws Exception {
+        String response = getWebServiceResponse("rest/message/Hello");
+        Assert.assertEquals("Decorated Hello", response);
+    }
+
+	@Test
+	public void testFacade() throws Exception {
+        String response = getWebServiceResponse("rest/facade/Hello");
+        Assert.assertEquals("Decorated Hello", response);
+    }
+
+    private String getWebServiceResponse(String urlPath) throws IOException {
+        URL url = new URL(base, urlPath);
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        try {
+            return in.readLine();
+        } finally {
+            in.close();
+        }
+    }
 }

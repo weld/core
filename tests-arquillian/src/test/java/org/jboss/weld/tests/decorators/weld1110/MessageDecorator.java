@@ -8,13 +8,13 @@ import javax.inject.Inject;
 
 
 @Decorator
-public abstract class MessageDecorator extends MessageSender implements Serializable {
-	
+public abstract class MessageDecorator implements MessageSender, Serializable {
+
 	@Inject @Delegate
 	private MessageSender sender;
-	
-	public Message send(Message message) {
-		Message msg = new Message("Decorated " + message.getContent());
+
+	public String send(String message) {
+		String msg = "Decorated " + message;
 		return sender.send(msg);
 	}
 }
