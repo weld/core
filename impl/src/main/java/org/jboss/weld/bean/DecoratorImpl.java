@@ -67,7 +67,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     private Set<Type> decoratedTypes;
 
     protected DecoratorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
-        super(attributes, type, new StringBuilder().append(Decorator.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
+        super(attributes, type, Decorator.class.getSimpleName() + BEAN_ID_SEPARATOR + type.getName(), beanManager);
     }
 
     @Override

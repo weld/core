@@ -58,8 +58,8 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     /**
      * Constructor
      *
-     * @param removeMethods
-     * @param proxy         The generic proxy
+     * @param bean the session bean
+     * @param creationalContext
      */
     public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, CreationalContext<T> creationalContext) {
         this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
@@ -96,12 +96,8 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             return null;
         }
 
-        if (!clientCanCallRemoveMethods) {
-            // TODO we can certainly optimize this search algorithm!
-            MethodSignature methodSignature = new MethodSignatureImpl(method);
-            if (removeMethodSignatures.contains(methodSignature)) {
-                throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
-            }
+        if (!clientCanCallRemoveMethods && isRemoveMethod(method)) {
+            throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
         }
         Class<?> businessInterface = getBusinessInterface(method);
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
@@ -116,6 +112,12 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
                 throw e;
             }
         }
+    }
+
+    private boolean isRemoveMethod(Method method) {
+        // TODO we can certainly optimize this search algorithm!
+        MethodSignature methodSignature = new MethodSignatureImpl(method);
+        return removeMethodSignatures.contains(methodSignature);
     }
 
     private Class<?> getBusinessInterface(Method method) {
