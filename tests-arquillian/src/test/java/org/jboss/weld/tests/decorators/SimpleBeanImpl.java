@@ -47,4 +47,8 @@ public class SimpleBeanImpl implements SimpleBean {
     public boolean isInvoked() {
         return invoked;
     }
+
+    public void resetInvokedFlag() {
+        invoked = false;
+    }
 }
