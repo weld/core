@@ -220,6 +220,12 @@
                     <exclude name="testBravoDecoratorObserved"/>
                 </methods>
             </class>
+            <!-- WELD-1111 -->
+            <class name="org.jboss.cdi.tck.tests.inheritance.generics.MemberLevelInheritanceTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
             
 
             <!-- Issues in JBoss AS -->
