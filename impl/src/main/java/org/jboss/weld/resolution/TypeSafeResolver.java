@@ -16,21 +16,15 @@
  */
 package org.jboss.weld.resolution;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MapMaker;
-import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-
-import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
+import org.jboss.weld.manager.BeanManagerImpl;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MapMaker;
 
 /**
  * Implementation of type safe bean resolution

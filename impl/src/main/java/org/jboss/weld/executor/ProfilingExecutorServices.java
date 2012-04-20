@@ -121,4 +121,8 @@ public class ProfilingExecutorServices implements ExecutorServices {
             measurement.stopProfiling();
         }
     }
+
+    public ExecutorServices getDelegate() {
+        return delegate;
+    }
 }

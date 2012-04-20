@@ -282,6 +282,7 @@ public class WeldBootstrap implements Bootstrap {
             deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
             deploymentServices.add(ContextualStore.class, implementationServices.get(ContextualStore.class));
             deploymentServices.add(CurrentInjectionPoint.class, implementationServices.get(CurrentInjectionPoint.class));
+            deploymentServices.add(ContainerLifecycleEventPreloader.class, implementationServices.get(ContainerLifecycleEventPreloader.class));
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
@@ -322,6 +323,7 @@ public class WeldBootstrap implements Bootstrap {
             services.add(Validator.class, new Validator());
         } else {
             services.add(Validator.class, new ConcurrentValidator(executor));
+            services.add(ContainerLifecycleEventPreloader.class, new ContainerLifecycleEventPreloader());
         }
 
         return services;
@@ -475,6 +477,10 @@ public class WeldBootstrap implements Bootstrap {
         }
         ClassTransformer.instance(deploymentManager).cleanupAfterBoot();
         Container.instance().services().get(SharedObjectCache.class).cleanupAfterBoot();
+        ContainerLifecycleEventPreloader preloader = Container.instance().services().get(ContainerLifecycleEventPreloader.class);
+        if (preloader != null) {
+            preloader.cleanup();
+        }
         return this;
     }
 

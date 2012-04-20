@@ -31,14 +31,15 @@ import javax.decorator.Decorator;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.interceptor.Interceptor;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
-import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
@@ -99,6 +100,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
 
         if (clazz != null && !clazz.isAnnotation()) {
+            preloadContainerLifecycleEvent(ProcessAnnotatedType.class, clazz);
             AnnotatedType<?> annotatedType = null;
             try {
                 annotatedType = classTransformer.getAnnotatedType(clazz);
@@ -213,14 +215,19 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     protected void createClassBean(AnnotatedType<?> annotatedType, Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses) {
         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
+            preloadContainerLifecycleEvent(ProcessInjectionTarget.class, annotatedType.getJavaClass());
+            preloadContainerLifecycleEvent(ProcessBeanAttributes.class, annotatedType.getJavaClass());
             EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
             if (weldClass.isAnnotationPresent(Decorator.class)) {
+                preloadContainerLifecycleEvent(ProcessBean.class, annotatedType.getJavaClass());
                 validateDecorator(weldClass);
                 createDecorator(weldClass);
             } else if (weldClass.isAnnotationPresent(Interceptor.class)) {
+                preloadContainerLifecycleEvent(ProcessBean.class, annotatedType.getJavaClass());
                 validateInterceptor(weldClass);
                 createInterceptor(weldClass);
             } else if (!weldClass.isAbstract()) {
+                preloadContainerLifecycleEvent(ProcessManagedBean.class, annotatedType.getJavaClass());
                 createManagedBean(weldClass);
             }
         } else {

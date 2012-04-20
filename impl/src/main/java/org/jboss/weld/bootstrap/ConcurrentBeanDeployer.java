@@ -21,6 +21,7 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,20 +30,14 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeFactory;
-import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.collections.ConcurrentHashSetSupplier;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -59,10 +54,20 @@ import com.google.common.collect.Multimaps;
 public class ConcurrentBeanDeployer extends BeanDeployer {
 
     private final ExecutorServices executor;
+    private final ContainerLifecycleEventPreloader preloader;
 
     public ConcurrentBeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         super(manager, ejbDescriptors, services, BeanDeployerEnvironment.newConcurrentEnvironment(ejbDescriptors, manager));
         this.executor = services.get(ExecutorServices.class);
+        this.preloader = services.get(ContainerLifecycleEventPreloader.class);
+        if (this.preloader == null) {
+            throw new IllegalArgumentException(ContainerLifecycleEventPreloader.class.getName() + " is null");
+        }
+    }
+
+    @Override
+    protected void preloadContainerLifecycleEvent(Class<?> eventRawType, Type... typeParameters) {
+        preloader.preloadContainerLifecycleEvent(getManager(), eventRawType, typeParameters);
     }
 
     @Override
@@ -75,67 +80,67 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
         return this;
     }
 
-    @Override
-    public void processAnnotatedTypes() {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AnnotatedType<?>>(getEnvironment().getAnnotatedTypes()) {
-            protected void doWork(AnnotatedType<?> annotatedType) {
-                // fire event
-                boolean synthetic = getEnvironment().getAnnotatedTypeSource(annotatedType) != null;
-                ProcessAnnotatedTypeImpl<?> event;
-                if (synthetic) {
-                    event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType, getEnvironment().getAnnotatedTypeSource(annotatedType));
-                } else {
-                    event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType);
-                }
-                event.fire();
-                // process the result
-                if (event.isVeto()) {
-                    getEnvironment().vetoAnnotatedType(annotatedType);
-                } else {
-                    boolean dirty = event.isDirty();
-                    if (dirty) {
-                        getEnvironment().removeAnnotatedType(annotatedType); // remove the original class
-                        AnnotatedType<?> modifiedType = event.getAnnotatedType();
-                        if (modifiedType instanceof SlimAnnotatedType<?>) {
-                            annotatedType = modifiedType;
-                        } else {
-                            annotatedType = classTransformer.getAnnotatedType(modifiedType);
-                        }
-                    }
-
-                    // vetoed due to @Veto or @Requires
-                    boolean vetoed = Beans.isVetoed(annotatedType);
-
-                    if (dirty && !vetoed) {
-                        getEnvironment().addAnnotatedType(annotatedType); // add a replacement for the removed class
-                    }
-                    if (!dirty && vetoed) {
-                        getEnvironment().vetoAnnotatedType(annotatedType);
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    protected void processBeanAttributes(Collection<? extends AbstractBean<?, ?>> beans) {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AbstractBean<?, ?>>(beans) {
-            protected void doWork(AbstractBean<?, ?> bean) {
-                // fire ProcessBeanAttributes for class beans
-                boolean vetoed = fireProcessBeanAttributes(bean);
-                if (vetoed) {
-                    if (bean.isSpecializing()) {
-                        BeansClosure.getClosure(getManager()).removeSpecialized(bean.getSpecializedBean());
-                        getQueue().add(bean.getSpecializedBean());
-                    }
-                    getEnvironment().vetoBean(bean);
-                } else {
-                    // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
-                    getEnvironment().addNewBeansFromInjectionPoints(bean);
-                }
-            }
-        });
-    }
+//    @Override
+//    public void processAnnotatedTypes() {
+//        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AnnotatedType<?>>(getEnvironment().getAnnotatedTypes()) {
+//            protected void doWork(AnnotatedType<?> annotatedType) {
+//                // fire event
+//                boolean synthetic = getEnvironment().getAnnotatedTypeSource(annotatedType) != null;
+//                ProcessAnnotatedTypeImpl<?> event;
+//                if (synthetic) {
+//                    event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType, getEnvironment().getAnnotatedTypeSource(annotatedType));
+//                } else {
+//                    event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType);
+//                }
+//                event.fire();
+//                // process the result
+//                if (event.isVeto()) {
+//                    getEnvironment().vetoAnnotatedType(annotatedType);
+//                } else {
+//                    boolean dirty = event.isDirty();
+//                    if (dirty) {
+//                        getEnvironment().removeAnnotatedType(annotatedType); // remove the original class
+//                        AnnotatedType<?> modifiedType = event.getAnnotatedType();
+//                        if (modifiedType instanceof SlimAnnotatedType<?>) {
+//                            annotatedType = modifiedType;
+//                        } else {
+//                            annotatedType = classTransformer.getAnnotatedType(modifiedType);
+//                        }
+//                    }
+//
+//                    // vetoed due to @Veto or @Requires
+//                    boolean vetoed = Beans.isVetoed(annotatedType);
+//
+//                    if (dirty && !vetoed) {
+//                        getEnvironment().addAnnotatedType(annotatedType); // add a replacement for the removed class
+//                    }
+//                    if (!dirty && vetoed) {
+//                        getEnvironment().vetoAnnotatedType(annotatedType);
+//                    }
+//                }
+//            }
+//        });
+//    }
+//
+//    @Override
+//    protected void processBeanAttributes(Collection<? extends AbstractBean<?, ?>> beans) {
+//        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AbstractBean<?, ?>>(beans) {
+//            protected void doWork(AbstractBean<?, ?> bean) {
+//                // fire ProcessBeanAttributes for class beans
+//                boolean vetoed = fireProcessBeanAttributes(bean);
+//                if (vetoed) {
+//                    if (bean.isSpecializing()) {
+//                        BeansClosure.getClosure(getManager()).removeSpecialized(bean.getSpecializedBean());
+//                        getQueue().add(bean.getSpecializedBean());
+//                    }
+//                    getEnvironment().vetoBean(bean);
+//                } else {
+//                    // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
+//                    getEnvironment().addNewBeansFromInjectionPoints(bean);
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public void createClassBeans() {
@@ -191,16 +196,6 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<RIBean<?>>(getEnvironment().getBeans()) {
             protected void doWork(RIBean<?> bean) {
                 bean.initialize(getEnvironment());
-            }
-        });
-        return this;
-    }
-
-    @Override
-    public AbstractBeanDeployer<BeanDeployerEnvironment> fireBeanEvents() {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<RIBean<?>>(getEnvironment().getBeans()) {
-            protected void doWork(RIBean<?> bean) {
-                fireBeanEvents(bean);
             }
         });
         return this;

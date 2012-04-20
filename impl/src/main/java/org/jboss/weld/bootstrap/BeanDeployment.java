@@ -212,34 +212,34 @@ public class BeanDeployment {
     // TODO -- OK?
     public void createBeans(Environment environment) {
         beanDeployer.processAnnotatedTypes();
-        beanDeployer.getEnvironment().addBuiltInBean(new InjectionPointBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new EventBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new InstanceBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new ConversationBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new BeanMetadataBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new InterceptedBeanMetadataBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new DecoratedBeanMetadataBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new InterceptorMetadataBean(beanManager));
-        beanDeployer.getEnvironment().addBuiltInBean(new DecoratorMetadataBean(beanManager));
+        beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
+        beanDeployer.addBuiltInBean(new EventBean(beanManager));
+        beanDeployer.addBuiltInBean(new InstanceBean(beanManager));
+        beanDeployer.addBuiltInBean(new ConversationBean(beanManager));
+        beanDeployer.addBuiltInBean(new BeanMetadataBean(beanManager));
+        beanDeployer.addBuiltInBean(new InterceptedBeanMetadataBean(beanManager));
+        beanDeployer.addBuiltInBean(new DecoratedBeanMetadataBean(beanManager));
+        beanDeployer.addBuiltInBean(new InterceptorMetadataBean(beanManager));
+        beanDeployer.addBuiltInBean(new DecoratorMetadataBean(beanManager));
         if (Reflections.isClassLoadable("javax.servlet.ServletContext", beanDeploymentArchive.getServices().get(ResourceLoader.class))) {
             HttpServletRequestBean httpServletRequestBean = new HttpServletRequestBean(beanManager);
-            beanDeployer.getEnvironment().addBuiltInBean(httpServletRequestBean);
-            beanDeployer.getEnvironment().addBuiltInBean(new HttpSessionBean(httpServletRequestBean, beanManager));
-            beanDeployer.getEnvironment().addBuiltInBean(new ServletContextBean(beanManager));
+            beanDeployer.addBuiltInBean(httpServletRequestBean);
+            beanDeployer.addBuiltInBean(new HttpSessionBean(httpServletRequestBean, beanManager));
+            beanDeployer.addBuiltInBean(new ServletContextBean(beanManager));
         }
         if (beanManager.getServices().contains(TransactionServices.class)) {
-            beanDeployer.getEnvironment().addBuiltInBean(new UserTransactionBean(beanManager));
+            beanDeployer.addBuiltInBean(new UserTransactionBean(beanManager));
         }
         if (beanManager.getServices().contains(SecurityServices.class)) {
-            beanDeployer.getEnvironment().addBuiltInBean(new PrincipalBean(beanManager));
+            beanDeployer.addBuiltInBean(new PrincipalBean(beanManager));
         }
         if (beanManager.getServices().contains(ValidationServices.class)) {
-            beanDeployer.getEnvironment().addBuiltInBean(new DefaultValidatorBean(beanManager));
-            beanDeployer.getEnvironment().addBuiltInBean(new DefaultValidatorFactoryBean(beanManager));
+            beanDeployer.addBuiltInBean(new DefaultValidatorBean(beanManager));
+            beanDeployer.addBuiltInBean(new DefaultValidatorFactoryBean(beanManager));
         }
         // Register the context beans
         for (ContextHolder<? extends Context> context : contexts) {
-            beanDeployer.getEnvironment().addBuiltInBean(ContextBean.of(context, beanManager));
+            beanDeployer.addBuiltInBean(ContextBean.of(context, beanManager));
         }
 
         BeansClosure closure = BeansClosure.getClosure(beanManager);
