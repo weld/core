@@ -17,8 +17,6 @@
 
 package org.jboss.weld.interceptor.proxy;
 
-import java.lang.reflect.Constructor;
-
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
 import org.jboss.weld.interceptor.spi.instance.InterceptorInstantiator;
@@ -44,17 +42,6 @@ public class InterceptorProxyCreatorImpl implements InterceptorProxyCreator {
     public <T> MethodHandler createSubclassingMethodHandler(Object targetInstance, ClassMetadata<T> proxyClass) {
         return new InterceptorMethodHandler(targetInstance, proxyClass, interceptionModel, interceptorInstantiator, invocationContextFactory);
     }
-
-    private <T> Constructor<T> getNoArgConstructor(Class<T> clazz) {
-        Constructor<T> constructor;
-        try {
-            constructor = clazz.getConstructor(new Class[]{});
-        } catch (NoSuchMethodException e) {
-            return null;
-        }
-        return constructor;
-    }
-
 }
 
 
