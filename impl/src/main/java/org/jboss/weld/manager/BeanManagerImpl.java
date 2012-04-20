@@ -1269,7 +1269,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <X> FieldInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedField<X> field, Bean<?> bean) {
         return createInjectionPoint(services.get(MemberTransformer.class).<X, EnhancedAnnotatedField<?, X>>loadEnhancedMember(field), bean);
-    }    
+    }
 
     public <T, X> FieldInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
         return InferingFieldInjectionPointAttributes.of(field, bean, this);
