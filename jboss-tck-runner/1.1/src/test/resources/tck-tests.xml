@@ -78,12 +78,6 @@
                     <exclude name="testDecoratorInvokesDelegateMethodOutsideOfBusinessMethodInterception" />
                 </methods>
             </class>
-            <!-- WELD-997 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.interceptors.custom.CustomInterceptorInvocationTest">
-                <methods>
-                    <exclude name="testCustomInterceptorInvocation" />
-                </methods>
-            </class>
             <!-- WELD-993 --> 
             <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.WebServiceResourceTest">
                 <methods>
