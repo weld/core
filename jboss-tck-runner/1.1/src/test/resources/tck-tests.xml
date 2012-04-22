@@ -197,12 +197,6 @@
                     <exclude name="testObtainingInjectionTargetWithDefinitionError"/>
                 </methods>
             </class>
-            <!-- WELD-1097 -->
-            <class name="org.jboss.cdi.tck.tests.event.eventTypes.EventTypesTest">
-                <methods>
-                    <exclude name="testEventTypeIsArray"/>
-                </methods>
-            </class>
             <!-- WELD-1103 -->
             <class name="org.jboss.cdi.tck.tests.implementation.builtin.broken.transaction.UserTransactionInvalidInjectionTest">
                 <methods>
