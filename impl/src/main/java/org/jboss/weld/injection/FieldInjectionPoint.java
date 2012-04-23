@@ -45,6 +45,7 @@ import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.TypeVariableResolver;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
@@ -57,6 +58,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
     private final boolean delegate;
     private final boolean cacheable;
     private Bean<?> cachedBean;
+    private Type type;
 
 
     public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldField<T, X> field) {
@@ -155,7 +157,10 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
     }
 
     public Type getType() {
-        return getBaseType();
+        if (type == null) {
+            type = TypeVariableResolver.resolveVariables(getBean(), getBaseType());
+        }
+        return type;
     }
 
     public Member getMember() {
