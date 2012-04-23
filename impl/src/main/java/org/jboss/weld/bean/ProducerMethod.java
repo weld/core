@@ -55,7 +55,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     // The underlying method
     private MethodInjectionPoint<T, ? super X> method;
     private ProducerMethod<?, ?> specializedBean;
-    private final String id;
     private final boolean proxiable;
 
     private volatile EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod;
@@ -73,8 +72,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     }
 
     protected ProducerMethod(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(attributes, new StringBuilder().append(ProducerMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getEnhancedAnnotated().getName()).append(".").append(method.getSignature().toString()).toString(), declaringBean, beanManager, services);
-        this.id = createId(method, declaringBean);
+        super(attributes, createId(method, declaringBean), declaringBean, beanManager, services);
         this.enhancedAnnotatedMethod = method;
         this.method = MethodInjectionPoint.of(method, this, beanManager);
         initType();
@@ -82,7 +80,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
     }
 
-    protected String createId(EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
+    protected static <T, X> String createId(EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
             StringBuilder sb = new StringBuilder();
             sb.append(BEAN_ID_PREFIX);
@@ -202,11 +200,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             throw new IllegalStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
         }
         this.specializedBean = check;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     @Override
