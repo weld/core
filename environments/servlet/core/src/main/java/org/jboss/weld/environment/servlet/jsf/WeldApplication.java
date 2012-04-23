@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
-import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
-import org.jboss.weld.environment.servlet.util.Reflections;
-import org.jboss.weld.environment.servlet.util.TransparentELResolver;
-
 import javax.el.ELContextListener;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
@@ -28,11 +24,17 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
+import org.jboss.weld.environment.servlet.portlet.PortletSupport;
+import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
+import org.jboss.weld.environment.servlet.util.Reflections;
+import org.jboss.weld.environment.servlet.util.TransparentELResolver;
+
 import static org.jboss.weld.environment.servlet.Listener.BEAN_MANAGER_ATTRIBUTE_NAME;
 
 /**
  * @author Pete Muir
  * @author Dan Allen
+ * @author Ales Justin
  */
 public class WeldApplication extends ForwardingApplication {
     /**
@@ -103,22 +105,23 @@ public class WeldApplication extends ForwardingApplication {
             boolean notFound = false;
             try {
                 if (obj instanceof ServletContext) {
-                    ServletContext ctx = (ServletContext) obj;
-                    if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null) {
+                    final ServletContext ctx = (ServletContext) obj;
+                    final BeanManager tmp = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+                    if (tmp == null) {
                         return null;
                     }
-                    this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
-                } else if (obj instanceof javax.portlet.PortletContext) {
-                    javax.portlet.PortletContext ctx = (javax.portlet.PortletContext) obj;
-                    if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null) {
+                    this.beanManager = tmp;
+                } else if (PortletSupport.isPortletEnvSupported() && PortletSupport.isPortletContext(obj)) {
+                    final BeanManager tmp = PortletSupport.getBeanManager(obj);
+                    if (tmp == null) {
                         return null;
                     }
-                    this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+                    this.beanManager = tmp;
                 } else {
                     notFound = true;
                 }
             } catch (Throwable t) {
-                throw new IllegalStateException("Not in a servlet or portlet environment!", t);
+                throw new IllegalStateException("Exception fetching BeanManager instance!", t);
             }
             if (notFound)
                 throw new IllegalStateException("Not in a servlet or portlet environment!");
