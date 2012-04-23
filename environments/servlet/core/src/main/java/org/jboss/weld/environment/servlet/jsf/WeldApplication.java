@@ -99,16 +99,30 @@ public class WeldApplication extends ForwardingApplication {
     private BeanManager beanManager() {
         FacesContext facesContext;
         if (beanManager == null && (facesContext = FacesContext.getCurrentInstance()) != null) {
-            if (!(facesContext.getExternalContext().getContext() instanceof ServletContext)) {
-                throw new IllegalStateException("Not in a servlet environment!");
+            Object obj = facesContext.getExternalContext().getContext();
+            boolean notFound = false;
+            try {
+                if (obj instanceof ServletContext) {
+                    ServletContext ctx = (ServletContext) obj;
+                    if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null) {
+                        return null;
+                    }
+                    this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+                } else if (obj instanceof javax.portlet.PortletContext) {
+                    javax.portlet.PortletContext ctx = (javax.portlet.PortletContext) obj;
+                    if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null) {
+                        return null;
+                    }
+                    this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+                } else {
+                    notFound = true;
+                }
+            } catch (Throwable t) {
+                throw new IllegalStateException("Not in a servlet or portlet environment!", t);
             }
-            ServletContext ctx = (ServletContext) facesContext.getExternalContext().getContext();
-            if (ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME) == null) {
-                return null;
-            }
-            this.beanManager = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+            if (notFound)
+                throw new IllegalStateException("Not in a servlet or portlet environment!");
         }
-
         return beanManager;
     }
 
