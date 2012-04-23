@@ -30,6 +30,7 @@ import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedTypeImpl;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.testng.Assert;
@@ -49,7 +50,7 @@ public class AnnotatedTypesTest {
     public void testComparison() throws SecurityException, NoSuchFieldException, NoSuchMethodException {
         //check that two weld classes on the same underlying are equal
         TypeStore ts = new TypeStore();
-        ClassTransformer ct = new ClassTransformer(ts);
+        ClassTransformer ct = new ClassTransformer(ts, new SharedObjectCache());
         EnhancedAnnotatedType<Chair> chair1 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct), ct);
         EnhancedAnnotatedType<Chair> chair2 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct), ct);
         Assert.assertTrue(AnnotatedTypes.compareAnnotatedTypes(chair1, chair2));

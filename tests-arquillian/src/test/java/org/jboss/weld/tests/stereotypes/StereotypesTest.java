@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,7 @@ public class StereotypesTest {
                 .addPackage(StereotypesTest.class.getPackage());
     }
 
-    private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
+    private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache());
 
     @Test
     public void testAnimalStereotype() {

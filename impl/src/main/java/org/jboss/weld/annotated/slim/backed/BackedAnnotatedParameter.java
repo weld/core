@@ -14,6 +14,7 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -21,16 +22,16 @@ import com.google.common.collect.ImmutableSet;
 
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, Serializable {
 
-    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable) {
-        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable);
+    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, SharedObjectCache cache) {
+        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable, cache);
     }
 
     private final int position;
     private final AnnotatedCallable<X> declaringCallable;
     private transient Set<Annotation> annotations;
 
-    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable) {
-        super(baseType);
+    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, SharedObjectCache cache) {
+        super(baseType, cache);
         this.position = position;
         this.declaringCallable = declaringCallable;
         this.annotations = SharedObjectFacade.wrap(ImmutableSet.copyOf(annotations));

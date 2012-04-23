@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +67,7 @@ public class SimpleInterceptorTest {
     @Test
     public void testInterceptorModel() {
         InterceptorBindingModel<SecondaryInterceptionBinding> interceptorBindingModel
-                = new InterceptorBindingModel<SecondaryInterceptionBinding>(new ClassTransformer(new TypeStore()).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
+                = new InterceptorBindingModel<SecondaryInterceptionBinding>(new ClassTransformer(new TypeStore(), new SharedObjectCache()).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
         Set<Annotation> annotations = interceptorBindingModel.getInheritedInterceptionBindingTypes();
         assert annotations.size() != 0;
     }

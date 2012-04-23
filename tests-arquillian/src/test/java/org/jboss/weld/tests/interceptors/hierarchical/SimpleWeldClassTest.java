@@ -30,6 +30,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.util.Beans;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class SimpleWeldClassTest {
     @Category(Broken.class)
     @Test
     public void testWeldClassForCovariantReturnType() {
-        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(new TypeStore()).getEnhancedAnnotatedType(Attacker.class);
+        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(new TypeStore(), new SharedObjectCache()).getEnhancedAnnotatedType(Attacker.class);
         Collection<EnhancedAnnotatedMethod<?, ? super Attacker>> methods = weldClass.getEnhancedMethods();
         Assert.assertEquals(4, methods.size());
         List<EnhancedAnnotatedMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);

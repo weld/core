@@ -20,6 +20,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -27,16 +28,16 @@ import com.google.common.collect.ImmutableSet;
 
 public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implements AnnotatedMethod<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType) {
+    public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
-        return new BackedAnnotatedMethod<X>(method, downcastDeclaringType);
+        return new BackedAnnotatedMethod<X>(method, downcastDeclaringType, cache);
     }
 
     private final Method method;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public BackedAnnotatedMethod(Method method, BackedAnnotatedType<X> declaringType) {
-        super(method.getGenericReturnType(), declaringType);
+    public BackedAnnotatedMethod(Method method, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
+        super(method.getGenericReturnType(), declaringType, cache);
         this.method = method;
 
         final Type[] genericParameterTypes = method.getGenericParameterTypes();
@@ -46,7 +47,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         for (int i = 0; i < genericParameterTypes.length; i++) {
             Type parameterType = genericParameterTypes[i];
-            parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this));
+            parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this, cache));
         }
         this.parameters = immutableList(parameters);
     }

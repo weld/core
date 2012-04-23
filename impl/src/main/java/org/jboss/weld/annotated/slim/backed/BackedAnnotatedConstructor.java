@@ -20,6 +20,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.ConstructorHolder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -28,15 +29,15 @@ import com.google.common.collect.ImmutableSet;
 
 public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> implements AnnotatedConstructor<X>, Serializable {
 
-    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType) {
-        return new BackedAnnotatedConstructor<X>(constructor, declaringType);
+    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
+        return new BackedAnnotatedConstructor<X>(constructor, declaringType, cache);
     }
 
     private final Constructor<X> constructor;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType) {
-        super(constructor.getDeclaringClass(), declaringType);
+    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
+        super(constructor.getDeclaringClass(), declaringType, cache);
         this.constructor = constructor;
 
         final Class<?>[] parameterTypes = constructor.getParameterTypes();
@@ -59,7 +60,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
                     parameterType = clazz;
                     position = i;
                 }
-                parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this));
+                parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this, cache));
             }
             this.parameters = immutableList(parameters);
         } else {

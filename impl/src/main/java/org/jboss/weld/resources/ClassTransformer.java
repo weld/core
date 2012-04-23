@@ -135,8 +135,9 @@ public class ClassTransformer implements Service {
     private final ConcurrentMap<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
     private final ConcurrentMap<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
     private final TypeStore typeStore;
+    private final SharedObjectCache cache;
 
-    public ClassTransformer(TypeStore typeStore) {
+    public ClassTransformer(TypeStore typeStore, SharedObjectCache cache) {
         MapMaker defaultMaker = new MapMaker();
         MapMaker weakValuesMaker = new MapMaker().weakValues();
         // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop it immediately
@@ -146,6 +147,7 @@ public class ClassTransformer implements Service {
         this.enhancedAnnotatedTypes = defaultMaker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = defaultMaker.makeComputingMap(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
+        this.cache = cache;
     }
 
     // Slim AnnotatedTypes
@@ -215,6 +217,10 @@ public class ClassTransformer implements Service {
 
     public TypeStore getTypeStore() {
         return typeStore;
+    }
+
+    public SharedObjectCache getSharedObjectCache() {
+        return cache;
     }
 
     public void cleanupAfterBoot() {

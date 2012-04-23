@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.resolution;
 
+import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
+
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedTypeImpl;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
@@ -41,8 +42,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
-
 public class AccessibleManagerResolutionTest {
 
     private ClassTransformer classTransformer;
@@ -50,7 +49,7 @@ public class AccessibleManagerResolutionTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        this.classTransformer = new ClassTransformer(new TypeStore());
+        this.classTransformer = new ClassTransformer(new TypeStore(), new SharedObjectCache());
         this.services = new SimpleServiceRegistry();
         this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         this.services.add(ContextualStore.class, new ContextualStoreImpl());

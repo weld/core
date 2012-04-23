@@ -48,10 +48,9 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private final ClassTransformer transformer;
 
     public BackedAnnotatedType(Class<X> rawType, Type baseType, ClassTransformer classTransformer) {
-        super(baseType);
+        super(baseType, classTransformer.getSharedObjectCache());
         this.javaClass = rawType;
         this.transformer = classTransformer;
-        // TODO this all should be initialized lazily so that we can serialize the AnnotatedType
 
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
@@ -171,7 +170,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ArraySet<AnnotatedConstructor<X>> constructors = new ArraySet<AnnotatedConstructor<X>>(declaredConstructors.length);
             for (Constructor<?> constructor : declaredConstructors) {
                 Constructor<X> c = Reflections.cast(constructor);
-                constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this));
+                constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this, transformer.getSharedObjectCache()));
             }
             return immutableSet(constructors);
         }
@@ -184,7 +183,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Field field : SecureReflections.getDeclaredFields(clazz)) {
-                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, transformer)));
+                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, transformer), transformer.getSharedObjectCache()));
                 }
                 clazz = clazz.getSuperclass();
             }
@@ -199,7 +198,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Method method : SecureReflections.getDeclaredMethods(clazz)) {
-                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, transformer)));
+                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, transformer), transformer.getSharedObjectCache()));
                 }
                 clazz = clazz.getSuperclass();
             }

@@ -16,6 +16,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.FieldHolder;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -23,15 +24,15 @@ import com.google.common.collect.ImmutableSet;
 
 public class BackedAnnotatedField<X> extends BackedAnnotatedMember<X> implements AnnotatedField<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedField<X> of(Field field, BackedAnnotatedType<Y> declaringType) {
+    public static <X, Y extends X> AnnotatedField<X> of(Field field, BackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
-        return new BackedAnnotatedField<X>(field.getGenericType(), field, downcastDeclaringType);
+        return new BackedAnnotatedField<X>(field.getGenericType(), field, downcastDeclaringType, cache);
     }
 
     private final Field field;
 
-    public BackedAnnotatedField(Type baseType, Field field, BackedAnnotatedType<X> declaringType) {
-        super(baseType, declaringType);
+    public BackedAnnotatedField(Type baseType, Field field, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
+        super(baseType, declaringType, cache);
         this.field = field;
     }
 

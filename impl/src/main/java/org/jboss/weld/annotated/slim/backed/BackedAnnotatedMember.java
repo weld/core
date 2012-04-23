@@ -5,14 +5,15 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.Reflections;
 
 public abstract class BackedAnnotatedMember<X> extends BackedAnnotated implements AnnotatedMember<X> {
 
     private BackedAnnotatedType<X> declaringType;
 
-    public BackedAnnotatedMember(Type baseType, BackedAnnotatedType<X> declaringType) {
-        super(baseType);
+    public BackedAnnotatedMember(Type baseType, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
+        super(baseType, cache);
         this.declaringType = declaringType;
     }
 
