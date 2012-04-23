@@ -48,6 +48,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.TypeVariableResolver;
 
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
@@ -66,6 +67,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTI
  * </p>
  *
  * @author David Allen
+ * @author Marko Luksa
  */
 public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
@@ -98,11 +100,12 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
         this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
-        this.eventType = observerMethod.getAnnotatedParameters(Observes.class).get(0).getBaseType();
-        this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
-        this.bindings = new HashSet<Annotation>(observerMethod.getAnnotatedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
-        Observes observesAnnotation = observerMethod.getAnnotatedParameters(Observes.class).get(0).getAnnotation(Observes.class);
-        this.reception = observesAnnotation.notifyObserver();
+
+        WeldParameter<?, ? super X> eventArgument = observerMethod.getAnnotatedParameters(Observes.class).get(0);
+        this.eventType = TypeVariableResolver.resolveVariables(declaringBean, eventArgument.getBaseType());
+        this.id = ID_PREFIX + ID_SEPARATOR + /*manager.getId() + ID_SEPARATOR +*/ ObserverMethod.class.getSimpleName() + ID_SEPARATOR + declaringBean.getBeanClass().getName() + "." + observer.getSignature();
+        this.bindings = new HashSet<Annotation>(eventArgument.getMetaAnnotations(Qualifier.class));
+        this.reception = eventArgument.getAnnotation(Observes.class).notifyObserver();
         transactionPhase = TransactionPhase.IN_PROGRESS;
 
         this.injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
@@ -169,7 +172,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     }
 
     public Annotation[] getBindingsAsArray() {
-        return bindings.toArray(new Annotation[0]);
+        return bindings.toArray(new Annotation[bindings.size()]);
     }
 
     public Reception getReception() {
@@ -221,9 +224,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         } else if (reception.equals(Reception.IF_EXISTS)) {
             Object receiver = getReceiverIfExists();
             // The observer is conditional, and there is no existing bean
-            if (receiver == null) {
-                return;
-            } else {
+            if (receiver != null) {
                 sendEvent(event, receiver, null);
             }
         } else {
@@ -261,11 +262,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected boolean ignore(T event) {
         Class<?> eventType = event.getClass();
         // This is a container lifeycle event, ensure we are firing to an extension
-        if (AbstractContainerEvent.class.isAssignableFrom(eventType) && !lifecycle) {
-            return true;
-        } else {
-            return false;
-        }
+        return !lifecycle && AbstractContainerEvent.class.isAssignableFrom(eventType);
     }
 
     @Override

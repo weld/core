@@ -220,21 +220,6 @@ public class Reflections {
     }
 
     /**
-     * Gets the actual type arguments of a class
-     *
-     * @param clazz The class to examine
-     * @return The type arguments
-     */
-    public static Type[] getActualTypeArguments(Class<?> clazz) {
-        Type type = new HierarchyDiscovery(clazz).getResolvedType();
-        if (type instanceof ParameterizedType) {
-            return ((ParameterizedType) type).getActualTypeArguments();
-        } else {
-            return EMPTY_TYPES;
-        }
-    }
-
-    /**
      * Gets the actual type arguments of a Type
      *
      * @param type The type to examine
