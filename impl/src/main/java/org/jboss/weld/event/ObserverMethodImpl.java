@@ -102,7 +102,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.observerMethod = MethodInjectionPoint.of(declaringBean, observer);
 
         WeldParameter<?, ? super X> eventArgument = observerMethod.getAnnotatedParameters(Observes.class).get(0);
-        this.eventType = eventArgument.getBaseType();
+        this.eventType = TypeVariableResolver.resolveVariables(declaringBean, eventArgument.getBaseType());
         this.id = ID_PREFIX + ID_SEPARATOR + /*manager.getId() + ID_SEPARATOR +*/ ObserverMethod.class.getSimpleName() + ID_SEPARATOR + declaringBean.getBeanClass().getName() + "." + observer.getSignature();
         this.bindings = new HashSet<Annotation>(eventArgument.getMetaAnnotations(Qualifier.class));
         this.reception = eventArgument.getAnnotation(Observes.class).notifyObserver();
