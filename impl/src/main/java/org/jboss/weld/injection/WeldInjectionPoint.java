@@ -17,6 +17,7 @@
 package org.jboss.weld.injection;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.resources.ClassTransformer;
@@ -37,20 +38,24 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
 
         public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint) {
             this.declaringBeanId =
-                    injectionPoint.getBean() == null ? null : Container.instance().services().get(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
+                    injectionPoint.getBean() == null ? null : getService(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
             this.declaringClass = injectionPoint.getDeclaringType().getJavaClass();
         }
 
         protected Bean<T> getDeclaringBean() {
-            return declaringBeanId == null ? null : Container.instance().services().get(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
+            return declaringBeanId == null ? null : getService(ContextualStore.class).<Bean<T>, T>getContextual(declaringBeanId);
         }
 
         protected WeldClass<?> getDeclaringWeldClass() {
-            return Container.instance().services().get(ClassTransformer.class).loadClass(declaringClass);
+            return getService(ClassTransformer.class).loadClass(declaringClass);
         }
 
         protected String getDeclaringBeanId() {
             return declaringBeanId;
+        }
+
+        protected <E extends Service> E getService(Class<E> serviceClass) {
+            return Container.instance().services().get(serviceClass);
         }
 
     }
