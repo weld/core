@@ -84,6 +84,7 @@ import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
@@ -948,13 +949,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        InjectionTarget<T> injectionTarget = new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).loadClass(type), this);
+        InjectionTarget<T> injectionTarget = new SimpleInjectionTarget<T>(loadClass(type), this);
         getServices().get(InjectionTargetValidator.class).addInjectionTarget(injectionTarget);
         return injectionTarget;
     }
 
     private <T> InjectionTarget<T> createMessageDrivenInjectionTarget(AnnotatedType<T> type) {
-        return new MessageDrivenInjectionTarget<T>(getServices().get(ClassTransformer.class).loadClass(type), this);
+        return new MessageDrivenInjectionTarget<T>(loadClass(type), this);
+    }
+
+    private <T> WeldClass<T> loadClass(AnnotatedType<T> type) {
+        return getServices().get(ClassTransformer.class).loadClass(type);
     }
 
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {

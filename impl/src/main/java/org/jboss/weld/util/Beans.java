@@ -74,7 +74,6 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.Enabled;
-import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -187,21 +186,27 @@ public class Beans {
         }
     }
 
-    public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WeldClass<?> type) {
-        List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
-        WeldClass<?> t = type;
-        while (t != null && !t.getJavaClass().equals(Object.class)) {
-            ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
-            injectableFieldsList.add(0, fields);
-            for (WeldField<?, ?> annotatedField : t.getDeclaredWeldFields(Inject.class)) {
-                if (!annotatedField.isStatic()) {
-                    addFieldInjectionPoint(annotatedField, fields, declaringBean);
-                }
-            }
-            fields.trimToSize();
-            t = t.getWeldSuperclass();
+    public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, WeldClass<?> weldClass) {
+        List<Set<FieldInjectionPoint<?, ?>>> list = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
+        while (weldClass != null && !weldClass.getJavaClass().equals(Object.class)) {
+            list.add(0, getDeclaredFieldInjectionPoints(declaringBean, weldClass));
+            weldClass = weldClass.getWeldSuperclass();
         }
-        return injectableFieldsList;
+        return list;
+    }
+
+    private static Set<FieldInjectionPoint<?, ?>> getDeclaredFieldInjectionPoints(Bean<?> declaringBean, WeldClass<?> weldClass) {
+        ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
+        for (WeldField<?, ?> field : weldClass.getDeclaredWeldFields(Inject.class)) {
+            if (!field.isStatic() && !field.isAnnotationPresent(Produces.class)) {
+                if (field.isFinal()) {
+                    throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, field);
+                }
+                fields.add(FieldInjectionPoint.of(declaringBean, field));
+            }
+        }
+        fields.trimToSize();
+        return fields;
     }
 
     public static Set<FieldInjectionPoint<?, ?>> getFieldInjectionPoints(Bean<?> declaringBean, List<? extends Set<? extends FieldInjectionPoint<?, ?>>> fieldInjectionPoints) {
@@ -421,16 +426,6 @@ public class Beans {
             }
         }
         return injectionPoints.trimToSize();
-    }
-
-    private static void addFieldInjectionPoint(WeldField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean) {
-        if (!annotatedField.isAnnotationPresent(Produces.class)) {
-            if (annotatedField.isFinal()) {
-                throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
-            }
-            FieldInjectionPoint<?, ?> fieldInjectionPoint = FieldInjectionPoint.of(declaringBean, annotatedField);
-            injectableFields.add(fieldInjectionPoint);
-        }
     }
 
     /**
