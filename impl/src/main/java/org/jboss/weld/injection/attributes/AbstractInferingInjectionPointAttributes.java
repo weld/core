@@ -32,6 +32,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.TypeVariableResolver;
 
 public abstract class AbstractInferingInjectionPointAttributes<T, S> implements WeldInjectionPointAttributes<T, S>, Serializable {
 
@@ -39,6 +40,7 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
     private final BeanHolder<?> bean;
     private final Set<Annotation> qualifiers;
+    private transient volatile Type type;
 
     public AbstractInferingInjectionPointAttributes(Bean<?> bean, Set<Annotation> qualifiers) {
         this.bean = BeanHolder.of(bean);
@@ -47,7 +49,10 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
     @Override
     public Type getType() {
-        return getAnnotated().getBaseType();
+        if (type == null) {
+            this.type = TypeVariableResolver.resolveVariables(getBean(), getAnnotated().getBaseType());
+        }
+        return type;
     }
 
     @Override
