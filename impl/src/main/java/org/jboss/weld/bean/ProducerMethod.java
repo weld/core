@@ -83,7 +83,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     protected static <T, X> String createId(EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
             StringBuilder sb = new StringBuilder();
-            sb.append(BEAN_ID_PREFIX);
             sb.append(ProducerMethod.class.getSimpleName());
             sb.append(BEAN_ID_SEPARATOR);
             sb.append(declaringBean.getEnhancedAnnotated().getName());
@@ -91,7 +90,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             return sb.toString();
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append(BEAN_ID_PREFIX);
             sb.append(ProducerMethod.class.getSimpleName());
             sb.append(BEAN_ID_SEPARATOR);
             sb.append(AnnotatedTypes.createTypeId(declaringBean.getEnhancedAnnotated()));
