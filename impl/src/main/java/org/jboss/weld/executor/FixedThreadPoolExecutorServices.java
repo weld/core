@@ -21,8 +21,6 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.slf4j.cal10n.LocLogger;
@@ -38,24 +36,6 @@ public class FixedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     private static final int DEFAULT_THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
 
-    /**
-     * Use daemon threads so that Weld does not hang e.g. in a SE environment.
-     */
-    private static class DeamonThreadFactory implements ThreadFactory {
-
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private static final String THREAD_NAME_PREFIX = "weld-worker-";
-        private final ThreadFactory delegate = Executors.defaultThreadFactory();
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = delegate.newThread(r);
-            thread.setDaemon(true);
-            thread.setName(THREAD_NAME_PREFIX + threadNumber.getAndIncrement());
-            return thread;
-        }
-    }
-
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
     private final int threadPoolSize;
 
@@ -67,7 +47,7 @@ public class FixedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     public FixedThreadPoolExecutorServices(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;
-        this.executor = Executors.newFixedThreadPool(threadPoolSize, new DeamonThreadFactory());
+        this.executor = Executors.newFixedThreadPool(threadPoolSize, new DeamonThreadFactory(new ThreadGroup("weld-workers"), "weld-worker-"));
         log.debug(BootstrapMessage.THREADS_IN_USE, threadPoolSize);
     }
 

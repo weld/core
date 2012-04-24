@@ -23,12 +23,11 @@ import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.executor.DeamonThreadFactory;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
@@ -46,23 +45,7 @@ public class ContainerLifecycleEventPreloader implements Service {
     // This is an optional services thus we do not need tasks to finish in order to get a valid deployment
     private static final long SHUTDOWN_TIMEOUT = 1L;
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
-
-    /**
-     * Use daemon threads so that Weld does not hang e.g. in a SE environment.
-     */
-    private static class DeamonThreadFactory implements ThreadFactory {
-
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private static final String THREAD_NAME_PREFIX = "weld-preloader-";
-        private static final ThreadGroup THREAD_GROUP = new ThreadGroup("weld-preloaders");
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = new Thread(THREAD_GROUP, r, THREAD_NAME_PREFIX + threadNumber.getAndIncrement());
-            thread.setDaemon(true);
-            return thread;
-        }
-    }
+    private static final int DEFAULT_THREAD_COUNT = Runtime.getRuntime().availableProcessors() - 1;
 
     private class PreloadingTask implements Callable<Void> {
 
@@ -84,7 +67,11 @@ public class ContainerLifecycleEventPreloader implements Service {
     private final ExecutorService executor;
 
     public ContainerLifecycleEventPreloader() {
-        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1, new DeamonThreadFactory());
+        this(DEFAULT_THREAD_COUNT);
+    }
+
+    public ContainerLifecycleEventPreloader(int threadCount) {
+        this.executor = Executors.newFixedThreadPool(threadCount, new DeamonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
     }
 
     public void preloadContainerLifecycleEvent(BeanManagerImpl manager, Class<?> eventRawType, Type... typeParameters) {
