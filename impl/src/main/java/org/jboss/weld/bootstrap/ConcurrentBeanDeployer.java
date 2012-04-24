@@ -80,68 +80,6 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
         return this;
     }
 
-//    @Override
-//    public void processAnnotatedTypes() {
-//        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AnnotatedType<?>>(getEnvironment().getAnnotatedTypes()) {
-//            protected void doWork(AnnotatedType<?> annotatedType) {
-//                // fire event
-//                boolean synthetic = getEnvironment().getAnnotatedTypeSource(annotatedType) != null;
-//                ProcessAnnotatedTypeImpl<?> event;
-//                if (synthetic) {
-//                    event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType, getEnvironment().getAnnotatedTypeSource(annotatedType));
-//                } else {
-//                    event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType);
-//                }
-//                event.fire();
-//                // process the result
-//                if (event.isVeto()) {
-//                    getEnvironment().vetoAnnotatedType(annotatedType);
-//                } else {
-//                    boolean dirty = event.isDirty();
-//                    if (dirty) {
-//                        getEnvironment().removeAnnotatedType(annotatedType); // remove the original class
-//                        AnnotatedType<?> modifiedType = event.getAnnotatedType();
-//                        if (modifiedType instanceof SlimAnnotatedType<?>) {
-//                            annotatedType = modifiedType;
-//                        } else {
-//                            annotatedType = classTransformer.getAnnotatedType(modifiedType);
-//                        }
-//                    }
-//
-//                    // vetoed due to @Veto or @Requires
-//                    boolean vetoed = Beans.isVetoed(annotatedType);
-//
-//                    if (dirty && !vetoed) {
-//                        getEnvironment().addAnnotatedType(annotatedType); // add a replacement for the removed class
-//                    }
-//                    if (!dirty && vetoed) {
-//                        getEnvironment().vetoAnnotatedType(annotatedType);
-//                    }
-//                }
-//            }
-//        });
-//    }
-//
-//    @Override
-//    protected void processBeanAttributes(Collection<? extends AbstractBean<?, ?>> beans) {
-//        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AbstractBean<?, ?>>(beans) {
-//            protected void doWork(AbstractBean<?, ?> bean) {
-//                // fire ProcessBeanAttributes for class beans
-//                boolean vetoed = fireProcessBeanAttributes(bean);
-//                if (vetoed) {
-//                    if (bean.isSpecializing()) {
-//                        BeansClosure.getClosure(getManager()).removeSpecialized(bean.getSpecializedBean());
-//                        getQueue().add(bean.getSpecializedBean());
-//                    }
-//                    getEnvironment().vetoBean(bean);
-//                } else {
-//                    // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
-//                    getEnvironment().addNewBeansFromInjectionPoints(bean);
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public void createClassBeans() {
         final Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses = Multimaps.newSetMultimap(new ConcurrentHashMap<Class<?>, Collection<AnnotatedType<?>>>(),
