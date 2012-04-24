@@ -420,17 +420,24 @@ public class WeldBootstrap implements Bootstrap {
     }
 
     public Bootstrap validateBeans() {
-        synchronized (this) {
-            log.debug(VALIDATING_BEANS);
-            for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-                BeanManagerImpl beanManager = entry.getValue().getBeanManager();
-                beanManager.getBeanResolver().clear();
-                deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
-                beanManager.getServices().get(InjectionTargetValidator.class).validate();
+        // this try-catch block is an ugly workaround for ARQ-890
+        // TODO remove once we upgrade to a post-1.0.0.CR3 version
+        try {
+            synchronized (this) {
+                log.debug(VALIDATING_BEANS);
+                for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
+                    BeanManagerImpl beanManager = entry.getValue().getBeanManager();
+                    beanManager.getBeanResolver().clear();
+                    deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
+                    beanManager.getServices().get(InjectionTargetValidator.class).validate();
+                }
+                AfterDeploymentValidationImpl.fire(deploymentManager, beanDeployments);
             }
-            AfterDeploymentValidationImpl.fire(deploymentManager, beanDeployments);
+            return this;
+        } catch (RuntimeException e) {
+            ContainerLifecycleEventPreloader.shutdown();
+            throw e;
         }
-        return this;
     }
 
     public Bootstrap endInitialization() {
@@ -477,10 +484,7 @@ public class WeldBootstrap implements Bootstrap {
         }
         ClassTransformer.instance(deploymentManager).cleanupAfterBoot();
         Container.instance().services().get(SharedObjectCache.class).cleanupAfterBoot();
-        ContainerLifecycleEventPreloader preloader = Container.instance().services().get(ContainerLifecycleEventPreloader.class);
-        if (preloader != null) {
-            preloader.cleanup();
-        }
+        ContainerLifecycleEventPreloader.shutdown();
         return this;
     }
 

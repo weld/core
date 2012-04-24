@@ -27,6 +27,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -83,7 +84,7 @@ public class ContainerLifecycleEventPreloader implements Service {
     private final ExecutorService executor;
 
     public ContainerLifecycleEventPreloader() {
-        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new DeamonThreadFactory());
+        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1, new DeamonThreadFactory());
     }
 
     public void preloadContainerLifecycleEvent(BeanManagerImpl manager, Class<?> eventRawType, Type... typeParameters) {
@@ -101,6 +102,13 @@ public class ContainerLifecycleEventPreloader implements Service {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    public static void shutdown() {
+        ContainerLifecycleEventPreloader instance = Container.instance().services().get(ContainerLifecycleEventPreloader.class);
+        if (instance != null) {
+            instance.cleanup();
         }
     }
 }
