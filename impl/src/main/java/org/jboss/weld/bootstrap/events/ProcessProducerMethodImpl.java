@@ -40,14 +40,6 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
         super(beanManager, ProcessProducerMethod.class, new Type[]{bean.getAnnotated().getBaseType(), bean.getAnnotated().getDeclaringType().getBaseType()}, bean);
     }
 
-    public AnnotatedParameter<T> getAnnotatedDisposedParameter() {
-        if (getBean().getDisposalMethod() != null) {
-            return cast(getBean().getDisposalMethod().getDisposesParameter());
-        } else {
-            return null;
-        }
-    }
-
     public AnnotatedMethod<T> getAnnotatedProducerMethod() {
         if (getBean().getAnnotated() != null) {
             return cast(getBean().getAnnotated());

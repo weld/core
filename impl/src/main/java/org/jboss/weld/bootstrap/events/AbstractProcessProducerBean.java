@@ -16,10 +16,13 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.ProcessBean;
 import java.lang.reflect.Type;
 
@@ -44,4 +47,11 @@ public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProduc
         return bean;
     }
 
+    public AnnotatedParameter<T> getAnnotatedDisposedParameter() {
+        if (getBean().getDisposalMethod() != null) {
+            return cast(getBean().getDisposalMethod().getDisposesParameter());
+        } else {
+            return null;
+        }
+    }
 }

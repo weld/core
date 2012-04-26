@@ -16,15 +16,15 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.ProducerField;
-import org.jboss.weld.manager.BeanManagerImpl;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.ProcessProducerField;
 import java.lang.reflect.Type;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.ProcessProducerField;
+
+import org.jboss.weld.bean.ProducerField;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerField<T, X>> implements ProcessProducerField<T, X> {
 
@@ -46,10 +46,4 @@ public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<
             return null;
         }
     }
-
-    public AnnotatedParameter<T> getAnnotatedDisposedParameter() {
-        // TODO
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
 }
