@@ -154,7 +154,7 @@ public class InterceptorMetadataUtils {
             }
             currentClass = currentClass.getSuperclass();
         }
-        while (currentClass != null && !OBJECT_CLASS_NAME.equals(currentClass.getJavaClass()));
+        while (currentClass != null && !OBJECT_CLASS_NAME.equals(currentClass.getJavaClass().getName()));
         return immutableMap(methodMap);
     }
 }
