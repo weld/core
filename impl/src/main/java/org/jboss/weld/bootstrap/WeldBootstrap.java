@@ -282,7 +282,6 @@ public class WeldBootstrap implements Bootstrap {
             deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
             deploymentServices.add(ContextualStore.class, implementationServices.get(ContextualStore.class));
             deploymentServices.add(CurrentInjectionPoint.class, implementationServices.get(CurrentInjectionPoint.class));
-            deploymentServices.add(ContainerLifecycleEventPreloader.class, implementationServices.get(ContainerLifecycleEventPreloader.class));
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
