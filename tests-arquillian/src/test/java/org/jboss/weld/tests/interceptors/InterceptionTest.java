@@ -16,19 +16,17 @@
  */
 package org.jboss.weld.tests.interceptors;
 
+import static org.junit.Assert.assertTrue;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertTrue;
-
 @RunWith(Arquillian.class)
-@Ignore
 public class InterceptionTest {
     @Deployment
     public static Archive<?> deploy() {
@@ -38,7 +36,6 @@ public class InterceptionTest {
     }
 
     @Test
-    // WELD-538
     public void testInterceptors(Ball ball) throws Exception {
         ball.shoot();
         assertTrue(Goalkeeper.called);

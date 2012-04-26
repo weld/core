@@ -44,7 +44,7 @@ public class SubclassConstructorInjectionPointTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("WELD-1118")
     public void testProcessInjectionPointNotFiredMultipleTimes(Foo foo, VerifyingExtension extension) {
         foo.ping();
         assertEquals(1, extension.getInjectionPoints().size());

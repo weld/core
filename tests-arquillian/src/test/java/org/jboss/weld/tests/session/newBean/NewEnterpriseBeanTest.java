@@ -33,10 +33,8 @@ import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.NewLiteral;
-import org.jboss.weld.tests.category.Broken;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -74,7 +72,6 @@ public class NewEnterpriseBeanTest {
     }
 
     @Test
-    @Category(Broken.class)
     public void testNewBeanHasImplementationClassOfInjectionPointType() {
         initNewBean();
         Assert.assertEquals(WrappedEnterpriseBean.class, newEnterpriseBean.getType());

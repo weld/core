@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-@Ignore
+@Ignore("WELD-580")
 public class NoArgInterceptorInvalidContractTest {
 
     // @ShouldThrowException(DefinitionException.class)
@@ -49,8 +49,6 @@ public class NoArgInterceptorInvalidContractTest {
                 .addClasses(Intercept.class, Service.class, ServiceImpl.class, NoArgInterceptor.class);
     }
 
-    //WELD-580
-    @Ignore
     @Test
     public void shouldHaveThrownDefinitionException() throws Exception {
     }

@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
  * @version $Revision: $
  */
 @RunWith(Arquillian.class)
-@Ignore
+@Ignore("WELD-580")
 public class VoidInterceptorInvalidContractTest {
 
     // @ShouldThrowException(DefinitionException.class)

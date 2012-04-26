@@ -61,7 +61,7 @@ public class WebServiceResourceTest {
 	}
 	
 	@Test
-	@Ignore // WELD-1099
+	@Ignore("WELD-1099")
 	public void testWebServiceResourceInvocation() {
 	    assertEquals("ok", translator.translate("hello"));
 	}

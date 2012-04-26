@@ -95,7 +95,7 @@ public class FiringArrayEventTest {
 
     }
 
-    @Ignore
+    @Ignore("CDI-169")
     @Test
     public void testStringListEvent() {
 
