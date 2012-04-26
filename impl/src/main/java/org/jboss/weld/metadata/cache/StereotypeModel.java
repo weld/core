@@ -28,6 +28,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.HashSet;
@@ -158,14 +159,16 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         if (isValid()) {
             if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
                 log.debug(MISSING_TARGET, annotatedAnnotation);
-            } else if (!(
-                    Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD, TYPE) ||
-                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), TYPE) ||
-                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD) ||
-                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), FIELD) ||
-                            Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, TYPE)
-            )) {
-                log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, annotatedAnnotation);
+            } else {
+                ElementType[] elementTypes = annotatedAnnotation.getAnnotation(Target.class).value();
+                if (!(Arrays2.unorderedEquals(elementTypes, METHOD, FIELD, TYPE) ||
+                                Arrays2.unorderedEquals(elementTypes, TYPE) ||
+                                Arrays2.unorderedEquals(elementTypes, METHOD) ||
+                                Arrays2.unorderedEquals(elementTypes, FIELD) ||
+                                Arrays2.unorderedEquals(elementTypes, METHOD, TYPE)
+                )) {
+                    log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, annotatedAnnotation);
+                }
             }
         }
     }
