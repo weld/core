@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.DISPOSE_NOT_FIRST_PARAM;
 import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSE_PARAMS;
@@ -149,9 +148,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     }
 
     private void checkDisposalMethod() {
-        if (!getEnhancedAnnotated().getEnhancedParameters().get(0).isAnnotationPresent(Disposes.class)) {
-            throw new DefinitionException(DISPOSE_NOT_FIRST_PARAM, disposalMethodInjectionPoint);
-        }
         if (getEnhancedAnnotated().getEnhancedParameters(Disposes.class).size() > 1) {
             throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
         }
