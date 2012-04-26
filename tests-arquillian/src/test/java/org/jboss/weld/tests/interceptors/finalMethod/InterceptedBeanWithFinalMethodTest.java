@@ -16,18 +16,17 @@
  */
 package org.jboss.weld.tests.interceptors.finalMethod;
 
+import javax.inject.Inject;
+
 import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.tests.category.Broken;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
 
 @RunWith(Arquillian.class)
 public class InterceptedBeanWithFinalMethodTest {
@@ -49,7 +48,6 @@ public class InterceptedBeanWithFinalMethodTest {
     /*
     * description = "WELD-771"
     */
-    @Category(Broken.class)
     @Test
     public void testFinalMethodInvocationOnInterceptedBean() {
         briefing.performBriefing();

@@ -17,6 +17,11 @@
  */
 package org.jboss.weld.tests.enterprise;
 
+import static org.junit.Assert.assertNotNull;
+
+import javax.ejb.EJBException;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,17 +30,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.ejb.EJBException;
-import javax.inject.Inject;
-
-import static org.junit.Assert.assertNotNull;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -92,7 +91,6 @@ public class EnterpriseBeanTest {
     * description = "WELD-364"
     */
     @Test
-    @Category(Broken.class)
     public void testEJBRemoteInterfacesOkForObservers(Scottish scottish) {
         Feed feed = new Feed();
         beanManager.fireEvent(feed);
@@ -111,7 +109,6 @@ public class EnterpriseBeanTest {
     * description = "WELD-80"
     */
     @Test
-    @Category(Broken.class)
     public void testPassivationOfEjbs(HelloAction action) {
         action.executeRequest();
         Assert.assertEquals("hello", action.getHello());
@@ -122,7 +119,6 @@ public class EnterpriseBeanTest {
     * description = "Simple test for no-interface views"
     */
     @Test
-    @Category(Broken.class)
     public void testNoInterfaceView(Castle castle) {
         castle.ping();
         Assert.assertTrue(castle.isPinged());
@@ -130,7 +126,6 @@ public class EnterpriseBeanTest {
     }
 
     @Test
-    @Category(Broken.class)
     // WELD-492
     // ARQ-258
     public void testImplementsEnterpriesBean(Grault grault) {

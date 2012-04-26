@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.resolution.wbri293;
 
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -23,13 +25,9 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Broken;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
 
 /**
  * @author Jozef Hartinger
@@ -47,7 +45,6 @@ public class ContextualReferenceTest {
     private BeanManagerImpl beanManager;
 
     @Test
-    @Category(Broken.class)
     public void testReferencesEqual() {
         Sheep sheep = Utils.getReference(beanManager, Sheep.class);
         sheep.setAge(10);

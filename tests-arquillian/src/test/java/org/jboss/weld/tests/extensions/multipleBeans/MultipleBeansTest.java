@@ -17,6 +17,9 @@
 package org.jboss.weld.tests.extensions.multipleBeans;
 
 
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,15 +28,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.test.util.annotated.TestAnnotatedTypeBuilder;
-import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
 
 /**
  * Tests that it is possible to add multiple beans with the same java class type
@@ -83,7 +82,6 @@ public class MultipleBeansTest {
      * Even though this is not very useful it should still be possible.
      */
     @Test
-    @Category(Broken.class)
     // WELD-406
     public void testTwoBeansExactlyTheSame() {
         Assert.assertEquals(2, beanManager.getBeans(UselessBean.class).size());

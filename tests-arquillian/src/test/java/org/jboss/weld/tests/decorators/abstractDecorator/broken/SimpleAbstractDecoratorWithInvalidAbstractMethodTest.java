@@ -18,23 +18,22 @@
 package org.jboss.weld.tests.decorators.abstractDecorator.broken;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.tests.category.Broken;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-//@ExpectedDeploymentException(DefinitionException.class)
 @RunWith(Arquillian.class)
 public class SimpleAbstractDecoratorWithInvalidAbstractMethodTest {
     @Deployment
+    @ShouldThrowException(Exception.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .decorate(Frame.class)
@@ -42,8 +41,6 @@ public class SimpleAbstractDecoratorWithInvalidAbstractMethodTest {
     }
 
     @Test
-    @Category(Broken.class)
-    // TODO: needs exception transformer to run in JBAS
     public void testAbstractDecoratorApplied() {
         Assert.assertFalse(false);
     }

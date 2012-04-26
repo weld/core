@@ -24,10 +24,8 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Broken;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -38,6 +36,7 @@ public class EnterpriseBeanProxyTest {
                 .addAsModule(
                         ShrinkWrap.create(JavaArchive.class)
                                 .addPackage(EnterpriseBeanProxyTest.class.getPackage())
+                                .addClass(Utils.class)
                                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 );
     }
@@ -49,7 +48,6 @@ public class EnterpriseBeanProxyTest {
     */
     // Broken due to WELDINT-45
     @Test
-    @Category(Broken.class)
     public void testNoInterfaceView(Mouse mouse) throws Exception {
         Assert.assertTrue(Utils.isProxy(mouse));
         Assert.assertTrue(mouse instanceof Mouse);

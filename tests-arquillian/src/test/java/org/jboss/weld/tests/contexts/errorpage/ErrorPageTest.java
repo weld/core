@@ -17,26 +17,29 @@
 
 package org.jboss.weld.tests.contexts.errorpage;
 
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+
+import junit.framework.Assert;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import junit.framework.Assert;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.tests.category.Broken;
-import org.jboss.weld.tests.category.Integration;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * <p>This test was mostly developed to test the scenario related to WELD-29.  Essentially
@@ -48,6 +51,10 @@ import java.util.Set;
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class ErrorPageTest {
+
+    @ArquillianResource
+    private URL url;
+    
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
@@ -62,7 +69,6 @@ public class ErrorPageTest {
     /*
     * description = "WELD-29"
     */
-    @Category(Broken.class)
     @Test
     public void testActionMethodExceptionDoesNotDestroyContext() throws Exception {
         WebClient client = new WebClient();
@@ -83,8 +89,7 @@ public class ErrorPageTest {
     }
 
     protected String getPath(String page) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + page;
+        return url.toString() + page;
     }
 
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {

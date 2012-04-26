@@ -17,20 +17,20 @@
 
 package org.jboss.weld.tests.event.observer.transactional;
 
+import java.math.BigInteger;
+
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import java.math.BigInteger;
 
 /**
  * Integration tests for Web Bean events.
@@ -55,7 +55,6 @@ public class TransactionalObserversTest {
     private Agent dogAgent;
 
     @Test
-    @Category(Broken.class)
     public void testTransactionalObserverNotifiedImmediatelyWhenNoTransactionInProgress() {
         dog.setCorrectContext(false);
         dog.setCorrectTransactionState(false);
@@ -98,7 +97,6 @@ public class TransactionalObserversTest {
     }
 
     @Test
-    @Category(Broken.class)
     public void testBeforeTransactionCompletionObserver() {
         dog.setCorrectContext(false);
         dog.setCorrectTransactionState(false);
