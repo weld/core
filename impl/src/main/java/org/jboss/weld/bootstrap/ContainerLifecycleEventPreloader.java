@@ -45,7 +45,7 @@ public class ContainerLifecycleEventPreloader implements Service {
     // This is an optional services thus we do not need tasks to finish in order to get a valid deployment
     private static final long SHUTDOWN_TIMEOUT = 1L;
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
-    private static final int DEFAULT_THREAD_COUNT = Runtime.getRuntime().availableProcessors() - 1;
+    private static final int DEFAULT_THREAD_COUNT = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
 
     private class PreloadingTask implements Callable<Void> {
 
