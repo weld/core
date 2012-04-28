@@ -87,12 +87,11 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
      * @throws Throwable if the method invocation fails.
      */
     public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable {
-        if (reference.isRemoved()) {
-            return null;
-        }
         if ("destroy".equals(method.getName()) && Marker.isMarker(0, method, args)) {
             if (stateful) {
-                reference.remove();
+                if(!reference.isRemoved()) {
+                    reference.remove();
+                }
             }
             return null;
         }
