@@ -16,14 +16,24 @@
  */
 package org.jboss.weld.tests.resources.ws;
 
-import javax.enterprise.inject.Produces;
-import javax.xml.ws.WebServiceRef;
+import java.net.URL;
 
-public class ResourceProducer {
-	
-    @True
-	@Produces
-	@WebServiceRef(value=TranslatorEndpointService.class)
-	Translator translator;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebEndpoint;
+import javax.xml.ws.WebServiceClient;
+
+@WebServiceClient(name="TranslatorEndpointService", targetNamespace = "http://ws.resources.tests.weld.jboss.org/")
+public class TranslatorEndpointService extends Service {
+
+    protected TranslatorEndpointService(URL wsdlDocumentLocation, QName serviceName) {
+        super(wsdlDocumentLocation, serviceName);
+    }
+    
+    @WebEndpoint(name="TranslatorPort")
+    public Translator getTranslatorPort() {
+        return super.getPort(Translator.class);
+    }
+
 
 }
