@@ -1,6 +1,8 @@
 package org.jboss.weld.util.reflection;
 
 import javax.enterprise.inject.spi.Bean;
+
+import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -46,7 +48,13 @@ public class TypeVariableResolver {
             return resolveTypeVariable(typeVariable);
         } else if (type instanceof GenericArrayType) {
             GenericArrayType genericArrayType = (GenericArrayType) type;
-            return new GenericArrayTypeImpl(resolveVariablesInType(genericArrayType.getGenericComponentType()));
+            Type resolvedComponentType = resolveVariablesInType(genericArrayType.getGenericComponentType());
+            if (resolvedComponentType instanceof Class) {
+                Class<?> componentClass = (Class<?>) resolvedComponentType;
+                return Array.newInstance(componentClass, 0).getClass();
+            } else {
+                return new GenericArrayTypeImpl(resolvedComponentType);
+            }
         } else {
             return type;
         }
