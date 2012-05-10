@@ -436,7 +436,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         if (isNormalScoped()) {
             for (WeldField<?, ?> field : getWeldAnnotated().getWeldFields()) {
                 if (field.isPublic() && !field.isStatic()) {
-                    throw new DefinitionException(PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED, getWeldAnnotated());
+                    throw new DefinitionException(PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED, field);
                 }
             }
         }
