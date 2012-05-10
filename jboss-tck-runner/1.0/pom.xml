@@ -202,7 +202,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                    <argLine>-Xmx2512m</argLine>
+                    <argLine>-Xmx1024m</argLine>
                     <forkMode>once</forkMode>
                 </configuration>
             </plugin>
@@ -312,7 +312,7 @@
                                 </property>
                                 <property>
                                     <name>jboss.options</name>
-                                    <value>-Xmx2048m -XX:MaxPermSize=512m -enableassertions
+                                    <value>-Xmx1024m -XX:MaxPermSize=512m -enableassertions
                                         -Dorg.jboss.testharness.api.ConfigurationBuilder=org.jboss.jsr299.tck.impl.JSR299PropertiesBasedConfigurationBuilder
                                         -Xdebug -Xnoagent -Djava.compiler=NONE
                                         -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=y
@@ -386,7 +386,7 @@
                                 </property>
                                 <property>
                                     <name>jboss.options</name>
-                                    <value>-Xmx2048m -XX:MaxPermSize=512m -enableassertions
+                                    <value>-Xmx1024m -XX:MaxPermSize=512m -enableassertions
                                         -Dorg.jboss.testharness.api.ConfigurationBuilder=org.jboss.jsr299.tck.impl.JSR299PropertiesBasedConfigurationBuilder
                                     </value>
                                 </property>
