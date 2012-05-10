@@ -96,9 +96,12 @@ public class HierarchyDiscovery {
             } else if (type instanceof GenericArrayType) {
                 GenericArrayType arrayType = (GenericArrayType) type;
                 Type genericComponentType = arrayType.getGenericComponentType();
-                Class<?> arrayClass = Array.newInstance(Reflections.getRawType(genericComponentType), 0).getClass();
-                add(arrayClass, type);
-                discoverFromClass(arrayClass);
+                Class<?> rawComponentType = Reflections.getRawType(genericComponentType);
+                if (rawComponentType != null) {
+                    Class<?> arrayClass = Array.newInstance(rawComponentType, 0).getClass();
+                    add(arrayClass, type);
+                    discoverFromClass(arrayClass);
+                }
             } else {
                 if (type instanceof ParameterizedType) {
                     Type rawType = ((ParameterizedType) type).getRawType();
