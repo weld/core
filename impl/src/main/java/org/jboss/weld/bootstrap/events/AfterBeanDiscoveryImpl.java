@@ -16,12 +16,10 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.CustomDecoratorWrapper;
-import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.manager.BeanManagerImpl;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -29,10 +27,14 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+
+import org.jboss.weld.bean.CustomDecoratorWrapper;
+import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Observers;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery {
 
@@ -69,7 +71,11 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
-        getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
+        BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
+        if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
+            ProcessObserverMethodImpl.fire(manager, observerMethod);
+            manager.addObserver(observerMethod);
+        }
     }
 
 }
