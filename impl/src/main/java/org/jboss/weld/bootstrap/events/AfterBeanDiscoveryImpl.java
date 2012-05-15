@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
+
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -23,6 +25,7 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.bean.WrappedBeanHolder;
 import org.jboss.weld.util.bean.IsolatedForwardingBean;
 import org.jboss.weld.util.bean.IsolatedForwardingDecorator;
@@ -91,6 +94,11 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     }
 
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
+        BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
+        if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
+            ProcessObserverMethodImpl.fire(manager, observerMethod);
+            manager.addObserver(observerMethod);
+        }
         getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
     }
 
