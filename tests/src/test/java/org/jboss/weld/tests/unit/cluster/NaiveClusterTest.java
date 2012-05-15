@@ -139,7 +139,7 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
         // Set a value into Foo1
-        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Foo.class, beanManager1.createCreationalContext(stableBean1));
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
         stable1.getFodder().setAmount(10);
         stable1.getHorse().setName("George");
 
@@ -187,7 +187,7 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
         // Set a value into Foo1
-        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Foo.class, beanManager1.createCreationalContext(stableBean1));
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
         stable1.getFodder().setAmount(10);
         stable1.getHorse().setName("George");
 
