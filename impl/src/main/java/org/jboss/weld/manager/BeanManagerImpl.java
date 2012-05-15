@@ -110,6 +110,7 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.Reflections;
@@ -658,7 +659,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (creationalContext == null) {
             throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
         }
-        if (!Reflections.isAssignableFrom(bean.getTypes(), beanType)) {
+        if (!Reflections.matches(beanType, bean.getTypes())) {
             throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, beanType, bean);
         }
         return getReference(bean, creationalContext, false);
