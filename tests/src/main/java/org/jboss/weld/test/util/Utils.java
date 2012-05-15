@@ -149,9 +149,13 @@ public class Utils {
         return (T) beanManager.getReference(bean, beanType, beanManager.createCreationalContext(bean));
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> T getReference(BeanManager beanManager, Bean<T> bean) {
-        return (T) beanManager.getReference(bean, bean.getBeanClass(), beanManager.createCreationalContext(bean));
+        return getReference(beanManager, bean, bean.getBeanClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getReference(BeanManager beanManager, Bean<T> bean, Type beanType) {
+        return (T) beanManager.getReference(bean, beanType, beanManager.createCreationalContext(bean));
     }
 
     @SuppressWarnings("unchecked")

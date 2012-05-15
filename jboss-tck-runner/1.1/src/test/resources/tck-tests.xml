@@ -73,12 +73,6 @@
                     <exclude name=".*" />
                 </methods>
             </class>
-            <!-- WELD-991 --> 
-            <class name="org.jboss.cdi.tck.tests.lookup.manager.ManagerTest">
-                <methods>
-                    <exclude name="testGetReferenceWithIllegalBeanType" />
-                </methods>
-            </class>
             <!-- WELD-430 -->
             <class name="org.jboss.cdi.tck.tests.decorators.invocation.DecoratorInvocationTest">
                 <methods>

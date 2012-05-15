@@ -53,7 +53,7 @@ public class ReceiverBeanLifecycleTest {
     public void testDependentReceiverInstanceDestroyedAfterProducerFieldInvocation(BeanManager manager) {
         Producer.reset();
 
-        Product1 product = Utils.getReference(manager, Utils.<Product1> getBean(manager, Product1.class));
+        Product1 product = Utils.getReference(manager, Utils.<Product1> getBean(manager, Product1.class), Product1.class);
         assertNotNull(product);
 
         assertTrue(Producer.isDestroyed());
