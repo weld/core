@@ -31,6 +31,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
@@ -67,6 +68,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         this.enhancedAnnotatedMethod = disposalMethod;
         initType(disposalMethod);
         addInjectionPoints(Beans.filterOutSpecialParameterInjectionPoints(disposalMethodInjectionPoint.getParameterInjectionPoints()));
+        checkDisposalMethod();
     }
 
     private void initDisposesParameter() {
@@ -91,7 +93,6 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
     @Override
     public void internalInitialize(BeanDeployerEnvironment environment) {
         super.internalInitialize(environment);
-        checkDisposalMethod();
         initDisposesParameter();
         initMetadataParameters();
     }
@@ -159,6 +160,9 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         }
         if (getEnhancedAnnotated().getAnnotation(Produces.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes", disposalMethodInjectionPoint);
+        }
+        if (getEnhancedAnnotated().getAnnotation(Specializes.class) != null) {
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Specialized", "@Disposes", disposalMethodInjectionPoint);
         }
         if (getDeclaringBean() instanceof SessionBean<?>) {
             boolean methodDeclaredOnTypes = false;
