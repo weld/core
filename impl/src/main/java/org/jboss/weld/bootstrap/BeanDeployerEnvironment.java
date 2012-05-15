@@ -56,6 +56,7 @@ import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.reflection.Reflections;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -187,13 +188,20 @@ public class BeanDeployerEnvironment {
 
     private void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints) {
         for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints) {
-            // FIXME: better check
-            if (injectionPoint.getJavaClass() == Instance.class || injectionPoint.getJavaClass() == Event.class) {
+            Class<?> rawType = Reflections.getRawType(injectionPoint.getType());
+            if (Event.class.equals(rawType)) {
                 continue;
             }
             New _new = injectionPoint.getAnnotation(New.class);
             if (_new.value().equals(New.class)) {
-                addNewBeanFromInjecitonPoint(injectionPoint.getJavaClass(), injectionPoint.getBaseType());
+                if (rawType.equals(Instance.class)) {
+                    // e.g. @Inject @New(ChequePaymentProcessor.class) Instance<PaymentProcessor> chequePaymentProcessor;
+                    // see WELD-975
+                    Type typeParameter = Reflections.getActualTypeArguments(injectionPoint.getType())[0];
+                    addNewBeanFromInjecitonPoint(Reflections.getRawType(typeParameter), typeParameter);
+                } else {
+                    addNewBeanFromInjecitonPoint(rawType, injectionPoint.getType());
+                }
             } else {
                 addNewBeanFromInjecitonPoint(_new.value(), _new.value());
             }
