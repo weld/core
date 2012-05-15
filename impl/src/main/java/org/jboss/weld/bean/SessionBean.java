@@ -17,14 +17,12 @@
 package org.jboss.weld.bean;
 
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
-import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.weld.bean.proxy.EnterpriseProxyFactory;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -45,7 +43,6 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
@@ -294,7 +291,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         try {
             T instance = SecureReflections.newInstance(proxyClass);
             creationalContext.push(instance);
-            ProxyFactory.setBeanInstance(instance, new EnterpriseTargetBeanInstance(getWeldAnnotated().getJavaClass(), new EnterpriseBeanProxyMethodHandler<T>(SessionBean.this, creationalContext)), this);
+            ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(creationalContext), this);
             if (hasDecorators()) {
                 instance = applyDecorators(instance, creationalContext, null);
             }
@@ -309,24 +306,16 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     }
 
+    private EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance(CreationalContext<T> creationalContext) {
+        return new EnterpriseTargetBeanInstance(
+            getWeldAnnotated().getJavaClass(),
+            new EnterpriseBeanProxyMethodHandler<T>(this, creationalContext));
+    }
+
     @Override
     protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
-        assert hasDecorators() : "Bean does not have decorators";
         //for EJBs, we apply decorators through a proxy
-        T proxy = null;
-        TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getServices().get(ContextualStore.class), getDecorators());
-        DecorationHelper.push(decorationHelper);
-        try {
-            proxy = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
-        } finally {
-            DecorationHelper.pop();
-        }
-
-        if (proxy == null) {
-            throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
-        }
-        return proxy;
+        return getOuterDelegate(instance, creationalContext, originalInjectionPoint);
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {

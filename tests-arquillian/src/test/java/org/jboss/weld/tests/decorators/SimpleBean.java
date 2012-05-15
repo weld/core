@@ -30,4 +30,6 @@ public interface SimpleBean {
     int echo4(int i);
 
     boolean isInvoked();
+
+    void resetInvokedFlag();
 }

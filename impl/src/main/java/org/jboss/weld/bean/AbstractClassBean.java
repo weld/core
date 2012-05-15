@@ -208,22 +208,30 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
+        T outerDelegate = getOuterDelegate(instance, creationalContext, originalInjectionPoint);
+        registerOuterDecorator((ProxyObject) instance, outerDelegate);
+        return instance;
+    }
+
+    protected T getOuterDelegate(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint) {
         assert hasDecorators() : "Bean does not have decorators";
         TargetBeanInstance beanInstance = new TargetBeanInstance(this, instance);
         DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, this, decoratorProxyFactory.getProxyClass(), beanManager, getContextualStore(), decorators);
         DecorationHelper.push(decorationHelper);
-        final T outerDelegate;
         try {
-            outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+            final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+            if (outerDelegate == null) {
+                throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
+            }
+            return outerDelegate;
         } finally {
             DecorationHelper.pop();
         }
-        if (outerDelegate == null) {
-            throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
-        }
-        CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
+    }
+
+    private void registerOuterDecorator(ProxyObject instance, T outerDelegate) {
+        CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) instance.getHandler();
         wrapperMethodHandler.setOuterDecorator(outerDelegate);
-        return instance;
     }
 
     public List<Decorator<?>> getDecorators() {
