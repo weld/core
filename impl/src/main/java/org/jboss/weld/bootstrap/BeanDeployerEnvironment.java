@@ -314,14 +314,20 @@ public class BeanDeployerEnvironment {
 
     public void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints) {
         for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints) {
-            // FIXME: better check
             Class<?> rawType = Reflections.getRawType(injectionPoint.getType());
-            if (Instance.class.equals(rawType) || Event.class.equals(rawType)) {
+            if (Event.class.equals(rawType)) {
                 continue;
             }
             New _new = injectionPoint.getQualifier(New.class);
             if (_new.value().equals(New.class)) {
-                addNewBeanFromInjecitonPoint(rawType, injectionPoint.getType());
+                if (rawType.equals(Instance.class)) {
+                    // e.g. @Inject @New(ChequePaymentProcessor.class) Instance<PaymentProcessor> chequePaymentProcessor;
+                    // see WELD-975
+                    Type typeParameter = Reflections.getActualTypeArguments(injectionPoint.getType())[0];
+                    addNewBeanFromInjecitonPoint(Reflections.getRawType(typeParameter), typeParameter);
+                } else {
+                    addNewBeanFromInjecitonPoint(rawType, injectionPoint.getType());
+                }
             } else {
                 addNewBeanFromInjecitonPoint(_new.value(), _new.value());
             }
