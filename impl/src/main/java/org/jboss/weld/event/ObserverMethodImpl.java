@@ -104,7 +104,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.declaringBean = declaringBean;
         this.observerMethod = MethodInjectionPoint.ofObserverOrDisposerMethod(observer, declaringBean, manager);
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
-        this.eventType = TypeVariableResolver.resolveVariables(declaringBean, eventParameter.getBaseType());
+        this.eventType = TypeVariableResolver.resolveVariables(declaringBean.getBeanClass(), eventParameter.getBaseType());
         this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
         this.bindings = manager.getServices().get(SharedObjectCache.class).getSharedSet(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
         Observes observesAnnotation = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);

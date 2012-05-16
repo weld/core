@@ -1269,11 +1269,19 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> FieldInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedField<X> field, Bean<?> bean) {
-        return createInjectionPoint(services.get(MemberTransformer.class).<X, EnhancedAnnotatedField<?, X>>loadEnhancedMember(field), bean);
+        if (bean == null) {
+            return createInjectionPoint(field, bean, field.getDeclaringType().getJavaClass());
+        } else {
+            return createInjectionPoint(field, bean, bean.getBeanClass());
+        }
     }
 
-    public <T, X> FieldInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedField<T, X> field, Bean<?> bean) {
-        return InferingFieldInjectionPointAttributes.of(field, bean, this);
+    public <X> FieldInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedField<X> field, Bean<?> bean, Class<?> declaringComponentClass) {
+        return createInjectionPoint(services.get(MemberTransformer.class).<X, EnhancedAnnotatedField<?, X>>loadEnhancedMember(field), bean, declaringComponentClass);
+    }
+
+    public <T, X> FieldInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass) {
+        return InferingFieldInjectionPointAttributes.of(field, bean, declaringComponentClass, this);
     }
 
     @Override
@@ -1282,11 +1290,19 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> ParameterInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedParameter<X> parameter, Bean<?> bean) {
-        return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean);
+        if (bean == null) {
+            return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean, parameter.getDeclaringCallable().getDeclaringType().getJavaClass());
+        } else {
+            return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean, bean.getBeanClass());
+        }
     }
 
-    public <T, X> ParameterInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean) {
-        return InferingParameterInjectionPointAttributes.of(parameter, bean, this);
+    public <X> ParameterInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedParameter<X> parameter, Bean<?> bean, Class<?> declaringComponentClass) {
+        return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean, declaringComponentClass);
+    }
+
+    public <T, X> ParameterInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass) {
+        return InferingParameterInjectionPointAttributes.of(parameter, bean, declaringComponentClass, this);
     }
 
     @Override

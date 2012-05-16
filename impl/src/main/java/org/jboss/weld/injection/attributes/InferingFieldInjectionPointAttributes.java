@@ -43,14 +43,14 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
 
     private static final long serialVersionUID = -3099189770772787108L;
 
-    public static <T, X> InferingFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean, BeanManagerImpl manager) {
-        return new InferingFieldInjectionPointAttributes<T, X>(field, bean, manager);
+    public static <T, X> InferingFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        return new InferingFieldInjectionPointAttributes<T, X>(field, bean, declaringComponentClass, manager);
     }
 
     private final AnnotatedField<X> field;
 
-    protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean, BeanManagerImpl manager) {
-        super(bean, SharedObjectCache.instance(manager).getSharedSet(field.getQualifiers()));
+    protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        super(bean, SharedObjectCache.instance(manager).getSharedSet(field.getQualifiers()), declaringComponentClass);
         this.field = field.slim();
     }
 

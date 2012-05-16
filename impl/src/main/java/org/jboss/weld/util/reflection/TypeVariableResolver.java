@@ -24,16 +24,8 @@ public class TypeVariableResolver {
         this.beanClass = beanClass;
     }
 
-    public static Type resolveVariables(Bean<?> bean, Type type) {
-        if (bean == null) {
-            // bean is null when we're dealing with an InjectionTarget created through BeanManager.createInjectionTarget()
-            // we can't resolve variables since we're missing critical info, thus we simply return the original type for now
-            return type;
-        }
-        if (bean.getBeanClass() == null) {
-            throw new IllegalArgumentException("Bean " + bean + " has null beanClass!");
-        }
-        return new TypeVariableResolver(bean.getBeanClass()).resolveVariablesInType(type);
+    public static Type resolveVariables(Class<?> componentClass, Type type) {
+        return new TypeVariableResolver(componentClass).resolveVariablesInType(type);
     }
 
     public Type resolveVariablesInType(Type type) {

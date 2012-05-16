@@ -40,19 +40,21 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
     private final BeanHolder<?> bean;
     private final Set<Annotation> qualifiers;
-    private transient volatile Type type;
+    private final TypeAttribute typeAttribute;
 
-    public AbstractInferingInjectionPointAttributes(Bean<?> bean, Set<Annotation> qualifiers) {
+    public AbstractInferingInjectionPointAttributes(Bean<?> bean, Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
         this.bean = BeanHolder.of(bean);
         this.qualifiers = qualifiers;
+        if (bean == null) {
+            this.typeAttribute = new NonContextualInjectionPointTypeAttribute(declaringComponentClass);
+        } else {
+            this.typeAttribute = new BeanInjectionPointTypeAttribute();
+        }
     }
 
     @Override
     public Type getType() {
-        if (type == null) {
-            this.type = TypeVariableResolver.resolveVariables(getBean(), getAnnotated().getBaseType());
-        }
-        return type;
+        return typeAttribute.getType();
     }
 
     @Override
@@ -90,6 +92,45 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
             return qualifier;
         } else {
             return null;
+        }
+    }
+
+    private abstract class TypeAttribute implements Serializable {
+        private static final long serialVersionUID = -4558590047874880757L;
+
+        private transient volatile Type type;
+
+        public Type getType() {
+            if (type == null) {
+                this.type = resolveType();
+            }
+            return type;
+        }
+
+        protected abstract Type resolveType();
+    }
+
+    private class BeanInjectionPointTypeAttribute extends TypeAttribute {
+        private static final long serialVersionUID = 6927120066961769765L;
+
+        @Override
+        protected Type resolveType() {
+            return TypeVariableResolver.resolveVariables(getBean().getBeanClass(), getAnnotated().getBaseType());
+        }
+    }
+
+    private class NonContextualInjectionPointTypeAttribute extends TypeAttribute {
+        private static final long serialVersionUID = 1870361474843082321L;
+
+        private Class<?> componentClass;
+
+        public NonContextualInjectionPointTypeAttribute(Class<?> componentClass) {
+            this.componentClass = componentClass;
+        }
+
+        @Override
+        protected Type resolveType() {
+            return TypeVariableResolver.resolveVariables(componentClass, getAnnotated().getBaseType());
         }
     }
 }

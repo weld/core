@@ -42,14 +42,14 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
 
     private static final long serialVersionUID = 1237037554422642608L;
 
-    public static <T, X> InferingParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, BeanManagerImpl manager) {
-        return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean, manager);
+    public static <T, X> InferingParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean, declaringComponentClass, manager);
     }
 
     private final AnnotatedParameter<X> parameter;
 
-    protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, BeanManagerImpl manager) {
-        super(bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()));
+    protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        super(bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
         this.parameter = parameter.slim();
     }
 
