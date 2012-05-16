@@ -154,7 +154,6 @@ import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.Reflections;
@@ -1268,46 +1267,20 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return SyntheticBeanFactory.create(attributes, beanClass, producer, this);
     }
 
-    public <X> FieldInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedField<X> field, Bean<?> bean) {
-        if (bean == null) {
-            return createInjectionPoint(field, bean, field.getDeclaringType().getJavaClass());
-        } else {
-            return createInjectionPoint(field, bean, bean.getBeanClass());
-        }
-    }
-
-    public <X> FieldInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedField<X> field, Bean<?> bean, Class<?> declaringComponentClass) {
-        return createInjectionPoint(services.get(MemberTransformer.class).<X, EnhancedAnnotatedField<?, X>>loadEnhancedMember(field), bean, declaringComponentClass);
-    }
-
-    public <T, X> FieldInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass) {
-        return InferingFieldInjectionPointAttributes.of(field, bean, declaringComponentClass, this);
-    }
-
     @Override
     public FieldInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedField<?> field) {
-        return createInjectionPoint(field, null);
+        return createFieldInjectionPoint(field);
     }
 
-    public <X> ParameterInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedParameter<X> parameter, Bean<?> bean) {
-        if (bean == null) {
-            return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean, parameter.getDeclaringCallable().getDeclaringType().getJavaClass());
-        } else {
-            return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean, bean.getBeanClass());
-        }
-    }
-
-    public <X> ParameterInjectionPointAttributes<?, X> createInjectionPoint(AnnotatedParameter<X> parameter, Bean<?> bean, Class<?> declaringComponentClass) {
-        return createInjectionPoint(services.get(MemberTransformer.class).load(parameter), bean, declaringComponentClass);
-    }
-
-    public <T, X> ParameterInjectionPointAttributes<T, X> createInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass) {
-        return InferingParameterInjectionPointAttributes.of(parameter, bean, declaringComponentClass, this);
+    private <X> FieldInjectionPointAttributes<?, X> createFieldInjectionPoint(AnnotatedField<X> field) {
+        EnhancedAnnotatedField<?, X> enhancedField = services.get(MemberTransformer.class).loadEnhancedMember(field);
+        return InferingFieldInjectionPointAttributes.of(enhancedField, null, field.getDeclaringType().getJavaClass(), this);
     }
 
     @Override
     public ParameterInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedParameter<?> parameter) {
-        return createInjectionPoint(parameter, null);
+        EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class).load(parameter);
+        return InferingParameterInjectionPointAttributes.of(enhancedParameter, null, parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this);
     }
 
     public <T extends Extension> T getExtension(Class<T> extensionClass) {

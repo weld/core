@@ -52,7 +52,7 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
 
     private ParameterInjectionPointAttributes<T, X> attributes;
 
-    private ParameterInjectionPointImpl(ParameterInjectionPointAttributes<T, X> attributes) {
+    protected ParameterInjectionPointImpl(ParameterInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;
         this.cacheable = isCacheableInjectionPoint(attributes);
     }

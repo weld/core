@@ -25,10 +25,12 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.InjectionPoints;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -67,7 +69,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
         }
         ConstructorInjectionPoint<T> constructor = null;
         try {
-            constructor = Beans.getBeanConstructorInjectionPoint(null, type, beanManager);
+            constructor = InjectionPointFactory.instance().createConstructorInjectionPoint(null, type, beanManager);
             this.injectionPoints.addAll(constructor.getParameterInjectionPoints());
         } catch (Exception e) {
             // this means the bean of a type that cannot be produce()d, but that is
@@ -75,16 +77,16 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             // unless someone calls produce()
         }
         this.constructor = constructor;
-        this.injectableFields = Beans.getFieldInjectionPoints(null, type, beanManager);
-        this.injectionPoints.addAll(Beans.flattenInjectionPoints(this.injectableFields));
+        this.injectableFields = InjectionPointFactory.instance().getFieldInjectionPoints(null, type, beanManager);
+        this.injectionPoints.addAll(InjectionPoints.flattenInjectionPoints(this.injectableFields));
         this.initializerMethods = Beans.getInitializerMethods(null, type, beanManager);
-        this.injectionPoints.addAll(Beans.flattenParameterInjectionPoints(initializerMethods));
+        this.injectionPoints.addAll(InjectionPoints.flattenParameterInjectionPoints(initializerMethods));
         this.postConstructMethods = Beans.getPostConstructMethods(type);
         this.preDestroyMethods = Beans.getPreDestroyMethods(type);
-        this.ejbInjectionPoints = Beans.getEjbInjectionPoints(null, type, beanManager);
-        this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(null, type, beanManager);
-        this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(null, type, beanManager);
-        this.resourceInjectionPoints = Beans.getResourceInjectionPoints(null, type, beanManager);
+        this.ejbInjectionPoints = InjectionPointFactory.instance().getEjbInjectionPoints(null, type, beanManager);
+        this.persistenceContextInjectionPoints = InjectionPointFactory.instance().getPersistenceContextInjectionPoints(null, type, beanManager);
+        this.persistenceUnitInjectionPoints = InjectionPointFactory.instance().getPersistenceUnitInjectionPoints(null, type, beanManager);
+        this.resourceInjectionPoints = InjectionPointFactory.instance().getResourceInjectionPoints(null, type, beanManager);
     }
 
     public T produce(CreationalContext<T> ctx) {
@@ -92,7 +94,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             // this means we couldn't find a constructor on instantiation, which
             // means there isn't one that's spec-compliant
             // try again so the correct DefinitionException is thrown
-            Beans.getBeanConstructorInjectionPoint(null, type, beanManager);
+            InjectionPointFactory.instance().createConstructorInjectionPoint(null, type, beanManager);
             // should not be reached
             throw new IllegalStateException(MISSING_BEAN_CONSTRUCTOR_FOUND);
         }

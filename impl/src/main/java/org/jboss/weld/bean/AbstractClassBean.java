@@ -78,6 +78,7 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -90,6 +91,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -287,8 +289,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the injection points
      */
     protected void initInjectableFields(BeanManagerImpl manager) {
-        injectableFields = Beans.getFieldInjectionPoints(this, getEnhancedAnnotated(), manager);
-        addInjectionPoints(Beans.flattenInjectionPoints(injectableFields));
+        injectableFields = InjectionPointFactory.instance().getFieldInjectionPoints(this, getEnhancedAnnotated(),  manager);
+        addInjectionPoints(InjectionPoints.flattenInjectionPoints(injectableFields));
     }
 
     /**
@@ -296,7 +298,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      */
     protected void initInitializerMethods(BeanManagerImpl manager) {
         initializerMethods = Beans.getInitializerMethods(this, getEnhancedAnnotated(), manager);
-        addInjectionPoints(Beans.flattenParameterInjectionPoints(initializerMethods));
+        addInjectionPoints(InjectionPoints.flattenParameterInjectionPoints(initializerMethods));
     }
 
     /**
@@ -456,7 +458,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     protected ConstructorInjectionPoint<T> initConstructor(BeanManagerImpl manager) {
         EnhancedAnnotatedConstructor<T> enhancedAnnotated = Beans.getBeanConstructor(getEnhancedAnnotated());
         checkConstructor(enhancedAnnotated);
-        ConstructorInjectionPoint<T> injectionPoint = ConstructorInjectionPoint.of(enhancedAnnotated, this, manager);
+        ConstructorInjectionPoint<T> injectionPoint = InjectionPointFactory.instance().createConstructorInjectionPoint(this, getBeanClass(), enhancedAnnotated, manager);
         addInjectionPoints(injectionPoint.getParameterInjectionPoints());
         return injectionPoint;
     }

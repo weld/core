@@ -42,6 +42,7 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ProxyClassConstructorInjectionPointWrapper;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.interceptor.proxy.DefaultInvocationContextFactory;
@@ -276,10 +277,10 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     private void initEEInjectionPoints() {
-        this.ejbInjectionPoints = Beans.getEjbInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
-        this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
-        this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
-        this.resourceInjectionPoints = Beans.getResourceInjectionPoints(this, getEnhancedAnnotated(), beanManager);
+        this.ejbInjectionPoints = InjectionPointFactory.instance().getEjbInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
+        this.persistenceContextInjectionPoints = InjectionPointFactory.instance().getPersistenceContextInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
+        this.persistenceUnitInjectionPoints = InjectionPointFactory.instance().getPersistenceUnitInjectionPoints(this, getEnhancedAnnotated(), getBeanManager());
+        this.resourceInjectionPoints = InjectionPointFactory.instance().getResourceInjectionPoints(this, getEnhancedAnnotated(), beanManager);
     }
 
     /**

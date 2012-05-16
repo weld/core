@@ -32,10 +32,12 @@ import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.collections.ArraySet;
 
 /**
@@ -78,14 +80,14 @@ public class EnumInjectionTarget<T extends Enum<?>> implements InjectionTarget<T
         this.weldClass = weldClass;
         this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
         this.newInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-        this.injectableFields = Beans.getFieldInjectionPoints(null, weldClass, manager);
-        this.ejbInjectionPoints = Beans.getEjbInjectionPoints(null, weldClass, manager);
-        this.persistenceContextInjectionPoints = Beans.getPersistenceContextInjectionPoints(null, weldClass, manager);
-        this.persistenceUnitInjectionPoints = Beans.getPersistenceUnitInjectionPoints(null, weldClass, manager);
-        this.resourceInjectionPoints = Beans.getResourceInjectionPoints(null, weldClass, manager);
+        this.injectableFields = InjectionPointFactory.instance().getFieldInjectionPoints(null, weldClass, manager);
+        this.ejbInjectionPoints = InjectionPointFactory.instance().getEjbInjectionPoints(null, weldClass, manager);
+        this.persistenceContextInjectionPoints = InjectionPointFactory.instance().getPersistenceContextInjectionPoints(null, weldClass, manager);
+        this.persistenceUnitInjectionPoints = InjectionPointFactory.instance().getPersistenceUnitInjectionPoints(null, weldClass, manager);
+        this.resourceInjectionPoints = InjectionPointFactory.instance().getResourceInjectionPoints(null, weldClass, manager);
         this.initializerMethods = Beans.getInitializerMethods(null, weldClass, manager);
-        addInjectionPoints(Beans.flattenInjectionPoints(injectableFields));
-        addInjectionPoints(Beans.flattenParameterInjectionPoints(initializerMethods));
+        addInjectionPoints(InjectionPoints.flattenInjectionPoints(injectableFields));
+        addInjectionPoints(InjectionPoints.flattenParameterInjectionPoints(initializerMethods));
         injectionPoints.trimToSize();
         newInjectionPoints.trimToSize();
     }

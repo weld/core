@@ -34,7 +34,6 @@ import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_METHOD_IS_GENERIC;
 import static org.jboss.weld.logging.messages.UtilMessage.INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS;
-import static org.jboss.weld.logging.messages.UtilMessage.QUALIFIER_ON_FINAL_FIELD;
 import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
@@ -80,35 +79,27 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.ParameterInjectionPoint;
-import org.jboss.weld.injection.ParameterInjectionPointImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
@@ -209,30 +200,6 @@ public class Beans {
         }
     }
 
-    public static List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
-        EnhancedAnnotatedType<?> t = type;
-        while (t != null && !t.getJavaClass().equals(Object.class)) {
-            ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
-            for (EnhancedAnnotatedField<?, ?> annotatedField : t.getDeclaredEnhancedFields(Inject.class)) {
-                if (!annotatedField.isStatic()) {
-                    addFieldInjectionPoint(annotatedField, fields, declaringBean, manager);
-                }
-            }
-            injectableFieldsList.add(0, immutableSet(fields));
-            t = t.getEnhancedSuperclass();
-        }
-        return immutableList(injectableFieldsList);
-    }
-
-    public static <T extends WeldInjectionPoint<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
-        ArraySet<T> injectionPoints = new ArraySet<T>();
-        for (Set<T> i : fieldInjectionPoints) {
-            injectionPoints.addAll(i);
-        }
-        return injectionPoints.trimToSize();
-    }
-
     public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getPostConstructMethods(EnhancedAnnotatedType<T> type) {
         EnhancedAnnotatedType<?> t = type;
         List<EnhancedAnnotatedMethod<?, ? super T>> methods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
@@ -312,58 +279,6 @@ public class Beans {
         return annotatedMethods;
     }
 
-    public static Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(EjbInjectionServices.class)) {
-            Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-            ArraySet<WeldInjectionPoint<?, ?>> ejbInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(ejbAnnotationType)) {
-                ejbInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
-            }
-            return immutableSet(ejbInjectionPoints);
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
-    public static Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(JpaInjectionServices.class)) {
-            ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-            Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(persistenceContextAnnotationType)) {
-                jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
-            }
-            return immutableSet(jpaInjectionPoints);
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
-    public static Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(JpaInjectionServices.class)) {
-            ArraySet<WeldInjectionPoint<?, ?>> jpaInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-            Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
-            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(persistenceUnitAnnotationType)) {
-                jpaInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
-            }
-            return immutableSet(jpaInjectionPoints);
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
-    public static Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(ResourceInjectionServices.class)) {
-            Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-            ArraySet<WeldInjectionPoint<?, ?>> resourceInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(resourceAnnotationType)) {
-                resourceInjectionPoints.add(FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager));
-            }
-            return immutableSet(resourceInjectionPoints);
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
     public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         List<Set<MethodInjectionPoint<?, ?>>> initializerMethodsList = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
         // Keep track of all seen methods so we can ignore overridden methods
@@ -389,8 +304,7 @@ public class Beans {
                         throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
                     } else {
                         if (!isOverridden(method, seenMethods)) {
-                            MethodInjectionPoint<?, ?> initializerMethod = MethodInjectionPoint.of(method, declaringBean, manager);
-                            initializerMethods.add(initializerMethod);
+                            initializerMethods.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean, type.getJavaClass(), false, manager));
                         }
                     }
                 }
@@ -409,67 +323,6 @@ public class Beans {
             return seenMethods.get(method.getSignature()).contains(method.getPackage());
         } else {
             return seenMethods.containsKey(method.getSignature());
-        }
-    }
-
-    public static <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(EnhancedAnnotatedCallable<?, X, ?> callable, Bean<?> declaringBean, BeanManagerImpl manager, boolean observerOrDisposer) {
-        List<ParameterInjectionPoint<?, X>> parameters = new ArrayList<ParameterInjectionPoint<?, X>>();
-
-        /*
-         * bean that the injection point belongs to
-         * this is null for observer and disposer methods
-         */
-        Bean<?> bean = null;
-        if (!observerOrDisposer) {
-            bean = declaringBean;
-        }
-
-        for (EnhancedAnnotatedParameter<?, X> parameter : callable.getEnhancedParameters()) {
-            if (isSpecialParameter(parameter)) {
-                parameters.add(SpecialParameterInjectionPoint.of(parameter, bean, declaringBean.getBeanClass(), manager));
-            } else if (declaringBean instanceof ExtensionBean) {
-                parameters.add(ParameterInjectionPointImpl.extension(manager.createInjectionPoint(parameter, bean, declaringBean.getBeanClass()), manager));
-            } else {
-                parameters.add(ParameterInjectionPointImpl.of(manager.createInjectionPoint(parameter, bean), manager));
-            }
-        }
-        return immutableList(parameters);
-    }
-
-    public static <X> Set<ParameterInjectionPoint<?, X>> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {
-        ArraySet<ParameterInjectionPoint<?, X>> filtered = new ArraySet<ParameterInjectionPoint<?, X>>();
-        for (ParameterInjectionPoint<?, X> parameter : injectionPoints) {
-            if (parameter instanceof SpecialParameterInjectionPoint) {
-                continue;
-            }
-            filtered.add(parameter);
-        }
-        return filtered.trimToSize();
-    }
-
-    public static boolean isSpecialParameter(EnhancedAnnotatedParameter<?, ?> parameter) {
-        return parameter.isAnnotationPresent(Disposes.class) || parameter.isAnnotationPresent(Observes.class);
-    }
-
-    public static Set<ParameterInjectionPoint<?, ?>> flattenParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
-        ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
-        for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
-            for (MethodInjectionPoint<?, ?> method : i) {
-                for (ParameterInjectionPoint<?, ?> parameter : method.getParameterInjectionPoints()) {
-                    injectionPoints.add(parameter);
-                }
-            }
-        }
-        return injectionPoints.trimToSize();
-    }
-
-    private static void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, BeanManagerImpl manager) {
-        if (!annotatedField.isAnnotationPresent(Produces.class)) {
-            if (annotatedField.isFinal()) {
-                throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
-            }
-            FieldInjectionPoint<?, ?> fieldInjectionPoint = FieldInjectionPoint.of(manager.createInjectionPoint(annotatedField, declaringBean), manager);
-            injectableFields.add(fieldInjectionPoint);
         }
     }
 
@@ -626,11 +479,6 @@ public class Beans {
             }
         }
         return false;
-    }
-
-    public static <T> ConstructorInjectionPoint<T> getBeanConstructorInjectionPoint(Bean<T> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
-        EnhancedAnnotatedConstructor<T> constructor = getBeanConstructor(type);
-        return ConstructorInjectionPoint.of(constructor, declaringBean, manager);
     }
 
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {
@@ -805,18 +653,6 @@ public class Beans {
         }
 
         return result;
-    }
-
-    public static InjectionPoint getDelegateInjectionPoint(javax.enterprise.inject.spi.Decorator<?> decorator) {
-        if (decorator instanceof DecoratorImpl<?>) {
-            return ((DecoratorImpl<?>) decorator).getDelegateInjectionPoint();
-        } else {
-            for (InjectionPoint injectionPoint : decorator.getInjectionPoints()) {
-                if (injectionPoint.isDelegate())
-                    return injectionPoint;
-            }
-        }
-        return null;
     }
 
     /**

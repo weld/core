@@ -51,7 +51,7 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     private final Bean<?> bean;
 
     public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, EnhancedAnnotatedConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
-        super(weldConstructor, declaringBean, manager);
+        super(weldConstructor, declaringBean, declaringBean.getBeanClass(), InjectionPointFactory.silentInstance(), manager);
         this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
         this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;
         this.bean = declaringBean;

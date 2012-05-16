@@ -42,16 +42,8 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
 
     private final InvokableAnnotatedMethod<X> method;
 
-    public static <T, X> MethodInjectionPoint<T, X> of(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
-        return new MethodInjectionPoint<T, X>(method, declaringBean, false, manager);
-    }
-
-    public static <T, X> MethodInjectionPoint<T, X> ofObserverOrDisposerMethod(EnhancedAnnotatedMethod<T, X> method, Bean<?> declaringBean, BeanManagerImpl manager) {
-        return new MethodInjectionPoint<T, X>(method, declaringBean, true, manager);
-    }
-
-    protected MethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
-        super(enhancedMethod, declaringBean, observerOrDisposer, manager);
+    protected MethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, InjectionPointFactory factory, BeanManagerImpl manager) {
+        super(enhancedMethod, declaringBean, declaringComponentClass, observerOrDisposer, factory, manager);
         this.method = new InvokableAnnotatedMethod<X>(enhancedMethod.slim());
     }
 

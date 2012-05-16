@@ -52,6 +52,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
@@ -102,7 +103,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
-        this.observerMethod = MethodInjectionPoint.ofObserverOrDisposerMethod(observer, declaringBean, manager);
+        this.observerMethod = initMethodInjectionPoint(observer, declaringBean, manager);
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
         this.eventType = TypeVariableResolver.resolveVariables(declaringBean.getBeanClass(), eventParameter.getBaseType());
         this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
@@ -124,6 +125,10 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
         this.injectionPoints = immutableSet(injectionPoints);
         this.newInjectionPoints = immutableSet(newInjectionPoints);
+    }
+
+    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
+        return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), true, manager);
     }
 
     public Set<WeldInjectionPoint<?, ?>> getInjectionPoints() {

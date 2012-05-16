@@ -42,9 +42,11 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -64,10 +66,10 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean) {
         super(BeanAttributesFactory.forDisposerMethod(disposalMethod, beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getEnhancedAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, beanManager.getServices());
-        this.disposalMethodInjectionPoint = MethodInjectionPoint.ofObserverOrDisposerMethod(disposalMethod, this, beanManager);
+        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(disposalMethod, declaringBean, declaringBean.getBeanClass(), true, beanManager);
         this.enhancedAnnotatedMethod = disposalMethod;
         initType(disposalMethod);
-        addInjectionPoints(Beans.filterOutSpecialParameterInjectionPoints(disposalMethodInjectionPoint.getParameterInjectionPoints()));
+        addInjectionPoints(InjectionPoints.filterOutSpecialParameterInjectionPoints(disposalMethodInjectionPoint.getParameterInjectionPoints()));
         checkDisposalMethod();
     }
 

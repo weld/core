@@ -40,6 +40,7 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -107,7 +108,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
     protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, field, declaringBean, manager, services);
         this.rawType = field.getJavaClass();
-        this.injectionPoint = FieldInjectionPoint.of(manager.createInjectionPoint(field, declaringBean), manager);
+        this.injectionPoint = InjectionPointFactory.instance().createFieldInjectionPoint(field, declaringBean, declaringBean.getBeanClass(), manager);
     }
 
     @Override

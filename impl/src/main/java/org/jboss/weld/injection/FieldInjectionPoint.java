@@ -29,7 +29,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
-import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
@@ -45,10 +44,6 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
     private transient Bean<?> cachedBean;
 
     private final FieldInjectionPointAttributes<T, X> attributes;
-
-    public static <T, X> FieldInjectionPoint<T, X> of(FieldInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
-        return new FieldInjectionPoint<T, X>(ProcessInjectionPointImpl.fire(attributes, manager));
-    }
 
     protected FieldInjectionPoint(FieldInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;

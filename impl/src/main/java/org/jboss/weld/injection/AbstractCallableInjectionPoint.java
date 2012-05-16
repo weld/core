@@ -24,7 +24,6 @@ package org.jboss.weld.injection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -35,16 +34,15 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
-import org.jboss.weld.util.Beans;
 
 public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> implements WeldInjectionPoint<T, S> {
 
     private final Bean<?> declaringBean;
     private final List<ParameterInjectionPoint<?, X>> parameters;
 
-    protected AbstractCallableInjectionPoint(EnhancedAnnotatedCallable<T, X, S> callable, Bean<?> declaringBean, boolean observerOrDisposer, BeanManagerImpl manager) {
+    protected AbstractCallableInjectionPoint(EnhancedAnnotatedCallable<T, X, S> callable, Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, InjectionPointFactory factory, BeanManagerImpl manager) {
         this.declaringBean = declaringBean;
-        this.parameters = Beans.getParameterInjectionPoints(callable, declaringBean, manager, observerOrDisposer);
+        this.parameters = factory.getParameterInjectionPoints(callable, declaringBean, declaringComponentClass, manager, observerOrDisposer);
     }
 
     @Override

@@ -28,6 +28,8 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -45,6 +47,12 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         super(observer, declaringBean, manager);
         this.containerLifecycleEventDeliveryLock = Container.instance();
+    }
+
+    @Override
+    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
+        // use silent creation of injection points for ProcessInjectionPoint events not to be fired for extention observer methods
+        return InjectionPointFactory.silentInstance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), true, manager);
     }
 
     @Override

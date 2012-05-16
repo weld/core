@@ -47,12 +47,8 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
     private final AnnotatedConstructor<T> constructor;
     private final ConstructorSignature signature;
 
-    public static <T> ConstructorInjectionPoint<T> of(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
-        return new ConstructorInjectionPoint<T>(constructor, declaringBean, manager);
-    }
-
-    protected ConstructorInjectionPoint(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, BeanManagerImpl manager) {
-        super(constructor, declaringBean, false, manager);
+    protected ConstructorInjectionPoint(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, Class<?> declaringComponentClass, InjectionPointFactory factory, BeanManagerImpl manager) {
+        super(constructor, declaringBean, declaringComponentClass, false, factory, manager);
         this.constructor = constructor.slim();
         this.signature = constructor.getSignature();
     }

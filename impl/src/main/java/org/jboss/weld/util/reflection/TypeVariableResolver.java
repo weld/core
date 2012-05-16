@@ -1,7 +1,5 @@
 package org.jboss.weld.util.reflection;
 
-import javax.enterprise.inject.spi.Bean;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;

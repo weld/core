@@ -35,6 +35,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -74,7 +75,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     protected ProducerMethod(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, createId(method, declaringBean), declaringBean, beanManager, services);
         this.enhancedAnnotatedMethod = method;
-        this.method = MethodInjectionPoint.of(method, this, beanManager);
+        this.method = InjectionPointFactory.instance().createMethodInjectionPoint(method, this, getBeanClass(), false, beanManager);
         initType();
         initProducerMethodInjectableParameters();
         this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
