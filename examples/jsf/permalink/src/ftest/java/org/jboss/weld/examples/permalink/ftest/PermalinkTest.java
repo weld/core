@@ -31,6 +31,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
@@ -86,6 +87,7 @@ public class PermalinkTest {
     }   
 
     @Test
+    @InSequence(1)
     public void addCommentOnTopicTest() {
         waitForHttp(selenium).click(VIEW_ENTRY_LINK);
         assertTrue("Topic title expected on the page", selenium.isTextPresent(TOPIC_TITLE));
@@ -99,6 +101,7 @@ public class PermalinkTest {
     }
 
     @Test
+    @InSequence(2)
     public void permanentLinkTest() {
         waitForHttp(selenium).click(PERMALINK_LINK);
         assertTrue("A name of comment's author expected", selenium.isTextPresent(AUTHOR_NAME));
