@@ -245,7 +245,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
                 observerMethod.invokeOnInstanceWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
             }
         } finally {
-            if (creationalContext != null && Dependent.class.equals(declaringBean.getScope())) {
+            if (creationalContext != null) {
                 creationalContext.release();
             }
         }
