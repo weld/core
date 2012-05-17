@@ -61,12 +61,6 @@
                     <exclude name="testInterceptorForLifecycleTargetMethod" />
                 </methods>
             </class>
-            <!-- WELD-998 -->
-            <class name="org.jboss.cdi.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
             <!-- WELD-430 -->
             <class name="org.jboss.cdi.tck.tests.decorators.invocation.DecoratorInvocationTest">
                 <methods>
