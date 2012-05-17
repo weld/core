@@ -264,7 +264,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             }
         } finally {
             postNotify(event, receiver);
-            if (creationalContext != null && Dependent.class.equals(declaringBean.getScope())) {
+            if (creationalContext != null) {
                 creationalContext.release();
             }
         }
