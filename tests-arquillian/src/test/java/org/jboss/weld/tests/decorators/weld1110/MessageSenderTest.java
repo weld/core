@@ -14,6 +14,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -23,33 +24,35 @@ import org.junit.runner.RunWith;
 @Category(Integration.class)
 public class MessageSenderTest {
 
-	@Deployment(testable = false)
-	public static WebArchive create() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackage(MessageSenderTest.class.getPackage())
-				.setWebXML(new StringAsset(
-						"<web-app>" +
-						"<display-name>jax</display-name>" +
-						"<servlet-mapping>" +
-						"<servlet-name>javax.ws.rs.core.Application</servlet-name>" +
-						"<url-pattern>/rest/*</url-pattern>" +
-						"</servlet-mapping>" +
-						"</web-app>"))
-				.addAsWebInfResource(
-						new BeansXml().decorators(MessageDecorator.class), "beans.xml");
-	}
+    @Deployment(testable = false)
+    public static WebArchive create() {
+        return ShrinkWrap.create(WebArchive.class)
+                .addPackage(MessageSenderTest.class.getPackage())
+                .setWebXML(new StringAsset(
+                        "<web-app>" +
+                                "<display-name>jax</display-name>" +
+                                "<servlet-mapping>" +
+                                "<servlet-name>javax.ws.rs.core.Application</servlet-name>" +
+                                "<url-pattern>/rest/*</url-pattern>" +
+                                "</servlet-mapping>" +
+                                "</web-app>"))
+                .addAsWebInfResource(
+                        new BeansXml().decorators(MessageDecorator.class), "beans.xml");
+    }
 
-	@ArquillianResource
-	private URL base;
+    @ArquillianResource
+    private URL base;
 
-	@Test
-	public void testImpl() throws Exception {
+    @Test
+    @Ignore("WELD-1110")
+    public void testImpl() throws Exception {
         String response = getWebServiceResponse("rest/message/Hello");
         Assert.assertEquals("Decorated Hello", response);
     }
 
-	@Test
-	public void testFacade() throws Exception {
+    @Test
+    @Ignore
+    public void testFacade() throws Exception {
         String response = getWebServiceResponse("rest/facade/Hello");
         Assert.assertEquals("Decorated Hello", response);
     }
