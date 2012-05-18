@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.logging.messages.BeanMessage.NAMED_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
+
 import java.io.Serializable;
 
 import javax.enterprise.context.Dependent;
@@ -43,10 +48,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
-
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
 
 /**
  * @author pmuir
@@ -119,6 +120,9 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
     protected void checkEEResource() {
         if (!getScope().equals(Dependent.class)) {
             throw new DefinitionException(NON_DEPENDENT_RESOURCE_PRODUCER_FIELD, this);
+        }
+        if (getName() != null) {
+            throw new DefinitionException(NAMED_RESOURCE_PRODUCER_FIELD, this);
         }
         EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
