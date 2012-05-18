@@ -19,6 +19,7 @@ package org.jboss.weld.bean.builtin.ee;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.logging.messages.BeanMessage.NAMED_RESOURCE_PRODUCER_FIELD;
 
 import java.io.Serializable;
 
@@ -39,7 +40,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -121,6 +121,9 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
     protected void checkEEResource() {
         if (!getScope().equals(Dependent.class)) {
             throw new DefinitionException(NON_DEPENDENT_RESOURCE_PRODUCER_FIELD, this);
+        }
+        if (getName() != null) {
+            throw new DefinitionException(NAMED_RESOURCE_PRODUCER_FIELD, this);
         }
         EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
