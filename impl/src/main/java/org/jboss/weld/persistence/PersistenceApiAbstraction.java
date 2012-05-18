@@ -31,6 +31,8 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
     public final Class<? extends Annotation> ENTITY_CLASS;
     public final Class<? extends Annotation> MAPPED_SUPERCLASS_CLASS;
     public final Class<? extends Annotation> EMBEDDABLE_CLASS;
+    public final Class<?> ENTITY_MANAGER_CLASS;
+    public final Class<?> ENTITY_MANAGER_FACTORY_CLASS;
 
     /**
      * @param resourceLoader
@@ -48,6 +50,8 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
         ENTITY_CLASS = annotationTypeForName("javax.persistence.Entity");
         MAPPED_SUPERCLASS_CLASS = annotationTypeForName("javax.persistence.MappedSuperclass");
         EMBEDDABLE_CLASS = annotationTypeForName("javax.persistence.Embeddable");
+        ENTITY_MANAGER_CLASS = classForName("javax.persistence.EntityManager");
+        ENTITY_MANAGER_FACTORY_CLASS = classForName("javax.persistence.EntityManagerFactory");
     }
 
     public void cleanup() {

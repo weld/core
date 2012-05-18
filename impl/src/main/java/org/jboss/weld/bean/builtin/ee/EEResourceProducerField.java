@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_P
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
 import static org.jboss.weld.logging.messages.BeanMessage.NAMED_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_TYPE;
 
 import java.io.Serializable;
 
@@ -137,6 +138,23 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         }
     }
 
+    @Override
+    protected void checkType() {
+        super.checkType();
+
+        // check JPA resources
+        PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
+        if (getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)) {
+            if (!getType().equals(persistenceApiAbstraction.ENTITY_MANAGER_FACTORY_CLASS)) {
+                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getEnhancedAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_FACTORY_CLASS);
+            }
+        }
+        if (getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)) {
+            if (!getType().equals(persistenceApiAbstraction.ENTITY_MANAGER_CLASS)) {
+                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getEnhancedAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_CLASS);
+            }
+        }
+    }
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
