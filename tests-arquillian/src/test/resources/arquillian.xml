@@ -22,6 +22,7 @@
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
             <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m ${jacoco.agent}</property>
+            <property name="managementAddress">${node.address}</property>
         </configuration>
 	</container>
 
