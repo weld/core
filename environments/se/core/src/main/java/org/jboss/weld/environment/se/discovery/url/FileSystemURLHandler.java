@@ -18,6 +18,8 @@ package org.jboss.weld.environment.se.discovery.url;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ import org.jboss.logging.Logger;
 public class FileSystemURLHandler {
 
     private static final Logger log = Logger.getLogger(FileSystemURLHandler.class);
+    private static final String UNEXPECTED_CLASSLOADER_MESSAGE = "could not invoke JNLPClassLoader#getJarFile(URL) on context class loader, expecting Web Start class loader";
 
     private static final String CLASS_FILE_EXTENSION = ".class";
     private static final String BEANS_XML = "beans.xml";
@@ -48,6 +51,29 @@ public class FileSystemURLHandler {
     public void handle(String urlPath) {
         try {
             log.tracev("scanning: {0}", urlPath);
+
+            // WebStart support: get path to local cached copy of remote JAR file
+            if (urlPath.startsWith("http:") || urlPath.startsWith("https:")) {
+                // Class loader should be an instance of com.sun.jnlp.JNLPClassLoader
+                ClassLoader jnlpClassLoader = WeldSEResourceLoader.getClassLoader();
+                try {
+                    // Try to call com.sun.jnlp.JNLPClassLoader#getJarFile(URL) from JDK 6
+                    Method m = jnlpClassLoader.getClass().getMethod("getJarFile", URL.class);
+                    // returns a reference to the local cached copy of the JAR
+                    ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(urlPath));
+                    urlPath = jarFile.getName();
+                } catch (MalformedURLException mue) {
+                    log.warn("could not read entries, method JNLPClassLoader#getJarFile(URL) did not return a valid URL", mue);
+                } catch (NoSuchMethodException nsme) {
+                    log.warn(UNEXPECTED_CLASSLOADER_MESSAGE, nsme);
+                } catch (IllegalArgumentException iarge) {
+                    log.warn(UNEXPECTED_CLASSLOADER_MESSAGE, iarge);
+                } catch (InvocationTargetException ite) {
+                    log.warn("JNLPClassLoader#getJarFile(URL) threw exception", ite);
+                } catch (Exception iacce) {
+                    log.warn("could not invoke JNLPClassLoader#getJarFile(URL) on context class loader", iacce);
+                }
+            }
 
             File file = new File(urlPath);
             if (file.isDirectory()) {
