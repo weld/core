@@ -374,11 +374,6 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     @Override
-    public Set<Class<? extends Annotation>> getStereotypes() {
-        return Collections.emptySet();
-    }
-
-    @Override
     protected boolean isInterceptionCandidate() {
         return true;
     }
