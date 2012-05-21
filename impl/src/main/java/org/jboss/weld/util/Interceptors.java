@@ -85,11 +85,18 @@ public class Interceptors {
         }
         if (addInheritedInterceptorBindings) {
             for (Annotation annotation : annotations) {
-                flattenInterceptorBindings.addAll(beanManager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotation.annotationType())
-                        .getInheritedInterceptionBindingTypes());
+                addInheritedInterceptorBindings(annotation.annotationType(), beanManager.getServices().get(MetaAnnotationStore.class), flattenInterceptorBindings);
             }
         }
         return flattenInterceptorBindings;
+    }
+
+    private static void addInheritedInterceptorBindings(Class<? extends Annotation> bindingType, MetaAnnotationStore store, Set<Annotation> inheritedBindings) {
+        Set<Annotation> metaBindings = store.getInterceptorBindingModel(bindingType).getInheritedInterceptionBindingTypes();
+        inheritedBindings.addAll(metaBindings);
+        for (Annotation metaBinding : metaBindings) {
+            addInheritedInterceptorBindings(metaBinding.annotationType(), store, inheritedBindings);
+        }
     }
 
     /**
