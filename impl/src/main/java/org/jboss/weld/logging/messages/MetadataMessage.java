@@ -49,4 +49,6 @@ public enum MetadataMessage {
     @MessageId("001111")NOT_A_QUALIFIER,
     @MessageId("001112")TYPES_EMPTY,
     @MessageId("001113")NOT_A_SCOPE,
+    @MessageId("001114")METADATA_SOURCE_RETURNED_NULL,
+    @MessageId("001115")INVALID_PARAMETER_POSITION,
 }

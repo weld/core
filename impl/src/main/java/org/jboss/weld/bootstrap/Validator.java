@@ -189,7 +189,8 @@ public class Validator implements Service {
                 DisposalMethod<?, ?> disposalMethod = ((AbstractProducerBean<?, ?, ?>)bean).getDisposalMethod();
                 for (InjectionPoint ip : disposalMethod.getInjectionPoints()) {
                     // pass the producer bean instead of the disposal method bean
-                    validateInjectionPoint(ip, bean, beanManager);
+                    validateInjectionPointForDefinitionErrors(ip, bean, beanManager);
+                    validateInjectionPointForDeploymentProblems(ip, bean, beanManager);
                 }
             }
         }
@@ -268,13 +269,14 @@ public class Validator implements Service {
      * @param beanManager the bean manager
      */
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
-        validateInjectionPoint(ij, ij.getBean(), beanManager);
+        validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager);
+        validateInjectionPointForDeploymentProblems(ij, ij.getBean(), beanManager);
     }
 
     /**
-     * Variation of the validateInjectionPoint method which allows the bean to be defined explicitly (used for disposer method validation)
+     * Checks for definition errors associated with a given {@link InjectionPoint}
      */
-    public void validateInjectionPoint(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
+    public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
             throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
         }
@@ -290,32 +292,6 @@ public class Validator implements Service {
         }
         checkFacadeInjectionPoint(ij, Instance.class);
         checkFacadeInjectionPoint(ij, Event.class);
-        Annotation[] bindings = ij.getQualifiers().toArray(new Annotation[0]);
-        Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
-        if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
-            throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()));
-        }
-        if (resolvedBeans.size() > 1 && !ij.isDelegate()) {
-            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(bindings), Formats.formatType(ij.getType()), resolvedBeans);
-        }
-        // Account for the case this is disabled decorator
-        if (!resolvedBeans.isEmpty()) {
-            Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-            if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal()) {
-                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType());
-                if (ue != null) {
-                    UnproxyableResolutionException exception = new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
-                    exception.initCause(ue);
-                    throw exception;
-                }
-            }
-            if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {
-                throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
-            }
-            if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
-                validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
-            }
-        }
         // metadata injection points
         if (ij.getType().equals(InjectionPoint.class) && bean == null) {
             throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
@@ -338,6 +314,37 @@ public class Validator implements Service {
             if (rawType.equals(Bean.class) && (ij.getQualifiers().contains(InterceptedLiteral.INSTANCE) && !(bean instanceof Interceptor<?>))
                     || (rawType.equals(Bean.class) && ij.getQualifiers().contains(DecoratedLiteral.INSTANCE) && !(bean instanceof Decorator<?>))) {
                 throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Bean.class.getSimpleName(), ij);
+            }
+        }
+    }
+
+    /**
+     * Checks for deployment problems associated with a given {@link InjectionPoint}
+     */
+    public void validateInjectionPointForDeploymentProblems(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
+        Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
+        if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
+            throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[0])), Formats.formatType(ij.getType()));
+        }
+        if (resolvedBeans.size() > 1 && !ij.isDelegate()) {
+            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[0])), Formats.formatType(ij.getType()), resolvedBeans);
+        }
+        // Account for the case this is disabled decorator
+        if (!resolvedBeans.isEmpty()) {
+            Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
+            if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal()) {
+                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType());
+                if (ue != null) {
+                    UnproxyableResolutionException exception = new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
+                    exception.initCause(ue);
+                    throw exception;
+                }
+            }
+            if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {
+                throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
+            }
+            if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
+                validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
             }
         }
     }

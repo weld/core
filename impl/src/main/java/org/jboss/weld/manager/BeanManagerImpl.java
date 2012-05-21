@@ -85,6 +85,7 @@ import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
@@ -112,6 +113,7 @@ import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -1023,6 +1025,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
+        AnnotatedTypeValidator.validateAnnotatedType(type);
         InjectionTarget<T> injectionTarget = new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type), this);
         getServices().get(InjectionTargetValidator.class).addInjectionTarget(injectionTarget);
         return injectionTarget;
@@ -1269,7 +1272,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public FieldInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedField<?> field) {
-        return createFieldInjectionPoint(field);
+        AnnotatedTypeValidator.validateAnnotatedMember(field);
+        return validateInjectionPoint(createFieldInjectionPoint(field));
     }
 
     private <X> FieldInjectionPointAttributes<?, X> createFieldInjectionPoint(AnnotatedField<X> field) {
@@ -1279,8 +1283,18 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public ParameterInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedParameter<?> parameter) {
+        AnnotatedTypeValidator.validateAnnotatedParameter(parameter);
         EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class).load(parameter);
-        return InferingParameterInjectionPointAttributes.of(enhancedParameter, null, parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this);
+        return validateInjectionPoint(InferingParameterInjectionPointAttributes.of(enhancedParameter, null, parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
+    }
+
+    private <T extends InjectionPoint> T validateInjectionPoint(T injectionPoint) {
+        try {
+            services.get(Validator.class).validateInjectionPointForDefinitionErrors(injectionPoint, null, this);
+        } catch (DefinitionException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return injectionPoint;
     }
 
     public <T extends Extension> T getExtension(Class<T> extensionClass) {
