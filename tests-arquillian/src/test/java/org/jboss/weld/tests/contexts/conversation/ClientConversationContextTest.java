@@ -42,6 +42,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -51,6 +52,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,6 +71,9 @@ public class ClientConversationContextTest {
     public static final String CID_HEADER_NAME = "org.jboss.jsr299.tck.cid";
 
     public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
+    
+    @ArquillianResource
+    URL url;
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
@@ -251,19 +256,17 @@ public class ClientConversationContextTest {
     }
 
     protected String getPath(String viewId, String cid) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test" + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
+        return url + viewId + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
     }
 
     protected String getPath(String viewId) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test" + viewId;
+        return url + viewId;
     }
 
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getAllHtmlChildElements()) {
+        for (HtmlElement element : rootElement.getChildElements()) {
             result.addAll(getElements(element, elementClass));
         }
 
@@ -275,7 +278,7 @@ public class ClientConversationContextTest {
     }
 
     protected String getCid(Page page) {
-        String url = page.getWebResponse().getRequestUrl().toString();
+        String url = page.getUrl().toString();
         return url.substring(url.indexOf("cid=") + 4);
     }
 

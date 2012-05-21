@@ -374,6 +374,7 @@
                             </systemPropertyVariables>
                             <systemProperties>
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
+                                <node.address>127.0.0.1</node.address>
                             </systemProperties>
                             <test>${test}</test>
                             <parallel>none</parallel>
@@ -417,9 +418,11 @@
                         <configuration>
                             <systemProperties>
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
+                                <node.address>127.0.0.1</node.address>
                             </systemProperties>
                             <test>${test}</test>
                             <parallel>none</parallel>
+                            
                         </configuration>
                     </plugin>
                 </plugins>
