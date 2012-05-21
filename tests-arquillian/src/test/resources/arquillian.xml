@@ -19,6 +19,7 @@
             <!-- ARQ-649 workaround -->
             <property name="outputToConsole">false</property>
             <property name="allowConnectingToRunningServer">true</property>
+            <property name="managementAddress">${node.address}</property>
         </configuration>
 	</container>
 

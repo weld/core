@@ -102,7 +102,7 @@ public class NamedProducerTest {
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
         Set<T> result = new HashSet<T>();
 
-        for (HtmlElement element : rootElement.getAllHtmlChildElements()) {
+        for (HtmlElement element : rootElement.getChildElements()) {
             result.addAll(getElements(element, elementClass));
         }
 
