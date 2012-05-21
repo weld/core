@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -50,6 +52,16 @@ public class FileSystemURLHandler {
                 if (urlPath.indexOf('!') > 0) {
                     urlPath = urlPath.substring(0, urlPath.indexOf('!'));
                 }
+                // WebStart support: get path to local cached copy of remote JAR file
+                if (urlPath.startsWith("http:") || urlPath.startsWith("https:")) {
+                // Class loader should be an instance of com.sun.jnlp.JNLPClassLoader
+                   ClassLoader jnlpClassLoader = WeldSEResourceLoader.getClassLoader();
+                   // Try to call com.sun.jnlp.JNLPClassLoader#getJarFile(URL) from JDK 6
+                   Method m = jnlpClassLoader.getClass().getMethod("getJarFile", URL.class);
+                   // returns a reference to the local cached copy of the JAR
+                   ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(urlPath));
+                   urlPath = jarFile.getName();
+                }
 
                 File file = new File(urlPath);
                 if (file.isDirectory()) {
@@ -57,9 +69,19 @@ public class FileSystemURLHandler {
                 } else {
                     handleArchiveByFile(file, discoveredClasses, discoveredBeansXmlUrls);
                 }
-            } catch (IOException ioe) {
-                FileSystemURLHandler.log.warn("could not read entries", ioe);
-            }
+           } catch (IOException ioe) {
+               FileSystemURLHandler.log.warn("could not read entries", ioe);
+           } catch (SecurityException se) {
+               FileSystemURLHandler.log.warn("could not read entries", se);
+           } catch (NoSuchMethodException nsme) {
+               FileSystemURLHandler.log.warn("could not read entries", nsme);
+           } catch (IllegalArgumentException iarge) {
+               FileSystemURLHandler.log.warn("could not read entries", iarge);
+           } catch (IllegalAccessException iacce) {
+               FileSystemURLHandler.log.warn("could not read entries", iacce);
+           } catch (InvocationTargetException ite) {
+               FileSystemURLHandler.log.warn("could not read entries", ite);
+           }
         }
     }
 
