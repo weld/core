@@ -91,11 +91,13 @@ import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
@@ -117,6 +119,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Supplier;
@@ -854,5 +857,24 @@ public class Beans {
             throw new IllegalStateException("Enhanced metadata should not be used at runtime.");
         }
         return enhancedAnnotated;
+    }
+
+    public static boolean isSessionBeanWithContainerManagedTransactions(Bean<?> bean, BeanManagerImpl manager) {
+        if (bean instanceof SessionBean<?>) {
+            SessionBean<?> sessionBean = (SessionBean<?>) bean;
+            EJBApiAbstraction ejbApi = manager.getServices().get(EJBApiAbstraction.class);
+            Annotation transactionManagementAnnotation = sessionBean.getAnnotated().getAnnotation(ejbApi.TRANSACTION_MANAGEMENT);
+            if (transactionManagementAnnotation == null) {
+                return true;
+            }
+            Object value;
+            try {
+                value = SecureReflections.invoke(transactionManagementAnnotation, "value");
+            } catch (Exception e) {
+                throw new WeldException(e);
+            }
+            return ejbApi.CONTAINER_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE.equals(value);
+        }
+        return false;
     }
 }

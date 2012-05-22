@@ -22,6 +22,7 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 import static org.jboss.weld.logging.messages.UtilMessage.CLASS_NOT_ENUM;
 
@@ -102,10 +103,15 @@ public class ApiAbstraction {
             throw new IllegalArgumentException(CLASS_NOT_ENUM, clazz);
         }
         try {
-            return SecureReflections.getField(clazz, memberName);
+            Field field = SecureReflections.getField(clazz, memberName);
+            return SecureReflections.ensureAccessible(field).get(null);
         } catch (SecurityException e) {
             return null;
         } catch (NoSuchFieldException e) {
+            return null;
+        } catch (java.lang.IllegalArgumentException e) {
+            return null;
+        } catch (IllegalAccessException e) {
             return null;
         }
     }

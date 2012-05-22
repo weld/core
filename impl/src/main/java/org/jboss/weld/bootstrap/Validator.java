@@ -54,6 +54,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
+import static org.jboss.weld.logging.messages.ValidatorMessage.USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -99,6 +100,7 @@ import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
@@ -114,11 +116,13 @@ import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.literal.DecoratedLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -314,6 +318,13 @@ public class Validator implements Service {
             if (rawType.equals(Bean.class) && (ij.getQualifiers().contains(InterceptedLiteral.INSTANCE) && !(bean instanceof Interceptor<?>))
                     || (rawType.equals(Bean.class) && ij.getQualifiers().contains(DecoratedLiteral.INSTANCE) && !(bean instanceof Decorator<?>))) {
                 throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Bean.class.getSimpleName(), ij);
+            }
+        }
+        // check that UserTransaction is not injected into a SessionBean with container-managed transactions
+        if (bean instanceof SessionBean<?>) {
+            JtaApiAbstraction jtaApi = beanManager.getServices().get(JtaApiAbstraction.class);
+            if (jtaApi.USER_TRANSACTION_CLASS.equals(rawType) && (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) && Beans.isSessionBeanWithContainerManagedTransactions(bean, beanManager)) {
+                throw new DefinitionException(USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS, ij);
             }
         }
     }

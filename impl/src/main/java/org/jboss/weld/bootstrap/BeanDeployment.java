@@ -71,6 +71,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.BeansClosure;
+import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
@@ -122,6 +123,7 @@ public class BeanDeployment {
         services.add(JsfApiAbstraction.class, new JsfApiAbstraction(resourceLoader));
         services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
+        services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
         this.enabledBuilder = EnabledBuilder.of(beanDeploymentArchive.getBeansXml(), resourceLoader);
         services.add(InjectionTargetValidator.class, new InjectionTargetValidator(beanManager));
