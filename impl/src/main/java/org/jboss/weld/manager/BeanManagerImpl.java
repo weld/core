@@ -1024,9 +1024,19 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return rootNamespace;
     }
 
+    @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
         AnnotatedTypeValidator.validateAnnotatedType(type);
         InjectionTarget<T> injectionTarget = new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type), this);
+        // validate InjectionTarget for definition errors
+        Validator validator = getServices().get(Validator.class);
+        try {
+            for (InjectionPoint ip : injectionTarget.getInjectionPoints()) {
+                validator.validateInjectionPointForDefinitionErrors(ip, null, this);
+            }
+        } catch (Throwable e) {
+            throw new IllegalArgumentException(e);
+        }
         getServices().get(InjectionTargetValidator.class).addInjectionTarget(injectionTarget);
         return injectionTarget;
     }

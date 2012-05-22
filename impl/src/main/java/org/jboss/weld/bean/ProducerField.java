@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
 
 import java.lang.reflect.Field;
@@ -24,7 +23,6 @@ import java.lang.reflect.Field;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
@@ -124,9 +122,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
 
 
     protected void checkProducerField() {
-        if (getEnhancedAnnotated().isAnnotationPresent(Inject.class)) {
-            throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, getEnhancedAnnotated(), getEnhancedAnnotated().getDeclaringType());
-        }
         if (getDeclaringBean() instanceof SessionBean<?> && !getEnhancedAnnotated().isStatic()) {
             throw new DefinitionException(PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC, getEnhancedAnnotated(), getEnhancedAnnotated().getDeclaringType());
         }

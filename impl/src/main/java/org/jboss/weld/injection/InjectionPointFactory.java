@@ -185,12 +185,10 @@ public class InjectionPointFactory {
     }
 
     private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        if (!annotatedField.isAnnotationPresent(Produces.class)) {
-            if (annotatedField.isFinal()) {
-                throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
-            }
-            injectableFields.add(createFieldInjectionPoint(annotatedField, declaringBean, declaringComponentClass, manager));
+        if (annotatedField.isFinal()) {
+            throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
         }
+        injectableFields.add(createFieldInjectionPoint(annotatedField, declaringBean, declaringComponentClass, manager));
     }
 
     private Set<WeldInjectionPoint<?, ?>> getFieldInjectionPointsWithSpecialAnnotation(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, Class<? extends Annotation> annotationType, BeanManagerImpl manager) {
