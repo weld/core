@@ -114,12 +114,6 @@
                     <exclude name="testSyntheticBeanIntercepted"/>
                 </methods>
             </class>
-            <!-- WELD-1054 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.parameterized.AssignabilityOfRawAndParameterizedTypesTest">
-                <methods>
-                    <exclude name="testAssignabilityToRawType"/>
-                </methods>
-            </class>
             <class name="org.jboss.cdi.tck.tests.lookup.injection.parameterized.ParameterizedTypesInjectionToRawTypeTest">
                 <methods>
                     <exclude name="testInjection"/>

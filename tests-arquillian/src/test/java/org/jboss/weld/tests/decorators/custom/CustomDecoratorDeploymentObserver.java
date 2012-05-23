@@ -32,7 +32,7 @@ public class CustomDecoratorDeploymentObserver implements Extension {
     /**
      * Must veto the custom decorator class, otherwise a bean will be created
      */
-    public void vetoCustomDecorator(@Observes ProcessAnnotatedType event, BeanManager beanManager) {
+    public void vetoCustomDecorator(@Observes ProcessAnnotatedType<?> event, BeanManager beanManager) {
         if (event.getAnnotatedType().getJavaClass().equals(CustomWindowFrame.class))
             event.veto();
     }

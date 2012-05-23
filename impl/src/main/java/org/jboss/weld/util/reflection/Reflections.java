@@ -498,6 +498,22 @@ public class Reflections {
         return clazz.isEnum() || (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum());
     }
 
+    public static boolean isArrayOfUnboundedTypeVariablesOrObjects(Type[] types) {
+        for (Type type : types) {
+            if (Object.class.equals(type)) {
+                continue;
+            }
+            if (type instanceof TypeVariable<?>) {
+                Type[] bounds = ((TypeVariable<?>) type).getBounds();
+                if (bounds == null || bounds.length == 0 || (bounds.length == 1 && Object.class.equals(bounds[0]))) {
+                    continue;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
     /**
      * This is a helper class that holds the raw type and the actual type arguments of a Type.
      * In case of arrays, the raw type is the raw type of the array, while the actualTypeArguments are the actualTypeArguments
@@ -555,14 +571,22 @@ public class Reflections {
         }
 
         private boolean areActualTypeArgumentsAssignableFrom(Type[] otherActualTypeArguments) {
-            for (int i = 0; i < this.getActualTypeArguments().length; i++) {
-                Type type1 = this.getActualTypeArguments()[i];
-                Type type2 = otherActualTypeArguments.length > i ? otherActualTypeArguments[i] : Object.class;
-                if (!Reflections.isAssignableFrom(type1, type2)) {
-                    return false;
+            if (this.getActualTypeArguments().length == 0) {
+                /*
+                 * A parameterized bean type is considered assignable to a raw required type if the raw types are identical and
+                 * all type parameters of the bean type are either unbounded type variables or java.lang.Object.
+                 */
+                return isArrayOfUnboundedTypeVariablesOrObjects(otherActualTypeArguments);
+            } else {
+                for (int i = 0; i < this.getActualTypeArguments().length; i++) {
+                    Type type1 = this.getActualTypeArguments()[i];
+                    Type type2 = otherActualTypeArguments.length > i ? otherActualTypeArguments[i] : Object.class;
+                    if (!Reflections.isAssignableFrom(type1, type2)) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
         }
 
         private static TypeHolder wrap(Type type) {

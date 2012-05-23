@@ -24,9 +24,9 @@ import java.util.List;
 public class ListInstance {
     @Inject
     @Any
-    Instance<List> instance;
+    Instance<List<?>> instance;
 
-    public Instance<List> get() {
+    public Instance<List<?>> get() {
         return instance;
     }
 

@@ -123,14 +123,17 @@ public class ResolvableBuilder {
             final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
             this.qualifierInstances.add(new QualifierInstance(DefaultLiteral.INSTANCE, store));
         }
-        for (Class<?> facadeType : FACADE_TYPES) {
-            if (Reflections.isAssignableFrom(facadeType, types)) {
-                return createFacade(facadeType);
+        for (Type type : types) {
+            Class<?> rawType = Reflections.getRawType(type);
+            for (Class<?> facadeType : FACADE_TYPES) {
+                if (facadeType.equals(rawType)) {
+                    return createFacade(facadeType);
+                }
             }
-        }
-        for (Class<?> metadataType : METADATA_TYPES) {
-            if (Reflections.isAssignableFrom(metadataType, types)) {
-                return createMetadataProvider(metadataType);
+            for (Class<?> metadataType : METADATA_TYPES) {
+                if (metadataType.equals(rawType)) {
+                    return createMetadataProvider(metadataType);
+                }
             }
         }
         return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances);

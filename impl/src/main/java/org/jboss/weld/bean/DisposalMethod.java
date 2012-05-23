@@ -189,9 +189,8 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
 
     }
 
-    @Override
-    public Class<T> getType() {
-        return type;
+    public Type getGenericType() {
+        return getDisposesParameter().getBaseType();
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
