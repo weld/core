@@ -157,12 +157,6 @@
                     <exclude name="testDeployment"/>
                 </methods>
             </class>
-            <!-- WELD-1090 -->
-            <class name="org.jboss.cdi.tck.tests.context.dependent.DependentContextTest">
-                <methods>
-                    <exclude name="testCallingCreationalContextReleaseDestroysDependents"/>
-                </methods>
-            </class>
             <!-- WELD-1045 -->
             <class name="org.jboss.cdi.tck.tests.extensions.lifecycle.processBeanAttributes.interceptor.InterceptorProcessBeanAttributesTest">
                 <methods>
