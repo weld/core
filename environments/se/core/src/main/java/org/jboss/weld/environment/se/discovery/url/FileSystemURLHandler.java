@@ -69,19 +69,21 @@ public class FileSystemURLHandler {
                 } else {
                     handleArchiveByFile(file, discoveredClasses, discoveredBeansXmlUrls);
                 }
-           } catch (IOException ioe) {
-               FileSystemURLHandler.log.warn("could not read entries", ioe);
-           } catch (SecurityException se) {
-               FileSystemURLHandler.log.warn("could not read entries", se);
-           } catch (NoSuchMethodException nsme) {
-               FileSystemURLHandler.log.warn("could not read entries", nsme);
-           } catch (IllegalArgumentException iarge) {
-               FileSystemURLHandler.log.warn("could not read entries", iarge);
-           } catch (IllegalAccessException iacce) {
-               FileSystemURLHandler.log.warn("could not read entries", iacce);
-           } catch (InvocationTargetException ite) {
-               FileSystemURLHandler.log.warn("could not read entries", ite);
-           }
+            } catch (MalformedURLException mue) {
+                log.warn("could not read entries, method JNLPClassLoader#getJarFile(URL) did not return a valid URL", mue);
+            } catch (SecurityException se) {
+                log.warn("could not invoke JNLPClassLoader#getJarFile(URL) on context class loader", se);
+            } catch (NoSuchMethodException nsme) {
+                log.warn("could not invoke JNLPClassLoader#getJarFile(URL) on context class loader, expecting Web Start class loader", nsme);
+            } catch (IllegalArgumentException iarge) {
+                log.warn("could not invoke JNLPClassLoader#getJarFile(URL) on context class loader, expecting Web Start class loader", iarge);
+            } catch (IllegalAccessException iacce) {
+                log.warn("could not invoke JNLPClassLoader#getJarFile(URL) on context class loader", iacce);
+            } catch (InvocationTargetException ite) {
+                log.warn("JNLPClassLoader#getJarFile(URL) threw exception", ite);
+            } catch (IOException ioe) { // from handleArchiveByFile
+                log.warn("could not read entries", ioe);
+            }
         }
     }
 
