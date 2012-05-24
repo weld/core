@@ -44,7 +44,6 @@ import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedConstructorImpl;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
-import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.InterceptedSubclassFactory;
@@ -59,10 +58,10 @@ import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.producer.InterceptionModelInitializer;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.producer.InterceptionModelInitializer;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
@@ -93,9 +92,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     // Decorators
     private List<Decorator<?>> decorators;
-
-    // Interceptors
-    private boolean hasSerializationOrInvocationInterceptorMethods;
 
     // Bean callback methods
     private List<AnnotatedMethod<? super T>> postConstructMethods;
@@ -138,7 +134,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         super.internalInitialize(environment);
         checkBeanImplementation();
         initPassivationCapable();
-        initTargetClassInterceptors();
     }
 
     private void initPassivationCapable() {
@@ -185,9 +180,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     protected void initInterceptorsIfNeeded() {
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
-            new InterceptionModelInitializer<T>(beanManager, enhancedAnnotatedItem, this, hasSerializationOrInvocationInterceptorMethods).init();
+            new InterceptionModelInitializer<T>(beanManager, enhancedAnnotatedItem, this).init();
         }
-        hasInterceptors = this.isInterceptionCandidate() && (hasSerializationOrInvocationInterceptorMethods || beanManager.getInterceptorModelRegistry().get(getType()) != null);
+        hasInterceptors = this.isInterceptionCandidate() && (beanManager.getInterceptorModelRegistry().containsKey(getType()));
     }
 
     public void initDecorators() {
@@ -370,20 +365,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     public boolean hasInterceptors() {
         return hasInterceptors;
-    }
-
-    private void initTargetClassInterceptors() {
-        if (!Beans.isInterceptor(getEnhancedAnnotated())) {
-            InterceptorMetadata<T> interceptorClassMetadata = beanManager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(getEnhancedAnnotated()));
-            hasSerializationOrInvocationInterceptorMethods = interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
-                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT)
-                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)
-                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE);
-        } else {
-            // an interceptor does not have lifecycle methods of its own, but it intercepts the methods of the
-            // target class
-            hasSerializationOrInvocationInterceptorMethods = false;
-        }
     }
 
     protected void checkConstructor(EnhancedAnnotatedConstructor<T> enhancedAnnotated) {

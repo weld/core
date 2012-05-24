@@ -17,7 +17,6 @@
 
 package org.jboss.weld.injection;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -35,26 +34,40 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * A wrapper on a {@link ConstructorInjectionPoint}, to be used if a proxy subclass is instantiated instead of the
  * original (e.g. because the original is an abstract {@link javax.decorator.Decorator})
  * <p/>
- * This is a wrapper class, it is not thread-safe and any instance of this class should be used only for temporarily
- * enhancing the bean instance creation process.
+ *
+ * This class is immutable.
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * @author Jozef Hartinger
  */
 // TODO Needs equals/hashcode
 // TODO Would be clearer to make this either a wrapper or not
-// TODO (AJ) this needs proper cleanup!
 public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorInjectionPoint<T> {
     private ConstructorInjectionPoint<T> originalConstructorInjectionPoint;
-    private Object decoratorDelegate = null;
-    private boolean decorator;
+    private final boolean decorator;
+    private final int delegateInjectionPointPosition;
     private final Bean<?> bean;
 
-    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, EnhancedAnnotatedConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
-        super(weldConstructor, declaringBean, declaringBean.getBeanClass(), InjectionPointFactory.silentInstance(), manager);
+    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, Class<?> declaringComponentClass, EnhancedAnnotatedConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, BeanManagerImpl manager) {
+        super(weldConstructor, declaringBean, declaringComponentClass, InjectionPointFactory.silentInstance(), manager);
         this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
         this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;
         this.bean = declaringBean;
+        this.delegateInjectionPointPosition = initDelegateInjectionPointPosition();
+    }
+
+    private int initDelegateInjectionPointPosition() {
+        for (ParameterInjectionPoint<?, T> parameter : getParameterInjectionPoints()) {
+            if (parameter.isDelegate()) {
+                return parameter.getAnnotated().getPosition();
+            }
+        }
+        return -1;
+    }
+
+    private boolean hasDelegateInjectionPoint() {
+        return delegateInjectionPointPosition != -1;
     }
 
     @Override
@@ -63,25 +76,14 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     }
 
     @Override
-    protected Object[] getParameterValues(List<ParameterInjectionPoint<?, T>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager, CreationalContext<?> creationalContext) {
-        Object[] parameterValues = super.getParameterValues(parameters, specialVal, specialParam, manager, creationalContext);
-        // Check if any of the injections are for a delegate
-        for (ParameterInjectionPoint<?, T> parameter : getParameterInjectionPoints()) {
-            if (parameter.isDelegate()) {
-                decoratorDelegate = parameterValues[parameter.getAnnotated().getPosition()];
-            }
-        }
-        return parameterValues;
-    }
-
-    @Override
-    public T newInstance(final BeanManagerImpl manager, final CreationalContext<?> creationalContext) {
+    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext, Object[] parameterValues) {
         // Once the instance is created, a method handler is required regardless of whether
         // an actual bean instance is known yet.
-        final T instance = super.newInstance(manager, creationalContext);
+        final T instance = super.newInstance(manager, creationalContext, parameterValues);
         if (decorator) {
             BeanInstance beanInstance = null;
-            if (decoratorDelegate != null) {
+            if (hasDelegateInjectionPoint()) {
+                Object decoratorDelegate = parameterValues[delegateInjectionPointPosition];
                 beanInstance = new TargetBeanInstance(decoratorDelegate);
             }
             ProxyFactory.setBeanInstance(instance, beanInstance, bean);

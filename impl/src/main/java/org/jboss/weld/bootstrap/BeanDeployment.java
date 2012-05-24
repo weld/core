@@ -59,9 +59,9 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.executor.SingleThreadExecutorServices;
+import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.InjectionTargetValidator;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
@@ -126,7 +126,7 @@ public class BeanDeployment {
         services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
         this.enabledBuilder = EnabledBuilder.of(beanDeploymentArchive.getBeansXml(), resourceLoader);
-        services.add(InjectionTargetValidator.class, new InjectionTargetValidator(beanManager));
+        services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
         services.add(EnumService.class, new EnumService(beanManager));
         if (beanManager.getServices().contains(EjbServices.class)) {
             // Must populate EJB cache first, as we need it to detect whether a

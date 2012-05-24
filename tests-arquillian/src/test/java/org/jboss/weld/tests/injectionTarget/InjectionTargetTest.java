@@ -16,19 +16,18 @@
  */
 package org.jboss.weld.tests.injectionTarget;
 
+import static org.junit.Assert.fail;
+
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.spi.BeanManager;
-
-import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
 public class InjectionTargetTest {
@@ -46,7 +45,7 @@ public class InjectionTargetTest {
     public void testCreateInjectionTargetOfInterface(BeanManager beanManager) {
         try {
             beanManager.createInjectionTarget(beanManager.createAnnotatedType(Foo.class));
-        } catch (DefinitionException e) {
+        } catch (IllegalArgumentException e) {
             return;
         }
         fail();

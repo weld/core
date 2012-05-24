@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 @Veto
 @Large
-@Simple
+@Lifecycle
 public class Office implements Building<String> {
 
     @Inject
@@ -79,6 +79,7 @@ public class Office implements Building<String> {
         return preDestroyCalled;
     }
 
+    @Simple
     public boolean intercepted() {
         return false;
     }

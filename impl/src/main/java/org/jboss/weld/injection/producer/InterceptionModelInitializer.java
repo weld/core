@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.producer;
+package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
@@ -44,6 +44,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
+import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -60,6 +61,14 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
+/**
+ * Initializes {@link InterceptionModel} for a {@link Bean} or a non-contextual component.
+ *
+ * @author Marko Luksa
+ * @author Jozef Hartinger
+ *
+ * @param <T>
+ */
 public class InterceptionModelInitializer<T> {
 
     private static final InterceptorMetadata<?>[] EMPTY_INTERCEPTOR_METADATA_ARRAY = new InterceptorMetadata[0];
@@ -68,19 +77,18 @@ public class InterceptionModelInitializer<T> {
         return cast(EMPTY_INTERCEPTOR_METADATA_ARRAY);
     }
 
-    private Map<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
-
-    private List<AnnotatedMethod<?>> businessMethods;
-    private final InterceptionModelBuilder<ClassMetadata<?>,?> builder;
     private final BeanManagerImpl manager;
-    private final EnhancedAnnotatedType<T> annotatedType; // TODO do we need enhanced one?
-    private boolean hasSerializationOrInvocationInterceptorMethods; // TODO move here
+    private final EnhancedAnnotatedType<T> annotatedType;
     private final Set<Class<? extends Annotation>> stereotypes;
 
-    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, Bean<?> bean, boolean hasSerializationOrInvocationInterceptorMethods) {
+    private Map<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
+    private List<AnnotatedMethod<?>> businessMethods;
+    private final InterceptionModelBuilder<ClassMetadata<?>,?> builder;
+    private boolean hasSerializationOrInvocationInterceptorMethods;
+
+    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, Bean<?> bean) {
         this.manager = manager;
         this.annotatedType = annotatedType;
-        this.hasSerializationOrInvocationInterceptorMethods = hasSerializationOrInvocationInterceptorMethods;
         this.builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(getClassMetadata());
         if (bean == null) {
             stereotypes = Collections.emptySet();
@@ -90,7 +98,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     public void init() {
-        // TODO check Container state
+        initTargetClassInterceptors();
         businessMethods = Beans.getInterceptableMethods(annotatedType);
 
         initCdiInterceptors();
@@ -102,6 +110,20 @@ public class InterceptionModelInitializer<T> {
                 throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, annotatedType.getJavaClass());
             }
             manager.getInterceptorModelRegistry().put(annotatedType.getJavaClass(), interceptionModel);
+        }
+    }
+
+    private void initTargetClassInterceptors() {
+        if (!Beans.isInterceptor(annotatedType)) {
+            InterceptorMetadata<T> interceptorClassMetadata = manager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(WeldInterceptorClassMetadata.of(annotatedType));
+            hasSerializationOrInvocationInterceptorMethods = interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_INVOKE)
+                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_TIMEOUT)
+                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)
+                    || interceptorClassMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE);
+        } else {
+            // an interceptor does not have lifecycle methods of its own, but it intercepts the methods of the
+            // target class
+            hasSerializationOrInvocationInterceptorMethods = false;
         }
     }
 

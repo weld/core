@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -102,8 +104,7 @@ public class Interceptors {
     /**
      * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
      */
-    public static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, EnhancedAnnotatedType<?> clazz,
-            Collection<Class<? extends Annotation>> stereotypes) {
+    public static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, AnnotatedType<?> clazz, Collection<Class<? extends Annotation>> stereotypes) {
         Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, clazz.getAnnotations()), true, false);
         Set<Annotation> inheritedBindingAnnotations = new HashSet<Annotation>();
         inheritedBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, clazz.getAnnotations()), false, true));

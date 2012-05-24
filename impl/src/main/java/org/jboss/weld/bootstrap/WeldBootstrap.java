@@ -101,9 +101,9 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.executor.SingleThreadExecutorServices;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.InjectionTargetValidator;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -410,6 +410,7 @@ public class WeldBootstrap implements Bootstrap {
             // outside the physical structure
             beanDeployments = deploymentVisitor.visit();
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
+                entry.getValue().getBeanManager().getServices().get(InjectionTargetService.class).initialize();
                 entry.getValue().afterBeanDiscovery(environment);
             }
             Container.instance().putBeanDeployments(beanDeployments);
@@ -428,7 +429,7 @@ public class WeldBootstrap implements Bootstrap {
                     BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                     beanManager.getBeanResolver().clear();
                     deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
-                    beanManager.getServices().get(InjectionTargetValidator.class).validate();
+                    beanManager.getServices().get(InjectionTargetService.class).validate();
                 }
                 AfterDeploymentValidationImpl.fire(deploymentManager, beanDeployments);
             }

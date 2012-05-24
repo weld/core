@@ -620,7 +620,7 @@ public class Beans {
         }
     }
 
-    public static <T> boolean isInterceptor(EnhancedAnnotatedType<T> annotatedItem) {
+    public static <T> boolean isInterceptor(AnnotatedType<T> annotatedItem) {
         return annotatedItem.isAnnotationPresent(javax.interceptor.Interceptor.class);
     }
 

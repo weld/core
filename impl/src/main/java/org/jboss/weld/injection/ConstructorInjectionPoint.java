@@ -54,8 +54,12 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
+        return newInstance(manager, creationalContext, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
+    }
+
+    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext, Object[] parameterValues) {
         try {
-            return RuntimeAnnotatedMembers.newInstance(getAnnotated(), getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
+            return RuntimeAnnotatedMembers.newInstance(getAnnotated(), parameterValues);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (InstantiationException e) {

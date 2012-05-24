@@ -33,9 +33,9 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.InjectionTargetValidator;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -67,7 +67,7 @@ public class EnumService implements Service {
         EnhancedAnnotatedType<T> weldClass = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(annotatedType);
         EnumInjectionTarget<? extends Enum<?>> enumInjectionTarget = EnumInjectionTarget.of(weldClass, manager);
         injectionTargets.put(weldClass.getJavaClass(), enumInjectionTarget);
-        manager.getServices().get(InjectionTargetValidator.class).addInjectionTarget(enumInjectionTarget);
+        manager.getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(enumInjectionTarget);
     }
 
     public void inject() {

@@ -271,7 +271,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         if (!isSubclassed()) {
             return getConstructor().newInstance(beanManager, ctx);
         } else {
-            ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, constructorForEnhancedSubclass, getConstructor(), beanManager);
+            ProxyClassConstructorInjectionPointWrapper<T> constructorInjectionPointWrapper = new ProxyClassConstructorInjectionPointWrapper<T>(this, this.getBeanClass(), constructorForEnhancedSubclass, getConstructor(), beanManager);
             return constructorInjectionPointWrapper.newInstance(beanManager, ctx);
         }
     }

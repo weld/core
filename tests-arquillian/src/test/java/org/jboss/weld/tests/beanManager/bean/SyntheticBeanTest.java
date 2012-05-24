@@ -60,7 +60,7 @@ public class SyntheticBeanTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(SimpleInterceptor.class).decorate(VehicleDecorator.class).addPackage(Simple.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class).intercept(SimpleInterceptor.class, LifecycleInterceptor.class).decorate(VehicleDecorator.class).addPackage(Simple.class.getPackage())
                 .addAsServiceProvider(Extension.class, BeanExtension.class);
     }
 
@@ -87,10 +87,18 @@ public class SyntheticBeanTest {
     }
 
     @Test
-    @Ignore("WELD-1049")
     public void testSyntheticBeanIntercepted() {
         assertTrue(office.intercepted());
         assertTrue(serializableOffice.intercepted());
+
+        LifecycleInterceptor.reset();
+        Bean<Office> bean = cast(manager.resolve(manager.getBeans(Office.class, Large.Literal.INSTANCE)));
+        CreationalContext<Office> ctx = manager.createCreationalContext(bean);
+        Office instance = bean.create(ctx);
+        instance.intercepted();
+        bean.destroy(instance, ctx);
+        assertTrue(LifecycleInterceptor.isPostConstructCalled());
+        assertTrue(LifecycleInterceptor.isPreDestroyCalled());
     }
 
     private void testOffice(Bean<Office> bean) {

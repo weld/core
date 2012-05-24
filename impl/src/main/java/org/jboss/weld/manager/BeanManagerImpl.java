@@ -125,6 +125,9 @@ import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
+import org.jboss.weld.injection.producer.InjectionTargetInitializationContext;
+import org.jboss.weld.injection.producer.InjectionTargetService;
+import org.jboss.weld.injection.producer.WeldInjectionTarget;
 import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -1026,18 +1029,30 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        AnnotatedTypeValidator.validateAnnotatedType(type);
-        InjectionTarget<T> injectionTarget = new SimpleInjectionTarget<T>(getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type), this);
-        // validate InjectionTarget for definition errors
         Validator validator = getServices().get(Validator.class);
+        AnnotatedTypeValidator.validateAnnotatedType(type);
         try {
+            EnhancedAnnotatedType<T> enhancedType = getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
+            InjectionTarget<T> injectionTarget = createInjectionTarget(enhancedType, null);
+
+            // validate InjectionTarget for definition errors
             for (InjectionPoint ip : injectionTarget.getInjectionPoints()) {
                 validator.validateInjectionPointForDefinitionErrors(ip, null, this);
             }
+            getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(injectionTarget);
+            return injectionTarget;
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
         }
-        getServices().get(InjectionTargetValidator.class).addInjectionTarget(injectionTarget);
+    }
+
+    public <T> WeldInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
+        WeldInjectionTarget<T> injectionTarget = new WeldInjectionTarget<T>(type, bean, this);
+        /*
+         * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension
+         * has to be initialized after beans (interceptors) are deployed.
+         */
+        getServices().get(InjectionTargetService.class).addInjectionTargetToBeInitialized(new InjectionTargetInitializationContext<T>(type, injectionTarget));
         return injectionTarget;
     }
 
@@ -1049,11 +1064,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (descriptor.isMessageDriven()) {
 
             InjectionTarget<T> injectionTarget = createMessageDrivenInjectionTarget(createAnnotatedType(descriptor.getBeanClass()));
-            getServices().get(InjectionTargetValidator.class).addInjectionTarget(injectionTarget);
+            getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(injectionTarget);
             return injectionTarget;
         } else {
             InjectionTarget<T> injectionTarget = getBean(descriptor).getInjectionTarget();
-            getServices().get(InjectionTargetValidator.class).addInjectionTarget(injectionTarget);
+            getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(injectionTarget);
             return injectionTarget;
         }
     }
