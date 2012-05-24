@@ -75,6 +75,7 @@ import javax.enterprise.inject.Requires;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.Veto;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -203,16 +204,16 @@ public class Beans {
         }
     }
 
-    public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getPostConstructMethods(EnhancedAnnotatedType<T> type) {
+    public static <T> List<AnnotatedMethod<? super T>> getPostConstructMethods(EnhancedAnnotatedType<T> type) {
         EnhancedAnnotatedType<?> t = type;
-        List<EnhancedAnnotatedMethod<?, ? super T>> methods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
+        List<AnnotatedMethod<? super T>> methods = new ArrayList<AnnotatedMethod<? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
             Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredEnhancedMethods(PostConstruct.class));
             log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
             } else if (declaredMethods.size() == 1) {
-                EnhancedAnnotatedMethod<?, ? super T> method = declaredMethods.iterator().next();
+                AnnotatedMethod<? super T> method = declaredMethods.iterator().next().slim();
                 log.trace(FOUND_ONE_POST_CONSTRUCT_METHOD, method, type);
                 methods.add(0, method);
             }
@@ -244,16 +245,16 @@ public class Beans {
         return observerMethods;
     }
 
-    public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getPreDestroyMethods(EnhancedAnnotatedType<T> type) {
+    public static <T> List<AnnotatedMethod<? super T>> getPreDestroyMethods(EnhancedAnnotatedType<T> type) {
         EnhancedAnnotatedType<?> t = type;
-        List<EnhancedAnnotatedMethod<?, ? super T>> methods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
+        List<AnnotatedMethod<? super T>> methods = new ArrayList<AnnotatedMethod<? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
             Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredEnhancedMethods(PreDestroy.class));
             log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
             } else if (declaredMethods.size() == 1) {
-                EnhancedAnnotatedMethod<?, ? super T> method = declaredMethods.iterator().next();
+                AnnotatedMethod<? super T> method = declaredMethods.iterator().next().slim();
                 log.trace(FOUND_ONE_PRE_DESTROY_METHOD, method, type);
                 methods.add(0, method);
             }

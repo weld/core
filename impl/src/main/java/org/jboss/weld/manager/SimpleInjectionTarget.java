@@ -16,8 +16,19 @@
  */
 package org.jboss.weld.manager;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.MISSING_BEAN_CONSTRUCTOR_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -32,16 +43,6 @@ import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.InjectionPoints;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.jboss.weld.logging.messages.BeanManagerMessage.MISSING_BEAN_CONSTRUCTOR_FOUND;
-import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
-
 /**
  * @author pmuir
  */
@@ -52,8 +53,8 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
     private final ConstructorInjectionPoint<T> constructor;
     private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
     private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
-    private final List<EnhancedAnnotatedMethod<?, ? super T>> postConstructMethods;
-    private final List<EnhancedAnnotatedMethod<?, ? super T>> preDestroyMethods;
+    private final List<AnnotatedMethod<? super T>> postConstructMethods;
+    private final List<AnnotatedMethod<? super T>> preDestroyMethods;
     private final Set<InjectionPoint> injectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
@@ -114,7 +115,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
     }
 
     public void postConstruct(T instance) {
-        for (EnhancedAnnotatedMethod<?, ? super T> method : postConstructMethods) {
+        for (AnnotatedMethod<? super T> method : postConstructMethods) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
@@ -127,7 +128,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
     }
 
     public void preDestroy(T instance) {
-        for (EnhancedAnnotatedMethod<?, ? super T> method : preDestroyMethods) {
+        for (AnnotatedMethod<? super T> method : preDestroyMethods) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy

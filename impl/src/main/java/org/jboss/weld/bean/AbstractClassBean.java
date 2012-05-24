@@ -153,8 +153,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     private boolean hasSerializationOrInvocationInterceptorMethods;
 
     // Bean callback methods
-    private List<EnhancedAnnotatedMethod<?, ? super T>> postConstructMethods;
-    private List<EnhancedAnnotatedMethod<?, ? super T>> preDestroyMethods;
+    private List<AnnotatedMethod<? super T>> postConstructMethods;
+    private List<AnnotatedMethod<? super T>> preDestroyMethods;
 
     // Injection target for the bean
     private InjectionTarget<T> injectionTarget;
@@ -371,7 +371,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      *
      * @return The post-construct method
      */
-    public List<EnhancedAnnotatedMethod<?, ? super T>> getPostConstruct() {
+    public List<AnnotatedMethod<? super T>> getPostConstruct() {
         return postConstructMethods;
     }
 
@@ -380,7 +380,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      *
      * @return The pre-destroy method
      */
-    public List<EnhancedAnnotatedMethod<?, ? super T>> getPreDestroy() {
+    public List<AnnotatedMethod<? super T>> getPreDestroy() {
         return preDestroyMethods;
     }
 
@@ -400,7 +400,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected void defaultPreDestroy(T instance) {
-        for (EnhancedAnnotatedMethod<?, ? super T> method : getPreDestroy()) {
+        for (AnnotatedMethod<? super T> method : getPreDestroy()) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
@@ -413,7 +413,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     protected void defaultPostConstruct(T instance) {
-        for (EnhancedAnnotatedMethod<?, ? super T> method : getPostConstruct()) {
+        for (AnnotatedMethod<? super T> method : getPostConstruct()) {
             if (method != null) {
                 try {
                     // note: RI supports injection into @PreDestroy
