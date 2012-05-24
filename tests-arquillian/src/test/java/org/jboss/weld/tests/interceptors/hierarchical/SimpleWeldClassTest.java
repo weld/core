@@ -19,6 +19,8 @@ package org.jboss.weld.tests.interceptors.hierarchical;
 import java.util.Collection;
 import java.util.List;
 
+import javax.enterprise.inject.spi.AnnotatedMethod;
+
 import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -57,7 +59,7 @@ public class SimpleWeldClassTest {
         EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(new TypeStore(), new SharedObjectCache()).getEnhancedAnnotatedType(Attacker.class);
         Collection<EnhancedAnnotatedMethod<?, ? super Attacker>> methods = weldClass.getEnhancedMethods();
         Assert.assertEquals(4, methods.size());
-        List<EnhancedAnnotatedMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
+        List<AnnotatedMethod<?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
         Assert.assertEquals(4, interceptableMethods.size());
     }
 }

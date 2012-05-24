@@ -263,9 +263,9 @@ public class Beans {
         return immutableList(methods);
     }
 
-    public static List<EnhancedAnnotatedMethod<?, ?>> getInterceptableMethods(EnhancedAnnotatedType<?> type) {
-        List<EnhancedAnnotatedMethod<?, ?>> annotatedMethods = new ArrayList<EnhancedAnnotatedMethod<?, ?>>();
-        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : type.getEnhancedMethods()) {
+    public static List<AnnotatedMethod<?>> getInterceptableMethods(AnnotatedType<?> type) {
+        List<AnnotatedMethod<?>> annotatedMethods = new ArrayList<AnnotatedMethod<?>>();
+        for (AnnotatedMethod<?> annotatedMethod : type.getMethods()) {
             boolean businessMethod = !annotatedMethod.isStatic()
                     && !annotatedMethod.isAnnotationPresent(Inject.class)
                     && !annotatedMethod.getJavaMember().isBridge();

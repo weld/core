@@ -54,7 +54,6 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedConstructorImpl;
@@ -160,8 +159,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     private InjectionTarget<T> injectionTarget;
 
     private final ConstructorInjectionPoint<T> constructor;
-
-    protected EnhancedAnnotatedType<T> enhancedSubclass;
 
     protected EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass;
 
@@ -478,16 +475,16 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     protected void initEnhancedSubclass() {
         final ClassTransformer transformer = beanManager.getServices().get(ClassTransformer.class);
-        enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass());
+        EnhancedAnnotatedType<T> enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass());
         constructorForEnhancedSubclass = EnhancedAnnotatedConstructorImpl.of(
-                enhancedSubclass.getDeclaredEnhancedConstructor(getConstructor().getSignature()),
+                enhancedSubclass.getDeclaredEnhancedConstructor(constructor.getSignature()),
                 enhancedSubclass,
                 transformer);
     }
 
     protected Class<T> createEnhancedSubclass() {
         Set<MethodSignature> enhancedMethodSignatures = new HashSet<MethodSignature>();
-        for (EnhancedAnnotatedMethod<?, ?> method : Beans.getInterceptableMethods(this.getEnhancedAnnotated())) {
+        for (AnnotatedMethod<?> method : Beans.getInterceptableMethods(this.getAnnotated())) {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
         }
         return new InterceptedSubclassFactory<T>(getType(), getTypes(), this, enhancedMethodSignatures).getProxyClass();
@@ -511,7 +508,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
         private Map<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
 
-        private List<EnhancedAnnotatedMethod<?,?>> businessMethods;
+        private List<AnnotatedMethod<?>> businessMethods;
         private InterceptionModelBuilder<ClassMetadata<?>,?> builder;
 
         public void init() {
@@ -562,17 +559,17 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
         }
 
         private void initCdiBusinessMethodInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-            for (EnhancedAnnotatedMethod<?, ?> method : businessMethods) {
+            for (AnnotatedMethod<?> method : businessMethods) {
                 initCdiBusinessMethodInterceptor(method, getMethodBindingAnnotations(classBindingAnnotations, method));
             }
         }
 
-        private Collection<Annotation> getMethodBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, EnhancedAnnotatedMethod<?, ?> method) {
+        private Collection<Annotation> getMethodBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, AnnotatedMethod<?> method) {
             Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, method.getAnnotations()), true, true);
             return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
         }
 
-        private void initCdiBusinessMethodInterceptor(EnhancedAnnotatedMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
+        private void initCdiBusinessMethodInterceptor(AnnotatedMethod<?> method, Collection<Annotation> methodBindingAnnotations) {
             if (methodBindingAnnotations.size() == 0) {
                 return;
             }
@@ -580,10 +577,10 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             initInterceptor(InterceptionType.AROUND_TIMEOUT, method, methodBindingAnnotations);
         }
 
-        private void initInterceptor(InterceptionType interceptionType, EnhancedAnnotatedMethod<?, ?> method, Collection<Annotation> methodBindingAnnotations) {
+        private void initInterceptor(InterceptionType interceptionType, AnnotatedMethod<?> method, Collection<Annotation> methodBindingAnnotations) {
             List<Interceptor<?>> methodBoundInterceptors = beanManager.resolveInterceptors(interceptionType, methodBindingAnnotations);
             if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
-                if (method.isFinal()) {
+                if (Reflections.isFinal(method.getJavaMember())) {
                     throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
                 }
                 Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
@@ -593,7 +590,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
         private void initEjbInterceptors() {
             initClassDeclaredEjbInterceptors();
-            for (EnhancedAnnotatedMethod<?, ?> method : businessMethods) {
+            for (AnnotatedMethod<?> method : businessMethods) {
                 initMethodDeclaredEjbInterceptors(method);
             }
         }
@@ -612,7 +609,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             }
         }
 
-        private void initMethodDeclaredEjbInterceptors(EnhancedAnnotatedMethod<?, ?> method) {
+        private void initMethodDeclaredEjbInterceptors(AnnotatedMethod<?> method) {
             Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
 
             boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
@@ -622,19 +619,19 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
             Class<?>[] methodDeclaredInterceptors = getMethodDeclaredInterceptors(method);
             if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
-                if (method.isFinal()) {
+                if (Reflections.isFinal(method.getJavaMember())) {
                     throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
                 }
 
                 InterceptionType interceptionType = isTimeoutAnnotationPresentOn(method)
                         ? InterceptionType.AROUND_TIMEOUT
                         : InterceptionType.AROUND_INVOKE;
-                InterceptorMetadata[] interceptors = getMethodDeclaredInterceptorMetadatas(methodDeclaredInterceptors);
+                InterceptorMetadata<?>[] interceptors = getMethodDeclaredInterceptorMetadatas(methodDeclaredInterceptors);
                 builder.intercept(interceptionType, javaMethod).with(interceptors);
             }
         }
 
-        private InterceptorMetadata[] getMethodDeclaredInterceptorMetadatas(Class<?>[] methodDeclaredInterceptors) {
+        private InterceptorMetadata<?>[] getMethodDeclaredInterceptorMetadatas(Class<?>[] methodDeclaredInterceptors) {
             List<InterceptorMetadata<?>> list = new ArrayList<InterceptorMetadata<?>>();
             for (Class<?> clazz : methodDeclaredInterceptors) {
                 list.add(beanManager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
@@ -642,11 +639,11 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             return list.toArray(new InterceptorMetadata[list.size()]);
         }
 
-        private boolean isTimeoutAnnotationPresentOn(EnhancedAnnotatedMethod<?, ?> method) {
+        private boolean isTimeoutAnnotationPresentOn(AnnotatedMethod<?> method) {
             return method.isAnnotationPresent(beanManager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS);
         }
 
-        private Class<?>[] getMethodDeclaredInterceptors(EnhancedAnnotatedMethod<?, ?> method) {
+        private Class<?>[] getMethodDeclaredInterceptors(AnnotatedMethod<?> method) {
             Class<?>[] methodDeclaredInterceptors = null;
             if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
                 methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));

@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.util.collections.Arrays2;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
+import javax.enterprise.inject.spi.AnnotatedMethod;
+
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class MethodSignatureImpl implements MethodSignature {
 
@@ -30,11 +32,11 @@ public class MethodSignatureImpl implements MethodSignature {
     private final String methodName;
     private final String[] parameterTypes;
 
-    public MethodSignatureImpl(EnhancedAnnotatedMethod<?, ?> method) {
-        this.methodName = method.getName();
-        this.parameterTypes = new String[method.getEnhancedParameters().size()];
-        for (int i = 0; i < method.getEnhancedParameters().size(); i++) {
-            parameterTypes[i] = method.getEnhancedParameters().get(i).getJavaClass().getName();
+    public MethodSignatureImpl(AnnotatedMethod<?> method) {
+        this.methodName = method.getJavaMember().getName();
+        this.parameterTypes = new String[method.getParameters().size()];
+        for (int i = 0; i < method.getParameters().size(); i++) {
+            parameterTypes[i] = Reflections.getRawType(method.getParameters().get(i).getBaseType()).getName();
         }
     }
 
