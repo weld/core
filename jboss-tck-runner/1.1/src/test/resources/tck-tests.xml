@@ -41,12 +41,6 @@
                     <exclude name="testNonexistentConversationExceptionThrown" />
                 </methods>
             </class>
-            <!-- CDI-180 -->
-            <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
             <!-- CDI-83 -->
             <class name="org.jboss.cdi.tck.tests.extensions.beanManager.BeanManagerTest">
                 <methods>
