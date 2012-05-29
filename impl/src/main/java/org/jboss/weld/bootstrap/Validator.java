@@ -89,6 +89,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.inject.spi.Producer;
 import javax.inject.Named;
 import javax.inject.Scope;
 
@@ -114,6 +115,7 @@ import org.jboss.weld.exceptions.InconsistentSpecializationException;
 import org.jboss.weld.exceptions.NullableDependencyException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
+import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
@@ -191,12 +193,17 @@ public class Validator implements Service {
                 }
             }
             // for each producer bean validate its disposer method
-            if (bean instanceof AbstractProducerBean<?, ?, ?> && ((AbstractProducerBean<?, ?, ?>)bean).getDisposalMethod() != null) {
-                DisposalMethod<?, ?> disposalMethod = ((AbstractProducerBean<?, ?, ?>)bean).getDisposalMethod();
-                for (InjectionPoint ip : disposalMethod.getInjectionPoints()) {
-                    // pass the producer bean instead of the disposal method bean
-                    validateInjectionPointForDefinitionErrors(ip, bean, beanManager);
-                    validateInjectionPointForDeploymentProblems(ip, bean, beanManager);
+            if (bean instanceof AbstractProducerBean<?, ?, ?>) {
+                AbstractProducerBean<?, ?, ?> producerBean = Reflections.<AbstractProducerBean<?, ?, ?>>cast(bean);
+                if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?>) {
+                    AbstractMemberProducer<?, ?> producer = Reflections.<AbstractMemberProducer<?, ?>>cast(producerBean.getProducer());
+                    if (producer.getDisposalMethod() != null) {
+                        for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
+                            // pass the producer bean instead of the disposal method bean
+                            validateInjectionPointForDefinitionErrors(ip, bean, beanManager);
+                            validateInjectionPointForDeploymentProblems(ip, bean, beanManager);
+                        }
+                    }
                 }
             }
         }
@@ -369,14 +376,14 @@ public class Validator implements Service {
         }
     }
 
-    public void validateInjectionTargets(Collection<InjectionTarget<?>> injectionTargets, BeanManagerImpl beanManager) {
-        for (InjectionTarget<?> injectionTarget : injectionTargets) {
-            validateInjectionTarget(injectionTarget, beanManager);
+    public void validateProducers(Collection<Producer<?>> producers, BeanManagerImpl beanManager) {
+        for (Producer<?> producer : producers) {
+            validateProducer(producer, beanManager);
         }
     }
 
-    public void validateInjectionTarget(InjectionTarget<?> injectionTarget, BeanManagerImpl beanManager) {
-        for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints()) {
+    public void validateProducer(Producer<?> producer, BeanManagerImpl beanManager) {
+        for (InjectionPoint injectionPoint : producer.getInjectionPoints()) {
             validateInjectionPoint(injectionPoint, beanManager);
         }
     }

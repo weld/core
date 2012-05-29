@@ -19,28 +19,21 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
 import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.New;
 import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.Producer;
 import javax.inject.Named;
@@ -48,13 +41,10 @@ import javax.inject.Named;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.BeansClosure;
-import org.jboss.weld.util.collections.ArraySet;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -71,31 +61,18 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
     protected Class<T> type;
 
-    private Set<WeldInjectionPoint<?, ?>> injectionPoints;
-    private Set<WeldInjectionPoint<?, ?>> delegateInjectionPoints;
-    private Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
-    private final ServiceRegistry services;
     private boolean preInitialized;
     private boolean proxyRequired;
+
+    protected Producer<T> producer;
 
     /**
      * Constructor
      *
      * @param beanManager The Bean manager
      */
-    public AbstractBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public AbstractBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager) {
         super(attributes, idSuffix, beanManager);
-        this.injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-        this.delegateInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-        this.newInjectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
-        this.services = services;
-    }
-
-    @Override
-    public void cleanupAfterBoot() {
-        injectionPoints = immutableSet(injectionPoints);
-        delegateInjectionPoints = immutableSet(delegateInjectionPoints);
-        newInjectionPoints = immutableSet(newInjectionPoints);
     }
 
     /**
@@ -123,21 +100,14 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     public void internalInitialize(BeanDeployerEnvironment environment) {
         preInitialize();
         log.trace(CREATING_BEAN, getType());
-        checkDelegateInjectionPoints();
         if (getScope() != null) {
-            proxyRequired = getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
+            proxyRequired = isNormalScoped();
         } else {
             proxyRequired = false;
         }
         log.trace(QUALIFIERS_USED, getQualifiers(), this);
         log.trace(USING_NAME, getName(), this);
         log.trace(USING_SCOPE, getScope(), this);
-    }
-
-    protected void checkDelegateInjectionPoints() {
-        if (this.delegateInjectionPoints.size() > 0) {
-            throw new DefinitionException(DELEGATE_NOT_ON_DECORATOR, this);
-        }
     }
 
     @Override
@@ -147,47 +117,13 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     protected abstract void checkType();
 
-    protected void addInjectionPoint(WeldInjectionPoint<?, ?> injectionPoint) {
-        if (injectionPoint.isDelegate()) {
-            this.delegateInjectionPoints.add(injectionPoint);
-        }
-        if (injectionPoint.getQualifier(New.class) != null) {
-            this.newInjectionPoints.add(injectionPoint);
-        }
-        injectionPoints.add(injectionPoint);
-    }
-
-    protected void addInjectionPoints(Iterable<? extends WeldInjectionPoint<?, ?>> injectionPoints) {
-        for (WeldInjectionPoint<?, ?> injectionPoint : injectionPoints) {
-            addInjectionPoint(injectionPoint);
-        }
-    }
-
-    protected Set<WeldInjectionPoint<?, ?>> getDelegateInjectionPoints() {
-        return delegateInjectionPoints;
-    }
-
-    protected static Set<Type> getTypedTypes(Map<Class<?>, Type> typeClosure, Class<?> rawType, Typed typed) {
-        Set<Type> types = new HashSet<Type>();
-        for (Class<?> specifiedClass : typed.value()) {
-            Type tmp = typeClosure.get(specifiedClass);
-            if (tmp != null) {
-                types.add(tmp);
-            } else {
-                throw new DefinitionException(TYPED_CLASS_NOT_IN_HIERARCHY, specifiedClass.getName(), rawType);
-            }
-        }
-        types.add(Object.class);
-        return types;
-    }
-
     /**
      * Validates specialization if this bean specializes another bean.
      */
     public void checkSpecialization() {
         if (isSpecializing()) {
-            if (getEnhancedAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
-                throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getEnhancedAnnotated());
+            if (getAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
+                throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getAnnotated());
             }
             for (Type type : getSpecializedBean().getTypes()) {
                 if (!getTypes().contains(type)) {
@@ -245,15 +181,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     @Override
     public abstract AbstractBean<?, ?> getSpecializedBean();
 
-    @Override
-    public Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints() {
-        return injectionPoints;
-    }
-
-    public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints() {
-        return newInjectionPoints;
-    }
-
     /**
      * Gets the type of the bean
      *
@@ -275,7 +202,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
 
     @Override
     public boolean isSpecializing() {
-        return getEnhancedAnnotated().isAnnotationPresent(Specializes.class);
+        return getAnnotated().isAnnotationPresent(Specializes.class);
     }
 
     @Override
@@ -283,13 +210,14 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return proxyRequired;
     }
 
-    protected ServiceRegistry getServices() {
-        return services;
+    public Producer<T> getProducer() {
+        return producer;
     }
 
     /**
-     * Returns true if the bean uses the default {@link Producer} ( or {@link InjectionTarget}). The method returns false if the
-     * producer of the bean was replaced by an extension.
+     * Set a Producer for this bean. This operation is *not* threadsafe, and should not be called outside bootstrap.
      */
-    public abstract boolean hasDefaultProducer();
+    public void setProducer(Producer<T> producer) {
+        this.producer = producer;
+    }
 }

@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -83,7 +84,8 @@ public class BuiltinMetadataBeanTest {
         // now verify the disposer method
         fruitYoghurtBean.destroy(fruitYoghurt, fruitCtx);
         probioticYoghurtBean.destroy(probioticYoghurt, probioticCtx);
-        assertEquals(2, factory.getBeans().size());
+        List<Bean<?>> beans = factory.getBeans();
+        assertEquals(2, beans.size());
         assertEquals(fruitYoghurtBean, factory.getBeans().get(0));
         assertEquals(probioticYoghurtBean, factory.getBeans().get(1));
     }

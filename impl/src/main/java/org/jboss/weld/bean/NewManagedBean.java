@@ -16,16 +16,9 @@
  */
 package org.jboss.weld.bean;
 
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -42,15 +35,13 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean {
      * @param beanManager The Bean manager
      * @return a new NewSimpleBean instance
      */
-    public static <T> NewManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> NewManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
         if (clazz.isDiscovered()) {
-            return new NewManagedBean<T>(attributes, clazz, createSimpleId(NewManagedBean.class.getSimpleName(), clazz), beanManager, services);
+            return new NewManagedBean<T>(attributes, clazz, createSimpleId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
         } else {
-            return new NewManagedBean<T>(attributes, clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager, services);
+            return new NewManagedBean<T>(attributes, clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
         }
     }
-
-    private Set<Annotation> bindings;
 
     /**
      * Protected constructor
@@ -58,54 +49,8 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean {
      * @param type        An annotated class
      * @param beanManager The Bean manager
      */
-    protected NewManagedBean(BeanAttributes<T> attributes, final EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(attributes, type, idSuffix, beanManager, services);
-        this.bindings = new HashSet<Annotation>();
-        this.bindings.add(new NewLiteral() {
-
-            private static final long serialVersionUID = -6678013994309291500L;
-
-            @Override
-            public Class<?> value() {
-                return type.getJavaClass();
-            }
-
-        });
-    }
-
-    /**
-     * Gets the scope type
-     *
-     * @return @Dependent
-     */
-    @Override
-    public Class<? extends Annotation> getScope() {
-        return Dependent.class;
-    }
-
-    @Override
-    public boolean isAlternative() {
-        return false;
-    }
-
-    /**
-     * Gets the name of the bean
-     *
-     * @return null
-     */
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    /**
-     * Gets the bindings
-     *
-     * @returns @New
-     */
-    @Override
-    public Set<Annotation> getQualifiers() {
-        return bindings;
+    protected NewManagedBean(BeanAttributes<T> attributes, final EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager) {
+        super(attributes, type, idSuffix, beanManager);
     }
 
     @Override
@@ -117,5 +62,4 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean {
     public String toString() {
         return "@New " + super.toString();
     }
-
 }

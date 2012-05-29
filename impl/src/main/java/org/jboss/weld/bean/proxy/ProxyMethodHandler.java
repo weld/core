@@ -48,7 +48,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
     protected static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     // The bean instance to forward calls to
-    private BeanInstance beanInstance;
+    private final BeanInstance beanInstance;
 
     private final String beanId;
 
@@ -83,7 +83,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
         }
         if (thisMethod.getDeclaringClass().equals(TargetInstanceProxy.class)) {
             if (beanInstance == null) {
-                throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY);
+                throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY, getBean());
             }
             if (thisMethod.getName().equals("getTargetInstance")) {
                 return beanInstance.getInstance();

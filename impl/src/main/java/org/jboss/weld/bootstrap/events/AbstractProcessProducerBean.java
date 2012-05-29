@@ -19,6 +19,7 @@ package org.jboss.weld.bootstrap.events;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import javax.enterprise.inject.spi.Annotated;
@@ -48,10 +49,12 @@ public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProduc
     }
 
     public AnnotatedParameter<T> getAnnotatedDisposedParameter() {
-        if (getBean().getDisposalMethod() != null) {
-            return cast(getBean().getDisposalMethod().getDisposesParameter());
-        } else {
-            return null;
+        if (getBean().getProducer() instanceof AbstractMemberProducer<?, ?>) {
+            AbstractMemberProducer<?, ?> producer = (AbstractMemberProducer<?, ?>) getBean().getProducer();
+            if (producer.getDisposalMethod() != null) {
+                return cast(producer.getDisposalMethod().getDisposesParameter());
+            }
         }
+        return null;
     }
 }

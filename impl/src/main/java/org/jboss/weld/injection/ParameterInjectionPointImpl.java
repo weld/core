@@ -39,7 +39,7 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
     /**
      * Creates an injection point without firing the {@link ProcessInjectionPoint} event.
      */
-    public static <T, X> ParameterInjectionPointImpl<T, X> extension(ParameterInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
+    public static <T, X> ParameterInjectionPointImpl<T, X> silent(ParameterInjectionPointAttributes<T, X> attributes) {
         return new ParameterInjectionPointImpl<T, X>(attributes);
     }
 

@@ -31,9 +31,9 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 public class InjectionTargetInitializationContext<T> {
 
     private final EnhancedAnnotatedType<T> enhancedAnnotatedType;
-    private final WeldInjectionTarget<T> injectionTarget;
+    private final AbstractInjectionTarget<T> injectionTarget;
 
-    public InjectionTargetInitializationContext(EnhancedAnnotatedType<T> enhancedAnnotatedType, WeldInjectionTarget<T> injectionTarget) {
+    public InjectionTargetInitializationContext(EnhancedAnnotatedType<T> enhancedAnnotatedType, AbstractInjectionTarget<T> injectionTarget) {
         this.enhancedAnnotatedType = enhancedAnnotatedType;
         this.injectionTarget = injectionTarget;
     }
@@ -42,7 +42,7 @@ public class InjectionTargetInitializationContext<T> {
         injectionTarget.initializeAfterBeanDiscovery(enhancedAnnotatedType);
     }
 
-    public WeldInjectionTarget<T> getInjectionTarget() {
+    public AbstractInjectionTarget<T> getInjectionTarget() {
         return injectionTarget;
     }
 

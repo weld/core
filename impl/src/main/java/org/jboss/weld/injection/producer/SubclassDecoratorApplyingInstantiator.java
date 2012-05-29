@@ -27,11 +27,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.DecorationHelper;
-import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
@@ -43,36 +41,19 @@ import org.jboss.weld.serialization.spi.ContextualStore;
  *
  * @param <T>
  */
-public class EnhancedSubclassDecoratorApplyingInstantiator<T> implements Instantiator<T> {
+public class SubclassDecoratorApplyingInstantiator<T> extends AbstractDecoratorApplyingInstantiator<T> {
 
-    private final Instantiator<T> delegate;
-    private final Bean<T> bean;
-    private final ProxyFactory<T> decoratorProxyFactory;
-    private final List<Decorator<?>> decorators;
-
-    public EnhancedSubclassDecoratorApplyingInstantiator(Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
-        this.delegate = delegate;
-        this.bean = bean;
-        this.decorators = decorators;
-        this.decoratorProxyFactory = new ProxyFactory<T>(bean.getBeanClass(), bean.getTypes(), bean);
-        //eagerly generate the proxy class
-        decoratorProxyFactory.getProxyClass();
+    public SubclassDecoratorApplyingInstantiator(Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
+        super(delegate, bean, decorators);
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        T instance = delegate.newInstance(ctx, manager);
-        applyDecorators(instance, ctx, manager);
-        return instance;
-    }
-
-    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager) {
-        TargetBeanInstance beanInstance = new TargetBeanInstance(bean, instance);
-        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, decoratorProxyFactory.getProxyClass(), manager, manager.getServices().get(ContextualStore.class), decorators);
+    protected T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager) {
+        TargetBeanInstance beanInstance = new TargetBeanInstance(getBean(), instance);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, getBean(), getProxyClass(), manager, manager.getServices().get(ContextualStore.class), getDecorators());
         DecorationHelper.push(decorationHelper);
         final T outerDelegate;
         try {
-            InjectionPoint originalInjectionPoint = manager.getServices().get(CurrentInjectionPoint.class).peek();
             outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
         } finally {
             DecorationHelper.pop();
@@ -83,15 +64,5 @@ public class EnhancedSubclassDecoratorApplyingInstantiator<T> implements Instant
         CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
         wrapperMethodHandler.setOuterDecorator(outerDelegate);
         return instance;
-    }
-
-    @Override
-    public boolean hasInterceptors() {
-        return delegate.hasInterceptors();
-    }
-
-    @Override
-    public boolean hasDecorators() {
-        return true;
     }
 }

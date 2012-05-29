@@ -88,8 +88,11 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -125,9 +128,14 @@ import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
+import org.jboss.weld.injection.producer.AbstractInjectionTarget;
+import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
 import org.jboss.weld.injection.producer.InjectionTargetInitializationContext;
 import org.jboss.weld.injection.producer.InjectionTargetService;
-import org.jboss.weld.injection.producer.WeldInjectionTarget;
+import org.jboss.weld.injection.producer.DefaultInjectionTarget;
+import org.jboss.weld.injection.producer.ProducerFieldProducer;
+import org.jboss.weld.injection.producer.ProducerMethodProducer;
+import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -1029,25 +1037,28 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        Validator validator = getServices().get(Validator.class);
         AnnotatedTypeValidator.validateAnnotatedType(type);
         try {
             EnhancedAnnotatedType<T> enhancedType = getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
             InjectionTarget<T> injectionTarget = createInjectionTarget(enhancedType, null);
 
-            // validate InjectionTarget for definition errors
-            for (InjectionPoint ip : injectionTarget.getInjectionPoints()) {
-                validator.validateInjectionPointForDefinitionErrors(ip, null, this);
-            }
-            getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(injectionTarget);
+            getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
             return injectionTarget;
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    public <T> WeldInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
-        WeldInjectionTarget<T> injectionTarget = new WeldInjectionTarget<T>(type, bean, this);
+    public <T> AbstractInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
+        AbstractInjectionTarget<T> injectionTarget = null;
+        if (bean instanceof DecoratorImpl<?> || type.isAnnotationPresent(javax.decorator.Decorator.class) || type.isAbstract()) {
+            // TODO if we get an abstract class, we assume that it is a decorator class - is this good?
+            injectionTarget = new DecoratorInjectionTarget<T>(type, bean, this);
+        } else if (bean instanceof SessionBean<?>) {
+            injectionTarget = new SessionBeanInjectionTarget<T>(type, (SessionBean<T>) bean, this);
+        } else {
+            injectionTarget = new DefaultInjectionTarget<T>(type, bean, this);
+        }
         /*
          * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension
          * has to be initialized after beans (interceptors) are deployed.
@@ -1062,15 +1073,96 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         if (descriptor.isMessageDriven()) {
-
             InjectionTarget<T> injectionTarget = createMessageDrivenInjectionTarget(createAnnotatedType(descriptor.getBeanClass()));
-            getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(injectionTarget);
+            getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
             return injectionTarget;
         } else {
-            InjectionTarget<T> injectionTarget = getBean(descriptor).getInjectionTarget();
-            getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(injectionTarget);
+            InjectionTarget<T> injectionTarget = getBean(descriptor).getProducer();
+            getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
             return injectionTarget;
         }
+    }
+
+    /**
+     * Creates a new {@link Producer} implementation for a given field. This method is required by the specification.
+     */
+    public <X> Producer<?> createProducer(AnnotatedField<X> field) {
+        AnnotatedTypeValidator.validateAnnotatedMember(field);
+        try {
+            EnhancedAnnotatedField<?, X> enhancedField = getServices().get(MemberTransformer.class).loadEnhancedMember(field);
+            Producer<?> producer = createProducer(enhancedField, null, null, null);
+            getServices().get(InjectionTargetService.class).validateProducer(producer);
+            return producer;
+        } catch (Throwable e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public <X, T> Producer<T> createProducer(EnhancedAnnotatedField<T, X> enhancedField, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
+        final AnnotatedField<X> field = enhancedField.slim();
+        return new ProducerFieldProducer<X, T>(enhancedField, disposalMethod) {
+
+            @Override
+            public AnnotatedField<? super X> getAnnotated() {
+                return field;
+            }
+
+            @Override
+            public BeanManagerImpl getBeanManager() {
+                return BeanManagerImpl.this;
+            }
+
+            @Override
+            public Bean<X> getDeclaringBean() {
+                return declaringBean;
+            }
+
+            @Override
+            public Bean<T> getBean() {
+                return bean;
+            }
+        };
+    }
+
+    /**
+     * Creates a new {@link Producer} implementation for a given method. This method is required by the specification.
+     */
+    public <X> Producer<?> createProducer(AnnotatedMethod<X> method) {
+        AnnotatedTypeValidator.validateAnnotatedMember(method);
+        try {
+            EnhancedAnnotatedMethod<?, X> enhancedMethod = getServices().get(MemberTransformer.class).loadEnhancedMember(method);
+            Producer<?> producer = createProducer(enhancedMethod, null, null, null);
+            getServices().get(InjectionTargetService.class).validateProducer(producer);
+            return producer;
+        } catch (Throwable e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public <X, T> Producer<T> createProducer(EnhancedAnnotatedMethod<T, X> enhancedMethod, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
+        final AnnotatedMethod<X> method = enhancedMethod.slim();
+        return new ProducerMethodProducer<X, T>(enhancedMethod, disposalMethod) {
+
+            @Override
+            public AnnotatedMethod<? super X> getAnnotated() {
+                return method;
+            }
+
+            @Override
+            public BeanManagerImpl getBeanManager() {
+                return BeanManagerImpl.this;
+            }
+
+            @Override
+            public Bean<X> getDeclaringBean() {
+                return declaringBean;
+            }
+
+            @Override
+            public Bean<T> getBean() {
+                return bean;
+            }
+        };
     }
 
     public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {

@@ -33,11 +33,11 @@ public class ProcessBeanInjectionTarget<X> extends AbstractProcessInjectionTarge
     }
 
     public InjectionTarget<X> getInjectionTarget() {
-        return classBean.getInjectionTarget();
+        return classBean.getProducer();
     }
 
     public void setInjectionTarget(InjectionTarget<X> injectionTarget) {
-        classBean.setInjectionTarget(injectionTarget);
+        classBean.setProducer(injectionTarget);
     }
 
 }

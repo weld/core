@@ -16,17 +16,10 @@
  */
 package org.jboss.weld.bean;
 
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
@@ -44,12 +37,10 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean {
      * @param beanManager The Bean manager
      * @return a new NewEnterpriseBean instance
      */
-    public static <T> NewSessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, ServiceRegistry services) {
+    public static <T> NewSessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager) {
         EnhancedAnnotatedType<T> type = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(ejbDescriptor.getBeanClass());
-        return new NewSessionBean<T>(attributes, type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager, services);
+        return new NewSessionBean<T>(attributes, type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager);
     }
-
-    private Set<Annotation> bindings;
 
     /**
      * Protected constructor
@@ -57,54 +48,8 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean {
      * @param type        An annotated class
      * @param beanManager The Bean manager
      */
-    protected NewSessionBean(BeanAttributes<T> attributes, final EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(attributes, type, ejbDescriptor, idSuffix, beanManager, services);
-        this.bindings = new HashSet<Annotation>();
-        this.bindings.add(new NewLiteral() {
-
-            private static final long serialVersionUID = 3953682907943246693L;
-
-            @Override
-            public Class<?> value() {
-                return type.getJavaClass();
-            }
-
-        });
-    }
-
-    /**
-     * Gets the scope type
-     *
-     * @return @Dependent
-     */
-    @Override
-    public Class<? extends Annotation> getScope() {
-        return Dependent.class;
-    }
-
-    @Override
-    public boolean isAlternative() {
-        return false;
-    }
-
-    /**
-     * Gets the name of the bean
-     *
-     * @return null
-     */
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    /**
-     * Gets the bindings
-     *
-     * @returns @New
-     */
-    @Override
-    public Set<Annotation> getQualifiers() {
-        return bindings;
+    protected NewSessionBean(BeanAttributes<T> attributes, final EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl beanManager) {
+        super(attributes, type, ejbDescriptor, idSuffix, beanManager);
     }
 
     @Override
@@ -115,11 +60,6 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean {
     @Override
     protected void checkScopeAllowed() {
         // No-op
-    }
-
-    @Override
-    protected void registerInterceptors() {
-        // No - op
     }
 
     @Override

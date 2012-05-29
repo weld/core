@@ -21,6 +21,9 @@
  */
 package org.jboss.weld.injection;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
@@ -29,20 +32,35 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.InjectionPoints;
+import org.jboss.weld.util.collections.ListToSet;
 
 public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> implements WeldInjectionPoint<T, S> {
 
     private final Bean<?> declaringBean;
     private final List<ParameterInjectionPoint<?, X>> parameters;
+    private final Set<InjectionPoint> injectionPoints;
 
     protected AbstractCallableInjectionPoint(EnhancedAnnotatedCallable<T, X, S> callable, Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, InjectionPointFactory factory, BeanManagerImpl manager) {
         this.declaringBean = declaringBean;
         this.parameters = factory.getParameterInjectionPoints(callable, declaringBean, declaringComponentClass, manager, observerOrDisposer);
+        if (observerOrDisposer) {
+            this.injectionPoints = cast(immutableSet(InjectionPoints.filterOutSpecialParameterInjectionPoints(parameters)));
+        } else {
+            this.injectionPoints = new ListToSet<InjectionPoint>() {
+                @Override
+                protected List<InjectionPoint> delegate() {
+                    return cast(getParameterInjectionPoints());
+                }
+            };
+        }
     }
 
     @Override
@@ -90,6 +108,15 @@ public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> imp
 
     public List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints() {
         return parameters;
+    }
+
+    /**
+     * Returns a set of {@link InjectionPoint} instances of this constructor/method. This set never contains a
+     * {@link SpecialParameterInjectionPoint} and is therefore suitable for use outside of Weld. The returned set
+     * is immutable.
+     */
+    public Set<InjectionPoint> getInjectionPoints() {
+        return injectionPoints;
     }
 
     @Override

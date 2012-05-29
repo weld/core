@@ -17,6 +17,9 @@
 
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
 
 import java.lang.reflect.Method;
@@ -28,13 +31,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.WeldDecorator;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -101,7 +111,25 @@ public class Decorators {
                 }
             }
         }
-
         return null;
+    }
+
+    public static WeldInjectionPoint<?, ?> findDelegateInjectionPoint(AnnotatedType<?> type, Iterable<InjectionPoint> injectionPoints) {
+        WeldInjectionPoint<?, ?> result = null;
+        for (InjectionPoint injectionPoint : injectionPoints) {
+            if (injectionPoint.isDelegate()) {
+                if (result != null) {
+                    throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, type);
+                }
+                if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.getAnnotated().isAnnotationPresent(Inject.class)) {
+                    throw new DefinitionException(DELEGATE_ON_NON_INITIALIZER_METHOD, injectionPoint);
+                }
+                result = InjectionPoints.getWeldInjectionPoint(injectionPoint);
+            }
+        }
+        if (result == null) {
+            throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, type);
+        }
+        return result;
     }
 }

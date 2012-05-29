@@ -21,8 +21,8 @@
  */
 package org.jboss.weld.tests.beanManager.bean;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.junit.Assert.assertEquals;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -40,8 +40,6 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.literal.AnyLiteral;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,6 +55,9 @@ public class SyntheticBeanTest {
 
     @Inject
     private SerializableOffice serializableOffice;
+
+    @Inject
+    FireTruck truck;
 
     @Deployment
     public static JavaArchive getDeployment() {

@@ -19,14 +19,20 @@ package org.jboss.weld.util;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
+import org.jboss.weld.injection.ParameterInjectionPointImpl;
 import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Helper class for {@link InjectionPoint} processing.
@@ -79,5 +85,16 @@ public class InjectionPoints {
             }
         }
         return null;
+    }
+
+    public static <T, X> WeldInjectionPoint<T, ?> getWeldInjectionPoint(InjectionPoint injectionPoint) {
+        if (injectionPoint instanceof WeldInjectionPoint<?, ?>) {
+            return Reflections.cast(injectionPoint);
+        }
+        if (injectionPoint.getAnnotated() instanceof AnnotatedField<?>) {
+            return FieldInjectionPoint.<T, X>silent(ForwardingFieldInjectionPointAttributes.<T, X>of(injectionPoint));
+        } else {
+            return ParameterInjectionPointImpl.<T, X>silent(ForwardingParameterInjectionPointAttributes.<T, X>of(injectionPoint));
+        }
     }
 }

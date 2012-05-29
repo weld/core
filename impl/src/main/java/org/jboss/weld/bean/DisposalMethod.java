@@ -25,6 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -37,48 +38,57 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
+import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.InjectionPoints;
+import org.jboss.weld.util.collections.ListToSet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
+public class DisposalMethod<X, T> {
 
-    protected MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
-    private AnnotatedParameter<? super X> disposesParameter;
+    private final BeanManagerImpl beanManager;
+    private final AbstractClassBean<X> declaringBean;
+
+    private final MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
+    private final AnnotatedParameter<? super X> disposesParameter;
     // indicates whether a given type of metadata is required by the disposal method
     private boolean injectionPointMetadataParameter = false;
     private boolean beanMetadataParameter = false;
 
-    private volatile EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod;
+    private final Set<QualifierInstance> qualifiers;
 
     public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
         return new DisposalMethod<X, T>(manager, method, declaringBean);
     }
 
-    protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> disposalMethod, AbstractClassBean<X> declaringBean) {
-        super(BeanAttributesFactory.forDisposerMethod(disposalMethod, beanManager), new StringBuilder().append(DisposalMethod.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(declaringBean.getEnhancedAnnotated().getName()).append(disposalMethod.getSignature().toString()).toString(), declaringBean, beanManager, beanManager.getServices());
-        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(disposalMethod, declaringBean, declaringBean.getBeanClass(), true, beanManager);
-        this.enhancedAnnotatedMethod = disposalMethod;
-        initType(disposalMethod);
-        addInjectionPoints(InjectionPoints.filterOutSpecialParameterInjectionPoints(disposalMethodInjectionPoint.getParameterInjectionPoints()));
-        checkDisposalMethod();
+    protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
+        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), true, beanManager);
+        this.beanManager = beanManager;
+        this.declaringBean = declaringBean;
+        EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);
+        this.disposesParameter = enhancedDisposesParameter.slim();
+        this.qualifiers = QualifierInstance.qualifiers(beanManager, enhancedDisposesParameter.getMetaAnnotations(Qualifier.class));
+        initMetadataParameters(enhancedAnnotatedMethod);
+        checkDisposalMethod(enhancedAnnotatedMethod, declaringBean);
     }
 
-    private void initDisposesParameter() {
-        this.disposesParameter = getEnhancedAnnotated().getEnhancedParameters(Disposes.class).get(0).slim();
+    private EnhancedAnnotatedParameter<?, ? super X> getEnhancedDisposesParameter(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
+        return enhancedAnnotatedMethod.getEnhancedParameters(Disposes.class).get(0);
     }
 
-    private void initMetadataParameters() {
-        for (Class<?> type : getEnhancedAnnotated().getParameterTypesAsArray()) {
+    private void initMetadataParameters(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
+        for (Class<?> type : enhancedAnnotatedMethod.getParameterTypesAsArray()) {
             if (InjectionPoint.class.equals(type)) {
                 injectionPointMetadataParameter = true;
             }
@@ -92,120 +102,63 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         return disposesParameter;
     }
 
-    @Override
-    public void internalInitialize(BeanDeployerEnvironment environment) {
-        super.internalInitialize(environment);
-        initDisposesParameter();
-        initMetadataParameters();
-    }
 
-    protected void initType(EnhancedAnnotatedMethod<T, ? super X> method) {
-        this.type = cast(method.getEnhancedParameters(Disposes.class).get(0).getJavaClass());
-    }
-
-    @Override
     public AnnotatedMethod<? super X> getAnnotated() {
         return disposalMethodInjectionPoint.getAnnotated();
     }
 
-    @Override
-    public EnhancedAnnotatedMethod<T, ? super X> getEnhancedAnnotated() {
-        return Beans.checkEnhancedAnnotatedAvailable(enhancedAnnotatedMethod);
-    }
-
-    @Override
-    public void cleanupAfterBoot() {
-        super.cleanupAfterBoot();
-        this.enhancedAnnotatedMethod = null;
-    }
-
-    @Override
-    public boolean isPassivationCapableBean() {
-        // Not relevant
-        return false;
-    }
-
-    @Override
-    public boolean isPassivationCapableDependency() {
-        // Not relevant
-        return false;
-    }
-
-    @Override
-    public boolean isProxyable() {
-        return true;
-    }
-
-    public T create(CreationalContext<T> creationalContext) {
-        // Not Relevant
-        return null;
-    }
-
-    public void invokeDisposeMethod(Object instance, CreationalContext<?> creationalContext) {
-        Object receiverInstance = getReceiver(creationalContext, creationalContext);
-        if (receiverInstance == null) {
+    public void invokeDisposeMethod(Object receiver, Object instance, CreationalContext<?> creationalContext) {
+        if (receiver == null) {
             disposalMethodInjectionPoint.invokeWithSpecialValue(null, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
         } else {
-            disposalMethodInjectionPoint.invokeOnInstanceWithSpecialValue(receiverInstance, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
+            disposalMethodInjectionPoint.invokeOnInstanceWithSpecialValue(receiver, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
         }
     }
 
-    private void checkDisposalMethod() {
-        if (getEnhancedAnnotated().getEnhancedParameters(Disposes.class).size() > 1) {
+    private void checkDisposalMethod(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
+        if (enhancedAnnotatedMethod.getEnhancedParameters(Disposes.class).size() > 1) {
             throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
         }
-        if (getEnhancedAnnotated().getEnhancedParameters(Observes.class).size() > 0) {
+        if (enhancedAnnotatedMethod.getEnhancedParameters(Observes.class).size() > 0) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (getEnhancedAnnotated().getAnnotation(Inject.class) != null) {
+        if (enhancedAnnotatedMethod.getAnnotation(Inject.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Intitializer", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (getEnhancedAnnotated().getAnnotation(Produces.class) != null) {
+        if (enhancedAnnotatedMethod.getAnnotation(Produces.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (getEnhancedAnnotated().getAnnotation(Specializes.class) != null) {
+        if (enhancedAnnotatedMethod.getAnnotation(Specializes.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Specialized", "@Disposes", disposalMethodInjectionPoint);
         }
-        if (getDeclaringBean() instanceof SessionBean<?>) {
+        if (declaringBean instanceof SessionBean<?>) {
             boolean methodDeclaredOnTypes = false;
             // TODO use annotated item?
-            for (Type type : getDeclaringBean().getTypes()) {
+            for (Type type : declaringBean.getTypes()) {
                 if (type instanceof Class<?>) {
                     Class<?> clazz = (Class<?>) type;
-                    if (SecureReflections.isMethodExists(clazz, getEnhancedAnnotated().getName(), getEnhancedAnnotated().getParameterTypesAsArray())) {
+                    if (SecureReflections.isMethodExists(clazz, enhancedAnnotatedMethod.getName(), enhancedAnnotatedMethod.getParameterTypesAsArray())) {
                         methodDeclaredOnTypes = true;
                         continue;
                     }
                 }
             }
             if (!methodDeclaredOnTypes) {
-                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, getEnhancedAnnotated(), getDeclaringBean());
+                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, enhancedAnnotatedMethod, declaringBean);
             }
         }
-    }
-
-    @Override
-    protected void checkType() {
-
     }
 
     public Type getGenericType() {
         return getDisposesParameter().getBaseType();
     }
 
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
-        // No-op. Producer method dependent objects are destroyed in producer method bean
+    public Set<QualifierInstance> getQualifiers() {
+        return qualifiers;
     }
 
-    @Override
-    public AbstractBean<?, ?> getSpecializedBean() {
-        // Doesn't support specialization
-        return null;
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> getStereotypes() {
-        return Collections.emptySet();
+    public AbstractClassBean<X> getDeclaringBean() {
+        return declaringBean;
     }
 
     public boolean hasInjectionPointMetadataParameter() {
@@ -221,8 +174,7 @@ public class DisposalMethod<X, T> extends AbstractReceiverBean<X, T, Method> {
         return "Disposer method [" + getDisposesParameter().getDeclaringCallable() + "]";
     }
 
-    @Override
-    public boolean hasDefaultProducer() {
-        return true; // cannot be replaced by an extension
+    public Set<InjectionPoint> getInjectionPoints() {
+        return disposalMethodInjectionPoint.getInjectionPoints();
     }
 }

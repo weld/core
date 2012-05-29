@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;
 import org.jboss.weld.bean.proxy.BeanInstance;
@@ -96,8 +97,8 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
      * @param manager       the current manager
      * @return A producer field
      */
-    public static <X, T> EEResourceProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
-        return new EEResourceProducerField<X, T>(attributes, field, declaringBean, manager, services);
+    public static <X, T> EEResourceProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
+        return new EEResourceProducerField<X, T>(attributes, field, declaringBean, disposalMethod, manager, services);
     }
 
     private final WeldInjectionPoint<?, ?> injectionPoint;
@@ -106,8 +107,8 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     private final Class<T> rawType;
 
-    protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
-        super(attributes, field, declaringBean, manager, services);
+    protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
+        super(attributes, field, declaringBean, disposalMethod, manager, services);
         this.rawType = field.getJavaClass();
         this.injectionPoint = InjectionPointFactory.instance().createFieldInjectionPoint(field, declaringBean, declaringBean.getBeanClass(), manager);
     }
@@ -129,29 +130,28 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
         WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
-        if (!(getEnhancedAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS)
-                || getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)
-                || getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
-                || getEnhancedAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)
-                || getEnhancedAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))) {
-            throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getEnhancedAnnotated());
+        if (!(getAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS)
+                || getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)
+                || getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
+                || getAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)
+                || getAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))) {
+            throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getAnnotated());
         }
     }
 
     @Override
     protected void checkType() {
         super.checkType();
-
         // check JPA resources
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
-        if (getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)) {
+        if (getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)) {
             if (!getType().equals(persistenceApiAbstraction.ENTITY_MANAGER_FACTORY_CLASS)) {
-                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getEnhancedAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_FACTORY_CLASS);
+                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_FACTORY_CLASS);
             }
         }
-        if (getEnhancedAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)) {
+        if (getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)) {
             if (!getType().equals(persistenceApiAbstraction.ENTITY_MANAGER_CLASS)) {
-                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getEnhancedAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_CLASS);
+                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_CLASS);
             }
         }
     }

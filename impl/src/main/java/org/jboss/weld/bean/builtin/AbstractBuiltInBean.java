@@ -24,11 +24,11 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -77,7 +77,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
     }
 
     @Override
-    public Set<WeldInjectionPoint<?, ?>> getWeldInjectionPoints() {
+    public Set<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
     }
 

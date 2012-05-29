@@ -178,7 +178,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         EnumService enumService = getManager().getServices().get(EnumService.class);
         for (AnnotatedType<?> annotatedType: getEnvironment().getAnnotatedTypes()) {
             if (Reflections.isEnum(annotatedType.getJavaClass())) {
-                // TODO
                 enumService.addEnumClass(Reflections.<AnnotatedType<Enum<?>>> cast(annotatedType));
             }
         }
@@ -303,7 +302,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
         for (Entry<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> entry : getEnvironment().getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
             InternalEjbDescriptor<?> descriptor = entry.getKey();
-            createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()));
+            createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()), entry.getValue().getJavaClass());
         }
     }
 

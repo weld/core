@@ -26,6 +26,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
@@ -37,6 +38,13 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPoint<T, Field>, Serializable {
+
+    /**
+     * Creates an injection point without firing the {@link ProcessInjectionPoint} event.
+     */
+    public static <T, X> FieldInjectionPoint<T, X> silent(FieldInjectionPointAttributes<T, X> attributes) {
+        return new FieldInjectionPoint<T, X>(attributes);
+    }
 
     private static final long serialVersionUID = 6645272914499045953L;
 

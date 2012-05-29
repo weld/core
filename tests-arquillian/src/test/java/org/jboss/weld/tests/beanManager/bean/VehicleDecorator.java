@@ -27,7 +27,7 @@ import javax.enterprise.inject.Veto;
 import javax.inject.Inject;
 
 @Veto
-public class VehicleDecorator implements Vehicle {
+public abstract class VehicleDecorator implements Vehicle {
 
     @Inject
     @Any

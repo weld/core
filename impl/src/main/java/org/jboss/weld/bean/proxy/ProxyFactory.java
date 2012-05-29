@@ -131,7 +131,15 @@ public class ProxyFactory<T> {
         this.beanType = superClass;
         addDefaultAdditionalInterfaces();
         baseProxyName = proxyName;
-        this.classLoader = resolveClassLoaderForBeanProxy(bean, typeInfo);
+        if (bean != null) {
+            /*
+             * this may happen when creating an InjectionTarget for a decorator using BeanManager#createInjectionTarget()
+             * which does not allow the bean to be specified
+             */
+            this.classLoader = resolveClassLoaderForBeanProxy(bean.getBeanClass(), typeInfo);
+        } else {
+            this.classLoader = resolveClassLoaderForBeanProxy(proxiedBeanType, typeInfo);
+        }
         // hierarchy order
         List<Class<?>> list = new ArrayList<Class<?>>(additionalInterfaces);
         Collections.sort(list, ClassHierarchyComparator.INSTANCE);
@@ -199,8 +207,10 @@ public class ProxyFactory<T> {
         //there is a remote chance that this could generate the same
         //proxy name for two interfaces with the same simple name.
         //append the hash code of the bean id to be sure
-        final String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-        name.append(id.hashCode());
+        if (bean != null) {
+            final String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+            name.append(id.hashCode());
+        }
         className = name.toString();
         return className;
     }
@@ -716,10 +726,10 @@ public class ProxyFactory<T> {
     /**
      * Figures out the correct class loader to use for a proxy for a given bean
      */
-    public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean, TypeInfo typeInfo) {
+    public static ClassLoader resolveClassLoaderForBeanProxy(Class<?> proxiedType, TypeInfo typeInfo) {
         Class<?> superClass = typeInfo.getSuperClass();
         if (superClass.getName().startsWith("java")) {
-            ClassLoader cl = Container.instance().services().get(ProxyServices.class).getClassLoader(bean.getBeanClass());
+            ClassLoader cl = Container.instance().services().get(ProxyServices.class).getClassLoader(proxiedType);
             if (cl == null) {
                 cl = Thread.currentThread().getContextClassLoader();
             }
@@ -728,8 +738,8 @@ public class ProxyFactory<T> {
         return Container.instance().services().get(ProxyServices.class).getClassLoader(superClass);
     }
 
-    public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean) {
-        return resolveClassLoaderForBeanProxy(bean, TypeInfo.of(bean.getTypes()));
-    }
+//    public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean) {
+//        return resolveClassLoaderForBeanProxy(bean, TypeInfo.of(bean.getTypes()));
+//    }
 
 }

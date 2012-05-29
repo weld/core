@@ -35,8 +35,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -144,10 +144,10 @@ public class ConcurrentValidator extends Validator {
     }
 
     @Override
-    public void validateInjectionTargets(Collection<InjectionTarget<?>> injectionTargets, final BeanManagerImpl beanManager) {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<InjectionTarget<?>>(injectionTargets) {
-            protected void doWork(InjectionTarget<?> injectionTarget) {
-                validateInjectionTarget(injectionTarget, beanManager);
+    public void validateProducers(Collection<Producer<?>> producers, final BeanManagerImpl beanManager) {
+        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<Producer<?>>(producers) {
+            protected void doWork(Producer<?> producer) {
+                validateProducer(producer, beanManager);
             }
         });
     }

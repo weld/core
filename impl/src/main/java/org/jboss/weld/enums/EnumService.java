@@ -67,7 +67,7 @@ public class EnumService implements Service {
         EnhancedAnnotatedType<T> weldClass = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(annotatedType);
         EnumInjectionTarget<? extends Enum<?>> enumInjectionTarget = EnumInjectionTarget.of(weldClass, manager);
         injectionTargets.put(weldClass.getJavaClass(), enumInjectionTarget);
-        manager.getServices().get(InjectionTargetService.class).addInjectionTargetToBeValidated(enumInjectionTarget);
+        manager.getServices().get(InjectionTargetService.class).validateProducer(enumInjectionTarget);
     }
 
     public void inject() {

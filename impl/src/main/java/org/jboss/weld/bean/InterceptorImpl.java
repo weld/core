@@ -33,7 +33,6 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
@@ -56,12 +55,12 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     private final boolean serializable;
 
-    public static <T> InterceptorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
-        return new InterceptorImpl<T>(attributes, type, beanManager, services);
+    public static <T> InterceptorImpl<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+        return new InterceptorImpl<T>(attributes, type, beanManager);
     }
 
-    protected InterceptorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(attributes, type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager, services);
+    protected InterceptorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+        super(attributes, type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
         this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
         this.serializable = type.isSerializable();
         this.interceptorBindingTypes = new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values());
@@ -101,16 +100,6 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     public boolean isSerializable() {
         return serializable;
-    }
-
-    @Override
-    protected void defaultPostConstruct(T instance) {
-        // Lifecycle callbacks not supported
-    }
-
-    @Override
-    protected void defaultPreDestroy(T instance) {
-        // Lifecycle callbacks not supported
     }
 
     @Override

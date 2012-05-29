@@ -22,7 +22,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Implementation of this interface is capable of producing Java objects. This abstraction allows different strategies to be employed
- * in a component creation process, e.g. {@link SimpleInstantiator} or {@link SubclassedComponentInstantiator}.
+ * in a component creation process, e.g. {@link DefaultInstantiator} or {@link SubclassedComponentInstantiator}.
  *
  * @author Jozef Hartinger
  *
@@ -32,7 +32,13 @@ public interface Instantiator<T> {
 
     T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager);
 
-    boolean hasInterceptors();
+    /**
+     * Indicates whether instances created by this Instantiator support interception.
+     */
+    boolean hasInterceptorSupport();
 
-    boolean hasDecorators();
+    /**
+     * Indicates whether instances created by this Instantiator support decorators.
+     */
+    boolean hasDecoratorSupport();
 }

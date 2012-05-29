@@ -77,12 +77,12 @@ public class InterceptorApplyingInstantiator<T> implements Instantiator<T> {
     }
 
     @Override
-    public boolean hasInterceptors() {
+    public boolean hasInterceptorSupport() {
         return true;
     }
 
     @Override
-    public boolean hasDecorators() {
-        return delegate.hasDecorators();
+    public boolean hasDecoratorSupport() {
+        return delegate.hasDecoratorSupport();
     }
 }

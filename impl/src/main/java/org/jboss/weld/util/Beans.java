@@ -26,6 +26,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_POST_CONSTRU
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_PRE_DESTROY_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_POST_CONSTRUCT_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_PRE_DESTROY_METHODS;
+import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.UtilMessage.AMBIGUOUS_CONSTRUCTOR;
@@ -88,7 +89,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.bean.AbstractReceiverBean;
+import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
@@ -397,8 +398,8 @@ public class Beans {
                 }
                 return false;
             }
-        } else if (bean instanceof AbstractReceiverBean<?,?,?>) {
-            AbstractReceiverBean<?, ?, ?> receiverBean = (AbstractReceiverBean<?, ?, ?>) bean;
+        } else if (bean instanceof AbstractProducerBean<?,?,?>) {
+            AbstractProducerBean<?, ?, ?> receiverBean = (AbstractProducerBean<?, ?, ?>) bean;
             return isBeanEnabled(receiverBean.getDeclaringBean(), enabled);
         } else if (bean instanceof DecoratorImpl<?>) {
             return enabled.getDecorator(bean.getBeanClass()) != null;
@@ -475,9 +476,9 @@ public class Beans {
      * Check if the given producer/disposer method of producer field is defined on a specialized bean and is therefore disabled.
      */
     public static boolean isSuppressedBySpecialization(Bean<?> bean, BeanManagerImpl manager) {
-        if (bean instanceof AbstractReceiverBean<?, ?, ?>) {
+        if (bean instanceof AbstractProducerBean<?, ?, ?>) {
             BeansClosure closure = BeansClosure.getClosure(manager);
-            if (closure.isSpecialized(Reflections.<AbstractReceiverBean<?, ?, ?>>cast(bean).getDeclaringBean())) {
+            if (closure.isSpecialized(Reflections.<AbstractProducerBean<?, ?, ?>>cast(bean).getDeclaringBean())) {
                 // if a bean is specialized, its producer methods are not enabled (WELD-977)
                 return true;
             }
@@ -488,18 +489,26 @@ public class Beans {
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {
         Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type.getEnhancedConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
+        EnhancedAnnotatedConstructor<T> constructor = null;
         if (initializerAnnotatedConstructors.size() > 1) {
             throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type, initializerAnnotatedConstructors);
         } else if (initializerAnnotatedConstructors.size() == 1) {
-            EnhancedAnnotatedConstructor<T> constructor = initializerAnnotatedConstructors.iterator().next();
+            constructor = initializerAnnotatedConstructors.iterator().next();
             log.trace(FOUND_ONE_INJECTABLE_CONSTRUCTOR, constructor, type);
-            return constructor;
         } else if (type.getNoArgsEnhancedConstructor() != null) {
-            EnhancedAnnotatedConstructor<T> constructor = type.getNoArgsEnhancedConstructor();
+            constructor = type.getNoArgsEnhancedConstructor();
             log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
-            return constructor;
         }
-        throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
+        if (constructor == null) {
+            throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
+        }
+        if (!constructor.getEnhancedParameters(Disposes.class).isEmpty()) {
+            throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
+        }
+        if (!constructor.getEnhancedParameters(Observes.class).isEmpty()) {
+            throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
+        }
+        return constructor;
     }
 
     /**

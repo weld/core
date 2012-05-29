@@ -20,8 +20,10 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -31,11 +33,17 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @param <T>
  */
-public class SimpleInstantiator<T> implements Instantiator<T> {
+public class DefaultInstantiator<T> implements Instantiator<T> {
 
     private final ConstructorInjectionPoint<T> constructor;
 
-    public SimpleInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl manager) {
+    public DefaultInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl manager) {
+        if (type.getJavaClass().isInterface()) {
+            throw new DefinitionException(BeanMessage.INJECTION_TARGET_CANNOT_BE_CREATED_FOR_INTERFACE, type);
+        }
+        if (type.isAbstract()) {
+            throw new DefinitionException(BeanMessage.INJECTION_TARGET_CANNOT_BE_CREATED_FOR_ABSTRACT_CLASS, type);
+        }
         constructor = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, type, manager);
     }
 
@@ -54,12 +62,12 @@ public class SimpleInstantiator<T> implements Instantiator<T> {
     }
 
     @Override
-    public boolean hasInterceptors() {
+    public boolean hasInterceptorSupport() {
         return false;
     }
 
     @Override
-    public boolean hasDecorators() {
+    public boolean hasDecoratorSupport() {
         return false;
     }
 }

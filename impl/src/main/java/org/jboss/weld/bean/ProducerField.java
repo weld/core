@@ -16,26 +16,20 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
-
 import java.lang.reflect.Field;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents a producer field
@@ -58,8 +52,8 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
      * @param beanManager   the current manager
      * @return A producer field
      */
-    public static <X, T> ProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        return new ProducerField<X, T>(attributes, field, declaringBean, beanManager, services);
+    public static <X, T> ProducerField<X, T> of(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager, ServiceRegistry services) {
+        return new ProducerField<X, T>(attributes, field, declaringBean, disposalMethod, beanManager, services);
     }
 
 
@@ -70,12 +64,39 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
      * @param declaringBean The declaring bean
      * @param manager       The Bean manager
      */
-    protected ProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
+    protected ProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, createId(field, declaringBean), declaringBean, manager, services);
         this.enhancedAnnotatedField = field;
         this.annotatedField = field.slim();
         initType();
         this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure());
+        setProducer(new ProducerFieldProducer<X, T>(field, disposalMethod) {
+
+            @Override
+            public AnnotatedField<? super X> getAnnotated() {
+                return annotatedField;
+            }
+
+            @Override
+            public BeanManagerImpl getBeanManager() {
+                return beanManager;
+            }
+
+            @Override
+            public Bean<X> getDeclaringBean() {
+                return ProducerField.this.getDeclaringBean();
+            }
+
+            @Override
+            public Bean<T> getBean() {
+                return ProducerField.this;
+            }
+
+            @Override
+            protected boolean isTypeSerializable(Object object) {
+                return isTypeSerializable(object.getClass());
+            }
+        });
     }
 
     protected static String createId(EnhancedAnnotatedField<?, ?> field, AbstractClassBean<?> declaringBean) {
@@ -99,35 +120,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     }
 
     @Override
-    public void internalInitialize(BeanDeployerEnvironment environment) {
-        super.internalInitialize(environment);
-        setProducer(new AbstractProducer() {
-
-            public T produce(Object receiver, CreationalContext<T> creationalContext) {
-                // unwrap if we have a proxy
-                if (receiver instanceof TargetInstanceProxy) {
-                    receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
-                }
-                return RuntimeAnnotatedMembers.getFieldValue(getAnnotated(), receiver);
-            }
-
-            @Override
-            public String toString() {
-                return getAnnotated().toString();
-            }
-
-        });
-        checkProducerField();
-    }
-
-
-    protected void checkProducerField() {
-        if (getDeclaringBean() instanceof SessionBean<?> && !getEnhancedAnnotated().isStatic()) {
-            throw new DefinitionException(PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC, getEnhancedAnnotated(), getEnhancedAnnotated().getDeclaringType());
-        }
-    }
-
-    @Override
     public AnnotatedField<? super X> getAnnotated() {
         return annotatedField;
     }
@@ -144,7 +136,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
 
     @Override
     public void cleanupAfterBoot() {
-        super.cleanupAfterBoot();
         this.enhancedAnnotatedField = null;
     }
 
@@ -168,5 +159,4 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     public boolean isProxyable() {
         return proxiable;
     }
-
 }

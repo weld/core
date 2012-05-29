@@ -49,9 +49,13 @@ public class SubclassedComponentInstantiator<T> implements Instantiator<T> {
 
     private final ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint;
 
-    public SubclassedComponentInstantiator(AnnotatedType<T> type, Bean<T> bean, SimpleInstantiator<T> delegate, BeanManagerImpl manager) {
-        EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass = initEnhancedSubclass(manager, type, bean, delegate.getConstructor());
-        this.proxyClassConstructorInjectionPoint = new ProxyClassConstructorInjectionPointWrapper<T>(bean, type.getJavaClass(), constructorForEnhancedSubclass, delegate.getConstructor(), manager);
+    public SubclassedComponentInstantiator(AnnotatedType<T> type, Bean<T> bean, DefaultInstantiator<T> delegate, BeanManagerImpl manager) {
+        this(type, bean, delegate.getConstructor(), manager);
+    }
+
+    protected SubclassedComponentInstantiator(AnnotatedType<T> type, Bean<T> bean, ConstructorInjectionPoint<T> originalConstructor, BeanManagerImpl manager) {
+        EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass = initEnhancedSubclass(manager, type, bean, originalConstructor);
+        this.proxyClassConstructorInjectionPoint = new ProxyClassConstructorInjectionPointWrapper<T>(bean, type.getJavaClass(), constructorForEnhancedSubclass, originalConstructor, manager);
     }
 
     protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, AnnotatedType<T> type, Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
@@ -88,12 +92,12 @@ public class SubclassedComponentInstantiator<T> implements Instantiator<T> {
     }
 
     @Override
-    public boolean hasInterceptors() {
+    public boolean hasInterceptorSupport() {
         return false;
     }
 
     @Override
-    public boolean hasDecorators() {
+    public boolean hasDecoratorSupport() {
         return false;
     }
 }

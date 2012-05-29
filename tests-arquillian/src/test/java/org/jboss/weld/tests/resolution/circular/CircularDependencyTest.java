@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.resolution.circular;
 
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -27,6 +29,10 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class CircularDependencyTest {
+
+    @Inject
+    private Foo foo;
+
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
@@ -34,7 +40,7 @@ public class CircularDependencyTest {
     }
 
     @Test
-    public void testCircularInjectionOnTwoSimpleDependentBeans(Foo foo) throws Exception {
+    public void testCircularInjectionOnTwoSimpleDependentBeans() throws Exception {
         foo.getName();
         Assert.assertTrue(Foo.success);
         Assert.assertTrue(Bar.success);

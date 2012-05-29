@@ -18,15 +18,18 @@ package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
@@ -70,6 +73,7 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
@@ -203,13 +207,25 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
      */
     protected <T> void createObserversProducersDisposers(AbstractClassBean<T> bean) {
         if (bean instanceof ManagedBean<?> || bean instanceof SessionBean<?>) {
+            // disposal methods have to go first as we want them to be ready for resolution when initializing producer method/fields
+            createDisposalMethods(bean, bean.getEnhancedAnnotated());
             createProducerMethods(bean, bean.getEnhancedAnnotated());
             createProducerFields(bean, bean.getEnhancedAnnotated());
             if (manager.isBeanEnabled(bean)) {
                 createObserverMethods(bean, bean.getEnhancedAnnotated());
             }
-            createDisposalMethods(bean, bean.getEnhancedAnnotated());
         }
+    }
+
+    protected <X> DisposalMethod<X, ?> resolveDisposalMethod(BeanAttributes<?> attributes, AbstractClassBean<X> declaringBean) {
+        Set<DisposalMethod<X, ?>> disposalBeans = environment.<X>resolveDisposalBeans(attributes.getTypes(), attributes.getQualifiers(), declaringBean);
+
+        if (disposalBeans.size() == 1) {
+            return disposalBeans.iterator().next();
+        } else if (disposalBeans.size() > 1) {
+            throw new DefinitionException(MULTIPLE_DISPOSAL_METHODS, this, disposalBeans);
+        }
+        return null;
     }
 
     protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> annotatedClass) {
@@ -223,14 +239,14 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> annotatedClass) {
         for (EnhancedAnnotatedMethod<?, ? super X> method : annotatedClass.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class)) {
             DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
-            disposalBean.initialize(getEnvironment());
             getEnvironment().addDisposesMethod(disposalBean);
         }
     }
 
     protected <X, T> void createProducerMethod(AbstractClassBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> annotatedMethod) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(annotatedMethod, getManager());
-        ProducerMethod<? super X, T> bean = ProducerMethod.of(attributes, annotatedMethod, declaringBean, manager, services);
+        DisposalMethod<X, ?> disposalMethod = resolveDisposalMethod(attributes, declaringBean);
+        ProducerMethod<? super X, T> bean = ProducerMethod.of(attributes, annotatedMethod, declaringBean, disposalMethod, manager, services);
         preloadContainerLifecycleEvent(ProcessBeanAttributes.class, bean.getType());
         preloadContainerLifecycleEvent(ProcessProducerMethod.class, annotatedMethod.getBaseType(), bean.getBeanClass());
         preloadContainerLifecycleEvent(ProcessProducer.class, bean.getBeanClass(), annotatedMethod.getBaseType());
@@ -239,11 +255,12 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     protected <X, T> void createProducerField(AbstractClassBean<X> declaringBean, EnhancedAnnotatedField<T, ? super X> field) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(field, getManager());
+        DisposalMethod<X, ?> disposalMethod = resolveDisposalMethod(attributes, declaringBean);
         ProducerField<X, T> bean;
         if (isEEResourceProducerField(field)) {
-            bean = EEResourceProducerField.of(attributes, field, declaringBean, manager, services);
+            bean = EEResourceProducerField.of(attributes, field, declaringBean, disposalMethod, manager, services);
         } else {
-            bean = ProducerField.of(attributes, field, declaringBean, manager, services);
+            bean = ProducerField.of(attributes, field, declaringBean, disposalMethod, manager, services);
         }
         preloadContainerLifecycleEvent(ProcessBeanAttributes.class, bean.getType());
         preloadContainerLifecycleEvent(ProcessProducerField.class, field.getBaseType(), bean.getBeanClass());
@@ -272,25 +289,25 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     protected <T> ManagedBean<T> createManagedBean(EnhancedAnnotatedType<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
-        ManagedBean<T> bean = ManagedBean.of(attributes, weldClass, manager, services);
+        ManagedBean<T> bean = ManagedBean.of(attributes, weldClass, manager);
         getEnvironment().addManagedBean(bean);
         return bean;
     }
 
     protected <T> void createNewManagedBean(EnhancedAnnotatedType<T> annotatedClass) {
         // TODO resolve existing beans first
-        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass, manager), annotatedClass, manager, services));
+        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass, manager), annotatedClass, manager));
     }
 
     protected <T> void createDecorator(EnhancedAnnotatedType<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
-        DecoratorImpl<T> bean = DecoratorImpl.of(attributes, weldClass, manager, services);
+        DecoratorImpl<T> bean = DecoratorImpl.of(attributes, weldClass, manager);
         getEnvironment().addDecorator(bean);
     }
 
     protected <T> void createInterceptor(EnhancedAnnotatedType<T> weldClass) {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
-        InterceptorImpl<T> bean = InterceptorImpl.of(attributes, weldClass, manager, services);
+        InterceptorImpl<T> bean = InterceptorImpl.of(attributes, weldClass, manager);
         getEnvironment().addInterceptor(bean);
     }
 
@@ -300,14 +317,14 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, EnhancedAnnotatedType<T> weldClass) {
         // TODO Don't create enterprise bean if it has no local interfaces!
         BeanAttributes<T> attributes = BeanAttributesFactory.forSessionBean(weldClass, descriptor, getManager());
-        SessionBean<T> bean = SessionBean.of(attributes, descriptor, manager, weldClass, services);
+        SessionBean<T> bean = SessionBean.of(attributes, descriptor, manager, weldClass);
         getEnvironment().addSessionBean(bean);
         return bean;
     }
 
-    protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor, BeanAttributes<?> originalAttributes) {
-        BeanAttributes<T> attributes = Reflections.cast(BeanAttributesFactory.forNewSessionBean(originalAttributes));
-        getEnvironment().addSessionBean(NewSessionBean.of(attributes, ejbDescriptor, manager, services));
+    protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor, BeanAttributes<?> originalAttributes, Class<?> javaClass) {
+        BeanAttributes<T> attributes = Reflections.cast(BeanAttributesFactory.forNewSessionBean(originalAttributes, javaClass));
+        getEnvironment().addSessionBean(NewSessionBean.of(attributes, ejbDescriptor, manager));
     }
 
     protected boolean isEEResourceProducerField(EnhancedAnnotatedField<?, ?> field) {

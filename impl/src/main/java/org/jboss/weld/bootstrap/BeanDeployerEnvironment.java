@@ -33,6 +33,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -61,6 +62,7 @@ import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.Sets;
@@ -300,38 +302,41 @@ public class BeanDeployerEnvironment {
 
     public void addDisposesMethod(DisposalMethod<?, ?> bean) {
         allDisposalBeans.add(bean);
-        addNewBeansFromInjectionPoints(bean);
+        addNewBeansFromInjectionPoints(bean.getInjectionPoints());
     }
 
     public void addObserverMethod(ObserverInitializationContext<?, ?> observerInitializer) {
         this.observers.add(observerInitializer);
-        addNewBeansFromInjectionPoints(observerInitializer.getObserver().getNewInjectionPoints());
+        addNewBeansFromInjectionPoints(observerInitializer.getObserver().getInjectionPoints());
     }
 
     public void addNewBeansFromInjectionPoints(AbstractBean<?, ?> bean) {
-        addNewBeansFromInjectionPoints(bean.getNewInjectionPoints());
+        addNewBeansFromInjectionPoints(bean.getInjectionPoints());
     }
 
-    public void addNewBeansFromInjectionPoints(Set<WeldInjectionPoint<?, ?>> newInjectionPoints) {
-        for (WeldInjectionPoint<?, ?> injectionPoint : newInjectionPoints) {
-            Class<?> rawType = Reflections.getRawType(injectionPoint.getType());
-            if (Event.class.equals(rawType)) {
-                continue;
-            }
-            New _new = injectionPoint.getQualifier(New.class);
-            if (_new.value().equals(New.class)) {
-                if (rawType.equals(Instance.class)) {
-                    // e.g. @Inject @New(ChequePaymentProcessor.class) Instance<PaymentProcessor> chequePaymentProcessor;
-                    // see WELD-975
-                    Type typeParameter = Reflections.getActualTypeArguments(injectionPoint.getType())[0];
-                    addNewBeanFromInjecitonPoint(Reflections.getRawType(typeParameter), typeParameter);
-                } else {
-                    addNewBeanFromInjecitonPoint(rawType, injectionPoint.getType());
-                }
-            } else {
-                addNewBeanFromInjecitonPoint(_new.value(), _new.value());
-            }
+    public void addNewBeansFromInjectionPoints(Set<? extends InjectionPoint> injectionPoints) {
+        for (InjectionPoint injectionPoint : injectionPoints) {
+            WeldInjectionPoint<?, ?> weldInjectionPoint = InjectionPoints.getWeldInjectionPoint(injectionPoint);
+            if (weldInjectionPoint.getQualifier(New.class) != null) {
 
+                Class<?> rawType = Reflections.getRawType(weldInjectionPoint.getType());
+                if (Event.class.equals(rawType)) {
+                    continue;
+                }
+                New _new = weldInjectionPoint.getQualifier(New.class);
+                if (_new.value().equals(New.class)) {
+                    if (rawType.equals(Instance.class)) {
+                        // e.g. @Inject @New(ChequePaymentProcessor.class) Instance<PaymentProcessor> chequePaymentProcessor;
+                        // see WELD-975
+                        Type typeParameter = Reflections.getActualTypeArguments(weldInjectionPoint.getType())[0];
+                        addNewBeanFromInjecitonPoint(Reflections.getRawType(typeParameter), typeParameter);
+                    } else {
+                        addNewBeanFromInjecitonPoint(rawType, weldInjectionPoint.getType());
+                    }
+                } else {
+                    addNewBeanFromInjecitonPoint(_new.value(), _new.value());
+                }
+            }
         }
     }
 

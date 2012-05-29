@@ -37,6 +37,8 @@ import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.injection.producer.AbstractInjectionTarget;
+import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
@@ -77,19 +79,25 @@ public class DependentContextImpl implements DependentContext {
         // by this we are making sure that the dependent instance has no transitive dependency with @PreDestroy / disposal method
         if (creationalContext.getDependentInstances().isEmpty()) {
             if (contextual instanceof ManagedBean<?> && ! isInterceptorOrDecorator(contextual)) {
-                ManagedBean<?> bean = (ManagedBean<?>) contextual;
-                if (bean.getPreDestroy().isEmpty() && !bean.hasInterceptors() && bean.hasDefaultProducer()) {
-                    // there is no @PreDestroy callback to call when destroying this dependent instance
-                    // therefore, we do not need to keep the reference
-                    return;
+                ManagedBean<?> managedBean = (ManagedBean<?>) contextual;
+                if (managedBean.getProducer() instanceof AbstractInjectionTarget<?>) {
+                    AbstractInjectionTarget<?> injectionTarget = (AbstractInjectionTarget<?>) managedBean.getProducer();
+                    if (injectionTarget.getPreDestroyMethods().isEmpty() && !injectionTarget.hasInterceptors()) {
+                        // there is no @PreDestroy callback to call when destroying this dependent instance
+                        // therefore, we do not need to keep the reference
+                        return;
+                    }
                 }
             }
             if (contextual instanceof AbstractProducerBean<?, ?, ?>) {
-                AbstractProducerBean<?, ?, ?> producer = (AbstractProducerBean<?, ?, ?>) contextual;
-                if (producer.getDisposalMethod() == null && producer.hasDefaultProducer()) {
-                    // there is no disposal method to call when destroying this dependent instance
-                    // therefore, we do not need to keep the reference
-                    return;
+                AbstractProducerBean<?, ?, ?> producerBean = (AbstractProducerBean<?, ?, ?>) contextual;
+                if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?>) {
+                    AbstractMemberProducer<?, ?> producer = (AbstractMemberProducer<?, ?>) producerBean.getProducer();
+                    if (producer.getDisposalMethod() == null) {
+                        // there is no disposal method to call when destroying this dependent instance
+                        // therefore, we do not need to keep the reference
+                        return;
+                    }
                 }
             }
         }
@@ -114,5 +122,4 @@ public class DependentContextImpl implements DependentContext {
     public Class<? extends Annotation> getScope() {
         return Dependent.class;
     }
-
 }
