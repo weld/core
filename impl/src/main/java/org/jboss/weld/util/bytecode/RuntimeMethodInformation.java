@@ -16,14 +16,15 @@
  */
 package org.jboss.weld.util.bytecode;
 
-import javassist.bytecode.AccessFlag;
-
 import java.lang.reflect.Method;
+
+import javassist.bytecode.AccessFlag;
 
 /**
  * Contains all the data that is needed when working with a method in bytecode
  *
  * @author Stuart Douglas
+ * @author Ales Justin
  */
 public class RuntimeMethodInformation implements MethodInformation {
     private final Method method;
@@ -39,11 +40,16 @@ public class RuntimeMethodInformation implements MethodInformation {
         this.returnType = DescriptorUtils.classToStringRepresentation(method.getReturnType());
         this.descriptor = DescriptorUtils.getMethodDescriptor(parameterTypes, returnType);
         this.declaringClass = method.getDeclaringClass().getName();
+        int modifier;
         if (method.isBridge()) {
             modifier = AccessFlag.PUBLIC | AccessFlag.BRIDGE | AccessFlag.SYNTHETIC;
         } else {
             modifier = AccessFlag.PUBLIC;
         }
+        if (method.isVarArgs()) {
+            modifier |= AccessFlag.VARARGS;
+        }
+        this.modifier = modifier;
     }
 
     public String getDeclaringClass() {
