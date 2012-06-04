@@ -21,12 +21,6 @@
                     <exclude name="testDestroyForSameCreationalContextOnly" />
                 </methods>
             </class>
-            <!-- CDITCK-263 -->
-            <class name="org.jboss.cdi.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
-                <methods>
-                    <exclude name="testNormalScopedUnproxyableBeanThrowsException" />
-                </methods>
-            </class>
             <!-- CDITCK-270 -->
             <class name="org.jboss.cdi.tck.tests.event.observer.transactional.TransactionalObserverTest">
                 <methods>
@@ -168,6 +162,13 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- WELD-1052 -->
+            <class name="org.jboss.cdi.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
+                <methods>
+                    <exclude name="testNormalScopedUnproxyableBeanResolution" />
+                </methods>
+            </class>
+            
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
             <class name="org.jboss.cdi.tck.tests.context.jms.MessageListenerContextTest">
