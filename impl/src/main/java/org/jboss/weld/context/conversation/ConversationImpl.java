@@ -18,6 +18,7 @@ package org.jboss.weld.context.conversation;
 
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.ManagedConversation;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.slf4j.cal10n.LocLogger;
 
@@ -100,7 +101,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
             throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
         }
         if (getConversationContext().getConversation(id) != null) {
-            throw new IllegalStateException(CONVERSATION_ID_ALREADY_IN_USE, id);
+            throw new IllegalArgumentException(CONVERSATION_ID_ALREADY_IN_USE, id);
         }
         _transient = false;
         this.id = id;
