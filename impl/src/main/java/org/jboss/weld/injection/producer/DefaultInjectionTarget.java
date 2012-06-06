@@ -113,4 +113,20 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
             }
         }
     }
+
+    public Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints() {
+        return ejbInjectionPoints;
+    }
+
+    public Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints() {
+        return persistenceContextInjectionPoints;
+    }
+
+    public Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints() {
+        return persistenceUnitInjectionPoints;
+    }
+
+    public Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints() {
+        return resourceInjectionPoints;
+    }
 }

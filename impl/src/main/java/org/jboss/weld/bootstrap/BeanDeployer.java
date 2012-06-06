@@ -183,7 +183,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
         // add @New injection points from enums
         for (EnumInjectionTarget<?> enumInjectionTarget : enumService.getEnumInjectionTargets()) {
-            getEnvironment().addNewBeansFromInjectionPoints(enumInjectionTarget.getNewInjectionPoints());
+            getEnvironment().addNewBeansFromInjectionPoints(enumInjectionTarget.getInjectionPoints());
         }
     }
 
