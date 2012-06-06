@@ -10,6 +10,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,7 @@ public class EJBCallTest {
 	SomeService someService;
 
 	@Test
+	@Ignore("WELD-1086")
 	public void testStatelessCall() {
 		Assert.assertEquals("test", someService.someMethod());
 	}
