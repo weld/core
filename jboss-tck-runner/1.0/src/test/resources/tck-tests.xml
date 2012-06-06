@@ -27,6 +27,12 @@
             <!-- Ensure that the DefaultDS has been set up -->
 
             <!-- Issues in the TCK -->
+            <!-- CDITCK-220 -->
+            <class name="org.jboss.jsr299.tck.tests.implementation.builtin.BuiltInBeansTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
             <!-- CDITCK-212 -->
             <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
                 <methods>
