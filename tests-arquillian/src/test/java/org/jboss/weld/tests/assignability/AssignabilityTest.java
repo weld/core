@@ -1,20 +1,21 @@
 package org.jboss.weld.tests.assignability;
 
-import junit.framework.Assert;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
-import java.util.Set;
+
+import junit.framework.Assert;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
@@ -76,7 +77,6 @@ public class AssignabilityTest {
         Assert.assertEquals(2, beans.size());
     }
 
-    @Ignore("WELD-1054")
     @Test
     public void testAssignability7() {
         Set<Bean<?>> beans = beanManager.getBeans(Dao.class);

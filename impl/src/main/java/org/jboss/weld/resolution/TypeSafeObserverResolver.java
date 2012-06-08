@@ -42,7 +42,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
 
     @Override
     protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer) {
-        return Reflections.matches(observer.getObservedType(), resolvable.getTypes())
+        return EventTypeAssignabilityRules.instance().matches(observer.getObservedType(), resolvable.getTypes())
                 && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(), observer.getObservedQualifiers()), resolvable.getQualifiers(), manager)
                 // container lifecycle events are fired into Extensions only
                 && (!isContainerLifecycleEvent(resolvable) || Extension.class.isAssignableFrom(observer.getBeanClass()));

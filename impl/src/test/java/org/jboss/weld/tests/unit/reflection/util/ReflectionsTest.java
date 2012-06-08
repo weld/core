@@ -184,7 +184,6 @@ public class ReflectionsTest<E> {
                 new TypeLiteral<Foo<E>>() { }.getType()));
     }
 
-    @Ignore("WELD-1054")
     @Test
     public <F extends Number> void testParameterizedBeanWithBoundedVariableTypeParameterIsNotAssignableToRawRequiredType() throws Exception {
         Assert.assertFalse("Foo<F extends Number> should not be assignable to Foo",
