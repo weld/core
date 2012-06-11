@@ -35,7 +35,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Marko Luksa
  * @author Jozef Hartinger
  */
-public class EventTypeAssignabilityRules {
+public class EventTypeAssignabilityRules implements AssignabilityRules {
 
     protected EventTypeAssignabilityRules() {
     }
@@ -122,36 +122,45 @@ public class EventTypeAssignabilityRules {
         return processWildcardTypesAndTypeVariables(requiredType, beanType);
     }
 
-    private boolean processWildcardTypesAndTypeVariables(Type requiredType, Type beanType) {
+    protected boolean processWildcardTypesAndTypeVariables(Type requiredType, Type beanType) {
         if (requiredType instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) requiredType;
-            if (isTypeInsideBounds(beanType, wildcardType.getLowerBounds(), wildcardType.getUpperBounds())) {
-                return true;
-            }
-        }
-        if (beanType instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) beanType;
-            if (isTypeInsideBounds(requiredType, wildcardType.getUpperBounds(), wildcardType.getLowerBounds())) {
-                return true;
-            }
+            return processWildcard((WildcardType) requiredType, beanType);
         }
         if (requiredType instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) requiredType;
-            if (isTypeInsideBounds(beanType, EMPTY_TYPES, typeVariable.getBounds())) {
-                return true;
-            }
-        }
-        if (beanType instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) beanType;
-            if (isTypeInsideBounds(requiredType, typeVariable.getBounds(), EMPTY_TYPES)) {
-                return true;
-            }
+            return processTypeVariable((TypeVariable<?>) requiredType, beanType);
         }
         return false;
     }
 
+    protected boolean processWildcard(WildcardType requiredType, Type beanType) {
+        return isTypeInsideBounds(beanType, requiredType.getLowerBounds(), requiredType.getUpperBounds());
+    }
+
+    protected boolean processTypeVariable(TypeVariable<?> requiredType, Type beanType) {
+        return isTypeInsideBounds(beanType, EMPTY_TYPES, requiredType.getBounds());
+    }
+
+    /**
+     * Checks whether the given type is assignable from lower bounds and assignable to upper bounds.
+     */
+    public boolean isTypeInsideBounds(TypeHolder type, Type[] lowerBounds, Type[] upperBounds) {
+        return (lowerBounds.length == 0 || isAssignableFrom(type, lowerBounds)) && (upperBounds.length == 0 || isAssignableTo(type, upperBounds));
+    }
+
+    /**
+     * Checks whether the given type is assignable from lower bounds and assignable to upper bounds.
+     */
     public boolean isTypeInsideBounds(Type type, Type[] lowerBounds, Type[] upperBounds) {
         return (lowerBounds.length == 0 || isAssignableFrom(type, lowerBounds)) && (upperBounds.length == 0 || isAssignableTo(type, upperBounds));
+    }
+
+    public boolean areTypesInsideBounds(Type[] types, Type[] lowerBounds, Type[] upperBounds) {
+        for (Type type : types) {
+            if (!isTypeInsideBounds(type, lowerBounds, upperBounds)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -191,7 +200,38 @@ public class EventTypeAssignabilityRules {
         // TODO: this doesn't look OK!
         if (otherType instanceof TypeVariable<?>) {
             TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
-            if (isTypeInsideBounds(requiredType.getRawType(), EMPTY_TYPES, typeVariable.getBounds())) {
+            if (isTypeInsideBounds(requiredType, EMPTY_TYPES, typeVariable.getBounds())) {
+                return true;
+            }
+        }
+        if (otherType instanceof WildcardType) {
+            WildcardType wildcardType = (WildcardType) otherType;
+            for (Type upperBound : wildcardType.getUpperBounds()) {
+                if (isAssignableFrom(requiredType, upperBound)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isAssignableFrom(TypeHolder type1, Type[] types2) {
+        for (Type type2 : types2) {
+            if (isAssignableFrom(type1, type2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isAssignableTo(TypeHolder type1, Type[] types2) {
+        return isAssignableFrom(types2, type1);
+    }
+
+    public boolean isAssignableFrom(Type[] types1, TypeHolder type2) {
+        for (Type type : types1) {
+            TypeHolder holder = wrapWithinTypeHolder(type);
+            if (holder != null && isAssignableFrom(holder, type2)) {
                 return true;
             }
         }

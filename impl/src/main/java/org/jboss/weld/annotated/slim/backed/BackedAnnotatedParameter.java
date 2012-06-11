@@ -16,7 +16,9 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SharedObjectFacade;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.RawType;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -35,6 +37,11 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         this.position = position;
         this.declaringCallable = declaringCallable;
         this.annotations = SharedObjectFacade.wrap(ImmutableSet.copyOf(annotations));
+    }
+
+    @Override
+    protected LazyValueHolder<Set<Type>> initTypeClosure(Type baseType, SharedObjectCache cache) {
+        return cache.getTypeClosureHolder(RawType.wrap(baseType));
     }
 
     public int getPosition() {

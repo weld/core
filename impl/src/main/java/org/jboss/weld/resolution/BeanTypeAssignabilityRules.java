@@ -18,6 +18,7 @@ package org.jboss.weld.resolution;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -67,5 +68,62 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected boolean processWildcard(WildcardType requiredType, Type beanType) {
+        if (beanType instanceof TypeVariable<?>) {
+            /*
+             * the required type parameter is a wildcard, the bean type parameter is a type variable and the upper bound of
+             * the type variable is assignable to or assignable from the upper bound, if any, of the wildcard and assignable
+             * from the lower bound, if any, of the wildcard, or
+             */
+            TypeVariable<?> beanTypeVariable = (TypeVariable<?>) beanType;
+            if (areTypesInsideBounds(beanTypeVariable.getBounds(), requiredType.getLowerBounds(), requiredType.getUpperBounds())) {
+                return true;
+            }
+            if (areTypesInsideBounds(requiredType.getUpperBounds(), EMPTY_TYPES, beanTypeVariable.getBounds())) {
+                return true;
+            }
+            return false;
+        } else {
+            /*
+             * the required type parameter is a wildcard, the bean type parameter is an actual type and the actual type is
+             * assignable to the upper bound, if any, of the wildcard and assignable from the lower bound, if any, of the
+             * wildcard, or
+             */
+            return isTypeInsideBounds(beanType, requiredType.getLowerBounds(), requiredType.getUpperBounds());
+        }
+    }
+
+    @Override
+    protected boolean processTypeVariable(TypeVariable<?> requiredType, Type beanType) {
+        /*
+         * the required type parameter and the bean type parameter are both type variables and the upper bound of the required
+         * type parameter is assignable to the upper bound, if any, of the bean type parameter.
+         */
+        if (beanType instanceof TypeVariable<?>) {
+            TypeVariable<?> requiredTypeVariable = (TypeVariable<?>) requiredType;
+            TypeVariable<?> beanTypeVariable = (TypeVariable<?>) beanType;
+            return areTypesInsideBounds(requiredTypeVariable.getBounds(), EMPTY_TYPES, beanTypeVariable.getBounds());
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean isAssignableFrom(TypeHolder requiredType, Type otherType) {
+        TypeHolder otherTypeHolder = wrapWithinTypeHolder(otherType);
+        if (otherTypeHolder != null) {
+            return this.isAssignableFrom(requiredType, otherTypeHolder);
+        }
+
+        // TODO: this doesn't look OK!
+        if (otherType instanceof TypeVariable<?>) {
+            TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
+            if (isTypeInsideBounds(requiredType, EMPTY_TYPES, typeVariable.getBounds())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

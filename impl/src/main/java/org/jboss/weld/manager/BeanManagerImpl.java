@@ -147,6 +147,7 @@ import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
+import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.InterceptorResolvableBuilder;
 import org.jboss.weld.resolution.NameBasedResolver;
@@ -738,7 +739,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (creationalContext == null) {
             throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
         }
-        if (!Reflections.matches(beanType, bean.getTypes())) {
+        if (!BeanTypeAssignabilityRules.instance().matches(beanType, bean.getTypes())) {
             throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, beanType, bean);
         }
         return getReference(bean, creationalContext, false);

@@ -111,7 +111,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
         private final InterceptionType interceptionType;
 
         private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType, final Set<QualifierInstance> instances) {
-            super(rawType, typeClosure, mappedQualifiers, declaringBean, instances);
+            super(rawType, typeClosure, mappedQualifiers, declaringBean, instances, false);
             this.interceptionType = interceptionType;
         }
 

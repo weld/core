@@ -62,6 +62,7 @@ public class ResolvableBuilder {
     protected final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
     protected Bean<?> declaringBean;
     private final BeanManagerImpl beanManager;
+    private boolean delegate;
 
     public ResolvableBuilder(final BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
@@ -101,6 +102,7 @@ public class ResolvableBuilder {
             }
         }
         setDeclaringBean(injectionPoint.getBean());
+        this.delegate = injectionPoint.isDelegate();
     }
 
     public ResolvableBuilder setDeclaringBean(Bean<?> declaringBean) {
@@ -116,6 +118,14 @@ public class ResolvableBuilder {
     public ResolvableBuilder addTypes(Set<Type> types) {
         this.types.addAll(types);
         return this;
+    }
+
+    public boolean isDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(boolean delegate) {
+        this.delegate = delegate;
     }
 
     public Resolvable create() {
@@ -136,18 +146,18 @@ public class ResolvableBuilder {
                 }
             }
         }
-        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances);
+        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances, delegate);
     }
 
     private Resolvable createFacade(Class<?> rawType) {
         Set<Type> types = Collections.<Type>singleton(rawType);
-        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, ANY_SINGLETON);
+        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, ANY_SINGLETON, delegate);
     }
 
     // just as facade but we keep the qualifiers so that we can recognize Bean from @Intercepted Bean.
     private Resolvable createMetadataProvider(Class<?> rawType) {
         Set<Type> types = Collections.<Type>singleton(rawType);
-        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances);
+        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances, delegate);
     }
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
@@ -218,13 +228,15 @@ public class ResolvableBuilder {
         private final Set<Type> typeClosure;
         private final Class<?> rawType;
         private final Bean<?> declaringBean;
+        private final boolean delegate;
 
-        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances) {
+        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances, boolean delegate) {
             this.mappedQualifiers = mappedQualifiers;
             this.typeClosure = typeClosure;
             this.rawType = rawType;
             this.declaringBean = declaringBean;
             this.qualifierInstances = qualifierInstances;
+            this.delegate = delegate;
         }
 
         public Set<QualifierInstance> getQualifiers() {
@@ -240,7 +252,13 @@ public class ResolvableBuilder {
         }
 
         public boolean isAssignableTo(Class<?> clazz) {
-            return Reflections.isAssignableFrom(clazz, typeClosure);
+            AssignabilityRules rules = null;
+            if (isDelegate()) {
+                rules = DelegateInjectionPointAssignabilityRules.instance();
+            } else {
+                rules = BeanTypeAssignabilityRules.instance();
+            }
+            return rules.isAssignableFrom(clazz, typeClosure);
         }
 
         public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
@@ -273,6 +291,11 @@ public class ResolvableBuilder {
                 return this.getTypes().equals(r.getTypes()) && this.qualifierInstances.equals(r.qualifierInstances);
             }
             return false;
+        }
+
+        @Override
+        public boolean isDelegate() {
+            return delegate;
         }
     }
 

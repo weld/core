@@ -148,8 +148,13 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
 
     @Override
     protected boolean matches(Resolvable resolvable, T bean) {
-
-        return BeanTypeAssignabilityRules.instance().matches(resolvable.getTypes(), bean.getTypes()) && Beans.containsAllQualifiers(resolvable.getQualifiers(), QualifierInstance.qualifiers(beanManager, bean), beanManager);
+        AssignabilityRules rules = null;
+        if (resolvable.isDelegate()) {
+            rules = DelegateInjectionPointAssignabilityRules.instance();
+        } else {
+            rules = BeanTypeAssignabilityRules.instance();
+        }
+        return rules.matches(resolvable.getTypes(), bean.getTypes()) && Beans.containsAllQualifiers(resolvable.getQualifiers(), QualifierInstance.qualifiers(beanManager, bean), beanManager);
     }
 
     @Override

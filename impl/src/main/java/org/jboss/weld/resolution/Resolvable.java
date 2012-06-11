@@ -59,9 +59,11 @@ public interface Resolvable {
      * Check if this resolvable's type closure includes the clazz passed as an
      * argument
      *
+     * @deprecated use {@link AssignabilityRules#isAssignableFrom(Type, Set)} instead.
      * @param clazz the class to check for
      * @return true if clazz is present
      */
+    @Deprecated
     boolean isAssignableTo(Class<?> clazz);
 
     /**
@@ -85,5 +87,11 @@ public interface Resolvable {
      * @return
      */
     Bean<?> getDeclaringBean();
+
+    /**
+     * Returns true if the resolvable represents a delegate injection point, which requires specific rules (8.3.1) to be used
+     * during resolution.
+     */
+    boolean isDelegate();
 
 }

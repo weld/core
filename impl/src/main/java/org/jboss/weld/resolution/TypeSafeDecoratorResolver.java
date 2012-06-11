@@ -36,7 +36,7 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
 
     @Override
     protected boolean matches(Resolvable resolvable, Decorator<?> bean) {
-        return BeanTypeAssignabilityRules.instance().matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
+        return DelegateInjectionPointAssignabilityRules.instance().matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
                 && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(), bean.getDelegateQualifiers()), resolvable.getQualifiers(), getBeanManager())
                 && getBeanManager().getEnabled().getDecorator(bean.getBeanClass()) != null;
     }

@@ -67,7 +67,7 @@ public class AssignabilityTest {
     public <X extends Persistent> void testAssignability5() {
         Set<Bean<?>> beans = beanManager.getBeans(new TypeLiteral<Dao<X>>() {
         }.getType());
-        Assert.assertEquals(2, beans.size());
+        Assert.assertEquals(1, beans.size());
     }
 
     @Test

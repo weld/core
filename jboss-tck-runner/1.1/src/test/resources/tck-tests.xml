@@ -102,16 +102,16 @@
                 </methods>
             </class>
             <!-- WELD-1060 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.parameterized.AssignabilityOfRawAndParameterizedTypesTest">
-                <methods>
-                    <exclude name="testAssignabilityOfParameterizedTypeWithTypeVariablesToParameterizedTypeTypeVariable"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.parameterized.ParameterizedTypesInjectionToParameterizedWithTypeVariableTest">
-                <methods>
-                    <exclude name="testInjection"/>
-                </methods>
-            </class>
+<!--             <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.parameterized.AssignabilityOfRawAndParameterizedTypesTest"> -->
+<!--                 <methods> -->
+<!--                     <exclude name="testAssignabilityOfParameterizedTypeWithTypeVariablesToParameterizedTypeTypeVariable"/> -->
+<!--                 </methods> -->
+<!--             </class> -->
+<!--             <class name="org.jboss.cdi.tck.tests.lookup.injection.parameterized.ParameterizedTypesInjectionToParameterizedWithTypeVariableTest"> -->
+<!--                 <methods> -->
+<!--                     <exclude name="testInjection"/> -->
+<!--                 </methods> -->
+<!--             </class> -->
             <!-- WELD-1073 -->
              <class name="org.jboss.cdi.tck.tests.deployment.packaging.interceptor.InterceptorClassNotInBeanArchiveTest">
                 <methods>

@@ -13,7 +13,11 @@ public abstract class BackedAnnotated extends BaseAnnotated {
 
     public BackedAnnotated(Type baseType, SharedObjectCache cache) {
         super(baseType);
-        this.typeClosure = cache.getTypeClosureHolder(baseType);
+        this.typeClosure = initTypeClosure(baseType, cache);
+    }
+
+    protected LazyValueHolder<Set<Type>> initTypeClosure(Type baseType, SharedObjectCache cache) {
+        return cache.getTypeClosureHolder(baseType);
     }
 
     public Set<Type> getTypeClosure() {

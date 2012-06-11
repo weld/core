@@ -84,12 +84,20 @@ public class HierarchyDiscovery {
             Class<?> clazz = (Class<?>) type;
             return resolveType(clazz);
         }
+        if (type instanceof RawType<?>) {
+            RawType<?> rawType = (RawType<?>) type;
+            return rawType.getType();
+        }
         return type;
     }
 
     private void discoverTypes(Type type) {
         if (type != null) {
-            if (type instanceof Class<?>) {
+            if (type instanceof RawType<?>) {
+                RawType<?> rawType = (RawType<?>) type;
+                add(rawType.getType(), rawType.getType());
+                discoverFromClass(rawType.getType());
+            } else if (type instanceof Class<?>) {
                 Class<?> clazz = (Class<?>) type;
                 add(clazz, resolveType(clazz));
                 discoverFromClass(clazz);
@@ -126,9 +134,9 @@ public class HierarchyDiscovery {
 
     private void discoverFromClass(Class<?> clazz) {
         try {
-            discoverTypes(resolveType(type, type, clazz.getGenericSuperclass()));
+            discoverTypes(resolveType(getUnwrappedType(), getUnwrappedType(), clazz.getGenericSuperclass()));
             for (Type c : clazz.getGenericInterfaces()) {
-                discoverTypes(resolveType(type, type, c));
+                discoverTypes(resolveType(getUnwrappedType(), getUnwrappedType(), c));
             }
         } catch (AccessControlException e) {
             // TODO Hmm, is this a hack?
@@ -180,7 +188,7 @@ public class HierarchyDiscovery {
         // reconstruct ParameterizedType by types resolved TypeVariable.
         ParameterizedTypeImpl pt = new ParameterizedTypeImpl(resolvedRawType, resolvedActualTypes, parameterizedType.getOwnerType());
         if (resolvedRawType instanceof Class<?>) {
-            add((Class) resolvedRawType, pt); // cache things, we need it later
+            add((Class<?>) resolvedRawType, pt); // cache things, we need it later
         }
         return pt;
     }
@@ -195,7 +203,7 @@ public class HierarchyDiscovery {
                 continue; // still no idea on how to match
 
             if (typeVariables[i].equals(typeVariable) && !actualTypes[i].equals(typeVariable)) {
-                return resolveType(this.type, beanType, actualTypes[i]);
+                return resolveType(getUnwrappedType(), beanType, actualTypes[i]);
             }
         }
 
@@ -230,4 +238,7 @@ public class HierarchyDiscovery {
         return typeVariable;
     }
 
+    private Type getUnwrappedType() {
+        return RawType.unwrap(type);
+    }
 }
