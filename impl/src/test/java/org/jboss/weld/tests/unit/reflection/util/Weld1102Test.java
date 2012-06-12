@@ -1,19 +1,10 @@
 package org.jboss.weld.tests.unit.reflection.util;
 
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
-
 import javax.enterprise.util.TypeLiteral;
 
 import junit.framework.Assert;
 
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
-import org.jboss.weld.resolution.EventTypeAssignabilityRules;
-import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,7 +14,6 @@ import org.junit.Test;
 public class Weld1102Test {
 
     @Test
-    @Ignore
     public <B extends Bar> void test1() throws Exception {
         Assert.assertTrue("Required type Foo<Bar<Integer>> should match bean type Foo<B extends Bar>",
             requiredTypeMatchesBeanType(
@@ -35,7 +25,6 @@ public class Weld1102Test {
     }
 
     @Test
-    @Ignore
     public <B extends Bar> void test2() throws Exception {
         Assert.assertTrue("Required type Foo<Bar<Baz>> should match bean type Foo<B extends Bar>",
             requiredTypeMatchesBeanType(
@@ -58,13 +47,24 @@ public class Weld1102Test {
     }
 
     @Test
-    @Ignore
+    @Ignore // this test seems broken since Bar<Number> is not assignable from B
     public <B extends Bar<Integer>> void test4() throws Exception {
         Assert.assertTrue("Required type Foo<Bar<Number>> should match bean type Foo<B extends Bar<Integer>>",
             requiredTypeMatchesBeanType(
                 new TypeLiteral<Foo<Bar<Number>>>() {
                 },
                 new TypeLiteral<Foo<B>>() {
+                }
+            ));
+    }
+
+    @Test
+    public <B extends Bar<Integer>, C extends B> void test5() throws Exception {
+        Assert.assertTrue("Required type Foo<Bar<Integer>>  should match bean type Foo<C extends B extends Bar<Integer>>",
+            requiredTypeMatchesBeanType(
+                new TypeLiteral<Foo<Bar<Integer>>>() {
+                },
+                new TypeLiteral<Foo<C>>() {
                 }
             ));
     }

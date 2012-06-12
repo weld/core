@@ -45,4 +45,10 @@ public class TypeVariableAssignabilityTest {
         assertNotNull(injectedBean.getFoo());
         assertEquals("AssignableFoo", injectedBean.getFoo().getName());
     }
+
+    @Test
+    public void testTypeVariableAssignabilityRules2() {
+        assertNotNull(injectedBean.getNumberFoo());
+        assertEquals("NumberFoo", injectedBean.getNumberFoo().getName());
+    }
 }

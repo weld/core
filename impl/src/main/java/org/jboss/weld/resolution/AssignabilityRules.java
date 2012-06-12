@@ -21,15 +21,9 @@ import java.util.Set;
 
 public interface AssignabilityRules {
 
-    boolean isAssignableTo(Type type1, Type[] types2);
-
     boolean isAssignableFrom(Type type1, Set<? extends Type> types2);
 
-    boolean isAssignableFrom(Type type1, Type[] types2);
-
     boolean isAssignableFrom(Type type1, Type type2);
-
-    boolean isAssignableFrom(Type[] types1, Type type2);
 
     /**
      * Check whether whether any of the requiredTypes matches a type in beanTypes

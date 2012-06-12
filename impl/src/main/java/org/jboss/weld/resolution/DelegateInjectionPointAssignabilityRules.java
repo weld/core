@@ -31,7 +31,7 @@ public class DelegateInjectionPointAssignabilityRules extends BeanTypeAssignabil
     }
 
     @Override
-    protected boolean processTypeVariable(TypeVariable<?> requiredType, Type beanType) {
+    protected boolean matches(TypeVariable<?> requiredType, Type beanType) {
         if (beanType instanceof TypeVariable<?>) {
             /*
              * the delegate type parameter and the bean type parameter are both type variables and the upper bound of the bean

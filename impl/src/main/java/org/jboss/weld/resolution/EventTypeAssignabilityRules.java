@@ -70,15 +70,6 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         return false;
     }
 
-    public boolean isAssignableFrom(Type type1, Type type2) {
-        TypeHolder typeHolder1 = wrapWithinTypeHolder(type1);
-        if (typeHolder1 != null && isAssignableFrom(typeHolder1, type2)) {
-            return true;
-        }
-
-        return processWildcardTypesAndTypeVariables(type1, type2);
-    }
-
     public boolean isAssignableFrom(Type[] types1, Type type2) {
         for (Type type : types1) {
             if (isAssignableFrom(type, type2)) {
@@ -86,6 +77,68 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
             }
         }
         return false;
+    }
+
+    public boolean isAssignableFrom(Type type1, Type type2) {
+        Type requiredType = wrapWithinTypeHolder(type1);
+        if (requiredType instanceof ActualTypeHolder) {
+            return isAssignableFrom((ActualTypeHolder) requiredType, type2);
+        }
+        // TODO use isAssignableFrom
+        if (requiredType instanceof WildcardType) {
+            return isAssignableFrom((WildcardType) requiredType, type2);
+        }
+        if (requiredType instanceof TypeVariable<?>) {
+            return isAssignableFrom((TypeVariable<?>) requiredType, type2);
+        }
+        return false;
+    }
+
+    protected boolean isAssignableFrom(ActualTypeHolder requiredType, Type otherType) {
+        otherType = wrapWithinTypeHolder(otherType);
+        if (otherType instanceof ActualTypeHolder) {
+            return isAssignableFrom(requiredType, (ActualTypeHolder) otherType);
+        }
+
+        // TODO: this doesn't look OK!
+        if (otherType instanceof TypeVariable<?>) {
+            TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
+            if (isTypeInsideBounds(requiredType, EMPTY_TYPES, typeVariable.getBounds())) {
+                return true;
+            }
+        }
+        if (otherType instanceof WildcardType) {
+            WildcardType wildcardType = (WildcardType) otherType;
+            for (Type upperBound : wildcardType.getUpperBounds()) {
+                if (isAssignableFrom(requiredType, upperBound)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean isAssignableFrom(ActualTypeHolder requiredType, ActualTypeHolder otherTypeHolder) {
+        return requiredType.getBoxedRawType().isAssignableFrom(otherTypeHolder.getBoxedRawType()) && areActualTypeArgumentsAssignableFrom(requiredType, otherTypeHolder.getActualTypeArguments());
+    }
+
+    protected boolean isAssignableFrom(WildcardType requiredType, Type beanType) {
+        return isTypeInsideBounds(beanType, requiredType.getLowerBounds(), requiredType.getUpperBounds());
+    }
+
+    protected boolean isAssignableFrom(TypeVariable<?> requiredType, Type beanType) {
+        return isTypeInsideBounds(beanType, EMPTY_TYPES, requiredType.getBounds());
+    }
+
+    protected boolean areActualTypeArgumentsAssignableFrom(ActualTypeHolder requiredType, Type[] otherActualTypeArguments) {
+        for (int i = 0; i < requiredType.getActualTypeArguments().length; i++) {
+            Type type1 = requiredType.getActualTypeArguments()[i];
+            Type type2 = otherActualTypeArguments.length > i ? otherActualTypeArguments[i] : Object.class;
+            if (!isAssignableFrom(type1, type2)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -114,37 +167,25 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
     }
 
     public boolean matches(Type requiredType, Type beanType) {
-        TypeHolder requiredTypeHolder = wrapWithinTypeHolder(requiredType);
-        if (requiredTypeHolder != null && this.matches(requiredTypeHolder, beanType)) {
-            return true;
+        requiredType = wrapWithinTypeHolder(requiredType);
+        if (requiredType instanceof ActualTypeHolder) {
+            return matches((ActualTypeHolder) requiredType, beanType);
         }
-
-        return processWildcardTypesAndTypeVariables(requiredType, beanType);
-    }
-
-    protected boolean processWildcardTypesAndTypeVariables(Type requiredType, Type beanType) {
         if (requiredType instanceof WildcardType) {
-            return processWildcard((WildcardType) requiredType, beanType);
+            return matches((WildcardType) requiredType, beanType);
         }
         if (requiredType instanceof TypeVariable<?>) {
-            return processTypeVariable((TypeVariable<?>) requiredType, beanType);
+            return matches((TypeVariable<?>) requiredType, beanType);
         }
         return false;
     }
 
-    protected boolean processWildcard(WildcardType requiredType, Type beanType) {
-        return isTypeInsideBounds(beanType, requiredType.getLowerBounds(), requiredType.getUpperBounds());
+    protected boolean matches(WildcardType requiredType, Type beanType) {
+        return isAssignableFrom(requiredType, beanType);
     }
 
-    protected boolean processTypeVariable(TypeVariable<?> requiredType, Type beanType) {
-        return isTypeInsideBounds(beanType, EMPTY_TYPES, requiredType.getBounds());
-    }
-
-    /**
-     * Checks whether the given type is assignable from lower bounds and assignable to upper bounds.
-     */
-    public boolean isTypeInsideBounds(TypeHolder type, Type[] lowerBounds, Type[] upperBounds) {
-        return (lowerBounds.length == 0 || isAssignableFrom(type, lowerBounds)) && (upperBounds.length == 0 || isAssignableTo(type, upperBounds));
+    protected boolean matches(TypeVariable<?> requiredType, Type beanType) {
+        return isAssignableFrom(requiredType, beanType);
     }
 
     /**
@@ -163,17 +204,77 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         return true;
     }
 
+    protected boolean matches(ActualTypeHolder requiredType, Type otherType) {
+        otherType = wrapWithinTypeHolder(otherType);
+        if (otherType instanceof ActualTypeHolder) {
+            return matches(requiredType, (ActualTypeHolder) otherType);
+        }
+        if (otherType instanceof TypeVariable<?>) {
+            TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
+            if (isTypeInsideBounds(requiredType, EMPTY_TYPES, typeVariable.getBounds())) {
+                return true;
+            }
+        }
+        if (otherType instanceof WildcardType) {
+            WildcardType wildcardType = (WildcardType) otherType;
+            for (Type upperBound : wildcardType.getUpperBounds()) {
+                if (matches(requiredType, upperBound)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean matches(ActualTypeHolder requiredType, ActualTypeHolder otherTypeHolder) {
+        return requiredType.getBoxedRawType().equals(otherTypeHolder.getBoxedRawType()) && areActualTypeArgumentsMatching(requiredType, otherTypeHolder.getActualTypeArguments());
+    }
+
+    protected boolean areActualTypeArgumentsMatching(ActualTypeHolder requiredType, Type[] otherActualTypeArguments) {
+        for (int i = 0; i < requiredType.getActualTypeArguments().length; i++) {
+            Type type1 = requiredType.getActualTypeArguments()[i];
+            Type type2 = otherActualTypeArguments.length > i ? otherActualTypeArguments[i] : Object.class;
+            if (!matches(type1, type2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected Type wrapWithinTypeHolder(Type type) {
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            Type rawType = parameterizedType.getRawType();
+            if (rawType instanceof Class<?>) {
+                Class<?> clazz = (Class<?>) rawType;
+                return new ActualTypeHolder(clazz, parameterizedType.getActualTypeArguments());
+            }
+        } else if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            return new ActualTypeHolder(clazz, EMPTY_TYPES);
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) type;
+            Type genericComponentType = arrayType.getGenericComponentType();
+            Class<?> rawComponentType = Reflections.getRawType(genericComponentType);
+            if (rawComponentType != null) {
+                Class<?> arrayClass = Array.newInstance(rawComponentType, 0).getClass();
+                return new ActualTypeHolder(arrayClass, Reflections.getActualTypeArguments(genericComponentType));
+            }
+        }
+        return type;
+    }
+
     /**
      * This is a helper class that holds the raw type and the actual type arguments of a Type. In case of arrays, the raw type
      * is the raw type of the array, while the actualTypeArguments are the actualTypeArguments of the component type of the
      * array.
      */
-    protected static class TypeHolder {
+    protected static class ActualTypeHolder implements Type {
 
         private Class<?> rawType;
         private Type[] actualTypeArguments;
 
-        private TypeHolder(Class<?> rawType, Type[] actualTypeArguments) {
+        private ActualTypeHolder(Class<?> rawType, Type[] actualTypeArguments) {
             this.rawType = rawType;
             this.actualTypeArguments = actualTypeArguments;
         }
@@ -189,99 +290,5 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         private Class<?> getBoxedRawType() {
             return Types.boxedClass(getRawType());
         }
-    }
-
-    protected boolean isAssignableFrom(TypeHolder requiredType, Type otherType) {
-        TypeHolder otherTypeHolder = wrapWithinTypeHolder(otherType);
-        if (otherTypeHolder != null) {
-            return this.isAssignableFrom(requiredType, otherTypeHolder);
-        }
-
-        // TODO: this doesn't look OK!
-        if (otherType instanceof TypeVariable<?>) {
-            TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
-            if (isTypeInsideBounds(requiredType, EMPTY_TYPES, typeVariable.getBounds())) {
-                return true;
-            }
-        }
-        if (otherType instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) otherType;
-            for (Type upperBound : wildcardType.getUpperBounds()) {
-                if (isAssignableFrom(requiredType, upperBound)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean isAssignableFrom(TypeHolder type1, Type[] types2) {
-        for (Type type2 : types2) {
-            if (isAssignableFrom(type1, type2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isAssignableTo(TypeHolder type1, Type[] types2) {
-        return isAssignableFrom(types2, type1);
-    }
-
-    public boolean isAssignableFrom(Type[] types1, TypeHolder type2) {
-        for (Type type : types1) {
-            TypeHolder holder = wrapWithinTypeHolder(type);
-            if (holder != null && isAssignableFrom(holder, type2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    protected boolean isAssignableFrom(TypeHolder requiredType, TypeHolder otherTypeHolder) {
-        return requiredType.getBoxedRawType().isAssignableFrom(otherTypeHolder.getBoxedRawType()) && areActualTypeArgumentsAssignableFrom(requiredType, otherTypeHolder.getActualTypeArguments());
-    }
-
-    protected boolean matches(TypeHolder requiredType, Type otherType) {
-        TypeHolder otherTypeHolder = wrapWithinTypeHolder(otherType);
-        return otherTypeHolder != null && this.matches(requiredType, otherTypeHolder);
-    }
-
-    protected boolean matches(TypeHolder requiredType, TypeHolder otherTypeHolder) {
-        return requiredType.getBoxedRawType().equals(otherTypeHolder.getBoxedRawType()) && areActualTypeArgumentsAssignableFrom(requiredType, otherTypeHolder.getActualTypeArguments());
-    }
-
-    protected boolean areActualTypeArgumentsAssignableFrom(TypeHolder requiredType, Type[] otherActualTypeArguments) {
-        for (int i = 0; i < requiredType.getActualTypeArguments().length; i++) {
-            Type type1 = requiredType.getActualTypeArguments()[i];
-            Type type2 = otherActualTypeArguments.length > i ? otherActualTypeArguments[i] : Object.class;
-            if (!isAssignableFrom(type1, type2)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    protected TypeHolder wrapWithinTypeHolder(Type type) {
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            Type rawType = parameterizedType.getRawType();
-            if (rawType instanceof Class<?>) {
-                Class<?> clazz = (Class<?>) rawType;
-                return new TypeHolder(clazz, parameterizedType.getActualTypeArguments());
-            }
-        } else if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
-            return new TypeHolder(clazz, EMPTY_TYPES);
-        } else if (type instanceof GenericArrayType) {
-            GenericArrayType arrayType = (GenericArrayType) type;
-            Type genericComponentType = arrayType.getGenericComponentType();
-            Class<?> rawComponentType = Reflections.getRawType(genericComponentType);
-            if (rawComponentType != null) {
-                Class<?> arrayClass = Array.newInstance(rawComponentType, 0).getClass();
-                return new TypeHolder(arrayClass, Reflections.getActualTypeArguments(genericComponentType));
-            }
-        }
-        return null;
     }
 }

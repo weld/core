@@ -23,7 +23,14 @@ public class InjectedBean<T extends RuntimeException> {
     @Inject
     private Foo<T> foo;
 
+    @Inject
+    private Foo<Number> numberFoo;
+
     public Foo<T> getFoo() {
         return foo;
+    }
+
+    public Foo<Number> getNumberFoo() {
+        return numberFoo;
     }
 }

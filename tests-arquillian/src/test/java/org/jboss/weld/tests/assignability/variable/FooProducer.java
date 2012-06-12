@@ -36,4 +36,9 @@ public class FooProducer {
         return new Foo("RawFoo");
     }
 
+    @Produces
+    public <A extends Number, B extends A> Foo<B> produceNumberFoo() {
+        return new Foo<B>("NumberFoo");
+    }
+
 }

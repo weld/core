@@ -42,7 +42,7 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
     }
 
     @Override
-    protected boolean areActualTypeArgumentsAssignableFrom(TypeHolder requiredType, Type[] otherActualTypeArguments) {
+    protected boolean areActualTypeArgumentsMatching(ActualTypeHolder requiredType, Type[] otherActualTypeArguments) {
         if (requiredType.getActualTypeArguments().length == 0) {
             /*
              * A parameterized bean type is considered assignable to a raw required type if the raw types are identical and
@@ -50,7 +50,7 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
              */
             return isArrayOfUnboundedTypeVariablesOrObjects(otherActualTypeArguments);
         } else {
-            return super.areActualTypeArgumentsAssignableFrom(requiredType, otherActualTypeArguments);
+            return super.areActualTypeArgumentsMatching(requiredType, otherActualTypeArguments);
         }
     }
 
@@ -71,7 +71,7 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
     }
 
     @Override
-    protected boolean processWildcard(WildcardType requiredType, Type beanType) {
+    protected boolean matches(WildcardType requiredType, Type beanType) {
         if (beanType instanceof TypeVariable<?>) {
             /*
              * the required type parameter is a wildcard, the bean type parameter is a type variable and the upper bound of
@@ -97,7 +97,7 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
     }
 
     @Override
-    protected boolean processTypeVariable(TypeVariable<?> requiredType, Type beanType) {
+    protected boolean matches(TypeVariable<?> requiredType, Type beanType) {
         /*
          * the required type parameter and the bean type parameter are both type variables and the upper bound of the required
          * type parameter is assignable to the upper bound, if any, of the bean type parameter.
@@ -111,10 +111,10 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
     }
 
     @Override
-    protected boolean isAssignableFrom(TypeHolder requiredType, Type otherType) {
-        TypeHolder otherTypeHolder = wrapWithinTypeHolder(otherType);
-        if (otherTypeHolder != null) {
-            return this.isAssignableFrom(requiredType, otherTypeHolder);
+    protected boolean isAssignableFrom(ActualTypeHolder requiredType, Type otherType) {
+        otherType = wrapWithinTypeHolder(otherType);
+        if (otherType instanceof ActualTypeHolder) {
+            return isAssignableFrom(requiredType, (ActualTypeHolder) otherType);
         }
 
         // TODO: this doesn't look OK!

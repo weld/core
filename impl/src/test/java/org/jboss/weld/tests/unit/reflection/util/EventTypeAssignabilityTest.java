@@ -136,4 +136,13 @@ public class EventTypeAssignabilityTest extends BeanTypeAssignabilityTest {
         assertFalse(getRules().matches(observerType4, eventType3));
         assertFalse(getRules().matches(observerType4, eventType4));
     }
+
+    @Test
+    public void testParameterizedTypes() {
+        Type observerType = new TypeLiteral<Foo<Number>>() {}.getType();
+        Type eventType1 = new TypeLiteral<Foo<Number>>() {}.getType();
+        Type eventType2 = new TypeLiteral<Foo<Integer>>() {}.getType();
+        assertTrue("Foo<Number> should be assignable to Foo<Number>", getRules().matches(observerType, eventType1));
+        assertFalse("Foo<Integer> should not be assignable to Foo<Number>", getRules().matches(observerType, eventType2));
+    }
 }

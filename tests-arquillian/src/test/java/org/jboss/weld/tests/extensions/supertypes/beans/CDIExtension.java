@@ -51,16 +51,16 @@ import java.util.Collections;
  */
 public class CDIExtension implements Extension {
 
-    void processAnnotatedType(@Observes ProcessAnnotatedType<BeanOne> event) {
-        AnnotatedType<BeanOne> type = event.getAnnotatedType();
+    <T extends BeanOne> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
+        AnnotatedType<T> type = event.getAnnotatedType();
 
-        AnnotatedTypeImpl<BeanOne> newType = new AnnotatedTypeImpl<BeanOne>(type);
+        AnnotatedTypeImpl<T> newType = new AnnotatedTypeImpl<T>(type);
 
         newType.setConstructors(type.getConstructors());
 
         // Clear all fields and methods
-        newType.setFields(Collections.<AnnotatedField<? super BeanOne>>emptySet());
-        newType.setMethods(Collections.<AnnotatedMethod<? super BeanOne>>emptySet());
+        newType.setFields(Collections.<AnnotatedField<? super T>>emptySet());
+        newType.setMethods(Collections.<AnnotatedMethod<? super T>>emptySet());
         event.setAnnotatedType(newType);
     }
 
