@@ -162,6 +162,12 @@
                     <exclude name="testNormalScopedUnproxyableBeanResolution" />
                 </methods>
             </class>
+            <!-- WELD-1148 -->
+            <class name="org.jboss.cdi.tck.tests.event.observer.transactional.custom.CustomTransactionalObserverTest">
+                <methods>
+                    <exclude name="testCustomTransactionalObserver" />
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
