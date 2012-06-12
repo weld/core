@@ -36,7 +36,7 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
 
     @Override
     protected boolean matches(Resolvable resolvable, DisposalMethod<?, ?> disposer) {
-        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && BeanTypeAssignabilityRules.instance().isAssignableFrom(disposer.getGenericType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers(), manager);
+        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && BeanTypeAssignabilityRules.instance().matches(disposer.getGenericType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers(), manager);
     }
 
     @Override
