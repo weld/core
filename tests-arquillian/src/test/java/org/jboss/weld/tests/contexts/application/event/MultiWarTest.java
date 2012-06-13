@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
  * 
  */
 @RunWith(Arquillian.class)
-@Ignore("WELD-1042")
+//@Ignore("WELD-1042")
 public class MultiWarTest {
 
     @Deployment(testable = false)
