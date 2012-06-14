@@ -52,6 +52,7 @@ import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -85,7 +86,7 @@ public class WeldListener extends AbstractServletListener {
     private transient HttpConversationContext conversationContextCache;
 
     @Inject
-    private BeanManager beanManager;
+    private BeanManagerImpl beanManager;
 
     private HttpSessionContext sessionContext() {
         if (sessionContextCache == null) {
@@ -111,17 +112,17 @@ public class WeldListener extends AbstractServletListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         sce.getServletContext().setAttribute(BeanManager.class.getName(), beanManager);
-        beanManager.fireEvent(sce, InitializedLiteral.APPLICATION);
+        beanManager.getAccessibleObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        beanManager.fireEvent(sce, DestroyedLiteral.APPLICATION);
+        beanManager.getAccessibleObserverNotifier().fireEvent(sce, DestroyedLiteral.APPLICATION);
     }
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        beanManager.fireEvent(event, InitializedLiteral.SESSION);
+        beanManager.getAccessibleObserverNotifier().fireEvent(event, InitializedLiteral.SESSION);
     }
 
     @Override
@@ -135,7 +136,7 @@ public class WeldListener extends AbstractServletListener {
             if (destroyed) {
                 // we are outside of a request (the session timed out) and therefore the session was destroyed immediately
                 // we can fire the @Destroyed(SessionScoped.class) event immediately
-                beanManager.fireEvent(event, DestroyedLiteral.SESSION);
+                beanManager.getAccessibleObserverNotifier().fireEvent(event, DestroyedLiteral.SESSION);
             } else {
                 // the old session won't be available at the time we destroy this request
                 // let's store its reference until then
@@ -160,11 +161,11 @@ public class WeldListener extends AbstractServletListener {
                     requestContext().invalidate();
                     requestContext().deactivate();
                     // fire @Destroyed(RequestScoped.class)
-                    beanManager.fireEvent(event, DestroyedLiteral.REQUEST);
+                    beanManager.getAccessibleObserverNotifier().fireEvent(event, DestroyedLiteral.REQUEST);
                     sessionContext().deactivate();
                     // fire @Destroyed(SessionScoped.class)
                     if (!sessionContext().isValid()) {
-                        beanManager.fireEvent(request.getAttribute(HTTP_SESSION_EVENT), DestroyedLiteral.SESSION);
+                        beanManager.getAccessibleObserverNotifier().fireEvent(request.getAttribute(HTTP_SESSION_EVENT), DestroyedLiteral.SESSION);
                     }
                 } finally {
                     requestContext().dissociate(request);
@@ -197,7 +198,7 @@ public class WeldListener extends AbstractServletListener {
             conversationContext.deactivate();
         }
         if (isTransient) {
-            beanManager.fireEvent(event, DestroyedLiteral.CONVERSATION);
+            beanManager.getAccessibleObserverNotifier().fireEvent(event, DestroyedLiteral.CONVERSATION);
         }
     }
 
@@ -228,7 +229,7 @@ public class WeldListener extends AbstractServletListener {
                  */
                 try {
                     activateConversations(event);
-                    beanManager.fireEvent(event, InitializedLiteral.REQUEST);
+                    beanManager.getAccessibleObserverNotifier().fireEvent(event, InitializedLiteral.REQUEST);
                 } catch (RuntimeException e) {
                     requestDestroyed(event);
                     throw e;
@@ -254,7 +255,7 @@ public class WeldListener extends AbstractServletListener {
             setContextActivatedInRequest(request);
             conversationContext.activate(cid);
             if (cid == null) { // transient conversation
-                beanManager.fireEvent(event, InitializedLiteral.CONVERSATION);
+                beanManager.getAccessibleObserverNotifier().fireEvent(event, InitializedLiteral.CONVERSATION);
             }
         } else {
             /*
