@@ -345,6 +345,9 @@ public class WeldBootstrap implements Bootstrap {
                 throw new IllegalStateException(MANAGER_NOT_INITIALIZED);
             }
 
+            // we need to know which BDAs are physical so that we fire ProcessModule for there archives only
+            Collection<BeanDeploymentArchive> physicalBeanDeploymentArchives = deployment.getBeanDeploymentArchives();
+
             ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments, contexts);
             extensionBeanDeployer.addExtensions(deployment.getExtensions());
             extensionBeanDeployer.deployBeans();
@@ -371,7 +374,7 @@ public class WeldBootstrap implements Bootstrap {
 
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanDeployment beanDeployment = entry.getValue();
-                if (deployment.getBeanDeploymentArchives().contains(entry.getKey())) {
+                if (physicalBeanDeploymentArchives.contains(entry.getKey())) {
                     // only fire for physical BDAs
                     ProcessModuleImpl.fire(beanDeployment);
                 }
