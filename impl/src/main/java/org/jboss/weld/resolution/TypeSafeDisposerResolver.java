@@ -30,13 +30,13 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
     private final BeanManagerImpl manager;
 
     public TypeSafeDisposerResolver(BeanManagerImpl manager, Iterable<DisposalMethod<?, ?>> disposers) {
-        super(disposers, manager);
+        super(disposers);
         this.manager = manager;
     }
 
     @Override
     protected boolean matches(Resolvable resolvable, DisposalMethod<?, ?> disposer) {
-        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && BeanTypeAssignabilityRules.instance().matches(disposer.getGenericType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers(), manager);
+        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && BeanTypeAssignabilityRules.instance().matches(disposer.getGenericType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers());
     }
 
     @Override

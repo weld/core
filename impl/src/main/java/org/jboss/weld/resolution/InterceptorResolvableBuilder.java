@@ -35,8 +35,6 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
 public class InterceptorResolvableBuilder extends ResolvableBuilder {
 
-
-
     public InterceptorResolvableBuilder(final BeanManagerImpl manager) {
         super(manager);
     }
@@ -49,7 +47,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
 
     @Override
     protected void checkQualifier(Annotation qualifier,final QualifierInstance qualifierInstance, Class<? extends  Annotation> annotationType) {
-        if (!getBeanManager().getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid()) {
+        if (!getMetaAnnotationStore().getInterceptorBindingModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
         }
         if (qualifierInstances.contains(qualifierInstance)) {

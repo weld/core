@@ -22,7 +22,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 
-import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Reflections;
@@ -33,17 +33,17 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>> {
 
-    private final BeanManagerImpl manager;
+    private final MetaAnnotationStore metaAnnotationStore;
 
-    public TypeSafeObserverResolver(BeanManagerImpl manager, Iterable<ObserverMethod<?>> observers) {
-        super(observers, manager);
-        this.manager = manager;
+    public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers) {
+        super(observers);
+        this.metaAnnotationStore = metaAnnotationStore;
     }
 
     @Override
     protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer) {
         return EventTypeAssignabilityRules.instance().matches(observer.getObservedType(), resolvable.getTypes())
-                && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(), observer.getObservedQualifiers()), resolvable.getQualifiers(), manager)
+                && Beans.containsAllQualifiers(QualifierInstance.qualifiers(metaAnnotationStore, observer.getObservedQualifiers()), resolvable.getQualifiers())
                 // container lifecycle events are fired into Extensions only
                 && (!isContainerLifecycleEvent(resolvable) || Extension.class.isAssignableFrom(observer.getBeanClass()));
     }
@@ -57,13 +57,6 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         return false;
     }
 
-    /**
-     * @return the manager
-     */
-    public BeanManagerImpl getManager() {
-        return manager;
-    }
-
     @Override
     protected Set<ObserverMethod<?>> filterResult(Set<ObserverMethod<?>> matched) {
         return matched;
@@ -74,4 +67,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         return matched;
     }
 
+    public MetaAnnotationStore getMetaAnnotationStore() {
+        return metaAnnotationStore;
+    }
 }

@@ -38,13 +38,15 @@ public class QualifierInstance {
 
 
     public static Set<QualifierInstance> qualifiers(final BeanManagerImpl beanManager, Set<Annotation> annotations) {
+        return qualifiers(beanManager.getServices().get(MetaAnnotationStore.class), annotations);
+    }
+    public static Set<QualifierInstance> qualifiers(MetaAnnotationStore metaAnnotationStore, Set<Annotation> annotations) {
         if (annotations.isEmpty()) {
             return Collections.emptySet();
         }
-        final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
         final Set<QualifierInstance> ret = new ArraySet<QualifierInstance>();
         for(Annotation a : annotations) {
-            ret.add(new QualifierInstance(a, store));
+            ret.add(new QualifierInstance(a, metaAnnotationStore));
         }
         return immutableSet(ret);
     }

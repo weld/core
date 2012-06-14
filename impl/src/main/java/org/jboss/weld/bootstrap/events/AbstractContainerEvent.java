@@ -16,19 +16,19 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.event.ExtensionObserverMethodImpl;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
-
-import javax.enterprise.inject.spi.ObserverMethod;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.ObserverMethod;
+
+import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
 public abstract class AbstractContainerEvent {
 
@@ -66,23 +66,7 @@ public abstract class AbstractContainerEvent {
     public void fire() {
         Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
         try {
-            beanManager.fireEvent(eventType, this);
-        } catch (Exception e) {
-            getErrors().add(e);
-        }
-    }
-
-    public void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
-        try {
-            // Collect all observers to remove dupes
-            Set<ObserverMethod<Object>> observers = new HashSet<ObserverMethod<Object>>();
-            Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
-            for (BeanDeployment beanDeployment : beanDeployments.values()) {
-                observers.addAll(beanDeployment.getBeanManager().resolveObserverMethods(eventType));
-            }
-            for (ObserverMethod<Object> observerMethod : observers) {
-                observerMethod.notify(this);
-            }
+            beanManager.getGlobalObserverNotifier().fireEvent(eventType, this);
         } catch (Exception e) {
             getErrors().add(e);
         }

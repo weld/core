@@ -83,10 +83,13 @@ public class Observers {
         CONTAINER_LIFECYCLE_EVENT_TYPES = Collections.unmodifiableSet(types);
     }
 
-    public static void checkEventObjectType(final BeanManagerImpl beanManager, Type eventType) {
+    public static void checkEventObjectType(BeanManagerImpl manager, Type eventType) {
+        checkEventObjectType(manager.getServices().get(SharedObjectCache.class), eventType);
+    }
+
+    public static void checkEventObjectType(SharedObjectCache sharedObjectCache, Type eventType) {
         Type[] types;
-        final SharedObjectCache cache = beanManager.getServices().get(SharedObjectCache.class);
-        final Type resolvedType = cache.getResolvedType(eventType);
+        final Type resolvedType = sharedObjectCache.getResolvedType(eventType);
         if (resolvedType instanceof Class<?>) {
             types = new Type[0];
         } else if (resolvedType instanceof ParameterizedType) {
@@ -101,8 +104,8 @@ public class Observers {
         }
     }
 
-    public static void checkEventObjectType(final BeanManagerImpl beanManager, Object event) {
-        checkEventObjectType(beanManager, event.getClass());
+    public static void checkEventObjectType(SharedObjectCache sharedObjectCache, Object event) {
+        checkEventObjectType(sharedObjectCache, event.getClass());
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {

@@ -40,13 +40,4 @@ public abstract class AbstractDefinitionContainerEvent extends AbstractContainer
             throw new DefinitionException(getErrors());
         }
     }
-
-    @Override
-    public void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
-        super.fire(beanDeployments);
-        if (!getErrors().isEmpty()) {
-            throw new DefinitionException(getErrors());
-        }
-    }
-
 }

@@ -126,7 +126,7 @@ public class NonBdaExtensionTest {
         CountingObserver2 observer2 = Utils.getReference(beanManager1, CountingObserver2.class);
         Assert.assertEquals(1, observer1.getBeforeBeanDiscovery());
         Assert.assertEquals(1, observer1.getProcessFooManagedBean());
-        Assert.assertEquals(0, observer1.getProcessBarManagedBean());
+        Assert.assertEquals(1, observer1.getProcessBarManagedBean());
         Assert.assertEquals(1, observer2.getBeforeBeanDiscovery());
         Assert.assertEquals(1, observer2.getProcessFooManagedBean());
         Assert.assertEquals(1, observer2.getProcessBarManagedBean());

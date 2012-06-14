@@ -339,7 +339,7 @@ public class Beans {
      * @param qualifiers         The set of qualifiers to check
      * @return True if all matches, false otherwise
      */
-    public static boolean containsAllQualifiers(Set<QualifierInstance> requiredQualifiers, Set<QualifierInstance> qualifiers, BeanManagerImpl beanManager) {
+    public static boolean containsAllQualifiers(Set<QualifierInstance> requiredQualifiers, Set<QualifierInstance> qualifiers) {
         return qualifiers.containsAll(requiredQualifiers);
     }
 

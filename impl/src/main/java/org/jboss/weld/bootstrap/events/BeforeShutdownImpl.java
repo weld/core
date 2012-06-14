@@ -36,12 +36,7 @@ public class BeforeShutdownImpl extends AbstractContainerEvent implements Before
     private static final Logger log = loggerFactory().getLogger(BOOTSTRAP);
 
     public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
-        if (beanDeployments == null) {
-            // Shutdown may have been called with an early-failure, before beanDeployments is built
-            new BeforeShutdownImpl(beanManager).fire();
-        } else {
-            new BeforeShutdownImpl(beanManager).fire(beanDeployments);
-        }
+        // Shutdown may have been called with an early-failure, before beanDeployments is built
     }
 
     public BeforeShutdownImpl(BeanManagerImpl beanManager) {
@@ -49,8 +44,8 @@ public class BeforeShutdownImpl extends AbstractContainerEvent implements Before
     }
 
     @Override
-    public void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
-        super.fire(beanDeployments);
+    public void fire() {
+        super.fire();
         if (!getErrors().isEmpty()) {
             log.error("Exception(s) thrown during observer of BeforeShutdown");
             for (Throwable t : getErrors()) {

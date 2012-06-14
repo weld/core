@@ -16,7 +16,18 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
@@ -26,27 +37,15 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
-import org.jboss.weld.util.bean.WrappedBeanHolder;
 import org.jboss.weld.util.bean.IsolatedForwardingBean;
 import org.jboss.weld.util.bean.IsolatedForwardingDecorator;
 import org.jboss.weld.util.bean.IsolatedForwardingInterceptor;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ObserverMethod;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.jboss.weld.util.bean.WrappedBeanHolder;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery {
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire(beanDeployments);
+        new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire();
     }
 
     protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {

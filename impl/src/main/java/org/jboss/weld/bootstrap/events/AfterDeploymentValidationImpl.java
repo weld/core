@@ -16,19 +16,16 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.manager.BeanManagerImpl;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
-import java.util.Map;
 
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEvent implements AfterDeploymentValidation {
 
-    public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
-        new AfterDeploymentValidationImpl(beanManager).fire(beanDeployments);
+    public static void fire(BeanManagerImpl beanManager) {
+        new AfterDeploymentValidationImpl(beanManager).fire();
     }
 
     protected AfterDeploymentValidationImpl(BeanManagerImpl beanManager) {

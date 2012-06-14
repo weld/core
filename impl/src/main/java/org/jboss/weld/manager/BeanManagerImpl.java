@@ -114,7 +114,8 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
-import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.event.GlobalObserverNotifierService;
+import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -166,7 +167,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Interceptors;
-import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
@@ -237,10 +237,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient TypeSafeBeanResolver<Bean<?>> beanResolver;
     private final transient TypeSafeResolver<Resolvable, Decorator<?>> decoratorResolver;
     private final transient TypeSafeResolver<InterceptorResolvable, Interceptor<?>> interceptorResolver;
-    private final transient TypeSafeResolver<Resolvable, ObserverMethod<?>> observerResolver;
     private final transient NameBasedResolver nameBasedResolver;
     private final transient ELResolver weldELResolver;
     private transient Namespace rootNamespace;
+
+    private final transient ObserverNotifier accessibleObserverNotifier;
+    private final transient ObserverNotifier globalObserverNotifier;
 
     /*
     * Activity scoped data structures
@@ -400,10 +402,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(beanTransform));
         this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(DecoratorTransform.INSTANCE));
         this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(InterceptorTransform.INSTANCE));
-        this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.weldELResolver = new WeldELResolver(this);
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
+
+        TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
+        this.accessibleObserverNotifier = new ObserverNotifier(accessibleObserverResolver, getServices().get(SharedObjectCache.class));
+        GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
+        this.globalObserverNotifier = globalObserverNotifierService.getGlobalObserverNotifier();
+        globalObserverNotifierService.registerBeanManager(this);
     }
 
 
@@ -423,7 +430,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         beanResolver.clear();
         interceptorResolver.clear();
         decoratorResolver.clear();
-        observerResolver.clear();
+        accessibleObserverNotifier.clear();
     }
 
     public HashSet<BeanManagerImpl> getAccessibleManagers() {
@@ -477,38 +484,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         decoratorResolver.clear();
     }
 
+    @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        Observers.checkEventObjectType(this, event);
-        return this.<T>resolveObserverMethods(event.getClass(), bindings);
+        return globalObserverNotifier.resolveObserverMethods(event, bindings);
     }
 
     public void addInterceptor(Interceptor<?> bean) {
         interceptors.add(bean);
         getServices().get(ContextualStore.class).putIfAbsent(bean);
         interceptorResolver.clear();
-    }
-
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
-        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Resolvable resolvable = new ResolvableBuilder(this)
-            .addTypes(services.get(SharedObjectCache.class).getTypeClosureHolder(eventType).get())
-            .addType(Object.class)
-            .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
-            .create();
-        return cast(observerResolver.resolve(resolvable, true));
-    }
-
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
-        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Set<Type> typeClosure = services.get(SharedObjectCache.class).getTypeClosureHolder(eventType).get();
-        Resolvable resolvable = new ResolvableBuilder(this)
-            .addTypes(typeClosure)
-            .addType(Object.class)
-            .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
-            .create();
-        return cast(observerResolver.resolve(resolvable, true));
     }
 
     /**
@@ -634,42 +618,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @see javax.enterprise.inject.spi.BeanManager#fireEvent(java.lang.Object,
      *      java.lang.annotation.Annotation[])
      */
+    @Override
     public void fireEvent(Object event, Annotation... qualifiers) {
-        fireEvent(event.getClass(), event, qualifiers);
-    }
-
-    public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
-        Observers.checkEventObjectType(this, event);
-        Set<Annotation> qualifierSet = new HashSet<Annotation>(Arrays.asList(qualifiers));
-        // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
-        notifyObservers(event, qualifierSet, resolveObserverMethods(eventType, qualifiers));
-    }
-
-    public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers) {
-        Observers.checkEventObjectType(this, event);
-        notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
-    }
-
-    private <T> void notifyObservers(final T event, final Set<Annotation> qualifiers, final Set<ObserverMethod<? super T>> observers) {
-        /*
-         * The spec requires that the set of qualifiers of an event always contains the {@link Any} qualifier. We optimize this
-         * and only do it for extension-provided observer methods since {@link ObserverMethodImpl} does not use the qualifiers
-         * anyway.
-         */
-        Set<Annotation> allQualifiers = null;
-
-        for (ObserverMethod<? super T> observer : observers) {
-            if (observer instanceof ObserverMethodImpl<?, ?>) {
-                observer.notify(event);
-            } else {
-                if (allQualifiers == null) {
-                    allQualifiers = new HashSet<Annotation>(qualifiers);
-                    allQualifiers.add(AnyLiteral.INSTANCE);
-                    allQualifiers = Collections.unmodifiableSet(allQualifiers);
-                }
-                observer.notify(event, allQualifiers);
-            }
-        }
+        globalObserverNotifier.fireEvent(event, qualifiers);
     }
 
     /**
@@ -901,12 +852,21 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Get the observer resolver. For internal use
+     * Get the observer notifier for accessible observer methods. For internal use
      *
-     * @return The resolver
+     * @return The {@link ObserverNotifier}
      */
-    public TypeSafeResolver<Resolvable, ObserverMethod<?>> getObserverResolver() {
-        return observerResolver;
+    public ObserverNotifier getAccessibleObserverNotifier() {
+        return accessibleObserverNotifier;
+    }
+
+    /**
+     * Get the global observer notifier. For internal use
+     *
+     * @return The {@link ObserverNotifier}
+     */
+    public ObserverNotifier getGlobalObserverNotifier() {
+        return globalObserverNotifier;
     }
 
     /**
@@ -1279,7 +1239,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.interceptors.clear();
         this.nameBasedResolver.clear();
         this.namespaces.clear();
-        this.observerResolver.clear();
+        this.accessibleObserverNotifier.clear();
         this.observers.clear();
         BeansClosure.removeClosure(this);
     }

@@ -33,7 +33,7 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
     private final BeanManagerImpl manager;
 
     public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors) {
-        super(interceptors, manager);
+        super(interceptors);
         this.manager = manager;
     }
 

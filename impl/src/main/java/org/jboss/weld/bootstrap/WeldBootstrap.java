@@ -96,6 +96,7 @@ import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.enums.EnumService;
+import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.executor.ExecutorServicesFactory;
@@ -282,6 +283,7 @@ public class WeldBootstrap implements Bootstrap {
             deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
             deploymentServices.add(ContextualStore.class, implementationServices.get(ContextualStore.class));
             deploymentServices.add(CurrentInjectionPoint.class, implementationServices.get(CurrentInjectionPoint.class));
+            deploymentServices.add(GlobalObserverNotifierService.class, implementationServices.get(GlobalObserverNotifierService.class));
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
@@ -315,6 +317,7 @@ public class WeldBootstrap implements Bootstrap {
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
+        services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services));
 
         ExecutorServices executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
         services.add(ExecutorServices.class, executor);
@@ -434,7 +437,7 @@ public class WeldBootstrap implements Bootstrap {
                     deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
                     beanManager.getServices().get(InjectionTargetService.class).validate();
                 }
-                AfterDeploymentValidationImpl.fire(deploymentManager, beanDeployments);
+                AfterDeploymentValidationImpl.fire(deploymentManager);
             }
             return this;
         } catch (RuntimeException e) {
@@ -451,12 +454,13 @@ public class WeldBootstrap implements Bootstrap {
             // clear the TypeSafeResolvers, so data that is only used at startup
             // is not kept around using up memory
             deploymentManager.getBeanResolver().clear();
-            deploymentManager.getObserverResolver().clear();
+            deploymentManager.getAccessibleObserverNotifier().clear();
+            deploymentManager.getGlobalObserverNotifier().clear();
             deploymentManager.getDecoratorResolver().clear();
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                 beanManager.getBeanResolver().clear();
-                beanManager.getObserverResolver().clear();
+                beanManager.getAccessibleObserverNotifier().clear();
                 beanManager.getDecoratorResolver().clear();
                 beanManager.getInterceptorMetadataReader().cleanAfterBoot();
                 // clean up beans

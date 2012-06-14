@@ -16,13 +16,10 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import java.lang.reflect.Type;
+
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * @author pmuir
@@ -40,13 +37,4 @@ public abstract class AbstractDeploymentContainerEvent extends AbstractContainer
             throw new DeploymentException(getErrors());
         }
     }
-
-    @Override
-    public void fire(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
-        super.fire(beanDeployments);
-        if (!getErrors().isEmpty()) {
-            throw new DeploymentException(getErrors());
-        }
-    }
-
 }
