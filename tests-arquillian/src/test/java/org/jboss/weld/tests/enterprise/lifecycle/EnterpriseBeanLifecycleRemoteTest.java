@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.tests.enterprise.lifecycle;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.URL;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
@@ -41,7 +42,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * Sections
@@ -64,7 +66,7 @@ public class EnterpriseBeanLifecycleRemoteTest {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
         ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
                 .addClass(RemoteClient.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").setManifest(new StringAsset("Manifest-Version: 1.0\nClass-Path: test-archive.jar"))
         );
         ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test-archive.jar")
                 .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
