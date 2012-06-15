@@ -119,7 +119,9 @@
 
                         <configuration>
                             <translations>
+                                <translation>fr-FR</translation>
                                 <translation>it-IT</translation>
+                                <translation>ja-JP</translation>
                                 <translation>zh-CN</translation>
                                 <translation>zh-TW</translation>
                                 <translation>es-ES</translation>
