@@ -68,7 +68,7 @@ public class IncontainerTest {
 
     @Test
     public void testCallingFromOutsideOfBda() {
-        assertEquals(0, MarkerObtainer4.getBeans(Marker.class).size());
+        assertEquals(1, MarkerObtainer4.getBeans(Marker.class).size()); // because we get the root manager, which is the manager of WEB-INF/classes in this case
         assertEquals(1, MarkerObtainer4.getBeans(Foo.class).size());
         assertEquals(1, MarkerObtainer4.getBeans(Bar.class).size());
         assertEquals(1, MarkerObtainer4.getBeans(Baz.class).size());
