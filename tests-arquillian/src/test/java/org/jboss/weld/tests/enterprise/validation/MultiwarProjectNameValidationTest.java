@@ -23,7 +23,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -34,6 +36,7 @@ import org.junit.runner.RunWith;
  * @author Jozef Hartinger
  *
  */
+@Category(Integration.class)
 @RunWith(Arquillian.class)
 public class MultiwarProjectNameValidationTest {
 
