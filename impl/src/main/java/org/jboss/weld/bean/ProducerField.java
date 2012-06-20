@@ -17,6 +17,7 @@
 package org.jboss.weld.bean;
 
 import java.lang.reflect.Field;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
@@ -139,12 +140,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         this.enhancedAnnotatedField = null;
     }
 
-
-    @Override
-    public AbstractBean<?, ?> getSpecializedBean() {
-        return null;
-    }
-
     @Override
     public boolean isSpecializing() {
         return false;
@@ -158,5 +153,10 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     @Override
     public boolean isProxyable() {
         return proxiable;
+    }
+
+    @Override
+    public Set<AbstractBean<?, ?>> getSpecializedBeans() {
+        throw new UnsupportedOperationException("Producer field may not specialize other beans " + this);
     }
 }

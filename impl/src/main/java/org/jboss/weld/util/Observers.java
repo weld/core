@@ -46,6 +46,7 @@ import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -116,7 +117,7 @@ public class Observers {
     public static boolean isObserverMethodEnabled(ObserverMethod<?> method, BeanManagerImpl manager) {
         if (method instanceof ObserverMethodImpl<?, ?>) {
             Bean<?> declaringBean = Reflections.<ObserverMethodImpl<?, ?>> cast(method).getDeclaringBean();
-            return manager.isBeanEnabled(declaringBean) && !Beans.isSpecialized(declaringBean, manager) && !Beans.isSuppressedBySpecialization(declaringBean, manager);
+            return manager.getServices().get(SpecializationAndEnablementRegistry.class).isCandidateForLifecycleEvent(declaringBean);
         }
         return true;
     }

@@ -59,7 +59,6 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -81,7 +80,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     protected final ClassTransformer classTransformer;
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
-        this(manager, ejbDescriptors, services, BeanDeployerEnvironment.newEnvironment(ejbDescriptors, manager));
+        this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
     }
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services, BeanDeployerEnvironment environment) {
@@ -238,11 +237,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
      * Fires {@link ProcessBeanAttributes} for each enabled bean and updates the environment based on the events.
      */
     public void processClassBeanAttributes() {
-        preInitializeBeans(getEnvironment().getClassBeanMap().values());
+        preInitializeBeans(getEnvironment().getClassBeans());
         preInitializeBeans(getEnvironment().getDecorators());
         preInitializeBeans(getEnvironment().getInterceptors());
 
-        processBeanAttributes(getEnvironment().getClassBeanMap().values());
+        processBeanAttributes(getEnvironment().getClassBeans());
         processBeanAttributes(getEnvironment().getDecorators());
         processBeanAttributes(getEnvironment().getInterceptors());
     }
@@ -274,8 +273,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         // remove vetoed class beans
         for (AbstractBean<?, ?> bean : vetoedBeans) {
             if (bean.isSpecializing()) {
-                BeansClosure.getClosure(getManager()).removeSpecialized(bean.getSpecializedBean());
-                previouslySpecializedBeans.add(bean.getSpecializedBean());
+                SpecializationAndEnablementRegistry registry = getManager().getServices().get(SpecializationAndEnablementRegistry.class);
+                previouslySpecializedBeans.addAll(registry.resolveSpecializedBeans(bean));
+                registry.vetoSpecializingBean(bean);
             }
             getEnvironment().vetoBean(bean);
         }
@@ -284,7 +284,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createProducersAndObservers() {
-        for (AbstractClassBean<?> bean : getEnvironment().getClassBeanMap().values()) {
+        for (AbstractClassBean<?> bean : getEnvironment().getClassBeans()) {
             createObserversProducersDisposers(bean);
         }
     }
@@ -292,8 +292,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     public void processProducerAttributes() {
         processBeanAttributes(getEnvironment().getProducerFields());
         // process BeanAttributes for producer methods
-        preInitializeBeans(getEnvironment().getProducerMethodBeanMap().values());
-        processBeanAttributes(getEnvironment().getProducerMethodBeanMap().values());
+        preInitializeBeans(getEnvironment().getProducerMethodBeans());
+        processBeanAttributes(getEnvironment().getProducerMethodBeans());
     }
 
     public void createNewBeans() {

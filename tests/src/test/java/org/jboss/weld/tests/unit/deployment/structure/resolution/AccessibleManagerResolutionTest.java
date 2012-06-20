@@ -28,6 +28,8 @@ import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.BeanDeployerEnvironmentFactory;
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.ejb.EjbDescriptors;
@@ -59,6 +61,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(SharedObjectCache.class, new SharedObjectCache());
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services));
         this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager("foo", services, EMPTY_ENABLED)));
+        this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {
@@ -66,7 +69,7 @@ public class AccessibleManagerResolutionTest {
         RIBean<?> bean = ManagedBean.of(BeanAttributesFactory.forBean(clazz, manager), clazz, manager);
         manager.addBean(bean);
         manager.getBeanResolver().clear();
-        BeanDeployerEnvironment environment = BeanDeployerEnvironment.newEnvironment(new EjbDescriptors(), manager);
+        BeanDeployerEnvironment environment = BeanDeployerEnvironmentFactory.newEnvironment(new EjbDescriptors(), manager);
         bean.initialize(environment);
     }
 

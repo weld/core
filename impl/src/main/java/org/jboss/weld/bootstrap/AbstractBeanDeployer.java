@@ -344,7 +344,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T, S> boolean fireProcessBeanAttributes(AbstractBean<T, S> bean) {
-        if (!getManager().isBeanEnabled(bean) || Beans.isSpecialized(bean, getManager()) || Beans.isSuppressedBySpecialization(bean, getManager())) {
+        if (!manager.getServices().get(SpecializationAndEnablementRegistry.class).isCandidateForLifecycleEvent(bean)) {
             return false;
         }
 

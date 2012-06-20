@@ -124,9 +124,11 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 
 /**
  * Helper class for bean inspection
@@ -372,17 +374,22 @@ public class Beans {
      * @param beanManager the bean manager
      * @return The filtered beans
      */
-    public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, BeanManagerImpl beanManager) {
+    public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, final BeanManagerImpl beanManager) {
         if (beans.size() == 0) {
             return beans;
         } else {
-            Set<T> result = new HashSet<T>();
-            for (T bean : beans) {
-                if (isBeanEnabled(bean, beanManager.getEnabled()) && !isSpecialized(bean, beans, beanManager) && !isSuppressedBySpecialization(bean, beanManager)) {
-                    result.add(bean);
+            return Sets.filter(beans, new Predicate<T>() {
+                @Override
+                public boolean apply(T bean) {
+                    if (bean instanceof AbstractProducerBean<?, ?, ?>) {
+                        AbstractProducerBean<?, ?, ?> producer = cast(bean);
+                        if (beanManager.isSpecialized(producer.getDeclaringBean())) {
+                            return false;
+                        }
+                    }
+                    return isBeanEnabled(bean, beanManager.getEnabled()) && !beanManager.isSpecialized(bean);
                 }
-            }
-            return result;
+            });
         }
     }
 
@@ -443,47 +450,6 @@ public class Beans {
      */
     public static boolean isNullable(EnhancedAnnotated<?, ?> annotated) {
         return !annotated.isPrimitive();
-    }
-
-    /**
-     * Check if bean is specialized by any of beans
-     *
-     * @param bean the bean to check
-     * @param beanManager bean manager
-     * @return true if bean is specialized by some bean in all beans
-     */
-    public static <T extends Bean<?>> boolean isSpecialized(T bean, BeanManagerImpl beanManager) {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        return closure.isSpecialized(bean);
-    }
-
-    /**
-     * Check if bean is specialized by any of beans
-     *
-     * @param bean the bean to check
-     * @param beans the possible specialized beans
-     * @param beanManager bean manager
-     * @return true if bean is specialized by some bean in beans
-     */
-    public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, BeanManagerImpl beanManager) {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        Bean<?> specializedBean = closure.getSpecialized(bean);
-        //noinspection SuspiciousMethodCalls
-        return (specializedBean != null && beans.contains(specializedBean));
-    }
-
-    /**
-     * Check if the given producer/disposer method of producer field is defined on a specialized bean and is therefore disabled.
-     */
-    public static boolean isSuppressedBySpecialization(Bean<?> bean, BeanManagerImpl manager) {
-        if (bean instanceof AbstractProducerBean<?, ?, ?>) {
-            BeansClosure closure = BeansClosure.getClosure(manager);
-            if (closure.isSpecialized(Reflections.<AbstractProducerBean<?, ?, ?>>cast(bean).getDeclaringBean())) {
-                // if a bean is specialized, its producer methods are not enabled (WELD-977)
-                return true;
-            }
-        }
-        return false;
     }
 
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {

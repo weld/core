@@ -70,7 +70,6 @@ import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
@@ -243,9 +242,6 @@ public class BeanDeployment {
         for (ContextHolder<? extends Context> context : contexts) {
             beanDeployer.addBuiltInBean(ContextBean.of(context, beanManager));
         }
-
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        closure.addEnvironment(beanDeployer.getEnvironment());
 
         // TODO Register the context beans
         beanDeployer.processEnums();

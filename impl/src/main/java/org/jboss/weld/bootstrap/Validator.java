@@ -95,6 +95,7 @@ import javax.inject.Scope;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DisposalMethod;
@@ -175,11 +176,14 @@ public class Validator implements Service {
     protected void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans) {
         validateGeneralBean(bean, beanManager);
         if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>)) {
-            RIBean<?> abstractBean = bean;
-            if (abstractBean.isSpecializing()) {
-                boolean added = specializedBeans.add(abstractBean.getSpecializedBean());
-                if (!added) {
-                    throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, bean);
+            if (bean instanceof AbstractBean<?, ?>) {
+                AbstractBean<?, ?> abstractBean = cast(bean);
+                if (abstractBean.isSpecializing()) {
+                    SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
+                    boolean added = specializedBeans.addAll(registry.resolveSpecializedBeans(abstractBean));
+                    if (!added) {
+                        throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, bean);
+                    }
                 }
             }
             if ((bean instanceof AbstractClassBean<?>)) {

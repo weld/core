@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
@@ -27,12 +28,10 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -44,7 +43,6 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
-    private ProducerMethod<?, ?> specializedBean;
     private final boolean proxiable;
 
     private final AnnotatedMethod<? super X> annotatedMethod;
@@ -132,26 +130,11 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     }
 
     @Override
-    public AbstractBean<?, ?> getSpecializedBean() {
-        return specializedBean;
-    }
-
-    @Override
-    protected void preSpecialize() {
-        if (getDeclaringBean().getEnhancedAnnotated().getEnhancedSuperclass().getDeclaredEnhancedMethod(getEnhancedAnnotated().getSignature()) == null) {
+    protected void specialize() {
+        Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
+        if (specializedBeans.isEmpty()) {
             throw new DefinitionException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
         }
-    }
-
-    @Override
-    protected void specialize() {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        EnhancedAnnotatedMethod<?, ?> superClassMethod = getDeclaringBean().getEnhancedAnnotated().getEnhancedSuperclass().getEnhancedMethod(getEnhancedAnnotated().getSignature());
-        ProducerMethod<?, ?> check = closure.getProducerMethod(superClassMethod);
-        if (check == null) {
-            throw new IllegalStateException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
-        }
-        this.specializedBean = check;
     }
 
     @Override

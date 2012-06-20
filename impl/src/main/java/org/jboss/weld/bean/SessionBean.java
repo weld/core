@@ -36,7 +36,6 @@ import java.util.Set;
 import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.interceptor.Interceptor;
 
@@ -51,15 +50,13 @@ import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -73,8 +70,6 @@ import org.jboss.weld.util.reflection.Formats;
 public class SessionBean<T> extends AbstractClassBean<T> {
     // The EJB descriptor
     private final InternalEjbDescriptor<T> ejbDescriptor;
-
-    private SessionBean<?> specializedBean;
 
     /**
      * Creates a simple, annotation defined Enterprise Web Bean using the annotations specified on type
@@ -149,30 +144,16 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         }
     }
 
-    /**
-     * Validates specialization
-     */
-    @Override
-    protected void preSpecialize() {
-        super.preSpecialize();
-        // We appear to check this twice?
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        if (closure.isEJB(getEnhancedAnnotated().getEnhancedSuperclass()) == false) {
-            throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
-        }
-    }
-
     @Override
     protected void specialize() {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        Bean<?> specializedBean = closure.getClassBean(getEnhancedAnnotated().getEnhancedSuperclass());
-        if (specializedBean == null) {
-            throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
+        Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
+        if (specializedBeans.isEmpty()) {
+            throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
         }
-        if (!(specializedBean instanceof SessionBean<?>)) {
-            throw new IllegalStateException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
-        } else {
-            this.specializedBean = (SessionBean<?>) specializedBean;
+        for (AbstractBean<?, ?> specializedBean : specializedBeans) {
+            if (!(specializedBean instanceof SessionBean<?>)) {
+                throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
+            }
         }
     }
 
@@ -223,11 +204,6 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     public boolean isClientCanCallRemoveMethods() {
         return getEjbDescriptor().isStateful() && isDependent();
-    }
-
-    @Override
-    public AbstractBean<?, ?> getSpecializedBean() {
-        return specializedBean;
     }
 
     /**

@@ -24,6 +24,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
+import static org.jboss.weld.logging.messages.BeanMessage.BEANS_WITH_DIFFERENT_BEAN_NAMES_CANNOT_BE_SPECIALIZED;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -41,10 +42,10 @@ import javax.inject.Named;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.util.BeansClosure;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -88,7 +89,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
                 specialize();
                 checkSpecialization();
                 postSpecialize();
-                finishSpecialization();
             }
         }
     }
@@ -122,12 +122,22 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      */
     public void checkSpecialization() {
         if (isSpecializing()) {
-            if (getAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
-                throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getAnnotated());
-            }
-            for (Type type : getSpecializedBean().getTypes()) {
-                if (!getTypes().contains(type)) {
-                    throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, getSpecializedBean());
+            boolean isNameDefined = getAnnotated().isAnnotationPresent(Named.class);
+            String previousSpecializedBeanName = null;
+            for (AbstractBean<?, ?> specializedBean : getSpecializedBeans()) {
+                String name = specializedBean.getName();
+                if (previousSpecializedBeanName != null && name != null && !previousSpecializedBeanName.equals(specializedBean.getName())) {
+                    // there may be multiple beans specialized by this bean - make sure they all share the same name
+                    throw new DefinitionException(BEANS_WITH_DIFFERENT_BEAN_NAMES_CANNOT_BE_SPECIALIZED, previousSpecializedBeanName, specializedBean.getName(), this);
+                }
+                previousSpecializedBeanName = name;
+                if (isNameDefined && name != null) {
+                    throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getAnnotated());
+                }
+                for (Type type : specializedBean.getTypes()) {
+                    if (!getTypes().contains(type)) {
+                        throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, specializedBean);
+                    }
                 }
             }
         }
@@ -137,21 +147,15 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         // override qualifiers
         Set<Annotation> qualifiers = new HashSet<Annotation>();
         qualifiers.addAll(attributes().getQualifiers());
-        qualifiers.addAll(getSpecializedBean().getQualifiers());
         // override name
         String name = attributes().getName();
-        if (isSpecializing() && getSpecializedBean().getName() != null) {
-            name = getSpecializedBean().getName();
+        for (AbstractBean<?, ?> specializedBean : getSpecializedBeans()) {
+            qualifiers.addAll(specializedBean.getQualifiers());
+            if (specializedBean.getName() != null) {
+                name = specializedBean.getName();
+            }
         }
         setAttributes(new ImmutableBeanAttributes<T>(qualifiers, name, attributes()));
-    }
-
-    /**
-     * Saves the result of specialization in {@link BeansClosure}.
-     */
-    protected void finishSpecialization() {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        closure.addSpecialized(getSpecializedBean(), this);
     }
 
     protected void preSpecialize() {
@@ -178,8 +182,9 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      */
     public abstract EnhancedAnnotated<T, S> getEnhancedAnnotated();
 
-    @Override
-    public abstract AbstractBean<?, ?> getSpecializedBean();
+    protected Set<? extends AbstractBean<?, ?>> getSpecializedBeans() {
+        return getBeanManager().getServices().get(SpecializationAndEnablementRegistry.class).resolveSpecializedBeans(this);
+    }
 
     /**
      * Gets the type of the bean
@@ -200,7 +205,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
     }
 
-    @Override
     public boolean isSpecializing() {
         return getAnnotated().isAnnotationPresent(Specializes.class);
     }

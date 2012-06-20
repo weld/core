@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -35,8 +34,8 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
@@ -61,46 +60,19 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 
 public class BeanDeployerEnvironment {
-
-    public static BeanDeployerEnvironment newEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
-        return new BeanDeployerEnvironment(ejbDescriptors, manager);
-    }
-
-    /**
-     * Creates a new threadsafe BeanDeployerEnvironment instance. These instances are used by {@link ConcurrentBeanDeployer} during bootstrap.
-     */
-    public static BeanDeployerEnvironment newConcurrentEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
-        return new BeanDeployerEnvironment(
-                Sets.newSetFromMap(new ConcurrentHashMap<AnnotatedType<?>, Boolean>()),
-                new ConcurrentHashMap<AnnotatedType<?>, Extension>(),
-                Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
-                new ConcurrentHashMap<AnnotatedType<?>, AbstractClassBean<?>>(),
-                Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
-                new ConcurrentHashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
-                Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<ObserverInitializationContext<?, ?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<DecoratorImpl<?>, Boolean>()),
-                Sets.newSetFromMap(new ConcurrentHashMap<InterceptorImpl<?>, Boolean>()),
-                ejbDescriptors,
-                Sets.newSetFromMap(new ConcurrentHashMap<EnhancedAnnotatedType<?>, Boolean>()),
-                new ConcurrentHashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
-                manager);
-    }
 
     private final Set<AnnotatedType<?>> annotatedTypes;
     private final Map<AnnotatedType<?>, Extension> annotatedTypeSource;
     private final Set<Class<?>> vetoedClasses;
-    private final Map<AnnotatedType<?>, AbstractClassBean<?>> classBeanMap;
-    private final Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap;
+    private final SetMultimap<Class<?>, AbstractClassBean<?>> classBeanMap;
+    private final SetMultimap<WeldMethodKey, ProducerMethod<?, ?>> producerMethodBeanMap;
     private final Set<ProducerField<?, ?>> producerFields;
     private final Set<RIBean<?>> beans;
     private final Set<ObserverInitializationContext<?, ?>> observers;
@@ -115,13 +87,33 @@ public class BeanDeployerEnvironment {
     private final Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint;
     private final BeanManagerImpl manager;
 
+    protected BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
+        this(
+                new HashSet<AnnotatedType<?>>(),
+                new HashMap<AnnotatedType<?>, Extension>(),
+                new HashSet<Class<?>>(),
+                HashMultimap.<Class<?>, AbstractClassBean<?>>create(),
+                new HashSet<ProducerField<?, ?>>(),
+                HashMultimap.<WeldMethodKey, ProducerMethod<?, ?>>create(),
+                new HashSet<RIBean<?>>(),
+                new HashSet<ObserverInitializationContext<?, ?>>(),
+                new HashSet<DisposalMethod<?, ?>>(),
+                new HashSet<DisposalMethod<?, ?>>(),
+                new HashSet<DecoratorImpl<?>>(),
+                new HashSet<InterceptorImpl<?>>(),
+                ejbDescriptors,
+                new HashSet<EnhancedAnnotatedType<?>>(),
+                new HashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
+                manager);
+    }
+
     protected BeanDeployerEnvironment(
             Set<AnnotatedType<?>> annotatedTypes,
             Map<AnnotatedType<?>, Extension> annotatedTypeSource,
             Set<Class<?>> vetoedClasses,
-            Map<AnnotatedType<?>, AbstractClassBean<?>> classBeanMap,
+            SetMultimap<Class<?>, AbstractClassBean<?>> classBeanMap,
             Set<ProducerField<?, ?>> producerFields,
-            Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> producerMethodBeanMap,
+            SetMultimap<WeldMethodKey, ProducerMethod<?, ?>> producerMethodBeanMap,
             Set<RIBean<?>> beans,
             Set<ObserverInitializationContext<?, ?>> observers,
             Set<DisposalMethod<?, ?>> allDisposalBeans,
@@ -150,26 +142,6 @@ public class BeanDeployerEnvironment {
         this.newManagedBeanClasses = newManagedBeanClasses;
         this.newSessionBeanDescriptorsFromInjectionPoint = newSessionBeanDescriptorsFromInjectionPoint;
         this.manager = manager;
-    }
-
-    protected BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
-        this(
-                new HashSet<AnnotatedType<?>>(),
-                new HashMap<AnnotatedType<?>, Extension>(),
-                new HashSet<Class<?>>(),
-                new HashMap<AnnotatedType<?>, AbstractClassBean<?>>(),
-                new HashSet<ProducerField<?, ?>>(),
-                new HashMap<WeldMethodKey<?, ?>, ProducerMethod<?, ?>>(),
-                new HashSet<RIBean<?>>(),
-                new HashSet<ObserverInitializationContext<?, ?>>(),
-                new HashSet<DisposalMethod<?, ?>>(),
-                new HashSet<DisposalMethod<?, ?>>(),
-                new HashSet<DecoratorImpl<?>>(),
-                new HashSet<InterceptorImpl<?>>(),
-                ejbDescriptors,
-                new HashSet<EnhancedAnnotatedType<?>>(),
-                new HashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
-                manager);
     }
 
     public void addAnnotatedType(AnnotatedType<?> annotatedType) {
@@ -226,29 +198,25 @@ public class BeanDeployerEnvironment {
         return newSessionBeanDescriptorsFromInjectionPoint;
     }
 
-    public <X, T> ProducerMethod<X, T> getProducerMethod(EnhancedAnnotatedMethod<X, T> method) {
-        WeldMethodKey<X, T> key = new WeldMethodKey<X, T>(method);
-        ProducerMethod<?, ?> bean = producerMethodBeanMap.get(key);
-        if (bean != null) {
-            bean.initialize(this);
+    public Set<ProducerMethod<?, ?>> getProducerMethod(Class<?> declaringClass, MethodSignature signature) {
+        WeldMethodKey key = new WeldMethodKey(declaringClass, signature);
+        Set<ProducerMethod<?, ?>> beans = producerMethodBeanMap.get(key);
+        for (ProducerMethod<?, ?> producerMethod : beans) {
+            producerMethod.initialize(this);
         }
-        return cast(bean);
+        return beans;
     }
 
-    public AbstractClassBean<?> getClassBean(AnnotatedType<?> clazz) {
-        AnnotatedType<?> type = clazz;
-        if (clazz instanceof EnhancedAnnotatedType<?>) {
-            type = Reflections.<EnhancedAnnotatedType<?>>cast(clazz).slim();
-        }
-        AbstractClassBean<?> bean = classBeanMap.get(type);
-        if (bean != null) {
+    public Set<AbstractClassBean<?>> getClassBeans(Class<?> clazz) {
+        Set<AbstractClassBean<?>> beans = classBeanMap.get(clazz);
+        for (AbstractClassBean<?> bean : beans) {
             bean.preInitialize();
         }
-        return bean;
+        return beans;
     }
 
     public void addProducerMethod(ProducerMethod<?, ?> bean) {
-        producerMethodBeanMap.put(WeldMethodKey.of(bean.getEnhancedAnnotated()), bean);
+        producerMethodBeanMap.put(WeldMethodKey.of(bean), bean);
         addAbstractBean(bean);
     }
 
@@ -267,7 +235,7 @@ public class BeanDeployerEnvironment {
 
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
         if (!(bean instanceof NewBean)) {
-            classBeanMap.put(bean.getAnnotated(), bean);
+            classBeanMap.put(bean.getBeanClass(), bean);
         }
         addAbstractBean(bean);
     }
@@ -392,37 +360,56 @@ public class BeanDeployerEnvironment {
         return Collections.unmodifiableSet(beans);
     }
 
-    protected static class WeldMethodKey<T, X> {
+    protected static class WeldMethodKey {
 
-        static <T, X> WeldMethodKey<T, X> of(EnhancedAnnotatedMethod<T, X> method) {
-            return new WeldMethodKey<T, X>(method);
+        static WeldMethodKey of(ProducerMethod<?, ?> producerMethod) {
+            return new WeldMethodKey(producerMethod.getBeanClass(), producerMethod.getEnhancedAnnotated().getSignature());
         }
 
-        final EnhancedAnnotatedMethod<T, X> method;
+        private final Class<?> declaringClass;
+        private final MethodSignature signature;
 
-        WeldMethodKey(EnhancedAnnotatedMethod<T, X> meth) {
-            this.method = meth;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (other instanceof WeldMethodKey<?, ?>) {
-                WeldMethodKey<?, ?> o = (WeldMethodKey<?, ?>) other;
-                return AnnotatedTypes.compareAnnotatedCallable(method, o.method);
-            }
-            return false;
+        WeldMethodKey(Class<?> clazz, MethodSignature signature) {
+            this.declaringClass = clazz;
+            this.signature = signature;
         }
 
         @Override
         public int hashCode() {
-            return method.getJavaMember().hashCode();
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
+            result = prime * result + ((signature == null) ? 0 : signature.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            WeldMethodKey other = (WeldMethodKey) obj;
+            if (declaringClass == null) {
+                if (other.declaringClass != null)
+                    return false;
+            } else if (!declaringClass.equals(other.declaringClass))
+                return false;
+            if (signature == null) {
+                if (other.signature != null)
+                    return false;
+            } else if (!signature.equals(other.signature))
+                return false;
+            return true;
         }
     }
 
     public void vetoBean(AbstractBean<?, ?> bean) {
         beans.remove(bean);
         if (bean instanceof AbstractClassBean<?>) {
-            classBeanMap.remove(bean.getAnnotated());
+            classBeanMap.get(bean.getBeanClass()).remove(bean);
             if (bean instanceof InterceptorImpl<?>) {
                 interceptors.remove(bean);
             }
@@ -431,19 +418,20 @@ public class BeanDeployerEnvironment {
             }
         }
         if (bean instanceof ProducerMethod<?, ?>) {
-            producerMethodBeanMap.remove(WeldMethodKey.of(Reflections.<ProducerMethod<?, ?>>cast(bean).getEnhancedAnnotated()));
+            ProducerMethod<?, ?> producerMethod = cast(bean);
+            producerMethodBeanMap.get(WeldMethodKey.of(producerMethod)).remove(producerMethod);
         }
         if (bean instanceof ProducerField<?, ?>) {
             producerFields.remove(bean);
         }
     }
 
-    public Map<AnnotatedType<?>, AbstractClassBean<?>> getClassBeanMap() {
-        return Collections.unmodifiableMap(classBeanMap);
+    public Collection<AbstractClassBean<?>> getClassBeans() {
+        return Collections.unmodifiableCollection(classBeanMap.values());
     }
 
-    public Map<WeldMethodKey<?, ?>, ProducerMethod<?, ?>> getProducerMethodBeanMap() {
-        return Collections.unmodifiableMap(producerMethodBeanMap);
+    public Collection<ProducerMethod<?, ?>> getProducerMethodBeans() {
+        return Collections.unmodifiableCollection(producerMethodBeanMap.values());
     }
 
     public Set<ProducerField<?, ?>> getProducerFields() {

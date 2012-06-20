@@ -119,7 +119,6 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -318,6 +317,7 @@ public class WeldBootstrap implements Bootstrap {
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services));
+        services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
 
         ExecutorServices executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
         services.add(ExecutorServices.class, executor);
@@ -419,6 +419,9 @@ public class WeldBootstrap implements Bootstrap {
                 entry.getValue().getBeanManager().getServices().get(InjectionTargetService.class).initialize();
                 entry.getValue().afterBeanDiscovery(environment);
             }
+            for (BeanDeployment deployment : beanDeployments.values()) {
+                deployment.getBeanManager().initializeSpecialization();
+            }
             Container.instance().putBeanDeployments(beanDeployments);
             Container.instance().setState(ContainerState.INITIALIZED);
         }
@@ -482,7 +485,6 @@ public class WeldBootstrap implements Bootstrap {
                         Reflections.<InterceptorImpl<?>>cast(interceptor).cleanupAfterBoot();
                     }
                 }
-                BeansClosure.getClosure(beanManager).clear();
             }
         }
         for (BeanDeployment deployment : beanDeployments.values()) {

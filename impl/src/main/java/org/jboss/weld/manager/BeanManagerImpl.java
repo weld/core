@@ -91,6 +91,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.NewBean;
@@ -103,6 +104,7 @@ import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
@@ -165,7 +167,6 @@ import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
@@ -259,6 +260,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient List<Interceptor<?>> interceptors;
     private final transient List<String> namespaces;
     private final transient List<ObserverMethod<?>> observers;
+
+    private transient volatile Set<Bean<?>> accessibleSpecializedBeans = Collections.emptySet();
 
     /*
     * set that is only used to make sure that no duplicate beans are added
@@ -655,7 +658,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy) {
-        bean = getMostSpecializedBean(bean);
         if (creationalContext instanceof WeldCreationalContext<?>) {
             creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
         }
@@ -935,13 +937,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return services;
     }
 
-    @SuppressWarnings({"deprecation", "unchecked"})
-    @Deprecated // should nto be used anymore
-    public Map<Contextual<?>, Contextual<?>> getSpecializedBeans() {
-        BeansClosure closure = BeansClosure.getClosure(this);
-        return closure.getSpecialized();
-    }
-
     // Serialization
 
     protected Object readResolve() {
@@ -1122,12 +1117,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         };
     }
 
-    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {
-        BeansClosure closure = BeansClosure.getClosure(this);
-        //noinspection unchecked
-        return (Bean<? extends X>) closure.mostSpecialized(bean);
-    }
-
     public void validate(InjectionPoint ij) {
         try {
             getServices().get(Validator.class).validateInjectionPoint(ij, this);
@@ -1241,7 +1230,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.namespaces.clear();
         this.accessibleObserverNotifier.clear();
         this.observers.clear();
-        BeansClosure.removeClosure(this);
     }
 
     public ConcurrentMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> getInterceptorModelRegistry() {
@@ -1385,4 +1373,26 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return ip != null && !ip.getType().equals(InjectionPoint.class) && !ip.isDelegate();
     }
 
+    public boolean isSpecialized(Bean<?> bean) {
+        return accessibleSpecializedBeans.contains(bean);
+    }
+
+    /**
+     * For each specializing bean accessible from this manager, beans specialized by this bean are added to the blacklist. These
+     * beans are then never resolved.
+     */
+    public void initializeSpecialization() {
+        Transform<Bean<?>> beanTransform = new BeanTransform(this);
+        SpecializationAndEnablementRegistry registry = services.get(SpecializationAndEnablementRegistry.class);
+        Set<Bean<?>> specializedBeansTemp = new HashSet<Bean<?>>();
+        for (Bean<?> bean : createDynamicAccessibleIterable(beanTransform)) {
+            if (bean instanceof AbstractBean<?, ?>) {
+                AbstractBean<?, ?> abstractBean = (AbstractBean<?, ?>) bean;
+                if (abstractBean.isSpecializing() && Beans.isBeanEnabled(abstractBean, getEnabled())) {
+                    specializedBeansTemp.addAll(registry.resolveSpecializedBeans(abstractBean));
+                }
+            }
+        }
+        this.accessibleSpecializedBeans = Collections.unmodifiableSet(specializedBeansTemp);
+    }
 }

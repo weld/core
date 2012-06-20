@@ -24,8 +24,9 @@ import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS
 import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
@@ -36,7 +37,6 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.slf4j.cal10n.LocLogger;
@@ -56,8 +56,6 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     // Logger
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
     private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
-
-    private ManagedBean<?> specializedBean;
 
     private final boolean proxiable;
 
@@ -160,31 +158,16 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     @Override
-    protected void preSpecialize() {
-        super.preSpecialize();
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        if (closure.isEJB(getEnhancedAnnotated().getEnhancedSuperclass())) {
-            throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
-        }
-    }
-
-    @Override
     protected void specialize() {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
-        Bean<?> specializedBean = closure.getClassBean(getEnhancedAnnotated().getEnhancedSuperclass());
-        if (specializedBean == null) {
+        Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
+        if (specializedBeans.isEmpty()) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
-        if (!(specializedBean instanceof ManagedBean<?>)) {
-            throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
-        } else {
-            this.specializedBean = (ManagedBean<?>) specializedBean;
+        for (AbstractBean<?, ?> specializedBean : specializedBeans) {
+            if (!(specializedBean instanceof ManagedBean<?>)) {
+                throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
+            }
         }
-    }
-
-    @Override
-    public ManagedBean<?> getSpecializedBean() {
-        return specializedBean;
     }
 
     @Override

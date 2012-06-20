@@ -16,17 +16,13 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.QualifierInstance;
 
@@ -46,7 +42,7 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
         this.beanManager = beanManager;
     }
 
-    protected BeanManagerImpl getBeanManager() {
+    public BeanManagerImpl getBeanManager() {
         return beanManager;
     }
 
@@ -88,8 +84,6 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
      */
     public abstract void initializeAfterBeanDiscovery();
 
-    public abstract boolean isSpecializing();
-
     public boolean isDependent() {
         return getScope().equals(Dependent.class);
     }
@@ -101,8 +95,6 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
     public abstract boolean isPassivationCapableDependency();
 
     public abstract boolean isProxyRequired();
-
-    public abstract RIBean<?> getSpecializedBean();
 
     public Set<QualifierInstance> getQualifierInstances() {
         if (qualifiers == null) {

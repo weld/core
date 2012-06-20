@@ -57,7 +57,7 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
     private final ContainerLifecycleEventPreloader preloader;
 
     public ConcurrentBeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
-        super(manager, ejbDescriptors, services, BeanDeployerEnvironment.newConcurrentEnvironment(ejbDescriptors, manager));
+        super(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newConcurrentEnvironment(ejbDescriptors, manager));
         this.executor = services.get(ExecutorServices.class);
         this.preloader = services.get(ContainerLifecycleEventPreloader.class);
         if (this.preloader == null) {
@@ -111,7 +111,7 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
     @Override
     public void createProducersAndObservers() {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AbstractClassBean<?>>(getEnvironment().getClassBeanMap().values()) {
+        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AbstractClassBean<?>>(getEnvironment().getClassBeans()) {
             protected void doWork(AbstractClassBean<?> bean) {
                 createObserversProducersDisposers(bean);
             }

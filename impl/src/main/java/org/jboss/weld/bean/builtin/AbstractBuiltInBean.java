@@ -72,18 +72,8 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
     }
 
     @Override
-    public RIBean<?> getSpecializedBean() {
-        return null;
-    }
-
-    @Override
     public Set<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
-    }
-
-    @Override
-    public boolean isSpecializing() {
-        return false;
     }
 
     @Override
