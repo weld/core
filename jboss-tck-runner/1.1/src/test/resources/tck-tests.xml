@@ -151,14 +151,6 @@
                     <exclude name="testCustomTransactionalObserver" />
                 </methods>
             </class>
-            <!-- WELD-1149 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.modules.SpecializedBeanInjectionNotAvailableTest">
-                <methods>
-                    <exclude name="testManagedBeanInjection" />
-                    <exclude name="testSessionBeanInjection" />
-                </methods>
-            </class>
-            
             <!-- Issues in JBoss AS -->
             <!-- AS7-3107 -->
             <class name="org.jboss.cdi.tck.tests.context.jms.MessageListenerContextTest">
