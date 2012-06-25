@@ -24,6 +24,7 @@ import static org.slf4j.ext.XLogger.Level.INFO;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -59,12 +60,10 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * @author Pete Muir
@@ -187,7 +186,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createClassBeans() {
-        Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses = HashMultimap.create();
+        Map<Class<?>, Set<AnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
 
         for (AnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
             createClassBean(annotatedType, otherWeldClasses);
@@ -210,7 +209,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
-    protected void createClassBean(AnnotatedType<?> annotatedType, Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses) {
+    protected void createClassBean(AnnotatedType<?> annotatedType, Map<Class<?>, Set<AnnotatedType<?>>> otherWeldClasses) {
         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
             preloadContainerLifecycleEvent(ProcessInjectionTarget.class, annotatedType.getJavaClass());
@@ -229,7 +228,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 createManagedBean(weldClass);
             }
         } else {
-            otherWeldClasses.put(annotatedType.getJavaClass(), annotatedType);
+            otherWeldClasses.get(annotatedType.getJavaClass()).add(annotatedType);
         }
     }
 
@@ -246,14 +245,14 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         processBeanAttributes(getEnvironment().getInterceptors());
     }
 
-    private void preInitializeBeans(Collection<? extends AbstractBean<?, ?>> beans) {
+    private void preInitializeBeans(Iterable<? extends AbstractBean<?, ?>> beans) {
         for (AbstractBean<?, ?> bean : beans) {
             bean.preInitialize();
         }
     }
 
-    protected void processBeanAttributes(Collection<? extends AbstractBean<?, ?>> beans) {
-        if (beans.isEmpty()) {
+    protected void processBeanAttributes(Iterable<? extends AbstractBean<?, ?>> beans) {
+        if (!beans.iterator().hasNext()) {
             return; // exit recursion
         }
 

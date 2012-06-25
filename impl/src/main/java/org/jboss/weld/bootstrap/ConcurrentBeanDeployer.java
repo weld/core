@@ -22,9 +22,9 @@
 package org.jboss.weld.bootstrap;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -38,11 +38,8 @@ import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.util.collections.ConcurrentHashSetSupplier;
+import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 /**
  * BeanDeployer that processes some of the deployment tasks in parallel. A threadsafe instance of
@@ -82,8 +79,7 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
     @Override
     public void createClassBeans() {
-        final Multimap<Class<?>, AnnotatedType<?>> otherWeldClasses = Multimaps.newSetMultimap(new ConcurrentHashMap<Class<?>, Collection<AnnotatedType<?>>>(),
-                new ConcurrentHashSetSupplier<AnnotatedType<?>>());
+        final Map<Class<?>, Set<AnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<AnnotatedType<?>>(getEnvironment().getAnnotatedTypes()) {
             protected void doWork(AnnotatedType<?> weldClass) {

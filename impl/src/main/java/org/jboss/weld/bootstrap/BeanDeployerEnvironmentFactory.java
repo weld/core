@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -34,9 +33,8 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment.WeldMethodKey;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.ConcurrentHashSetSupplier;
+import org.jboss.weld.util.collections.Multimaps;
 
-import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 
 public class BeanDeployerEnvironmentFactory {
@@ -56,9 +54,9 @@ public class BeanDeployerEnvironmentFactory {
                 Sets.newSetFromMap(new ConcurrentHashMap<AnnotatedType<?>, Boolean>()),
                 new ConcurrentHashMap<AnnotatedType<?>, Extension>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
-                Multimaps.newSetMultimap(new ConcurrentHashMap<Class<?>, Collection<AbstractClassBean<?>>>(), new ConcurrentHashSetSupplier<AbstractClassBean<?>>()),
+                Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
                 Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
-                Multimaps.newSetMultimap(new ConcurrentHashMap<WeldMethodKey, Collection<ProducerMethod<?, ?>>>(), new ConcurrentHashSetSupplier<ProducerMethod<?, ?>>()),
+                Multimaps.<WeldMethodKey, ProducerMethod<?, ?>>newConcurrentSetMultimap(),
                 Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
                 Sets.newSetFromMap(new ConcurrentHashMap<ObserverInitializationContext<?, ?>, Boolean>()),
                 Sets.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),

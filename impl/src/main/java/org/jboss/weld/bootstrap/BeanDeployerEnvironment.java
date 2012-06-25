@@ -61,18 +61,18 @@ import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.InjectionPoints;
+import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Iterables;
 
 public class BeanDeployerEnvironment {
 
     private final Set<AnnotatedType<?>> annotatedTypes;
     private final Map<AnnotatedType<?>, Extension> annotatedTypeSource;
     private final Set<Class<?>> vetoedClasses;
-    private final SetMultimap<Class<?>, AbstractClassBean<?>> classBeanMap;
-    private final SetMultimap<WeldMethodKey, ProducerMethod<?, ?>> producerMethodBeanMap;
+    private final Map<Class<?>, Set<AbstractClassBean<?>>> classBeanMap;
+    private final Map<WeldMethodKey, Set<ProducerMethod<?, ?>>> producerMethodBeanMap;
     private final Set<ProducerField<?, ?>> producerFields;
     private final Set<RIBean<?>> beans;
     private final Set<ObserverInitializationContext<?, ?>> observers;
@@ -92,9 +92,9 @@ public class BeanDeployerEnvironment {
                 new HashSet<AnnotatedType<?>>(),
                 new HashMap<AnnotatedType<?>, Extension>(),
                 new HashSet<Class<?>>(),
-                HashMultimap.<Class<?>, AbstractClassBean<?>>create(),
+                Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
                 new HashSet<ProducerField<?, ?>>(),
-                HashMultimap.<WeldMethodKey, ProducerMethod<?, ?>>create(),
+                Multimaps.<WeldMethodKey, ProducerMethod<?, ?>>newConcurrentSetMultimap(),
                 new HashSet<RIBean<?>>(),
                 new HashSet<ObserverInitializationContext<?, ?>>(),
                 new HashSet<DisposalMethod<?, ?>>(),
@@ -111,9 +111,9 @@ public class BeanDeployerEnvironment {
             Set<AnnotatedType<?>> annotatedTypes,
             Map<AnnotatedType<?>, Extension> annotatedTypeSource,
             Set<Class<?>> vetoedClasses,
-            SetMultimap<Class<?>, AbstractClassBean<?>> classBeanMap,
+            Map<Class<?>, Set<AbstractClassBean<?>>> classBeanMap,
             Set<ProducerField<?, ?>> producerFields,
-            SetMultimap<WeldMethodKey, ProducerMethod<?, ?>> producerMethodBeanMap,
+            Map<WeldMethodKey, Set<ProducerMethod<?, ?>>> producerMethodBeanMap,
             Set<RIBean<?>> beans,
             Set<ObserverInitializationContext<?, ?>> observers,
             Set<DisposalMethod<?, ?>> allDisposalBeans,
@@ -216,7 +216,7 @@ public class BeanDeployerEnvironment {
     }
 
     public void addProducerMethod(ProducerMethod<?, ?> bean) {
-        producerMethodBeanMap.put(WeldMethodKey.of(bean), bean);
+        producerMethodBeanMap.get(WeldMethodKey.of(bean)).add(bean);
         addAbstractBean(bean);
     }
 
@@ -235,7 +235,7 @@ public class BeanDeployerEnvironment {
 
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
         if (!(bean instanceof NewBean)) {
-            classBeanMap.put(bean.getBeanClass(), bean);
+            classBeanMap.get(bean.getBeanClass()).add(bean);
         }
         addAbstractBean(bean);
     }
@@ -426,12 +426,12 @@ public class BeanDeployerEnvironment {
         }
     }
 
-    public Collection<AbstractClassBean<?>> getClassBeans() {
-        return Collections.unmodifiableCollection(classBeanMap.values());
+    public Iterable<AbstractClassBean<?>> getClassBeans() {
+        return Iterables.concat(classBeanMap.values());
     }
 
-    public Collection<ProducerMethod<?, ?>> getProducerMethodBeans() {
-        return Collections.unmodifiableCollection(producerMethodBeanMap.values());
+    public Iterable<ProducerMethod<?, ?>> getProducerMethodBeans() {
+        return Iterables.concat(producerMethodBeanMap.values());
     }
 
     public Set<ProducerField<?, ?>> getProducerFields() {
