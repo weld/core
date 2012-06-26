@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.event;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
+import javax.enterprise.inject.spi.ObserverMethod;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
@@ -32,15 +37,18 @@ import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILUR
  * A task that will notify the observer of a specific event at some future time.
  *
  * @author David Allen
+ * @author Jozef Hartinger
  */
 public class DeferredEventNotification<T> implements Runnable {
     private static final LocLogger log = loggerFactory().getLogger(EVENT);
     private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
 
     // The observer
-    protected final ObserverMethodImpl<T, ?> observer;
+    protected final ObserverMethod<? super T> observer;
     // The event object
     protected final T event;
+    // Event qualifiers
+    private final Set<Annotation> qualifiers;
 
     /**
      * Creates a new deferred event notifier.
@@ -48,9 +56,10 @@ public class DeferredEventNotification<T> implements Runnable {
      * @param observer The observer to be notified
      * @param event    The event being fired
      */
-    public DeferredEventNotification(T event, ObserverMethodImpl<T, ?> observer) {
+    public DeferredEventNotification(T event, ObserverMethod<? super T> observer, Set<Annotation> qualifiers) {
         this.observer = observer;
         this.event = event;
+        this.qualifiers = qualifiers;
     }
 
     public void run() {
@@ -60,7 +69,7 @@ public class DeferredEventNotification<T> implements Runnable {
 
                 @Override
                 protected void execute() {
-                    observer.sendEvent(event);
+                    observer.notify(event, qualifiers);
                 }
 
             }.run();

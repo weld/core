@@ -27,27 +27,38 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
 
 /**
  * Provides event-related operations such sa observer method resolution and event delivery.
  *
  * @author Jozef Hartinger
+ * @author David Allen
  *
  */
 public class ObserverNotifier {
 
+    public static ObserverNotifier of(TypeSafeObserverResolver resolver, ServiceRegistry services) {
+        if (services.contains(TransactionServices.class)) {
+            return new TransactionalObserverNotifier(resolver, services);
+        } else {
+            return new ObserverNotifier(resolver, services);
+        }
+    }
+
     private final TypeSafeObserverResolver resolver;
     private final SharedObjectCache sharedObjectCache;
 
-    public ObserverNotifier(TypeSafeObserverResolver resolver, SharedObjectCache sharedObjectCache) {
+    protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services) {
         this.resolver = resolver;
-        this.sharedObjectCache = sharedObjectCache;
+        this.sharedObjectCache = services.get(SharedObjectCache.class);
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
@@ -71,25 +82,19 @@ public class ObserverNotifier {
         notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
     }
 
-    private <T> void notifyObservers(final T event, final Set<Annotation> qualifiers, final Set<ObserverMethod<? super T>> observers) {
-        /*
-         * The spec requires that the set of qualifiers of an event always contains the {@link Any} qualifier. We optimize this
-         * and only do it for extension-provided observer methods since {@link ObserverMethodImpl} does not use the qualifiers
-         * anyway.
-         */
-        Set<Annotation> allQualifiers = null;
-
+    private <T> void notifyObservers(final T event, Set<Annotation> qualifiers, final Set<ObserverMethod<? super T>> observers) {
         for (ObserverMethod<? super T> observer : observers) {
-            if (observer instanceof ObserverMethodImpl<?, ?>) {
-                observer.notify(event);
-            } else {
-                if (allQualifiers == null) {
-                    allQualifiers = new HashSet<Annotation>(qualifiers);
-                    allQualifiers.add(AnyLiteral.INSTANCE);
-                    allQualifiers = Collections.unmodifiableSet(allQualifiers);
-                }
-                observer.notify(event, allQualifiers);
+            /*
+             * The spec requires that the set of qualifiers of an event always contains the {@link Any} qualifier. We optimize this
+             * and only do it for extension-provided observer methods since {@link ObserverMethodImpl} does not use the qualifiers
+             * anyway.
+             */
+            if (!(observer instanceof ObserverMethodImpl<?, ?>) && !qualifiers.contains(AnyLiteral.INSTANCE)) {
+                qualifiers = new HashSet<Annotation>(qualifiers);
+                qualifiers.add(AnyLiteral.INSTANCE);
+                qualifiers = Collections.unmodifiableSet(qualifiers);
             }
+            notifyObserver(event, qualifiers, observer);
         }
     }
 
@@ -118,5 +123,9 @@ public class ObserverNotifier {
 
     public void clear() {
         resolver.clear();
+    }
+
+    protected <T> void notifyObserver(final T event, Set<Annotation> qualifiers, final ObserverMethod<? super T> observer) {
+        observer.notify(event, qualifiers);
     }
 }

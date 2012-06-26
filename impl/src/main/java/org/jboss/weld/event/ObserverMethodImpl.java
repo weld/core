@@ -110,7 +110,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.bindings = manager.getServices().get(SharedObjectCache.class).getSharedSet(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
         Observes observesAnnotation = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);
         this.reception = observesAnnotation.notifyObserver();
-        transactionPhase = TransactionPhase.IN_PROGRESS;
+        transactionPhase = ObserverFactory.getTransactionalPhase(observer);
 
         Set<WeldInjectionPoint<?, ?>> injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
         Set<WeldInjectionPoint<?, ?>> newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();

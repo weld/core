@@ -276,13 +276,16 @@ public class WeldBootstrap implements Bootstrap {
 
             registry.addAll(implementationServices.entrySet());
 
+            GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(registry);
+            registry.add(GlobalObserverNotifierService.class, observerNotificationService);
+
             ServiceRegistry deploymentServices = new SimpleServiceRegistry();
             deploymentServices.add(ClassTransformer.class, implementationServices.get(ClassTransformer.class));
             deploymentServices.add(MetaAnnotationStore.class, implementationServices.get(MetaAnnotationStore.class));
             deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
             deploymentServices.add(ContextualStore.class, implementationServices.get(ContextualStore.class));
             deploymentServices.add(CurrentInjectionPoint.class, implementationServices.get(CurrentInjectionPoint.class));
-            deploymentServices.add(GlobalObserverNotifierService.class, implementationServices.get(GlobalObserverNotifierService.class));
+            deploymentServices.add(GlobalObserverNotifierService.class, observerNotificationService);
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
@@ -316,7 +319,6 @@ public class WeldBootstrap implements Bootstrap {
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
-        services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services));
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
 
         ExecutorServices executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);

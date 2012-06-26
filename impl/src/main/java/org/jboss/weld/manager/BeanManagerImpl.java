@@ -410,7 +410,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
-        this.accessibleObserverNotifier = new ObserverNotifier(accessibleObserverResolver, getServices().get(SharedObjectCache.class));
+        this.accessibleObserverNotifier = ObserverNotifier.of(accessibleObserverResolver, getServices());
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalObserverNotifier = globalObserverNotifierService.getGlobalObserverNotifier();
         globalObserverNotifierService.registerBeanManager(this);

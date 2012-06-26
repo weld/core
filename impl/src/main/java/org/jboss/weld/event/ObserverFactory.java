@@ -24,7 +24,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.transaction.spi.TransactionServices;
 
 /**
  * Bound factory class that produces implicit observers for observer methods.
@@ -42,11 +41,8 @@ public class ObserverFactory {
      */
     public static <T, X> ObserverMethodImpl<T, X> create(EnhancedAnnotatedMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager) {
         ObserverMethodImpl<T, X> result = null;
-        TransactionPhase transactionPhase = getTransactionalPhase(method);
         if (declaringBean instanceof ExtensionBean) {
             result = new ExtensionObserverMethodImpl<T, X>(method, declaringBean, manager);
-        } else if  (manager.getServices().contains(TransactionServices.class) && !transactionPhase.equals(TransactionPhase.IN_PROGRESS)) {
-            result = new TransactionalObserverMethodImpl<T, X>(method, declaringBean, transactionPhase, manager);
         } else {
             result = new ObserverMethodImpl<T, X>(method, declaringBean, manager);
         }

@@ -28,7 +28,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
-import org.jboss.weld.resources.SharedObjectCache;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
@@ -56,7 +55,7 @@ public class GlobalObserverNotifierService implements Service {
     public GlobalObserverNotifierService(ServiceRegistry services) {
         this.beanManagers = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver resolver = new TypeSafeObserverResolver(services.get(MetaAnnotationStore.class), createGlobalObserverMethodIterable(beanManagers));
-        this.globalObserverNotifier = new ObserverNotifier(resolver, services.get(SharedObjectCache.class));
+        this.globalObserverNotifier = ObserverNotifier.of(resolver, services);
     }
 
     private static Iterable<ObserverMethod<?>> createGlobalObserverMethodIterable(final Set<BeanManagerImpl> beanManagers) {
