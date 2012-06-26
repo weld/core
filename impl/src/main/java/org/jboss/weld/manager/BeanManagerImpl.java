@@ -1384,15 +1384,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public void initializeSpecialization() {
         Transform<Bean<?>> beanTransform = new BeanTransform(this);
         SpecializationAndEnablementRegistry registry = services.get(SpecializationAndEnablementRegistry.class);
-        Set<Bean<?>> specializedBeansTemp = new HashSet<Bean<?>>();
-        for (Bean<?> bean : createDynamicAccessibleIterable(beanTransform)) {
-            if (bean instanceof AbstractBean<?, ?>) {
-                AbstractBean<?, ?> abstractBean = (AbstractBean<?, ?>) bean;
-                if (abstractBean.isSpecializing() && Beans.isBeanEnabled(abstractBean, getEnabled())) {
-                    specializedBeansTemp.addAll(registry.resolveSpecializedBeans(abstractBean));
+        if (!registry.getBeansSpecializedInAnyDeployment().isEmpty()) {
+            Set<Bean<?>> specializedBeansTemp = new HashSet<Bean<?>>();
+            for (Bean<?> bean : createDynamicAccessibleIterable(beanTransform)) {
+                if (bean instanceof AbstractBean<?, ?>) {
+                    AbstractBean<?, ?> abstractBean = (AbstractBean<?, ?>) bean;
+                    if (abstractBean.isSpecializing() && Beans.isBeanEnabled(abstractBean, getEnabled())) {
+                        specializedBeansTemp.addAll(registry.resolveSpecializedBeans(abstractBean));
+                    }
                 }
             }
+            this.accessibleSpecializedBeans = Collections.unmodifiableSet(specializedBeansTemp);
         }
-        this.accessibleSpecializedBeans = Collections.unmodifiableSet(specializedBeansTemp);
     }
 }

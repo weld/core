@@ -187,4 +187,8 @@ public class SpecializationAndEnablementRegistry implements Service {
         specializedBeans.clear();
         specializedBeansSet.clear();
     }
+
+    public Set<AbstractBean<?, ?>> getBeansSpecializedInAnyDeployment() {
+        return specializedBeansSet.elementSet();
+    }
 }
