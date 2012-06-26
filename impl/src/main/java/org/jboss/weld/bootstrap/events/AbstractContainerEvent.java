@@ -57,7 +57,7 @@ public abstract class AbstractContainerEvent {
     protected void fire() {
         Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
         try {
-            beanManager.fireEvent(eventType, this);
+            beanManager.getAccessibleObserverNotifier().fireEvent(eventType, this);
         } catch (Exception e) {
             getErrors().add(e);
         }
@@ -69,7 +69,7 @@ public abstract class AbstractContainerEvent {
             Set<ObserverMethod<Object>> observers = new HashSet<ObserverMethod<Object>>();
             Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
             for (BeanDeployment beanDeployment : beanDeployments.values()) {
-                observers.addAll(beanDeployment.getBeanManager().resolveObserverMethods(eventType));
+                observers.addAll(beanDeployment.getBeanManager().getAccessibleObserverNotifier().resolveObserverMethods(eventType));
             }
             for (ObserverMethod<Object> observerMethod : observers) {
                 observerMethod.notify(this);

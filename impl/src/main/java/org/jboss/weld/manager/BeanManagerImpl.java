@@ -16,6 +16,26 @@
  */
 package org.jboss.weld.manager;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+import static org.jboss.weld.util.reflection.Reflections.isCacheable;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -50,7 +70,6 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.TypeLiteral;
 
-import com.google.common.collect.Iterators;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
@@ -71,6 +90,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
+import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -104,36 +124,15 @@ import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
-import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.Reflections;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
-import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-import static org.jboss.weld.util.reflection.Reflections.isCacheable;
+import com.google.common.collect.Iterators;
 
 /**
  * Implementation of the Bean Manager.
@@ -195,10 +194,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient TypeSafeBeanResolver<Bean<?>> beanResolver;
     private final transient TypeSafeResolver<Resolvable, Decorator<?>> decoratorResolver;
     private final transient TypeSafeResolver<InterceptorResolvable, Interceptor<?>> interceptorResolver;
-    private final transient TypeSafeResolver<Resolvable, ObserverMethod<?>> observerResolver;
     private final transient NameBasedResolver nameBasedResolver;
     private final transient ELResolver weldELResolver;
     private transient Namespace rootNamespace;
+
+    private final transient ObserverNotifier accessibleObserverNotifier;
 
     /*
     * Activity scoped data structures
@@ -358,10 +358,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(beanTransform));
         this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(DecoratorTransform.INSTANCE));
         this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(InterceptorTransform.INSTANCE));
-        this.observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.weldELResolver = new WeldELResolver(this);
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
+        TypeSafeObserverResolver observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
+        this.accessibleObserverNotifier = ObserverNotifier.of(observerResolver, getServices());
     }
 
 
@@ -381,7 +382,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         beanResolver.clear();
         interceptorResolver.clear();
         decoratorResolver.clear();
-        observerResolver.clear();
+        accessibleObserverNotifier.clear();
     }
 
     public HashSet<BeanManagerImpl> getAccessibleManagers() {
@@ -418,37 +419,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        Observers.checkEventObjectType(this, event);
-        return this.<T>resolveObserverMethods(event.getClass(), bindings);
+        return accessibleObserverNotifier.resolveObserverMethods(event, bindings);
     }
 
     public void addInterceptor(Interceptor<?> bean) {
         interceptors.add(bean);
         getServices().get(ContextualStore.class).putIfAbsent(bean);
         interceptorResolver.clear();
-    }
-
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
-        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Resolvable resolvable = new ResolvableBuilder(this)
-            .addTypes(services.get(SharedObjectCache.class).getTypeClosure(eventType))
-            .addType(Object.class)
-            .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
-            .create();
-        return cast(observerResolver.resolve(resolvable, true));
-    }
-
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
-        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Set<Type> typeClosure = services.get(SharedObjectCache.class).getTypeClosure(eventType);
-        Resolvable resolvable = new ResolvableBuilder(this)
-            .addTypes(typeClosure)
-            .addType(Object.class)
-            .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
-            .create();
-        return cast(observerResolver.resolve(resolvable, true));
     }
 
     /**
@@ -571,23 +548,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      *      java.lang.annotation.Annotation[])
      */
     public void fireEvent(Object event, Annotation... qualifiers) {
-        fireEvent(event.getClass(), event, qualifiers);
-    }
-
-    public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
-        Observers.checkEventObjectType(this, event);
-        notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
-    }
-
-    public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers) {
-        Observers.checkEventObjectType(this, event);
-        notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
-    }
-
-    private <T> void notifyObservers(final T event, final Set<ObserverMethod<? super T>> observers) {
-        for (ObserverMethod<? super T> observer : observers) {
-            observer.notify(event);
-        }
+        accessibleObserverNotifier.fireEvent(event, qualifiers);
     }
 
     /**
@@ -818,12 +779,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Get the observer resolver. For internal use
+     * Get the observer notifier for accessible observer methods. For internal use
      *
-     * @return The resolver
+     * @return The {@link ObserverNotifier}
      */
-    public TypeSafeResolver<Resolvable, ObserverMethod<?>> getObserverResolver() {
-        return observerResolver;
+    public ObserverNotifier getAccessibleObserverNotifier() {
+        return accessibleObserverNotifier;
     }
 
     /**
@@ -1093,7 +1054,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.interceptors.clear();
         this.nameBasedResolver.clear();
         this.namespaces.clear();
-        this.observerResolver.clear();
+        this.accessibleObserverNotifier.clear();
         this.observers.clear();
         BeansClosure.removeClosure(this);
     }

@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.logging.Category.EVENT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
+
+import javax.enterprise.inject.spi.ObserverMethod;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
@@ -23,22 +30,18 @@ import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
 
-import static org.jboss.weld.logging.Category.EVENT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
-
 /**
  * A task that will notify the observer of a specific event at some future time.
  *
  * @author David Allen
+ * @author Jozef Hartinger
  */
 public class DeferredEventNotification<T> implements Runnable {
     private static final LocLogger log = loggerFactory().getLogger(EVENT);
     private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
 
     // The observer
-    protected final ObserverMethodImpl<T, ?> observer;
+    protected final ObserverMethod<? super T> observer;
     // The event object
     protected final T event;
 
@@ -48,7 +51,7 @@ public class DeferredEventNotification<T> implements Runnable {
      * @param observer The observer to be notified
      * @param event    The event being fired
      */
-    public DeferredEventNotification(T event, ObserverMethodImpl<T, ?> observer) {
+    public DeferredEventNotification(T event, ObserverMethod<? super T> observer) {
         this.observer = observer;
         this.event = event;
     }
@@ -60,7 +63,7 @@ public class DeferredEventNotification<T> implements Runnable {
 
                 @Override
                 protected void execute() {
-                    observer.sendEvent(event);
+                    observer.notify(event);
                 }
 
             }.run();
