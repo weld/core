@@ -54,14 +54,18 @@ public class ResolvableBuilder {
     protected final Set<QualifierInstance> qualifierInstances;
     protected final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
     protected Bean<?> declaringBean;
-    private final BeanManagerImpl beanManager;
+    private final MetaAnnotationStore store;
 
-    public ResolvableBuilder(final BeanManagerImpl beanManager) {
-        this.beanManager = beanManager;
+    public ResolvableBuilder(final MetaAnnotationStore store) {
+        this.store = store;
         this.types = new HashSet<Type>();
         this.qualifiers = new HashSet<Annotation>();
         this.mappedQualifiers = new HashMap<Class<? extends Annotation>, Annotation>();
         this.qualifierInstances = new HashSet<QualifierInstance>();
+    }
+
+    public ResolvableBuilder(final BeanManagerImpl beanManager) {
+        this(beanManager.getServices().get(MetaAnnotationStore.class));
     }
 
     public ResolvableBuilder(Type type, final BeanManagerImpl beanManager) {
@@ -79,7 +83,6 @@ public class ResolvableBuilder {
         this(injectionPoint.getType(), manager);
         addQualifiers(injectionPoint.getQualifiers());
         if (mappedQualifiers.containsKey(Named.class) && injectionPoint.getMember() instanceof Field) {
-            final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
             Named named = (Named) mappedQualifiers.get(Named.class);
             QualifierInstance qualifierInstance = new QualifierInstance(named, store);
             if (named.value().equals("")) {
@@ -113,7 +116,6 @@ public class ResolvableBuilder {
 
     public Resolvable create() {
         if (qualifiers.size() == 0) {
-            final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
             this.qualifierInstances.add(new QualifierInstance(DefaultLiteral.INSTANCE, store));
         }
         if (Reflections.isAssignableFrom(Event.class, types)) {
@@ -128,7 +130,6 @@ public class ResolvableBuilder {
     }
 
     private Resolvable createFacade(Class<?> rawType) {
-        final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
         Set<QualifierInstance> qualifiers = Collections.<QualifierInstance>singleton(new QualifierInstance(AnyLiteral.INSTANCE, store));
         Set<Type> types = Collections.<Type>singleton(rawType);
         return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifiers);
@@ -136,7 +137,6 @@ public class ResolvableBuilder {
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
         // Handle the @New qualifier special case
-        final MetaAnnotationStore store = beanManager.getServices().get(MetaAnnotationStore.class);
         QualifierInstance qualifierInstance = new QualifierInstance(qualifier, store);
         final Class<? extends Annotation> annotationType = qualifierInstance.getAnnotationClass();
         if (annotationType.equals(New.class)) {
@@ -187,7 +187,7 @@ public class ResolvableBuilder {
     }
 
     protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance, Class<? extends Annotation> annotationType) {
-        if (!beanManager.getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid()) {
+        if (!store.getBindingTypeModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
         }
         if (qualifierInstances.contains(qualifierInstance)) {

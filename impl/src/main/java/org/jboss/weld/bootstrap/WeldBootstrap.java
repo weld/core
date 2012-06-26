@@ -393,12 +393,12 @@ public class WeldBootstrap implements Bootstrap {
             // clear the TypeSafeResolvers, so data that is only used at startup
             // is not kept around using up memory
             deploymentManager.getBeanResolver().clear();
-            deploymentManager.getObserverResolver().clear();
+            deploymentManager.getAccessibleObserverNotifier().clear();
             deploymentManager.getDecoratorResolver().clear();
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                 beanManager.getBeanResolver().clear();
-                beanManager.getObserverResolver().clear();
+                beanManager.getAccessibleObserverNotifier().clear();
                 beanManager.getDecoratorResolver().clear();
                 for (Bean<?> bean : beanManager.getBeans()) {
                     if (bean instanceof RIBean<?>) {

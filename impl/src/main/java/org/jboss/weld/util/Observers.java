@@ -37,9 +37,12 @@ import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALL
  */
 public class Observers {
 
-    public static void checkEventObjectType(final BeanManagerImpl beanManager, Type eventType) {
+    public static void checkEventObjectType(BeanManagerImpl manager, Type eventType) {
+        checkEventObjectType(manager.getServices().get(SharedObjectCache.class), eventType);
+    }
+
+    public static void checkEventObjectType(final SharedObjectCache cache, Type eventType) {
         Type[] types;
-        final SharedObjectCache cache = beanManager.getServices().get(SharedObjectCache.class);
         final Type resolvedType = cache.getResolvedType(eventType);
         if (resolvedType instanceof Class<?>) {
             types = new Type[0];
@@ -55,8 +58,8 @@ public class Observers {
         }
     }
 
-    public static void checkEventObjectType(final BeanManagerImpl beanManager, Object event) {
-        checkEventObjectType(beanManager, event.getClass());
+    public static void checkEventObjectType(final SharedObjectCache cache, Object event) {
+        checkEventObjectType(cache, event.getClass());
 
     }
 
