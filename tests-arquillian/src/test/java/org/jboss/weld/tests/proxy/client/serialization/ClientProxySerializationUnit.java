@@ -39,7 +39,7 @@ public class ClientProxySerializationUnit {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class, "deployment" + deploymentId.incrementAndGet() + ".jar").addPackage(ClientProxySerializationUnit.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, "deployment" + deploymentId.incrementAndGet() + ".jar").addPackage(ClientProxySerializationUnit.class.getPackage()).addClass(Utils.class);
     }
 
     @Test

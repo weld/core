@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class BackedAnnotatedTypeSerializationTest {
     }
 
     public AnnotatedType<Foo> getAnnotatedType() {
-        ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache());
+        ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
         return transformer.getAnnotatedType(Foo.class);
     }
 

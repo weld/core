@@ -104,7 +104,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     public static <T> EnhancedAnnotatedType<T> of(SlimAnnotatedType<T> annotatedType, ClassTransformer classTransformer) {
         if (annotatedType instanceof BackedAnnotatedType<?>) {
-            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(annotatedType.getJavaClass().getDeclaredAnnotations()), classTransformer);
+            return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(classTransformer.getReflectionCache().getDeclaredAnnotations(annotatedType.getJavaClass())), classTransformer);
         } else {
             return new EnhancedAnnotatedTypeImpl<T>(annotatedType, buildAnnotationMap(annotatedType.getAnnotations()), buildAnnotationMap(annotatedType.getAnnotations()), classTransformer);
         }
@@ -255,7 +255,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
         ArraySetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
         for (Annotation declaredAnnotation : declaredAnnotationMap.values()) {
-            addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, declaredAnnotation.annotationType().getAnnotations(), true);
+            addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getReflectionCache().getAnnotations(declaredAnnotation.annotationType()), true);
             addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getTypeStore().get(declaredAnnotation.annotationType()), true);
             declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
         }

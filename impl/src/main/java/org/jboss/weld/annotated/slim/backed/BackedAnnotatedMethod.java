@@ -8,39 +8,37 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.util.reflection.Formats;
-
-import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implements AnnotatedMethod<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType, SharedObjectCache cache) {
+    public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType, ClassTransformer transformer) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
-        return new BackedAnnotatedMethod<X>(method, downcastDeclaringType, cache);
+        return new BackedAnnotatedMethod<X>(method, downcastDeclaringType, transformer);
     }
 
     private final Method method;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public BackedAnnotatedMethod(Method method, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
-        super(method.getGenericReturnType(), declaringType, cache);
+    public BackedAnnotatedMethod(Method method, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
+        super(method.getGenericReturnType(), declaringType, transformer);
         this.method = method;
 
         final Type[] genericParameterTypes = method.getGenericParameterTypes();
@@ -50,7 +48,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         for (int i = 0; i < genericParameterTypes.length; i++) {
             Type parameterType = genericParameterTypes[i];
-            parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this, cache));
+            parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this, transformer));
         }
         this.parameters = immutableList(parameters);
     }
@@ -63,8 +61,9 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
         return method.getAnnotation(annotationType);
     }
 
-    public Set<Annotation> getAnnotations() {
-        return ImmutableSet.copyOf(method.getAnnotations());
+    @Override
+    protected AnnotatedElement getAnnotatedElement() {
+        return method;
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {

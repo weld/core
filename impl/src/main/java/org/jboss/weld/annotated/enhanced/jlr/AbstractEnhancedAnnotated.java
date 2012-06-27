@@ -141,7 +141,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         this.annotationMap = immutableMap(annotationMap);
         ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
         for (Annotation annotation : annotationMap.values()) {
-            addMetaAnnotations(metaAnnotationMap, annotation, annotation.annotationType().getAnnotations(), false);
+            addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), false);
             addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
         }
         this.metaAnnotationMap = metaAnnotationMap;

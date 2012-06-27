@@ -17,6 +17,14 @@
 
 package org.jboss.weld.tests.interceptors.simple;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -25,17 +33,11 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -67,7 +69,7 @@ public class SimpleInterceptorTest {
     @Test
     public void testInterceptorModel() {
         InterceptorBindingModel<SecondaryInterceptionBinding> interceptorBindingModel
-                = new InterceptorBindingModel<SecondaryInterceptionBinding>(new ClassTransformer(new TypeStore(), new SharedObjectCache()).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
+                = new InterceptorBindingModel<SecondaryInterceptionBinding>(new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance()).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
         Set<Annotation> annotations = interceptorBindingModel.getInheritedInterceptionBindingTypes();
         assert annotations.size() != 0;
     }

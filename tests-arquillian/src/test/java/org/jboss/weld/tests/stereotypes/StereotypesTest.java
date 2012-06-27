@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.stereotypes;
 
+import javax.enterprise.context.RequestScoped;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -24,12 +26,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.context.RequestScoped;
 
 @RunWith(Arquillian.class)
 public class StereotypesTest {
@@ -39,7 +40,7 @@ public class StereotypesTest {
                 .addPackage(StereotypesTest.class.getPackage());
     }
 
-    private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache());
+    private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
 
     @Test
     public void testAnimalStereotype() {

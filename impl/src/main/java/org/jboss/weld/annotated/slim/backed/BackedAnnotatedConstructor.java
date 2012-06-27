@@ -7,40 +7,38 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.ConstructorHolder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> implements AnnotatedConstructor<X>, Serializable {
 
-    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
-        return new BackedAnnotatedConstructor<X>(constructor, declaringType, cache);
+    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
+        return new BackedAnnotatedConstructor<X>(constructor, declaringType, transformer);
     }
 
     private final Constructor<X> constructor;
     private final List<AnnotatedParameter<X>> parameters;
 
-    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
-        super(constructor.getDeclaringClass(), declaringType, cache);
+    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
+        super(constructor.getDeclaringClass(), declaringType, transformer);
         this.constructor = constructor;
 
         final Class<?>[] parameterTypes = constructor.getParameterTypes();
@@ -63,7 +61,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
                     parameterType = clazz;
                     position = i;
                 }
-                parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this, cache));
+                parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this, transformer));
             }
             this.parameters = immutableList(parameters);
         } else {
@@ -79,16 +77,17 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedMember<X> impl
         }
     }
 
+    @Override
+    protected AnnotatedElement getAnnotatedElement() {
+        return constructor;
+    }
+
     public Constructor<X> getJavaMember() {
         return constructor;
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
         return constructor.getAnnotation(annotationType);
-    }
-
-    public Set<Annotation> getAnnotations() {
-        return ImmutableSet.copyOf(constructor.getAnnotations());
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {

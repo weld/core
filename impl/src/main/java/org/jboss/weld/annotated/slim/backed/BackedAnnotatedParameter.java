@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
@@ -27,16 +29,16 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, Serializable {
 
-    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, SharedObjectCache cache) {
-        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable, cache);
+    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, ClassTransformer transformer) {
+        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable, transformer);
     }
 
     private final int position;
     private final AnnotatedCallable<X> declaringCallable;
     private transient Set<Annotation> annotations;
 
-    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, SharedObjectCache cache) {
-        super(baseType, cache);
+    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, ClassTransformer transformer) {
+        super(baseType, transformer);
         this.position = position;
         this.declaringCallable = declaringCallable;
         this.annotations = SharedObjectFacade.wrap(ImmutableSet.copyOf(annotations));
@@ -64,8 +66,14 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         return null;
     }
 
+    @Override
     public Set<Annotation> getAnnotations() {
         return annotations;
+    }
+
+    @Override
+    protected AnnotatedElement getAnnotatedElement() {
+        return null;
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {

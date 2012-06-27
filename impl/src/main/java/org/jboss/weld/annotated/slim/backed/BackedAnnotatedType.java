@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -29,8 +30,6 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
-import com.google.common.collect.ImmutableSet;
-
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD_STORE", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnotatedType<X>, Serializable {
@@ -50,13 +49,18 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private final ClassTransformer transformer;
 
     public BackedAnnotatedType(Class<X> rawType, Type baseType, ClassTransformer classTransformer) {
-        super(baseType, classTransformer.getSharedObjectCache());
+        super(baseType, classTransformer);
         this.javaClass = rawType;
         this.transformer = classTransformer;
 
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
         this.methods = new BackedAnnotatedMethods();
+    }
+
+    @Override
+    protected AnnotatedElement getAnnotatedElement() {
+        return javaClass;
     }
 
     private <T> BackedAnnotatedType<T> getDeclaringAnnotatedType(Member member, ClassTransformer transformer) {
@@ -85,10 +89,6 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
 
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
         return javaClass.getAnnotation(annotationType);
-    }
-
-    public Set<Annotation> getAnnotations() {
-        return ImmutableSet.copyOf(javaClass.getAnnotations());
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -172,7 +172,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ArraySet<AnnotatedConstructor<X>> constructors = new ArraySet<AnnotatedConstructor<X>>(declaredConstructors.length);
             for (Constructor<?> constructor : declaredConstructors) {
                 Constructor<X> c = Reflections.cast(constructor);
-                constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this, transformer.getSharedObjectCache()));
+                constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this, transformer));
             }
             return immutableSet(constructors);
         }
@@ -185,7 +185,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Field field : SecureReflections.getDeclaredFields(clazz)) {
-                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, transformer), transformer.getSharedObjectCache()));
+                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, transformer), transformer));
                 }
                 clazz = clazz.getSuperclass();
             }
@@ -200,7 +200,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Method method : SecureReflections.getDeclaredMethods(clazz)) {
-                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, transformer), transformer.getSharedObjectCache()));
+                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, transformer), transformer));
                 }
                 clazz = clazz.getSuperclass();
             }

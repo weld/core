@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.RawType;
@@ -15,8 +16,8 @@ public abstract class BackedAnnotatedMember<X> extends BackedAnnotated implement
 
     private BackedAnnotatedType<X> declaringType;
 
-    public BackedAnnotatedMember(Type baseType, BackedAnnotatedType<X> declaringType, SharedObjectCache cache) {
-        super(baseType, cache);
+    public BackedAnnotatedMember(Type baseType, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
+        super(baseType, transformer);
         this.declaringType = declaringType;
     }
 

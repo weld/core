@@ -22,13 +22,14 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class WeldMethodTest {
 
-    private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache());
+    private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
     private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() {
         private static final long serialVersionUID = 1672009803068800735L;
     }.getRawType();
