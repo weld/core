@@ -253,5 +253,15 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     public boolean isProxyable() {
         return true;
     }
+
+    @Override
+    public boolean isPassivationCapableBean() {
+        return ejbDescriptor.isStateful(); // all stateful session beans are passivation capable
+    }
+
+    @Override
+    public boolean isPassivationCapableDependency() {
+        return true; // all session beans are passivation capable dependencies
+    }
 }
 

@@ -33,6 +33,10 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class NonPassivationCapableEjbTest {
 
+    /*
+     * If a stateful session bean has a non-transient injected field that does not resolve to a passivation capable dependency
+     * then the container automatically detects the problem and treats it as a deployment problem.
+     */
     @Deployment
     @ShouldThrowException(Exception.class)
     public static JavaArchive getDeployment() {

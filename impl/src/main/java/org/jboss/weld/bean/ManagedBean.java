@@ -26,19 +26,25 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST
 
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
@@ -58,6 +64,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
 
     private final boolean proxiable;
+
+    private boolean passivationCapableBean;
+    private boolean passivationCapableDependency;
 
     /**
      * Creates a simple, annotation defined Web Bean
@@ -97,6 +106,44 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         super(attributes, type, idSuffix, beanManager);
         this.proxiable = Proxies.isTypesProxyable(type.getTypeClosure());
         setProducer(beanManager.createInjectionTarget(getEnhancedAnnotated(), this));
+    }
+
+    @Override
+    public void internalInitialize(BeanDeployerEnvironment environment) {
+        super.internalInitialize(environment);
+        initPassivationCapable();
+    }
+
+    private void initPassivationCapable() {
+        this.passivationCapableBean = getEnhancedAnnotated().isSerializable();
+        if (isNormalScoped()) {
+            this.passivationCapableDependency = true;
+        } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
+            this.passivationCapableDependency = true;
+        } else {
+            this.passivationCapableDependency = false;
+        }
+    }
+
+    @Override
+    public void initializeAfterBeanDiscovery() {
+        if (this.passivationCapableBean && this.hasDecorators()) {
+            for (Decorator<?> decorator : this.getDecorators()) {
+                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getEnhancedAnnotated().isSerializable()) {
+                    this.passivationCapableBean = false;
+                    break;
+                }
+            }
+        }
+        if (this.passivationCapableBean && hasInterceptors()) {
+            for (InterceptorMetadata<?> interceptorMetadata : getInterceptors().getAllInterceptors()) {
+                if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
+                    this.passivationCapableBean = false;
+                    break;
+                }
+            }
+        }
+        super.initializeAfterBeanDiscovery();
     }
 
     /**
@@ -183,5 +230,15 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     public boolean isProxyable() {
         return proxiable;
+    }
+
+    @Override
+    public boolean isPassivationCapableBean() {
+        return passivationCapableBean;
+    }
+
+    @Override
+    public boolean isPassivationCapableDependency() {
+        return passivationCapableDependency;
     }
 }

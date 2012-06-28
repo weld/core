@@ -57,9 +57,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     // Injection target for the bean
     protected InjectionTarget<T> producer;
 
-    private boolean passivationCapableBean;
-    private boolean passivationCapableDependency;
-
     /**
      * Constructor
      *
@@ -80,39 +77,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     public void internalInitialize(BeanDeployerEnvironment environment) {
         super.internalInitialize(environment);
         checkBeanImplementation();
-        initPassivationCapable();
-    }
-
-    private void initPassivationCapable() {
-        this.passivationCapableBean = getEnhancedAnnotated().isSerializable();
-        if (isNormalScoped()) {
-            this.passivationCapableDependency = true;
-        } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
-            this.passivationCapableDependency = true;
-        } else {
-            this.passivationCapableDependency = false;
-        }
-    }
-
-    @Override
-    public void initializeAfterBeanDiscovery() {
-        if (this.passivationCapableBean && this.hasDecorators()) {
-            for (Decorator<?> decorator : this.getDecorators()) {
-                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getEnhancedAnnotated().isSerializable()) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
-            }
-        }
-        if (this.passivationCapableBean && hasInterceptors()) {
-            for (InterceptorMetadata<?> interceptorMetadata : getInterceptors().getAllInterceptors()) {
-                if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
-            }
-        }
-        super.initializeAfterBeanDiscovery();
     }
 
     public boolean hasDecorators() {
@@ -185,16 +149,6 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     public boolean hasInterceptors() {
         return getInterceptors() != null;
-    }
-
-    @Override
-    public boolean isPassivationCapableBean() {
-        return passivationCapableBean;
-    }
-
-    @Override
-    public boolean isPassivationCapableDependency() {
-        return passivationCapableDependency;
     }
 
     @Override

@@ -23,9 +23,13 @@ package org.jboss.weld.tests.contexts.passivating.enterprise.broken.sessionBeanW
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 
 @Stateful
 @SessionScoped
 public class Cup_Broken {
 
+    @SuppressWarnings("unused")
+    @Inject 
+    private Foo foo;
 }
