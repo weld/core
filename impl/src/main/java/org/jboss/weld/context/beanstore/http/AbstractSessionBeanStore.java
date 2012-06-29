@@ -1,18 +1,21 @@
 package org.jboss.weld.context.beanstore.http;
 
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.util.Collection;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpSession;
+
+import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
-
-import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.Enumeration;
-
-import static java.util.Collections.emptyList;
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
 /**
  * Base class providing an HttpSession backed, bound bean store.
@@ -65,8 +68,22 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
     }
 
     @Override
+    public <T> ContextualInstance<T> get(String id) {
+        ContextualInstance<T> instance = super.get(id);
+        if (instance == null && isAttached()) {
+            String prefixedId = getNamingScheme().prefix(id);
+            instance = cast(getAttribute(prefixedId));
+        }
+        return instance;
+    }
+
+    @Override
     protected Object getAttribute(String prefixedId) {
-        return getSession(false).getAttribute(prefixedId);
+        HttpSession session = getSession(false);
+        if (session != null) {
+            return session.getAttribute(prefixedId);
+        }
+        return null;
     }
 
 }
