@@ -21,6 +21,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.BeanStore;
+import org.jboss.weld.context.beanstore.LockedBean;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -53,8 +54,6 @@ import static org.jboss.weld.logging.messages.ContextMessage.NO_BEAN_STORE_AVAIL
 public abstract class AbstractContext implements Context {
     private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
-    private Lock creationLock = new ReentrantLock();
-
     private final boolean multithreaded;
 
     private final ServiceRegistry serviceRegistry;
@@ -62,7 +61,6 @@ public abstract class AbstractContext implements Context {
     /**
      * Constructor
      *
-     * @param scopeType The scope type
      */
     public AbstractContext(boolean multithreaded) {
         this.multithreaded = multithreaded;
@@ -72,8 +70,6 @@ public abstract class AbstractContext implements Context {
     /**
      * Get the bean if it exists in the contexts.
      *
-     * @param create If true, a new instance of the bean will be created if none
-     *               exists
      * @return An instance of the bean
      * @throws ContextNotActiveException if the context is not active
      * @see javax.enterprise.context.spi.Context#get(BaseBean, boolean)
@@ -95,10 +91,10 @@ public abstract class AbstractContext implements Context {
         if (beanInstance != null) {
             return beanInstance.getInstance();
         } else if (creationalContext != null) {
+            LockedBean lock = null;
             try {
                 if (multithreaded) {
-
-                    creationLock.lock();
+                    lock = beanStore.lock(id);
                     beanInstance = beanStore.get(id);
                     if (beanInstance != null) {
                         return beanInstance.getInstance();
@@ -112,7 +108,7 @@ public abstract class AbstractContext implements Context {
                 return instance;
             } finally {
                 if (multithreaded) {
-                    creationLock.unlock();
+                    lock.unlock();
                 }
             }
         } else {
