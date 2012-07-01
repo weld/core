@@ -17,10 +17,10 @@
 
 package org.jboss.weld.context.beanstore;
 
-import org.jboss.weld.context.api.ContextualInstance;
-
 import java.util.Iterator;
 import java.util.Map;
+
+import org.jboss.weld.context.api.ContextualInstance;
 
 /**
  * A {@link Map} like store of contextual instances, used to back the Weld built
@@ -60,4 +60,10 @@ public interface BeanStore extends Iterable<String> {
      */
     <T> void put(String id, ContextualInstance<T> contextualInstance);
 
+    /**
+     * Gets a creation lock for the given bean id.
+     * @param id The bean id
+     * @return A handle that must be used to unlock the bean
+     */
+    LockedBean lock(String id);
 }

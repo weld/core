@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.context.beanstore;
 
-import org.jboss.weld.context.api.ContextualInstance;
-import org.slf4j.cal10n.LocLogger;
-
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.jboss.weld.context.api.ContextualInstance;
+import org.slf4j.cal10n.LocLogger;
 
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -48,8 +48,9 @@ import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
  */
 public abstract class AttributeBeanStore implements BoundBeanStore {
 
-    private static final long serialVersionUID = 8923580660774253915L;
+    private static final long serialVersionUID = 8923580660774253916L;
     private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
+    private transient volatile LockStore lockStore = new LockStore();
 
     private final HashMapBeanStore beanStore;
     private final NamingScheme namingScheme;
@@ -201,4 +202,16 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
      */
     protected abstract void setAttribute(String prefixedId, Object instance);
 
+    public LockedBean lock(final String id) {
+        LockStore lockStore = this.lockStore;
+        if(lockStore == null) {
+            synchronized (this) {
+                lockStore = this.lockStore;
+                if(lockStore == null) {
+                    this.lockStore = lockStore = new LockStore();
+                }
+            }
+        }
+        return lockStore.lock(id);
+    }
 }
