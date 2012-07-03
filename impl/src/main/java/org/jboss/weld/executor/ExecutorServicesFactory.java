@@ -16,73 +16,26 @@
  */
 package org.jboss.weld.executor;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
-
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.messages.BootstrapMessage;
+import org.jboss.weld.bootstrap.BootstrapConfiguration;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 public class ExecutorServicesFactory {
-
-    private static final String CONFIGURATION_FILE = "org.jboss.weld.executor.properties";
-    private static final String ENABLED = "enabled";
-    private static final String DEBUG = "debug";
-    private static final String THREAD_POOL_SIZE = "threadPoolSize";
 
     private ExecutorServicesFactory() {
     }
 
-    public static ExecutorServices create(ResourceLoader loader) {
-        URL configuration = loader.getResource(CONFIGURATION_FILE);
-        if (configuration == null) {
-            return createDefault();
-        } else {
-            return create(loadProperties(configuration));
+    public static ExecutorServices create(BootstrapConfiguration configuration) {
+        if (!configuration.isThreadingEnabled()) {
+            return null;
         }
-    }
-
-    public static ExecutorServices create(Properties properties) {
-        if (properties.getProperty(ENABLED, "true").equalsIgnoreCase("false")) {
+        if (!configuration.isConcurrentDeployerEnabled()) {
             return new SingleThreadExecutorServices();
         }
 
-        ExecutorServices executor = null;
-        if (properties.containsKey(THREAD_POOL_SIZE)) {
-            executor = new FixedThreadPoolExecutorServices(parseThreadPoolSize(properties.getProperty(THREAD_POOL_SIZE)));
-        } else {
-            executor = new FixedThreadPoolExecutorServices();
-        }
-
-        if (properties.getProperty(DEBUG, "false").equalsIgnoreCase("true")) {
+        ExecutorServices executor = new FixedThreadPoolExecutorServices(configuration.getDeployerThreads());
+        if (configuration.isDebug()) {
             executor = new ProfilingExecutorServices(executor);
         }
-
         return executor;
-    }
-
-    public static ExecutorServices createDefault() {
-        return new FixedThreadPoolExecutorServices();
-    }
-
-    protected static int parseThreadPoolSize(String size) {
-        try {
-            return Integer.valueOf(size);
-        } catch (NumberFormatException e) {
-            throw new DeploymentException(BootstrapMessage.INVALID_THREAD_POOL_SIZE, size);
-        }
-    }
-
-    protected static Properties loadProperties(URL url) {
-        Properties properties = new Properties();
-        try {
-            properties.load(url.openStream());
-        } catch (IOException e) {
-            throw new ResourceLoadingException(e);
-        }
-        return properties;
     }
 }

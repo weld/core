@@ -100,7 +100,6 @@ import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.executor.ExecutorServicesFactory;
-import org.jboss.weld.executor.SingleThreadExecutorServices;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.logging.messages.VersionMessage;
@@ -321,15 +320,20 @@ public class WeldBootstrap implements Bootstrap {
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
 
-        ExecutorServices executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
-        services.add(ExecutorServices.class, executor);
-        if (executor instanceof SingleThreadExecutorServices) {
-            services.add(Validator.class, new Validator());
-        } else {
-            services.add(Validator.class, new ConcurrentValidator(executor));
-            services.add(ContainerLifecycleEventPreloader.class, new ContainerLifecycleEventPreloader());
+        BootstrapConfiguration configuration = new BootstrapConfiguration(DefaultResourceLoader.INSTANCE);
+        if (configuration.isThreadingEnabled()) {
+            ExecutorServices executor = ExecutorServicesFactory.create(configuration);
+            services.add(ExecutorServices.class, executor);
+            if (configuration.isConcurrentDeployerEnabled()) {
+                services.add(Validator.class, new ConcurrentValidator(executor));
+            }
+            if (configuration.isPreloaderEnabled()) {
+                services.add(ContainerLifecycleEventPreloader.class, new ContainerLifecycleEventPreloader(configuration));
+            }
         }
-
+        if (!services.contains(Validator.class)) {
+            services.add(Validator.class, new Validator());
+        }
         return services;
     }
 

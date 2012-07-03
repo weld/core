@@ -110,6 +110,70 @@
       </tip>
 
    </section>
+   <section>
+      <title>Parallel bootstrap configuration</title>
+    <para>
+        Weld by default supports parallel loading and deploying of
+        beans. However, in certain deployment scenarios the default
+        setup may not be appropriate. Bootstrap configuration may be
+        altered using the
+        <filename>org.jboss.weld.bootstrap.properties</filename>
+        file located on the classpath (e.g.
+        <filename>WEB-INF/classes/org.jboss.weld.bootstrap.properties</filename>
+        in a web archive).
+    </para>
+
+    <table id="bootstrap.configuration.table">
+         <title>Bootstrap configuration options</title>
+         <tgroup cols="3">
+         <thead>
+            <row>
+               <entry>Configuration option</entry>
+               <entry>Default value</entry>
+               <entry>Description</entry>
+            </row>
+         </thead>
+         <tbody>
+            <row>
+                <entry>enableThreading</entry>
+                <entry>true</entry>
+                <entry>If set to false, Weld will only use the default thread for
+                    bootstrap and will not try to spawn any additional threads. This
+                    mode is safe for environments such as GAE.</entry>
+            </row>
+         </tbody>
+         <tbody>
+            <row>
+                <entry>debug</entry>
+                <entry>false</entry>
+                <entry>If set to true, debug timing information is printed to the standard output.</entry>
+            </row>
+         </tbody>
+         <tbody>
+            <row>
+                <entry>deployerThreads</entry>
+                <entry><function>Runtime.getRuntime().availableProcessors()</function></entry>
+                <entry>The number of threads to be used for bean loading
+                    and deployment. If set to 0 the serial deployer is used instead
+                    of its concurrent counterpart.</entry>
+            </row>
+         </tbody>
+         <tbody>
+            <row>
+                <entry>preloaderThreads</entry>
+                <entry><function>Math.max(1, Runtime.getRuntime().availableProcessors() - 1)</function></entry>
+                <entry>Weld is capable of resolving observer methods for container
+                    lifecycle events in advance while bean deployer threads are
+                    blocked waiting for I/O operations (such as classloading). This
+                    process is called preloading and leads to better CPU utilization
+                    and faster application startup time. This configuration option
+                    specifies the number of threads used for preloading. If set to
+                    0, preloading is disabled.</entry>
+            </row>
+         </tbody>
+         </tgroup>
+      </table>
+   </section>
 
 <!--
 vim:et:ts=3:sw=3:tw=120
