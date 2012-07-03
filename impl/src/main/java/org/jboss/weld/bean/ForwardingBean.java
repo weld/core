@@ -27,7 +27,7 @@ import org.jboss.weld.util.bean.IsolatedForwardingBean;
  * @param <T>
  * @author Pete Muir
  */
-public abstract class ForwardingBean<T> extends IsolatedForwardingBean<T> implements Bean<T> {
+public abstract class ForwardingBean<T> extends IsolatedForwardingBean<T> {
 
     protected abstract Bean<T> delegate();
 

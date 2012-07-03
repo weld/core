@@ -49,7 +49,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @param <T>
  * @author Gavin King
  */
-@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR", justification = "Uses SerializationProxy")
+@edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD" }, justification = "Uses SerializationProxy")
 public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements Instance<T>, Serializable {
 
     private static class InstanceInjectionPoint extends ForwardingInjectionPoint implements Serializable {

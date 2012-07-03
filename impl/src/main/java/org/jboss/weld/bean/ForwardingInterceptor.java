@@ -32,7 +32,7 @@ import org.jboss.weld.util.bean.IsolatedForwardingInterceptor;
  * @author Jozef Hartinger
  *
  */
-public abstract class ForwardingInterceptor<T> extends IsolatedForwardingInterceptor<T> implements Interceptor<T> {
+public abstract class ForwardingInterceptor<T> extends IsolatedForwardingInterceptor<T> {
 
     protected abstract Interceptor<T> delegate();
 

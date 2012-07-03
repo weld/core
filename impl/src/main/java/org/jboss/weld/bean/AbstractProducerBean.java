@@ -214,10 +214,10 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         try {
-            if (producer instanceof AbstractMemberProducer<?, ?>) {
-                Reflections.<AbstractMemberProducer<?, T>>cast(producer).dispose(instance, creationalContext);
+            if (getProducer() instanceof AbstractMemberProducer<?, ?>) {
+                Reflections.<AbstractMemberProducer<?, T>>cast(getProducer()).dispose(instance, creationalContext);
             } else {
-                producer.dispose(instance);
+                getProducer().dispose(instance);
             }
         } finally {
             if (getDeclaringBean().isDependent()) {

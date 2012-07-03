@@ -65,7 +65,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     private boolean preInitialized;
     private boolean proxyRequired;
 
-    protected Producer<T> producer;
+    private Producer<T> producer;
 
     /**
      * Constructor

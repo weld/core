@@ -21,7 +21,7 @@ import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.util.bean.IsolatedForwardingDecorator;
 
-public abstract class ForwardingDecorator<T> extends IsolatedForwardingDecorator<T> implements Decorator<T> {
+public abstract class ForwardingDecorator<T> extends IsolatedForwardingDecorator<T> {
 
     @Override
     protected abstract Decorator<T> delegate();

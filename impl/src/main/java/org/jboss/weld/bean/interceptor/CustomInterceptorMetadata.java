@@ -19,6 +19,7 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
  */
 public class CustomInterceptorMetadata implements InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> {
 
+    private static final long serialVersionUID = -4399216536392687374L;
 
     private SerializableContextualInterceptorReference reference;
 

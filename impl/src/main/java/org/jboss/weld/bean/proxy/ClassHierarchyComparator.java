@@ -22,6 +22,7 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -29,7 +30,9 @@ import java.util.Comparator;
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-class ClassHierarchyComparator implements Comparator<Class<?>> {
+class ClassHierarchyComparator implements Comparator<Class<?>>, Serializable {
+
+    private static final long serialVersionUID = -8437779965946194053L;
 
     static final ClassHierarchyComparator INSTANCE = new ClassHierarchyComparator();
 

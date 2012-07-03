@@ -40,7 +40,7 @@ import org.jboss.weld.util.Beans;
  *
  * @param <T>
  */
-public abstract class AbstractSyntheticBean<T> extends CommonBean<T> implements Bean<T> {
+public abstract class AbstractSyntheticBean<T> extends CommonBean<T> {
 
     private final Class<T> beanClass;
     protected final Producer<T> producer;

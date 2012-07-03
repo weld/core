@@ -12,6 +12,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Locale;
 import java.util.Set;
 
 public class ConversationBean extends AbstractBuiltInBean<Conversation> {
@@ -53,7 +54,7 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation> {
 
     @Override
     public String getName() {
-        return Conversation.class.getName().toLowerCase();
+        return Conversation.class.getName().toLowerCase(Locale.ENGLISH);
     }
 
 }

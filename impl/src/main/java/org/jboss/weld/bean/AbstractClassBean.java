@@ -22,23 +22,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * An abstract bean representation common for class-based beans
@@ -55,7 +51,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     protected volatile EnhancedAnnotatedType<T> enhancedAnnotatedItem;
 
     // Injection target for the bean
-    protected InjectionTarget<T> producer;
+    private InjectionTarget<T> producer;
 
     /**
      * Constructor

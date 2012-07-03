@@ -18,7 +18,6 @@
 package org.jboss.weld.interceptor.spi.metadata;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
