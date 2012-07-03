@@ -29,11 +29,14 @@ import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.collections.ArraySet;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Represents information about an interceptor method
  *
  * @author Marius Bogoevici
  */
+@SuppressWarnings(value = "SE_BAD_FIELD", justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
 
     private static final long serialVersionUID = -4538617003189564552L;

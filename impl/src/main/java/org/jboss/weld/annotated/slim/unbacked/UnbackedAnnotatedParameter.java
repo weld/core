@@ -15,6 +15,9 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.util.reflection.Formats;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
+@SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedParameter<X> extends UnbackedAnnotated implements AnnotatedParameter<X>, Serializable {
 
     private final int position;

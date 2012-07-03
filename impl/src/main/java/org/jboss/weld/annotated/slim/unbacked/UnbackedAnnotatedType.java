@@ -23,6 +23,8 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Wrapper for extension-provided {@link AnnotatedType}. This may seem unnecessary, however it does mean we are providing a
  * consistent view for debugging, error reporting etc. This implementation is also serializable no matter if the original
@@ -33,6 +35,7 @@ import org.jboss.weld.util.reflection.Formats;
  *
  * @param <X> the type
  */
+@SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
     public static <X> UnbackedAnnotatedType<X> of(AnnotatedType<X> originalType) {
