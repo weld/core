@@ -26,6 +26,9 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorReference;
  * This is used internally by the framework.
  */
 public class ClassMetadataInterceptorReference implements InterceptorReference<ClassMetadata<?>> {
+
+    private static final long serialVersionUID = -619464974130150607L;
+
     private final ClassMetadata<?> classMetadata;
 
     private ClassMetadataInterceptorReference(ClassMetadata<?> classMetadata) {

@@ -171,7 +171,7 @@ public class MemberTransformer implements Service {
     /**
      * If an unbacked member is being deserialized it is looked in all the members of the declaring type and cached.
      */
-    private class UnbackedMemberById implements Function<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> {
+    private static class UnbackedMemberById implements Function<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> {
 
         @Override
         public UnbackedAnnotatedMember<?> apply(UnbackedMemberIdentifier<?> identifier) {

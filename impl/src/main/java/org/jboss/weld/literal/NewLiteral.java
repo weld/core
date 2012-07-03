@@ -29,11 +29,15 @@ public class NewLiteral extends AnnotationLiteral<New> implements New {
 
     private static final long serialVersionUID = 5740797331347409678L;
 
+    public static final NewLiteral DEFAULT_INSTANCE = new NewLiteral(New.class);
+
+    private Class<?> value;
+
+    public NewLiteral(Class<?> value) {
+        this.value = value;
+    }
+
     public Class<?> value() {
-        return New.class;
+        return value;
     }
-
-    public NewLiteral() {
-    }
-
 }

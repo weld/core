@@ -32,6 +32,9 @@ import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
+@SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "cachedBean field is loaded lazily")
 public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointAttributes<T, Object> implements ParameterInjectionPoint<T, X>, Serializable {
 
     private static final long serialVersionUID = -8354344628345860324L;

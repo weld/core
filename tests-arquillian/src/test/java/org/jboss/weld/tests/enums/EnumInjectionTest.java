@@ -76,8 +76,8 @@ public class EnumInjectionTest {
     public void testNewBeansCreated(BeanManager manager) {
         assertNotNull(EnumWithNewInjectionPoint.FOO.getCat());
         assertNotNull(EnumWithNewInjectionPoint.FOO.getDog());
-        assertEquals(1, manager.getBeans(Cat.class, new NewLiteral()).size());
-        assertEquals(1, manager.getBeans(Dog.class, new NewLiteral()).size());
+        assertEquals(1, manager.getBeans(Cat.class, NewLiteral.DEFAULT_INSTANCE).size());
+        assertEquals(1, manager.getBeans(Dog.class, NewLiteral.DEFAULT_INSTANCE).size());
     }
     
     @Test

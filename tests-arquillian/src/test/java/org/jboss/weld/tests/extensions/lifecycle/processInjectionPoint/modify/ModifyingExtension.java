@@ -93,7 +93,7 @@ public class ModifyingExtension implements Extension {
 
             @Override
             public Set<Annotation> getQualifiers() {
-                return Collections.<Annotation> singleton(new NewLiteral());
+                return Collections.<Annotation> singleton(NewLiteral.DEFAULT_INSTANCE);
             }
         });
     }

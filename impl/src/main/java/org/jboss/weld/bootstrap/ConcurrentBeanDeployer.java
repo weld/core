@@ -115,13 +115,7 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
     @Override
     public void doAfterBeanDiscovery(List<? extends Bean<?>> beanList) {
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<Bean<?>>(beanList) {
-            protected void doWork(Bean<?> bean) {
-                if (bean instanceof RIBean<?>) {
-                    ((RIBean<?>) bean).initializeAfterBeanDiscovery();
-                }
-            }
-        });
+        executor.invokeAllAndCheckForExceptions(new AfterBeanDiscoveryInitializerFactory(beanList));
     }
 
     @Override
@@ -132,5 +126,19 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
             }
         });
         return this;
+    }
+
+    private static class AfterBeanDiscoveryInitializerFactory extends IterativeWorkerTaskFactory<Bean<?>> {
+
+        public AfterBeanDiscoveryInitializerFactory(Iterable<? extends Bean<?>> iterable) {
+            super(iterable);
+        }
+
+        @Override
+        protected void doWork(Bean<?> bean) {
+            if (bean instanceof RIBean<?>) {
+                ((RIBean<?>) bean).initializeAfterBeanDiscovery();
+            }
+        }
     }
 }

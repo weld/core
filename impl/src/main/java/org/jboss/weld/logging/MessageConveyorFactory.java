@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public abstract class MessageConveyorFactory {
 
-    private static MessageConveyorFactory INSTANCE;
+    private static volatile MessageConveyorFactory INSTANCE;
 
     private static MessageConveyorFactory load() {
         return new WeldMessageConveyerFactory();
@@ -30,7 +30,11 @@ public abstract class MessageConveyorFactory {
 
     public static MessageConveyorFactory messageConveyerFactory() {
         if (INSTANCE == null) {
-            INSTANCE = load();
+            synchronized (MessageConveyorFactory.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = load();
+                }
+            }
         }
         return INSTANCE;
     }

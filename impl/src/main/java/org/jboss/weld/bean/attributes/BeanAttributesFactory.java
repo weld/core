@@ -79,16 +79,7 @@ public class BeanAttributesFactory {
     }
 
     public static <T> BeanAttributes<T> forNewBean(boolean nullable, Set<Type> types, final Class<?> javaClass) {
-        Set<Annotation> qualifiers = Collections.<Annotation>singleton(new NewLiteral() {
-
-            private static final long serialVersionUID = -6678013994309291500L;
-
-            @Override
-            public Class<?> value() {
-                return javaClass;
-            }
-
-        });
+        Set<Annotation> qualifiers = Collections.<Annotation>singleton(new NewLiteral(javaClass));
         return new ImmutableBeanAttributes<T>(nullable, Collections.<Class<? extends Annotation>> emptySet(), false, null, qualifiers, types, Dependent.class);
     }
 

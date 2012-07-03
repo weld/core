@@ -22,6 +22,8 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.slf4j.cal10n.LocLogger;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -44,6 +46,7 @@ import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANS
 /**
  * @author Nicklas Karlsson
  */
+@SuppressWarnings(value = "SE_BAD_FIELD", justification = "InstanceImpl, which we actually use, is serializable")
 public class ConversationImpl implements ManagedConversation, Serializable {
 
     private static final long serialVersionUID = 8873338254645033645L;

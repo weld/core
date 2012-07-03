@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.SecureReflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
 
 
@@ -37,6 +39,7 @@ public class UnsafeInstantiator implements Instantiator {
     private Method allocateInstanceMethod = null;
     private Object unsafeInstance = null;
 
+    @SuppressWarnings(value = "DE_MIGHT_IGNORE", justification = "The exception is expected to be ignored.")
     private void init() {
         try {
             Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);

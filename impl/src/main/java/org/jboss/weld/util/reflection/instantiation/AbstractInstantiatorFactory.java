@@ -17,8 +17,9 @@
 
 package org.jboss.weld.util.reflection.instantiation;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Abstract instantiator factory.
@@ -30,12 +31,7 @@ public abstract class AbstractInstantiatorFactory implements InstantiatorFactory
 
     // create new instance for every deployment,
     // making sure isAvailable is properly checked against security, etc
-    private final List<Instantiator> instantiators = new ArrayList<Instantiator>() {
-        {
-            add(new UnsafeInstantiator());
-            add(new ReflectionFactoryInstantiator());
-        }
-    };
+    private final List<Instantiator> instantiators = Lists.newArrayList(new UnsafeInstantiator(), new ReflectionFactoryInstantiator());
 
     protected boolean checkInstantiator() {
         for (Instantiator i : instantiators) {

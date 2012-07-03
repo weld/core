@@ -29,6 +29,8 @@ import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_INSTANCE_NOT_SET_ON_PROXY;
@@ -40,6 +42,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PROXY_HANDLER_SERIALIZ
  *
  * @author David Allen
  */
+@SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "bean field is loaded lazily")
 public class ProxyMethodHandler implements MethodHandler, Serializable {
 
     private static final long serialVersionUID = 5293834510764991583L;

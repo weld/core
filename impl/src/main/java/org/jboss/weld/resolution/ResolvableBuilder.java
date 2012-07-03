@@ -171,16 +171,7 @@ public class ResolvableBuilder {
             if (newQualifier.value().equals(New.class) && rawType == null) {
                 throw new IllegalStateException("Cannot transform @New when there is no known raw type");
             } else if (newQualifier.value().equals(New.class)) {
-                qualifier = new NewLiteral() {
-
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public Class<?> value() {
-                        return rawType;
-                    }
-
-                };
+                qualifier = new NewLiteral(rawType);
                 qualifierInstance = new QualifierInstance(qualifier, store);
             }
         }

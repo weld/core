@@ -37,6 +37,9 @@ import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
+@SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "The bean cache is loaded lazily.")
 public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPoint<T, Field>, Serializable {
 
     /**

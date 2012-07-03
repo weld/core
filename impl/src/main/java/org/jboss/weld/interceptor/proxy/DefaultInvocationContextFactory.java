@@ -28,6 +28,9 @@ import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
  * @author Marius Bogoevici
  */
 public class DefaultInvocationContextFactory implements InvocationContextFactory {
+
+    private static final long serialVersionUID = -4084466041606358073L;
+
     public InvocationContext newInvocationContext(InterceptionChain chain, Object o, Method method, Object[] args) {
         return new InterceptorInvocationContext(chain, o, method, args);
     }

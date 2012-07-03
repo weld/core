@@ -44,6 +44,7 @@ import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -820,7 +821,8 @@ public class Beans {
         throw new java.lang.IllegalArgumentException("Unknown type " + type);
     }
 
-    private static class TypeComparator implements Comparator<Type> {
+    private static class TypeComparator implements Comparator<Type>, Serializable {
+        private static final long serialVersionUID = -2162735176891985078L;
         private static final TypeComparator INSTANCE = new TypeComparator();
         @Override
         public int compare(Type o1, Type o2) {

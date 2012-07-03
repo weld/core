@@ -18,28 +18,9 @@ package org.jboss.weld.tests.managed.newBean;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
-import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.bean.ManagedBean;
-import org.jboss.weld.bean.NewManagedBean;
-import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.injection.producer.AbstractInjectionTarget;
-import org.jboss.weld.injection.producer.DefaultInstantiator;
-import org.jboss.weld.injection.producer.Instantiator;
-import org.jboss.weld.literal.NewLiteral;
-import org.jboss.weld.util.AnnotatedTypes;
-import org.jboss.weld.util.reflection.Reflections;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.List;
+import java.util.Set;
 
-import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -47,8 +28,23 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
 
-import java.util.List;
-import java.util.Set;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.bean.ManagedBean;
+import org.jboss.weld.bean.NewManagedBean;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.producer.AbstractInjectionTarget;
+import org.jboss.weld.injection.producer.DefaultInstantiator;
+import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.util.reflection.Reflections;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class NewSimpleBeanTest {
@@ -61,8 +57,6 @@ public class NewSimpleBeanTest {
     private ManagedBean<WrappedSimpleBean> wrappedSimpleBean;
     private NewManagedBean<WrappedSimpleBean> newSimpleBean;
 
-    private static final New NEW_LITERAL = new NewLiteral();
-
     @Inject
     private BeanManager beanManager;
 
@@ -72,9 +66,9 @@ public class NewSimpleBeanTest {
         Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class).iterator().next() instanceof ManagedBean);
         wrappedSimpleBean = (ManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class).iterator().next();
 
-        Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).size());
-        Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next() instanceof NewManagedBean);
-        newSimpleBean = (NewManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class, NEW_LITERAL).iterator().next();
+        Assert.assertEquals(1, beanManager.getBeans(WrappedSimpleBean.class, NewLiteral.DEFAULT_INSTANCE).size());
+        Assert.assertTrue(beanManager.getBeans(WrappedSimpleBean.class, NewLiteral.DEFAULT_INSTANCE).iterator().next() instanceof NewManagedBean);
+        newSimpleBean = (NewManagedBean<WrappedSimpleBean>) beanManager.getBeans(WrappedSimpleBean.class, NewLiteral.DEFAULT_INSTANCE).iterator().next();
     }
 
     // groups = { "new" }

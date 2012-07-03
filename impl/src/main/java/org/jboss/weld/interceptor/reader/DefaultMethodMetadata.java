@@ -36,7 +36,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author Marius Bogoevici
  */
-@SuppressWarnings(value = "SE_BAD_FIELD", justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
+@SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
 
     private static final long serialVersionUID = -4538617003189564552L;
@@ -92,6 +92,9 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
 
 
     private static class DefaultMethodMetadataSerializationProxy implements Serializable {
+
+        private static final long serialVersionUID = 6505717058846166713L;
+
         private final Set<InterceptionType> supportedInterceptionTypes;
         private final MethodReference methodReference;
 

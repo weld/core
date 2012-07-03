@@ -24,7 +24,7 @@ import org.slf4j.ext.XLoggerFactory;
 
 public class LoggerFactory {
 
-    private static LoggerFactory INSTANCE;
+    private static volatile LoggerFactory INSTANCE;
 
     public static void cleanup() {
         INSTANCE = null;
@@ -48,7 +48,11 @@ public class LoggerFactory {
 
     public static LoggerFactory loggerFactory() {
         if (INSTANCE == null) {
-            INSTANCE = new LoggerFactory("WELD");
+            synchronized (LoggerFactory.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new LoggerFactory("WELD");
+                }
+            }
         }
         return INSTANCE;
     }

@@ -25,7 +25,7 @@ import static org.jboss.weld.logging.messages.ContextMessage.DELIMITER_IN_PREFIX
  *
  * @author Nicklas Karlsson
  */
-public class SimpleNamingScheme extends AbstractNamingScheme implements NamingScheme {
+public class SimpleNamingScheme extends AbstractNamingScheme {
 
     private final String prefix;
 

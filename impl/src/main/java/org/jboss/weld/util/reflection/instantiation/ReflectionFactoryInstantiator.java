@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 
 import org.jboss.weld.exceptions.WeldException;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 import static org.jboss.weld.logging.messages.ReflectionMessage.REFLECTIONFACTORY_INSTANTIATION_FAILED;
 
 /**
@@ -35,6 +37,7 @@ public class ReflectionFactoryInstantiator implements Instantiator {
     private Method generator = null;
     private Object reflectionFactoryInstance = null;
 
+    @SuppressWarnings(value = "DE_MIGHT_IGNORE", justification = "The exception is expected to be ignored.")
     private void init() {
         try {
             Class<?> reflectionFactory = Class.forName(REFLECTION_CLASS_NAME);

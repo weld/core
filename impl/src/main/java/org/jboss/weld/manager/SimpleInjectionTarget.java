@@ -43,6 +43,8 @@ import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.InjectionPoints;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * @author pmuir
  */
@@ -61,6 +63,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
     private final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
     private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
 
+    @SuppressWarnings(value = "DE_MIGHT_IGNORE", justification = "The exception is expected to be ignored.")
     public SimpleInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.type = type;

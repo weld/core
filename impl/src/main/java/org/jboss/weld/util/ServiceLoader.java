@@ -19,6 +19,8 @@ package org.jboss.weld.util;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.metadata.FileMetadata;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -163,6 +165,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
         return serviceFiles;
     }
 
+    @SuppressWarnings(value = "OS_OPEN_STREAM", justification = "False positive")
     private void loadServiceFile(URL serviceFile) {
         InputStream is = null;
         try {

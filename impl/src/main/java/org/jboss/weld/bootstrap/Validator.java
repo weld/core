@@ -129,6 +129,7 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -355,10 +356,10 @@ public class Validator implements Service {
     public void validateInjectionPointForDeploymentProblems(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
         if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
-            throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[0])), Formats.formatType(ij.getType()));
+            throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()])), Formats.formatType(ij.getType()));
         }
         if (resolvedBeans.size() > 1 && !ij.isDelegate()) {
-            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[0])), Formats.formatType(ij.getType()), resolvedBeans);
+            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()])), Formats.formatType(ij.getType()), resolvedBeans);
         }
         // Account for the case this is disabled decorator
         if (!resolvedBeans.isEmpty()) {
@@ -536,13 +537,7 @@ public class Validator implements Service {
     }
 
     public void validateBeanNames(BeanManagerImpl beanManager) {
-        SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>() {
-
-            public Set<Bean<?>> get() {
-                return new HashSet<Bean<?>>();
-            }
-
-        });
+        SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), HashSetSupplier.<Bean<?>>instance());
         for (Bean<?> bean : beanManager.getAccessibleBeans()) {
             if (bean.getName() != null) {
                 namedAccessibleBeans.put(bean.getName(), bean);

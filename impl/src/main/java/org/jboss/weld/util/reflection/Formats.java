@@ -275,6 +275,7 @@ public class Formats {
         }
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_NULL_ON_SOME_PATH_MIGHT_BE_INFEASIBLE", justification = "False positive.")
     public static String version(String version, String timestamp) {
         if (version == null && timestamp != null) {
             return timestamp;

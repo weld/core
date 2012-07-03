@@ -32,6 +32,9 @@ import org.jboss.weld.interceptor.util.ReflectionUtils;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public class MethodReference implements Serializable {
+
+    private static final long serialVersionUID = 4080414886347232201L;
+
     private final String methodName;
 
     private final Class<?>[] parameterTypes;
@@ -103,6 +106,9 @@ public class MethodReference implements Serializable {
     }
 
     static class MethodHolderSerializationProxy implements Serializable {
+
+        private static final long serialVersionUID = -2675263185246118353L;
+
         private final String className;
         private final String methodName;
         private String[] parameterClassNames;

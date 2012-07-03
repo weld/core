@@ -51,7 +51,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                         if (proceed != null) {
                             return this.interceptorMethodHandler.invoke(outerDecorator != null ? outerDecorator : self, thisMethod, thisMethod, args);
                         } else {
-                            return this.interceptorMethodHandler.invoke(self, thisMethod, proceed, args);
+                            return this.interceptorMethodHandler.invoke(self, thisMethod, null, args);
                         }
                     } else {
                         if (outerDecorator != null) {

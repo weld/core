@@ -62,7 +62,7 @@ public class InjectionPointOverridingTest {
 
     @Test
     public void testNewInjectionPointDiscovered(InjectingBean bean, BeanManager manager) {
-        assertEquals(1, manager.getBeans(Cat.class, new NewLiteral()).size());
+        assertEquals(1, manager.getBeans(Cat.class, NewLiteral.DEFAULT_INSTANCE).size());
         assertNotNull(bean.getCat());
         assertNotNull(bean.getCat().getBean());
         assertEquals(Dependent.class, bean.getCat().getBean().getScope());

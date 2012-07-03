@@ -48,7 +48,7 @@ public class ProgrammaticLookupOfNewBeanTest {
 
     @Test
     public void testProgrammaticLookupOfNewBean(InjectedBean1 bean, BeanManager manager) {
-        assertEquals(1, manager.getBeans(PaymentProcessor.class, new NewLiteral()).size());
+        assertEquals(1, manager.getBeans(PaymentProcessor.class, NewLiteral.DEFAULT_INSTANCE).size());
         Instance<PaymentProcessor> instance = bean.getInstance();
         assertNotNull(instance);
         assertFalse(instance.isAmbiguous());

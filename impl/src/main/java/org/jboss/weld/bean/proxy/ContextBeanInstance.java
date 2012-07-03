@@ -24,6 +24,8 @@ import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 import java.io.Serializable;
@@ -37,6 +39,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  *
  * @author David Allen
  */
+@SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "bean field is loaded lazily")
 public class ContextBeanInstance<T> extends AbstractBeanInstance implements Serializable {
 
     private static final long serialVersionUID = -8144230657830556503L;

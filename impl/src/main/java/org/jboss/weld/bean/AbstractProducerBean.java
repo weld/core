@@ -174,7 +174,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (injectionPoint != null && injectionPoint.getBean() != null) {
                 if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
                     if (injectionPoint.getMember() instanceof Field) {
-                        if (!injectionPoint.isTransient() && instance != null && !instanceSerializable) {
+                        if (!injectionPoint.isTransient() && !instanceSerializable) {
                             throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
                         }
                     } else if (injectionPoint.getMember() instanceof Method) {

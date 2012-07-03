@@ -26,6 +26,7 @@ import java.util.List;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,7 @@ public class SimpleInterceptionChain implements InterceptionChain {
                 }
             } else {
                 if (targetMethod != null) {
-                    targetMethod.setAccessible(true);
+                    SecureReflections.ensureAccessible(targetMethod);
                     if (invocationContext.getMethod() != null) {
                         return targetMethod.invoke(target, invocationContext.getParameters());
                     } else {
@@ -92,16 +93,6 @@ public class SimpleInterceptionChain implements InterceptionChain {
             }
         } catch (InvocationTargetException e) {
             throw e.getCause();
-        }
-    }
-
-    private void validateInterceptor(SimpleMethodInvocation nextInterceptorMethodInvocation, InvocationContext context) {
-        int expectedParameters = context == null ? 0 : 1;
-        if (nextInterceptorMethodInvocation.method.getJavaMethod().getParameterTypes().length != expectedParameters) {
-            throw new IllegalStateException(
-                    "Mismatch between number of expected and actual parameters on "
-                            + nextInterceptorMethodInvocation.getMethod() + ": expected " + expectedParameters
-                            + ", actual " + nextInterceptorMethodInvocation.getMethod().getJavaMethod().getParameterTypes().length);
         }
     }
 

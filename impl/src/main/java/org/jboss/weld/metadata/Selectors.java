@@ -341,9 +341,7 @@ public class Selectors {
      * @param str
      * @return
      */
-    @SuppressWarnings("unused")
     static String[] tokenize(String str) {
-        String root = null;
         char sep = '.';
         int start = 0;
         int len = str.length();
@@ -359,14 +357,9 @@ public class Selectors {
         if (len != start) {
             count++;
         }
-        String[] l = new String[count + ((root == null) ? 0 : 1)];
+        String[] l = new String[count];
 
-        if (root != null) {
-            l[0] = root;
-            count = 1;
-        } else {
-            count = 0;
-        }
+        count = 0;
         start = 0;
         for (int pos = 0; pos < len; pos++) {
             if (str.charAt(pos) == sep) {

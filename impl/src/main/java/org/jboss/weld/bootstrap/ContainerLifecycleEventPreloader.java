@@ -33,6 +33,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.slf4j.cal10n.LocLogger;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Allows observer methods for container lifecycle events to be resolved upfront while the deployment is waiting for classloader
  * or reflection API.
@@ -46,7 +48,7 @@ public class ContainerLifecycleEventPreloader implements Service {
     private static final long SHUTDOWN_TIMEOUT = 1L;
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
-    private class PreloadingTask implements Callable<Void> {
+    private static class PreloadingTask implements Callable<Void> {
 
         private final Type type;
         private final BeanManagerImpl manager;
@@ -69,6 +71,7 @@ public class ContainerLifecycleEventPreloader implements Service {
         this.executor = Executors.newFixedThreadPool(configuration.getPreloaderThreads(), new DeamonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
     }
 
+    @SuppressWarnings(value = "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE", justification = "We never need to synchronize with the preloader.")
     public void preloadContainerLifecycleEvent(BeanManagerImpl manager, Class<?> eventRawType, Type... typeParameters) {
         executor.submit(new PreloadingTask(new ParameterizedTypeImpl(eventRawType, typeParameters, null), manager));
     }

@@ -186,10 +186,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         return declaringBean;
     }
 
-    public Annotation[] getBindingsAsArray() {
-        return bindings.toArray(new Annotation[0]);
-    }
-
     public Reception getReception() {
         return reception;
     }
@@ -256,7 +252,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         try {
             preNotify(event, receiver);
             if (receiver == null) {
-                observerMethod.invokeWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
+                observerMethod.invokeWithSpecialValue(null, Observes.class, event, beanManager, creationalContext, ObserverException.class);
             } else {
                 // As we are working with the contextual instance, we may not have the
                 // actual object, but a container proxy (e.g. EJB)

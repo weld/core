@@ -18,6 +18,7 @@
 package org.jboss.weld.interceptor.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author Marius Bogoevici
@@ -38,6 +39,9 @@ public class ArrayIterator<T> implements Iterator<T> {
     }
 
     public T next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
         return array[currentIndex++];
     }
 

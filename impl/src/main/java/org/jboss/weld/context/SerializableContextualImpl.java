@@ -31,6 +31,7 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
  *
  * @author pmuir
  */
+@SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "cachedContextualStore field is loaded lazily")
 public class SerializableContextualImpl<C extends Contextual<I>, I> extends ForwardingContextual<I> implements SerializableContextual<C, I> {
 
     @Override

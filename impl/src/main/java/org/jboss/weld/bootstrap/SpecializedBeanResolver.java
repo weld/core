@@ -19,6 +19,7 @@ package org.jboss.weld.bootstrap;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bean.AbstractClassBean;
@@ -41,14 +42,28 @@ public class SpecializedBeanResolver {
         this.accessibleEnvironments = accessibleEnvironments;
     }
 
-    private static interface BootstrapTransform<T> {
-        Iterable<T> transform(BeanDeployerEnvironment environment);
+    private static interface BootstrapTransform<T extends Bean<?>> {
+        Iterable<T> transform(T bean, BeanDeployerEnvironment environment);
     }
 
-    private <T> Set<T> getSpecializedBeans(BootstrapTransform<T> transform) {
+    private static final BootstrapTransform<AbstractClassBean<?>> CLASS_BEAN_TRANSFORM = new BootstrapTransform<AbstractClassBean<?>>() {
+        @Override
+        public Iterable<AbstractClassBean<?>> transform(AbstractClassBean<?> bean, BeanDeployerEnvironment environment) {
+            return environment.getClassBeans(bean.getBeanClass().getSuperclass());
+        }
+    };
+
+    private static final BootstrapTransform<ProducerMethod<?, ?>> PRODUCER_METHOD_TRANSFORM = new BootstrapTransform<ProducerMethod<?, ?>>() {
+        @Override
+        public Iterable<ProducerMethod<?, ?>> transform(ProducerMethod<?, ?> bean, BeanDeployerEnvironment environment) {
+            return environment.getProducerMethod(bean.getBeanClass().getSuperclass(), bean.getEnhancedAnnotated().getSignature());
+        }
+    };
+
+    private <T extends Bean<?>> Set<T> getSpecializedBeans(T bean, BootstrapTransform<T> transform) {
         Set<T> beans = new HashSet<T>();
         for (BeanDeployerEnvironment environment : accessibleEnvironments) {
-            Iterables.addAll(beans, transform.transform(environment));
+            Iterables.addAll(beans, transform.transform(bean, environment));
         }
         return beans;
     }
@@ -57,23 +72,13 @@ public class SpecializedBeanResolver {
         if (!bean.isSpecializing()) {
             throw new IllegalArgumentException(bean + " is not a specializing bean");
         }
-        return getSpecializedBeans(new BootstrapTransform<AbstractClassBean<?>>() {
-            @Override
-            public Iterable<AbstractClassBean<?>> transform(BeanDeployerEnvironment environment) {
-                return environment.getClassBeans(bean.getBeanClass().getSuperclass());
-            }
-        });
+        return getSpecializedBeans(bean, CLASS_BEAN_TRANSFORM);
     }
 
     protected Set<ProducerMethod<?, ?>> resolveSpecializedBeans(final ProducerMethod<?, ?> bean) {
         if (!bean.isSpecializing()) {
             throw new IllegalArgumentException(bean + " is not a specializing bean");
         }
-        return getSpecializedBeans(new BootstrapTransform<ProducerMethod<?, ?>>() {
-            @Override
-            public Iterable<ProducerMethod<?, ?>> transform(BeanDeployerEnvironment environment) {
-                return environment.getProducerMethod(bean.getBeanClass().getSuperclass(), bean.getEnhancedAnnotated().getSignature());
-            }
-        });
+        return getSpecializedBeans(bean, PRODUCER_METHOD_TRANSFORM);
     }
 }

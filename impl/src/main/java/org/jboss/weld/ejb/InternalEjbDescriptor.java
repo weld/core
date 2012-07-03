@@ -33,7 +33,7 @@ import java.util.Collection;
  *
  * @author Pete Muir
  */
-public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> implements EjbDescriptor<T> {
+public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
 
     private final Class<?> objectInterface;
     private final EjbDescriptor<T> delegate;

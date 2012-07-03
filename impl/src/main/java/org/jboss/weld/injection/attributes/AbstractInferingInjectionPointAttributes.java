@@ -34,6 +34,8 @@ import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.TypeVariableResolver;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public abstract class AbstractInferingInjectionPointAttributes<T, S> implements WeldInjectionPointAttributes<T, S>, Serializable {
 
     private static final long serialVersionUID = 7820718127728549436L;
@@ -110,6 +112,7 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
         protected abstract Type resolveType();
     }
 
+    @SuppressWarnings(value = "SE_INNER_CLASS", justification = "The outer class is always serialized along this inner class.")
     private class BeanInjectionPointTypeAttribute extends TypeAttribute {
         private static final long serialVersionUID = 6927120066961769765L;
 
@@ -119,6 +122,7 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
         }
     }
 
+    @SuppressWarnings(value = "SE_INNER_CLASS", justification = "The outer class is always serialized along this inner class.")
     private class NonContextualInjectionPointTypeAttribute extends TypeAttribute {
         private static final long serialVersionUID = 1870361474843082321L;
 
