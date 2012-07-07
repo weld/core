@@ -16,34 +16,28 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_FIELD_INJECTION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODUCT_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NULL_NOT_ALLOWED_FROM_PRODUCER;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_CAST_ERROR;
 
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
@@ -127,11 +121,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     private void initPassivationCapable() {
-        if (getEnhancedAnnotated().isFinal() && !Serializable.class.isAssignableFrom(getEnhancedAnnotated().getJavaClass())) {
-            this.passivationCapableBean = false;
-        } else {
-            this.passivationCapableBean = true;
-        }
+        this.passivationCapableBean = !Reflections.isFinal(getEnhancedAnnotated().getJavaClass()) || Reflections.isSerializable(getEnhancedAnnotated().getJavaClass());
         if (isNormalScoped()) {
             this.passivationCapableDependency = true;
         } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
@@ -165,7 +155,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         if (instance == null && !isDependent()) {
             throw new IllegalProductException(NULL_NOT_ALLOWED_FROM_PRODUCER, getProducer());
         } else if (instance != null) {
-            boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
+            boolean passivating = beanManager.isPassivatingScope(getScope());
             boolean instanceSerializable = isTypeSerializable(instance.getClass());
             if (passivating && !instanceSerializable) {
                 throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
@@ -177,16 +167,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
                         if (!injectionPoint.isTransient() && !instanceSerializable) {
                             throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
                         }
-                    } else if (injectionPoint.getMember() instanceof Method) {
-                        Method method = (Method) injectionPoint.getMember();
-                        if (method.isAnnotationPresent(Inject.class)) {
-                            throw new IllegalProductException(NON_SERIALIZABLE_INITIALIZER_PARAM_INJECTION_ERROR, this, injectionPoint);
-                        }
-                        if (method.isAnnotationPresent(Produces.class)) {
-                            throw new IllegalProductException(NON_SERIALIZABLE_PRODUCER_PARAM_INJECTION_ERROR, this, injectionPoint);
-                        }
-                    } else if (injectionPoint.getMember() instanceof Constructor<?>) {
-                        throw new IllegalProductException(NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR, this, injectionPoint);
                     }
                 }
             }
@@ -195,6 +175,9 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     @Override
     protected void checkType() {
+        if (beanManager.isPassivatingScope(getScope()) && !isPassivationCapableBean()) {
+            throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+        }
     }
 
     protected boolean isTypeSerializable(final Class<?> clazz) {

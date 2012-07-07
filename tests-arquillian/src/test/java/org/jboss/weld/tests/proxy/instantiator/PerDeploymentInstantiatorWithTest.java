@@ -42,11 +42,11 @@ public class PerDeploymentInstantiatorWithTest extends AbstractPerDeploymentInst
     }
 
     @Inject
-    Unproxiable unproxiable;
+    InjectedBean bean;
 
     @Test
     public void testWith() throws Exception {
-        unproxiable.getBm();
+        bean.getUnproxiable().getBm();
     }
 
 }

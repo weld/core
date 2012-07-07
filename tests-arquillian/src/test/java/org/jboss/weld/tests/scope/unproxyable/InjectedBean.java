@@ -14,37 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.weld.tests.proxy.instantiator;
+package org.jboss.weld.tests.scope.unproxyable;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-/**
- * WELD-687.
- *
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
- */
-@RunWith(Arquillian.class)
-public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstantiator {
-
-    @Deployment
-    @ShouldThrowException(Exception.class)
-    public static Archive<?> getDeploymentWO() {
-        return getDeployment();
-    }
+public class InjectedBean {
 
     @Inject
-    InjectedBean bean;
-
-    @Test
-    public void testWO() throws Exception {
-    }
-
+    @HttpParam("")
+    @SuppressWarnings("unused")
+    private Integer param;
 }

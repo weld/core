@@ -52,7 +52,7 @@ public class WeldInterceptorInstantiator<T> implements InterceptorInstantiator<T
         if (interceptorReference.getInterceptor() instanceof SerializableContextual) {
             try {
                 SerializableContextual<Interceptor<T>, T> serializableContextual = cast(interceptorReference.getInterceptor());
-                return Reflections.<T>cast(manager.getReference(serializableContextual.get(), creationalContext, false));
+                return Reflections.<T>cast(manager.getReference(serializableContextual.get(), null, creationalContext, false));
             } catch (Exception e) {
                 throw new DeploymentException(e);
             }

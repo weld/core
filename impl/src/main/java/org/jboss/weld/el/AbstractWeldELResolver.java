@@ -117,14 +117,14 @@ public abstract class AbstractWeldELResolver extends ELResolver {
                     return value;
                 }
             }
-            return beanManager.getReference(bean, beanManager.createCreationalContext(bean), false);
+            return beanManager.getReference(bean, null, beanManager.createCreationalContext(bean), false);
         } else {
             // Need to use a "special" creationalContext that can make sure that we do share dependent instances referenced by the EL Expression
             final ELCreationalContext<?> creationalContext = getELCreationalContext(context);
             String beanName = bean.getName();
             Object value = creationalContext.getDependentInstanceForExpression(beanName);
             if (value == null) {
-                value = getManager(context).getReference(bean, creationalContext, false);
+                value = getManager(context).getReference(bean, null, creationalContext, false);
                 creationalContext.registerDependentInstanceForExpression(beanName, value);
             }
             return value;

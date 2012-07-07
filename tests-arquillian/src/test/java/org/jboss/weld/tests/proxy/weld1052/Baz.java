@@ -14,37 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.tests.proxy.weld1052;
 
-package org.jboss.weld.tests.proxy.instantiator;
-
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-/**
- * WELD-687.
- *
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
- */
-@RunWith(Arquillian.class)
-public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstantiator {
-
-    @Deployment
-    @ShouldThrowException(Exception.class)
-    public static Archive<?> getDeploymentWO() {
-        return getDeployment();
-    }
+@RequestScoped
+public class Baz implements BazInterface {
 
     @Inject
-    InjectedBean bean;
-
-    @Test
-    public void testWO() throws Exception {
+    private Baz(BeanManager manager) {
     }
 
+    // no default constructor
 }

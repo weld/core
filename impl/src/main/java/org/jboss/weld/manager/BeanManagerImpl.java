@@ -164,7 +164,6 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Interceptors;
@@ -657,13 +656,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return activeContext;
     }
 
-    public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy) {
+    public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
         if (creationalContext instanceof WeldCreationalContext<?>) {
             creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
         }
         if (!noProxy && isProxyRequired(bean)) {
             if (creationalContext != null || getContext(bean.getScope()).get(bean) != null) {
-                return clientProxyProvider.getClientProxy(bean);
+                if (requestedType == null) {
+                    return clientProxyProvider.getClientProxy(bean);
+                } else {
+                    return clientProxyProvider.getClientProxy(bean, requestedType);
+                }
             } else {
                 return null;
             }
@@ -682,20 +685,20 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
-    public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> creationalContext) {
+    public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext) {
         if (bean == null) {
             throw new IllegalArgumentException(NULL_BEAN_ARGUMENT);
         }
-        if (beanType == null) {
+        if (requestedType == null) {
             throw new IllegalArgumentException(NULL_BEAN_TYPE_ARGUMENT);
         }
         if (creationalContext == null) {
             throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
         }
-        if (!BeanTypeAssignabilityRules.instance().matches(beanType, bean.getTypes())) {
-            throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, beanType, bean);
+        if (!BeanTypeAssignabilityRules.instance().matches(requestedType, bean.getTypes())) {
+            throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, requestedType, bean);
         }
-        return getReference(bean, creationalContext, false);
+        return getReference(bean, requestedType, creationalContext, false);
     }
 
 
@@ -726,6 +729,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             if (injectionPoint != null && isNormalScope(resolvedBean.getScope()) && !Proxies.isTypeProxyable(injectionPoint.getType())) {
                 throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
             }
+            Type requestedType = null;
+            if (injectionPoint != null) {
+                requestedType = injectionPoint.getType();
+            }
             // TODO Can we move this logic to getReference?
             if (creationalContext instanceof WeldCreationalContext<?>) {
                 WeldCreationalContext<?> wbCreationalContext = (WeldCreationalContext<?>) creationalContext;
@@ -733,10 +740,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 if (incompleteInstance != null) {
                     return incompleteInstance;
                 } else {
-                    return getReference(resolvedBean, wbCreationalContext, delegateInjectionPoint);
+                    return getReference(resolvedBean, requestedType, wbCreationalContext, delegateInjectionPoint);
                 }
             } else {
-                return getReference(resolvedBean, creationalContext, delegateInjectionPoint);
+                return getReference(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
             }
         } finally {
             if (registerInjectionPoint) {

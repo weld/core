@@ -113,7 +113,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
                     return incompleteInstance;
                 }
             }
-            return getBeanManager().getReference(getDeclaringBean(), receiverCreationalContext, true);
+            return getBeanManager().getReference(getDeclaringBean(), null, receiverCreationalContext, true);
         }
     }
 

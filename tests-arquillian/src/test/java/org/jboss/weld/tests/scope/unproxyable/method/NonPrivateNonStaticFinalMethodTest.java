@@ -41,7 +41,7 @@ public class NonPrivateNonStaticFinalMethodTest {
     @Deployment
     @ShouldThrowException(Exception.class)
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClass(Swan.class);
+        return ShrinkWrap.create(BeanArchive.class).addClasses(Swan.class, SwanLake.class);
     }
 
     @Test

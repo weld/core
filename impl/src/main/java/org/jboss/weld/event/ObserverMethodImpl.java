@@ -277,14 +277,14 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     protected Object getReceiverIfExists() {
         try {
-            return beanManager.getReference(declaringBean, null, false);
+            return beanManager.getReference(declaringBean, null, null, false);
         } catch (ContextNotActiveException e) {
             return null;
         }
     }
 
     protected Object getReceiver(CreationalContext<?> ctx) {
-        return beanManager.getReference(declaringBean, ctx, false);
+        return beanManager.getReference(declaringBean, null, ctx, false);
     }
 
     @Override

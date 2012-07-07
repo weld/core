@@ -79,22 +79,6 @@
                     <exclude name="testDefinitionErrorDetected"></exclude>
                 </methods>
             </class>
-            <!-- WELD-1052 -->
-            <class name="org.jboss.cdi.tck.tests.context.passivating.broken.nonPassivationCapableProducerField.NonPassivationCapableProducerFieldTest">
-                <methods>
-                    <exclude name="testNonPassivationCapableProducerFieldNotOk"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.passivating.broken.nonPassivationCapableProducerMethod.NonPassivationCapableProducerMethodTest">
-                <methods>
-                    <exclude name="testNonPassivationCapableProducerMethodNotOk"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.parameterized.ParameterizedTypesInjectionToRawTypeTest">
-                <methods>
-                    <exclude name="testInjection"/>
-                </methods>
-            </class>
             <!-- WELD-1073 -->
              <class name="org.jboss.cdi.tck.tests.deployment.packaging.interceptor.InterceptorClassNotInBeanArchiveTest">
                 <methods>
@@ -137,12 +121,6 @@
             <class name="org.jboss.cdi.tck.tests.decorators.invocation.enterprise.EnterpriseDecoratorInvocationTest">
                 <methods>
                     <exclude name=".*"/>
-                </methods>
-            </class>
-            <!-- WELD-1052 -->
-            <class name="org.jboss.cdi.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
-                <methods>
-                    <exclude name="testNormalScopedUnproxyableBeanResolution" />
                 </methods>
             </class>
             <!-- Issues in JBoss AS -->

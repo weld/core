@@ -134,7 +134,6 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -157,9 +156,16 @@ public class Validator implements Service {
         for (InjectionPoint ij : bean.getInjectionPoints()) {
             validateInjectionPoint(ij, beanManager);
         }
-        boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
-        if (normalScoped && !Beans.isBeanProxyable(bean)) {
-            throw Proxies.getUnproxyableTypesException(bean);
+        boolean normalScoped = beanManager.isNormalScope(bean.getScope());
+        /*
+         * Named beans are validated eagerly. If a bean is not named, it is validated for proxyability based on discovered
+         * injection points.
+         */
+        if (normalScoped && bean.getName() != null && !Beans.isBeanProxyable(bean)) {
+            UnproxyableResolutionException ue = Proxies.getUnproxyableTypesException(bean);
+            if (ue != null) {
+                throw new DeploymentException(ue);
+            }
         }
         if (!normalScoped) {
             validatePseudoScopedBean(bean, beanManager);
@@ -364,12 +370,10 @@ public class Validator implements Service {
         // Account for the case this is disabled decorator
         if (!resolvedBeans.isEmpty()) {
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
-            if (beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(resolvedBean.getScope()).isNormal()) {
+            if (beanManager.isNormalScope(resolvedBean.getScope())) {
                 UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType());
                 if (ue != null) {
-                    UnproxyableResolutionException exception = new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
-                    exception.initCause(ue);
-                    throw exception;
+                    throw new DeploymentException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ue, ij);
                 }
             }
             if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {

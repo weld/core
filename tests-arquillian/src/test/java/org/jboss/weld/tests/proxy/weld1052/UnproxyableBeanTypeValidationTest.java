@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,35 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.scope.unproxyable;
+package org.jboss.weld.tests.proxy.weld1052;
+
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class UnproxyableTest {
+public class UnproxyableBeanTypeValidationTest {
+
+    @Inject
+    private FooInterface foo;
+
+    @Inject
+    private BarInterface bar;
+
+    @Inject
+    private BazInterface baz;
 
     @Deployment
-    @ShouldThrowException(Exception.class) // AS7-1197
-    public static JavaArchive deploy() {
-        BeanArchive archive = ShrinkWrap.create(BeanArchive.class);
-        archive.addPackage(UnproxyableTest.class.getPackage());
-
-        return archive;
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.create(BeanArchive.class).addPackage(UnproxyableBeanTypeValidationTest.class.getPackage());
     }
 
-    //groups = "incontainer-broken"
     @Test
     public void test() {
-
+        assertNotNull(foo);
+        assertNotNull(bar);
+        assertNotNull(baz);
     }
-
 }
