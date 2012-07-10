@@ -29,20 +29,30 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
  * Loads bootstrap configuration.
  *
  * @author Jozef Hartinger
- *
+ * @author Martin Kouba
  */
 public class BootstrapConfiguration {
+
+    public static final int DEFAULT_THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
+    /**
+     * Default keep-alive time in seconds
+     */
+    public static final long DEFAULT_KEEP_ALIVE_TIME = 60;
 
     private static final String CONFIGURATION_FILE = "org.jboss.weld.bootstrap.properties";
     private static final String DEPLOYER_THREADS = "deployerThreads";
     private static final String PRELOADER_THREADS = "preloaderThreads";
     private static final String DEBUG = "debug";
     private static final String ENABLE_THREADING = "enableThreading";
+    private static final String THREAD_POOL_TYPE = "threadPoolType";
+    private static final String THREAD_POOL_KEEP_ALIVE_TIME = "threadPoolKeepAliveTimeSeconds";
 
     private final int deployerThreads;
     private final int preloaderThreads;
     private final boolean debug;
     private final boolean threadingEnabled;
+    private final ThreadPoolType threadPoolType;
+    private final long threadPoolKeepAliveTime;
 
     public BootstrapConfiguration(ResourceLoader loader) {
         URL configuration = loader.getResource(CONFIGURATION_FILE);
@@ -50,10 +60,12 @@ public class BootstrapConfiguration {
         if (configuration != null) {
             properties = loadProperties(configuration);
         }
-        this.deployerThreads = initIntValue(properties, DEPLOYER_THREADS, Runtime.getRuntime().availableProcessors());
+        this.deployerThreads = initIntValue(properties, DEPLOYER_THREADS, DEFAULT_THREAD_POOL_SIZE);
         this.preloaderThreads = initIntValue(properties, PRELOADER_THREADS, Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
         this.debug = initBooleanValue(properties, DEBUG, false);
         this.threadingEnabled = initBooleanValue(properties, ENABLE_THREADING, true);
+        this.threadPoolType = initThreadPoolType(properties, THREAD_POOL_TYPE, ThreadPoolType.FIXED);
+        this.threadPoolKeepAliveTime = initLongValue(properties, THREAD_POOL_KEEP_ALIVE_TIME, DEFAULT_KEEP_ALIVE_TIME);
     }
 
     private int initIntValue(Properties properties, String property, int defaultValue) {
@@ -73,6 +85,30 @@ public class BootstrapConfiguration {
             return defaultValue;
         }
         return Boolean.valueOf(properties.getProperty(property));
+    }
+
+    private ThreadPoolType initThreadPoolType(Properties properties, String property, ThreadPoolType defaultValue) {
+        if (properties == null || properties.get(property) == null) {
+            return defaultValue;
+        }
+        String value = properties.getProperty(property);
+        try {
+            return ThreadPoolType.valueOf(value);
+        } catch (NumberFormatException e) {
+            throw new DeploymentException(BootstrapMessage.INVALID_THREAD_POOL_TYPE, value);
+        }
+    }
+
+    private long initLongValue(Properties properties, String property, long defaultValue) {
+        if (properties == null || properties.get(property) == null) {
+            return defaultValue;
+        }
+        String value = properties.getProperty(property);
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException e) {
+            throw new DeploymentException(BootstrapMessage.INVALID_PROPERTY_VALUE, property, value);
+        }
     }
 
     private Properties loadProperties(URL url) {
@@ -107,5 +143,23 @@ public class BootstrapConfiguration {
 
     public boolean isPreloaderEnabled() {
         return preloaderThreads > 0 && threadingEnabled;
+    }
+
+    public ThreadPoolType getThreadPoolType() {
+        return threadPoolType;
+    }
+
+    public long getThreadPoolKeepAliveTime() {
+        return threadPoolKeepAliveTime;
+    }
+
+    /**
+     *
+     * @author Martin Kouba
+     */
+    public enum ThreadPoolType {
+        FIXED,
+        CACHED,
+        ;
     }
 }

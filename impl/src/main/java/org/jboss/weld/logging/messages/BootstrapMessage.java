@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.logging.messages;
 
+import org.jboss.weld.logging.MessageId;
+
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.bootstrap")
 @LocaleData({
@@ -57,6 +58,9 @@ public enum BootstrapMessage {
     @MessageId("000123")ERROR_LOADING_BEANS_XML_ENTRY,
     @MessageId("000124")THREADS_IN_USE,
     @MessageId("000125")INVALID_THREAD_POOL_SIZE,
-    @MessageId("000126")TIMEOUT_SHUTTING_DOWN_THREAD_POOL;
+    @MessageId("000126")TIMEOUT_SHUTTING_DOWN_THREAD_POOL,
+    @MessageId("000127")INVALID_THREAD_POOL_TYPE,
+    @MessageId("000128")INVALID_PROPERTY_VALUE,
+    ;
 
 }

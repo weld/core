@@ -17,6 +17,8 @@
 package org.jboss.weld.executor;
 
 import org.jboss.weld.bootstrap.BootstrapConfiguration;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.api.ExecutorServices;
 
 public class ExecutorServicesFactory {
@@ -32,7 +34,19 @@ public class ExecutorServicesFactory {
             return new SingleThreadExecutorServices();
         }
 
-        ExecutorServices executor = new FixedThreadPoolExecutorServices(configuration.getDeployerThreads());
+        ExecutorServices executor = null;
+
+        switch (configuration.getThreadPoolType()) {
+            case FIXED:
+                executor = new FixedThreadPoolExecutorServices(configuration.getDeployerThreads());
+                break;
+            case CACHED:
+                executor = new CachedThreadPoolExecutorServices(configuration.getDeployerThreads(), configuration.getThreadPoolKeepAliveTime());
+                break;
+            default:
+                throw new DeploymentException(BootstrapMessage.INVALID_THREAD_POOL_TYPE, configuration.getThreadPoolType());
+        }
+
         if (configuration.isDebug()) {
             executor = new ProfilingExecutorServices(executor);
         }
