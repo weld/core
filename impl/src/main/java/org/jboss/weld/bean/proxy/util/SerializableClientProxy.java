@@ -18,6 +18,8 @@
 package org.jboss.weld.bean.proxy.util;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
 import javax.enterprise.inject.spi.Bean;
@@ -51,6 +53,9 @@ public class SerializableClientProxy implements Serializable {
      */
     Object readResolve() throws ObjectStreamException {
         Bean<?> bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+        if (bean == null) {
+            throw new WeldException(BeanMessage.PROXY_DESERIALIZATION_FAILURE);
+        }
         return Container.instance().deploymentManager().getClientProxyProvider().getClientProxy(bean);
     }
 
