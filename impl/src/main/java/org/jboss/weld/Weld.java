@@ -85,7 +85,7 @@ public class Weld<T> extends CDI<T> {
     private final Set<String> subclassNames;
 
     public Weld() {
-        beanManagers = new MapMaker().makeComputingMap(new ClassNameToBeanManager());
+        beanManagers = new MapMaker().weakValues().makeComputingMap(new ClassNameToBeanManager());
         Set<String> names = new HashSet<String>();
         for (Class<?> clazz = getClass(); clazz != CDI.class; clazz = clazz.getSuperclass()) {
             names.add(clazz.getName());

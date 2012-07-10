@@ -31,10 +31,12 @@ import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
@@ -111,6 +113,10 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        if (beanManager == null) {
+            // servlet containers may not be able to inject fields in a servlet listener
+            beanManager = cast(CDI.current().getBeanManager());
+        }
         sce.getServletContext().setAttribute(BeanManager.class.getName(), beanManager);
         beanManager.getAccessibleObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
     }
