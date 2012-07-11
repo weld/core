@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ProcessBean;
 
+import org.jboss.weld.annotated.EmptyAnnotated;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -32,7 +33,7 @@ public abstract class ProcessBeanImpl<X> extends AbstractDefinitionContainerEven
     }
 
     public static <X> void fire(BeanManagerImpl beanManager, Bean<X> bean) {
-        fire(beanManager, bean, null);
+        fire(beanManager, bean, EmptyAnnotated.INSTANCE);
     }
 
     private static <X> void fire(BeanManagerImpl beanManager, Bean<X> bean, Annotated annotated) {
