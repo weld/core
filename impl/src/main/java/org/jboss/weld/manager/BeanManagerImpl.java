@@ -726,9 +726,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             currentInjectionPoint.push(injectionPoint);
         }
         try {
-            if (injectionPoint != null && isNormalScope(resolvedBean.getScope()) && !Proxies.isTypeProxyable(injectionPoint.getType())) {
-                throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
-            }
             Type requestedType = null;
             if (injectionPoint != null) {
                 requestedType = injectionPoint.getType();
