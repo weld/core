@@ -30,7 +30,6 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,9 +57,6 @@ public class PopulateDatabase {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Inject
-    private UserTransaction utx;
 
     @PostConstruct
     public void startup() {
