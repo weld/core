@@ -21,6 +21,8 @@ import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTO
 import static org.jboss.weld.logging.messages.BeanMessage.MISSING_BINDING_ON_INTERCEPTOR;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,15 +35,18 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Interceptors;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -100,6 +105,26 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     public boolean isSerializable() {
         return serializable;
+    }
+
+    @Override
+    public void initializeAfterBeanDiscovery() {
+        super.initializeAfterBeanDiscovery();
+        checkInterceptorBindings();
+    }
+
+    private void checkInterceptorBindings() {
+        if (interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_CONSTRUCT) ||
+                interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_DESTROY) ||
+                interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE) ||
+                interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)) {
+            for (Annotation interceptorBindingType : interceptorBindingTypes) {
+                Target target = interceptorBindingType.annotationType().getAnnotation(Target.class);
+                if (target != null && Arrays2.unorderedEquals(target.value(), ElementType.TYPE, ElementType.METHOD)) {
+                    throw new DefinitionException(ReflectionMessage.METHOD_ELEMENT_TYPE_NOT_ALLOWED, this, interceptorBindingType.annotationType());
+                }
+            }
+        }
     }
 
     @Override
