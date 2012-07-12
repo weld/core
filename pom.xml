@@ -39,7 +39,7 @@
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
         <cdi.api.version>1.1.EDR1.2</cdi.api.version>
         <cdi.tck-1-0.version>1.0.4.SP3</cdi.tck-1-0.version>
-        <cdi.tck-1-1.version>1.1.0.Alpha3</cdi.tck-1-1.version>
+        <cdi.tck-1-1.version>1.1.0-SNAPSHOT</cdi.tck-1-1.version>
         <checkstyle.plugin.version>2.5</checkstyle.plugin.version>
         <classfilewriter.version>1.0.1.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
