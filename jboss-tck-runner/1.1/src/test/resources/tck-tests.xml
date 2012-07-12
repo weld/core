@@ -16,19 +16,7 @@
         <classes>
 
             <!-- Issues in the TCK -->
-            <class name="org.jboss.cdi.tck.tests.context.DestroyForSameCreationalContext2Test">
-                <methods>
-                    <exclude name="testDestroyForSameCreationalContextOnly" />
-                </methods>
-            </class>
-            <!-- CDITCK-270 -->
-            <class name="org.jboss.cdi.tck.tests.event.observer.transactional.TransactionalObserverTest">
-                <methods>
-                    <exclude name="testSucessfullTransaction" />
-                </methods>
-            </class>
-            
-            <!-- TCK tests no longer valid for CDI 1.1 -->
+
             <!-- CDI-206 -->
             <class name="org.jboss.cdi.tck.tests.context.conversation.ClientConversationContextTest">
                 <methods>
@@ -106,17 +94,6 @@
                     <exclude name="testDeployment"/>
                 </methods>
             </class>
-            <!-- WELD-1045 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.lifecycle.processBeanAttributes.interceptor.InterceptorProcessBeanAttributesTest">
-                <methods>
-                    <exclude name="testBravoInterceptorObserved"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.lifecycle.processBeanAttributes.decorator.DecoratorProcessBeanAttributesTest">
-                <methods>
-                    <exclude name="testBravoDecoratorObserved"/>
-                </methods>
-            </class>
             <!-- WELD-1110 -->
             <class name="org.jboss.cdi.tck.tests.decorators.invocation.enterprise.EnterpriseDecoratorInvocationTest">
                 <methods>
@@ -139,14 +116,6 @@
             <class name="org.jboss.cdi.tck.tests.context.request.async.RequestContextAsyncListenerTest">
                 <methods>
                     <exclude name="testRequestContextActiveOnError" />
-                </methods>
-            </class>
-
-            <!-- JBAS-8306 -->
-            <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
-                <methods>
-                    <exclude name="testRequestScopeActiveDuringCallToEjbTimeoutMethod" />
-                    <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
                 </methods>
             </class>
         </classes>
