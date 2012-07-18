@@ -53,7 +53,10 @@ public abstract class AbstractEnhancedAnnotatedCallable<T, X, S extends Member> 
             parameterTypes = AnnotatedMethod.class.cast(callable).getJavaMember().getParameterTypes();
         }
         if (callable.getParameters().size() != parameterTypes.length) {
-            throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, callable.getParameters().size(), callable, callable.getParameters(), Arrays.asList(parameterTypes));
+            // For enums, BackedAnnotatedConstructor sets parameters to an empty list, so we shouldn't throw the DefinitionException
+            if (!callable.getDeclaringType().getJavaClass().isEnum()) {
+                throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, callable.getParameters().size(), callable, callable.getParameters(), Arrays.asList(parameterTypes));
+            }
         }
     }
 }
