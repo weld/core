@@ -85,6 +85,12 @@ public class AnnotatedTypes {
             if (result != 0) {
                 return result;
             }
+
+            result = arg0.getJavaMember().getParameterTypes().length - arg1.getJavaMember().getParameterTypes().length;
+            if (result != 0) {
+                return result;
+            }
+
             for (int i = 0; i < arg0.getJavaMember().getParameterTypes().length; ++i) {
                 Class<?> p0 = arg0.getJavaMember().getParameterTypes()[i];
                 Class<?> p1 = arg1.getJavaMember().getParameterTypes()[i];
@@ -112,6 +118,12 @@ public class AnnotatedTypes {
             if (result != 0) {
                 return result;
             }
+
+            result = arg0.getJavaMember().getParameterTypes().length - arg1.getJavaMember().getParameterTypes().length;
+            if (result != 0) {
+                return result;
+            }
+
             for (int i = 0; i < arg0.getJavaMember().getParameterTypes().length; ++i) {
                 Class<?> p0 = arg0.getJavaMember().getParameterTypes()[i];
                 Class<?> p1 = arg1.getJavaMember().getParameterTypes()[i];
