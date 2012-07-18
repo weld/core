@@ -378,6 +378,7 @@
                             </systemPropertyVariables>
                             <systemProperties>
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
+                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
                             </systemProperties>
                             <test>${test}</test>
                             <parallel>none</parallel>
@@ -583,6 +584,37 @@
                             <test>${test}</test>
                             <parallel>none</parallel>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jacoco</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>jacoco</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>org.jboss.weld.tests.*</exclude>
+                            </excludes>
+                            <propertyName>jacoco.agent</propertyName>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
