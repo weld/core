@@ -6,6 +6,9 @@
     </container>
     
     <container qualifier="jbossas-managed-7">
+        <configuration>
+            <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m ${jacoco.agent}</property>
+        </configuration>
     </container>
     
     <container qualifier="jbossas-remote-6">
