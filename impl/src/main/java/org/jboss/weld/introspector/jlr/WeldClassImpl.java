@@ -143,8 +143,8 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
         }
 
         // Assign class field information
-        this.declaredAnnotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ? super T>>create();
-        this.declaredMetaAnnotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ?>>create();
+        this.declaredAnnotatedFields = ArrayListMultimap.create();
+        this.declaredMetaAnnotatedFields = ArrayListMultimap.create();
 
         Set<WeldField<?, ?>> fieldsTemp = null;
         ArrayList<WeldField<?, ?>> declaredFieldsTemp = new ArrayList<WeldField<?, ?>>();
@@ -168,7 +168,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
             }
             this.declaredFields = new ArraySet<WeldField<?, ?>>(declaredFieldsTemp);
         } else {
-            this.annotatedFields = ArrayListMultimap.<Class<? extends Annotation>, WeldField<?, ?>>create();
+            this.annotatedFields = ArrayListMultimap.create();
             fieldsTemp = new HashSet<WeldField<?, ?>>();
             for (AnnotatedField<? super T> annotatedField : annotatedType.getFields()) {
                 WeldField<?, ? super T> weldField = WeldFieldImpl.of(annotatedField, this, classTransformer);
@@ -212,19 +212,14 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
                 WeldConstructor<T> weldConstructor = WeldConstructorImpl.of(constructor, this, classTransformer);
 
                 this.constructors.add(weldConstructor);
-
-                List<Class<?>> parameterTypes = new ArrayList<Class<?>>();
-                for (AnnotatedParameter<T> parameter : constructor.getParameters()) {
-                    parameterTypes.add(Reflections.getRawType(parameter.getBaseType()));
-                }
                 this.declaredConstructorsBySignature.put(weldConstructor.getSignature(), weldConstructor);
             }
         }
         this.constructors.trimToSize();
 
         // Assign method information
-        this.declaredAnnotatedMethods = ArrayListMultimap.<Class<? extends Annotation>, WeldMethod<?, ? super T>>create();
-        this.declaredMethodsByAnnotatedParameters = ArrayListMultimap.<Class<? extends Annotation>, WeldMethod<?, ? super T>>create();
+        this.declaredAnnotatedMethods = ArrayListMultimap.create();
+        this.declaredMethodsByAnnotatedParameters = ArrayListMultimap.create();
 
         Set<WeldMethod<?, ? super T>> methodsTemp = null;
         ArrayList<WeldMethod<?, ? super T>> declaredMethodsTemp = new ArrayList<WeldMethod<?, ? super T>>();
@@ -255,7 +250,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
             }
             this.declaredMethods = new ArraySet<WeldMethod<?, ? super T>>(declaredMethodsTemp);
         } else {
-            this.annotatedMethods = ArrayListMultimap.<Class<? extends Annotation>, WeldMethod<?, ?>>create();
+            this.annotatedMethods = ArrayListMultimap.create();
             methodsTemp = new HashSet<WeldMethod<?, ? super T>>();
             for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
                 WeldMethod<?, ? super T> weldMethod = WeldMethodImpl.of(method, this, classTransformer);
@@ -549,7 +544,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     /**
      * Gets the name of the type
      *
-     * @returns The name
+     * @return The name
      * @see org.jboss.weld.introspector.WeldAnnotated#getName()
      */
     public String getName() {
@@ -586,7 +581,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     }
 
     public <S> S cast(Object object) {
-        return Reflections.<S>cast(object);
+        return Reflections.cast(object);
     }
 
     public Set<AnnotatedConstructor<T>> getConstructors() {
