@@ -359,6 +359,7 @@
                                     <name>jboss.options</name>
                                     <value>-Xmx1024m -XX:MaxPermSize=512m -enableassertions
                                         -Dorg.jboss.testharness.api.ConfigurationBuilder=org.jboss.jsr299.tck.impl.JSR299PropertiesBasedConfigurationBuilder
+                                        ${jacoco.agent}
                                     </value>
                                 </property>
                                 <property>
@@ -412,6 +413,47 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>jacoco</id>
+            <activation>
+                <property>
+                    <name>jacoco</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>org.jboss.jsr299.tck.*</exclude>
+                            </excludes>
+                            <propertyName>jacoco.agent</propertyName>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- Need to set empty jacoco.agent property, as surefire would put "${jacoco.agent}" verbatim otherwise. -->
+            <id>notjacoco</id>
+            <activation>
+                <property>
+                    <name>!jacoco</name>
+                </property>
+            </activation>
+            <properties>
+                <jacoco.agent></jacoco.agent>
+            </properties>
         </profile>
         <profile>
             <id>jboss-public-repository</id>
