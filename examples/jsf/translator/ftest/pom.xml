@@ -68,7 +68,7 @@
             <id>arquillian-jbossas-managed-6</id>
         </profile>
 
-         <profile>
+        <profile>
             <id>arquillian-jbossas-remote-6</id>
         </profile>
     </profiles>
