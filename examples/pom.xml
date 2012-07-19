@@ -285,6 +285,7 @@
                             <configuration>
                                 <systemProperties>
                                     <arquillian.launch>${arquillian}</arquillian.launch>
+                                    <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 </systemProperties>
                             </configuration>
                             <executions>
@@ -621,6 +622,37 @@
                         </plugin>
                     </plugins>
                 </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jacoco</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>jacoco</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <propertyName>jacoco.agent</propertyName>
+                            <excludes>
+                                <exclude>org.jboss.weld.examples.*</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
 
