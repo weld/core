@@ -76,7 +76,7 @@ public class JspTest {
         Page page = client.getPage(getPath("/index.jsp"));
 
         Assert.assertEquals(200, page.getWebResponse().getStatusCode());
-        Assert.assertTrue(page.getWebResponse().getRequestUrl().toString().contains("home.jsf"));
+        Assert.assertTrue(page.getUrl().toString().contains("home.jsf"));
     }
 
     protected String getPath(String page) {
