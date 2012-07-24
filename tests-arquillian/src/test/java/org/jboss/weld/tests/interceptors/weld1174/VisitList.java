@@ -19,29 +19,29 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.resteasy.cdi.interceptors;
+package org.jboss.weld.tests.interceptors.weld1174;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.interceptor.InterceptorBinding;
+import java.util.ArrayList;
 
 /**
- * 
  * @author <a href="ron.sigal@jboss.com">Ron Sigal</a>
  * @version $Revision: 1.1 $
- *
- * Copyright Jul 21, 2012
+ *          <p/>
+ *          Copyright Jul 21, 2012
  */
-@InterceptorBinding
-@Target({TYPE, METHOD})
-@Retention(RUNTIME)
-public @interface TestBinding
-{
-   String placement() default "CLASS";
+public class VisitList {
+    static private ArrayList<Object> visitList = new ArrayList<Object>();
+
+    static public void add(Object interceptor) {
+        visitList.add(interceptor);
+    }
+
+    static public ArrayList<Object> getList() {
+        return new ArrayList<Object>(visitList);
+    }
+
+    public static void reset() {
+        visitList.clear();
+    }
 }
 
