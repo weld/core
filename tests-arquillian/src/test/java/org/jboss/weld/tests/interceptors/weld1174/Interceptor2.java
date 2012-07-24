@@ -19,29 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.resteasy.cdi.interceptors;
+package org.jboss.weld.tests.interceptors.weld1174;
 
-import java.util.ArrayList;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
 /**
- * 
  * @author <a href="ron.sigal@jboss.com">Ron Sigal</a>
  * @version $Revision: 1.1 $
- *
- * Copyright Jul 21, 2012
+ *          <p/>
+ *          Copyright Jul 21, 2012
  */
-public class VisitList
-{
-   static private ArrayList<Object> visitList = new ArrayList<Object>();
-   
-   static public void add(Object interceptor)
-   {
-      visitList.add(interceptor);
-   }
-   
-   static public ArrayList<Object> getList()
-   {
-      return new ArrayList<Object>(visitList);
-   }
+@Interceptor
+@ClassTestBinding
+public class Interceptor2  implements Serializable {
+    @AroundInvoke
+    public Object intercept(InvocationContext ctx) throws Exception {
+        VisitList.add(getClass().getSimpleName());
+        return ctx.proceed();
+    }
 }
 

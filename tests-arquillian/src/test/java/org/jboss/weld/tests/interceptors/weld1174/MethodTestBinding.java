@@ -19,31 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.resteasy.cdi.interceptors;
+package org.jboss.weld.tests.interceptors.weld1174;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import javax.interceptor.InterceptorBinding;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * 
  * @author <a href="ron.sigal@jboss.com">Ron Sigal</a>
  * @version $Revision: 1.1 $
- *
- * Copyright Jul 21, 2012
+ *          <p/>
+ *          Copyright Jul 21, 2012
  */
-@Interceptor
-@TestBinding(placement="CLASS")
-public class Interceptor2
-{
-   @AroundInvoke
-   public Object intercept(InvocationContext ctx) throws Exception
-   {
-      System.out.println("*** Intercepting call to Interceptor2.intercept()");
-      VisitList.add(this);
-      Object result = ctx.proceed();
-      System.out.println("*** Back from call to Interceptor2.intercept()");
-      return result;
-   }
+@InterceptorBinding
+@Target({TYPE, METHOD})
+@Retention(RUNTIME)
+public @interface MethodTestBinding {
 }
 
