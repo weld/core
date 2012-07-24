@@ -492,8 +492,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             businessMethods = Beans.getInterceptableMethods(getWeldAnnotated());
             builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(getClassMetadata());
 
-            initCdiInterceptors();
             initEjbInterceptors();
+            initCdiInterceptors();
 
             InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
             if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
