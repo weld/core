@@ -101,8 +101,8 @@ public class InterceptionModelInitializer<T> {
         initTargetClassInterceptors();
         businessMethods = Beans.getInterceptableMethods(annotatedType);
 
-        initCdiInterceptors();
         initEjbInterceptors();
+        initCdiInterceptors();
 
         InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
         if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
