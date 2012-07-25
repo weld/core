@@ -11,7 +11,8 @@
 	<container qualifier="weld" default="true">
 		<configuration>
 			<property name="enableConversationScope">true</property>
-		</configuration>
+            <property name="allowConnectingToRunningServer">true</property>
+        </configuration>
 	</container>
 
 	<container qualifier="jboss-as-7">
