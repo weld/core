@@ -27,9 +27,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Scan the classloader
@@ -39,6 +36,7 @@ import java.util.List;
  * @author Norman Richards
  * @author Pete Muir
  * @author Peter Royle
+ * @author Marko Luksa
  */
 public class URLScanner {
 
@@ -55,53 +53,58 @@ public class URLScanner {
 
     public BeanDeploymentArchive scan() {
         FileSystemURLHandler handler = new FileSystemURLHandler();
-        List<String> discoveredClasses = new ArrayList<String>();
-        List<URL> discoveredBeanXmlUrls = new ArrayList<URL>();
-        Collection<String> paths = new ArrayList<String>();
         for (String resourceName : resources) {
             // grab all the URLs for this resource
-            Collection<URL> urlEnum = resourceLoader.getResources(resourceName);
-            for (URL url : urlEnum) {
-
-                String urlPath = url.toExternalForm();
-
-                // determin resource type (eg: jar, file, bundle)
-                String urlType = "file";
-                int colonIndex = urlPath.indexOf(":");
-                if (colonIndex != -1) {
-                    urlType = urlPath.substring(0, colonIndex);
-                }
-
-                // Extra built-in support for simple file-based resources
-                if ("file".equals(urlType) || "jar".equals(urlType)) {
-                    // switch to using getPath() instead of toExternalForm()
-                    urlPath = url.getPath();
-
-                    if (urlPath.indexOf('!') > 0) {
-                        urlPath = urlPath.substring(0, urlPath.indexOf('!'));
-                    } else {
-                        // hack for /META-INF/beans.xml
-                        File dirOrArchive = new File(urlPath);
-                        if ((resourceName != null) && (resourceName.lastIndexOf('/') > 0)) {
-                            dirOrArchive = dirOrArchive.getParentFile();
-                        }
-                        urlPath = dirOrArchive.getParent();
-                    }
-                }
-
-                try {
-                    urlPath = URLDecoder.decode(urlPath, "UTF-8");
-                } catch (UnsupportedEncodingException ex) {
-                    throw new ClasspathScanningException("Error decoding URL using UTF-8");
-                }
-
-                log.debug("URL Type: " + urlType);
-
-                paths.add(urlPath);
+            for (URL url : resourceLoader.getResources(resourceName)) {
+                handler.handle(getUrlPath(resourceName, url));
             }
-            handler.handle(paths, discoveredClasses, discoveredBeanXmlUrls);
         }
-        return new ImmutableBeanDeploymentArchive("classpath", discoveredClasses, bootstrap.parse(discoveredBeanXmlUrls));
+        return new ImmutableBeanDeploymentArchive("classpath", handler.getDiscoveredClasses(), bootstrap.parse(handler.getDiscoveredBeansXmlUrls()));
+    }
+
+    private String getUrlPath(String resourceName, URL url) {
+        String urlPath = url.toExternalForm();
+        String urlType = getUrlType(urlPath);
+        log.debug("URL Type: " + urlType);
+        // Extra built-in support for simple file-based resources
+        if ("file".equals(urlType) || "jar".equals(urlType)) {
+            // switch to using getPath() instead of toExternalForm()
+            urlPath = url.getPath();
+
+            if (urlPath.indexOf('!') > 0) {
+                urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+            } else {
+                // hack for /META-INF/beans.xml
+                File dirOrArchive = new File(urlPath);
+                if ((resourceName != null) && (resourceName.lastIndexOf('/') > 0)) {
+                    dirOrArchive = dirOrArchive.getParentFile();
+                }
+                urlPath = dirOrArchive.getParent();
+            }
+        }
+
+        return decode(urlPath);
+    }
+
+    private String decode(String urlPath) {
+        try {
+            urlPath = URLDecoder.decode(urlPath, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            throw new ClasspathScanningException("Error decoding URL using UTF-8");
+        }
+        return urlPath;
+    }
+
+    /**
+     * determine resource type (eg: jar, file, bundle)
+     */
+    private String getUrlType(String urlPath) {
+        String urlType = "file";
+        int colonIndex = urlPath.indexOf(":");
+        if (colonIndex != -1) {
+            urlType = urlPath.substring(0, colonIndex);
+        }
+        return urlType;
     }
 
 }
