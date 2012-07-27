@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -34,36 +34,41 @@ import java.util.zip.ZipFile;
  * This class provides file-system orientated scanning
  *
  * @author Pete Muir
+ * @author Marko Luksa
  */
 public class FileSystemURLHandler {
 
     private static final Logger log = LoggerFactory.getLogger(FileSystemURLHandler.class);
 
-    public void handle(Collection<String> paths, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls) {
-        for (String urlPath : paths) {
-            try {
-                FileSystemURLHandler.log.trace("scanning: " + urlPath);
+    private static final String CLASS_FILE_EXTENSION = ".class";
+    private static final String BEANS_XML = "beans.xml";
 
-                if (urlPath.startsWith("file:")) {
-                    urlPath = urlPath.substring(5);
-                }
-                if (urlPath.indexOf('!') > 0) {
-                    urlPath = urlPath.substring(0, urlPath.indexOf('!'));
-                }
+    private List<String> discoveredClasses = new ArrayList<String>();
+    private List<URL> discoveredBeansXmlUrls = new ArrayList<URL>();
 
-                File file = new File(urlPath);
-                if (file.isDirectory()) {
-                    handleDirectory(file, null, discoveredClasses, discoveredBeansXmlUrls);
-                } else {
-                    handleArchiveByFile(file, discoveredClasses, discoveredBeansXmlUrls);
-                }
-            } catch (IOException ioe) {
-                FileSystemURLHandler.log.warn("could not read entries", ioe);
+    public void handle(String urlPath) {
+        try {
+            log.trace("scanning: " + urlPath);
+
+            if (urlPath.startsWith("file:")) {
+                urlPath = urlPath.substring(5);
             }
+            if (urlPath.indexOf('!') > 0) {
+                urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+            }
+
+            File file = new File(urlPath);
+            if (file.isDirectory()) {
+                handleDirectory(file, null);
+            } else {
+                handleArchiveByFile(file);
+            }
+        } catch (IOException ioe) {
+            log.warn("could not read entries", ioe);
         }
     }
 
-    private void handleArchiveByFile(File file, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls) throws IOException {
+    private void handleArchiveByFile(File file) throws IOException {
         try {
             log.trace("archive: " + file);
 
@@ -74,36 +79,26 @@ public class FileSystemURLHandler {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 String name = entry.getName();
-                handle(name, new URL(archiveUrl + name), discoveredClasses, discoveredBeansXmlUrls);
+                addToDiscovered(name, new URL(archiveUrl + name));
             }
         } catch (ZipException e) {
             throw new RuntimeException("Error handling file " + file, e);
         }
     }
 
-    protected void handleDirectory(File file, String path, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls) {
-        handleDirectory(file, path, new File[0], discoveredClasses, discoveredBeansXmlUrls);
-    }
+    private void handleDirectory(File dir, String path) {
+        log.trace("handling directory: " + dir);
 
-    private void handleDirectory(File file, String path, File[] excludedDirectories, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls) {
-        for (File excludedDirectory : excludedDirectories) {
-            if (file.equals(excludedDirectory)) {
-                log.trace("skipping excluded directory: " + file);
-
-                return;
-            }
-        }
-
-        log.trace("handling directory: " + file);
-
-        for (File child : file.listFiles()) {
+        File[] files = dir.listFiles();
+        assert files != null;
+        for (File child : files) {
             String newPath = (path == null) ? child.getName() : (path + '/' + child.getName());
 
             if (child.isDirectory()) {
-                handleDirectory(child, newPath, excludedDirectories, discoveredClasses, discoveredBeansXmlUrls);
+                handleDirectory(child, newPath);
             } else {
                 try {
-                    handle(newPath, child.toURI().toURL(), discoveredClasses, discoveredBeansXmlUrls);
+                    addToDiscovered(newPath, child.toURI().toURL());
                 } catch (MalformedURLException e) {
                     log.error("Error loading file " + newPath);
                 }
@@ -111,10 +106,10 @@ public class FileSystemURLHandler {
         }
     }
 
-    protected void handle(String name, URL url, List<String> discoveredClasses, List<URL> discoveredBeansXmlUrls) {
-        if (name.endsWith(".class")) {
+    protected void addToDiscovered(String name, URL url) {
+        if (name.endsWith(CLASS_FILE_EXTENSION)) {
             discoveredClasses.add(filenameToClassname(name));
-        } else if (name.endsWith("beans.xml")) {
+        } else if (name.endsWith(BEANS_XML)) {
             discoveredBeansXmlUrls.add(url);
         }
     }
@@ -123,6 +118,14 @@ public class FileSystemURLHandler {
      * Convert a path to a class file to a class name
      */
     public static String filenameToClassname(String filename) {
-        return filename.substring(0, filename.lastIndexOf(".class")).replace('/', '.').replace('\\', '.');
+        return filename.substring(0, filename.lastIndexOf(CLASS_FILE_EXTENSION)).replace('/', '.').replace('\\', '.');
+    }
+
+    public List<String> getDiscoveredClasses() {
+        return discoveredClasses;
+    }
+
+    public List<URL> getDiscoveredBeansXmlUrls() {
+        return discoveredBeansXmlUrls;
     }
 }
