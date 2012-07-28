@@ -66,12 +66,14 @@ public class URLScanner {
         String urlPath = url.toExternalForm();
         String urlType = getUrlType(urlPath);
         log.debug("URL Type: " + urlType);
+        boolean isFile = "file".equals(urlType);
+        boolean isJar = "jar".equals(urlType);
         // Extra built-in support for simple file-based resources
-        if ("file".equals(urlType) || "jar".equals(urlType)) {
+        if (isFile || isJar) {
             // switch to using getPath() instead of toExternalForm()
             urlPath = url.getPath();
 
-            if (urlPath.indexOf('!') > 0) {
+            if (isJar && urlPath.indexOf('!') > 0) {
                 urlPath = urlPath.substring(0, urlPath.indexOf('!'));
             } else {
                 // hack for /META-INF/beans.xml
@@ -80,6 +82,10 @@ public class URLScanner {
                     dirOrArchive = dirOrArchive.getParentFile();
                 }
                 urlPath = dirOrArchive.getParent();
+            }
+
+            if (urlPath.startsWith("file:")) {
+                urlPath = urlPath.substring(5);
             }
         }
 

@@ -52,13 +52,6 @@ public class FileSystemURLHandler {
                 log.trace("scanning: " + urlPath);
             }
 
-            if (urlPath.startsWith("file:")) {
-                urlPath = urlPath.substring(5);
-            }
-            if (urlPath.indexOf('!') > 0) {
-                urlPath = urlPath.substring(0, urlPath.indexOf('!'));
-            }
-
             File file = new File(urlPath);
             if (file.isDirectory()) {
                 handleDirectory(file, null);
