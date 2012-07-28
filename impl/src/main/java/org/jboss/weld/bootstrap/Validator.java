@@ -681,7 +681,7 @@ public class Validator implements Service {
      * beans) have no circular dependencies
      */
     private static void validatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager) {
-        reallyValidatePseudoScopedBean(bean, beanManager, new LinkedHashSet<Bean<?>>(), new HashSet<Bean<?>>());
+        reallyValidatePseudoScopedBean(bean, beanManager, new LinkedHashSet<Object>(), new HashSet<Bean<?>>());
     }
 
     /**
@@ -689,11 +689,11 @@ public class Validator implements Service {
      * resolves the InjectionPoints and adds the resolved beans to the set of
      * beans to be validated
      */
-    private static void reallyValidatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans) {
+    private static void reallyValidatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager, Set<Object> dependencyPath, Set<Bean<?>> validatedBeans) {
         // see if we have already seen this bean in the dependency path
         if (dependencyPath.contains(bean)) {
             // create a list that shows the path to the bean
-            List<Bean<?>> realDependencyPath = new ArrayList<Bean<?>>(dependencyPath);
+            List<Object> realDependencyPath = new ArrayList<Object>(dependencyPath);
             realDependencyPath.add(bean);
             throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, realDependencyPath);
         }
@@ -703,7 +703,9 @@ public class Validator implements Service {
         dependencyPath.add(bean);
         for (InjectionPoint injectionPoint : bean.getInjectionPoints()) {
             if (!injectionPoint.isDelegate()) {
+                dependencyPath.add(injectionPoint);
                 validatePseudoScopedInjectionPoint(injectionPoint, beanManager, dependencyPath, validatedBeans);
+                dependencyPath.remove(injectionPoint);
             }
         }
         if (bean instanceof AbstractClassBean) {
@@ -721,7 +723,7 @@ public class Validator implements Service {
     /**
      * finds pseudo beans and adds them to the list of beans to be validated
      */
-    private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Bean<?>> dependencyPath, Set<Bean<?>> validatedBeans) {
+    private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Object> dependencyPath, Set<Bean<?>> validatedBeans) {
         Set<Bean<?>> resolved = beanManager.getBeans(ij);
         Bean<?> bean = beanManager.resolve(resolved);
         if (bean != null) {
