@@ -731,7 +731,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return bean;
     }
 
-    private boolean isNormalScoped(Bean<?> bean) {
+    public boolean isNormalScoped(Bean<?> bean) {
         return getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal();
     }
 
