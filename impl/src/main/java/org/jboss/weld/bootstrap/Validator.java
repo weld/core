@@ -693,9 +693,9 @@ public class Validator implements Service {
         // see if we have already seen this bean in the dependency path
         if (dependencyPath.contains(bean)) {
             // create a list that shows the path to the bean
-            List<Bean<?>> realDepdencyPath = new ArrayList<Bean<?>>(dependencyPath);
-            realDepdencyPath.add(bean);
-            throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, realDepdencyPath);
+            List<Bean<?>> realDependencyPath = new ArrayList<Bean<?>>(dependencyPath);
+            realDependencyPath.add(bean);
+            throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, realDependencyPath);
         }
         if (validatedBeans.contains(bean)) {
             return;
