@@ -24,9 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 
 /**
  * Scan the classloader
@@ -56,13 +55,17 @@ public class URLScanner {
         for (String resourceName : resources) {
             // grab all the URLs for this resource
             for (URL url : resourceLoader.getResources(resourceName)) {
-                handler.handle(getUrlPath(resourceName, url));
+                try {
+                    handler.handle(getUrlPath(resourceName, url));
+                } catch (URISyntaxException e) {
+                    log.warn("could not read: " + resourceName, e);
+                }
             }
         }
         return new ImmutableBeanDeploymentArchive("classpath", handler.getDiscoveredClasses(), bootstrap.parse(handler.getDiscoveredBeansXmlUrls()));
     }
 
-    private String getUrlPath(String resourceName, URL url) {
+    private String getUrlPath(String resourceName, URL url) throws URISyntaxException {
         String urlPath = url.toExternalForm();
         String urlType = getUrlType(urlPath);
         log.debug("URL Type: " + urlType);
@@ -70,11 +73,14 @@ public class URLScanner {
         boolean isJar = "jar".equals(urlType);
         // Extra built-in support for simple file-based resources
         if (isFile || isJar) {
-            // switch to using getPath() instead of toExternalForm()
-            urlPath = url.getPath();
+            // switch to using toURI().getSchemeSpecificPart() instead of toExternalForm()
+            urlPath = url.toURI().getSchemeSpecificPart();
 
-            if (isJar && urlPath.indexOf('!') > 0) {
-                urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+            if (isJar && urlPath.lastIndexOf('!') > 0) {
+                urlPath = urlPath.substring(0, urlPath.lastIndexOf('!'));
+                if (urlPath.startsWith("file:")) {
+                    urlPath = urlPath.substring(5);
+                }
             } else {
                 // hack for /META-INF/beans.xml
                 File dirOrArchive = new File(urlPath);
@@ -83,21 +89,8 @@ public class URLScanner {
                 }
                 urlPath = dirOrArchive.getParent();
             }
-
-            if (urlPath.startsWith("file:")) {
-                urlPath = urlPath.substring(5);
-            }
         }
 
-        return decode(urlPath);
-    }
-
-    private String decode(String urlPath) {
-        try {
-            urlPath = URLDecoder.decode(urlPath, "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            throw new ClasspathScanningException("Error decoding URL using UTF-8");
-        }
         return urlPath;
     }
 
