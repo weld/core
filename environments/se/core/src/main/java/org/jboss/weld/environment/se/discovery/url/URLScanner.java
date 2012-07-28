@@ -76,8 +76,8 @@ public class URLScanner {
             // switch to using toURI().getSchemeSpecificPart() instead of toExternalForm()
             urlPath = url.toURI().getSchemeSpecificPart();
 
-            if (isJar && urlPath.lastIndexOf('!') > 0) {
-                urlPath = urlPath.substring(0, urlPath.lastIndexOf('!'));
+            if (isJar && urlPath.lastIndexOf("!/") > 0) {   // according to JarURLConnection api doc, the separator is "!/"
+                urlPath = urlPath.substring(0, urlPath.lastIndexOf("!/"));
                 if (urlPath.startsWith("file:")) {
                     urlPath = urlPath.substring(5);
                 }

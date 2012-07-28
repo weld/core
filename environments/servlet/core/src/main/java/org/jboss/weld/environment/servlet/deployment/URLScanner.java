@@ -86,8 +86,8 @@ public class URLScanner {
                         urlPath = urlPath.substring(5);
                     }
 
-                    if (urlPath.indexOf('!') > 0) {
-                        urlPath = urlPath.substring(0, urlPath.indexOf('!'));
+                    if (urlPath.indexOf("!/") > 0) {   // according to JarURLConnection api doc, the separator is "!/"
+                        urlPath = urlPath.substring(0, urlPath.indexOf("!/"));
                     } else {
                         File dirOrArchive = new File(urlPath);
 
