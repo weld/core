@@ -11,7 +11,8 @@
    express or implied. * See the License for the specific language
    governing permissions and * limitations under the License. */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
@@ -91,7 +92,7 @@
                             org.jboss.weld.manager;
                             org.jboss.weld.servlet;
                             org.jboss.weld.util;
-                            org.jboss.interceptor.*;
+                            org.jboss.weld.interceptor.*;
                             version=${osgi.version},
                             org.jboss.weld.el;
                             version=${osgi.version},
@@ -113,7 +114,8 @@
                              on foreign bundles.
                         -->
                         <Import-Package>
-                            org.slf4j; org.slf4j.spi; org.slf4j.helpers; version="[${slf4j.version},$${version;=+;${slf4j.version}})"; resolution:=optional,
+                            org.slf4j; org.slf4j.spi; org.slf4j.helpers;
+                            version="[${slf4j.version},$${version;=+;${slf4j.version}})"; resolution:=optional,
                             ch.qos.cal10n; version=${cal10n.version}; resolution:=optional,
                             javax.interceptor.*, *;
                             resolution:=optional

@@ -46,8 +46,8 @@ public class WeldCDIContainerFactory implements CDIContainerFactory {
         logger.debug("Creation of a new Weld CDI container factory");
         blackList = new HashSet<String>();
         blackList.add("java.io.Serializable");
-        blackList.add("org.jboss.interceptor.proxy.LifecycleMixin");
-        blackList.add("org.jboss.interceptor.util.proxy.TargetInstanceProxy");
+        blackList.add("org.jboss.weld.interceptor.proxy.LifecycleMixin");
+        blackList.add("org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy");
         blackList.add("javassist.util.proxy.ProxyObject");
     }
 

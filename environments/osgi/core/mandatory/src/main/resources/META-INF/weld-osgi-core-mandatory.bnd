@@ -97,17 +97,17 @@ Export-Package javax.el;version=2.2.0, \
                ch.qos.cal10n; \
                ch.qos.cal10n.verifier; \
                ch.qos.cal10n.util; version=0.7.2, \
-               org.jboss.interceptor.reader; \
-               org.jboss.interceptor.reader.cache; \
-               org.jboss.interceptor.spi.instance; \
-               org.jboss.interceptor.spi.context; \
-               org.jboss.interceptor.spi.model; \
-               org.jboss.interceptor.spi.metadata; \
-               org.jboss.interceptor.util; \
-               org.jboss.interceptor.util.proxy; \
-               org.jboss.interceptor.proxy; \
-               org.jboss.interceptor.proxy.javassist; \
-               org.jboss.interceptor.builder; version=2.0.0, \
+               org.jboss.weld.interceptor.reader; \
+               org.jboss.weld.interceptor.reader.cache; \
+               org.jboss.weld.interceptor.spi.instance; \
+               org.jboss.weld.interceptor.spi.context; \
+               org.jboss.weld.interceptor.spi.model; \
+               org.jboss.weld.interceptor.spi.metadata; \
+               org.jboss.weld.interceptor.util; \
+               org.jboss.weld.interceptor.util.proxy; \
+               org.jboss.weld.interceptor.proxy; \
+               org.jboss.weld.interceptor.proxy.javassist; \
+               org.jboss.weld.interceptor.builder; \
                org.jboss.weld.manager.api; \
                org.jboss.weld.ejb.spi; \
                org.jboss.weld.ejb.spi.helpers; \
@@ -183,7 +183,7 @@ Export-Package javax.el;version=2.2.0, \
                org.jboss.weld.environment.se.discovery; \
                org.jboss.weld.environment.se.discovery.url; \
                org.jboss.weld.environment.se.contexts; \
-               org.jboss.weld.messages; version=1.1.5
+               org.jboss.weld.messages; version=1.2.0-SNAPSHOT
 
 
 DynamicImport-Package *
