@@ -21,6 +21,7 @@
  */
 package org.jboss.weld.tests.specialization.weld802;
 
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.introspector.ForwardingWeldClass;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
@@ -57,7 +58,7 @@ public class CustomExtension implements Extension {
         if (manager instanceof BeanManagerImpl) {
             BeanManagerImpl bmi = (BeanManagerImpl) manager;
             ClassTransformer ct = bmi.getServices().get(ClassTransformer.class);
-            return WeldClassImpl.of(Foo.class, ct);
+            return WeldClassImpl.of(RegistrySingletonProvider.STATIC_INSTANCE, Foo.class, ct);
         } else {
             return (WeldClass<Foo>) manager.createAnnotatedType(Foo.class);
         }

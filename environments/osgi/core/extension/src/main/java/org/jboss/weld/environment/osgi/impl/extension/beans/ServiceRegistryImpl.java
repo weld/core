@@ -16,6 +16,25 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import org.jboss.weld.environment.osgi.api.BundleState;
 import org.jboss.weld.environment.osgi.api.Registration;
 import org.jboss.weld.environment.osgi.api.Service;
@@ -32,24 +51,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link ServiceRegistry}.
@@ -59,6 +62,7 @@ import java.util.Set;
  */
 @ApplicationScoped
 public class ServiceRegistryImpl implements ServiceRegistry {
+    private static final Logger logger = LoggerFactory.getLogger(ServiceRegistryImpl.class);
 
     @Inject
     private BundleContext registry;
@@ -77,9 +81,6 @@ public class ServiceRegistryImpl implements ServiceRegistry {
 
     @Inject
     private Event<Valid> validEvent;
-
-    @Inject
-    private Event<Invalid> invalidEvent;
 
     @Inject
     private Event<Invalid> invalidEvent;
@@ -152,9 +153,9 @@ public class ServiceRegistryImpl implements ServiceRegistry {
 
     private void checkForValidDependencies(AbstractServiceEvent event) {
         logger.trace("Entering ServiceRegistryImpl : "
-                     + "checkForValidDependencies() with parameter {} "
-                     + "for bundle {} and instance {}",
-                     new Object[] {event, bundle, this});
+                + "checkForValidDependencies() with parameter {} "
+                + "for bundle {} and instance {}",
+                new Object[]{event, bundle, this});
         if (osgiServiceDependencies == null) {
             osgiServiceDependencies = extension.getRequiredOsgiServiceDependencies();
         }
@@ -198,6 +199,7 @@ public class ServiceRegistryImpl implements ServiceRegistry {
             }
             // TODO : synchronize here to change the state of the bundle
             if (valid && bundleHolder.getState().equals(BundleState.INVALID)) {
+                logger.debug("Bundle {} is now VALID", bundleHolder.getBundle());
                 bundleHolder.setState(BundleState.VALID);
                 validEvent.fire(new Valid());
             } else if (!valid && (bundleHolder.getState().equals(BundleState.VALID) || event == null)) {

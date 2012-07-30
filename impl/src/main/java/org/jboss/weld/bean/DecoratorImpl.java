@@ -234,7 +234,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
                             //this is only needed for fields, as constructor and method injection are handed
                             //at injection time
                             final Object delegate = delegateFieldInjectionPoint.getWeldField().get(instance);
-                            final ProxyMethodHandler handler = new ProxyMethodHandler(new TargetBeanInstance(delegate), DecoratorImpl.this);
+                            final ProxyMethodHandler handler = new ProxyMethodHandler(beanManager.getContextId(), new TargetBeanInstance(delegate), DecoratorImpl.this);
                             ((ProxyObject)instance).setHandler(handler);
                         }
                     }

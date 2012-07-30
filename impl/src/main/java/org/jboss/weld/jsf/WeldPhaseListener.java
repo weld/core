@@ -30,6 +30,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.Container;
@@ -105,7 +106,7 @@ public class WeldPhaseListener implements PhaseListener {
         if (contextId == null) {
             contextId = RegistrySingletonProvider.STATIC_INSTANCE;
         }
-        ConversationContext conversationContext = instance(contextId).select(HttpConversationContext.class).get();
+        HttpConversationContext conversationContext = instance(contextId).select(HttpConversationContext.class).get();
         String cid = getConversationId(facesContext, conversationContext);
         log.debug(RESUMING_CONVERSATION, cid);
 
