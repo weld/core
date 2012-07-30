@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -310,7 +310,7 @@ public class WeldOSGiExtension implements Extension {
             delegate.removeServiceListener(listener);
         }
     }
-    
+
     void afterDeployment(@Observes AfterDeploymentValidation event) {
         if (listener != null) {
             currentContext.remove();
