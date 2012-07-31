@@ -184,6 +184,8 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
 
     boolean isDiscovered();
 
+    boolean isModified();
+
     <S> S cast(Object object);
 
     <U> WeldClass<? extends U> asWeldSubclass(WeldClass<U> clazz);

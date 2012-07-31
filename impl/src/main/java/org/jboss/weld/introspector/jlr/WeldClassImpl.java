@@ -65,6 +65,7 @@ import java.util.Set;
  * @author Pete Muir
  * @author David Allen
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> implements WeldClass<T> {
 
@@ -104,6 +105,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     private final ArraySetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap;
 
     private final boolean discovered;
+    private final boolean modified;
 
     public static <T> WeldClass<T> of(Class<T> clazz, ClassTransformer classTransformer) {
         return new WeldClassImpl<T>(clazz, clazz, null, new TypeClosureLazyValueHolder(clazz), buildAnnotationMap(clazz.getAnnotations()), buildAnnotationMap(clazz.getDeclaredAnnotations()), classTransformer);
@@ -120,7 +122,6 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     protected WeldClassImpl(Class<T> rawType, Type type, AnnotatedType<T> annotatedType, LazyValueHolder<Set<Type>> typeClosure, Map<Class<? extends Annotation>, Annotation> annotationMap, Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap, ClassTransformer classTransformer) {
         super(annotationMap, declaredAnnotationMap, classTransformer, rawType, type, typeClosure);
 
-        boolean modified;
         if (annotatedType instanceof DiscoveredExternalAnnotatedType) {
             discovered = true;
             modified = DiscoveredExternalAnnotatedType.class.cast(annotatedType).isModifed();
@@ -623,4 +624,7 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
         return discovered;
     }
 
+    public boolean isModified() {
+        return modified;
+    }
 }
