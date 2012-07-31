@@ -31,7 +31,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.jboss.weld.environment.osgi.tests.util.Environment.toMavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(JUnit4TestRunner.class)
@@ -40,9 +40,9 @@ public class ExtensionTest {
     @Configuration
     public static Option[] configure() {
         return options(
-                Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1").version("1.2.0-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-cdi-spi").version("1.2.0-SNAPSHOT")
+                Environment.toCDIOSGiEnvironment(
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1"),
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-cdi-spi")
                 )
         );
     }

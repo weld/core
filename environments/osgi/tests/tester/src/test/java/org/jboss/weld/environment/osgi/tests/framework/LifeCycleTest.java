@@ -1,5 +1,7 @@
 package org.jboss.weld.environment.osgi.tests.framework;
 
+import java.lang.reflect.Field;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,15 +13,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
-import java.lang.reflect.Field;
-
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(JUnit4TestRunner.class)
 public class LifeCycleTest {
     @Configuration
     public static Option[] configure() {
-        return options(Environment.CDIOSGiEnvironment());
+        return options(Environment.toCDIOSGiEnvironment());
     }
 
     @Test

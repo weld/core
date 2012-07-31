@@ -17,6 +17,8 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
+import java.io.Serializable;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.api.AutoPublishedService;
 import org.jboss.weld.osgi.tests.bundle1.api.ContractInterface;
@@ -35,9 +37,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import java.io.Serializable;
-
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.jboss.weld.environment.osgi.tests.util.Environment.toMavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(JUnit4TestRunner.class)
@@ -46,10 +46,10 @@ public class ServicePublishingTest {
     @Configuration
     public static Option[] configure() {
         return options(
-                Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1").version("1.2.0-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle2").version("1.2.0-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle3").version("1.2.0-SNAPSHOT")
+                Environment.toCDIOSGiEnvironment(
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1"),
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle2"),
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle3")
                 )
         );
     }

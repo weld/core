@@ -33,6 +33,11 @@
 
     <description>Integration tests launcher for Weld-OSGi</description>
 
+    <properties>
+        <version.pax.exam>2.5.0</version.pax.exam>
+        <version.org.apache.felix>4.0.3</version.org.apache.felix>
+    </properties>
+
     <url>http://www.seamframework.org/Weld</url>
     <licenses>
         <license>
@@ -64,28 +69,28 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
-            <version>2.0.0-RC3</version>
+            <version>${version.pax.exam}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-native</artifactId>
-            <version>2.0.0-RC3</version>
+            <version>${version.pax.exam}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-link-mvn</artifactId>
-            <version>2.0.0-RC3</version>
+            <version>${version.pax.exam}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
-            <version>3.2.0</version>
+            <version>${version.org.apache.felix}</version>
             <scope>test</scope>
         </dependency>
 

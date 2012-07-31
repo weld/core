@@ -32,7 +32,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.jboss.weld.environment.osgi.tests.util.Environment.toMavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(JUnit4TestRunner.class)
@@ -41,8 +41,8 @@ public class InfrastructureTest {
     @Configuration
     public static Option[] configure() {
         return options(
-                Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-importing").version("1.2.0-SNAPSHOT")
+                Environment.toCDIOSGiEnvironment(
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-importing")
                 )
         );
     }

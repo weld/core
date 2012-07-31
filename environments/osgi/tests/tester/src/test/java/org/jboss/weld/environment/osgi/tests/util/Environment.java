@@ -17,27 +17,37 @@
 
 package org.jboss.weld.environment.osgi.tests.util;
 
-import org.ops4j.pax.exam.Option;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.ops4j.pax.exam.Option;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+
 import static org.ops4j.pax.exam.CoreOptions.felix;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.LibraryOptions.junitBundles;
 
 public class Environment {
 
-    public static Option[] CDIOSGiEnvironment(Option... options) {
+    public static final String PROJECT_VERSION = "1.2.0-SNAPSHOT";
+
+    public static Option toMavenBundle(String groupId, String artifactName) {
+        return mavenBundle(artifactName, groupId).version(PROJECT_VERSION);
+    }
+
+    public static Option toMavenBundle(String groupId, String artifactName, String version) {
+        return mavenBundle(groupId, artifactName).version(version);
+    }
+
+    public static Option[] toCDIOSGiEnvironment(Option... options) {
         List<Option> result = new ArrayList<Option>();
-        result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-mandatory").version("1.2.0-SNAPSHOT"));
-        result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-api").version("1.2.0-SNAPSHOT"));
-        result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-spi").version("1.2.0-SNAPSHOT"));
-        result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-extension").version("1.2.0-SNAPSHOT"));
-        result.add(mavenBundle("org.jboss.weld.osgi", "weld-osgi-core-integration").version("1.2.0-SNAPSHOT"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-mandatory"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-api"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-spi"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-extension"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-integration"));
         result.add(junitBundles());
         result.add(felix());
         Collections.addAll(result, options);
