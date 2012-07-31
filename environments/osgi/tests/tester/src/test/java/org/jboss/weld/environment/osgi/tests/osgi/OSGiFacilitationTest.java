@@ -18,6 +18,10 @@
 package org.jboss.weld.environment.osgi.tests.osgi;
 
 import java.io.File;
+import java.util.Dictionary;
+import java.util.Map;
+
+import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.util.BundleProvider;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,6 +39,7 @@ import java.util.Dictionary;
 import java.util.Map;
 
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.jboss.weld.environment.osgi.tests.util.Environment.toMavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(JUnit4TestRunner.class)
@@ -43,12 +48,12 @@ public class OSGiFacilitationTest {
     @Configuration
     public static Option[] configure() {
         return options(
-                Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("2.1-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle2").version("2.1-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle3").version("2.1-SNAPSHOT")
-                                              )
-                      );
+                Environment.toCDIOSGiEnvironment(
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1"),
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle2"),
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle3")
+                )
+        );
     }
 
     @Test

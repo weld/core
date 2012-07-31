@@ -18,6 +18,12 @@
 package org.jboss.weld.environment.osgi.tests.framework;
 
 import org.junit.Ignore;
+import java.util.Collection;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.junit.Assert;
@@ -29,12 +35,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.osgi.framework.*;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import java.util.Collection;
-
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.jboss.weld.environment.osgi.tests.util.Environment.toMavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(JUnit4TestRunner.class)
@@ -43,10 +44,10 @@ public class UsageTest {
     @Configuration
     public static Option[] configure() {
         return options(
-                Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("2.1-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle2").version("2.1-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle3").version("2.1-SNAPSHOT")
+                Environment.toCDIOSGiEnvironment(
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle1"),
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle2"),
+                        toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-bundle3")
                 )
         );
     }
