@@ -20,6 +20,8 @@ package org.jboss.weld.environment.osgi.tests.framework;
 import org.junit.Ignore;
 import java.util.Collection;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.junit.Assert;
@@ -47,9 +49,11 @@ public class BundleScannerTest  {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void bundleScannerTest(BundleContext context) throws InterruptedException, BundleException, InvalidSyntaxException {
+    public void bundleScannerTest() throws InterruptedException, BundleException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
 
         Bundle bundleScanner = null, bundleScannerInner = null;

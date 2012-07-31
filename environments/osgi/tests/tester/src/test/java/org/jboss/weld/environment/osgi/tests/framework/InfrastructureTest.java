@@ -17,7 +17,9 @@
 
 package org.jboss.weld.environment.osgi.tests.framework;
 
-import org.junit.Ignore;
+import javax.inject.Inject;
+
+import junit.framework.Assert;
 import org.jboss.weld.environment.osgi.api.BundleState;
 import org.jboss.weld.environment.osgi.api.annotation.BundleDataFile;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleContainerEvent;
@@ -48,9 +50,11 @@ public class InfrastructureTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void fiveBundlesTest(BundleContext context) throws InterruptedException, BundleException {
+    public void fiveBundlesTest() throws InterruptedException, BundleException {
         Environment.waitForEnvironment(context);
 
         Bundle extAPI = null, intAPI = null, extImpl = null, intImpl = null, mand = null;
@@ -75,8 +79,7 @@ public class InfrastructureTest {
     }
 
     @Test
-    //@Ignore
-    public void interactionsTest(BundleContext context) throws InterruptedException {
+    public void interactionsTest() throws InterruptedException {
         Environment.waitForEnvironment(context);
 
         Bundle importingBundle = null;

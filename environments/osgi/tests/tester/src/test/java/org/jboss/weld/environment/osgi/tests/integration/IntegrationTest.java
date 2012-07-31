@@ -20,6 +20,8 @@ package org.jboss.weld.environment.osgi.tests.integration;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.inject.Inject;
+
 import junit.framework.Assert;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
@@ -47,9 +49,11 @@ public class IntegrationTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void CDIContainerFactoryTest(BundleContext context) throws InterruptedException {
+    public void CDIContainerFactoryTest() throws InterruptedException {
         Environment.waitForEnvironment(context);
 
         ServiceReference factoryReference = context.getServiceReference(CDIContainerFactory.class.getName());
@@ -83,8 +87,7 @@ public class IntegrationTest {
     }
 
     @Test
-    //@Ignore
-    public void CDIContainerTest(BundleContext context) throws InterruptedException, InvalidSyntaxException {
+    public void CDIContainerTest() throws InterruptedException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
 
         ServiceReference factoryReference = context.getServiceReference(CDIContainerFactory.class.getName());

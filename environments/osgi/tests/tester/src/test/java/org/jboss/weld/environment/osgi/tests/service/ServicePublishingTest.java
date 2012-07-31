@@ -22,6 +22,8 @@ import org.jboss.weld.osgi.tests.bundle1.api.PropertyService;
 import java.io.Serializable;
 import java.io.Serializable;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.api.AutoPublishedService;
 import org.jboss.weld.osgi.tests.bundle1.api.ContractInterface;
@@ -56,9 +58,11 @@ public class ServicePublishingTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void servicePublishingTest(BundleContext context) throws InterruptedException, InvalidSyntaxException, BundleException {
+    public void servicePublishingTest() throws InterruptedException, InvalidSyntaxException, BundleException {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundle2 = null, bundle3 = null;
