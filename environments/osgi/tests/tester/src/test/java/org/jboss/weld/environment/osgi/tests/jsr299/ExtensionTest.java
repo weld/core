@@ -17,6 +17,8 @@
 
 package org.jboss.weld.environment.osgi.tests.jsr299;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.cdispi.ServiceExtensionProvider;
 import org.junit.Assert;
@@ -47,9 +49,11 @@ public class ExtensionTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void eventTest(BundleContext context) throws InterruptedException, InvalidSyntaxException, BundleException {
+    public void eventTest() throws InterruptedException, InvalidSyntaxException, BundleException {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundleExtension = null;

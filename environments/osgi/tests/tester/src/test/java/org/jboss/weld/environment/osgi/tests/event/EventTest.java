@@ -17,6 +17,8 @@
 
 package org.jboss.weld.environment.osgi.tests.event;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.api.MovingService;
 import org.jboss.weld.osgi.tests.bundle1.util.EventListener;
@@ -50,10 +52,12 @@ public class EventTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @SuppressWarnings("unchecked")
     @Test
-    //@Ignore
-    public void eventTest(BundleContext context) throws InterruptedException, InvalidSyntaxException, BundleException {
+    public void eventTest() throws InterruptedException, InvalidSyntaxException, BundleException {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundle2 = null, bundle3 = null;

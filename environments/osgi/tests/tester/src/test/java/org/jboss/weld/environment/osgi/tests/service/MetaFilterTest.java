@@ -17,6 +17,8 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.api.PropertyService;
 import org.jboss.weld.osgi.tests.bundle1.api.TestPublished;
@@ -48,9 +50,11 @@ public class MetaFilterTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void metaFilterTest(BundleContext context) throws InterruptedException, InvalidSyntaxException, BundleException {
+    public void metaFilterTest() throws InterruptedException, InvalidSyntaxException, BundleException {
         Environment.waitForEnvironment(context);
         ServiceReference ref = context.getServiceReference(TestPublished.class.getName());
         TestPublished test = (TestPublished) context.getService(ref);

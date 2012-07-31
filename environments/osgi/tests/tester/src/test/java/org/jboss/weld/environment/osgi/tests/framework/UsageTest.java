@@ -22,6 +22,7 @@ import java.util.Collection;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
@@ -56,9 +57,11 @@ public class UsageTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void launchTest(BundleContext context) throws InterruptedException, BundleException, InvalidSyntaxException {
+    public void launchTest() throws InterruptedException, BundleException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundle2 = null, bundle3 = null;

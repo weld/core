@@ -2,6 +2,8 @@ package org.jboss.weld.environment.osgi.tests.framework;
 
 import java.lang.reflect.Field;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,9 +24,11 @@ public class LifeCycleTest {
         return options(Environment.toCDIOSGiEnvironment());
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void bundleLifeCycleTest(BundleContext context) throws InterruptedException, BundleException, ClassNotFoundException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    public void bundleLifeCycleTest() throws InterruptedException, BundleException, ClassNotFoundException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         Environment.waitForEnvironment(context);
 
         Bundle bundle = context.installBundle("mvn:org.jboss.weld.osgi.tests/weld-osgi-life-cycle/1.2.0-SNAPSHOT");

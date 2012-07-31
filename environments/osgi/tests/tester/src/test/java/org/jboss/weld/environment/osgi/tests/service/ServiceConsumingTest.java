@@ -17,6 +17,8 @@
 
 package org.jboss.weld.environment.osgi.tests.service;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.api.PersonalizedHashCodeService;
@@ -49,9 +51,11 @@ public class ServiceConsumingTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void serviceOSGiConsumingTest(BundleContext context) throws InterruptedException, InvalidSyntaxException {
+    public void serviceOSGiConsumingTest() throws InterruptedException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
 
         ServiceReference[] propertyServiceReferences = context.getServiceReferences(PropertyService.class.getName(), null);
@@ -74,8 +78,7 @@ public class ServiceConsumingTest {
     }
 
     @Test
-    //@Ignore
-    public void serviceCDIConsumingTest(BundleContext context) throws InterruptedException, InvalidSyntaxException {
+    public void serviceCDIConsumingTest() throws InterruptedException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
 
         ServiceReference[] serviceProviderReferences = context.getServiceReferences(ServiceProvider.class.getName(), null);
@@ -257,8 +260,7 @@ public class ServiceConsumingTest {
     }
 
     @Test
-    //@Ignore
-    public void hashCodeCallTest(BundleContext context) throws InterruptedException, InvalidSyntaxException {
+    public void hashCodeCallTest() throws InterruptedException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
 
         ServiceReference[] serviceProviderReferences = context.getServiceReferences(ServiceProvider.class.getName(), null);

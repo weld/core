@@ -21,6 +21,8 @@ import java.io.File;
 import java.util.Dictionary;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.tests.util.Environment;
 import org.jboss.weld.osgi.tests.bundle1.util.BundleProvider;
 import org.junit.Assert;
@@ -51,9 +53,11 @@ public class OSGiFacilitationTest {
         );
     }
 
+    @Inject
+    private BundleContext context;
+
     @Test
-    //@Ignore
-    public void osgiUtilitiesTest(BundleContext context) throws InterruptedException, InvalidSyntaxException {
+    public void osgiUtilitiesTest() throws InterruptedException, InvalidSyntaxException {
         Environment.waitForEnvironment(context);
 
         Bundle bundle1 = null, bundle2 = null;

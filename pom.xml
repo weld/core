@@ -72,7 +72,7 @@
         <testng.version>5.10</testng.version>
         <osgi.version>4.2.0</osgi.version>
         <!-- Weld OSGi deps -->
-        <javax.inject.version>1</javax.inject.version>
+        <javax.inject.version>1.0</javax.inject.version>
         <javax.web.version>6.0</javax.web.version>
         <javax.el.version>2.2</javax.el.version>
         <jsr250.api>1.0</jsr250.api>
@@ -575,8 +575,8 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-atinject_1.0_spec</artifactId>
                 <version>${javax.inject.version}</version>
             </dependency>
 
