@@ -3,7 +3,6 @@ package org.jboss.weld.tests.annotatedType.weld1144;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-@Stateless
 public class CdiTest2 extends CdiTest1 {
 
 	@Inject

@@ -551,7 +551,7 @@
                     </executions>
                 </plugin>
 
-                <!-- So m2e doesn't throw errors for features it doesn't support in the 
+                <!-- So m2e doesn't throw errors for features it doesn't support in the
                     POM -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>

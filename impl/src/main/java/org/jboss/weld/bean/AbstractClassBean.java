@@ -250,7 +250,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      */
     protected void initInjectableFields() {
         injectableFields = Beans.getFieldInjectionPoints(this, annotatedItem);
-        addInjectionPoints(Beans.getFieldInjectionPoints(this, injectableFields));
+        addInjectionPoints(Beans.mergeFieldInjectionPoints(injectableFields));
     }
 
     /**

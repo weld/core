@@ -6,7 +6,6 @@ import javax.inject.Inject;
 /**
  * Session Bean implementation class CdiTest
  */
-@Stateless
 public class CdiTest1 {
 
 	@Inject

@@ -33,21 +33,15 @@ public class Weld1144Test {
     private Instance<CdiTest2> test;
 
     @Test
-    @Ignore
     public void testChildClassFieldIsInjected() {
         CdiTest2 cdiTest2 = test.get();
         assertNotNull(cdiTest2.getSomeInjectedBean2());
     }
 
     @Test
-    @Ignore
     public void testSuperclassFieldIsInjected() {
         CdiTest2 cdiTest2 = test.get();
         assertNotNull(cdiTest2.getSomeInjectedBean1());
     }
 
-    @Test
-    public void testDummy() {
-        // remove it
-    }
 }
