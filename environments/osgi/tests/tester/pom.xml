@@ -33,11 +33,6 @@
 
     <description>Integration tests launcher for Weld-OSGi</description>
 
-    <properties>
-        <version.pax.exam>2.5.0</version.pax.exam>
-        <version.org.apache.felix>4.0.3</version.org.apache.felix>
-    </properties>
-
     <url>http://www.seamframework.org/Weld</url>
     <licenses>
         <license>
@@ -69,28 +64,24 @@
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
-            <version>${version.pax.exam}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-container-native</artifactId>
-            <version>${version.pax.exam}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-link-mvn</artifactId>
-            <version>${version.pax.exam}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
-            <version>${version.org.apache.felix}</version>
             <scope>test</scope>
         </dependency>
 
@@ -107,37 +98,31 @@
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-extension</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-spi</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-integration</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -208,49 +193,41 @@
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-bundle1</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-bundle2</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-bundle3</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-importing</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-scanner</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-innerscanner</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-cdi-spi</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-life-cycle</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

@@ -46,19 +46,16 @@
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-spi</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-extension</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
