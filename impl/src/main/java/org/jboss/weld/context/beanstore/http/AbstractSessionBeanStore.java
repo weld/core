@@ -35,6 +35,8 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
 
     private transient volatile LockStore lockStore;
 
+    private static final ThreadLocal<LockStore> CURRENT_LOCK_STORE = new ThreadLocal<LockStore>();
+
     protected abstract HttpSession getSession(boolean create);
 
     public AbstractSessionBeanStore(NamingScheme namingScheme) {
@@ -95,13 +97,32 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
     protected LockStore getLockStore() {
         LockStore lockStore = this.lockStore;
         if (lockStore == null) {
-            final HttpSession session = getSession(true);
+            //needed to prevent some edge cases
+            //where we would otherwise enter an infinite loop
+            lockStore = CURRENT_LOCK_STORE.get();
+            if(lockStore != null) {
+                return lockStore;
+            }
+            HttpSession session = getSession(false);
+            if(session == null) {
+                lockStore = new LockStore();
+                CURRENT_LOCK_STORE.set(lockStore);
+                try {
+                session = getSession(true);
+                } finally {
+                    CURRENT_LOCK_STORE.remove();
+                }
+            }
             lockStore = (LockStore) session.getAttribute(SESSION_KEY);
             if (lockStore == null) {
+                //we don't really have anything we can lock on
+                //so we just acquire a big global lock
+                //this should only be taken on session creation though
+                //so should not be a problem
                 synchronized (AbstractSessionBeanStore.class) {
                     lockStore = (LockStore) session.getAttribute(SESSION_KEY);
                     if (lockStore == null) {
-                        this.lockStore = lockStore = new LockStore();
+                        lockStore = new LockStore();
                         session.setAttribute(SESSION_KEY, lockStore);
                     }
                 }

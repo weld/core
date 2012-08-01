@@ -206,11 +206,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
         if(lockStore == null) {
             //if the lockstore is null then no locking is necessary, as the underlying
             //context is single threaded
-            return new LockedBean() {
-                public void unlock() {
-
-                }
-            };
+            return null;
         }
         return lockStore.lock(id);
     }
