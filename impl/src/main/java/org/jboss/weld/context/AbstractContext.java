@@ -107,7 +107,7 @@ public abstract class AbstractContext implements Context {
                 }
                 return instance;
             } finally {
-                if (multithreaded) {
+                if (lock != null) {
                     lock.unlock();
                 }
             }
