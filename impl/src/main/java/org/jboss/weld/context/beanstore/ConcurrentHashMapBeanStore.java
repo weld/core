@@ -32,6 +32,7 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
 
     // The backing map
     protected Map<String, Object> delegate;
+    private transient volatile LockStore lockStore;
 
     /**
      * Constructor
@@ -55,4 +56,16 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
         return "contextuals " + delegate;
     }
 
+    public LockedBean lock(final String id) {
+        LockStore lockStore = this.lockStore;
+        if(lockStore == null) {
+            synchronized (this) {
+                lockStore = this.lockStore;
+                if(lockStore == null) {
+                    this.lockStore = lockStore = new LockStore();
+                }
+            }
+        }
+        return lockStore.lock(id);
+    }
 }

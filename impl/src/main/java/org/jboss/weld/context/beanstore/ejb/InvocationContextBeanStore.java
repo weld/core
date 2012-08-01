@@ -1,10 +1,12 @@
 package org.jboss.weld.context.beanstore.ejb;
 
-import org.jboss.weld.context.beanstore.AttributeBeanStore;
-import org.jboss.weld.context.beanstore.NamingScheme;
+import java.util.Collection;
 
 import javax.interceptor.InvocationContext;
-import java.util.Collection;
+
+import org.jboss.weld.context.beanstore.AttributeBeanStore;
+import org.jboss.weld.context.beanstore.LockStore;
+import org.jboss.weld.context.beanstore.NamingScheme;
 
 public class InvocationContextBeanStore extends AttributeBeanStore {
 
@@ -35,4 +37,7 @@ public class InvocationContextBeanStore extends AttributeBeanStore {
         ctx.getContextData().put(prefixedId, instance);
     }
 
+    public LockStore getLockStore() {
+        return null;
+    }
 }
