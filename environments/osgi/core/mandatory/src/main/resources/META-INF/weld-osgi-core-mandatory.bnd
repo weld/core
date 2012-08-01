@@ -106,7 +106,6 @@ Export-Package javax.el;version=2.2.0, \
                org.jboss.weld.interceptor.util; \
                org.jboss.weld.interceptor.util.proxy; \
                org.jboss.weld.interceptor.proxy; \
-               org.jboss.weld.interceptor.proxy.javassist; \
                org.jboss.weld.interceptor.builder; \
                org.jboss.weld.manager.api; \
                org.jboss.weld.ejb.spi; \
