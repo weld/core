@@ -194,6 +194,7 @@
                        http://old.nabble.com/Maven-Surefire-and-newer-junit-features-td28539796.html
                     -->
                     <parallel>none</parallel>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
         </plugins>
