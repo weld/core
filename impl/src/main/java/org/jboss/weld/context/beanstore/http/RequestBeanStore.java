@@ -1,15 +1,15 @@
 package org.jboss.weld.context.beanstore.http;
 
+import java.util.Collection;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
+import org.jboss.weld.context.beanstore.LockStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.Collection;
-import java.util.Enumeration;
 
 /**
  * <p>
@@ -72,5 +72,9 @@ public class RequestBeanStore extends AttributeBeanStore {
 
     public HttpServletRequest getRequest() {
         return request;
+    }
+
+    public LockStore getLockStore() {
+        return null;
     }
 }

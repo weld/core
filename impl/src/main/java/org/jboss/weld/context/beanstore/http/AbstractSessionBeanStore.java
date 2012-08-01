@@ -1,10 +1,5 @@
 package org.jboss.weld.context.beanstore.http;
 
-import static java.util.Collections.emptyList;
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.util.Collection;
 import java.util.Enumeration;
 
@@ -12,10 +7,16 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
+import org.jboss.weld.context.beanstore.LockStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
+
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Base class providing an HttpSession backed, bound bean store.
@@ -29,6 +30,10 @@ import org.slf4j.cal10n.LocLogger;
 public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
 
     private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
+
+    private static final String SESSION_KEY = "org.jboss.weld.context.beanstore.http.LockStore";
+
+    private transient volatile LockStore lockStore;
 
     protected abstract HttpSession getSession(boolean create);
 
@@ -86,4 +91,23 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         return null;
     }
 
+    @Override
+    protected LockStore getLockStore() {
+        LockStore lockStore = this.lockStore;
+        if (lockStore == null) {
+            final HttpSession session = getSession(true);
+            lockStore = (LockStore) session.getAttribute(SESSION_KEY);
+            if (lockStore == null) {
+                synchronized (AbstractSessionBeanStore.class) {
+                    lockStore = (LockStore) session.getAttribute(SESSION_KEY);
+                    if (lockStore == null) {
+                        this.lockStore = lockStore = new LockStore();
+                        session.setAttribute(SESSION_KEY, lockStore);
+                    }
+                }
+            }
+            this.lockStore = lockStore;
+        }
+        return lockStore;
+    }
 }

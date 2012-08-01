@@ -22,6 +22,7 @@
 
 package org.jboss.weld.context.beanstore;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -31,13 +32,16 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Stuart Douglas
  */
-public class LockStore {
+public class LockStore implements Serializable {
 
-    private final Map<String, ReferenceCountedLock> locks = new HashMap<String, ReferenceCountedLock>();
+    private transient volatile Map<String, ReferenceCountedLock> locks = new HashMap<String, ReferenceCountedLock>();
 
     public LockedBean lock(String id) {
         ReferenceCountedLock refLock;
         synchronized (locks) {
+            if(locks == null) {
+                locks = new HashMap<String, ReferenceCountedLock>();
+            }
             refLock = locks.get(id);
             if (refLock != null) {
                 refLock.count++;

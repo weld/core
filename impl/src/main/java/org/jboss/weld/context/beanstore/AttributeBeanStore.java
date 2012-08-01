@@ -50,7 +50,6 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
 
     private static final long serialVersionUID = 8923580660774253916L;
     private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
-    private transient volatile LockStore lockStore = new LockStore();
 
     private final HashMapBeanStore beanStore;
     private final NamingScheme namingScheme;
@@ -203,15 +202,18 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     protected abstract void setAttribute(String prefixedId, Object instance);
 
     public LockedBean lock(final String id) {
-        LockStore lockStore = this.lockStore;
+        LockStore lockStore = getLockStore();
         if(lockStore == null) {
-            synchronized (this) {
-                lockStore = this.lockStore;
-                if(lockStore == null) {
-                    this.lockStore = lockStore = new LockStore();
+            //if the lockstore is null then no locking is necessary, as the underlying
+            //context is single threaded
+            return new LockedBean() {
+                public void unlock() {
+
                 }
-            }
+            };
         }
         return lockStore.lock(id);
     }
+
+    protected abstract LockStore getLockStore();
 }
