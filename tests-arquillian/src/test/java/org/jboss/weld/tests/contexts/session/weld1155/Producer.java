@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
 
 public class Producer {
 
@@ -29,11 +28,11 @@ public class Producer {
 
     @Produces
     @SessionScoped
-    public static Product produceTrickyProduct(Bean<Product> bean) {
+    public static Product produceTrickyProduct() {
         try {
             latch.countDown();
             if (latch.await(5, TimeUnit.SECONDS)) {
-                throw new IllegalStateException("Producer method " + bean.toString() + " invoked twice for the same session.");
+                throw new IllegalStateException("Producer method invoked twice for the same session.");
             } else {
                 return new Product();
             }
