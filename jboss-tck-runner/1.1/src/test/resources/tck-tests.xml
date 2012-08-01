@@ -29,6 +29,12 @@
                     <exclude name="testObtainingWrappedAnnotatedType" />
                 </methods>
             </class>
+            <!-- CDI-180 -->
+            <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
+                <methods>
+                    <exclude name="testRequestScopeActiveDuringRemoteCallToEjb" />
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-430 -->
@@ -112,6 +118,15 @@
                     <exclude name="testRequestContextActiveOnError" />
                 </methods>
             </class>
+            <!-- AS7-5256 -->
+            <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
+                <methods>
+                    <exclude name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
+                    <exclude name="testRequestScopeActiveDuringAsyncCallToEjb" />
+                </methods>
+            </class>
+            
+            
         </classes>
     </test>
 
