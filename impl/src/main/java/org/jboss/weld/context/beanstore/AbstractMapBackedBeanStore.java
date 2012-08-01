@@ -27,7 +27,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 public abstract class AbstractMapBackedBeanStore implements BeanStore {
 
     protected abstract Map<String, Object> delegate();
-    private transient volatile LockStore lockStore;
 
     public <T> ContextualInstance<T> get(String id) {
         return cast(delegate().get(id));
@@ -77,16 +76,4 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore {
         return delegate().keySet().iterator();
     }
 
-    public LockedBean lock(final String id) {
-        LockStore lockStore = this.lockStore;
-        if(lockStore == null) {
-            synchronized (this) {
-                lockStore = this.lockStore;
-                if(lockStore == null) {
-                    this.lockStore = lockStore = new LockStore();
-                }
-            }
-        }
-        return lockStore.lock(id);
-    }
 }

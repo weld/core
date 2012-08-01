@@ -50,4 +50,7 @@ public class HashMapBeanStore extends AbstractMapBackedBeanStore implements Seri
         return delegate;
     }
 
+    public LockedBean lock(final String id) {
+        return null;
+    }
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 public class MapBeanStore extends AttributeBeanStore {
 
     private final Map<String, Object> delegate;
+    private transient volatile LockStore lockStore = new LockStore();
 
     public MapBeanStore(NamingScheme namingScheme, Map<String, Object> delegate) {
         super(namingScheme);
@@ -32,4 +33,16 @@ public class MapBeanStore extends AttributeBeanStore {
         delegate.put(prefixedId, instance);
     }
 
+    public LockStore getLockStore() {
+        LockStore lockStore = this.lockStore;
+        if(lockStore == null) {
+            synchronized (this) {
+                lockStore = this.lockStore;
+                if(lockStore == null) {
+                    this.lockStore = lockStore = new LockStore();
+                }
+            }
+        }
+        return lockStore;
+    }
 }
