@@ -16,6 +16,10 @@
  */
 package org.jboss.weld;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.Singleton;
@@ -27,16 +31,13 @@ import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.logging.MessageConveyorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_MANAGER_ID;
 
 /**
  * A Weld application container
  *
  * @author pmuir
+ * @author alesj
  */
 public class Container {
     public static final String CONTEXT_ID_KEY = "WELD_CONTEXT_ID_KEY";
@@ -52,38 +53,32 @@ public class Container {
     /**
      * Get the container for the current application deployment
      *
-     * @return
+     * @return static instance
      */
     public static Container instance() {
-        return instance.get(RegistrySingletonProvider.STATIC_INSTANCE);
+        return instance(RegistrySingletonProvider.STATIC_INSTANCE);
     }
 
     public static boolean available() {
-        String id = RegistrySingletonProvider.STATIC_INSTANCE;
-        return instance.isSet(id) && instance.get(id) != null
-                && instance.get(id).getState().isAvailable();
+        return available(RegistrySingletonProvider.STATIC_INSTANCE);
     }
 
     public static Container instance(String contextId) {
-        Container container = instance.get(contextId);
-        return container;
+        return instance.get(contextId);
     }
 
     public static boolean available(String contextId) {
-        boolean b = instance.isSet(contextId) && instance(contextId) != null
-                && instance(contextId).getState().isAvailable();
-        return b;
+        return instance.isSet(contextId) && instance(contextId) != null && instance(contextId).getState().isAvailable();
     }
 
     /**
      * Initialize the container for the current application deployment
      *
-     * @param deploymentManager
-     * @param deploymentServices
+     * @param deploymentManager the deployment manager
+     * @param deploymentServices the deployment services
      */
     public static void initialize(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
-        Container instance = new Container(RegistrySingletonProvider.STATIC_INSTANCE, deploymentManager, deploymentServices);
-        Container.instance.set(RegistrySingletonProvider.STATIC_INSTANCE, instance);
+        initialize(RegistrySingletonProvider.STATIC_INSTANCE, deploymentManager, deploymentServices);
     }
 
     public static void initialize(String contextId, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
@@ -116,12 +111,7 @@ public class Container {
     }
 
     public Container(BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices) {
-        this.deploymentManager = deploymentManager;
-        this.managers = new ConcurrentHashMap<String, BeanManagerImpl>();
-        this.managers.put(deploymentManager.getId(), deploymentManager);
-        this.beanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanManagerImpl>();
-        this.deploymentServices = deploymentServices;
-        this.contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+        this(RegistrySingletonProvider.STATIC_INSTANCE, deploymentManager, deploymentServices);
     }
 
     /**
@@ -156,8 +146,8 @@ public class Container {
     /**
      * Get the activity manager for a given key
      *
-     * @param key
-     * @return
+     * @param key the key
+     * @return activity manager
      */
     public BeanManagerImpl activityManager(String key) {
         return managers.get(key);
@@ -166,8 +156,8 @@ public class Container {
     /**
      * Add an activity
      *
-     * @param manager
-     * @return
+     * @param manager the bean manager
+     * @return key
      */
     public String addActivity(BeanManagerImpl manager) {
         String id = manager.getId();
@@ -190,7 +180,7 @@ public class Container {
     /**
      * Add sub-deployment units to the container
      *
-     * @param beanDeployments
+     * @param beanDeployments bean deployments
      */
     public void putBeanDeployments(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
         for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
