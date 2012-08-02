@@ -16,6 +16,16 @@
  */
 package org.jboss.weld.bean;
 
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.PassivationCapable;
+
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
 import org.jboss.weld.Container;
@@ -50,15 +60,6 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.PassivationCapable;
-import java.util.Set;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -281,7 +282,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         initTypes();
         initQualifiers();
         initConstructor();
-        this.proxiable = Proxies.isTypesProxyable(getTypes());
+        this.proxiable = Proxies.isTypesProxyable(getTypes(), beanManager.getContextId());
     }
 
     /**

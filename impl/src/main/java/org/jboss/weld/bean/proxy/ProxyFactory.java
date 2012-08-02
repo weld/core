@@ -237,9 +237,9 @@ public class ProxyFactory<T> {
         T proxy;
         Class<T> proxyClass = getProxyClass();
         try {
-            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            InstantiatorFactory factory = Container.instance(getContextId()).services().get(InstantiatorFactory.class);
             if (factory != null && factory.useInstantiators()) {
-                proxy = SecureReflections.newUnsafeInstance(proxyClass);
+                proxy = SecureReflections.newUnsafeInstance(proxyClass, getContextId());
             } else {
                 proxy = SecureReflections.newInstance(proxyClass);
             }

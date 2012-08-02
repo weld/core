@@ -16,6 +16,16 @@
  */
 package org.jboss.weld.bean;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -30,16 +40,6 @@ import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.SecureReflections;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.CreationException;
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
@@ -82,7 +82,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         this.id = createId(method, declaringBean);
         initStereotypes();
         initProducerMethodInjectableParameters();
-        this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
+        this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure(), beanManager.getContextId());
     }
 
     protected String createId(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {

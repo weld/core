@@ -28,12 +28,17 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class DefaultInstantiatorFactory extends AbstractInstantiatorFactory {
     private volatile Boolean enabled;
+    private final String id;
+
+    public DefaultInstantiatorFactory(String id) {
+        this.id = id;
+    }
 
     public boolean useInstantiators() {
         if (enabled == null) {
             synchronized (this) {
                 if (enabled == null) {
-                    ResourceLoader loader = Container.instance().services().get(ResourceLoader.class);
+                    ResourceLoader loader = Container.instance(id).services().get(ResourceLoader.class);
                     if (loader == null)
                         loader = DefaultResourceLoader.INSTANCE;
 

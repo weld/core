@@ -143,8 +143,8 @@ public class Validator implements Service {
             validateInjectionPoint(ij, beanManager);
         }
         boolean normalScoped = beanManager.isNormalScoped(bean);
-        if (normalScoped && !Beans.isBeanProxyable(bean)) {
-            throw Proxies.getUnproxyableTypesException(bean);
+        if (normalScoped && !Beans.isBeanProxyable(bean, beanManager.getContextId())) {
+            throw Proxies.getUnproxyableTypesException(bean, beanManager.getContextId());
         }
         if (!normalScoped) {
             validatePseudoScopedBean(bean, beanManager);
@@ -317,7 +317,7 @@ public class Validator implements Service {
         if (!resolvedBeans.isEmpty()) {
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
             if (beanManager.isNormalScoped(resolvedBean)) {
-                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType());
+                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), beanManager.getContextId());
                 if (ue != null) {
                     UnproxyableResolutionException exception = new UnproxyableResolutionException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ij);
                     exception.initCause(ue);

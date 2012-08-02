@@ -16,16 +16,17 @@
  */
 package org.jboss.weld.injection;
 
+import java.io.Serializable;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.io.Serializable;
 
 public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<T, S> {
 
@@ -57,7 +58,7 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
         }
 
         protected <E extends Service> E getService(Class<E> serviceClass) {
-            return Container.instance().services().get(serviceClass);
+            return Container.instance(contextId).services().get(serviceClass);
         }
 
     }

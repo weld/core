@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.bean;
 
+import java.lang.reflect.Field;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.inject.Inject;
+
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -27,16 +32,8 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import javax.inject.Inject;
-import java.lang.reflect.Field;
-import java.util.Set;
-
 import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Represents a producer field
@@ -66,9 +63,10 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     /**
      * Constructor
      *
-     * @param method        The producer field abstraction
+     * @param field        The producer field abstraction
      * @param declaringBean The declaring bean
      * @param manager       The Bean manager
+     * @param services      The services
      */
     protected ProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(createId(field, declaringBean), declaringBean, manager, services);
@@ -77,7 +75,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         initTypes();
         initQualifiers();
         initStereotypes();
-        this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure());
+        this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure(), manager.getContextId());
     }
 
     protected static String createId(WeldField<?, ?> field, AbstractClassBean<?> declaringBean) {

@@ -132,67 +132,70 @@ public class Proxies {
      * Indicates if a class is proxyable
      *
      * @param type The class to test
+     * @param id the container id
      * @return True if proxyable, false otherwise
      */
-    public static boolean isTypeProxyable(Type type) {
-        return getUnproxyableTypeException(type) == null;
+    public static boolean isTypeProxyable(Type type, String id) {
+        return getUnproxyableTypeException(type, id) == null;
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypeException(Type type) {
-        return getUnproxyableTypeException(type, null);
+    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, String id) {
+        return getUnproxyableTypeException(type, null, id);
     }
 
     /**
      * Indicates if a set of types are all proxyable
      *
      * @param declaringBean with types to test
+     * @param id the container id
      * @return True if proxyable, false otherwise
      */
-    public static boolean isTypesProxyable(Bean<?> declaringBean) {
-        return getUnproxyableTypesException(declaringBean) == null;
+    public static boolean isTypesProxyable(Bean<?> declaringBean, String id) {
+        return getUnproxyableTypesException(declaringBean, id) == null;
     }
 
     /**
      * Indicates if a set of types are all proxyable
      *
      * @param types The types to test
+     * @param id the container id
      * @return True if proxyable, false otherwise
      */
-    public static boolean isTypesProxyable(Iterable<? extends Type> types) {
-        return getUnproxyableTypesException(types) == null;
+    public static boolean isTypesProxyable(Iterable<? extends Type> types, String id) {
+        return getUnproxyableTypesException(types, id) == null;
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean) {
+    public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean, String id) {
         if (declaringBean == null)
             throw new java.lang.IllegalArgumentException("Null declaring bean!");
 
-        return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean);
+        return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean, id);
     }
 
-    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types) {
-        return getUnproxyableTypesExceptionInt(types, null);
+    public static UnproxyableResolutionException getUnproxyableTypesException(Iterable<? extends Type> types, String id) {
+        return getUnproxyableTypesExceptionInt(types, null, id);
     }
 
     // --- private
 
-    private static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean) {
+    private static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean, String id) {
         if (type instanceof Class<?>) {
-            return getUnproxyableClassException((Class<?>) type, declaringBean);
+            return getUnproxyableClassException((Class<?>) type, declaringBean, id);
         } else if (type instanceof ParameterizedType) {
             Type rawType = ((ParameterizedType) type).getRawType();
             if (rawType instanceof Class<?>) {
-                return getUnproxyableClassException((Class<?>) rawType, declaringBean);
+                return getUnproxyableClassException((Class<?>) rawType, declaringBean, id);
             }
         }
         return new UnproxyableResolutionException(NOT_PROXYABLE_UNKNOWN, type, getDeclaringBeanInfo(declaringBean));
     }
 
-    private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types, Bean<?> declaringBean) {
+    private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types, Bean<?> declaringBean, String manager) {
         for (Type apiType : types) {
             if (Object.class.equals(apiType)) {
                 continue;
             }
-            UnproxyableResolutionException e = getUnproxyableTypeException(apiType, declaringBean);
+            UnproxyableResolutionException e = getUnproxyableTypeException(apiType, declaringBean, manager);
             if (e != null) {
                 return e;
             }
@@ -200,7 +203,7 @@ public class Proxies {
         return null;
     }
 
-    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean) {
+    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean, String id) {
         if (clazz.isInterface()) {
             return null;
         }
@@ -209,7 +212,7 @@ public class Proxies {
         try {
             constructor = SecureReflections.getDeclaredConstructor(clazz);
         } catch (NoSuchMethodException e) {
-            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            InstantiatorFactory factory = Container.instance(id).services().get(InstantiatorFactory.class);
             if (factory == null || factory.useInstantiators() == false) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
             } else {
@@ -219,7 +222,7 @@ public class Proxies {
         if (constructor == null) {
             return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
-            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            InstantiatorFactory factory = Container.instance(id).services().get(InstantiatorFactory.class);
             if (factory == null || factory.useInstantiators() == false) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor, getDeclaringBeanInfo(declaringBean));
             } else {

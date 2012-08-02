@@ -356,11 +356,11 @@ public class SecureReflections {
      * @throws IllegalAccessException If there was an illegal access attempt
      * @see java.lang.Class#newInstance()
      */
-    public static <T> T newUnsafeInstance(final Class<T> clazz) throws InstantiationException, IllegalAccessException {
+    public static <T> T newUnsafeInstance(final Class<T> clazz, final String id) throws InstantiationException, IllegalAccessException {
         return new SecureReflectionAccess<T>() {
             @Override
             protected T work() throws Exception {
-                ServiceRegistry services = Container.instance().services();
+                ServiceRegistry services = Container.instance(id).services();
                 InstantiatorFactory factory = services.get(InstantiatorFactory.class);
                 return factory.getInstantiator().instantiate(clazz);
             }

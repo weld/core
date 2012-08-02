@@ -177,13 +177,14 @@ public class Beans {
      * Indicates if a bean is proxyable
      *
      * @param bean The bean to test
+     * @param id the container id
      * @return True if proxyable, false otherwise
      */
-    public static boolean isBeanProxyable(Bean<?> bean) {
+    public static boolean isBeanProxyable(Bean<?> bean, String id) {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isProxyable();
         } else {
-            return Proxies.isTypesProxyable(bean.getTypes());
+            return Proxies.isTypesProxyable(bean.getTypes(), id);
         }
     }
 
@@ -817,10 +818,10 @@ public class Beans {
             result.addAll(qualifiers);
 
         if (newQualifiers != null && newQualifiers.length > 0) {
-            final MetaAnnotationStore store = Container.instance().services().get(MetaAnnotationStore.class);
+            final MetaAnnotationStore store = Container.instance(contextId).services().get(MetaAnnotationStore.class);
             Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
             for (Annotation qualifier : newQualifiers) {
-                if (!Container.instance(contextId).services().get(MetaAnnotationStore.class).getBindingTypeModel(qualifier.annotationType()).isValid()) {
+                if (!store.getBindingTypeModel(qualifier.annotationType()).isValid()) {
                     throw new IllegalArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
                 }
                 if (checkedNewQualifiers.contains(qualifier)) {
