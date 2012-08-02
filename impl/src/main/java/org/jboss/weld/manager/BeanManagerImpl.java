@@ -1147,7 +1147,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             foundInterceptionBindingTypes.add(interceptorBindingType);
 
             InterceptorBindingModel<? extends Annotation> interceptorBindingModel = metaAnnotationStore.getInterceptorBindingModel(interceptorBindingType.annotationType());
-            foundInterceptionBindingTypes.addAll(extractInterceptorBindings(interceptorBindingModel.getInheritedInterceptionBindingTypes()));
+            foundInterceptionBindingTypes.addAll(flattenInterceptorBindings(extractInterceptorBindings(interceptorBindingModel.getInheritedInterceptionBindingTypes())));
         }
         return foundInterceptionBindingTypes;
     }
