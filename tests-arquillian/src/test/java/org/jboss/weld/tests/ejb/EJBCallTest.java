@@ -17,7 +17,6 @@
 
 package org.jboss.weld.tests.ejb;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -37,22 +36,16 @@ public class EJBCallTest {
     public static JavaArchive createTestArchive() {
         return ShrinkWrap
                 .create(JavaArchive.class, "test.jar")
-                .addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
-    }
-
-    @Stateless
-    public static class SomeService {
-        public String someMethod() {
-            return "test";
-        }
+                .addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"))
+                .addPackage(EJBCallTest.class.getPackage());
     }
 
     @Inject
-    SomeService someService;
+    StatelessCow statelessCow;
 
     @Test
-    @Ignore
+    @Ignore // https://issues.jboss.org/browse/ARQ-814
     public void testStatelessCall() {
-        Assert.assertEquals("test", someService.someMethod());
+        Assert.assertEquals("moo", statelessCow.call());
     }
 }
