@@ -1,6 +1,8 @@
 package org.jboss.weld.tests.annotatedType.weld1144;
 
 import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Extension;
@@ -41,5 +43,12 @@ public class Weld1144Test {
     public void testSuperclassFieldIsInjected() {
         CdiTest2 cdiTest2 = test.get();
         assertNotNull(cdiTest2.getSomeInjectedBean1());
+    }
+
+    @Test
+    public void testInitializers(@Original Foo foo, Bar bar) {
+        assertTrue(foo.isInitCalled());
+        assertFalse(bar.isInitCalled()); // because the initializer is overriden without @Inject
+        assertFalse(bar.isSubclassInitCalled());
     }
 }
