@@ -90,6 +90,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
@@ -120,6 +121,7 @@ import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -287,41 +289,52 @@ public class Beans {
         return annotatedMethods;
     }
 
-    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
+    public static <T> List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
         List<Set<MethodInjectionPoint<?, ?>>> initializerMethodsList = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
         // Keep track of all seen methods so we can ignore overridden methods
-        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>() {
+        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), HashSetSupplier.<Package>instance());
 
-            public Set<Package> get() {
-                return new HashSet<Package>();
-            }
+        if (type.slim() instanceof UnbackedAnnotatedType<?>) {
+            // external AnnotatedTypes require special treatment
+            Collection<EnhancedAnnotatedMethod<?, ? super T>> allMethods = type.getEnhancedMethods();
 
-        });
-        EnhancedAnnotatedType<?> t = type;
-        while (t != null && !t.getJavaClass().equals(Object.class)) {
-            ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
-            for (EnhancedAnnotatedMethod<?, ?> method : t.getDeclaredEnhancedMethods()) {
-                if (method.isAnnotationPresent(Inject.class) && !method.isStatic()) {
-                    if (method.getAnnotation(Produces.class) != null) {
-                        throw new DefinitionException(INITIALIZER_CANNOT_BE_PRODUCER, method, type);
-                    } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
-                        throw new DefinitionException(INITIALIZER_CANNOT_BE_DISPOSAL_METHOD, method, type);
-                    } else if (method.getEnhancedParameters(Observes.class).size() > 0) {
-                        throw new DefinitionException(INVALID_INITIALIZER, method);
-                    } else if (method.isGeneric()) {
-                        throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
-                    } else {
-                        if (!isOverridden(method, seenMethods)) {
-                            initializerMethods.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean, type.getJavaClass(), false, manager));
-                        }
+            for (Class<?> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+                ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
+                for (EnhancedAnnotatedMethod<?, ?> method : allMethods) {
+                    if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
+                        processPossibleInitializerMethod(type, method, initializerMethods, seenMethods, declaringBean, manager);
                     }
                 }
-                seenMethods.put(method.getSignature(), method.getPackage());
+                initializerMethodsList.add(0, immutableSet(initializerMethods));
             }
-            initializerMethodsList.add(0, immutableSet(initializerMethods));
-            t = t.getEnhancedSuperclass();
+        } else {
+            for (EnhancedAnnotatedType<?> t = type; t != null && !t.getJavaClass().equals(Object.class); t = t.getEnhancedSuperclass()) {
+                ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
+                for (EnhancedAnnotatedMethod<?, ?> method : t.getDeclaredEnhancedMethods()) {
+                    processPossibleInitializerMethod(type, method, initializerMethods, seenMethods, declaringBean, manager);
+                }
+                initializerMethodsList.add(0, immutableSet(initializerMethods));
+            }
         }
         return immutableList(initializerMethodsList);
+    }
+
+    private static void processPossibleInitializerMethod(EnhancedAnnotatedType<?> type, EnhancedAnnotatedMethod<?, ?> method, Set<MethodInjectionPoint<?, ?>> initializerMethods, Multimap<MethodSignature, Package> seenMethods, Bean<?> declaringBean, BeanManagerImpl manager) {
+        if (method.isAnnotationPresent(Inject.class)) {
+            if (method.getAnnotation(Produces.class) != null) {
+                throw new DefinitionException(INITIALIZER_CANNOT_BE_PRODUCER, method, type);
+            } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
+                throw new DefinitionException(INITIALIZER_CANNOT_BE_DISPOSAL_METHOD, method, type);
+            } else if (method.getEnhancedParameters(Observes.class).size() > 0) {
+                throw new DefinitionException(INVALID_INITIALIZER, method);
+            } else if (method.isGeneric()) {
+                throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
+            }
+            if (!method.isStatic() && !isOverridden(method, seenMethods)) {
+                initializerMethods.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean, type.getJavaClass(), false, manager));
+            }
+        }
+        seenMethods.put(method.getSignature(), method.getPackage());
     }
 
     private static boolean isOverridden(EnhancedAnnotatedMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods) {

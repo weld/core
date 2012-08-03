@@ -22,6 +22,7 @@ import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -170,16 +172,30 @@ public class InjectionPointFactory {
      */
     public List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
-        EnhancedAnnotatedType<?> t = type;
-        while (t != null && !t.getJavaClass().equals(Object.class)) {
-            ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
-            for (EnhancedAnnotatedField<?, ?> annotatedField : t.getDeclaredEnhancedFields(Inject.class)) {
-                if (!annotatedField.isStatic()) {
-                    addFieldInjectionPoint(annotatedField, fields, declaringBean, type.getJavaClass(), manager);
+
+        if (type.slim() instanceof UnbackedAnnotatedType<?>) {
+            // external AnnotatedTypes require special treatment
+            Collection<EnhancedAnnotatedField<?, ?>> allFields = type.getEnhancedFields(Inject.class);
+
+            for (Class<?> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+                ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
+                for (EnhancedAnnotatedField<?, ?> field : allFields) {
+                    if (!field.isStatic() && field.getJavaMember().getDeclaringClass().equals(clazz)) {
+                        addFieldInjectionPoint(field, fields, declaringBean, type.getJavaClass(), manager);
+                    }
                 }
+                injectableFieldsList.add(0, immutableSet(fields));
             }
-            injectableFieldsList.add(0, immutableSet(fields));
-            t = t.getEnhancedSuperclass();
+        } else {
+            for (EnhancedAnnotatedType<?> t = type; t != null && !t.getJavaClass().equals(Object.class); t = t.getEnhancedSuperclass()) {
+                ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
+                for (EnhancedAnnotatedField<?, ?> annotatedField : t.getDeclaredEnhancedFields(Inject.class)) {
+                    if (!annotatedField.isStatic()) {
+                        addFieldInjectionPoint(annotatedField, fields, declaringBean, t.getJavaClass(), manager);
+                    }
+                }
+                injectableFieldsList.add(0, immutableSet(fields));
+            }
         }
         return immutableList(injectableFieldsList);
     }
