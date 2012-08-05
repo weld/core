@@ -22,23 +22,20 @@
  */
 package org.jboss.weld.context;
 
-import org.jboss.weld.bootstrap.api.Singleton;
-import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.context.beanstore.BeanStore;
 import org.jboss.weld.context.beanstore.ConcurrentHashMapBeanStore;
 
 public abstract class AbstractSharedContext extends AbstractContext {
 
     // The beans
-    private final Singleton<BeanStore> beanStore;
+    private final BeanStore beanStore;
 
     /**
      * Constructor
      */
     protected AbstractSharedContext() {
         super(true);
-        this.beanStore = SingletonProvider.instance().create(BeanStore.class);
-        beanStore.set(new ConcurrentHashMapBeanStore());
+        this.beanStore = new ConcurrentHashMapBeanStore();
     }
 
     /**
@@ -48,7 +45,7 @@ public abstract class AbstractSharedContext extends AbstractContext {
      */
     @Override
     public BeanStore getBeanStore() {
-        return this.beanStore.get();
+        return this.beanStore;
     }
 
     public boolean isActive() {
