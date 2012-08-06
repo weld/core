@@ -19,6 +19,7 @@ package org.jboss.weld.bean.proxy;
 
 import java.io.ObjectStreamException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -68,7 +69,21 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     private static final String CACHE_FIELD = "BEAN_INSTANCE_CACHE";
 
+    /**
+     * It is possible although very unlikely that two different beans will end up with the same proxy class
+     * (generally this will only happen in test situations where weld is being started/stopped multiple times
+     * in the same class loader, such as during unit tests)
+     *
+     * To avoid this causing serialization problems we explicitly set the bean id on creation, and store it in this
+     * field.
+     *
+     *
+     */
+    private static final String BEAN_ID_FIELD = "BEAN_ID_FIELD";
+
     private final String beanId;
+
+    private volatile Field beanIdField;
 
     static {
         Set<Class<? extends Annotation>> scopes = new HashSet<Class<? extends Annotation>>();
@@ -82,6 +97,24 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     public ClientProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
         super(proxiedBeanType, typeClosure, bean);
         beanId = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+    }
+
+    @Override
+    public T create(BeanInstance beanInstance) {
+        try {
+            final T instance = super.create(beanInstance);
+            if (beanIdField == null) {
+                final Field f = instance.getClass().getDeclaredField(BEAN_ID_FIELD);
+                f.setAccessible(true);
+                beanIdField = f;
+            }
+            beanIdField.set(instance, beanId);
+            return instance;
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -100,6 +133,13 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
             } catch (DuplicateMemberException e) {
                 throw new RuntimeException(e);
             }
+        }
+        try {
+            FieldInfo beanIdField = new FieldInfo(proxyClassType.getConstPool(), BEAN_ID_FIELD, "Ljava/lang/String;");
+            beanIdField.setAccessFlags(AccessFlag.VOLATILE | AccessFlag.PRIVATE);
+            proxyClassType.addField(beanIdField);
+        } catch (DuplicateMemberException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -121,7 +161,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         Bytecode b = new Bytecode(proxyClassType.getConstPool());
         b.addNew(SerializableClientProxy.class.getName());
         b.add(Opcode.DUP);
-        b.addLdc(beanId);
+        b.add(Opcode.ALOAD_0);
+        b.addGetfield(proxyClassType.getName(), BEAN_ID_FIELD, "Ljava/lang/String;");
         b.addInvokespecial(SerializableClientProxy.class.getName(), "<init>", "(Ljava/lang/String;)V");
         b.add(Opcode.ARETURN);
         b.setMaxLocals(1);
