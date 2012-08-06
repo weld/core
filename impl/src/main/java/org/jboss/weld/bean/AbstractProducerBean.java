@@ -43,7 +43,6 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -156,17 +155,14 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             throw new IllegalProductException(NULL_NOT_ALLOWED_FROM_PRODUCER, getProducer());
         } else if (instance != null) {
             boolean passivating = beanManager.isPassivatingScope(getScope());
-            boolean instanceSerializable = isTypeSerializable(instance.getClass());
-            if (passivating && !instanceSerializable) {
+            if (passivating && !isTypeSerializable(instance.getClass())) {
                 throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
             }
             InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
             if (injectionPoint != null && injectionPoint.getBean() != null) {
-                if (!instanceSerializable && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
-                    if (injectionPoint.getMember() instanceof Field) {
-                        if (!injectionPoint.isTransient() && !instanceSerializable) {
-                            throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
-                        }
+                if (Beans.isPassivatingScope(injectionPoint.getBean(), beanManager) && !isTypeSerializable(instance.getClass())) {
+                    if (injectionPoint.getMember() instanceof Field && !injectionPoint.isTransient()) {
+                        throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
                     }
                 }
             }
