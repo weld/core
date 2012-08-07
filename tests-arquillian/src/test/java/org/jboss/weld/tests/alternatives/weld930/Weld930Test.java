@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.tests.alternatives.weld930;
 
+import static org.junit.Assert.assertEquals;
+
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -27,12 +30,19 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Marko Luksa
+ * @author Jozef Hartinger
+ * 
+ * @see https://issues.jboss.org/browse/WELD-930
+ * @see https://issues.jboss.org/browse/WELD-1180
+ * @see http://docs.jboss.org/cdi/spec/1.0/html/injectionelresolution.html#ambigdependencies
  */
 @RunWith(Arquillian.class)
 public class Weld930Test {
 
+    @Inject
+    private Product product;
+
     @Deployment
-    @ShouldThrowException(value = Exception.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .alternate(AlternativeProducer.class)
@@ -41,7 +51,7 @@ public class Weld930Test {
 
     @Test
     public void testWeld930() {
-        // no checks, deployment should fail with DeploymentException (Bean name is ambiguous...)
+        assertEquals("Alternative", product.getName());
     }
 
 }

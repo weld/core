@@ -39,11 +39,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 import com.google.common.primitives.Primitives;
+
+import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
@@ -62,24 +65,30 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
         private BeanDisambiguation() {
         }
 
-        @SuppressWarnings("unchecked")
         public Set<Bean<?>> apply(Set<Bean<?>> from) {
             if (from.size() > 1) {
                 Set<Bean<?>> allBeans = new HashSet<Bean<?>>();
-                Set<Bean<?>> alternativeBeans = new HashSet<Bean<?>>();
+                // beans that are themselves alternatives or their defining bean is an alternative
+                Set<Bean<?>> priorityBeans = new HashSet<Bean<?>>();
 
                 for (Bean<?> bean : from) {
                     if (bean.isAlternative()) {
-                        alternativeBeans.add(bean);
+                        priorityBeans.add(bean);
+                    } else if (bean instanceof AbstractProducerBean<?, ?, ?>) {
+                        AbstractProducerBean<?, ?, ?> producer = (AbstractProducerBean<?, ?, ?>) bean;
+                        if (producer.getDeclaringBean().isAlternative()) {
+                            priorityBeans.add(bean);
+                        }
                     }
                     allBeans.add(bean);
                 }
-                if (alternativeBeans.isEmpty())
-                    return ImmutableSet.copyOf((Iterable) allBeans);
-                else
-                    return ImmutableSet.copyOf((Iterable) alternativeBeans);
+                if (priorityBeans.isEmpty()) {
+                    return immutableSet(allBeans);
+                } else {
+                    return immutableSet(priorityBeans);
+                }
             } else {
-                return ImmutableSet.copyOf((Iterable) from);
+                return ImmutableSet.copyOf(from);
             }
         }
 

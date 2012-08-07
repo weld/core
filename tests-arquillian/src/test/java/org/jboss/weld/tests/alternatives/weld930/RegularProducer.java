@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.alternatives.weld930;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
