@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
@@ -26,13 +24,15 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
+
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Provides event-related operations such sa observer method resolution and event delivery.
@@ -43,22 +43,23 @@ import org.jboss.weld.util.Observers;
  */
 public class ObserverNotifier {
 
-    public static ObserverNotifier of(TypeSafeObserverResolver resolver, ServiceRegistry services) {
-        if (services.contains(TransactionServices.class)) {
-            return new TransactionalObserverNotifier(resolver, services);
+    public static ObserverNotifier of(TypeSafeObserverResolver resolver, BeanManagerImpl beanManager) {
+        if (beanManager.getServices().contains(TransactionServices.class)) {
+            return new TransactionalObserverNotifier(resolver, beanManager);
         } else {
-            return new ObserverNotifier(resolver, services);
+            return new ObserverNotifier(resolver, beanManager);
         }
     }
 
     private final TypeSafeObserverResolver resolver;
+    protected final BeanManagerImpl beanManager;
     private final SharedObjectCache sharedObjectCache;
-    private final MetaAnnotationStore store;
 
-    protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services) {
+    protected ObserverNotifier(TypeSafeObserverResolver resolver, BeanManagerImpl beanManager) {
         this.resolver = resolver;
+        this.beanManager = beanManager;
+        final ServiceRegistry services = beanManager.getServices();
         this.sharedObjectCache = services.get(SharedObjectCache.class);
-        this.store = services.get(MetaAnnotationStore.class);
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
@@ -88,7 +89,7 @@ public class ObserverNotifier {
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        Resolvable resolvable = new ResolvableBuilder(store)
+        Resolvable resolvable = new ResolvableBuilder(beanManager)
             .addTypes(sharedObjectCache.getTypeClosure(eventType))
             .addType(Object.class)
             .addQualifiers(qualifiers)
@@ -100,7 +101,7 @@ public class ObserverNotifier {
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         Set<Type> typeClosure = sharedObjectCache.getTypeClosure(eventType);
-        Resolvable resolvable = new ResolvableBuilder(store)
+        Resolvable resolvable = new ResolvableBuilder(beanManager)
             .addTypes(typeClosure)
             .addType(Object.class)
             .addQualifiers(qualifiers)

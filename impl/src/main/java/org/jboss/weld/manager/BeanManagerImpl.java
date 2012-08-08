@@ -16,26 +16,6 @@
  */
 package org.jboss.weld.manager;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
-import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-import static org.jboss.weld.util.reflection.Reflections.isCacheable;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -70,6 +50,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.TypeLiteral;
 
+import com.google.common.collect.Iterators;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
@@ -132,7 +113,25 @@ import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.Iterators;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
 /**
  * Implementation of the Bean Manager.
@@ -370,7 +369,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.weldELResolver = new WeldELResolver(this);
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
-        this.accessibleObserverNotifier = ObserverNotifier.of(observerResolver, getServices());
+        this.accessibleObserverNotifier = ObserverNotifier.of(observerResolver, this);
         this.closure = new BeansClosure(this);
     }
 

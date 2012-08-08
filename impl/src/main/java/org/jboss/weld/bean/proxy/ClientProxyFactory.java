@@ -168,7 +168,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.add(Opcode.DUP);
         b.add(Opcode.ALOAD_0);
         b.addGetfield(proxyClassType.getName(), BEAN_ID_FIELD, "Ljava/lang/String;");
-        b.addInvokespecial(SerializableClientProxy.class.getName(), "<init>", "(Ljava/lang/String;)V");
+        b.addLdc(getContextId());
+        b.addInvokespecial(SerializableClientProxy.class.getName(), "<init>", "(Ljava/lang/String;Ljava/lang/String;)V");
         b.add(Opcode.ARETURN);
         b.setMaxLocals(1);
         return b;

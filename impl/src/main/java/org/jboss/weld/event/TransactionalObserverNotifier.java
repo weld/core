@@ -19,7 +19,7 @@ package org.jboss.weld.event;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.ObserverMethod;
 
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
@@ -33,9 +33,9 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
 
     private final TransactionServices transactionServices;
 
-    protected TransactionalObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services) {
-        super(resolver, services);
-        this.transactionServices = services.get(TransactionServices.class);
+    protected TransactionalObserverNotifier(TypeSafeObserverResolver resolver, BeanManagerImpl beanManager) {
+        super(resolver, beanManager);
+        this.transactionServices = beanManager.getServices().get(TransactionServices.class);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
      * @param event The event object
      */
     private <T> void deferNotification(final T event, final ObserverMethod<? super T> observer) {
-        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
+        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer, beanManager.getContextId());
         TransactionPhase transactionPhase = observer.getTransactionPhase();
 
         if (transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION)) {
