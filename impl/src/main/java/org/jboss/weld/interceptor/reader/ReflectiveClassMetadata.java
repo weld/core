@@ -60,6 +60,11 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
         };
     }
 
+    @Override
+    public MethodMetadata getDeclaredMethod(Method method) {
+        return DefaultMethodMetadata.of(method);
+    }
+
     public Class<T> getJavaClass() {
         return clazz;
     }
@@ -94,6 +99,4 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
             return false;
         return true;
     }
-
-
 }

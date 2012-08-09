@@ -30,10 +30,16 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  * @author Marius Bogoevici
  */
 public interface MethodMetadata {
+
     Method getJavaMethod();
 
     Set<InterceptionType> getSupportedInterceptionTypes();
 
     Class<?> getReturnType();
+
+    /**
+     * Returns true if the method is an interceptor method (it supports any interception type)
+     */
+    boolean isInterceptorMethod();
 
 }

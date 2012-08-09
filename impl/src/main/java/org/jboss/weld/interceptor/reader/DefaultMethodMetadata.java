@@ -20,6 +20,7 @@ package org.jboss.weld.interceptor.reader;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Set;
 
 import org.jboss.weld.interceptor.builder.MethodReference;
@@ -35,6 +36,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * Represents information about an interceptor method
  *
  * @author Marius Bogoevici
+ * @author Jozef Hartinger
  */
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
@@ -53,7 +55,11 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
                 supportedInterceptorTypes.add(interceptionType);
             }
         }
-        this.supportedInterceptorTypes = SharedObjectFacade.wrap(supportedInterceptorTypes);
+        if (supportedInterceptorTypes.isEmpty()) {
+            this.supportedInterceptorTypes = Collections.emptySet();
+        } else {
+            this.supportedInterceptorTypes = SharedObjectFacade.wrap(supportedInterceptorTypes);
+        }
     }
 
     private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodReference methodReference) {
@@ -73,6 +79,10 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
         return new DefaultMethodMetadata(method, new ReflectiveAnnotatedMethodReader());
     }
 
+    @Override
+    public boolean isInterceptorMethod() {
+        return !supportedInterceptorTypes.isEmpty();
+    }
 
     public Set<InterceptionType> getSupportedInterceptionTypes() {
         return supportedInterceptorTypes;
@@ -108,5 +118,4 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
         }
 
     }
-
 }

@@ -18,15 +18,16 @@ import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
 import org.jboss.weld.interceptor.spi.instance.InterceptorInstantiator;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
-import org.jboss.weld.interceptor.util.ReflectionUtils;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * @author Marius Bogoevici
  * @author Marko Luksa
+ * @author Jozef Hartinger
  */
 public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
@@ -70,7 +71,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
     }
 
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        ReflectionUtils.ensureAccessible(thisMethod);
+        SecureReflections.ensureAccessible(thisMethod);
         if (proceed == null) {
             if (thisMethod.getName().equals(InterceptionUtils.POST_CONSTRUCT)) {
                 return executeInterception(isProxy() ? null : self, null, null, null, InterceptionType.POST_CONSTRUCT);
@@ -78,24 +79,21 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
                 return executeInterception(isProxy() ? null : self, null, null, null, InterceptionType.PRE_DESTROY);
             }
         } else {
-            if (!InterceptionUtils.isInterceptionCandidate(thisMethod)) {
+            if (isInterceptorMethod(thisMethod)) {
                 if (isProxy()) {
                     return thisMethod.invoke(targetInstance, args);
                 } else {
                     return proceed.invoke(self, args);
                 }
             }
-            return executeInterception(isProxy() ? null : self, thisMethod, thisMethod, args, getInterceptionType(thisMethod));
+            return executeInterception(isProxy() ? null : self, thisMethod, thisMethod, args, InterceptionType.AROUND_INVOKE);
         }
         return null;
     }
 
-    private InterceptionType getInterceptionType(Method thisMethod) {
-        if (InterceptionTypeRegistry.isSupported(InterceptionType.AROUND_TIMEOUT) && thisMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(InterceptionType.AROUND_TIMEOUT))) {
-            return InterceptionType.AROUND_TIMEOUT;
-        } else {
-            return InterceptionType.AROUND_INVOKE;
-        }
+    private boolean isInterceptorMethod(Method method) {
+        MethodMetadata methodMetadata = targetClassInterceptorMetadata.getInterceptorClass().getDeclaredMethod(method);
+        return methodMetadata != null && methodMetadata.isInterceptorMethod();
     }
 
     private Object executeInterception(Object self, Method proceedingMethod, Method thisMethod, Object[] args, InterceptionType interceptionType) throws Throwable {

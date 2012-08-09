@@ -17,17 +17,24 @@
 
 package org.jboss.weld.bean.interceptor;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.interceptor.reader.DefaultMethodMetadata;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
+import org.jboss.weld.resources.ClassTransformer;
 
 /**
  * @author Marius Bogoevici
@@ -35,24 +42,26 @@ import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serializable {
     private static final long serialVersionUID = -5087425231467781559L;
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
-    private WeldInterceptorClassMetadata<?> superclass;
+    private final WeldInterceptorClassMetadata<?> superclass;
 
-    private Collection<MethodMetadata> methodMetadatas;
+    private final Map<Method, MethodMetadata> methodMetadata;
 
     private WeldInterceptorClassMetadata(EnhancedAnnotatedType<T> weldClass) {
         this.clazz = weldClass.getJavaClass();
-        ArrayList<MethodMetadata> methodMetadatas = new ArrayList<MethodMetadata>();
+        Map<Method, MethodMetadata> methodMetadataMap = new HashMap<Method, MethodMetadata>();
         for (EnhancedAnnotatedMethod<?, ?> method : weldClass.getDeclaredEnhancedMethods()) {
             MethodMetadata methodMetadata = DefaultMethodMetadata.of(method, WeldAnnotatedMethodReader.getInstance());
             if (methodMetadata.getSupportedInterceptionTypes() != null && methodMetadata.getSupportedInterceptionTypes().size() != 0) {
-                methodMetadatas.add(methodMetadata);
+                methodMetadataMap.put(method.getJavaMember(), methodMetadata);
             }
         }
-        this.methodMetadatas = immutableList(methodMetadatas);
+        this.methodMetadata =  immutableMap(methodMetadataMap);
         if (weldClass.getEnhancedSuperclass() != null) {
             this.superclass = WeldInterceptorClassMetadata.of(weldClass.getEnhancedSuperclass());
+        } else {
+            this.superclass = null;
         }
     }
 
@@ -65,7 +74,12 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
     }
 
     public Iterable<MethodMetadata> getDeclaredMethods() {
-        return methodMetadatas;
+        return methodMetadata.values();
+    }
+
+    @Override
+    public MethodMetadata getDeclaredMethod(Method method) {
+        return methodMetadata.get(method);
     }
 
     public Class<T> getJavaClass() {
@@ -76,5 +90,28 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
         return superclass;
     }
 
+    private Object writeReplace() throws ObjectStreamException {
+        return new SerializationProxy<T>(clazz);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException(PROXY_REQUIRED);
+    }
+
+    private static class SerializationProxy<T> implements Serializable {
+
+        private static final long serialVersionUID = 514950313251775936L;
+
+        private final Class<T> clazz;
+
+        public SerializationProxy(Class<T> clazz) {
+            this.clazz = clazz;
+        }
+
+        private Object readResolve() {
+            EnhancedAnnotatedType<T> type = Container.instance().services().get(ClassTransformer.class).getEnhancedAnnotatedType(clazz);
+            return new WeldInterceptorClassMetadata<T>(type);
+        }
+    }
 }
 
