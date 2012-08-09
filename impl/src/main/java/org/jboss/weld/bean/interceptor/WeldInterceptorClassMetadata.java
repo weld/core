@@ -58,10 +58,10 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
             }
         }
         this.methodMetadata =  immutableMap(methodMetadataMap);
-        if (weldClass.getEnhancedSuperclass() != null) {
-            this.superclass = WeldInterceptorClassMetadata.of(weldClass.getEnhancedSuperclass());
-        } else {
+        if (weldClass.getEnhancedSuperclass() == null || weldClass.getEnhancedSuperclass().getJavaClass().equals(Object.class)) {
             this.superclass = null;
+        } else {
+            this.superclass = WeldInterceptorClassMetadata.of(weldClass.getEnhancedSuperclass());
         }
     }
 
