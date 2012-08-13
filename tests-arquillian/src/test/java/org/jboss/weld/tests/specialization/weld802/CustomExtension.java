@@ -21,17 +21,16 @@
  */
 package org.jboss.weld.tests.specialization.weld802;
 
-import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.introspector.ForwardingWeldClass;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
 
 /**
  * @author Ales Justin
@@ -58,7 +57,7 @@ public class CustomExtension implements Extension {
         if (manager instanceof BeanManagerImpl) {
             BeanManagerImpl bmi = (BeanManagerImpl) manager;
             ClassTransformer ct = bmi.getServices().get(ClassTransformer.class);
-            return WeldClassImpl.of(RegistrySingletonProvider.STATIC_INSTANCE, Foo.class, ct);
+            return WeldClassImpl.of("STATIC_INSTANCE", Foo.class, ct);
         } else {
             return (WeldClass<Foo>) manager.createAnnotatedType(Foo.class);
         }

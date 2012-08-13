@@ -25,7 +25,6 @@ import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.introspector.WeldClass;
@@ -42,139 +41,132 @@ import org.testng.annotations.Test;
 
 import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
 
-public class AccessibleManagerResolutionTest
-{
-   private static String contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+public class AccessibleManagerResolutionTest {
+    private static String contextId = "STATIC_INSTANCE";
 
-   private ClassTransformer classTransformer;
-   private ServiceRegistry services;
-   
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      this.classTransformer = new ClassTransformer(contextId, new TypeStore());
-      this.services = new SimpleServiceRegistry();
-      this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
-      this.services.add(ContextualStore.class, new ContextualStoreImpl(contextId));
-      this.services.add(ClassTransformer.class, classTransformer);
-   }
-   
-   private void addBean(BeanManagerImpl manager, Class<?> c)
-   {
-      WeldClass<?> clazz = WeldClassImpl.of(contextId, c, classTransformer);
-      RIBean<?> bean = ManagedBean.of(clazz, manager, services);
-      manager.addBean(bean);
-      manager.getBeanResolver().clear();
-      BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptors(), manager);
-      bean.initialize(environment);
-   }
-   
-   @Test
-   public void testAccessibleDynamicallySingleLevel()
-   {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
-      Container.initialize(root, services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
-      addBean(root, Cow.class);
-      Assert.assertEquals(1, root.getBeans(Cow.class).size());
-      Assert.assertEquals(0, child.getBeans(Cow.class).size());
-      child.addAccessibleBeanManager(root);
-      Set<Bean<?>> beans = child.getBeans(Cow.class);
-      Assert.assertEquals(1, beans.size());
-      addBean(child, Chicken.class);
-      Assert.assertEquals(1, child.getBeans(Chicken.class).size());
-      Assert.assertEquals(0, root.getBeans(Chicken.class).size());
-   }
-   
-   @Test
-   public void testAccessibleThreeLevelsWithMultiple()
-   {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
-      Container.initialize(root, services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
-      BeanManagerImpl child1 = BeanManagerImpl.newRootManager(contextId, "child1", services, EMPTY_ENABLED);
-      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(contextId, "grandchild", services, EMPTY_ENABLED);
-      BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager(contextId, "greatGrandchild", services, EMPTY_ENABLED);
-      child.addAccessibleBeanManager(root);
-      grandchild.addAccessibleBeanManager(child1);
-      grandchild.addAccessibleBeanManager(child);
-      addBean(greatGrandchild, Cat.class);
-      greatGrandchild.addAccessibleBeanManager(grandchild);
-      addBean(root, Cow.class);
-      addBean(child, Chicken.class);
-      addBean(grandchild, Pig.class);
-      addBean(child1, Horse.class);
-      Assert.assertEquals(0, root.getBeans(Pig.class).size());
-      Assert.assertEquals(0, root.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, root.getBeans(Cow.class).size());
-      Assert.assertEquals(0, root.getBeans(Horse.class).size());
-      Assert.assertEquals(0, root.getBeans(Cat.class).size());
-      Assert.assertEquals(0, child.getBeans(Pig.class).size());
-      Assert.assertEquals(1, child.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, child.getBeans(Cow.class).size());
-      Assert.assertEquals(0, child.getBeans(Horse.class).size());
-      Assert.assertEquals(0, child.getBeans(Cat.class).size());
-      Assert.assertEquals(0, child1.getBeans(Cow.class).size());
-      Assert.assertEquals(1, child1.getBeans(Horse.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Cow.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Horse.class).size());
-      Assert.assertEquals(0, grandchild.getBeans(Cat.class).size());
-      Assert.assertEquals(1, greatGrandchild.getBeans(Pig.class).size());
-      Assert.assertEquals(1, greatGrandchild.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, greatGrandchild.getBeans(Cow.class).size());
-      Assert.assertEquals(1, greatGrandchild.getBeans(Horse.class).size());
-      Assert.assertEquals(1, greatGrandchild.getBeans(Cat.class).size());
-   }
-   
-   @Test
-   public void testSameManagerAddedTwice()
-   {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
-      Container.initialize(root, services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
-      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(contextId, "grandchild", services, EMPTY_ENABLED);
-      grandchild.addAccessibleBeanManager(child);
-      child.addAccessibleBeanManager(root);
-      grandchild.addAccessibleBeanManager(root);
-      addBean(root, Cow.class);
-      addBean(child, Chicken.class);
-      addBean(grandchild, Pig.class);
-      Assert.assertEquals(0, root.getBeans(Pig.class).size());
-      Assert.assertEquals(0, root.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, root.getBeans(Cow.class).size());
-      Assert.assertEquals(0, child.getBeans(Pig.class).size());
-      Assert.assertEquals(1, child.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, child.getBeans(Cow.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Cow.class).size());
-   }
-   
-   @Test
-   public void testCircular()
-   {
-      BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
-      Container.initialize(root, services);
-      BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
-      BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(contextId, "grandchild", services, EMPTY_ENABLED);
-      grandchild.addAccessibleBeanManager(child);
-      child.addAccessibleBeanManager(root);
-      grandchild.addAccessibleBeanManager(root);
-      root.addAccessibleBeanManager(grandchild);
-      addBean(root, Cow.class);
-      addBean(child, Chicken.class);
-      addBean(grandchild, Pig.class);
-      Assert.assertEquals(1, root.getBeans(Pig.class).size());
-      Assert.assertEquals(1, root.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, root.getBeans(Cow.class).size());
-      Assert.assertEquals(1, child.getBeans(Pig.class).size());
-      Assert.assertEquals(1, child.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, child.getBeans(Cow.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Chicken.class).size());
-      Assert.assertEquals(1, grandchild.getBeans(Cow.class).size());
-   }
-   
+    private ClassTransformer classTransformer;
+    private ServiceRegistry services;
+
+    @BeforeMethod
+    public void beforeMethod() {
+        this.classTransformer = new ClassTransformer(contextId, new TypeStore());
+        this.services = new SimpleServiceRegistry();
+        this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
+        this.services.add(ContextualStore.class, new ContextualStoreImpl(contextId));
+        this.services.add(ClassTransformer.class, classTransformer);
+    }
+
+    private void addBean(BeanManagerImpl manager, Class<?> c) {
+        WeldClass<?> clazz = WeldClassImpl.of(contextId, c, classTransformer);
+        RIBean<?> bean = ManagedBean.of(clazz, manager, services);
+        manager.addBean(bean);
+        manager.getBeanResolver().clear();
+        BeanDeployerEnvironment environment = new BeanDeployerEnvironment(new EjbDescriptors(), manager);
+        bean.initialize(environment);
+    }
+
+    @Test
+    public void testAccessibleDynamicallySingleLevel() {
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
+        Container.initialize(root, services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
+        addBean(root, Cow.class);
+        Assert.assertEquals(1, root.getBeans(Cow.class).size());
+        Assert.assertEquals(0, child.getBeans(Cow.class).size());
+        child.addAccessibleBeanManager(root);
+        Set<Bean<?>> beans = child.getBeans(Cow.class);
+        Assert.assertEquals(1, beans.size());
+        addBean(child, Chicken.class);
+        Assert.assertEquals(1, child.getBeans(Chicken.class).size());
+        Assert.assertEquals(0, root.getBeans(Chicken.class).size());
+    }
+
+    @Test
+    public void testAccessibleThreeLevelsWithMultiple() {
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
+        Container.initialize(root, services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
+        BeanManagerImpl child1 = BeanManagerImpl.newRootManager(contextId, "child1", services, EMPTY_ENABLED);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(contextId, "grandchild", services, EMPTY_ENABLED);
+        BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager(contextId, "greatGrandchild", services, EMPTY_ENABLED);
+        child.addAccessibleBeanManager(root);
+        grandchild.addAccessibleBeanManager(child1);
+        grandchild.addAccessibleBeanManager(child);
+        addBean(greatGrandchild, Cat.class);
+        greatGrandchild.addAccessibleBeanManager(grandchild);
+        addBean(root, Cow.class);
+        addBean(child, Chicken.class);
+        addBean(grandchild, Pig.class);
+        addBean(child1, Horse.class);
+        Assert.assertEquals(0, root.getBeans(Pig.class).size());
+        Assert.assertEquals(0, root.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, root.getBeans(Cow.class).size());
+        Assert.assertEquals(0, root.getBeans(Horse.class).size());
+        Assert.assertEquals(0, root.getBeans(Cat.class).size());
+        Assert.assertEquals(0, child.getBeans(Pig.class).size());
+        Assert.assertEquals(1, child.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, child.getBeans(Cow.class).size());
+        Assert.assertEquals(0, child.getBeans(Horse.class).size());
+        Assert.assertEquals(0, child.getBeans(Cat.class).size());
+        Assert.assertEquals(0, child1.getBeans(Cow.class).size());
+        Assert.assertEquals(1, child1.getBeans(Horse.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Cow.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Horse.class).size());
+        Assert.assertEquals(0, grandchild.getBeans(Cat.class).size());
+        Assert.assertEquals(1, greatGrandchild.getBeans(Pig.class).size());
+        Assert.assertEquals(1, greatGrandchild.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, greatGrandchild.getBeans(Cow.class).size());
+        Assert.assertEquals(1, greatGrandchild.getBeans(Horse.class).size());
+        Assert.assertEquals(1, greatGrandchild.getBeans(Cat.class).size());
+    }
+
+    @Test
+    public void testSameManagerAddedTwice() {
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
+        Container.initialize(root, services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(contextId, "grandchild", services, EMPTY_ENABLED);
+        grandchild.addAccessibleBeanManager(child);
+        child.addAccessibleBeanManager(root);
+        grandchild.addAccessibleBeanManager(root);
+        addBean(root, Cow.class);
+        addBean(child, Chicken.class);
+        addBean(grandchild, Pig.class);
+        Assert.assertEquals(0, root.getBeans(Pig.class).size());
+        Assert.assertEquals(0, root.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, root.getBeans(Cow.class).size());
+        Assert.assertEquals(0, child.getBeans(Pig.class).size());
+        Assert.assertEquals(1, child.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, child.getBeans(Cow.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Cow.class).size());
+    }
+
+    @Test
+    public void testCircular() {
+        BeanManagerImpl root = BeanManagerImpl.newRootManager(contextId, "root", services, EMPTY_ENABLED);
+        Container.initialize(root, services);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager(contextId, "child", services, EMPTY_ENABLED);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager(contextId, "grandchild", services, EMPTY_ENABLED);
+        grandchild.addAccessibleBeanManager(child);
+        child.addAccessibleBeanManager(root);
+        grandchild.addAccessibleBeanManager(root);
+        root.addAccessibleBeanManager(grandchild);
+        addBean(root, Cow.class);
+        addBean(child, Chicken.class);
+        addBean(grandchild, Pig.class);
+        Assert.assertEquals(1, root.getBeans(Pig.class).size());
+        Assert.assertEquals(1, root.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, root.getBeans(Cow.class).size());
+        Assert.assertEquals(1, child.getBeans(Pig.class).size());
+        Assert.assertEquals(1, child.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, child.getBeans(Cow.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Chicken.class).size());
+        Assert.assertEquals(1, grandchild.getBeans(Cow.class).size());
+    }
+
 }
