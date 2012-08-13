@@ -51,7 +51,7 @@
         <javassist.version>3.14.0-GA</javassist.version>
         <jbossas.client.version>6.1.0.Final</jbossas.client.version>
         <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
-        <jboss.as7.tck-runner.version>1.0.0.CR2</jboss.as7.tck-runner.version>
+        <jboss.as7.tck-runner.version>1.0.0.CR3-SNAPSHOT</jboss.as7.tck-runner.version>
         <jboss.as7.version>7.2.0.Alpha1-SNAPSHOT</jboss.as7.version>
         <jboss.ejb3.ext-api.version>1.1.1</jboss.ejb3.ext-api.version>
         <jboss.mdr.version>2.0.1.GA</jboss.mdr.version>

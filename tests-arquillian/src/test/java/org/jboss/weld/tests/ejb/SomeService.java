@@ -19,6 +19,9 @@ package org.jboss.weld.tests.ejb;
 
 import javax.ejb.Stateless;
 
+/**
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ */
 @Stateless
 public class SomeService {
     public String someMethod() {
