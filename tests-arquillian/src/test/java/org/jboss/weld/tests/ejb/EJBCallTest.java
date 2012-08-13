@@ -17,7 +17,6 @@
 
 package org.jboss.weld.tests.ejb;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -37,14 +36,8 @@ public class EJBCallTest {
     public static JavaArchive createTestArchive() {
         return ShrinkWrap
                 .create(JavaArchive.class, "test.jar")
+                .addClass(SomeService.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
-    }
-
-    @Stateless
-    public static class SomeService {
-        public String someMethod() {
-            return "test";
-        }
     }
 
     @Inject
