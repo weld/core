@@ -49,7 +49,7 @@ public class SimpleInterceptionChain implements InterceptionChain {
         this.target = target;
         this.targetMethod = targetMethod;
         this.currentPosition = 0;
-        interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
+        interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorInvocations.size());
         for (InterceptorInvocation interceptorInvocation : interceptorInvocations) {
             interceptorMethodInvocations.addAll(interceptorInvocation.getInterceptorMethodInvocations());
         }

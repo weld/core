@@ -19,11 +19,13 @@ package org.jboss.weld.context;
 import java.io.Serializable;
 
 import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.inject.spi.PassivationCapable;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.weld.Container;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * A serializable version of contextual that knows how to restore the
@@ -61,6 +63,8 @@ public class SerializableContextualImpl<C extends Contextual<I>, I> extends Forw
         if (contextual instanceof Serializable) {
             // the contextual is serializable, so we can just use it
             this.serialiazable = contextual;
+        } else if (contextual instanceof PassivationCapable) {
+            this.id = Reflections.<PassivationCapable>cast(contextual).getId();
         } else {
             // otherwise, generate an id (may not be portable between container instances)
             this.id = contextualStore.putIfAbsent(contextual);

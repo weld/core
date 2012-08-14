@@ -23,6 +23,7 @@ import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.interceptor.util.InterceptorMetadataException;
 import org.jboss.weld.interceptor.util.ReflectionUtils;
 import org.jboss.weld.logging.messages.ValidatorMessage;
+import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 import static org.jboss.weld.logging.Category.REFLECTION;
@@ -142,7 +143,7 @@ public class InterceptorMetadataUtils {
                             // add method in the list - if it is there already, it means that it has been added by a subclass
                             // final methods are treated separately, as a final method cannot override another method nor be
                             // overridden
-                            ReflectionUtils.ensureAccessible(method.getJavaMethod());
+                            SecureReflections.ensureAccessible(method.getJavaMethod());
                             if (!foundMethods.contains(methodReference)) {
                                 methodMap.get(interceptionType).add(0, method);
                             }

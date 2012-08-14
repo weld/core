@@ -280,17 +280,19 @@ public class SecureReflections {
      * @return The accessible object
      */
     public static <T extends AccessibleObject> T ensureAccessible(final T accessibleObject) {
-        return new SecureReflectionAccess<T>() {
+        if (accessibleObject.isAccessible()) {
+            return accessibleObject;
+        } else {
+            return new SecureReflectionAccess<T>() {
 
-            @Override
-            protected T work() throws Exception {
-                if (!accessibleObject.isAccessible()) {
+                @Override
+                protected T work() throws Exception {
                     accessibleObject.setAccessible(true);
+                    return accessibleObject;
                 }
-                return accessibleObject;
-            }
 
-        }.runAndWrap();
+            }.runAndWrap();
+        }
     }
 
     /**
