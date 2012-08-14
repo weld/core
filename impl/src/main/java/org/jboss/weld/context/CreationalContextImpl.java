@@ -44,7 +44,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     private static final long serialVersionUID = 7375854583908262422L;
 
     @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
-    private final transient Map<Contextual<?>, Object> incompleteInstances;
+    private transient Map<Contextual<?>, Object> incompleteInstances;
     @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
     private final transient Contextual<T> contextual;
 
@@ -62,7 +62,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     private InjectionPoint persistentInjectionPoint;
 
     public CreationalContextImpl(Contextual<T> contextual) {
-        this(contextual, new HashMap<Contextual<?>, Object>(), Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
+        this(contextual, null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
     }
 
     private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances,
@@ -76,11 +76,14 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public void push(T incompleteInstance) {
+        if (incompleteInstances == null) {
+            incompleteInstances = new HashMap<Contextual<?>, Object>();
+        }
         incompleteInstances.put(contextual, incompleteInstance);
     }
 
     public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual) {
-        return new CreationalContextImpl<S>(contextual, incompleteInstances == null ? new HashMap<Contextual<?>, Object>() : new HashMap<Contextual<?>, Object>(incompleteInstances), dependentInstances, this);
+        return new CreationalContextImpl<S>(contextual, incompleteInstances, dependentInstances, this);
     }
 
     public <S> S getIncompleteInstance(Contextual<S> bean) {
