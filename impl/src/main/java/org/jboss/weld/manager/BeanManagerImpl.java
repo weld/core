@@ -1023,15 +1023,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return injectionTarget;
     }
 
-    private <T> InjectionTarget<T> createMessageDrivenInjectionTarget(AnnotatedType<T> type) {
-        return new MessageDrivenInjectionTarget<T>(getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type), this);
-    }
-
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         if (descriptor.isMessageDriven()) {
-            InjectionTarget<T> injectionTarget = createMessageDrivenInjectionTarget(createAnnotatedType(descriptor.getBeanClass()));
-            getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
-            return injectionTarget;
+            throw new UnsupportedOperationException();
         } else {
             InjectionTarget<T> injectionTarget = getBean(descriptor).getProducer();
             getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
