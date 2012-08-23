@@ -111,6 +111,10 @@ public class Weld {
                 return delegate.parse(urls);
             }
 
+            public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
+                return delegate.parse(urls, removeDuplicates);
+            }
+
             public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader) {
                 Iterable<Metadata<Extension>> iter = delegate.loadExtensions(classLoader);
                 if (extensions != null) {

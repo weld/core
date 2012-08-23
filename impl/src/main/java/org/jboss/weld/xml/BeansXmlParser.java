@@ -123,6 +123,10 @@ public class BeansXmlParser {
     }
 
     public BeansXml parse(Iterable<URL> urls) {
+        return parse(urls, false);
+    }
+
+    public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
         List<Metadata<String>> alternativeStereotypes = new ArrayList<Metadata<String>>();
         List<Metadata<String>> alternativeClasses = new ArrayList<Metadata<String>>();
         List<Metadata<String>> decorators = new ArrayList<Metadata<String>>();
@@ -132,10 +136,10 @@ public class BeansXmlParser {
         URL beansXmlUrl = null;
         for (URL url : urls) {
             BeansXml beansXml = parse(url);
-            alternativeStereotypes.addAll(beansXml.getEnabledAlternativeStereotypes());
-            alternativeClasses.addAll(beansXml.getEnabledAlternativeClasses());
-            decorators.addAll(beansXml.getEnabledDecorators());
-            interceptors.addAll(beansXml.getEnabledInterceptors());
+            addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
+            addTo(alternativeClasses, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
+            addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
+            addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
             includes.addAll(beansXml.getScanning().getIncludes());
             excludes.addAll(beansXml.getScanning().getExcludes());
             /*
@@ -145,6 +149,28 @@ public class BeansXmlParser {
             beansXmlUrl = url;
         }
         return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
+    }
+
+    private void addTo(List<Metadata<String>> list, List<Metadata<String>> listToAdd, boolean removeDuplicates) {
+        if (removeDuplicates) {
+            List<Metadata<String>> filteredListToAdd = new ArrayList<Metadata<String>>(listToAdd.size());
+            for (Metadata<String> metadata : listToAdd) {
+                if (!alreadyAdded(metadata, list)) {
+                    filteredListToAdd.add(metadata);
+                }
+            }
+            listToAdd = filteredListToAdd;
+        }
+        list.addAll(listToAdd);
+    }
+
+    private boolean alreadyAdded(Metadata<String> metadata, List<Metadata<String>> list) {
+        for (Metadata<String> existing : list) {
+            if (existing.getValue().equals(metadata.getValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static InputSource[] loadXsds() {
