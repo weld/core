@@ -17,6 +17,7 @@
 package org.jboss.weld.context;
 
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.injection.spi.ResourceReference;
 
 import javax.enterprise.context.spi.Contextual;
 
@@ -65,6 +66,10 @@ public abstract class ForwardingWeldCreationalContext<T> implements WeldCreation
     @Override
     public String toString() {
         return delegate().toString();
+    }
+
+    public void addDependentResourceReference(ResourceReference<?> resourceReference) {
+        delegate().addDependentResourceReference(resourceReference);
     }
 
 }

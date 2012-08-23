@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.injection.ResourceInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.producer.DefaultInjectionTarget;
 import org.jboss.weld.injection.producer.Instantiator;
@@ -66,10 +67,9 @@ public class EnumInjectionTarget<T extends Enum<?>> extends DefaultInjectionTarg
 
     @Override
     public void dispose(T instance) {
-        disinject(getEjbInjectionPoints(), instance);
-        disinject(getPersistenceContextInjectionPoints(), instance);
-        disinject(getPersistenceUnitInjectionPoints(), instance);
-        disinject(getResourceInjectionPoints(), instance);
+        for (ResourceInjectionPoint<?, ?> ip : getResourceInjectionPoints()) {
+            ip.disinject(instance);
+        }
         for (InjectionPoint ip : getInjectionPoints()) {
             if (ip.getAnnotated() instanceof AnnotatedField<?>) {
                 disinject(InjectionPoints.getWeldInjectionPoint(ip), instance);

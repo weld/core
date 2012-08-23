@@ -105,6 +105,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.ResourceInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
@@ -494,34 +495,9 @@ public class Beans {
     /**
      * Injects EJBs and common fields
      */
-    public static <T> void injectEEFields(T beanInstance, BeanManagerImpl manager, Iterable<WeldInjectionPoint<?, ?>> ejbInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints, Iterable<WeldInjectionPoint<?, ?>> resourceInjectionPoints) {
-        EjbInjectionServices ejbServices = manager.getServices().get(EjbInjectionServices.class);
-        JpaInjectionServices jpaServices = manager.getServices().get(JpaInjectionServices.class);
-        ResourceInjectionServices resourceServices = manager.getServices().get(ResourceInjectionServices.class);
-
-        if (ejbServices != null) {
-            for (WeldInjectionPoint<?, ?> injectionPoint : ejbInjectionPoints) {
-                Object ejbInstance = ejbServices.resolveEjb(injectionPoint);
-                injectionPoint.inject(beanInstance, ejbInstance);
-            }
-        }
-
-        if (jpaServices != null) {
-            for (WeldInjectionPoint<?, ?> injectionPoint : persistenceContextInjectionPoints) {
-                Object pcInstance = jpaServices.resolvePersistenceContext(injectionPoint);
-                injectionPoint.inject(beanInstance, pcInstance);
-            }
-            for (WeldInjectionPoint<?, ?> injectionPoint : persistenceUnitInjectionPoints) {
-                Object puInstance = jpaServices.resolvePersistenceUnit(injectionPoint);
-                injectionPoint.inject(beanInstance, puInstance);
-            }
-        }
-
-        if (resourceServices != null) {
-            for (WeldInjectionPoint<?, ?> injectionPoint : resourceInjectionPoints) {
-                Object resourceInstance = resourceServices.resolveResource(injectionPoint);
-                injectionPoint.inject(beanInstance, resourceInstance);
-            }
+    public static <T> void injectEEFields(Iterable<ResourceInjectionPoint<?, ?>> resourceInjectionPoints, T beanInstance, CreationalContext<T> ctx) {
+        for (ResourceInjectionPoint<?, ?> ip : resourceInjectionPoints) {
+            ip.inject(beanInstance, ctx);
         }
     }
 

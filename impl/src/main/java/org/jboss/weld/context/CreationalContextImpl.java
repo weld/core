@@ -30,6 +30,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -53,6 +54,8 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     private final List<ContextualInstance<?>> parentDependentInstances;
 
     private final WeldCreationalContext<?> parentCreationalContext;
+
+    private List<ResourceReference<?>> resourceReferences;
 
     /*
      * A disposer method may define a metadata injection point. If that's the case, we need to preserve the metadata associated
@@ -110,6 +113,11 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             // do not destroy contextual again, since it's just being destroyed
             if (contextual == null || (dependentInstance.getContextual().equals(contextual) == false))
                 destroy(dependentInstance);
+        }
+        if (resourceReferences != null) {
+            for (ResourceReference<?> reference : resourceReferences) {
+                reference.release();
+            }
         }
     }
 
@@ -172,5 +180,13 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             }
         }
         return this;
+    }
+
+    @Override
+    public void addDependentResourceReference(ResourceReference<?> resoruceReference) {
+        if (resourceReferences == null) {
+            this.resourceReferences = new ArrayList<ResourceReference<?>>();
+        }
+        this.resourceReferences.add(resoruceReference);
     }
 }

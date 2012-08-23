@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.spi.ResourceReference;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -74,4 +75,10 @@ public interface WeldCreationalContext<T> extends CreationalContext<T> {
      * Returns an unmodifiable list of dependent instances.
      */
     List<ContextualInstance<?>> getDependentInstances();
+
+    /**
+     * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every {@link ResourceReference}
+     * once this {@link CreationalContext} instance is released.
+     */
+    void addDependentResourceReference(ResourceReference<?> resourceReference);
 }

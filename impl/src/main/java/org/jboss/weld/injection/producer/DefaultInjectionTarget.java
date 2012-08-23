@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.injection.producer;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+
 import java.util.List;
 import java.util.Set;
 
@@ -27,10 +29,11 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
-import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.ResourceInjectionPoint;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.collections.ArraySet;
 
 /**
  * @author Pete Muir
@@ -38,17 +41,16 @@ import org.jboss.weld.util.Beans;
  */
 public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
 
-    private final Set<WeldInjectionPoint<?, ?>> ejbInjectionPoints;
-    private final Set<WeldInjectionPoint<?, ?>> persistenceContextInjectionPoints;
-    private final Set<WeldInjectionPoint<?, ?>> persistenceUnitInjectionPoints;
-    private final Set<WeldInjectionPoint<?, ?>> resourceInjectionPoints;
+    private final Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints;
 
     public DefaultInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
-        this.ejbInjectionPoints = InjectionPointFactory.instance().getEjbInjectionPoints(bean, type, beanManager);
-        this.persistenceContextInjectionPoints = InjectionPointFactory.instance().getPersistenceContextInjectionPoints(bean, type, beanManager);
-        this.persistenceUnitInjectionPoints = InjectionPointFactory.instance().getPersistenceUnitInjectionPoints(bean, type, beanManager);
-        this.resourceInjectionPoints = InjectionPointFactory.instance().getResourceInjectionPoints(bean, type, beanManager);
+        Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new ArraySet<ResourceInjectionPoint<?,?>>();
+        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getEjbInjectionPoints(bean, type, beanManager));
+        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceContextInjectionPoints(bean, type, beanManager));
+        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceUnitInjectionPoints(bean, type, beanManager));
+        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getResourceInjectionPoints(bean, type, beanManager));
+        this.resourceInjectionPoints = immutableSet(resourceInjectionPoints);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
     public void inject(final T instance, final CreationalContext<T> ctx) {
         new InjectionContextImpl<T>(beanManager, this, getType(), instance) {
             public void proceed() {
-                Beans.injectEEFields(instance, beanManager, ejbInjectionPoints, persistenceContextInjectionPoints, persistenceUnitInjectionPoints, resourceInjectionPoints);
+                Beans.injectEEFields(resourceInjectionPoints, instance, ctx);
                 Beans.injectFieldsAndInitializers(instance, ctx, beanManager, getInjectableFields(), getInitializerMethods());
             }
 
@@ -114,19 +116,7 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
         }
     }
 
-    public Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints() {
-        return ejbInjectionPoints;
-    }
-
-    public Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints() {
-        return persistenceContextInjectionPoints;
-    }
-
-    public Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints() {
-        return persistenceUnitInjectionPoints;
-    }
-
-    public Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints() {
+    public Set<ResourceInjectionPoint<?, ?>> getResourceInjectionPoints() {
         return resourceInjectionPoints;
     }
 }

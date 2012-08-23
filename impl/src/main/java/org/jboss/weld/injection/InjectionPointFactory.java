@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +54,7 @@ import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.Beans;
@@ -207,48 +209,76 @@ public class InjectionPointFactory {
         injectableFields.add(createFieldInjectionPoint(annotatedField, declaringBean, declaringComponentClass, manager));
     }
 
-    private Set<WeldInjectionPoint<?, ?>> getFieldInjectionPointsWithSpecialAnnotation(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, Class<? extends Annotation> annotationType, BeanManagerImpl manager) {
-        ArraySet<WeldInjectionPoint<?, ?>> injectionPoints = new ArraySet<WeldInjectionPoint<?, ?>>();
+    private Set<FieldInjectionPoint<?, ?>> getFieldInjectionPointsWithSpecialAnnotation(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, Class<? extends Annotation> annotationType, BeanManagerImpl manager) {
+        ArraySet<FieldInjectionPoint<?, ?>> injectionPoints = new ArraySet<FieldInjectionPoint<?, ?>>();
         for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(annotationType)) {
             injectionPoints.add(createFieldInjectionPoint(field, declaringBean, type.getJavaClass(), manager));
         }
         return immutableSet(injectionPoints);
     }
 
-    public Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(EjbInjectionServices.class)) {
+    public Set<ResourceInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
+        EjbInjectionServices injectionServices = manager.getServices().get(EjbInjectionServices.class);
+        if (injectionServices != null) {
             Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-            return getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, ejbAnnotationType, manager);
-        } else {
-            return Collections.emptySet();
+            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, ejbAnnotationType, manager);
+            if (!fieldInjectionPoints.isEmpty()) {
+                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
+                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
+                    resourceInjectionPoints.add(ResourceInjectionPoint.forEjb(fieldInjectionPoint, injectionServices));
+                }
+                return resourceInjectionPoints;
+            }
         }
+        return Collections.emptySet();
     }
 
-    public Set<WeldInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(JpaInjectionServices.class)) {
+    public Set<ResourceInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
+        JpaInjectionServices injectionServices = manager.getServices().get(JpaInjectionServices.class);
+        if (injectionServices != null) {
             Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-            return getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, persistenceContextAnnotationType, manager);
-        } else {
-            return Collections.emptySet();
+            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, persistenceContextAnnotationType, manager);
+            if (!fieldInjectionPoints.isEmpty()) {
+                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
+                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
+                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceContext(fieldInjectionPoint, injectionServices));
+                }
+                return resourceInjectionPoints;
+            }
         }
+        return Collections.emptySet();
     }
 
-    public Set<WeldInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(JpaInjectionServices.class)) {
+    public Set<ResourceInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
+        JpaInjectionServices injectionServices = manager.getServices().get(JpaInjectionServices.class);
+        if (injectionServices != null) {
             Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
-            return getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, persistenceUnitAnnotationType, manager);
-        } else {
-            return Collections.emptySet();
+            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, persistenceUnitAnnotationType, manager);
+            if (!fieldInjectionPoints.isEmpty()) {
+                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
+                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
+                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceUnit(fieldInjectionPoint, injectionServices));
+                }
+                return resourceInjectionPoints;
+            }
         }
+        return Collections.emptySet();
     }
 
-    public Set<WeldInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        if (manager.getServices().contains(ResourceInjectionServices.class)) {
+    public Set<ResourceInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
+        ResourceInjectionServices injectionServices = manager.getServices().get(ResourceInjectionServices.class);
+        if (injectionServices != null) {
             Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-            return getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, resourceAnnotationType, manager);
-        } else {
-            return Collections.emptySet();
+            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, resourceAnnotationType, manager);
+            if (!fieldInjectionPoints.isEmpty()) {
+                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
+                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
+                    resourceInjectionPoints.add(ResourceInjectionPoint.forResource(fieldInjectionPoint, injectionServices));
+                }
+                return resourceInjectionPoints;
+            }
         }
+        return Collections.emptySet();
     }
 
     /*
