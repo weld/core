@@ -65,6 +65,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Veto;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMember;
@@ -1252,6 +1253,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return foundInterceptionBindingTypes;
     }
 
+    @Veto
     private static class InstanceInjectionPoint implements InjectionPoint, Serializable {
 
         private static final InjectionPoint INSTANCE = new InstanceInjectionPoint();

@@ -22,6 +22,7 @@
 package org.jboss.weld.literal;
 
 import javax.enterprise.inject.Decorated;
+import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
@@ -30,6 +31,7 @@ import javax.enterprise.util.AnnotationLiteral;
  * @author Jozef Hartinger
  *
  */
+@Veto
 @SuppressWarnings("all")
 public class DecoratedLiteral extends AnnotationLiteral<Decorated> implements Decorated {
 

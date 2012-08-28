@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.literal;
 
+import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Scope;
 
@@ -24,6 +25,7 @@ import javax.inject.Scope;
  *
  * @author Pete Muir
  */
+@Veto
 @SuppressWarnings("all")
 public class ScopeLiteral extends AnnotationLiteral<Scope> implements Scope {
 

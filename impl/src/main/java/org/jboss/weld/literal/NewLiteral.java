@@ -17,6 +17,7 @@
 package org.jboss.weld.literal;
 
 import javax.enterprise.inject.New;
+import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
@@ -24,6 +25,7 @@ import javax.enterprise.util.AnnotationLiteral;
  *
  * @author Pete Muir
  */
+@Veto
 @SuppressWarnings("all")
 public class NewLiteral extends AnnotationLiteral<New> implements New {
 

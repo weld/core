@@ -18,6 +18,7 @@ package org.jboss.weld.servlet;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import javax.enterprise.inject.Veto;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 
@@ -31,6 +32,7 @@ public class StaticWeldProvider implements CDIProvider {
         private static final Weld<Object> WELD_INSTANCE = new EnhancedWeld<Object>();
     }
 
+    @Veto
     private static class EnhancedWeld<T> extends Weld<T> {
 
         @Override

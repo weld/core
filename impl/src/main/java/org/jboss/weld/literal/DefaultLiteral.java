@@ -17,6 +17,7 @@
 package org.jboss.weld.literal;
 
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
@@ -25,6 +26,7 @@ import javax.enterprise.util.AnnotationLiteral;
  * @author Pete Muir
  */
 @SuppressWarnings("all")
+@Veto
 public class DefaultLiteral extends AnnotationLiteral<Default> implements Default {
 
     private static final long serialVersionUID = 5464062523108931731L;

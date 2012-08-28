@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.literal;
 
+import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
@@ -24,6 +25,7 @@ import javax.inject.Qualifier;
  *
  * @author Pete Muir
  */
+@Veto
 @SuppressWarnings("all")
 public class QualifierLiteral extends AnnotationLiteral<Qualifier> implements Qualifier {
 
