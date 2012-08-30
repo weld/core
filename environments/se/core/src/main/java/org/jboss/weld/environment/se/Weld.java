@@ -199,7 +199,7 @@ public class Weld {
      *                                        the given bean
      */
     protected <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings) {
-        final Bean<?> bean = manager.resolve(manager.getBeans(type));
+        final Bean<?> bean = manager.resolve(manager.getBeans(type, bindings));
         if (bean == null) {
             throw new UnsatisfiedResolutionException("Unable to resolve a bean for " + type + " with bindings " + Arrays.asList(bindings));
         }
