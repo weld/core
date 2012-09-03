@@ -40,8 +40,8 @@ public class ExecutorServicesFactory {
             case FIXED:
                 executor = new FixedThreadPoolExecutorServices(configuration.getDeployerThreads());
                 break;
-            case CACHED:
-                executor = new CachedThreadPoolExecutorServices(configuration.getDeployerThreads(), configuration.getThreadPoolKeepAliveTime());
+            case FIXED_TIMEOUT:
+                executor = new TimingOutFixedThreadPoolExecutorServices(configuration.getDeployerThreads(), configuration.getThreadPoolKeepAliveTime());
                 break;
             default:
                 throw new DeploymentException(BootstrapMessage.INVALID_THREAD_POOL_TYPE, configuration.getThreadPoolType());

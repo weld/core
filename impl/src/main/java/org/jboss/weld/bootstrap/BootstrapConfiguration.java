@@ -159,7 +159,7 @@ public class BootstrapConfiguration {
      */
     public enum ThreadPoolType {
         FIXED,
-        CACHED,
+        FIXED_TIMEOUT,
         ;
     }
 }

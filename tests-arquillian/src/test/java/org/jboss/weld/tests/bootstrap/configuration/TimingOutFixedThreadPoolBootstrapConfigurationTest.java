@@ -31,21 +31,21 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
 import org.jboss.weld.bootstrap.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.Validator;
-import org.jboss.weld.executor.CachedThreadPoolExecutorServices;
+import org.jboss.weld.executor.TimingOutFixedThreadPoolExecutorServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class CachedThreadPoolBootstrapConfigurationTest {
+public class TimingOutFixedThreadPoolBootstrapConfigurationTest {
 
     @Inject
     private BeanManagerImpl manager;
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("threadPoolType=CACHED\nthreadPoolKeepAliveTimeSeconds=0"),
+        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("deployerThreads=3\nthreadPoolType=FIXED_TIMEOUT\nthreadPoolKeepAliveTimeSeconds=1"),
                 "org.jboss.weld.bootstrap.properties");
     }
 
@@ -53,9 +53,12 @@ public class CachedThreadPoolBootstrapConfigurationTest {
     public void testServices() throws Exception {
         assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
         assertNotNull(manager.getServices().get(ContainerLifecycleEventPreloader.class));
-        assertTrue(manager.getServices().get(ExecutorServices.class) instanceof CachedThreadPoolExecutorServices);
-        Thread.sleep(100l);
-        CachedThreadPoolExecutorServices executorServices = (CachedThreadPoolExecutorServices) manager.getServices().get(ExecutorServices.class);    
+        assertTrue(manager.getServices().get(ExecutorServices.class) instanceof TimingOutFixedThreadPoolExecutorServices);
+        TimingOutFixedThreadPoolExecutorServices executorServices = (TimingOutFixedThreadPoolExecutorServices) manager.getServices().get(ExecutorServices.class);    
+        // Use full capaticy of the pool
+        assertEquals(3, executorServices.getPoolSize());
+        Thread.sleep(1100l);
+        // All workers timed out
         assertEquals(0, executorServices.getPoolSize());
     }
 }
