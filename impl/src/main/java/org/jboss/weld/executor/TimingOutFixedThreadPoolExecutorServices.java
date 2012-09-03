@@ -20,8 +20,7 @@ import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -30,16 +29,15 @@ import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.slf4j.cal10n.LocLogger;
 
 /**
- * Implementation of {@link ExtendedExecutorServices} that uses a cached thread pool. Similar to
- * {@link Executors#newCachedThreadPool()} but defines max thread pool size.
+ * Implementation of {@link ExtendedExecutorServices} that uses a fixed thread pool. However threads are terminated if no new tasks arrive within the keep-alive time. 
  *
  * @author Martin Kouba
  */
-public class CachedThreadPoolExecutorServices extends AbstractExecutorServices {
+public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
-    private final int maxThreadPoolSize;
+    private final int threadPoolSize;
     /**
      * Keep-alive time in seconds
      */
@@ -47,21 +45,23 @@ public class CachedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     private final ThreadPoolExecutor executor;
 
-    public CachedThreadPoolExecutorServices() {
+    public TimingOutFixedThreadPoolExecutorServices() {
         this(BootstrapConfiguration.DEFAULT_THREAD_POOL_SIZE, BootstrapConfiguration.DEFAULT_KEEP_ALIVE_TIME);
     }
 
-    public CachedThreadPoolExecutorServices(int maxThreadPoolSize, long keepAliveTime) {
+    public TimingOutFixedThreadPoolExecutorServices(int threadPoolSize, long keepAliveTime) {
 
-        this.maxThreadPoolSize = maxThreadPoolSize;
+        this.threadPoolSize = threadPoolSize;
         this.keepAliveTime = keepAliveTime;
 
-        this.executor = new ThreadPoolExecutor(0, maxThreadPoolSize,
+        this.executor = new ThreadPoolExecutor(threadPoolSize, threadPoolSize,
                 keepAliveTime, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(),
+                new LinkedBlockingQueue<Runnable>(),
                 new DeamonThreadFactory(new ThreadGroup("weld-workers"), "weld-worker-"));
+        // Terminate threads if no new tasks arrive within the keep-alive time 
+        this.executor.allowCoreThreadTimeOut(true);
 
-        log.debug(BootstrapMessage.THREADS_IN_USE, maxThreadPoolSize);
+        log.debug(BootstrapMessage.THREADS_IN_USE, threadPoolSize);
     }
 
     public int getPoolSize() {
@@ -75,7 +75,7 @@ public class CachedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     @Override
     protected int getThreadPoolSize() {
-        return maxThreadPoolSize;
+        return threadPoolSize;
     }
 
     public long getKeepAliveTime() {
@@ -84,7 +84,7 @@ public class CachedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     @Override
     public String toString() {
-        return String.format("CachedThreadPoolExecutorServices [maxThreadPoolSize=%s, keepAliveTime=%s]", maxThreadPoolSize,
+        return String.format("TimingOutFixedThreadPoolExecutorServices [threadPoolSize=%s, keepAliveTime=%s]", threadPoolSize,
                 keepAliveTime);
     }
 
