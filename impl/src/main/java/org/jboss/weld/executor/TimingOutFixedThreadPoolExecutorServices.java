@@ -29,7 +29,7 @@ import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.slf4j.cal10n.LocLogger;
 
 /**
- * Implementation of {@link ExtendedExecutorServices} that uses a fixed thread pool. However threads are terminated if no new tasks arrive within the keep-alive time. 
+ * Implementation of {@link ExtendedExecutorServices} that uses a fixed thread pool. However threads are terminated if no new tasks arrive within the keep-alive time.
  *
  * @author Martin Kouba
  */
@@ -58,7 +58,7 @@ public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorSe
                 keepAliveTime, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 new DeamonThreadFactory(new ThreadGroup("weld-workers"), "weld-worker-"));
-        // Terminate threads if no new tasks arrive within the keep-alive time 
+        // Terminate threads if no new tasks arrive within the keep-alive time
         this.executor.allowCoreThreadTimeOut(true);
 
         log.debug(BootstrapMessage.THREADS_IN_USE, threadPoolSize);
