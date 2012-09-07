@@ -106,6 +106,12 @@
                     <exclude name="testEjbInjectionPointGetBean"/>
                 </methods>
             </class>
+            <!-- WELD-1194 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.primitive.PrimitiveInjectionPointTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
