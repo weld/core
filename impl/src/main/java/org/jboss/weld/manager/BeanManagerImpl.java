@@ -34,6 +34,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -1034,11 +1035,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Creates a new {@link Producer} implementation for a given field. This method is required by the specification.
      */
-    public <X> Producer<?> createProducer(AnnotatedField<X> field) {
+    public <X> Producer<?> createProducer(AnnotatedField<? super X> field, Bean<X> declaringBean) {
+        if (declaringBean == null && !field.isStatic()) {
+            throw new IllegalArgumentException(NULL_DECLARING_BEAN, field);
+        }
         AnnotatedTypeValidator.validateAnnotatedMember(field);
         try {
-            EnhancedAnnotatedField<?, X> enhancedField = getServices().get(MemberTransformer.class).loadEnhancedMember(field);
-            Producer<?> producer = createProducer(enhancedField, null, null, null);
+            Producer<?> producer = createProducer(field, null, declaringBean, null);
             getServices().get(InjectionTargetService.class).validateProducer(producer);
             return producer;
         } catch (Throwable e) {
@@ -1046,8 +1049,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
-    public <X, T> Producer<T> createProducer(EnhancedAnnotatedField<T, X> enhancedField, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
-        final AnnotatedField<X> field = enhancedField.slim();
+    public <S, X extends S , T> Producer<T> createProducer(final AnnotatedField<S> field, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
+        EnhancedAnnotatedField<T, S> enhancedField = getServices().get(MemberTransformer.class).loadEnhancedMember(field);
         return new ProducerFieldProducer<X, T>(enhancedField, disposalMethod) {
 
             @Override
@@ -1075,11 +1078,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Creates a new {@link Producer} implementation for a given method. This method is required by the specification.
      */
-    public <X> Producer<?> createProducer(AnnotatedMethod<X> method) {
+    public <X> Producer<?> createProducer(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
+        if (declaringBean == null && !method.isStatic()) {
+            throw new IllegalArgumentException(NULL_DECLARING_BEAN, method);
+        }
         AnnotatedTypeValidator.validateAnnotatedMember(method);
         try {
-            EnhancedAnnotatedMethod<?, X> enhancedMethod = getServices().get(MemberTransformer.class).loadEnhancedMember(method);
-            Producer<?> producer = createProducer(enhancedMethod, null, null, null);
+            Producer<?> producer = createProducer(method, null, declaringBean, null);
             getServices().get(InjectionTargetService.class).validateProducer(producer);
             return producer;
         } catch (Throwable e) {
@@ -1087,8 +1092,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
-    public <X, T> Producer<T> createProducer(EnhancedAnnotatedMethod<T, X> enhancedMethod, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
-        final AnnotatedMethod<X> method = enhancedMethod.slim();
+    public <S, X extends S, T> Producer<T> createProducer(final AnnotatedMethod<S> method, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
+        EnhancedAnnotatedMethod<T, S> enhancedMethod = getServices().get(MemberTransformer.class).loadEnhancedMember(method);
         return new ProducerMethodProducer<X, T>(enhancedMethod, disposalMethod) {
 
             @Override
