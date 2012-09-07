@@ -42,18 +42,18 @@ import org.jboss.weld.util.Beans;
  */
 public abstract class AbstractSyntheticBean<T> extends CommonBean<T> {
 
-    private final Class<T> beanClass;
+    private final Class<?> beanClass;
     protected final Producer<T> producer;
     private final Set<InjectionPoint> injectionPoints;
 
-    protected AbstractSyntheticBean(BeanAttributes<T> attributes, String id, BeanManagerImpl manager, Class<T> beanClass, Producer<T> producer) {
+    protected AbstractSyntheticBean(BeanAttributes<T> attributes, String id, BeanManagerImpl manager, Class<?> beanClass, Producer<T> producer) {
         super(attributes, id, manager);
         this.beanClass = beanClass;
         this.producer = producer;
         this.injectionPoints = wrapInjectionPoints(producer.getInjectionPoints());
     }
 
-    protected static <T> String createId(BeanAttributes<T> attributes, Class<T> beanClass, Producer<T> producer) {
+    protected static <T> String createId(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer) {
         return new StringBuilder().append(SyntheticClassBean.class.getName()).append(RIBean.BEAN_ID_SEPARATOR).append(beanClass.getName())
                 .append(Beans.createBeanAttributesId(attributes)).toString();
     }

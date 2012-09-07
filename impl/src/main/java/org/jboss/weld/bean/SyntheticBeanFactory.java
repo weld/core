@@ -43,19 +43,16 @@ public class SyntheticBeanFactory {
     private SyntheticBeanFactory() {
     }
 
-    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<?> attrs, Class<?> clazz, Producer<?> producer, BeanManagerImpl manager) {
-        BeanAttributes<T> attributes = Reflections.cast(attrs);
-        Class<T> beanClass = Reflections.cast(clazz);
-
-        if (producer instanceof InjectionTarget<?>) {
-            if (attributes.getStereotypes().contains(Decorator.class)) {
-                return createDecorator(attributes, beanClass, Reflections.<InjectionTarget<T>> cast(producer), manager);
-            } else {
-                return createClassBean(attributes, beanClass, Reflections.<InjectionTarget<T>> cast(producer), manager);
-            }
+    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget, BeanManagerImpl manager) {
+        if (attributes.getStereotypes().contains(Decorator.class)) {
+            return createDecorator(attributes, beanClass, injectionTarget, manager);
         } else {
-            return createProducerBean(attributes, beanClass, Reflections.<Producer<T>> cast(producer), manager);
+            return createClassBean(attributes, beanClass, injectionTarget, manager);
         }
+    }
+
+    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer, BeanManagerImpl manager) {
+        return createProducerBean(attributes, beanClass, producer, manager);
     }
 
     private static <T> AbstractSyntheticBean<T> createClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget, BeanManagerImpl manager) {
@@ -74,7 +71,7 @@ public class SyntheticBeanFactory {
         }
     }
 
-    private static <T> AbstractSyntheticBean<T> createProducerBean(BeanAttributes<T> attributes, Class<T> beanClass, Producer<T> producer, BeanManagerImpl manager) {
+    private static <T> AbstractSyntheticBean<T> createProducerBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer, BeanManagerImpl manager) {
         return new SyntheticProducerBean<T>(attributes, beanClass, producer, manager);
     }
 
