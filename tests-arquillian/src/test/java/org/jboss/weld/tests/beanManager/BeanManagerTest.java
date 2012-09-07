@@ -1,5 +1,17 @@
 package org.jboss.weld.tests.beanManager;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -9,14 +21,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class BeanManagerTest {
@@ -58,5 +62,16 @@ public class BeanManagerTest {
         Object myBean = beanManager.getReference(sourceBean, Object.class, beanManager.createCreationalContext(sourceBean));
         assertTrue(myBean instanceof UserInfo);
         assertEquals(((UserInfo) myBean).getUsername(), "pmuir");
+    }
+
+    @Test
+    public void testResolveWithNull() {
+        assertNull(beanManager.resolve(null));
+    }
+
+    @Test
+    public void testResolveWithEmptySet() {
+        assertNull(beanManager.resolve(Collections.<Bean<? extends Integer>>emptySet()));
+        assertNull(beanManager.resolve(new HashSet<Bean<? extends Integer>>()));
     }
 }

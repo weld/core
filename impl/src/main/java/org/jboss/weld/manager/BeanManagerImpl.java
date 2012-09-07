@@ -33,7 +33,6 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
@@ -124,7 +123,6 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
-import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
@@ -1192,6 +1190,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
+        if (beans == null || beans.isEmpty()) {
+            return null;
+        }
         Set<Bean<? extends X>> resolvedBeans = beanResolver.resolve(beans);
         if (resolvedBeans.size() == 1) {
             return resolvedBeans.iterator().next();
