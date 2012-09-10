@@ -44,7 +44,7 @@ public class StandaloneTest {
 
     @Test
     public void testStandalone() {
-        CDI<Object> cdi = new Weld<Object>();
+        CDI<Object> cdi = new Weld();
         assertEquals("pong", cdi.select(ScrewDriver.class).get().ping());
     }
 }

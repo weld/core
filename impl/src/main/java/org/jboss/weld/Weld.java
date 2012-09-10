@@ -37,7 +37,6 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.BeanManagerMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
@@ -48,7 +47,7 @@ import com.google.common.collect.MapMaker;
  * @author Jozef Hartinger
  *
  */
-public class Weld<T> extends CDI<T> {
+public class Weld extends CDI<Object> {
 
     private class ClassNameToBeanManager implements Function<String, BeanManagerImpl> {
 
@@ -135,27 +134,27 @@ public class Weld<T> extends CDI<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<Object> iterator() {
         return getInstance().iterator();
     }
 
     @Override
-    public T get() {
+    public Object get() {
         return getInstance().get();
     }
 
     @Override
-    public Instance<T> select(Annotation... qualifiers) {
+    public Instance<Object> select(Annotation... qualifiers) {
         return getInstance().select(qualifiers);
     }
 
     @Override
-    public <U extends T> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
+    public <U> Instance<U> select(Class<U> subtype, Annotation... qualifiers) {
         return getInstance().select(subtype, qualifiers);
     }
 
     @Override
-    public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+    public <U> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         return getInstance().select(subtype, qualifiers);
     }
 
@@ -169,8 +168,8 @@ public class Weld<T> extends CDI<T> {
         return getInstance().isAmbiguous();
     }
 
-    protected Instance<T> getInstance() {
-        return Reflections.cast(getBeanManager().instance());
+    protected Instance<Object> getInstance() {
+        return getBeanManager().instance();
     }
 
     @Override

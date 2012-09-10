@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 
@@ -28,10 +26,10 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class StaticWeldProvider implements CDIProvider {
 
     private static class WeldSingleton {
-        private static final Weld<Object> WELD_INSTANCE = new EnhancedWeld<Object>();
+        private static final Weld WELD_INSTANCE = new EnhancedWeld();
     }
 
-    private static class EnhancedWeld<T> extends Weld<T> {
+    private static class EnhancedWeld extends Weld {
 
         @Override
         protected BeanManagerImpl unsatisfiedBeanManager(String callerClassName) {
@@ -47,7 +45,7 @@ public class StaticWeldProvider implements CDIProvider {
     }
 
     @Override
-    public <T> CDI<T> getCDI() {
-        return cast(WeldSingleton.WELD_INSTANCE);
+    public CDI<Object> getCDI() {
+        return WeldSingleton.WELD_INSTANCE;
     }
 }

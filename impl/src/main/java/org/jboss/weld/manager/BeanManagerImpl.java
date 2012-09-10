@@ -1343,25 +1343,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return BeanAttributesFactory.forBean(weldMember, this);
     }
 
-    /*
-     * Legacy method defined by the old CDI 1.1 EDR1 API.
-     */
-    public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, InjectionTarget<?> injectionTarget) {
-        return internalCreateBean(Reflections.<BeanAttributes<Object>>cast(attributes), Reflections.<Class<Object>>cast(beanClass), Reflections.<InjectionTarget<Object>>cast(injectionTarget));
-    }
-
-    /*
-     * Legacy method defined by the old CDI 1.1 EDR1 API.
-     */
-    public Bean<?> createBean(BeanAttributes<?> attributes, Class<?> beanClass, Producer<?> producer) {
-        return internalCreateBean(Reflections.<BeanAttributes<Object>>cast(attributes), Reflections.<Class<Object>>cast(beanClass), Reflections.<Producer<Object>>cast(producer));
-    }
-
-    public <T> Bean<T> internalCreateBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget) {
+    @Override
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget) {
         return SyntheticBeanFactory.create(attributes, beanClass, injectionTarget, this);
     }
 
-    public <T> Bean<T> internalCreateBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer) {
+    @Override
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer) {
         return SyntheticBeanFactory.create(attributes, beanClass, producer, this);
     }
 

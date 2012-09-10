@@ -110,7 +110,6 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.MemberTransformer;
-import org.jboss.weld.resources.DefaultReflectionCache;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
@@ -573,8 +572,8 @@ public class WeldBootstrap implements Bootstrap {
                         // remove BeanManager references
                         try {
                             CDI<?> cdi = CDI.current();
-                            if (cdi instanceof Weld<?>) {
-                                ((Weld<?>) cdi).cleanup();
+                            if (cdi instanceof Weld) {
+                                ((Weld) cdi).cleanup();
                             }
                         } catch (java.lang.IllegalStateException ignored) {
                         }
