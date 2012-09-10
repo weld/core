@@ -112,6 +112,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- WELD-1201 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.communication.broken.ExtensionCannotFireContainerLifecycleEventTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
