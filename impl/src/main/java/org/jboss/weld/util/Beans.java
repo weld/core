@@ -284,17 +284,19 @@ public class Beans {
                     && !annotatedMethod.isAnnotationPresent(Inject.class)
                     && !annotatedMethod.getJavaMember().isBridge();
 
-            if (businessMethod) {
-                for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
-                    businessMethod = !annotatedMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(interceptionType));
-                    if (!businessMethod)
-                        break;
-                }
-                if (businessMethod)
-                    annotatedMethods.add(annotatedMethod);
+            if (businessMethod && !isInterceptorMethod(annotatedMethod)) {
+                annotatedMethods.add(annotatedMethod);
             }
         }
         return annotatedMethods;
+    }
+
+    private static boolean isInterceptorMethod(WeldMethod<?, ?> annotatedMethod) {
+        for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
+            if (annotatedMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(interceptionType)))
+                return true;
+        }
+        return false;
     }
 
     public static Set<WeldInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, WeldClass<?> type, BeanManagerImpl manager) {
