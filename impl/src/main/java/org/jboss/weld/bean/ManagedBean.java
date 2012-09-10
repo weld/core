@@ -27,7 +27,9 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -36,6 +38,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
@@ -154,7 +158,24 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     public T create(CreationalContext<T> creationalContext) {
         T instance = getProducer().produce(creationalContext);
         getProducer().inject(instance, creationalContext);
-        getProducer().postConstruct(instance);
+
+        if (beanManager.isContextActive(RequestScoped.class)) {
+            getProducer().postConstruct(instance);
+        } else {
+            /*
+             * CDI-219
+             * The request scope is active during @PostConstruct callback of any bean.
+             */
+            RequestContext context = getUnboundRequestContext();
+            try {
+                context.activate();
+                getProducer().postConstruct(instance);
+            } finally {
+                context.invalidate();
+                context.deactivate();
+            }
+        }
+
         return instance;
     }
 
@@ -240,5 +261,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     public boolean isPassivationCapableDependency() {
         return passivationCapableDependency;
+    }
+
+    private RequestContext getUnboundRequestContext() {
+        final Bean<?> bean = beanManager.resolve(beanManager.getBeans(RequestContext.class, UnboundLiteral.INSTANCE));
+        final CreationalContext<?> ctx = beanManager.createCreationalContext(bean);
+        return (RequestContext) beanManager.getReference(bean, RequestContext.class, ctx);
     }
 }

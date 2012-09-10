@@ -628,16 +628,35 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * Gets an active context of the given scope. Throws an exception if there
      * are no active contexts found or if there are too many matches
      *
+     * @throws IllegalStateException if there are multiple active scopes for a given context
      * @param scopeType The scope to match
      * @return A single active context of the given scope
      * @see javax.enterprise.inject.spi.BeanManager#getContext(java.lang.Class)
      */
     public Context getContext(Class<? extends Annotation> scopeType) {
+        Context activeContext = internalGetContext(scopeType);
+        if (activeContext == null) {
+            throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
+        }
+        return activeContext;
+    }
+
+    /**
+     * Indicates whether there is an active context for a given scope.
+     *
+     * @throws IllegalStateException if there are multiple active scopes for a given context
+     * @param scopeType
+     * @return true if there is an active context for a given scope, false otherwise
+     */
+    public boolean isContextActive(Class<? extends Annotation> scopeType) {
+        return internalGetContext(scopeType) != null;
+    }
+
+    private Context internalGetContext(Class<? extends Annotation> scopeType) {
         Context activeContext = null;
         final List<Context> ctx = contexts.get(scopeType);
         if (ctx == null) {
-            //this happens if no context is registered
-            throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
+            return null;
         }
         for (Context context : ctx) {
             if (context.isActive()) {
@@ -648,10 +667,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 }
             }
         }
-        if (activeContext == null) {
-            throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
-        }
-
         return activeContext;
     }
 
