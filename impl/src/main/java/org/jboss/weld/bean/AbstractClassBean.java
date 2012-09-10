@@ -181,6 +181,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     public void initializeAfterBeanDiscovery() {
         initInterceptorsIfNeeded();
         initDecorators();
+        initAfterInterceptorsAndDecoratorsInitialized();
         super.initializeAfterBeanDiscovery();
         subclassed = !Reflections.isFinal(getType()) && (hasDecorators() || hasInterceptors());
         if (isSubclassed()) {
@@ -190,6 +191,9 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
             decoratorProxyFactory = new ProxyFactory<T>(getType(), getTypes(), this);
             decoratorProxyFactory.getProxyClass(); //eagerly generate the proxy class
         }
+    }
+
+    protected void initAfterInterceptorsAndDecoratorsInitialized() {
     }
 
     protected void initInterceptorsIfNeeded() {
