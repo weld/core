@@ -341,8 +341,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     @Override
-    public void initializeAfterBeanDiscovery() {
-        initInterceptorsIfNeeded();
+    protected void initAfterInterceptorsAndDecoratorsInitialized() {
+        super.initAfterInterceptorsAndDecoratorsInitialized();
+
         if (this.passivationCapableBean && this.hasDecorators()) {
             for (Decorator<?> decorator : this.getDecorators()) {
                 if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
@@ -359,7 +360,6 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 }
             }
         }
-        super.initializeAfterBeanDiscovery();
     }
 
     private void initPassivationCapable() {
