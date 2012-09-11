@@ -1408,7 +1408,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T extends Extension> T getExtension(Class<T> extensionClass) {
-        Bean<?> bean = resolve(getBeans(extensionClass));
+        Bean<?> bean = null;
+        // resolve based on the bean class
+        for (Bean<?> b : getBeans(extensionClass)) {
+            if (b.getBeanClass().equals(extensionClass)) {
+                bean = b;
+            }
+        }
         if (bean == null) {
             throw new IllegalArgumentException(NO_INSTANCE_OF_EXTENSION, extensionClass);
         }
