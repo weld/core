@@ -129,6 +129,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- WELD-1207 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.manager.provider.runtime.CDIProviderRuntimeTest">
+                <methods>
+                    <exclude name="testLookup"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
