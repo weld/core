@@ -513,6 +513,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return Beans.isBeanEnabled(bean, getEnabled());
     }
 
+    @Override
     public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
         Resolvable resolvable = new ResolvableBuilder(beanType, this).addQualifiers(qualifiers).create();
         return beanResolver.resolve(resolvable, isCacheable(qualifiers));
@@ -633,6 +634,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @return A single active context of the given scope
      * @see javax.enterprise.inject.spi.BeanManager#getContext(java.lang.Class)
      */
+    @Override
     public Context getContext(Class<? extends Annotation> scopeType) {
         Context activeContext = internalGetContext(scopeType);
         if (activeContext == null) {
@@ -699,6 +701,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext) {
         if (bean == null) {
             throw new IllegalArgumentException(NULL_BEAN_ARGUMENT);
@@ -763,6 +766,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
     public Object getInjectableReference(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
         if (injectionPoint.isDelegate()) {
             return DecorationHelper.peek().getNextDelegate(injectionPoint, creationalContext);
@@ -785,10 +789,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return bean;
     }
 
+    @Override
     public Set<Bean<?>> getBeans(String name) {
         return nameBasedResolver.resolve(name);
     }
 
+    @Override
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers) {
         checkResolveDecoratorsArguments(types);
         // TODO Fix this cast and make the resolver return a list
@@ -819,6 +825,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @see javax.enterprise.inject.spi.BeanManager#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType,
      *      java.lang.annotation.Annotation[])
      */
+    @Override
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
         if (interceptorBindings.length == 0) {
             throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
@@ -1050,6 +1057,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Creates a new {@link Producer} implementation for a given field. This method is required by the specification.
      */
+    @Override
     public <X> Producer<?> createProducer(AnnotatedField<? super X> field, Bean<X> declaringBean) {
         if (declaringBean == null && !field.isStatic()) {
             throw new IllegalArgumentException(NULL_DECLARING_BEAN, field);
@@ -1093,6 +1101,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Creates a new {@link Producer} implementation for a given method. This method is required by the specification.
      */
+    @Override
     public <X> Producer<?> createProducer(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
         if (declaringBean == null && !method.isStatic()) {
             throw new IllegalArgumentException(NULL_DECLARING_BEAN, method);
@@ -1133,6 +1142,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         };
     }
 
+    @Override
     public void validate(InjectionPoint ij) {
         try {
             getServices().get(Validator.class).validateInjectionPoint(ij, this);
@@ -1141,6 +1151,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
     public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType) {
         InterceptorBindingModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingType);
         if (model.isValid()) {
@@ -1150,10 +1161,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
     public Bean<?> getPassivationCapableBean(String id) {
         return getServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(id);
     }
 
+    @Override
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
         final StereotypeModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getStereotype(stereotype);
         if (model.isValid()) {
@@ -1163,44 +1176,54 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
     public boolean isQualifier(Class<? extends Annotation> annotationType) {
         return getServices().get(MetaAnnotationStore.class).getBindingTypeModel(annotationType).isValid();
     }
 
+    @Override
     public boolean isInterceptorBinding(Class<? extends Annotation> annotationType) {
         return getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid();
     }
 
+    @Override
     public boolean isNormalScope(Class<? extends Annotation> annotationType) {
         ScopeModel<?> scope = getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType);
         return scope.isValid() && scope.isNormal();
     }
 
+    @Override
     public boolean isPassivatingScope(Class<? extends Annotation> annotationType) {
         ScopeModel<?> scope = getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType);
         return scope.isValid() && scope.isPassivating();
     }
 
+    @Override
     public boolean isScope(Class<? extends Annotation> annotationType) {
         return getServices().get(MetaAnnotationStore.class).getScopeModel(annotationType).isValid();
     }
 
+    @Override
     public boolean isStereotype(Class<? extends Annotation> annotationType) {
         return getServices().get(MetaAnnotationStore.class).getStereotype(annotationType).isValid();
     }
 
+    @Override
     public ELResolver getELResolver() {
         return weldELResolver;
     }
 
+    @Override
     public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory) {
         return new WeldExpressionFactory(expressionFactory);
     }
 
+    @Override
     public <T> WeldCreationalContext<T> createCreationalContext(Contextual<T> contextual) {
         return new CreationalContextImpl<T>(contextual);
     }
 
+    @Override
     public <T> AnnotatedType<T> createAnnotatedType(Class<T> type) {
         return getServices().get(ClassTransformer.class).getAnnotatedType(type);
     }
@@ -1209,6 +1232,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
     }
 
+    @Override
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
         if (beans == null || beans.isEmpty()) {
             return null;
@@ -1321,6 +1345,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return InstanceImpl.of(InstanceInjectionPoint.INSTANCE, createCreationalContext(null), this);
     }
 
+    @Override
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
         EnhancedAnnotatedType<T> clazz = services.get(ClassTransformer.class).getEnhancedAnnotatedType(type);
         if (services.get(EjbDescriptors.class).contains(type.getJavaClass())) {
@@ -1329,6 +1354,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return BeanAttributesFactory.forBean(clazz, this);
     }
 
+    @Override
     public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> member) {
         return internalCreateBeanAttributes(member);
     }
@@ -1380,6 +1406,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return injectionPoint;
     }
 
+    @Override
     public <T extends Extension> T getExtension(Class<T> extensionClass) {
         Bean<?> bean = resolve(getBeans(extensionClass));
         if (bean == null) {
