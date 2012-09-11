@@ -22,6 +22,8 @@
 package org.jboss.weld.tests.beanManager.extension;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -66,9 +68,10 @@ public class GetExtensionTest {
         manager.getExtension(InactiveExtension.class);
     }
     
-    @Test(expected = Exception.class) // TODO: modify based on the resolution of CDI-99
+    @Test
     public void testAmbiguousExtensions() {
-        manager.getExtension(BravoExtension.class);
+        assertTrue(manager.getExtension(BravoExtension.class) instanceof BravoExtension);
+        assertFalse(manager.getExtension(BravoExtension.class) instanceof CharlieExtension);
     }
     
     @Test(expected = IllegalArgumentException.class)
