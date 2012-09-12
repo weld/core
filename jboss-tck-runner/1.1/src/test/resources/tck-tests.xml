@@ -135,6 +135,62 @@
                     <exclude name="testLookup"/>
                 </methods>
             </class>
+            <!-- WELD-1196 -->
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamConstructorTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamInitializerTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamFieldTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamProducerTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamDisposerTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinDecoratorInvalidTypeParamFieldTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinDecoratorInvalidTypeParamConstructorTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinDecoratorInvalidTypeParamInitializerTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinInterceptorInvalidTypeParamConstructorTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinInterceptorInvalidTypeParamFieldTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinInterceptorInvalidTypeParamInitializerTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
