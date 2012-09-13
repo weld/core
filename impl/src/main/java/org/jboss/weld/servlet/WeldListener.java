@@ -117,7 +117,6 @@ public class WeldListener extends AbstractServletListener {
             // servlet containers may not be able to inject fields in a servlet listener
             beanManager = cast(CDI.current().getBeanManager());
         }
-        sce.getServletContext().setAttribute(BeanManager.class.getName(), beanManager);
         beanManager.getAccessibleObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
     }
 
