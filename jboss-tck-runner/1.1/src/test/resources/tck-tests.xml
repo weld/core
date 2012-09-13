@@ -118,17 +118,6 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <!-- WELD-1202 -->
-            <class name="org.jboss.cdi.tck.tests.event.broken.raw.RawEventProcessInjectionPointTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.lookup.dynamic.broken.raw.RawInstanceProcessInjectionPointTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- WELD-1207 -->
             <class name="org.jboss.cdi.tck.tests.lookup.manager.provider.runtime.CDIProviderRuntimeTest">
                 <methods>

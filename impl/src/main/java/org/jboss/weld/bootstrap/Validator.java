@@ -61,6 +61,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
@@ -648,20 +649,21 @@ public class Validator implements Service {
     }
 
     private static void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type) {
-        if (injectionPoint.getAnnotated().getBaseType().equals(type)) {
-            if (injectionPoint.getType() instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) injectionPoint.getType();
+        Type injectionPointType = injectionPoint.getType();
+        if (injectionPointType instanceof Class<?> && type.equals(injectionPointType)) {
+            throw new DefinitionException(INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER, type, injectionPoint);
+        }
+        if (injectionPointType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) injectionPointType;
+            if (type.equals(parameterizedType.getRawType())) {
                 if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>) {
                     throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, injectionPoint);
                 }
                 if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
                     throw new DefinitionException(INJECTION_POINT_HAS_WILDCARD, type, injectionPoint);
                 }
-            } else {
-                throw new DefinitionException(INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER, type, injectionPoint);
             }
         }
-
     }
 
     private static boolean isInjectionPointSatisfied(InjectionPoint ij, Set<?> resolvedBeans, BeanManagerImpl beanManager) {
