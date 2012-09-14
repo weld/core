@@ -36,8 +36,8 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
 
     private final TransactionServices transactionServices;
 
-    protected TransactionalObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services) {
-        super(resolver, services);
+    protected TransactionalObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+        super(resolver, services, strict);
         this.transactionServices = services.get(TransactionServices.class);
     }
 

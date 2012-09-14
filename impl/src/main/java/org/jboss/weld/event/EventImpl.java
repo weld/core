@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.logging.messages.EventMessage.PROXY_REQUIRED;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -30,10 +32,7 @@ import org.jboss.weld.bean.builtin.AbstractFacade;
 import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Formats;
-
-import static org.jboss.weld.logging.messages.EventMessage.PROXY_REQUIRED;
 
 /**
  * Implementation of the Event interface
@@ -66,7 +65,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     public void fire(T event) {
-        getBeanManager().getGlobalObserverNotifier().fireEvent(getType(), event, getQualifiers());
+        getBeanManager().getGlobalStrictObserverNotifier().fireEvent(getType(), event, getQualifiers());
     }
 
     public Event<T> select(Annotation... qualifiers) {
@@ -82,7 +81,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
-        Observers.checkEventObjectType(getBeanManager(), subtype);
+        getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
         return new EventImpl<U>(new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(), newQualifiers), getBeanManager());
     }
 

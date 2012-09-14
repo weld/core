@@ -240,8 +240,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ELResolver weldELResolver;
     private transient Namespace rootNamespace;
 
-    private final transient ObserverNotifier accessibleObserverNotifier;
-    private final transient ObserverNotifier globalObserverNotifier;
+    /*
+     * Lenient instances do not perform event type checking - this is required for firing container lifecycle events.
+     * Strict instances do performe event type checking and are used for firing application an extension events.
+     */
+    private final transient ObserverNotifier accessibleLenientObserverNotifier;
+    private final transient ObserverNotifier globalLenientObserverNotifier;
+    private final transient ObserverNotifier globalStrictObserverNotifier;
 
     /*
     * Activity scoped data structures
@@ -408,9 +413,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
-        this.accessibleObserverNotifier = ObserverNotifier.of(accessibleObserverResolver, getServices());
+        this.accessibleLenientObserverNotifier = ObserverNotifier.of(accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
-        this.globalObserverNotifier = globalObserverNotifierService.getGlobalObserverNotifier();
+        this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
+        this.globalStrictObserverNotifier = globalObserverNotifierService.getGlobalStrictObserverNotifier();
         globalObserverNotifierService.registerBeanManager(this);
     }
 
@@ -431,7 +437,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         beanResolver.clear();
         interceptorResolver.clear();
         decoratorResolver.clear();
-        accessibleObserverNotifier.clear();
+        accessibleLenientObserverNotifier.clear();
     }
 
     public HashSet<BeanManagerImpl> getAccessibleManagers() {
@@ -487,7 +493,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        return globalObserverNotifier.resolveObserverMethods(event, bindings);
+        return globalStrictObserverNotifier.resolveObserverMethods(event, bindings);
     }
 
     public void addInterceptor(Interceptor<?> bean) {
@@ -622,7 +628,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     @Override
     public void fireEvent(Object event, Annotation... qualifiers) {
-        globalObserverNotifier.fireEvent(event, qualifiers);
+        globalStrictObserverNotifier.fireEvent(event, qualifiers);
     }
 
     /**
@@ -879,21 +885,30 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     /**
-     * Get the observer notifier for accessible observer methods. For internal use
+     * Get the lenient observer notifier for accessible observer methods. Should never be exposed to an application.
      *
      * @return The {@link ObserverNotifier}
      */
-    public ObserverNotifier getAccessibleObserverNotifier() {
-        return accessibleObserverNotifier;
+    public ObserverNotifier getAccessibleLenientObserverNotifier() {
+        return accessibleLenientObserverNotifier;
     }
 
     /**
-     * Get the global observer notifier. For internal use
+     * Get the lenient global observer notifier. Should never be exposed to an application.
      *
      * @return The {@link ObserverNotifier}
      */
-    public ObserverNotifier getGlobalObserverNotifier() {
-        return globalObserverNotifier;
+    public ObserverNotifier getGlobalLenientObserverNotifier() {
+        return globalLenientObserverNotifier;
+    }
+
+    /**
+     * Get the Strict global observer notifier. This one should be used for firing application / extension events.
+     *
+     * @return The {@link ObserverNotifier}
+     */
+    public ObserverNotifier getGlobalStrictObserverNotifier() {
+        return globalStrictObserverNotifier;
     }
 
     /**
@@ -1271,7 +1286,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.interceptors.clear();
         this.nameBasedResolver.clear();
         this.namespaces.clear();
-        this.accessibleObserverNotifier.clear();
+        this.accessibleLenientObserverNotifier.clear();
         this.observers.clear();
     }
 

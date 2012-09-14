@@ -117,17 +117,17 @@ public class WeldListener extends AbstractServletListener {
             // servlet containers may not be able to inject fields in a servlet listener
             beanManager = cast(CDI.current().getBeanManager());
         }
-        beanManager.getAccessibleObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
+        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        beanManager.getAccessibleObserverNotifier().fireEvent(sce, DestroyedLiteral.APPLICATION);
+        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce, DestroyedLiteral.APPLICATION);
     }
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        beanManager.getAccessibleObserverNotifier().fireEvent(event, InitializedLiteral.SESSION);
+        beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, InitializedLiteral.SESSION);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class WeldListener extends AbstractServletListener {
             if (destroyed) {
                 // we are outside of a request (the session timed out) and therefore the session was destroyed immediately
                 // we can fire the @Destroyed(SessionScoped.class) event immediately
-                beanManager.getAccessibleObserverNotifier().fireEvent(event, DestroyedLiteral.SESSION);
+                beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, DestroyedLiteral.SESSION);
             } else {
                 // the old session won't be available at the time we destroy this request
                 // let's store its reference until then
@@ -166,11 +166,11 @@ public class WeldListener extends AbstractServletListener {
                     requestContext().invalidate();
                     requestContext().deactivate();
                     // fire @Destroyed(RequestScoped.class)
-                    beanManager.getAccessibleObserverNotifier().fireEvent(event, DestroyedLiteral.REQUEST);
+                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, DestroyedLiteral.REQUEST);
                     sessionContext().deactivate();
                     // fire @Destroyed(SessionScoped.class)
                     if (!sessionContext().isValid()) {
-                        beanManager.getAccessibleObserverNotifier().fireEvent(request.getAttribute(HTTP_SESSION_EVENT), DestroyedLiteral.SESSION);
+                        beanManager.getAccessibleLenientObserverNotifier().fireEvent(request.getAttribute(HTTP_SESSION_EVENT), DestroyedLiteral.SESSION);
                     }
                 } finally {
                     requestContext().dissociate(request);
@@ -203,7 +203,7 @@ public class WeldListener extends AbstractServletListener {
             conversationContext.deactivate();
         }
         if (isTransient) {
-            beanManager.getAccessibleObserverNotifier().fireEvent(event, DestroyedLiteral.CONVERSATION);
+            beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, DestroyedLiteral.CONVERSATION);
         }
     }
 
@@ -234,7 +234,7 @@ public class WeldListener extends AbstractServletListener {
                  */
                 try {
                     activateConversations(event);
-                    beanManager.getAccessibleObserverNotifier().fireEvent(event, InitializedLiteral.REQUEST);
+                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, InitializedLiteral.REQUEST);
                 } catch (RuntimeException e) {
                     requestDestroyed(event);
                     throw e;
@@ -260,7 +260,7 @@ public class WeldListener extends AbstractServletListener {
             setContextActivatedInRequest(request);
             conversationContext.activate(cid);
             if (cid == null) { // transient conversation
-                beanManager.getAccessibleObserverNotifier().fireEvent(event, InitializedLiteral.CONVERSATION);
+                beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, InitializedLiteral.CONVERSATION);
             }
         } else {
             /*

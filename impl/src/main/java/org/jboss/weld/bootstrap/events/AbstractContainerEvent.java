@@ -66,7 +66,7 @@ public abstract class AbstractContainerEvent {
     public void fire() {
         Type eventType = new ParameterizedTypeImpl(getRawType(), getActualTypeArguments(), null);
         try {
-            beanManager.getGlobalObserverNotifier().fireEvent(eventType, this);
+            beanManager.getGlobalLenientObserverNotifier().fireEvent(eventType, this);
         } catch (Exception e) {
             getErrors().add(e);
         }

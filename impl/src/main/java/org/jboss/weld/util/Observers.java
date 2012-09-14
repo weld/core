@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,9 +43,7 @@ import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -59,7 +51,14 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class Observers {
 
+    /*
+     * Contains all container lifecycle event types
+     */
     public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES;
+    /*
+     * Contains only top superinterfaces of each chain of container lifecycle event types.
+     */
+    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES;
 
     static {
         Set<Class<?>> types = new HashSet<Class<?>>();
@@ -82,31 +81,21 @@ public class Observers {
         types.add(ProcessProducerField.class);
         types.add(ProcessObserverMethod.class);
         CONTAINER_LIFECYCLE_EVENT_TYPES = Collections.unmodifiableSet(types);
-    }
 
-    public static void checkEventObjectType(BeanManagerImpl manager, Type eventType) {
-        checkEventObjectType(manager.getServices().get(SharedObjectCache.class), eventType);
-    }
-
-    public static void checkEventObjectType(SharedObjectCache sharedObjectCache, Type eventType) {
-        Type[] types;
-        final Type resolvedType = sharedObjectCache.getResolvedType(eventType);
-        if (resolvedType instanceof Class<?>) {
-            types = new Type[0];
-        } else if (resolvedType instanceof ParameterizedType) {
-            types = ((ParameterizedType) resolvedType).getActualTypeArguments();
-        } else {
-            throw new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
-        }
-        for (Type type : types) {
-            if (type instanceof TypeVariable<?>) {
-                throw new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
-            }
-        }
-    }
-
-    public static void checkEventObjectType(SharedObjectCache sharedObjectCache, Object event) {
-        checkEventObjectType(sharedObjectCache, event.getClass());
+        Set<Class<?>> canonicalSupertypes = new HashSet<Class<?>>();
+        canonicalSupertypes.add(BeforeBeanDiscovery.class);
+        canonicalSupertypes.add(AfterBeanDiscovery.class);
+        canonicalSupertypes.add(AfterDeploymentValidation.class);
+        canonicalSupertypes.add(BeforeShutdown.class);
+        canonicalSupertypes.add(ProcessModule.class);
+        canonicalSupertypes.add(ProcessAnnotatedType.class);
+        canonicalSupertypes.add(ProcessInjectionPoint.class);
+        canonicalSupertypes.add(ProcessInjectionTarget.class);
+        canonicalSupertypes.add(ProcessProducer.class);
+        canonicalSupertypes.add(ProcessBeanAttributes.class);
+        canonicalSupertypes.add(ProcessBean.class);
+        canonicalSupertypes.add(ProcessObserverMethod.class);
+        CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = Collections.unmodifiableSet(canonicalSupertypes);
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {

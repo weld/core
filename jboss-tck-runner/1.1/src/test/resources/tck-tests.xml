@@ -112,12 +112,6 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <!-- WELD-1201 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.communication.broken.ExtensionCannotFireContainerLifecycleEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- WELD-1207 -->
             <class name="org.jboss.cdi.tck.tests.lookup.manager.provider.runtime.CDIProviderRuntimeTest">
                 <methods>

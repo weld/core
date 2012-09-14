@@ -50,12 +50,14 @@ public class GlobalObserverNotifierService implements Service {
     }
 
     private final Set<BeanManagerImpl> beanManagers;
-    private final ObserverNotifier globalObserverNotifier;
+    private final ObserverNotifier globalLenientObserverNotifier;
+    private final ObserverNotifier globalStrictObserverNotifier;
 
     public GlobalObserverNotifierService(ServiceRegistry services) {
         this.beanManagers = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver resolver = new TypeSafeObserverResolver(services.get(MetaAnnotationStore.class), createGlobalObserverMethodIterable(beanManagers));
-        this.globalObserverNotifier = ObserverNotifier.of(resolver, services);
+        this.globalLenientObserverNotifier = ObserverNotifier.of(resolver, services, false);
+        this.globalStrictObserverNotifier = ObserverNotifier.of(resolver, services, true);
     }
 
     private static Iterable<ObserverMethod<?>> createGlobalObserverMethodIterable(final Set<BeanManagerImpl> beanManagers) {
@@ -72,13 +74,18 @@ public class GlobalObserverNotifierService implements Service {
         this.beanManagers.add(manager);
     }
 
-    public ObserverNotifier getGlobalObserverNotifier() {
-        return globalObserverNotifier;
+    public ObserverNotifier getGlobalLenientObserverNotifier() {
+        return globalLenientObserverNotifier;
+    }
+
+    public ObserverNotifier getGlobalStrictObserverNotifier() {
+        return globalStrictObserverNotifier;
     }
 
     @Override
     public void cleanup() {
         this.beanManagers.clear();
-        this.globalObserverNotifier.clear();
+        this.globalStrictObserverNotifier.clear();
+        this.globalLenientObserverNotifier.clear();
     }
 }

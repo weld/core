@@ -16,10 +16,14 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,6 +32,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -35,9 +40,12 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Provides event-related operations such sa observer method resolution and event delivery.
+ *
+ *
  *
  * @author Jozef Hartinger
  * @author David Allen
@@ -45,24 +53,33 @@ import org.jboss.weld.util.Observers;
  */
 public class ObserverNotifier {
 
-    public static ObserverNotifier of(TypeSafeObserverResolver resolver, ServiceRegistry services) {
+    /**
+     *
+     * @param resolver
+     * @param services
+     * @param strict indicates whether event type should be performed or not
+     * @return ObserverNotifier instance
+     */
+    public static ObserverNotifier of(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         if (services.contains(TransactionServices.class)) {
-            return new TransactionalObserverNotifier(resolver, services);
+            return new TransactionalObserverNotifier(resolver, services, strict);
         } else {
-            return new ObserverNotifier(resolver, services);
+            return new ObserverNotifier(resolver, services, strict);
         }
     }
 
     private final TypeSafeObserverResolver resolver;
     private final SharedObjectCache sharedObjectCache;
+    private final boolean strict;
 
-    protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services) {
+    protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         this.resolver = resolver;
         this.sharedObjectCache = services.get(SharedObjectCache.class);
+        this.strict = strict;
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        Observers.checkEventObjectType(sharedObjectCache, event);
+        checkEventObjectType(event);
         return this.<T>resolveObserverMethods(event.getClass(), bindings);
     }
 
@@ -71,14 +88,14 @@ public class ObserverNotifier {
     }
 
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
-        Observers.checkEventObjectType(sharedObjectCache, event);
+        checkEventObjectType(event);
         Set<Annotation> qualifierSet = new HashSet<Annotation>(Arrays.asList(qualifiers));
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
         notifyObservers(event, qualifierSet, resolveObserverMethods(eventType, qualifiers));
     }
 
     public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers) {
-        Observers.checkEventObjectType(sharedObjectCache, event);
+        checkEventObjectType(event);
         notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
     }
 
@@ -127,5 +144,42 @@ public class ObserverNotifier {
 
     protected <T> void notifyObserver(final T event, Set<Annotation> qualifiers, final ObserverMethod<? super T> observer) {
         observer.notify(event, qualifiers);
+    }
+
+    public void checkEventObjectType(Object event) {
+        checkEventObjectType(event.getClass());
+    }
+
+    public void checkEventObjectType(Type eventType) {
+        if (!strict) {
+            return;
+        }
+        Type[] typeParameters;
+        final Type resolvedType = sharedObjectCache.getResolvedType(eventType);
+        if (resolvedType instanceof Class<?>) {
+            typeParameters = new Type[0];
+        } else if (resolvedType instanceof ParameterizedType) {
+            typeParameters = ((ParameterizedType) resolvedType).getActualTypeArguments();
+        } else {
+            throw new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
+        }
+        /*
+         * If the runtime type of the event object contains a type variable, the container must throw an IllegalArgumentException.
+         */
+        for (Type type : typeParameters) {
+            if (type instanceof TypeVariable<?>) {
+                throw new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
+            }
+        }
+        /*
+         * If the runtime type of the event object is assignable to the type of a container lifecycle event, IllegalArgumentException
+         * is thrown.
+         */
+        Class<?> resolvedClass = Reflections.getRawType(resolvedType);
+        for (Class<?> containerEventType : Observers.CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES) {
+            if (containerEventType.isAssignableFrom(resolvedClass)) {
+                throw new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
+            }
+        }
     }
 }
