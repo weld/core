@@ -191,6 +191,23 @@
                     <exclude name="testNormalScopedUnproxyableBeanThrowsException" />
                 </methods>
             </class>
+            <!-- CDI-247 -->
+            <class name="org.jboss.jsr299.tck.tests.lookup.typesafe.resolution.broken.primitive.PrimitiveInjectionPointTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.lookup.injection.nullableBean.NullableBeanTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.jsr299.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
+                <methods>
+                    <exclude name="testIsNullableCalled" />
+                </methods>
+            </class>
+            
 
             <!-- Issues in Weld (the RI) -->
             <!-- Issues in JBoss AS -->

@@ -377,9 +377,6 @@ public class Validator implements Service {
                     throw new DeploymentException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ue, ij);
                 }
             }
-            if (Reflections.isPrimitive(ij.getType()) && resolvedBean.isNullable()) {
-                throw new NullableDependencyException(INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES, ij);
-            }
             if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
                 validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
             }

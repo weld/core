@@ -35,6 +35,12 @@
                     <exclude name="testRequestScopeActiveDuringRemoteCallToEjb" />
                 </methods>
             </class>
+            <!-- CDI-247 -->
+            <class name="org.jboss.cdi.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
+                <methods>
+                    <exclude name="testIsNullableCalled" />
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-430 -->
@@ -104,12 +110,6 @@
             <class name="org.jboss.cdi.tck.tests.lookup.injectionpoint.non.contextual.NonContextualInjectionPointTest">
                 <methods>
                     <exclude name="testEjbInjectionPointGetBean"/>
-                </methods>
-            </class>
-            <!-- WELD-1194 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.primitive.PrimitiveInjectionPointTest">
-                <methods>
-                    <exclude name=".*"/>
                 </methods>
             </class>
             <!-- WELD-1207 -->

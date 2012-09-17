@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_PRODU
 import static org.jboss.weld.logging.messages.BeanMessage.NULL_NOT_ALLOWED_FROM_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_CAST_ERROR;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -46,6 +47,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
+import com.google.common.base.Defaults;
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 
@@ -150,10 +152,20 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      *
      * @param instance The instance to validate
      */
-    protected void checkReturnValue(T instance) {
+    protected T checkReturnValue(T instance) {
         if (instance == null && !isDependent()) {
             throw new IllegalProductException(NULL_NOT_ALLOWED_FROM_PRODUCER, getProducer());
-        } else if (instance != null) {
+        }
+        if (instance == null) {
+            InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
+            if (injectionPoint != null) {
+                Class<?> injectionPointRawType = Reflections.getRawType(injectionPoint.getType());
+                if (injectionPointRawType.isPrimitive()) {
+                    return cast(Defaults.defaultValue(injectionPointRawType));
+                }
+            }
+        }
+        if (instance != null) {
             boolean passivating = beanManager.isPassivatingScope(getScope());
             if (passivating && !isTypeSerializable(instance.getClass())) {
                 throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
@@ -167,6 +179,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
                 }
             }
         }
+        return instance;
     }
 
     @Override
@@ -187,7 +200,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      */
     public T create(final CreationalContext<T> creationalContext) {
         T instance = getProducer().produce(creationalContext);
-        checkReturnValue(instance);
+        instance = checkReturnValue(instance);
         return instance;
     }
 
