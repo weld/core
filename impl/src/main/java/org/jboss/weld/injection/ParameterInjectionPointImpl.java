@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
-import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
@@ -44,10 +43,6 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
      */
     public static <T, X> ParameterInjectionPointImpl<T, X> silent(ParameterInjectionPointAttributes<T, X> attributes) {
         return new ParameterInjectionPointImpl<T, X>(attributes);
-    }
-
-    public static <T, X> ParameterInjectionPointImpl<T, X> of(ParameterInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
-        return new ParameterInjectionPointImpl<T, X>(ProcessInjectionPointImpl.fire(attributes, manager));
     }
 
     private final boolean cacheable;

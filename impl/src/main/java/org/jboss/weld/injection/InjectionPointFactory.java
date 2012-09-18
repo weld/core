@@ -76,13 +76,13 @@ public class InjectionPointFactory {
     private static final InjectionPointFactory SILENT_INSTANCE = new InjectionPointFactory() {
 
         @Override
-        protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(FieldInjectionPointAttributes<T, X> injectionPointAttributes, BeanManagerImpl manager) {
+        protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(FieldInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
             // NOOP
             return injectionPointAttributes;
         }
 
         @Override
-        protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes, BeanManagerImpl manager) {
+        protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
             // NOOP
             return injectionPointAttributes;
         }
@@ -108,15 +108,15 @@ public class InjectionPointFactory {
     /**
      * Notifies CDI extension of a given {@link InjectionPoint}.
      */
-    protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(FieldInjectionPointAttributes<T, X> injectionPointAttributes, BeanManagerImpl manager) {
-        return ProcessInjectionPointImpl.fire(injectionPointAttributes, manager);
+    protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(FieldInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        return ProcessInjectionPointImpl.fire(injectionPointAttributes, declaringComponentClass, manager);
     }
 
     /**
      * Notifies CDI extension of a given {@link InjectionPoint}.
      */
-    protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes, BeanManagerImpl manager) {
-        return ProcessInjectionPointImpl.fire(injectionPointAttributes, manager);
+    protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        return ProcessInjectionPointImpl.fire(injectionPointAttributes, declaringComponentClass, manager);
     }
 
     /*
@@ -133,7 +133,7 @@ public class InjectionPointFactory {
      */
     public <T, X> FieldInjectionPoint<T, X> createFieldInjectionPoint(EnhancedAnnotatedField<T, X> field, Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
         FieldInjectionPointAttributes<T, X> attributes = InferingFieldInjectionPointAttributes.of(field, declaringBean, declaringComponentClass, manager);
-        attributes = processInjectionPoint(attributes, manager);
+        attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new FieldInjectionPoint<T, X>(attributes);
     }
 
@@ -148,7 +148,7 @@ public class InjectionPointFactory {
     public <T, X> ParameterInjectionPoint<T, X> createParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> declaringBean,
             Class<?> declaringComponentClass, BeanManagerImpl manager) {
         ParameterInjectionPointAttributes<T, X> attributes = InferingParameterInjectionPointAttributes.of(parameter, declaringBean, declaringComponentClass, manager);
-        attributes = processInjectionPoint(attributes, manager);
+        attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new ParameterInjectionPointImpl<T, X>(attributes);
     }
 

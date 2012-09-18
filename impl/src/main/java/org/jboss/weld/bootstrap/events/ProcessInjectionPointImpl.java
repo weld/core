@@ -37,8 +37,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessInjectionPoint<T, X> {
 
-    public static <T, X> FieldInjectionPointAttributes<T, X> fire(FieldInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
-        ProcessInjectionPointImpl<T, X> event = new ProcessInjectionPointImpl<T, X>(attributes, manager, attributes.getAnnotated().getBaseType()) {
+    public static <T, X> FieldInjectionPointAttributes<T, X> fire(FieldInjectionPointAttributes<T, X> attributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        ProcessInjectionPointImpl<T, X> event = new ProcessInjectionPointImpl<T, X>(attributes, declaringComponentClass, manager, attributes.getAnnotated().getBaseType()) {
         };
         event.fire();
         if (!event.isDirty()) {
@@ -48,8 +48,8 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
         }
     }
 
-    public static <T, X> ParameterInjectionPointAttributes<T, X> fire(ParameterInjectionPointAttributes<T, X> attributes, BeanManagerImpl manager) {
-        ProcessInjectionPointImpl<T, X> event = new ProcessInjectionPointImpl<T, X>(attributes, manager, attributes.getAnnotated().getBaseType()) {
+    public static <T, X> ParameterInjectionPointAttributes<T, X> fire(ParameterInjectionPointAttributes<T, X> attributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        ProcessInjectionPointImpl<T, X> event = new ProcessInjectionPointImpl<T, X>(attributes, declaringComponentClass, manager, attributes.getAnnotated().getBaseType()) {
         };
         event.fire();
         if (!event.isDirty()) {
@@ -59,8 +59,8 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
         }
     }
 
-    protected ProcessInjectionPointImpl(InjectionPoint ip, BeanManagerImpl beanManager, Type injectionPointType) {
-        super(beanManager, ProcessInjectionPoint.class, new Type[] { (ip.getBean() == null ? Object.class : ip.getBean().getBeanClass()), injectionPointType });
+    protected ProcessInjectionPointImpl(InjectionPoint ip, Class<?> declaringComponentClass, BeanManagerImpl beanManager, Type injectionPointType) {
+        super(beanManager, ProcessInjectionPoint.class, new Type[] { (ip.getBean() == null ? declaringComponentClass : ip.getBean().getBeanClass()), injectionPointType });
         this.ip = ip;
     }
 
