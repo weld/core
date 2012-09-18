@@ -38,7 +38,6 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NO
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NULLABLE_DEPENDENCIES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_WILDCARD;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER;
@@ -48,6 +47,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANN
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_TYPE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
@@ -56,6 +56,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_
 import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS;
+import static org.jboss.weld.util.AnnotatedTypes.getDeclaringAnnotatedType;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -104,6 +105,7 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
+import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
@@ -114,7 +116,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.InconsistentSpecializationException;
-import org.jboss.weld.exceptions.NullableDependencyException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
@@ -239,7 +240,6 @@ public class Validator implements Service {
                         }
                         for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints()) {
                             Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                            validateInjectionPoint(injectionPoint, beanManager);
                             if (passivationCapabilityCheckRequired) {
                                 validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
                             }
@@ -333,19 +333,16 @@ public class Validator implements Service {
         }
         Class<?> rawType = Reflections.getRawType(ij.getType());
         if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
-            // TODO: check that the generic type of Bean matches the type of the injecting bean
             if (bean == null) {
                 throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
             }
-            if (rawType.equals(Interceptor.class) && !(bean instanceof Interceptor<?>)) {
-                throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Interceptor.class.getSimpleName(), ij);
+            if (bean instanceof AbstractClassBean<?>) {
+                checkBeanMetadataInjectionPoint(bean, ij, getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
             }
-            if (rawType.equals(Decorator.class) && !(bean instanceof Decorator<?>)) {
-                throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Decorator.class.getSimpleName(), ij);
-            }
-            if (rawType.equals(Bean.class) && (ij.getQualifiers().contains(InterceptedLiteral.INSTANCE) && !(bean instanceof Interceptor<?>))
-                    || (rawType.equals(Bean.class) && ij.getQualifiers().contains(DecoratedLiteral.INSTANCE) && !(bean instanceof Decorator<?>))) {
-                throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ij.getQualifiers(), Bean.class.getSimpleName(), ij);
+            // make sure this is PM injection point and not an injection point of the disposer method
+            if (bean instanceof ProducerMethod<?, ?> && bean == ij.getBean()) {
+                ProducerMethod<?, ?> producerMethod = Reflections.cast(bean);
+                checkBeanMetadataInjectionPoint(bean, ij, producerMethod.getAnnotated().getBaseType());
             }
         }
         // check that UserTransaction is not injected into a SessionBean with container-managed transactions
@@ -436,7 +433,7 @@ public class Validator implements Service {
 
     public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment) {
         validateDecorators(manager.getDecorators(), manager);
-        validateInterceptors(manager.getInterceptors());
+        validateInterceptors(manager.getInterceptors(), manager);
         validateBeans(manager.getBeans(), manager);
         validateEnabledDecoratorClasses(manager);
         validateEnabledInterceptorClasses(manager);
@@ -474,13 +471,13 @@ public class Validator implements Service {
         }
     }
 
-    public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors) {
+    public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors, BeanManagerImpl manager) {
         for (Interceptor<?> interceptor : interceptors) {
-            validateInterceptor(interceptor);
+            validateInterceptor(interceptor, manager);
         }
     }
 
-    protected void validateInterceptor(Interceptor<?> interceptor) {
+    protected void validateInterceptor(Interceptor<?> interceptor, BeanManagerImpl manager) {
         // TODO: confirm that producer methods, fields and disposers can be
         // only found on Weld interceptors?
         if (interceptor instanceof InterceptorImpl<?>) {
@@ -500,6 +497,9 @@ public class Validator implements Service {
                 }
                 annotated = annotated.getEnhancedSuperclass();
             }
+        }
+        for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
+            validateInjectionPoint(injectionPoint, manager);
         }
     }
 
@@ -659,6 +659,37 @@ public class Validator implements Service {
                 if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
                     throw new DefinitionException(INJECTION_POINT_HAS_WILDCARD, type, injectionPoint);
                 }
+            }
+        }
+    }
+
+    public static void checkBeanMetadataInjectionPoint(Object bean, InjectionPoint ip, Type expectedTypeArgument) {
+        if (!(ip.getType() instanceof ParameterizedType)) {
+            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip);
+        }
+        ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
+        Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+        if (bean == null) {
+            throw new DefinitionException(INJECTION_INTO_NON_BEAN, ip);
+        }
+        if (rawType.equals(Interceptor.class) && !(bean instanceof Interceptor<?>)) {
+            throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ip.getQualifiers(), Interceptor.class.getSimpleName(), ip);
+        }
+        if (rawType.equals(Decorator.class) && !(bean instanceof Decorator<?>)) {
+            throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ip.getQualifiers(), Decorator.class.getSimpleName(), ip);
+        }
+        Set<Annotation> qualifiers = ip.getQualifiers();
+        if (rawType.equals(Bean.class) && (qualifiers.contains(InterceptedLiteral.INSTANCE) && !(bean instanceof Interceptor<?>))
+                || (rawType.equals(Bean.class) && qualifiers.contains(DecoratedLiteral.INSTANCE) && !(bean instanceof Decorator<?>))) {
+            throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, qualifiers, Bean.class.getSimpleName(), ip);
+        }
+        // only check the self bean metadata parameter (not @Intercepted nor @Decorated)
+        if (!qualifiers.contains(InterceptedLiteral.INSTANCE) && !qualifiers.contains(DecoratedLiteral.INSTANCE)) {
+            if (parameterizedType.getActualTypeArguments().length != 1) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip);
+            }
+            if (!expectedTypeArgument.equals(parameterizedType.getActualTypeArguments()[0])) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip);
             }
         }
     }

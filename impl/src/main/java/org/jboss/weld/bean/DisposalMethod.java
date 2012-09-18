@@ -19,13 +19,8 @@ package org.jboss.weld.bean;
 import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSE_PARAMS;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -36,22 +31,21 @@ import javax.enterprise.inject.Specializes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Inject;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
-import org.jboss.weld.bean.attributes.BeanAttributesFactory;
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.QualifierInstance;
-import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.InjectionPoints;
-import org.jboss.weld.util.collections.ListToSet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 
@@ -88,11 +82,12 @@ public class DisposalMethod<X, T> {
     }
 
     private void initMetadataParameters(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
-        for (Class<?> type : enhancedAnnotatedMethod.getParameterTypesAsArray()) {
+        for (EnhancedAnnotatedParameter<?, ?> parameter : enhancedAnnotatedMethod.getEnhancedParameters()) {
+            Class<?> type = parameter.getJavaClass();
             if (InjectionPoint.class.equals(type)) {
                 injectionPointMetadataParameter = true;
             }
-            if (Bean.class.equals(Reflections.getRawType(type))) {
+            if (Bean.class.equals(type)) {
                 beanMetadataParameter = true;
             }
         }
@@ -145,6 +140,12 @@ public class DisposalMethod<X, T> {
             }
             if (!methodDeclaredOnTypes) {
                 throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, enhancedAnnotatedMethod, declaringBean);
+            }
+        }
+        for (ParameterInjectionPoint<?, ?> ip : disposalMethodInjectionPoint.getParameterInjectionPoints()) {
+            Class<?> rawType = Reflections.getRawType(ip.getType());
+            if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
+                Validator.checkBeanMetadataInjectionPoint(this, ip, getDisposesParameter().getBaseType());
             }
         }
     }

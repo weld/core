@@ -51,7 +51,7 @@ public class YoghurtFactory {
         return new Yoghurt();
     }
 
-    public void dispose(@Disposes @Any Yoghurt yoghurt, Bean<?> bean) {
+    public void dispose(@Disposes @Any Yoghurt yoghurt, Bean<Yoghurt> bean) {
         beans.add(bean);
     }
 

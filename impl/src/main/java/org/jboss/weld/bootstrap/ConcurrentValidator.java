@@ -85,10 +85,10 @@ public class ConcurrentValidator extends Validator {
     }
 
     @Override
-    public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors) {
+    public void validateInterceptors(Collection<? extends Interceptor<?>> interceptors, final BeanManagerImpl manager) {
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<Interceptor<?>>(interceptors) {
             protected void doWork(Interceptor<?> interceptor) {
-                validateInterceptor(interceptor);
+                validateInterceptor(interceptor, manager);
             }
         });
     }

@@ -40,7 +40,7 @@ public class MilkProductDecorator implements MilkProduct {
     private Decorator<MilkProductDecorator> decorator;
     @Inject
     @Decorated
-    private Bean<? extends MilkProduct> decoratedBean;
+    private Bean<MilkProduct> decoratedBean;
 
     public Bean<MilkProductDecorator> getBean() {
         return bean;

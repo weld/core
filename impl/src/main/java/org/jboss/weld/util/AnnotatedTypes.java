@@ -16,15 +16,20 @@
  */
 package org.jboss.weld.util;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
+
+import org.jboss.weld.util.reflection.Reflections;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -483,6 +488,30 @@ public class AnnotatedTypes {
 
     }
 
+    /**
+     * Returns the declaring {@link AnnotatedType} of a given annotated.
+     *
+     * For an {@link AnnotatedMember}, {@link AnnotatedMember#getDeclaringType()} is returned.
+     * For an {@link AnnotatedParameter}, the declaring annotated type of {@link AnnotatedParameter#getDeclaringCallable()} is returned.
+     * If the parameter is an {@link AnnotatedType}, it is returned.
+     *
+     * @throws IllegalArgumentException if the annotated parameter is an unknown non-standard {@link Annotated} subclass.
+     */
+    public static AnnotatedType<?> getDeclaringAnnotatedType(Annotated annotated) {
+        if (annotated == null) {
+            throw new IllegalArgumentException("Annotated cannot be null");
+        }
+        if (annotated instanceof AnnotatedType<?>) {
+            return cast(annotated);
+        }
+        if (annotated instanceof AnnotatedMember<?>) {
+            return Reflections.<AnnotatedMember<?>>cast(annotated).getDeclaringType();
+        }
+        if (annotated instanceof AnnotatedParameter<?>) {
+            return getDeclaringAnnotatedType(Reflections.<AnnotatedParameter<?>>cast(annotated).getDeclaringCallable());
+        }
+        throw new IllegalArgumentException("Unrecognized annotated " + annotated);
+    }
 
     private AnnotatedTypes() {
     }
