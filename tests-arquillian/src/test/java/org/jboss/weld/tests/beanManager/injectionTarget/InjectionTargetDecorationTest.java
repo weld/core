@@ -50,7 +50,7 @@ public class InjectionTargetDecorationTest {
         @SuppressWarnings("unchecked")
         Bean<Skyscraper> bean = (Bean<Skyscraper>) manager.resolve(manager.getBeans(Skyscraper.class));
         EnhancedAnnotatedType<Skyscraper> type = manager.createEnhancedAnnotatedType(Skyscraper.class);
-        InjectionTarget<Skyscraper> target = manager.createInjectionTarget(type, bean);
+        InjectionTarget<Skyscraper> target = manager.internalCreateInjectionTarget(type, bean);
         CreationalContext<Skyscraper> ctx = manager.createCreationalContext(bean);
 
         Skyscraper instance = target.produce(ctx);

@@ -1029,10 +1029,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
+        return createInjectionTarget(type, null);
+    }
+
+    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type, Bean<T> bean) {
         AnnotatedTypeValidator.validateAnnotatedType(type);
         try {
             EnhancedAnnotatedType<T> enhancedType = getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
-            InjectionTarget<T> injectionTarget = createInjectionTarget(enhancedType, null);
+            InjectionTarget<T> injectionTarget = internalCreateInjectionTarget(enhancedType, bean);
 
             getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
             return injectionTarget;
@@ -1041,7 +1045,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
-    public <T> AbstractInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
+    public <T> AbstractInjectionTarget<T> internalCreateInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
         AbstractInjectionTarget<T> injectionTarget = null;
         if (bean instanceof DecoratorImpl<?> || type.isAnnotationPresent(javax.decorator.Decorator.class) || type.isAbstract()) {
             // TODO if we get an abstract class, we assume that it is a decorator class - is this good?

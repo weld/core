@@ -29,6 +29,8 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 
+import org.jboss.weld.util.reflection.Reflections;
+
 /**
  * Delegating implementation of {@link Bean}. Separate delegate is used for {@link BeanAttributes} methods, allowing this class
  * to be used for processing of extension-provided beans.
@@ -69,6 +71,9 @@ public abstract class IsolatedForwardingBean<T> extends ForwardingBeanAttributes
 
     @Override
     public boolean equals(Object obj) {
+        if (obj instanceof IsolatedForwardingBean<?>) {
+            return delegate().equals(Reflections.<IsolatedForwardingBean<?>>cast(obj).delegate());
+        }
         return delegate().equals(obj);
     }
 

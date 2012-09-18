@@ -27,6 +27,8 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
 
+import org.jboss.weld.util.reflection.Reflections;
+
 /**
  * Delegating {@link BeanAttributes}.
  *
@@ -80,6 +82,9 @@ public abstract class ForwardingBeanAttributes<T> implements BeanAttributes<T> {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj instanceof ForwardingBeanAttributes<?>) {
+            return attributes().equals(Reflections.<ForwardingBeanAttributes<?>>cast(obj).attributes());
+        }
         return attributes().equals(obj);
     }
 
