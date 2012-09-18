@@ -16,13 +16,9 @@
  */
 package org.jboss.weld.util.reflection;
 
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.util.Types;
-import org.slf4j.cal10n.LocLogger;
-import org.slf4j.ext.XLogger;
+import static org.jboss.weld.logging.Category.UTIL;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
-import javax.inject.Qualifier;
 import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -42,8 +38,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.jboss.weld.logging.Category.UTIL;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import javax.inject.Qualifier;
+
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
 
 /**
  * Utility class for static reflection-type operations
@@ -364,12 +364,24 @@ public class Reflections {
             }
             if (type instanceof TypeVariable<?>) {
                 Type[] bounds = ((TypeVariable<?>) type).getBounds();
-                if (bounds == null || bounds.length == 0 || (bounds.length == 1 && Object.class.equals(bounds[0]))) {
+                if (isEmptyBoundArray(bounds)) {
                     continue;
                 }
             }
             return false;
         }
         return true;
+    }
+
+    public static boolean isUnboundedWildcard(Type type) {
+        if (type instanceof WildcardType) {
+            WildcardType wildcard = (WildcardType) type;
+            return isEmptyBoundArray(wildcard.getUpperBounds()) && isEmptyBoundArray(wildcard.getLowerBounds());
+        }
+        return false;
+    }
+
+    private static boolean isEmptyBoundArray(Type[] bounds) {
+        return bounds == null || bounds.length == 0 || (bounds.length == 1 && Object.class.equals(bounds[0]));
     }
 }

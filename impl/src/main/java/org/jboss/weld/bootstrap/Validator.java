@@ -26,7 +26,6 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STERE
 import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.CANNOT_INJECT_BEAN_METADATA;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_OBSERVER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
@@ -47,7 +46,9 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANN
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_QUALIFIER;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_TYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
@@ -78,8 +79,10 @@ import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Decorated;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Intercepted;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
@@ -665,31 +668,86 @@ public class Validator implements Service {
 
     public static void checkBeanMetadataInjectionPoint(Object bean, InjectionPoint ip, Type expectedTypeArgument) {
         if (!(ip.getType() instanceof ParameterizedType)) {
-            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip);
+            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
         }
         ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
+        if (parameterizedType.getActualTypeArguments().length != 1) {
+            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+        }
         Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+        Type typeArgument = parameterizedType.getActualTypeArguments()[0];
+
         if (bean == null) {
             throw new DefinitionException(INJECTION_INTO_NON_BEAN, ip);
         }
+        /*
+         * If an Interceptor instance is injected into a bean instance other than an interceptor instance, the container
+         * automatically detects the problem and treats it as a definition error.
+         */
         if (rawType.equals(Interceptor.class) && !(bean instanceof Interceptor<?>)) {
-            throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ip.getQualifiers(), Interceptor.class.getSimpleName(), ip);
+            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
         }
+        /*
+         * If a Decorator instance is injected into a bean instance other than a decorator instance, the container automatically
+         * detects the problem and treats it as a definition error.
+         */
         if (rawType.equals(Decorator.class) && !(bean instanceof Decorator<?>)) {
-            throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, ip.getQualifiers(), Decorator.class.getSimpleName(), ip);
+            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
         }
         Set<Annotation> qualifiers = ip.getQualifiers();
-        if (rawType.equals(Bean.class) && (qualifiers.contains(InterceptedLiteral.INSTANCE) && !(bean instanceof Interceptor<?>))
-                || (rawType.equals(Bean.class) && qualifiers.contains(DecoratedLiteral.INSTANCE) && !(bean instanceof Decorator<?>))) {
-            throw new DefinitionException(CANNOT_INJECT_BEAN_METADATA, qualifiers, Bean.class.getSimpleName(), ip);
-        }
-        // only check the self bean metadata parameter (not @Intercepted nor @Decorated)
-        if (!qualifiers.contains(InterceptedLiteral.INSTANCE) && !qualifiers.contains(DecoratedLiteral.INSTANCE)) {
-            if (parameterizedType.getActualTypeArguments().length != 1) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip);
+        if (qualifiers.contains(InterceptedLiteral.INSTANCE)) {
+            /*
+             * If a Bean instance with qualifier @Intercepted is injected into a bean instance other than an interceptor
+             * instance, the container automatically detects the problem and treats it as a definition error.
+             */
+            if (!(bean instanceof Interceptor<?>)) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_QUALIFIER, Intercepted.class, Interceptor.class, ip);
             }
-            if (!expectedTypeArgument.equals(parameterizedType.getActualTypeArguments()[0])) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip);
+            /*
+             * If the injection point is a field, an initializer method parameter or a bean constructor of an interceptor, with
+             * qualifier @Intercepted, then the type parameter of the injected Bean must be an unbounded wildcard.
+             */
+            if (!rawType.equals(Bean.class)) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+            }
+            if (!Reflections.isUnboundedWildcard(typeArgument)) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT, typeArgument, ip);
+            }
+        }
+        if (qualifiers.contains(DecoratedLiteral.INSTANCE)) {
+            /*
+             * If a Bean instance with qualifier @Decorated is injected into a bean instance other than a decorator instance,
+             * the container automatically detects the problem and treats it as a definition error.
+             */
+            if (!(bean instanceof Decorator<?>)) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_QUALIFIER, Decorated.class, Decorator.class, ip);
+            }
+            Decorator<?> decorator = Reflections.cast(bean);
+            /*
+             * If the injection point is a field, an initializer method parameter or a bean constructor of a decorator, with
+             * qualifier @Decorated, then the type parameter of the injected Bean must be the same as the delegate type.
+             */
+            if (!rawType.equals(Bean.class)) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+            }
+            if (!typeArgument.equals(decorator.getDelegateType())) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT, typeArgument, ip);
+            }
+        }
+        if (qualifiers.contains(DefaultLiteral.INSTANCE)) {
+            /*
+             * If the injection point is a field, an initializer method parameter or a bean constructor, with qualifier
+             * @Default, then the type parameter of the injected Bean, Interceptor or Decorator must be the same as the type
+             * declaring the injection point.
+             *
+             * If the injection point is a producer method parameter then the type parameter of the injected Bean must be the
+             * same as the producer method return type.
+             *
+             * If the injection point is a disposer method parameter then the type parameter of the injected Bean must be the
+             * same as the disposed parameter.
+             */
+            if (!expectedTypeArgument.equals(typeArgument)) {
+                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT, typeArgument, ip);
             }
         }
     }
