@@ -128,6 +128,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
+import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
@@ -514,6 +515,9 @@ public class Validator implements Service {
     }
 
     protected void validateDecorator(Decorator<?> decorator, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
+        if (decorator.getDecoratedTypes().isEmpty()) {
+            throw new DefinitionException(ValidatorMessage.NO_DECORATED_TYPES, decorator);
+        }
         if (decorator instanceof RIBean<?>) {
             validateRIBean((RIBean<?>) decorator, manager, specializedBeans);
 

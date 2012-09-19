@@ -41,7 +41,7 @@ import static org.testng.Assert.assertEquals;
 public class BeansXmlTest {
 
     private static Runner createRunner(String... beansXmls) {
-        List<Class<?>> beanClasses = Arrays.asList(Alt.class, Dec.class, Int.class, Plain.class, IntBind.class);
+        List<Class<?>> beanClasses = Arrays.asList(Alt.class, Dec.class, Int.class, Plain.class, PlainImpl.class, IntBind.class);
         List<URL> beansXmlsList = new ArrayList<URL>();
         for (String beansXml : beansXmls) {
             beansXmlsList.add(BeansXmlTest.class.getResource(beansXml));

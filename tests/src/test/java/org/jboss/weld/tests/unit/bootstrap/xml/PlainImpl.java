@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
+public class PlainImpl implements Plain {
 
-@Decorator
-public class Dec implements Plain {
-    @Inject
-    @Delegate
-    Plain plain;
 }

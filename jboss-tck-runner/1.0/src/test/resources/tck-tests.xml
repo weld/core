@@ -207,7 +207,12 @@
                     <exclude name="testIsNullableCalled" />
                 </methods>
             </class>
-            
+            <!-- CDI-221 -->
+            <class name="org.jboss.jsr299.tck.tests.decorators.resolution.DecoratorResolutionTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- Issues in JBoss AS -->
