@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,21 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.injectionPoint;
+package org.jboss.weld.util.bean;
 
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.AnnotatedField;
+import java.io.Serializable;
+
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.injection.ForwardingInjectionPoint;
+import org.jboss.weld.serialization.InjectionPointHolder;
 
-public class CowShed {
+public class SerializableForwardingInjectionPoint extends ForwardingInjectionPoint implements Serializable {
 
-    @Produces
-    public Cow get(InjectionPoint ip) {
-        assert ip.getAnnotated() instanceof AnnotatedField<?>;
-        assert Reflections.<AnnotatedField<?>>cast(ip.getAnnotated()).getDeclaringType().getJavaClass().equals(Field.class);
-        return new Cow("daisy");
+    private static final long serialVersionUID = 7803445899943317029L;
+
+    private final InjectionPointHolder ip;
+
+    public SerializableForwardingInjectionPoint(InjectionPoint ip) {
+        this.ip = new InjectionPointHolder(ip);
     }
 
+    @Override
+    protected InjectionPoint delegate() {
+        return ip.get();
+    }
 }

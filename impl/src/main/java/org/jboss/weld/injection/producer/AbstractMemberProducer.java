@@ -127,9 +127,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
                 ctx.storeContextual();
             }
             if (disposalMethod.hasInjectionPointMetadataParameter()) {
-                InjectionPoint ip = currentInjectionPointService.peek();
-                checkValue(ip);
-                getWeldCreationalContext(creationalContext).storeInjectionPoint(ip);
+                getWeldCreationalContext(creationalContext).storeInjectionPoint(currentInjectionPointService.peek());
             }
         }
     }
@@ -139,13 +137,6 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
             return Reflections.cast(ctx);
         }
         throw new IllegalArgumentException("Unable to store values in " + ctx);
-    }
-
-    private void checkValue(Object object) {
-        InjectionPoint ip = currentInjectionPointService.peek();
-        if (ip != null && Beans.isPassivatingScope(ip.getBean(), getBeanManager()) && !(isTypeSerializable(object.getClass()))) {
-            throw new IllegalArgumentException("Unable to store non-serializable " + object + " as a dependency of " + this);
-        }
     }
 
     // according to the spec, anyone may call this method

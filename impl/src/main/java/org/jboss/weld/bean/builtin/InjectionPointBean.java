@@ -21,6 +21,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.bean.SerializableForwardingInjectionPoint;
 
 /**
  * Bean for InjectionPoint metadata
@@ -28,6 +29,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author David Allen
  */
 public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
+
+    private final CurrentInjectionPoint currentInjectionPointService;
 
     /**
      * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
@@ -40,10 +43,12 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
      */
     public InjectionPointBean(BeanManagerImpl manager) {
         super(InjectionPoint.class.getSimpleName(), manager, InjectionPoint.class);
+        this.currentInjectionPointService = getBeanManager().getServices().get(CurrentInjectionPoint.class);
     }
 
     public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext) {
-        return getBeanManager().getServices().get(CurrentInjectionPoint.class).peek();
+        InjectionPoint injectionPoint = currentInjectionPointService.peek();
+        return new SerializableForwardingInjectionPoint(injectionPoint);
     }
 
     public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {

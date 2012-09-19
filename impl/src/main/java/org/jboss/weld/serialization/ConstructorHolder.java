@@ -32,6 +32,10 @@ public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor
 
     private static final long serialVersionUID = -6439218442811003152L;
 
+    public static <T> ConstructorHolder<T> of(Constructor<T> constructor) {
+        return new ConstructorHolder<T>(constructor);
+    }
+
     private final Class<X> declaringClass;
     private final Class<?>[] parameterTypes;
 

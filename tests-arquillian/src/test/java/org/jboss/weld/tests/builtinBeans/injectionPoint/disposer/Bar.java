@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,21 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.injectionPoint;
+package org.jboss.weld.tests.builtinBeans.injectionPoint.disposer;
 
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.InjectionPoint;
+import java.io.Serializable;
 
-import org.jboss.weld.util.reflection.Reflections;
+public class Bar implements Serializable {
 
-public class CowShed {
+    private static final long serialVersionUID = -1913344654658055424L;
 
-    @Produces
-    public Cow get(InjectionPoint ip) {
-        assert ip.getAnnotated() instanceof AnnotatedField<?>;
-        assert Reflections.<AnnotatedField<?>>cast(ip.getAnnotated()).getDeclaringType().getJavaClass().equals(Field.class);
-        return new Cow("daisy");
+    public Bar(boolean value) {
     }
 
 }

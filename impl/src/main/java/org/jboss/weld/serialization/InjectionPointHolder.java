@@ -35,7 +35,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * Serializable holder for {@link InjectionPoint}.
  *
  * @author Jozef Hartinger
- * 
+ *
  */
 public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPoint> {
 
@@ -44,6 +44,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
     private final InjectionPointIdentifier identifier;
 
     public InjectionPointHolder(InjectionPoint ip) {
+        super(ip);
         if (ip.getBean() == null) {
             this.identifier = new NoopInjectionPointIdentifier(ip);
         } else if (ip.getAnnotated() instanceof AnnotatedField<?>) {
@@ -78,9 +79,9 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
      * Noop implementation of {@link InjectionPointIdentifier}. An instance is serializable as long as the underlying
      * {@link InjectionPoint} is serializable. This identifier should only be used to wrap {@link InjectionPoint}s that do not
      * belong to a bean.
-     * 
+     *
      * @author Jozef Hartinger
-     * 
+     *
      */
     private static class NoopInjectionPointIdentifier implements InjectionPointIdentifier {
 
@@ -187,7 +188,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
         @Override
         protected boolean matches(InjectionPoint ip, AnnotatedCallable<?> annotatedCallable) {
             if (annotatedCallable instanceof AnnotatedConstructor<?>) {
-                AnnotatedConstructor<?> annotatedConstructor = Reflections.cast(ip.getAnnotated());
+                AnnotatedConstructor<?> annotatedConstructor = Reflections.cast(annotatedCallable);
                 return constructor.get().equals(annotatedConstructor.getJavaMember());
             }
             return false;
@@ -208,7 +209,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
         @Override
         protected boolean matches(InjectionPoint ip, AnnotatedCallable<?> annotatedCallable) {
             if (annotatedCallable instanceof AnnotatedMethod<?>) {
-                AnnotatedConstructor<?> annotatedMethod = Reflections.cast(ip.getAnnotated());
+                AnnotatedMethod<?> annotatedMethod = Reflections.cast(annotatedCallable);
                 return method.get().equals(annotatedMethod.getJavaMember());
             }
             return false;
