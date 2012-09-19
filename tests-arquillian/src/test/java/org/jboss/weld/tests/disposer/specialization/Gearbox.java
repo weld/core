@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.disposer.specialization;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 
-@Veto
+@Vetoed
 public class Gearbox {
 
 }

@@ -18,9 +18,9 @@ package org.jboss.weld.tests.contexts.session.weld1155;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 
-@Veto
+@Vetoed
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 6628439341707781817L;

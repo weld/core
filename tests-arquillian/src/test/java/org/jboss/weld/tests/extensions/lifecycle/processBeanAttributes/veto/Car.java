@@ -21,8 +21,8 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.veto;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 
-@Veto
+@Vetoed
 public class Car {
 }

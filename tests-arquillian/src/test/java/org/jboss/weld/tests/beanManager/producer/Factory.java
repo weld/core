@@ -18,11 +18,11 @@ package org.jboss.weld.tests.beanManager.producer;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-@Veto
+@Vetoed
 public class Factory {
 
     public static final Toy WOODY = new Toy("Woody");

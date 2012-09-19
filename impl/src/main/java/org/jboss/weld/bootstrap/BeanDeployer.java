@@ -97,7 +97,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             xlog.catching(INFO, e);
         }
 
-        if (clazz != null && !clazz.isAnnotation()) {
+        if (clazz != null && !clazz.isAnnotation() && !Beans.isVetoed(clazz)) {
             preloadContainerLifecycleEvent(ProcessAnnotatedType.class, clazz);
             AnnotatedType<?> annotatedType = null;
             try {
@@ -154,17 +154,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     } else {
                         annotatedType = classTransformer.getAnnotatedType(modifiedType);
                     }
-                }
-
-                // vetoed due to @Veto or @Requires
-                boolean vetoed = Beans.isVetoed(annotatedType);
-
-                if (dirty && !vetoed) {
                     classesToBeAdded.add(annotatedType); // add a replacement for the removed class
-                }
-                if (!dirty && vetoed) {
-                    getEnvironment().vetoJavaClass(annotatedType.getJavaClass());
-                    classesToBeRemoved.add(annotatedType);
                 }
             }
         }
@@ -193,7 +183,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
         // create session beans
         for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors()) {
-            if (getEnvironment().isVetoed(ejbDescriptor.getBeanClass())) {
+            if (getEnvironment().isVetoed(ejbDescriptor.getBeanClass()) || Beans.isVetoed(ejbDescriptor.getBeanClass())) {
                 continue;
             }
             if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {

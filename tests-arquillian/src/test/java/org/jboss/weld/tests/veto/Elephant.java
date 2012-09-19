@@ -21,9 +21,9 @@
  */
 package org.jboss.weld.tests.veto;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 
-@Veto
+@Vetoed
 public class Elephant {
 
 }

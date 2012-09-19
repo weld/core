@@ -21,13 +21,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
 /**
  * @author Martin Kouba
  */
-@Veto
+@Vetoed
 public class Dao<T extends Entity> {
 
     @Inject

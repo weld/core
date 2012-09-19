@@ -23,10 +23,10 @@ package org.jboss.weld.tests.beanManager.bean;
 
 import javax.decorator.Delegate;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
-@Veto
+@Vetoed
 public abstract class VehicleDecorator implements Vehicle {
 
     @Inject

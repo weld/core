@@ -38,6 +38,7 @@ import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -88,7 +89,7 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<InternalEjbDescriptor<?>>(getEnvironment().getEjbDescriptors()) {
             protected void doWork(InternalEjbDescriptor<?> descriptor) {
-                if (!getEnvironment().isVetoed(descriptor.getBeanClass())) {
+                if (!getEnvironment().isVetoed(descriptor.getBeanClass()) && !Beans.isVetoed(descriptor.getBeanClass())) {
                     if (descriptor.isSingleton() || descriptor.isStateful() || descriptor.isStateless()) {
                         if (otherWeldClasses.containsKey(descriptor.getBeanClass())) {
                             for (AnnotatedType<?> annotatedType : otherWeldClasses.get(descriptor.getBeanClass())) {

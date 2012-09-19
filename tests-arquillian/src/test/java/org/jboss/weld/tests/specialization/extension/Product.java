@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.tests.specialization.extension;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 
-@Veto
+@Vetoed
 public class Product {
 }

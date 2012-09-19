@@ -41,6 +41,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Beans;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery {
 
@@ -91,6 +92,9 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
     }
 
     public void addAnnotatedType(AnnotatedType<?> type) {
+        if (Beans.isVetoed(type)) {
+            return;
+        }
         Object receiver = getReceiver();
         if (!(receiver instanceof Extension)) {
             throw new IllegalStateException("BeforeBeanDiscovery receiver is not an extension");

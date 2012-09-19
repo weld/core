@@ -21,9 +21,9 @@
  */
 package org.jboss.weld.tests.beanManager.bean;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 
-@Veto
+@Vetoed
 public class Lion {
 
     public void foo() {

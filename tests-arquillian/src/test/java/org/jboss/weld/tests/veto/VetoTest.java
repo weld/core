@@ -22,7 +22,7 @@
 package org.jboss.weld.tests.veto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
@@ -35,8 +35,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.tests.veto.package1.Hippo;
-import org.jboss.weld.tests.veto.package2.Giraffe;
-import org.jboss.weld.tests.veto.package2.Rhino;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,40 +49,19 @@ public class VetoTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackages(true, Elephant.class.getPackage()).addAsServiceProvider(Extension.class, VerifyingExtension.class, ModifyingExtension.class);
+        return ShrinkWrap.create(BeanArchive.class).addPackages(true, Elephant.class.getPackage())
+                .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 
     @Test
     public void testClassLevelVeto() {
-        assertTrue(extension.getClasses().contains(Elephant.class));
+        assertFalse(extension.getClasses().contains(Elephant.class));
         assertEquals(0, manager.getBeans(Elephant.class, AnyLiteral.INSTANCE).size());
     }
-    
+
     @Test
     public void testPackageLevelVeto() {
-        assertTrue(extension.getClasses().contains(Hippo.class));
+        assertFalse(extension.getClasses().contains(Hippo.class));
         assertEquals(0, manager.getBeans(Hippo.class, AnyLiteral.INSTANCE).size());
-    }
-    
-    @Test
-    public void testClassLevelRequirements() {
-        assertTrue(extension.getClasses().contains(Lion.class));
-        assertTrue(extension.getClasses().contains(Tiger.class));
-        assertEquals(1, manager.getBeans(Lion.class, AnyLiteral.INSTANCE).size());
-        assertEquals(0, manager.getBeans(Tiger.class, AnyLiteral.INSTANCE).size());
-    }
-    
-    @Test
-    public void testPackageLevelRequirements() {
-        assertTrue(extension.getClasses().contains(Rhino.class));
-        assertTrue(extension.getClasses().contains(Giraffe.class));
-        assertEquals(0, manager.getBeans(Rhino.class, AnyLiteral.INSTANCE).size());
-        assertEquals(0, manager.getBeans(Giraffe.class, AnyLiteral.INSTANCE).size());
-    }
-    
-    @Test
-    public void testWithExtension() {
-        assertTrue(extension.getClasses().contains(Leopard.class));
-        assertEquals(1, manager.getBeans(Leopard.class, AnyLiteral.INSTANCE).size());
     }
 }

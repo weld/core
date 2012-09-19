@@ -23,10 +23,10 @@ package org.jboss.weld.tests.beanManager.bean;
 
 import java.io.Serializable;
 
-import javax.enterprise.inject.Veto;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
-@Veto
+@Vetoed
 public class SerializableOffice extends Office implements Serializable {
 
     private static final long serialVersionUID = 22685424608978110L;
