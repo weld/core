@@ -75,7 +75,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public BeanDeployer addClass(String className) {
         Class<?> clazz = loadClass(className);
-        if (clazz != null && !clazz.isAnnotation() && !clazz.isEnum() && !Reflections.isNonStaticInnerClass(clazz)) {
+        if (clazz != null && isBeanCandidate(clazz)) {
             WeldClass<?> weldClass = loadWeldClass(clazz);
             if (weldClass != null) {
                 ProcessAnnotatedTypeImpl<?> event = ProcessAnnotatedTypeImpl.fire(getManager(), weldClass);
@@ -93,12 +93,20 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         return this;
     }
 
+    private boolean isBeanCandidate(Class<?> clazz) {
+        try {
+            return !clazz.isAnnotation() && !clazz.isEnum() && !Reflections.isNonStaticInnerClass(clazz);
+        } catch (NoClassDefFoundError e) {
+            logIgnoredClass(clazz.getName(), e);
+            return false;
+        }
+    }
+
     private Class<?> loadClass(String className) {
         try {
             return resourceLoader.classForName(className);
         } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-            xlog.catching(INFO, e);
+            logIgnoredClass(className, e);
             return null;
         }
     }
@@ -107,10 +115,14 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         try {
             return classTransformer.loadClass(clazz);
         } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName());
-            xlog.catching(INFO, e);
+            logIgnoredClass(clazz.getName(), e);
             return null;
         }
+    }
+
+    private void logIgnoredClass(String className, Throwable e) {
+        log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+        xlog.catching(INFO, e);
     }
 
     public BeanDeployer addClass(AnnotatedType<?> clazz) {
