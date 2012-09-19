@@ -119,59 +119,89 @@
                 </methods>
             </class>
             <!-- WELD-1196 -->
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamConstructorTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BeanTypeParamConstructorTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamInitializerTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BeanTypeParamInitializerTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamFieldTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BeanTypeParamFieldTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamProducerTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BeanTypeParamProducerTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinBeanInvalidTypeParamDisposerTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BeanTypeParamDisposerTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinDecoratorInvalidTypeParamFieldTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.decorator.DecoratorTypeParamFieldTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinDecoratorInvalidTypeParamConstructorTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.decorator.DecoratorTypeParamConstructorTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinDecoratorInvalidTypeParamInitializerTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.decorator.DecoratorTypeParamInitializerTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinInterceptorInvalidTypeParamConstructorTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.decorator.DecoratoredBeanTypeParamFieldTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinInterceptorInvalidTypeParamFieldTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.decorator.DecoratoredBeanTypeParamInitializerTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.BuiltinInterceptorInvalidTypeParamInitializerTest">
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.decorator.DecoratoredBeanTypeParamConstructorTest">
                 <methods>
                     <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.interceptor.InterceptorTypeParamConstructorTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.interceptor.InterceptorTypeParamFieldTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.interceptor.InterceptorTypeParamInitializerTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.interceptor.InterceptedBeanTypeParamInitializerTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.interceptor.InterceptedBeanTypeParamConstructorTest">
+                <methods>
+                    <exclude name=".*" />
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.implementation.builtin.metadata.broken.typeparam.interceptor.InterceptedBeanTypeParamFieldTest">
+                <methods>
+                    <exclude name=".*" />
                 </methods>
             </class>
             
