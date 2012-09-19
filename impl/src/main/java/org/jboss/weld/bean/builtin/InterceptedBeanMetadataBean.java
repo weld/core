@@ -21,6 +21,7 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
@@ -36,6 +37,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.bean.SerializableForwardingBean;
 
 /**
  * Allows an interceptor to obtain information about the bean it intercepts.
@@ -63,7 +65,12 @@ public class InterceptedBeanMetadataBean extends BeanMetadataBean {
         Contextual<?> interceptedContextual = interceptedBeanContext.getContextual();
 
         if (interceptedContextual instanceof Bean<?>) {
-            return SerializableProxy.of((Bean<?>) interceptedContextual);
+            Bean<?> bean = (Bean<?>) interceptedContextual;
+            if (bean instanceof Serializable) {
+                return bean;
+            } else {
+                return SerializableForwardingBean.of(bean);
+            }
         } else {
             throw new IllegalArgumentException("Unable to determine @Intercepted Bean<?> for this interceptor.");
         }

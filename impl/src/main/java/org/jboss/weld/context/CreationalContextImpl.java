@@ -27,10 +27,12 @@ import java.util.Map;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;
+import org.jboss.weld.util.bean.SerializableForwardingBean;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -137,7 +139,15 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public void storeContextual() {
-        persistentContextual = contextual;
+        if (contextual instanceof Serializable) {
+            persistentContextual = contextual;
+        } else {
+            if (contextual instanceof Bean<?>) {
+                persistentContextual = SerializableForwardingBean.of(Reflections.<Bean<T>> cast(contextual));
+            } else {
+                throw new IllegalArgumentException("Unable to store non-serializable " + contextual);
+            }
+        }
     }
 
     public InjectionPoint loadInjectionPoint() {

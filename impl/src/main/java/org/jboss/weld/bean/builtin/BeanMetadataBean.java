@@ -28,9 +28,8 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.serialization.BeanHolder;
+import org.jboss.weld.util.bean.SerializableForwardingBean;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -53,28 +52,13 @@ public class BeanMetadataBean extends AbstractBuiltInMetadataBean<Bean<?>> {
     protected Bean<?> newInstance(InjectionPoint ip, CreationalContext<Bean<?>> creationalContext) {
         Contextual<?> contextual = getParentCreationalContext(creationalContext).getContextual();
         if (contextual instanceof Bean<?>) {
-            return SerializableProxy.of((Bean<?>) contextual);
+            if (contextual instanceof Serializable) {
+                return Reflections.cast(contextual);
+            } else {
+                return SerializableForwardingBean.of((Bean<?>) contextual);
+            }
         } else {
             throw new IllegalArgumentException("Unable to determine Bean metadata for " + ip);
-        }
-    }
-
-    protected static class SerializableProxy<T> extends ForwardingBean<T> implements Serializable {
-
-        public static <T> SerializableProxy<T> of(Bean<T> bean) {
-            return new SerializableProxy<T>(bean);
-        }
-
-        private static final long serialVersionUID = 3010119463206410943L;
-        private BeanHolder<T> holder;
-
-        protected SerializableProxy(Bean<T> bean) {
-            this.holder = new BeanHolder<T>(bean);
-        }
-
-        @Override
-        protected Bean<T> delegate() {
-            return holder.get();
         }
     }
 }

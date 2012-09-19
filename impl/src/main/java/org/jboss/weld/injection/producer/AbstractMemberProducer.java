@@ -124,7 +124,6 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         if (disposalMethod != null) {
             if (disposalMethod.hasBeanMetadataParameter()) {
                 WeldCreationalContext<T> ctx = getWeldCreationalContext(creationalContext);
-                checkValue(ctx.getContextual());
                 ctx.storeContextual();
             }
             if (disposalMethod.hasInjectionPointMetadataParameter()) {
