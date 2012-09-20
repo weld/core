@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.serialization;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -109,9 +107,6 @@ public class ContextualStoreImpl implements ContextualStore {
     }
 
     public <C extends Contextual<I>, I> SerializableContextual<C, I> getSerializableContextual(Contextual<I> contextual) {
-        if (contextual instanceof SerializableContextual<?, ?>) {
-            return cast(contextual);
-        }
         return new SerializableContextualImpl<C, I>(Reflections.<C>cast(contextual), this);
     }
 

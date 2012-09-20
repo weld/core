@@ -148,12 +148,11 @@ public class ClientProxyProvider {
     }
 
     private static <T> T createClientProxy(Bean<T> bean, Set<Type> types) {
-        ContextualStore store = Container.instance().services().get(ContextualStore.class);
-        String id = store.putIfAbsent(bean);
+        String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
         if (id == null) {
             throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);
         }
-        ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id, store);
+        ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id);
         TypeInfo typeInfo = TypeInfo.of(types);
         T proxy = new ClientProxyFactory<T>(typeInfo.getSuperClass(), types, bean).create(beanInstance);
         log.trace(CREATED_NEW_CLIENT_PROXY_TYPE, proxy.getClass(), bean, id);

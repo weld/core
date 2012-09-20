@@ -32,7 +32,7 @@ public class SerializableContextualInstanceImpl<C extends Contextual<I>, I> impl
     private final CreationalContext<I> creationalContext;
 
     public SerializableContextualInstanceImpl(C contextual, I instance, CreationalContext<I> creationalContext, ContextualStore contextualStore) {
-        this.contextual = contextualStore.getSerializableContextual(contextual);
+        this.contextual = new SerializableContextualImpl<C, I>(contextual, contextualStore);
         this.instance = instance;
         this.creationalContext = creationalContext;
     }

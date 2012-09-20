@@ -23,7 +23,6 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -45,7 +44,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
 
     private static final long serialVersionUID = -8144230657830556503L;
     // The bean
-    private transient SerializableContextual<Bean<T>, T> bean;
+    private transient Bean<T> bean;
     // The bean index in the manager
     private final String id;
     // The actual type of the resulting bean instance
@@ -60,12 +59,8 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
      * @param bean The contextual bean
      * @param id   The unique identifier of this bean
      */
-    public ContextBeanInstance(Bean<T> bean, String id, ContextualStore store) {
-        /*
-         * Make sure that the Contextual we pass to the get() methods of a Context is always serializable.
-         * https://issues.jboss.org/browse/CDI-24
-         */
-        this.bean = store.getSerializableContextual(bean);
+    public ContextBeanInstance(Bean<T> bean, String id) {
+        this.bean = bean;
         this.id = id;
         this.instanceType = computeInstanceType(bean);
         log.trace("Created context instance locator for bean " + bean + " identified as " + id);
@@ -74,10 +69,9 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     public T getInstance() {
         Container container = Container.instance();
         if (bean == null) {
-            ContextualStore store = Container.instance().services().get(ContextualStore.class);
-            bean = store.getSerializableContextual(store.<Bean<T>, T>getContextual(id));
+            bean = container.services().get(ContextualStore.class).<Bean<T>, T>getContextual(id);
         }
-        Context context = container.deploymentManager().getContext(bean.get().getScope());
+        Context context = container.deploymentManager().getContext(bean.getScope());
 
         T existingInstance = context.get(bean);
         if (existingInstance != null) {
