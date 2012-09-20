@@ -31,10 +31,10 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -169,7 +169,6 @@ import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
-import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.collect.Iterators;
@@ -678,12 +677,21 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return activeContext;
     }
 
-    public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
+    public <T> Object getReference(Bean<?> bean, Type requestedType, CreationalContext<T> creationalContext, boolean noProxy) {
+        Contextual<T> contextual = cast(bean);
         if (creationalContext instanceof WeldCreationalContext<?>) {
-            creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
+            creationalContext = ((WeldCreationalContext<T>) creationalContext).getCreationalContext(contextual);
         }
+        /*
+         * Make sure that the Contextual we pass to the get() methods of a Context is always serializable.
+         * https://issues.jboss.org/browse/CDI-24
+         */
+        if (isPassivatingScope(bean.getScope())) {
+            contextual = services.get(ContextualStore.class).getSerializableContextual(contextual);
+        }
+        Context context = getContext(bean.getScope());
         if (!noProxy && isProxyRequired(bean)) {
-            if (creationalContext != null || getContext(bean.getScope()).get(bean) != null) {
+            if (creationalContext != null || context.get(contextual) != null) {
                 if (requestedType == null) {
                     return clientProxyProvider.getClientProxy(bean);
                 } else {
@@ -693,7 +701,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 return null;
             }
         } else {
-            return getContext(bean.getScope()).get(Reflections.<Contextual>cast(bean), creationalContext);
+            return context.get(contextual, creationalContext);
         }
     }
 
