@@ -105,11 +105,11 @@ public class InterceptorMetadataUtils {
         Class<?>[] parameterTypes = method.getJavaMethod().getParameterTypes();
 
         if (parameterTypes.length != 1) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_ARGUMENT, method.getJavaMethod());
+            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_PARAMETER, method.getJavaMethod());
         }
 
         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_ARGUMENT, method.getJavaMethod(), InvocationContext.class.getName());
+            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_PARAMETER, method.getJavaMethod(), InvocationContext.class.getName());
         }
         return true;
     }
