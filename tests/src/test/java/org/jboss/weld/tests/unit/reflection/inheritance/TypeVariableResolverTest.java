@@ -1,13 +1,13 @@
 package org.jboss.weld.tests.unit.reflection.inheritance;
 
 import org.jboss.weld.util.reflection.TypeVariableResolver;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import javax.enterprise.util.TypeLiteral;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-import static junit.framework.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:marko.luksa@gmail.com">Marko Luksa</a>
@@ -56,7 +56,12 @@ public class TypeVariableResolverTest {
 
     @Test
     public void testVariableArray() throws Exception {
-        assertTypeEquals(new TypeLiteral<Integer[]>() {}, BOfIntegerString.class, A.class.getDeclaredField("variableArray"));
+        assertTypeEquals(Integer[].class, BOfIntegerString.class, A.class.getDeclaredField("variableArray"));
+    }
+
+    @Test
+    public void testTwoDimensionalVariableArray() throws Exception {
+        assertTypeEquals(Integer[][].class, BOfIntegerString.class, A.class.getDeclaredField("twoDimensionalVariableArray"));
     }
 
     @Test
@@ -75,9 +80,12 @@ public class TypeVariableResolverTest {
     }
 
     private void assertTypeEquals(TypeLiteral<?> expectedTypeLiteral, Class beanClass, Field field) {
-        Type expectedType = expectedTypeLiteral.getType();
+        assertTypeEquals(expectedTypeLiteral.getType(), beanClass, field);
+    }
+
+    private void assertTypeEquals(Type expectedType, Class beanClass, Field field) {
         Type type = new TypeVariableResolver(beanClass).resolveVariablesInType(field.getGenericType());
-        assertEquals(expectedType, type);
+        Assert.assertEquals(type, expectedType);
     }
 
 }
