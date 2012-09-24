@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.environment.se.beans;
 
-import org.jboss.weld.environment.se.WeldContainer;
-
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.jboss.weld.environment.se.WeldContainer;
 
 /**
  * A managed bean which holds all of the injected instances of managed beans and
@@ -28,13 +29,14 @@ import javax.inject.Inject;
  * and event() methods.
  *
  * @author Peter Royle
+ * @author Ales Justin
  * @see WeldContainer
  */
 public class InstanceManager {
 
-    @Inject
+    @Inject @Any
     Instance<Object> instances;
-    @Inject
+    @Inject @Any
     Event<Object> events;
 
     public InstanceManager() {
