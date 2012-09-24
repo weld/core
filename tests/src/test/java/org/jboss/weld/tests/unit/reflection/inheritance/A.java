@@ -23,5 +23,7 @@ public class A<E1, E2> {
 
     private E1[] variableArray;
 
+    private E1[][] twoDimensionalVariableArray;
+
     private Foo<E1>[] foo1Array;
 }
