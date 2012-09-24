@@ -36,6 +36,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
@@ -110,6 +111,7 @@ public class PasteCodeTest {
     }
 
     @Test
+    @InSequence(1)
     public void mainPageTest() {
         assertTrue("A page should contain text 'new'", selenium.isTextPresent("new"));
         assertTrue("A page should contain text 'martin'", selenium.isTextPresent("martin"));
@@ -118,6 +120,7 @@ public class PasteCodeTest {
     }
 
     @Test
+    @InSequence(2)
     public void newPublicPostTest() {        
         selenium.type(POST_AREA, CODE_FRAGMENT);
         selenium.select(SYNTAX_SELECT, JS_SYNTAX);
@@ -137,6 +140,7 @@ public class PasteCodeTest {
     }
 
     @Test
+    @InSequence(3)
     public void newPrivatePostTest() {
         selenium.type(POST_AREA, CODE_FRAGMENT);
         selenium.select(SYNTAX_SELECT, JS_SYNTAX);
@@ -153,6 +157,7 @@ public class PasteCodeTest {
 
 
     @Test
+    @InSequence(4)
     public void recentPostsTest() {
         waitForHttp(selenium).click(CRAZYMAN_LINK);
         assertTrue("A page should contain 'Posted by crazyman on 19 Feb'", selenium.isTextPresent("Posted by crazyman on 19 Feb"));
@@ -160,6 +165,7 @@ public class PasteCodeTest {
     }
 
     @Test
+    @InSequence(5)
     public void exactSearchTest() {
         waitForHttp(selenium).click(HISTORY_LINK);
         assertTrue("A page should contain 'Posted by PublicTester'", selenium.isTextPresent("Posted by PublicTester"));
@@ -178,6 +184,7 @@ public class PasteCodeTest {
     }
 
     @Test
+    @InSequence(6)
     public void searchAndPaginationTest() {
         waitForHttp(selenium).click(HISTORY_LINK);
         selenium.type(USER_SEARCH_INPUT, "martin");
@@ -194,6 +201,7 @@ public class PasteCodeTest {
     }
 
     @Test
+    @InSequence(7)
     public void helpPageTest() {
         waitForHttp(selenium).click(HELP_LINK);
         assertTrue("A page should contain help information", selenium.isTextPresent("Useful Information"));
