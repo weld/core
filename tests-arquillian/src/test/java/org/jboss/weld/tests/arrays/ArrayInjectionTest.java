@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -26,46 +27,73 @@ public class ArrayInjectionTest {
             .addClasses(Foo.class, Bar.class, ArrayProducer.class);
     }
 
+    @Inject
+    int[] intArray;
+
+    @Inject
+    Foo[] fooArray;
+
+    @Inject
+    Instance<int[]> intArrayInstance;
+
+    @Inject
+    Instance<Foo[]> fooArrayInstance;
+
+    @Inject
+    Instance<Bar<String>[]> stringBarArrayInstance;
+
+    @Inject
+    Bar<String>[] stringBarArray;
+
+    @Inject
+    Bar<Integer>[] integerBarArray;
+
+    @Inject
+    Instance<Bar<String>> stringBarInstance;
+
+    @Inject
+    Instance<Bar<Integer>> integerBarInstance;
+
     @Test
-    public void testDirectArrayInjection(int[] intArray, Foo[] fooArray) {
+    public void testDirectArrayInjection() {
         assertNotNull(intArray);
         assertNotNull(fooArray);
     }
 
     @Test
-    public void testIntArrayInstanceInjection(Instance<int[]> intArrayInstance) {
+    public void testIntArrayInstanceInjection() {
         assertNotNull(intArrayInstance.get());
     }
 
     @Test
-    public void testFooArrayInstanceInjection(Instance<Foo[]> fooArrayInstance) {
+    public void testFooArrayInstanceInjection() {
         assertNotNull(fooArrayInstance.get());
     }
 
     @Test
-    public void testStringBarArrayInstanceInjection(Instance<Bar<String>[]> stringBarArrayInstance) {
+    public void testStringBarArrayInstanceInjection() {
         Bar<String>[] stringBarArray = stringBarArrayInstance.get();
         assertArrayEquals(ArrayProducer.STRING_BAR_ARRAY, stringBarArray);
     }
 
     @Test
-    public void testStringBarArrayInjection(Bar<String>[] stringBarArray) {
+    public void testStringBarArrayInjection() {
         assertArrayEquals(ArrayProducer.STRING_BAR_ARRAY, stringBarArray);
     }
 
     @Test
-    public void testIntegerBarArrayInjection(Bar<Integer>[] integerBarArray) {
+    public void testIntegerBarArrayInjection() {
         assertArrayEquals(ArrayProducer.INTEGER_BAR_ARRAY, integerBarArray);
     }
 
     @Test
-    public void testStringBarInstanceInjection(Instance<Bar<String>> stringBarInstance) {
+    public void testStringBarInstanceInjection() {
         Bar<String> stringBar = stringBarInstance.get();
         assertEquals(ArrayProducer.STRING_BAR, stringBar);
     }
 
     @Test
-    public void testIntegerBarInstanceInjection(Instance<Bar<Integer>> integerBarInstance) {
+    public void testIntegerBarInstanceInjection() {
         Bar<Integer> integerBar = integerBarInstance.get();
         assertEquals(ArrayProducer.INTEGER_BAR, integerBar);
     }
