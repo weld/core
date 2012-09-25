@@ -533,7 +533,7 @@ public class Beans {
      * @return true if bean is specialized by some bean in all beans
      */
     public static <T extends Bean<?>> boolean isSpecialized(T bean, BeanManagerImpl beanManager) {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
+        BeansClosure closure = beanManager.getClosure();
         return closure.isSpecialized(bean);
     }
 
@@ -546,7 +546,7 @@ public class Beans {
      * @return true if bean is specialized by some bean in beans
      */
     public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, BeanManagerImpl beanManager) {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
+        BeansClosure closure = beanManager.getClosure();
         Bean<?> specializedBean = closure.getSpecialized(bean);
         //noinspection SuspiciousMethodCalls
         return (specializedBean != null && beans.contains(specializedBean));
@@ -557,7 +557,7 @@ public class Beans {
      */
     public static boolean isSuppressedBySpecialization(Bean<?> bean, BeanManagerImpl manager) {
         if (bean instanceof AbstractReceiverBean<?, ?, ?>) {
-            BeansClosure closure = BeansClosure.getClosure(manager);
+            BeansClosure closure = manager.getClosure();
             if (closure.isSpecialized(Reflections.<AbstractReceiverBean<?, ?, ?>>cast(bean).getDeclaringBean())) {
                 // if a bean is specialized, its producer methods are not enabled (WELD-977)
                 return true;

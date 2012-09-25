@@ -95,7 +95,6 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
-import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -406,7 +405,7 @@ public class WeldBootstrap implements Bootstrap {
                         riBean.cleanupAfterBoot();
                     }
                 }
-                BeansClosure.getClosure(beanManager).clear();
+                beanManager.getClosure().clear();
             }
         }
         return this;

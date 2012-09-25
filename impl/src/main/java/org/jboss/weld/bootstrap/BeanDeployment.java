@@ -203,7 +203,7 @@ public class BeanDeployment {
         // TODO Register the context beans
         beanDeployer.createBeans();
 
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
+        BeansClosure closure = beanManager.getClosure();
         closure.addEnvironment(beanDeployer.getEnvironment());
     }
 
