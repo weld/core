@@ -243,6 +243,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader();
 
     /**
+     * Beans closure
+     */
+    private final transient BeansClosure closure;
+
+    /**
      * Create a new, root, manager
      *
      * @param serviceRegistry
@@ -363,8 +368,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
         this.accessibleObserverNotifier = ObserverNotifier.of(observerResolver, getServices());
+        this.closure = new BeansClosure(this);
     }
 
+    public BeansClosure getClosure() {
+        return closure;
+    }
 
     private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform) {
         return new Iterable<T>() {
@@ -856,7 +865,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @SuppressWarnings({"deprecation", "unchecked"})
     @Deprecated // should nto be used anymore
     public Map<Contextual<?>, Contextual<?>> getSpecializedBeans() {
-        BeansClosure closure = BeansClosure.getClosure(this);
         return closure.getSpecialized();
     }
 
@@ -938,7 +946,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {
-        BeansClosure closure = BeansClosure.getClosure(this);
         //noinspection unchecked
         return (Bean<? extends X>) closure.mostSpecialized(bean);
     }
@@ -1056,7 +1063,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.namespaces.clear();
         this.accessibleObserverNotifier.clear();
         this.observers.clear();
-        BeansClosure.removeClosure(this);
+        this.closure.destroy();
     }
 
     public Map<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> getInterceptorModelRegistry() {

@@ -22,6 +22,14 @@
 
 package org.jboss.weld.util;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -31,12 +39,6 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
 
-import javax.enterprise.inject.spi.Bean;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * Keeps the BDA closure information.
  *
@@ -44,66 +46,58 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class BeansClosure {
 
-    private static final Map<BeanManagerImpl, BeansClosure> closureMap = new HashMap<BeanManagerImpl, BeansClosure>();
+    private final BeanManagerImpl owner;
+    private volatile Set<BeanManagerImpl> accessibleBeanManagers;
 
     private final Map<Bean<?>, Bean<?>> specialized = new ConcurrentHashMap<Bean<?>, Bean<?>>();
     private final Map<BeanDeployerEnvironment, Object> envs = new ConcurrentHashMap<BeanDeployerEnvironment, Object>();
 
-    /**
-     * Get beans closure.
-     *
-     * @param beanManager the bean manager
-     * @return beans closure
-     */
-    public static BeansClosure getClosure(BeanManagerImpl beanManager) {
-        BeansClosure closure = closureMap.get(beanManager);
-        if (closure == null) {
-            synchronized (closureMap) {
-                closure = closureMap.get(beanManager);
-                if (closure == null) {
-                    closure = new BeansClosure();
-                    for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
+    public BeansClosure(BeanManagerImpl owner) {
+        this.owner = owner;
+    }
+
+    private Set<BeanManagerImpl> getAccessibleBeanManagers() {
+        if (accessibleBeanManagers == null) {
+            synchronized (this) {
+                if (accessibleBeanManagers == null) {
+                    Set<BeanManagerImpl> tmp = new HashSet<BeanManagerImpl>();
+                    for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(owner)) {
                         for (BeanManagerImpl accessibleBeanManager : beanManagers) {
-                            closureMap.put(accessibleBeanManager, closure);
+                            if (owner != accessibleBeanManager) {
+                                tmp.add(accessibleBeanManager);
+                            }
                         }
                     }
+                    accessibleBeanManagers = tmp;
                 }
             }
         }
-        return closure;
-    }
-
-    /**
-     * Remove beans closure.
-     *
-     * @param beanManager the bean manager
-     */
-    public static void removeClosure(BeanManagerImpl beanManager) {
-        BeansClosure closure = closureMap.remove(beanManager);
-        if (closure != null)
-            closure.destroy();
-    }
-
-    /**
-     * Remove accesible beans closure.
-     *
-     * @param beanManager the bean manager
-     */
-    public static void removeAccessibleClosure(BeanManagerImpl beanManager) {
-        for (Iterable<BeanManagerImpl> beanManagers : BeanManagers.getAccessibleClosure(beanManager)) {
-            for (BeanManagerImpl accessibleBeanManager : beanManagers) {
-                removeClosure(accessibleBeanManager);
-            }
-        }
+        return accessibleBeanManagers;
     }
 
     // --- modification methods
 
     public void addSpecialized(Bean<?> target, Bean<?> override) {
+        addSpecializedInternal(target, override);
+        for (BeanManagerImpl accessibleBeanManager : getAccessibleBeanManagers()) {
+            BeansClosure closure = accessibleBeanManager.getClosure();
+            closure.addSpecializedInternal(target, override);
+        }
+    }
+
+    protected void addSpecializedInternal(Bean<?> target, Bean<?> override) {
         specialized.put(target, override);
     }
 
     public void addEnvironment(BeanDeployerEnvironment environment) {
+        addEnvironmentInternal(environment);
+        for (BeanManagerImpl accessibleBeanManager : getAccessibleBeanManagers()) {
+            BeansClosure closure = accessibleBeanManager.getClosure();
+            closure.addEnvironmentInternal(environment);
+        }
+    }
+
+    protected void addEnvironmentInternal(BeanDeployerEnvironment environment) {
         envs.put(environment, Object.class);
     }
 
@@ -111,8 +105,11 @@ public final class BeansClosure {
         envs.clear();
     }
 
-    private void destroy() {
+    public void destroy() {
         specialized.clear();
+        if (accessibleBeanManagers != null) {
+            accessibleBeanManagers.clear();
+        }
     }
 
     // -- querys

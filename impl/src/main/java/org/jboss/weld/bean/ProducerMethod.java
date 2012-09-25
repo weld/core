@@ -245,7 +245,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     @Override
     protected void specialize(BeanDeployerEnvironment environment) {
-        BeansClosure closure = BeansClosure.getClosure(beanManager);
+        BeansClosure closure = beanManager.getClosure();
         WeldMethod<?, ?> superClassMethod = getDeclaringBean().getWeldAnnotated().getWeldSuperclass().getWeldMethod(getWeldAnnotated().getJavaMember());
         ProducerMethod<?, ?> check = closure.getProducerMethod(superClassMethod);
         if (check == null) {
