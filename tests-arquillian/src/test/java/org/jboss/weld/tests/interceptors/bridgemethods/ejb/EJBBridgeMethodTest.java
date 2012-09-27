@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
+@Ignore("Enable once we upgrade AS7 version to 7.2.x -- this is fixed there")
 public class EJBBridgeMethodTest {
 
     @Deployment
