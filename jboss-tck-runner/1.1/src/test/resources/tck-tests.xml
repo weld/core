@@ -118,23 +118,8 @@
                     <exclude name="testLookup"/>
                 </methods>
             </class>
-             <!-- WELD-1211 -->
-            <class name="org.jboss.cdi.tck.tests.context.request.event.async.RequestScopeEventAsyncTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
+            <!-- WELD-1211 -->
             <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.request.event.remote.RequestScopeEventRemoteTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.request.event.timeout.RequestScopeEventTimeoutTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>

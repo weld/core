@@ -23,6 +23,7 @@ package org.jboss.weld.tests.contexts.conversation.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
@@ -42,6 +43,9 @@ public class Servlet extends HttpServlet {
     @Inject
     private Conversation conversation;
 
+    @Inject
+    private DestroyedConversationObserver observer;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
@@ -59,8 +63,17 @@ public class Servlet extends HttpServlet {
             setMessage(req);
             printInfo(resp.getWriter());
         } else if (uri.endsWith("/invalidateSession")) {
+            observer.reset();
             req.getSession().invalidate();
             printInfo(resp.getWriter());
+        } else if (uri.endsWith("/listConversationsDestroyedWhileBeingAssociated")) {
+            PrintWriter writer = resp.getWriter();
+            writer.append("ConversationsDestroyedWhileBeingAssociated: ");
+            printSessionIds(writer, observer.getAssociatedConversationIds());
+        } else if (uri.endsWith("/listConversationsDestroyedWhileBeingDisassociated")) {
+            PrintWriter writer = resp.getWriter();
+            writer.append("ConversationsDestroyedWhileBeingDisassociated: ");
+            printSessionIds(writer, observer.getDisassociatedConversationIds());
         } else {
             resp.setStatus(404);
         }
@@ -86,6 +99,13 @@ public class Servlet extends HttpServlet {
         writer.append("]");
         writer.append("\n");
         writer.append("transient: " + conversation.isTransient());
+        writer.append("\n");
+    }
+
+    private void printSessionIds(PrintWriter writer, Set<String> ids) {
+        for (String id : ids) {
+            writer.append("<" + id + ">");
+        }
     }
     
     private void setMessage(HttpServletRequest request) {

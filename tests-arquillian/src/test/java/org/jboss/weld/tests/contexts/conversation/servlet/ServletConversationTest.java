@@ -22,6 +22,7 @@
 package org.jboss.weld.tests.contexts.conversation.servlet;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -61,7 +62,9 @@ public class ServletConversationTest {
 
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, "test.war").addClasses(Message.class, Servlet.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                .addClasses(Message.class, Servlet.class, DestroyedConversationObserver.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebResource(ServletConversationTest.class.getPackage(), "message.html", "message.html");
     }
 
@@ -170,34 +173,65 @@ public class ServletConversationTest {
 
         String cid = getCid(content);
 
-        // Do a redirect. Verify that the conversation is not propagated (In this case, the application must manage this request parameter.)
+        // Do a redirect. Verify that the conversation is not propagated (In this case, the application must manage this request
+        // parameter.)
         TextPage page = client.getPage(getPath("/redirect", cid));
         assertTrue(page.getContent().contains("message: Hello"));
         assertTrue(page.getContent().contains("cid: [null]"));
         assertTrue(page.getContent().contains("transient: true"));
     }
-    
+
     @Test
     public void testInvalidatingSessionDestroysConversation() throws Exception {
         WebClient client = new WebClient();
-        
-        // begin conversation
-        TextPage initialPage = client.getPage(getPath("/begin", null));
-        String content = initialPage.getContent();
+
+        // begin conversation 1
+        TextPage initialPage1 = client.getPage(getPath("/begin", null));
+        String content = initialPage1.getContent();
         assertTrue(content.contains("message: Hello"));
         assertTrue(content.contains("transient: false"));
+        String cid1 = getCid(content);
 
-        String cid = getCid(content);
+        // begin conversation 1
+        TextPage initialPage2 = client.getPage(getPath("/begin", null));
+        String content2 = initialPage2.getContent();
+        assertTrue(content2.contains("message: Hello"));
+        assertTrue(content2.contains("transient: false"));
+        String cid2 = getCid(content2);
 
-        // Invalidate the session
+        assertFalse(cid1.equals(cid2));
+
+        /*
+         * Invalidate the session. This should destroy the currently associated conversation (with cid1) as well as the
+         * not-currently-associated conversation (with cid2).
+         */
         {
-            client.getPage(getPath("/invalidateSession", cid));
+            client.getPage(getPath("/invalidateSession", cid1));
         }
 
-        // Verify that the conversation cannot be associated
+        // verify destroyed conversations
+        {
+            TextPage page = client.getPage(getPath("/listConversationsDestroyedWhileBeingAssociated", null));
+            assertTrue(page.getContent().contains("ConversationsDestroyedWhileBeingAssociated:"));
+            assertTrue(page.getContent().contains("<" + cid1 + ">"));
+        }
+        {
+            TextPage page = client.getPage(getPath("/listConversationsDestroyedWhileBeingDisassociated", null));
+            assertTrue(page.getContent().contains("ConversationsDestroyedWhileBeingDisassociated:"));
+            assertTrue(page.getContent().contains("<" + cid2 + ">"));
+        }
+
+        // Verify that the conversation 1 cannot be associated
         {
             client.setThrowExceptionOnFailingStatusCode(false);
-            Page page = client.getPage(getPath("/display", cid));
+            Page page = client.getPage(getPath("/display", cid1));
+            assertEquals(500, page.getWebResponse().getStatusCode());
+        }
+
+        // Verify that the conversation 2 cannot be associated
+        {
+            client.setThrowExceptionOnFailingStatusCode(false);
+            Page page = client.getPage(getPath("/display", cid2));
             assertEquals(500, page.getWebResponse().getStatusCode());
         }
     }

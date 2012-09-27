@@ -43,7 +43,9 @@ import org.jboss.weld.context.beanstore.ConversationNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
+import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.logging.messages.ConversationMessage;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 
 /**
@@ -72,13 +74,16 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     private final Instance<ConversationContext> conversationContexts;
 
+    private final BeanManagerImpl manager;
+
     public AbstractConversationContext() {
         super(true);
         this.parameterName = new AtomicReference<String>(PARAMETER_NAME);
         this.defaultTimeout = new AtomicLong(DEFAULT_TIMEOUT);
         this.concurrentAccessTimeout = new AtomicLong(CONCURRENT_ACCESS_TIMEOUT);
         this.associated = new ThreadLocal<R>();
-        this.conversationContexts = Container.instance().deploymentManager().instance().select(ConversationContext.class);
+        this.manager = Container.instance().deploymentManager();
+        this.conversationContexts = manager.instance().select(ConversationContext.class);
     }
 
     public String getParameterName() {
@@ -347,6 +352,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             destroy();
             getBeanStore().detach();
             setBeanStore(null);
+            manager.getGlobalLenientObserverNotifier().fireEvent(id, DestroyedLiteral.CONVERSATION);
         }
     }
 
