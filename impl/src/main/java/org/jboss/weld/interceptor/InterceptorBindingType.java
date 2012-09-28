@@ -26,6 +26,9 @@ public class InterceptorBindingType {
     }
 
     public static Set<Annotation> unwrap(Set<InterceptorBindingType> interceptorBindingTypes) {
+        if (interceptorBindingTypes == null) {
+            return null;
+        }
         HashSet<Annotation> annotations = new HashSet<Annotation>();
         for (InterceptorBindingType interceptorBindingType : interceptorBindingTypes) {
             annotations.add(interceptorBindingType.getAnnotation());
