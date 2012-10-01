@@ -139,6 +139,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- CDITCK-284 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.modules.SpecializedProducerMethodInjectionNotAvailableTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
