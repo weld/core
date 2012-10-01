@@ -31,10 +31,10 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -142,8 +142,6 @@ import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -167,7 +165,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Proxies;
-import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -1321,7 +1318,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         private static final InjectionPoint INSTANCE = new InstanceInjectionPoint();
 
         private transient Type type;
-        private transient Set<Annotation> qualifiers;
+        // there are no qualifiers by default
+        // ResolvableBuilder.create() takes care of adding @Default if there is no qualifier selected
+        private transient Set<Annotation> qualifiers = Collections.emptySet();
 
         public Type getType() {
             if (type == null) {
@@ -1332,9 +1331,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
 
         public Set<Annotation> getQualifiers() {
-            if (qualifiers == null) {
-                this.qualifiers = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
-            }
             return qualifiers;
         }
 
