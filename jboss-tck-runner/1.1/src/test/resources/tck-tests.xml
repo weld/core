@@ -118,8 +118,13 @@
                     <exclude name="testLookup"/>
                 </methods>
             </class>
-            <!-- WELD-1211 -->
+            <!-- CDITCK-283 -->
             <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.jms.MessageDrivenBeanContextTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
