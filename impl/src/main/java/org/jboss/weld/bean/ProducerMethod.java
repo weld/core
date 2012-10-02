@@ -82,11 +82,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
             public Bean<T> getBean() {
                 return ProducerMethod.this;
             }
-
-            @Override
-            protected boolean isTypeSerializable(Object object) {
-                return ProducerMethod.this.isTypeSerializable(object.getClass());
-            }
         });
     }
 

@@ -92,11 +92,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
             public Bean<T> getBean() {
                 return ProducerField.this;
             }
-
-            @Override
-            protected boolean isTypeSerializable(Object object) {
-                return ProducerField.this.isTypeSerializable(object.getClass());
-            }
         });
     }
 

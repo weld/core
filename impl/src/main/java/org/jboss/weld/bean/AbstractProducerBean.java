@@ -23,11 +23,11 @@ import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_CAST_ERROR;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -48,8 +48,6 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Defaults;
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
 
 /**
  * The implicit producer bean
@@ -63,22 +61,11 @@ import com.google.common.collect.MapMaker;
  */
 public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractBean<T, S> {
 
-    private static final Function<Class<?>, Boolean> SERIALIZABLE_CHECK = new Function<Class<?>, Boolean>() {
-
-        public Boolean apply(Class<?> from) {
-            return Reflections.isSerializable(from);
-        }
-
-    };
-
     private final AbstractClassBean<X> declaringBean;
 
     // Passivation flags
     private boolean passivationCapableBean;
     private boolean passivationCapableDependency;
-
-    // Serialization cache for produced types at runtime
-    private ConcurrentMap<Class<?>, Boolean> serializationCheckCache;
 
     /**
      * Constructor
@@ -89,7 +76,6 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     public AbstractProducerBean(BeanAttributes<T> attributes, String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(attributes, idSuffix, beanManager);
         this.declaringBean = declaringBean;
-        serializationCheckCache = new MapMaker().makeComputingMap(SERIALIZABLE_CHECK);
     }
 
     @Override
@@ -166,15 +152,17 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             }
         }
         if (instance != null) {
-            boolean passivating = beanManager.isPassivatingScope(getScope());
-            if (passivating && !isTypeSerializable(instance.getClass())) {
-                throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
-            }
-            InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
-            if (injectionPoint != null && injectionPoint.getBean() != null) {
-                if (Beans.isPassivatingScope(injectionPoint.getBean(), beanManager) && !isTypeSerializable(instance.getClass())) {
-                    if (injectionPoint.getMember() instanceof Field && !injectionPoint.isTransient()) {
-                        throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
+            if (!(instance instanceof Serializable)) {
+                boolean passivating = beanManager.isPassivatingScope(getScope());
+                if (passivating) {
+                    throw new IllegalProductException(NON_SERIALIZABLE_PRODUCT_ERROR, getProducer());
+                }
+                InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
+                if (injectionPoint != null && injectionPoint.getBean() != null) {
+                    if (Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
+                        if (injectionPoint.getMember() instanceof Field && !injectionPoint.isTransient()) {
+                            throw new IllegalProductException(NON_SERIALIZABLE_FIELD_INJECTION_ERROR, this, injectionPoint);
+                        }
                     }
                 }
             }
@@ -189,8 +177,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         }
     }
 
-    protected boolean isTypeSerializable(final Class<?> clazz) {
-        return serializationCheckCache.get(clazz);
+    protected boolean isTypeSerializable(final Object instance) {
+        return instance instanceof Serializable;
     }
 
     /**
