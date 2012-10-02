@@ -263,6 +263,7 @@ public class BeanDeployment {
         beanDeployer.doAfterBeanDiscovery(beanManager.getBeans());
         beanDeployer.doAfterBeanDiscovery(beanManager.getDecorators());
         beanDeployer.doAfterBeanDiscovery(beanManager.getInterceptors());
+        beanDeployer.registerCdiInterceptorsForMessageDrivenBeans();
     }
 
     public EnabledBuilder getEnabledBuilder() {

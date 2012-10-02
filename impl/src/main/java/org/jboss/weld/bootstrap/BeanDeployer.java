@@ -45,15 +45,20 @@ import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
+import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeFactory;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.enums.EnumInjectionTarget;
 import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.injection.producer.InterceptionModelInitializer;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -319,6 +324,21 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         for (Bean<?> bean : beanList) {
             if (bean instanceof RIBean<?>) {
                 ((RIBean<?>) bean).initializeAfterBeanDiscovery();
+            }
+        }
+    }
+
+    public void registerCdiInterceptorsForMessageDrivenBeans() {
+        EjbServices ejbServices = getManager().getServices().get(EjbServices.class);
+        for (InternalEjbDescriptor<?> descriptor : getEnvironment().getEjbDescriptors()) {
+            if (descriptor.isMessageDriven()) {
+                if (!getManager().getInterceptorModelRegistry().containsKey(descriptor.getBeanClass())) {
+                    InterceptionModelInitializer.of(getManager(), classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass()), null).init();
+                }
+                InterceptionModel<ClassMetadata<?>, ?> model = getManager().getInterceptorModelRegistry().get(descriptor.getBeanClass());
+                if (model != null) {
+                    ejbServices.registerInterceptors(descriptor, new InterceptorBindingsAdapter(model));
+                }
             }
         }
     }

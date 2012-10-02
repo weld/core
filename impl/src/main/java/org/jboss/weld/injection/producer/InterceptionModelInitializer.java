@@ -77,6 +77,10 @@ public class InterceptionModelInitializer<T> {
         return cast(EMPTY_INTERCEPTOR_METADATA_ARRAY);
     }
 
+    public static <T> InterceptionModelInitializer<T> of(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, Bean<?> bean) {
+        return new InterceptionModelInitializer<T>(manager, annotatedType, bean);
+    }
+
     private final BeanManagerImpl manager;
     private final EnhancedAnnotatedType<T> annotatedType;
     private final Set<Class<? extends Annotation>> stereotypes;
