@@ -42,7 +42,7 @@ public class SpecializedBeanResolver {
         this.accessibleEnvironments = accessibleEnvironments;
     }
 
-    private static interface BootstrapTransform<T extends Bean<?>> {
+    private interface BootstrapTransform<T extends Bean<?>> {
         Iterable<T> transform(T bean, BeanDeployerEnvironment environment);
     }
 

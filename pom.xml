@@ -39,7 +39,7 @@
         <cdi.api.version>1.1-20120918</cdi.api.version>
         <cdi.tck-1-0.version>1.0.4.SP3</cdi.tck-1-0.version>
         <cdi.tck-1-1.version>1.1.0-SNAPSHOT</cdi.tck-1-1.version>
-        <checkstyle.plugin.version>2.5</checkstyle.plugin.version>
+        <checkstyle.plugin.version>2.9.1</checkstyle.plugin.version>
         <classfilewriter.version>1.0.1.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.5.1</findbugs-maven-plugin.version>

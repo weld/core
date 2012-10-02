@@ -71,7 +71,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
         return identifier.restoreInjectionPoint();
     }
 
-    private static interface InjectionPointIdentifier extends Serializable {
+    private interface InjectionPointIdentifier extends Serializable {
         InjectionPoint restoreInjectionPoint();
     }
 
