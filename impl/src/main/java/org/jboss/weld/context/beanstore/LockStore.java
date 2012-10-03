@@ -31,6 +31,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Helper class for bean store creation locking.
  *
  * @author Stuart Douglas
+ * @author Marko Luksa
  */
 public class LockStore implements Serializable {
 
@@ -38,7 +39,7 @@ public class LockStore implements Serializable {
 
     public LockedBean lock(String id) {
         ReferenceCountedLock refLock;
-        synchronized (locks) {
+        synchronized (this) {
             if(locks == null) {
                 locks = new HashMap<String, ReferenceCountedLock>();
             }
@@ -64,7 +65,7 @@ public class LockStore implements Serializable {
         }
 
         public void unlock() {
-            synchronized (locks) {
+            synchronized (LockStore.this) {
                 lock.unlock();
                 --count;
                 if (count == 0) {
