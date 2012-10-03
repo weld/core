@@ -36,7 +36,7 @@ import java.util.Map;
  * </p>
  * <p/>
  * <p>
- * A request parameter was choosen to propagate the conversation because it's
+ * A request parameter was chosen to propagate the conversation because it's
  * the most technology agnostic approach for passing data between requests and
  * allows for the ensuing request to use whatever means necessary (a servlet
  * filter, phase listener, etc) to capture the conversation id and restore the
@@ -46,6 +46,7 @@ import java.util.Map;
  * @author Dan Allen
  * @author Pete Muir
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class ConversationAwareViewHandler extends ViewHandlerWrapper {
 
@@ -99,7 +100,7 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
     public String getActionURL(FacesContext facesContext, String viewId) {
         String actionUrl = super.getActionURL(facesContext, viewId);
         Conversation conversation = getConversationContext().getCurrentConversation();
-        if (!getSource().equals(Source.BOOKMARKABLE) && !conversation.isTransient()) {
+        if (!getSource().equals(Source.BOOKMARKABLE) && getConversationContext().isActive() && !conversation.isTransient()) {
             return new FacesUrlTransformer(actionUrl, facesContext)
                 .appendConversationIdIfNecessary(getConversationContext().getParameterName(), conversation.getId())
                 .getUrl();
