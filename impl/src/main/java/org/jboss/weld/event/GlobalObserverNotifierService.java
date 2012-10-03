@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.servlet.ServletContextEvent;
 
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -40,7 +40,7 @@ import com.google.common.collect.Iterators;
  * @author Jozef Hartinger
  *
  */
-public class GlobalObserverNotifierService implements Service {
+public class GlobalObserverNotifierService implements BootstrapService {
 
     private static class BeanManagerToObserverMethodIterable implements Function <BeanManagerImpl, Iterator<ObserverMethod<?>>> {
         @Override
@@ -83,9 +83,14 @@ public class GlobalObserverNotifierService implements Service {
     }
 
     @Override
-    public void cleanup() {
-        this.beanManagers.clear();
+    public void cleanupAfterBoot() {
         this.globalStrictObserverNotifier.clear();
         this.globalLenientObserverNotifier.clear();
+    }
+
+    @Override
+    public void cleanup() {
+        cleanupAfterBoot();
+        this.beanManagers.clear();
     }
 }

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySetMultimap;
@@ -38,7 +38,7 @@ import com.google.common.collect.MapMaker;
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
  * @author Jozef Hartinger
  */
-public class SharedObjectCache implements Service {
+public class SharedObjectCache implements BootstrapService {
 
     public static SharedObjectCache instance(BeanManagerImpl manager) {
         return manager.getServices().get(SharedObjectCache.class);

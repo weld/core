@@ -9,10 +9,10 @@ import javax.enterprise.inject.spi.Producer;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.bootstrap.Validator;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public class InjectionTargetService implements Service {
+public class InjectionTargetService extends AbstractBootstrapService {
 
     private final Validator validator;
     private final Container container;
@@ -64,7 +64,8 @@ public class InjectionTargetService implements Service {
         producersToValidate.clear();
     }
 
-    public void cleanup() {
+    @Override
+    public void cleanupAfterBoot() {
         producersToValidate.clear();
         injectionTargetsToInitialize.clear();
     }

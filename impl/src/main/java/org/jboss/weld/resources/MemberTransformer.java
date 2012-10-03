@@ -49,7 +49,7 @@ import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedMember;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedMemberIdentifier;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
@@ -67,7 +67,7 @@ import com.google.common.collect.MapMaker;
  * @author Jozef Hartinger
  *
  */
-public class MemberTransformer implements Service {
+public class MemberTransformer implements BootstrapService {
 
     private final ClassTransformer transformer;
 

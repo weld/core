@@ -32,7 +32,7 @@ import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotationImpl;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -52,7 +52,7 @@ import com.google.common.collect.MapMaker;
  * @author JBoss Weld Community
  * @author Ales Justin
  */
-public class ClassTransformer implements Service {
+public class ClassTransformer implements BootstrapService {
 
     public static ClassTransformer instance(BeanManagerImpl manager) {
         return manager.getServices().get(ClassTransformer.class);
@@ -229,6 +229,7 @@ public class ClassTransformer implements Service {
         return reflectionCache;
     }
 
+    @Override
     public void cleanupAfterBoot() {
         this.enhancedAnnotatedTypes.clear();
         this.annotations.clear();
@@ -237,6 +238,7 @@ public class ClassTransformer implements Service {
         }
     }
 
+    @Override
     public void cleanup() {
         cleanupAfterBoot();
         this.discoveredSlimAnnotatedTypes.clear();

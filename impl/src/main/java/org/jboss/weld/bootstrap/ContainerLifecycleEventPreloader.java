@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.executor.DeamonThreadFactory;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -42,7 +42,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * @author Jozef Hartinger
  *
  */
-public class ContainerLifecycleEventPreloader implements Service {
+public class ContainerLifecycleEventPreloader extends AbstractBootstrapService {
 
     // This is an optional services thus we do not need tasks to finish in order to get a valid deployment
     private static final long SHUTDOWN_TIMEOUT = 1L;
@@ -77,7 +77,7 @@ public class ContainerLifecycleEventPreloader implements Service {
     }
 
     @Override
-    public void cleanup() {
+    public void cleanupAfterBoot() {
         if (!executor.isShutdown()) {
             executor.shutdownNow();
             try {

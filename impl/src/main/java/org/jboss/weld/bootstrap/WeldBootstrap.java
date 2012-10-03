@@ -471,12 +471,14 @@ public class WeldBootstrap implements Bootstrap {
             deploymentManager.getGlobalStrictObserverNotifier().clear();
             deploymentManager.getGlobalLenientObserverNotifier().clear();
             deploymentManager.getDecoratorResolver().clear();
+            deploymentManager.getServices().cleanupAfterBoot();
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                 beanManager.getBeanResolver().clear();
                 beanManager.getAccessibleLenientObserverNotifier().clear();
                 beanManager.getDecoratorResolver().clear();
                 beanManager.getInterceptorMetadataReader().cleanAfterBoot();
+                beanManager.getServices().cleanupAfterBoot();
                 // clean up beans
                 for (Bean<?> bean : beanManager.getBeans()) {
                     if (bean instanceof RIBean<?>) {
@@ -502,9 +504,6 @@ public class WeldBootstrap implements Bootstrap {
             deployment.getBeanManager().getServices().get(EnumService.class).inject();
             deployment.getBeanDeployer().cleanup();
         }
-        ClassTransformer.instance(deploymentManager).cleanupAfterBoot();
-        Container.instance().services().get(SharedObjectCache.class).cleanupAfterBoot();
-        ContainerLifecycleEventPreloader.shutdown();
         return this;
     }
 

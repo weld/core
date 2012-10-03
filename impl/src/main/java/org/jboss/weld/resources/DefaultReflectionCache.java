@@ -20,12 +20,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
 
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
 
-public class DefaultReflectionCache implements Service, ReflectionCache {
+public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
 
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
         return element.getAnnotations();
@@ -63,7 +63,7 @@ public class DefaultReflectionCache implements Service, ReflectionCache {
     }
 
     @Override
-    public void cleanup() {
+    public void cleanupAfterBoot() {
         annotations.clear();
         declaredAnnotations.clear();
     }
