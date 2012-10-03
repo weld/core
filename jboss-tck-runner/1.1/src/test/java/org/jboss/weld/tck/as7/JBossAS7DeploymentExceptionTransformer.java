@@ -26,9 +26,11 @@ import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTr
 import org.jboss.as.arquillian.container.ExceptionTransformer;
 
 /**
- * Temporary replacement for NOOP {@link ExceptionTransformer} used by JBoss AS7 arquillian container.
+ * TEMPORARY WORKAROUND - temporary replacement for NOOP {@link ExceptionTransformer} used by JBoss AS7 managed container.
  * 
- * @see JBossAS7DeploymentExceptionTransformerExtension
+ * See AS7-1197 for more details.
+ * 
+ * @see JBossAS7Extension
  * @author Martin Kouba
  */
 public class JBossAS7DeploymentExceptionTransformer implements DeploymentExceptionTransformer {

@@ -23,23 +23,22 @@ import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * This arquillian extention is TEMPORARY WORKAROUND. It overrides the default NOOP exception transformer for JBoss managed
- * container.
- *
- * See AS7-1197 for more details.
+ * 
  *
  * @author Martin Kouba
  */
-public class JBossAS7DeploymentExceptionTransformerExtension implements LoadableExtension {
+public class JBossAS7Extension implements LoadableExtension {
 
-    private static final String JBOSSAS7_TEST_CLASS = "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer";
-
+    private static final String JBOSSAS7_MANAGED_CONTAINER_CLASS = "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer";
+   
     public void register(ExtensionBuilder builder) {
 
-        if (Reflections.isClassLoadable(JBOSSAS7_TEST_CLASS, new ClassLoaderResourceLoader(this.getClass().getClassLoader()))) {
+        if (Reflections.isClassLoadable(JBOSSAS7_MANAGED_CONTAINER_CLASS, new ClassLoaderResourceLoader(this.getClass().getClassLoader()))) {
             // Override the default NOOP exception transformer
             builder.override(DeploymentExceptionTransformer.class, ExceptionTransformer.class,
                     JBossAS7DeploymentExceptionTransformer.class);
+            // Observe container start and check EE resources
+            builder.observer(JBossAS7EEResourceManager.class);
         }
     }
 
