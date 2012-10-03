@@ -146,7 +146,7 @@ public class Listener extends ForwardingServletListener {
         StringBuilder dump = new StringBuilder();
         Container container = findContainer(cc, dump);
         if (container == null) {
-            log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filtersor or Listeners");
+            log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filters or Listeners");
             if (log.isDebugEnabled())
                 log.debug("Exception dump from Container lookup: " + dump);
         } else {
