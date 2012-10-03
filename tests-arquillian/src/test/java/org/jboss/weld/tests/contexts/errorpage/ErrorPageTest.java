@@ -26,6 +26,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -35,6 +36,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,6 +50,10 @@ import java.util.Set;
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class ErrorPageTest {
+
+    @ArquillianResource
+    private URL url;
+
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
@@ -83,8 +89,7 @@ public class ErrorPageTest {
     }
 
     protected String getPath(String page) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/" + page;
+        return url + page;
     }
 
     protected <T> Set<T> getElements(HtmlElement rootElement, Class<T> elementClass) {
