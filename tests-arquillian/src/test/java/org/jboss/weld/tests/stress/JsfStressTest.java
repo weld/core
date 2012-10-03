@@ -26,6 +26,7 @@ import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -38,6 +39,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Stress test of basically the JSF NumberGuess game example.
@@ -58,6 +60,9 @@ public class JsfStressTest {
 
     protected String WIN_MSG = "Correct!";
     protected String LOSE_MSG = "No guesses left!";
+
+    @ArquillianResource
+    private URL url;
 
     @Rule
     public ContiPerfRule i = new ContiPerfRule();
@@ -136,8 +141,7 @@ public class JsfStressTest {
     }
 
     protected String getPath(String viewId) {
-        // TODO: this should be moved out and be handled by Arquillian
-        return "http://localhost:8080/test/";
+        return url + viewId;
     }
 
 
