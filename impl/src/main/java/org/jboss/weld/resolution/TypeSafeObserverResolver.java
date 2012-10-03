@@ -19,9 +19,9 @@ package org.jboss.weld.resolution;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
@@ -47,7 +47,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         return rules.matches(observer.getObservedType(), resolvable.getTypes())
                 && Beans.containsAllQualifiers(QualifierInstance.qualifiers(metaAnnotationStore, observer.getObservedQualifiers()), resolvable.getQualifiers())
                 // container lifecycle events are fired into Extensions only
-                && (!isContainerLifecycleEvent(resolvable) || Extension.class.isAssignableFrom(observer.getBeanClass()));
+                && (observer instanceof ExtensionObserverMethodImpl<?, ?> || !isContainerLifecycleEvent(resolvable));
     }
 
     protected boolean isContainerLifecycleEvent(Resolvable resolvable) {
