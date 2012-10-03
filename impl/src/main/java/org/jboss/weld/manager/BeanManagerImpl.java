@@ -158,7 +158,6 @@ import org.jboss.weld.resolution.TypeSafeBeanResolver;
 import org.jboss.weld.resolution.TypeSafeDecoratorResolver;
 import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
-import org.jboss.weld.resolution.TypeSafeResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -230,9 +229,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     * structures that are transitive accessible from other bean deployment
     * archives
     */
-    private final transient TypeSafeBeanResolver<Bean<?>> beanResolver;
-    private final transient TypeSafeResolver<Resolvable, Decorator<?>> decoratorResolver;
-    private final transient TypeSafeResolver<InterceptorResolvable, Interceptor<?>> interceptorResolver;
+    private final transient TypeSafeBeanResolver beanResolver;
+    private final transient TypeSafeDecoratorResolver decoratorResolver;
+    private final transient TypeSafeInterceptorResolver interceptorResolver;
     private final transient NameBasedResolver nameBasedResolver;
     private final transient ELResolver weldELResolver;
     private transient Namespace rootNamespace;
@@ -402,7 +401,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
         Transform<Bean<?>> beanTransform = new BeanTransform(this);
-        this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(beanTransform));
+        this.beanResolver = new TypeSafeBeanResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(DecoratorTransform.INSTANCE));
         this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(InterceptorTransform.INSTANCE));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
@@ -800,15 +799,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers) {
         checkResolveDecoratorsArguments(types);
-        // TODO Fix this cast and make the resolver return a list
-        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers)));
+        return decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
     }
 
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> qualifiers) {
         checkResolveDecoratorsArguments(types);
-        // TODO Fix this cast and make the resolver return a list
-        // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
-        return new ArrayList<Decorator<?>>(decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true));
+        return decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true);
     }
 
     private void checkResolveDecoratorsArguments(Set<Type> types) {
@@ -860,7 +856,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         .setInterceptionType(type)
         .addQualifiers(interceptorBindings)
         .create();
-        return new ArrayList<Interceptor<?>>(interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindings)));
+        return interceptorResolver.resolve(interceptorResolvable, isCacheable(interceptorBindings));
     }
 
     /**
@@ -868,7 +864,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      *
      * @return The resolver
      */
-    public TypeSafeBeanResolver<Bean<?>> getBeanResolver() {
+    public TypeSafeBeanResolver getBeanResolver() {
         return beanResolver;
     }
 
@@ -877,7 +873,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      *
      * @return The resolver
      */
-    public TypeSafeResolver<Resolvable, Decorator<?>> getDecoratorResolver() {
+    public TypeSafeDecoratorResolver getDecoratorResolver() {
         return decoratorResolver;
     }
 

@@ -16,12 +16,15 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
+import org.jboss.weld.util.collections.WeldCollections;
+
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 
 /**
@@ -31,34 +34,34 @@ import com.google.common.collect.MapMaker;
  * @author Marius Bogoevici
  * @author Ales Justin
  */
-public abstract class TypeSafeResolver<R extends Resolvable, T> {
+public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collection<T>> {
 
-    private static class ResolvableToBeanSet<R extends Resolvable, T> implements Function<R, Set<T>> {
+    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>> implements Function<R, C> {
 
-        private final TypeSafeResolver<R, T> resolver;
+        private final TypeSafeResolver<R, T, C> resolver;
 
-        private ResolvableToBeanSet(TypeSafeResolver<R, T> resolver) {
+        private ResolvableToBeanCollection(TypeSafeResolver<R, T, C> resolver) {
             this.resolver = resolver;
         }
 
-        public Set<T> apply(R from) {
-            return resolver.sortResult(resolver.filterResult(resolver.findMatching(from)));
+        public C apply(R from) {
+            return resolver.makeResultImmutable(resolver.sortResult(resolver.filterResult(resolver.findMatching(from))));
         }
 
     }
 
     // The resolved injection points
-    private final ConcurrentMap<R, Set<T>> resolved;
+    private final ConcurrentMap<R, C> resolved;
     // The beans to search
     private final Iterable<? extends T> allBeans;
-    private final ResolvableToBeanSet<R, T> resolverFunction;
+    private final ResolvableToBeanCollection<R, T, C> resolverFunction;
 
 
     /**
      * Constructor
      */
     public TypeSafeResolver(Iterable<? extends T> allBeans) {
-        this.resolverFunction = new ResolvableToBeanSet<R, T>(this);
+        this.resolverFunction = new ResolvableToBeanCollection<R, T, C>(this);
         this.resolved = new MapMaker().makeComputingMap(resolverFunction);
         this.allBeans = allBeans;
     }
@@ -76,7 +79,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
      * @param resolvable The resolving criteria
      * @return An unmodifiable set of matching beans
      */
-    public Set<T> resolve(R resolvable, boolean cache) {
+    public C resolve(R resolvable, boolean cache) {
         R wrappedResolvable = wrap(resolvable);
         if (cache) {
             return resolved.get(wrappedResolvable);
@@ -98,9 +101,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
                 result.add(bean);
             }
         }
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        Iterable<T> iterable = result; // downcast
-        return ImmutableSet.copyOf(iterable);
+        return result;
     }
 
     protected Iterable<? extends T> getAllBeans(R resolvable) {
@@ -113,9 +114,11 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
 
     protected abstract Set<T> filterResult(Set<T> matched);
 
-    protected abstract Set<T> sortResult(Set<T> matched);
+    protected abstract C sortResult(Set<T> matched);
 
     protected abstract boolean matches(R resolvable, T t);
+
+    protected abstract C makeResultImmutable(C result);
 
     /**
      * allows subclasses to wrap a resolvable before it is resolved
@@ -139,5 +142,13 @@ public abstract class TypeSafeResolver<R extends Resolvable, T> {
         buffer.append("Resolver\n");
         buffer.append("Resolved injection points: " + resolved.size() + "\n");
         return buffer.toString();
+    }
+
+    protected List<T> makeResultImmutable(List<T> result) {
+        return WeldCollections.immutableList(result);
+    }
+
+    protected Set<T> makeResultImmutable(Set<T> result) {
+        return WeldCollections.immutableSet(result);
     }
 }

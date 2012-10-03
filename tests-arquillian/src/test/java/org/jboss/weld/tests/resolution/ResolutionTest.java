@@ -60,7 +60,7 @@ public class ResolutionTest {
         Annotation defaultQualifier = new AnnotationLiteral<Default>() {
         };
         assertNotNull(getReference(beanManager, Foo.class, defaultQualifier));
-        TypeSafeBeanResolver<?> resolver = beanManager.getBeanResolver();
+        TypeSafeBeanResolver resolver = beanManager.getBeanResolver();
         assertFalse(resolver.isCached(new ResolvableBuilder(beanManager).addType(Foo.class).addQualifier(defaultQualifier).create()));
     }
 

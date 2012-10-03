@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.resolution;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.enterprise.inject.spi.Decorator;
 
@@ -28,15 +29,18 @@ import org.jboss.weld.util.Beans;
 /**
  * @author Pete Muir
  */
-public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>> {
+public class TypeSafeDecoratorResolver extends AbstractTypeSafeBeanResolver<Decorator<?>, List<Decorator<?>>> {
+
+    private final AssignabilityRules rules;
 
     public TypeSafeDecoratorResolver(BeanManagerImpl manager, Iterable<Decorator<?>> decorators) {
         super(manager, decorators);
+        this.rules = DelegateInjectionPointAssignabilityRules.instance();
     }
 
     @Override
     protected boolean matches(Resolvable resolvable, Decorator<?> bean) {
-        return DelegateInjectionPointAssignabilityRules.instance().matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
+        return rules.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
                 && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(), bean.getDelegateQualifiers()), resolvable.getQualifiers())
                 && getBeanManager().getEnabled().getDecorator(bean.getBeanClass()) != null;
     }
@@ -47,10 +51,9 @@ public class TypeSafeDecoratorResolver extends TypeSafeBeanResolver<Decorator<?>
     }
 
     @Override
-    protected Set<Decorator<?>> sortResult(Set<Decorator<?>> matchedDecorators) {
-        Set<Decorator<?>> sortedBeans = new TreeSet<Decorator<?>>(getBeanManager().getEnabled().getDecoratorComparator());
-        sortedBeans.addAll(matchedDecorators);
-        return sortedBeans;
+    protected List<Decorator<?>> sortResult(Set<Decorator<?>> matchedDecorators) {
+        List<Decorator<?>> sortedDecorators = new ArrayList<Decorator<?>>(matchedDecorators);
+        Collections.sort(sortedDecorators, getBeanManager().getEnabled().getDecoratorComparator());
+        return sortedDecorators;
     }
-
 }

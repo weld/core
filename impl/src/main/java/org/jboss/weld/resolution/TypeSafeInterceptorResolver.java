@@ -17,8 +17,10 @@
 
 package org.jboss.weld.resolution;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.enterprise.inject.spi.Interceptor;
 
@@ -28,7 +30,7 @@ import org.jboss.weld.util.Beans;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>> {
+public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>, List<Interceptor<?>>> {
 
     private final BeanManagerImpl manager;
 
@@ -42,14 +44,14 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
         return bean.intercepts(resolvable.getInterceptionType())
                 && bean.getInterceptorBindings().size() > 0
                 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager())
-                && getManager().getEnabled().getInterceptor(bean.getBeanClass()) != null;
+                && manager.getEnabled().getInterceptor(bean.getBeanClass()) != null;
     }
 
     @Override
-    protected Set<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors) {
-        Set<Interceptor<?>> sortedBeans = new TreeSet<Interceptor<?>>(getManager().getEnabled().getInterceptorComparator());
-        sortedBeans.addAll(matchedInterceptors);
-        return sortedBeans;
+    protected List<Interceptor<?>> sortResult(Set<Interceptor<?>> matchedInterceptors) {
+        List<Interceptor<?>> sortedInterceptors = new ArrayList<Interceptor<?>>(matchedInterceptors);
+        Collections.sort(sortedInterceptors, manager.getEnabled().getInterceptorComparator());
+        return sortedInterceptors;
     }
 
     @Override

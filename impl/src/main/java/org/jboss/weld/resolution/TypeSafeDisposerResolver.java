@@ -25,18 +25,20 @@ import org.jboss.weld.util.Beans;
 /**
  * @author pmuir
  */
-public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>> {
+public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>, Set<DisposalMethod<?, ?>>> {
 
     private final BeanManagerImpl manager;
+    private final AssignabilityRules rules;
 
     public TypeSafeDisposerResolver(BeanManagerImpl manager, Iterable<DisposalMethod<?, ?>> disposers) {
         super(disposers);
         this.manager = manager;
+        this.rules = BeanTypeAssignabilityRules.instance();
     }
 
     @Override
     protected boolean matches(Resolvable resolvable, DisposalMethod<?, ?> disposer) {
-        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && BeanTypeAssignabilityRules.instance().matches(disposer.getGenericType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers());
+        return resolvable.getDeclaringBean().equals(disposer.getDeclaringBean()) && rules.matches(disposer.getGenericType(), resolvable.getTypes()) && Beans.containsAllQualifiers(disposer.getQualifiers(), resolvable.getQualifiers());
     }
 
     @Override
@@ -82,5 +84,4 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
     protected Set<DisposalMethod<?, ?>> sortResult(Set<DisposalMethod<?, ?>> matched) {
         return matched;
     }
-
 }

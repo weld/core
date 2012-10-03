@@ -31,18 +31,20 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author Jozef Hartinger
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>> {
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, Set<ObserverMethod<?>>> {
 
     private final MetaAnnotationStore metaAnnotationStore;
+    private final AssignabilityRules rules;
 
     public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers) {
         super(observers);
         this.metaAnnotationStore = metaAnnotationStore;
+        this.rules = EventTypeAssignabilityRules.instance();
     }
 
     @Override
     protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer) {
-        return EventTypeAssignabilityRules.instance().matches(observer.getObservedType(), resolvable.getTypes())
+        return rules.matches(observer.getObservedType(), resolvable.getTypes())
                 && Beans.containsAllQualifiers(QualifierInstance.qualifiers(metaAnnotationStore, observer.getObservedQualifiers()), resolvable.getQualifiers())
                 // container lifecycle events are fired into Extensions only
                 && (!isContainerLifecycleEvent(resolvable) || Extension.class.isAssignableFrom(observer.getBeanClass()));
