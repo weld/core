@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.bootstrap.configuration;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
@@ -28,8 +28,8 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
-import org.jboss.weld.bootstrap.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.Validator;
+import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.executor.FixedThreadPoolExecutorServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -52,6 +52,6 @@ public class DisabledPreloaderTest {
     public void testServices() {
         assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
         assertTrue(manager.getServices().get(ExecutorServices.class) instanceof FixedThreadPoolExecutorServices);
-        assertNull(manager.getServices().get(ContainerLifecycleEventPreloader.class));
+        assertFalse(manager.getServices().get(ContainerLifecycleEvents.class).isPreloaderEnabled());
     }
 }

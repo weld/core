@@ -63,6 +63,8 @@ import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.AfterDeploymentValidationImpl;
 import org.jboss.weld.bootstrap.events.BeforeBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
+import org.jboss.weld.bootstrap.events.ContainerLifecycleEventPreloader;
+import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.ProcessModuleImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -273,20 +275,16 @@ public class WeldBootstrap implements Bootstrap {
             // }
 
             this.deployment = deployment;
-            ServiceRegistry implementationServices = getImplementationServices();
-
-            registry.addAll(implementationServices.entrySet());
-
-            GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(registry);
-            registry.add(GlobalObserverNotifierService.class, observerNotificationService);
+            addImplementationServices(registry);
 
             ServiceRegistry deploymentServices = new SimpleServiceRegistry();
-            deploymentServices.add(ClassTransformer.class, implementationServices.get(ClassTransformer.class));
-            deploymentServices.add(MetaAnnotationStore.class, implementationServices.get(MetaAnnotationStore.class));
-            deploymentServices.add(TypeStore.class, implementationServices.get(TypeStore.class));
-            deploymentServices.add(ContextualStore.class, implementationServices.get(ContextualStore.class));
-            deploymentServices.add(CurrentInjectionPoint.class, implementationServices.get(CurrentInjectionPoint.class));
-            deploymentServices.add(GlobalObserverNotifierService.class, observerNotificationService);
+            deploymentServices.add(ClassTransformer.class, registry.get(ClassTransformer.class));
+            deploymentServices.add(MetaAnnotationStore.class, registry.get(MetaAnnotationStore.class));
+            deploymentServices.add(TypeStore.class, registry.get(TypeStore.class));
+            deploymentServices.add(ContextualStore.class, registry.get(ContextualStore.class));
+            deploymentServices.add(CurrentInjectionPoint.class, registry.get(CurrentInjectionPoint.class));
+            deploymentServices.add(GlobalObserverNotifierService.class, registry.get(GlobalObserverNotifierService.class));
+            deploymentServices.add(ContainerLifecycleEvents.class, registry.get(ContainerLifecycleEvents.class));
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
@@ -305,8 +303,7 @@ public class WeldBootstrap implements Bootstrap {
         }
     }
 
-    private ServiceRegistry getImplementationServices() {
-        ServiceRegistry services = new SimpleServiceRegistry();
+    private void addImplementationServices(ServiceRegistry services) {
         // Temporary workaround to provide context for building annotated class
         // TODO expose AnnotatedClass on SPI and allow container to provide impl
         // of this via ResourceLoader
@@ -324,7 +321,11 @@ public class WeldBootstrap implements Bootstrap {
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
 
+        GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services);
+        services.add(GlobalObserverNotifierService.class, observerNotificationService);
+
         BootstrapConfiguration configuration = new BootstrapConfiguration(DefaultResourceLoader.INSTANCE);
+        ContainerLifecycleEventPreloader preloader = null;
         if (configuration.isThreadingEnabled()) {
             ExecutorServices executor = ExecutorServicesFactory.create(configuration);
             services.add(ExecutorServices.class, executor);
@@ -332,13 +333,15 @@ public class WeldBootstrap implements Bootstrap {
                 services.add(Validator.class, new ConcurrentValidator(executor));
             }
             if (configuration.isPreloaderEnabled()) {
-                services.add(ContainerLifecycleEventPreloader.class, new ContainerLifecycleEventPreloader(configuration));
+                preloader = new ContainerLifecycleEventPreloader(configuration, observerNotificationService.getGlobalLenientObserverNotifier());
             }
         }
+
+        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader));
+
         if (!services.contains(Validator.class)) {
             services.add(Validator.class, new Validator());
         }
-        return services;
     }
 
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
@@ -454,7 +457,7 @@ public class WeldBootstrap implements Bootstrap {
             }
             return this;
         } catch (RuntimeException e) {
-            ContainerLifecycleEventPreloader.shutdown();
+            Container.instance().services().get(ContainerLifecycleEvents.class).cleanup();
             throw e;
         }
     }

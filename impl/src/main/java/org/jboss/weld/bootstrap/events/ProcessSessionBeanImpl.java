@@ -30,14 +30,14 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X> {
 
-    public static <X> void fire(BeanManagerImpl beanManager, SessionBean<Object> bean) {
+    protected static <X> void fire(BeanManagerImpl beanManager, SessionBean<Object> bean) {
         if (beanManager.isBeanEnabled(bean)) {
             new ProcessSessionBeanImpl<X>(beanManager, bean) {
             }.fire();
         }
     }
 
-    public ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean) {
+    private ProcessSessionBeanImpl(BeanManagerImpl beanManager, SessionBean<Object> bean) {
         super(beanManager, ProcessSessionBean.class, new Type[]{bean.getAnnotated().getBaseType()}, bean);
     }
 

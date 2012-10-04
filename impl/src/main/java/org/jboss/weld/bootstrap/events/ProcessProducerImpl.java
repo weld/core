@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
 
 public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessProducer<T, X> {
 
-    public static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean) {
+    protected static <T, X> void fire(BeanManagerImpl beanManager, AbstractProducerBean<T, X, Member> bean) {
         if (beanManager.isBeanEnabled(bean)) {
             new ProcessProducerImpl<T, X>(beanManager, Reflections.<AnnotatedMember<T>>cast(bean.getAnnotated()), bean) {
             }.fire();
@@ -39,7 +39,7 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
     private final AnnotatedMember<T> annotatedMember;
     private AbstractProducerBean<T, X, ?> bean;
 
-    public ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean) {
+    private ProcessProducerImpl(BeanManagerImpl beanManager, AnnotatedMember<T> annotatedMember, AbstractProducerBean<T, X, ?> bean) {
         super(beanManager, ProcessProducer.class, new Type[]{bean.getAnnotated().getDeclaringType().getBaseType(), bean.getAnnotated().getBaseType()});
         this.bean = bean;
         this.annotatedMember = annotatedMember;

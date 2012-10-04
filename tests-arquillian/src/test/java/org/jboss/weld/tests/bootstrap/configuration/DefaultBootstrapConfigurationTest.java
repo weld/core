@@ -26,8 +26,8 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
-import org.jboss.weld.bootstrap.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.Validator;
+import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.executor.FixedThreadPoolExecutorServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -48,7 +48,7 @@ public class DefaultBootstrapConfigurationTest {
     @Test
     public void testServices() {
         assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
-        assertTrue(manager.getServices().get(ContainerLifecycleEventPreloader.class) != null);
+        assertTrue(manager.getServices().get(ContainerLifecycleEvents.class).isPreloaderEnabled());
         assertTrue(manager.getServices().get(ExecutorServices.class) instanceof FixedThreadPoolExecutorServices);
     }
 }

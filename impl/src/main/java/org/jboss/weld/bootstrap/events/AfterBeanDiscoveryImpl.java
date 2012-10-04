@@ -68,14 +68,17 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         Bean<T> bean = b;
         BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, beanManager);
+        ContainerLifecycleEvents containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
 
         // ProcessBeanAttributes for the Bean
-        ProcessBeanAttributesImpl<T> event = ProcessBeanAttributesImpl.fire(beanManager, bean, null, bean.getBeanClass());
-        if (event.isVeto()) {
-            return;
-        }
-        if (event.isDirty()) {
-            bean = setBeanAttributes(bean, ExternalBeanAttributesFactory.of(event.getBeanAttributes(), getBeanManager()));
+        ProcessBeanAttributesImpl<T> event = containerLifecycleEvents.fireProcessBeanAttributes(beanManager, bean, null, bean.getBeanClass());
+        if (event != null) {
+            if (event.isVeto()) {
+                return;
+            }
+            if (event.isDirty()) {
+                bean = setBeanAttributes(bean, ExternalBeanAttributesFactory.of(event.getBeanAttributes(), getBeanManager()));
+            }
         }
 
         if (bean instanceof Interceptor<?>) {
@@ -85,7 +88,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         } else {
             beanManager.addBean(bean);
         }
-        ProcessBeanImpl.fire(beanManager, bean);
+        containerLifecycleEvents.fireProcessBean(beanManager, bean);
     }
 
     public void addContext(Context context) {

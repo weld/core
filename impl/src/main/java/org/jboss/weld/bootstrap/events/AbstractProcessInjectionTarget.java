@@ -27,14 +27,14 @@ import java.util.List;
 
 public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefinitionContainerEvent {
 
-    public static <X> void fire(BeanManagerImpl beanManager, AbstractClassBean<X> bean) {
+    protected static <X> void fire(BeanManagerImpl beanManager, AbstractClassBean<X> bean) {
         if (beanManager.isBeanEnabled(bean)) {
             new ProcessBeanInjectionTarget<X>(beanManager, bean) {
             }.fire();
         }
     }
 
-    public static <X> InjectionTarget<X> fire(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+    protected static <X> InjectionTarget<X> fire(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
         ProcessSimpleInjectionTarget<X> processSimpleInjectionTarget = new ProcessSimpleInjectionTarget<X>(beanManager, annotatedType, injectionTarget) {
         };
         processSimpleInjectionTarget.fire();
@@ -43,7 +43,7 @@ public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefiniti
 
     protected final AnnotatedType<T> annotatedType;
 
-    public AbstractProcessInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType) {
+    protected AbstractProcessInjectionTarget(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType) {
         super(beanManager, ProcessInjectionTarget.class, new Type[]{annotatedType.getBaseType()});
         this.annotatedType = annotatedType;
     }

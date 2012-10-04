@@ -16,27 +16,27 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.ProducerMethod;
-import org.jboss.weld.manager.BeanManagerImpl;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.ProcessProducerMethod;
 import java.lang.reflect.Type;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.ProcessProducerMethod;
+
+import org.jboss.weld.bean.ProducerMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerMethod<T, X>> implements ProcessProducerMethod<T, X> {
 
 
-    public static <T, X> void fire(BeanManagerImpl beanManager, ProducerMethod<T, X> bean) {
+    protected static <T, X> void fire(BeanManagerImpl beanManager, ProducerMethod<T, X> bean) {
         if (beanManager.isBeanEnabled(bean)) {
             new ProcessProducerMethodImpl<T, X>(beanManager, bean) {
             }.fire();
         }
     }
 
-    public ProcessProducerMethodImpl(BeanManagerImpl beanManager, ProducerMethod<T, X> bean) {
+    private ProcessProducerMethodImpl(BeanManagerImpl beanManager, ProducerMethod<T, X> bean) {
         super(beanManager, ProcessProducerMethod.class, new Type[]{bean.getAnnotated().getBaseType(), bean.getAnnotated().getDeclaringType().getBaseType()}, bean);
     }
 

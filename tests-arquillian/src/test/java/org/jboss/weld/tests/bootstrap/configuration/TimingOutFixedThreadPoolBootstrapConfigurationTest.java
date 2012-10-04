@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.bootstrap.configuration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
@@ -29,8 +28,8 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
-import org.jboss.weld.bootstrap.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.Validator;
+import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.executor.TimingOutFixedThreadPoolExecutorServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -52,7 +51,7 @@ public class TimingOutFixedThreadPoolBootstrapConfigurationTest {
     @Test
     public void testServices() throws Exception {
         assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
-        assertNotNull(manager.getServices().get(ContainerLifecycleEventPreloader.class));
+        assertTrue(manager.getServices().get(ContainerLifecycleEvents.class).isPreloaderEnabled());
         assertTrue(manager.getServices().get(ExecutorServices.class) instanceof TimingOutFixedThreadPoolExecutorServices);
         TimingOutFixedThreadPoolExecutorServices executorServices = (TimingOutFixedThreadPoolExecutorServices) manager.getServices().get(ExecutorServices.class);    
         // Use full capaticy of the pool

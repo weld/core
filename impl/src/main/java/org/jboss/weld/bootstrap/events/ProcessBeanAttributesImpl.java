@@ -38,14 +38,14 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEvent implements ProcessBeanAttributes<T> {
 
-    public static <T> ProcessBeanAttributesImpl<T> fire(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated, Type type) {
+    protected static <T> ProcessBeanAttributesImpl<T> fire(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated, Type type) {
         ProcessBeanAttributesImpl<T> event = new ProcessBeanAttributesImpl<T>(beanManager, attributes, annotated, type) {
         };
         event.fire();
         return event;
     }
 
-    public ProcessBeanAttributesImpl(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated, Type type) {
+    private ProcessBeanAttributesImpl(BeanManagerImpl beanManager, BeanAttributes<T> attributes, Annotated annotated, Type type) {
         super(beanManager, ProcessBeanAttributes.class, new Type[] { type });
         this.attributes = attributes;
         this.annotated = annotated;

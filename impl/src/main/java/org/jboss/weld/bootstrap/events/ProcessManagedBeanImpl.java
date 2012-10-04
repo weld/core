@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 
 public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, ManagedBean<X>> implements ProcessManagedBean<X> {
 
-    public static <X> void fire(BeanManagerImpl beanManager, ManagedBean<X> bean) {
+    protected static <X> void fire(BeanManagerImpl beanManager, ManagedBean<X> bean) {
         if (beanManager.isBeanEnabled(bean)) {
             new ProcessManagedBeanImpl<X>(beanManager, bean) {
             }.fire();

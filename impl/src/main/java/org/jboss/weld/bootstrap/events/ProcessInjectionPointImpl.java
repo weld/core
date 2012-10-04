@@ -37,7 +37,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessInjectionPoint<T, X> {
 
-    public static <T, X> FieldInjectionPointAttributes<T, X> fire(FieldInjectionPointAttributes<T, X> attributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    protected static <T, X> FieldInjectionPointAttributes<T, X> fire(FieldInjectionPointAttributes<T, X> attributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
         ProcessInjectionPointImpl<T, X> event = new ProcessInjectionPointImpl<T, X>(attributes, declaringComponentClass, manager, attributes.getAnnotated().getBaseType()) {
         };
         event.fire();

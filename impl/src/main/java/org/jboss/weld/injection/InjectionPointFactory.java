@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
@@ -43,7 +42,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
-import org.jboss.weld.bootstrap.events.ProcessInjectionPointImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
@@ -54,7 +52,6 @@ import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
-import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.Beans;
@@ -109,14 +106,14 @@ public class InjectionPointFactory {
      * Notifies CDI extension of a given {@link InjectionPoint}.
      */
     protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(FieldInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        return ProcessInjectionPointImpl.fire(injectionPointAttributes, declaringComponentClass, manager);
+        return manager.getContainerLifecycleEvents().fireProcessInjectionPoint(injectionPointAttributes, declaringComponentClass, manager);
     }
 
     /**
      * Notifies CDI extension of a given {@link InjectionPoint}.
      */
     protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        return ProcessInjectionPointImpl.fire(injectionPointAttributes, declaringComponentClass, manager);
+        return manager.getContainerLifecycleEvents().fireProcessInjectionPoint(injectionPointAttributes, declaringComponentClass, manager);
     }
 
     /*

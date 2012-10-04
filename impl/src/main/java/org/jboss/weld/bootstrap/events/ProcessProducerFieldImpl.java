@@ -28,14 +28,14 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessProducerFieldImpl<T, X> extends AbstractProcessProducerBean<T, X, ProducerField<T, X>> implements ProcessProducerField<T, X> {
 
-    public static <T, X> void fire(BeanManagerImpl beanManager, ProducerField<T, X> bean) {
+    protected static <T, X> void fire(BeanManagerImpl beanManager, ProducerField<T, X> bean) {
         if (beanManager.isBeanEnabled(bean)) {
             new ProcessProducerFieldImpl<T, X>(beanManager, bean) {
             }.fire();
         }
     }
 
-    public ProcessProducerFieldImpl(BeanManagerImpl beanManager, ProducerField<T, X> bean) {
+    private ProcessProducerFieldImpl(BeanManagerImpl beanManager, ProducerField<T, X> bean) {
         super(beanManager, ProcessProducerField.class, new Type[]{bean.getAnnotated().getBaseType(), bean.getAnnotated().getDeclaringType().getBaseType()}, bean);
     }
 

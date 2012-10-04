@@ -16,11 +16,21 @@
  */
 package org.jboss.weld.bootstrap;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
+import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -30,15 +40,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.DeploymentStructures;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Extension;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * @author pmuir
@@ -50,6 +51,7 @@ public class ExtensionBeanDeployer {
     private final Deployment deployment;
     private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
     private final Collection<ContextHolder<? extends Context>> contexts;
+    private final ContainerLifecycleEvents containerLifecycleEventObservers;
 
     public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
         this.beanManager = manager;
@@ -57,6 +59,7 @@ public class ExtensionBeanDeployer {
         this.deployment = deployment;
         this.beanDeployments = beanDeployments;
         this.contexts = contexts;
+        this.containerLifecycleEventObservers = beanManager.getServices().get(ContainerLifecycleEvents.class);
     }
 
     public ExtensionBeanDeployer deployBeans() {
@@ -74,6 +77,7 @@ public class ExtensionBeanDeployer {
             for (ObserverInitializationContext<?, ?> observerMethodInitializer : observerMethodInitializers) {
                 observerMethodInitializer.initialize();
                 beanDeployment.getBeanManager().addObserver(observerMethodInitializer.getObserver());
+                containerLifecycleEventObservers.processObserverMethod(observerMethodInitializer.getObserver());
             }
         }
         return this;

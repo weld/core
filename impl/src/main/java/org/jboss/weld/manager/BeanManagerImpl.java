@@ -107,7 +107,7 @@ import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
+import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -288,6 +288,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ConcurrentMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>>();
     private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader();
 
+    private final transient ContainerLifecycleEvents containerLifecycleEvents;
+
     /**
      * Create a new, root, manager
      *
@@ -414,6 +416,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
         this.globalStrictObserverNotifier = globalObserverNotifierService.getGlobalStrictObserverNotifier();
         globalObserverNotifierService.registerBeanManager(this);
+        this.containerLifecycleEvents = serviceRegistry.get(ContainerLifecycleEvents.class);
     }
 
 
@@ -1296,7 +1299,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType) {
-        return AbstractProcessInjectionTarget.fire(this, annotatedType, createInjectionTarget(annotatedType));
+        return services.get(ContainerLifecycleEvents.class).fireProcessInjectionTarget(this, annotatedType, createInjectionTarget(annotatedType));
     }
 
     public Set<QualifierInstance> extractInterceptorBindingsForQualifierInstance(Iterable<QualifierInstance> annotations) {
@@ -1461,5 +1464,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             }
             this.accessibleSpecializedBeans = Collections.unmodifiableSet(specializedBeansTemp);
         }
+    }
+
+    public ContainerLifecycleEvents getContainerLifecycleEvents() {
+        return containerLifecycleEvents;
     }
 }

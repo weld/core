@@ -21,7 +21,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,19 +51,10 @@ import org.jboss.weld.util.reflection.Reflections;
 public class ConcurrentBeanDeployer extends BeanDeployer {
 
     private final ExecutorServices executor;
-    private final ContainerLifecycleEventPreloader preloader;
 
     public ConcurrentBeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         super(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newConcurrentEnvironment(ejbDescriptors, manager));
         this.executor = services.get(ExecutorServices.class);
-        this.preloader = services.get(ContainerLifecycleEventPreloader.class);
-    }
-
-    @Override
-    protected void preloadContainerLifecycleEvent(Class<?> eventRawType, Type... typeParameters) {
-        if (preloader != null) {
-            preloader.preloadContainerLifecycleEvent(getManager(), eventRawType, typeParameters);
-        }
     }
 
     @Override

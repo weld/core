@@ -32,10 +32,8 @@ import javax.decorator.Decorator;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.interceptor.Interceptor;
 
@@ -47,7 +45,6 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeFactory;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -103,7 +100,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
 
         if (clazz != null && !clazz.isAnnotation() && !Beans.isVetoed(clazz)) {
-            preloadContainerLifecycleEvent(ProcessAnnotatedType.class, clazz);
+            containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
             AnnotatedType<?> annotatedType = null;
             try {
                 annotatedType = classTransformer.getAnnotatedType(clazz);
@@ -137,29 +134,24 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
         for (AnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
             // fire event
-            boolean synthetic = getEnvironment().getAnnotatedTypeSource(annotatedType) != null;
-            ProcessAnnotatedTypeImpl<?> event;
-            if (synthetic) {
-                event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType, getEnvironment().getAnnotatedTypeSource(annotatedType));
-            } else {
-                event = ProcessAnnotatedTypeFactory.create(getManager(), annotatedType);
-            }
-            event.fire();
+            ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), annotatedType, getEnvironment().getAnnotatedTypeSource(annotatedType));
             // process the result
-            if (event.isVeto()) {
-                getEnvironment().vetoJavaClass(annotatedType.getJavaClass());
-                classesToBeRemoved.add(annotatedType);
-            } else {
-                boolean dirty = event.isDirty();
-                if (dirty) {
-                    classesToBeRemoved.add(annotatedType); // remove the original class
-                    AnnotatedType<?> modifiedType = event.getAnnotatedType();
-                    if (modifiedType instanceof SlimAnnotatedType<?>) {
-                        annotatedType = modifiedType;
-                    } else {
-                        annotatedType = classTransformer.getAnnotatedType(modifiedType);
+            if (event != null) {
+                if (event.isVeto()) {
+                    getEnvironment().vetoJavaClass(annotatedType.getJavaClass());
+                    classesToBeRemoved.add(annotatedType);
+                } else {
+                    boolean dirty = event.isDirty();
+                    if (dirty) {
+                        classesToBeRemoved.add(annotatedType); // remove the original class
+                        AnnotatedType<?> modifiedType = event.getAnnotatedType();
+                        if (modifiedType instanceof SlimAnnotatedType<?>) {
+                            annotatedType = modifiedType;
+                        } else {
+                            annotatedType = classTransformer.getAnnotatedType(modifiedType);
+                        }
+                        classesToBeAdded.add(annotatedType); // add a replacement for the removed class
                     }
-                    classesToBeAdded.add(annotatedType); // add a replacement for the removed class
                 }
             }
         }
@@ -207,19 +199,19 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     protected void createClassBean(AnnotatedType<?> annotatedType, Map<Class<?>, Set<AnnotatedType<?>>> otherWeldClasses) {
         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
-            preloadContainerLifecycleEvent(ProcessInjectionTarget.class, annotatedType.getJavaClass());
-            preloadContainerLifecycleEvent(ProcessBeanAttributes.class, annotatedType.getJavaClass());
+            containerLifecycleEvents.preloadProcessInjectionTarget(annotatedType.getJavaClass());
+            containerLifecycleEvents.preloadProcessBeanAttributes(annotatedType.getJavaClass());
             EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
             if (weldClass.isAnnotationPresent(Decorator.class)) {
-                preloadContainerLifecycleEvent(ProcessBean.class, annotatedType.getJavaClass());
+                containerLifecycleEvents.preloadProcessBean(ProcessBean.class, annotatedType.getJavaClass());
                 validateDecorator(weldClass);
                 createDecorator(weldClass);
             } else if (weldClass.isAnnotationPresent(Interceptor.class)) {
-                preloadContainerLifecycleEvent(ProcessBean.class, annotatedType.getJavaClass());
+                containerLifecycleEvents.preloadProcessBean(ProcessBean.class, annotatedType.getJavaClass());
                 validateInterceptor(weldClass);
                 createInterceptor(weldClass);
             } else if (!weldClass.isAbstract()) {
-                preloadContainerLifecycleEvent(ProcessManagedBean.class, annotatedType.getJavaClass());
+                containerLifecycleEvents.preloadProcessBean(ProcessManagedBean.class, annotatedType.getJavaClass());
                 createManagedBean(weldClass);
             }
         } else {
@@ -238,6 +230,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         processBeanAttributes(getEnvironment().getClassBeans());
         processBeanAttributes(getEnvironment().getDecorators());
         processBeanAttributes(getEnvironment().getInterceptors());
+
+        // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
+        searchForNewBeanDeclarations(getEnvironment().getClassBeans());
+        searchForNewBeanDeclarations(getEnvironment().getDecorators());
+        searchForNewBeanDeclarations(getEnvironment().getInterceptors());
     }
 
     private void preInitializeBeans(Iterable<? extends AbstractBean<?, ?>> beans) {
@@ -247,6 +244,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     protected void processBeanAttributes(Iterable<? extends AbstractBean<?, ?>> beans) {
+        if (!containerLifecycleEvents.isProcessBeanAttributesObserved()) {
+            return;
+        }
         if (!beans.iterator().hasNext()) {
             return; // exit recursion
         }
@@ -258,9 +258,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             boolean vetoed = fireProcessBeanAttributes(bean);
             if (vetoed) {
                 vetoedBeans.add(bean);
-            } else {
-                // now that we know that the bean won't be vetoed, it's the right time to register @New injection points
-                getEnvironment().addNewBeansFromInjectionPoints(bean);
             }
         }
 
@@ -277,6 +274,12 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         processBeanAttributes(previouslySpecializedBeans);
     }
 
+    protected void searchForNewBeanDeclarations(Iterable<? extends AbstractBean<?, ?>> beans) {
+        for (AbstractBean<?, ?> bean : beans) {
+            getEnvironment().addNewBeansFromInjectionPoints(bean);
+        }
+    }
+
     public void createProducersAndObservers() {
         for (AbstractClassBean<?> bean : getEnvironment().getClassBeans()) {
             createObserversProducersDisposers(bean);
@@ -285,9 +288,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void processProducerAttributes() {
         processBeanAttributes(getEnvironment().getProducerFields());
+        searchForNewBeanDeclarations(getEnvironment().getProducerFields());
         // process BeanAttributes for producer methods
         preInitializeBeans(getEnvironment().getProducerMethodBeans());
         processBeanAttributes(getEnvironment().getProducerMethodBeans());
+        searchForNewBeanDeclarations(getEnvironment().getProducerMethodBeans());
     }
 
     public void createNewBeans() {
