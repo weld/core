@@ -32,7 +32,7 @@ public class ManagedBeanBridgeMethodTest {
                 .addPackage(ManagedBeanBridgeMethodTest.class.getPackage());
     }
 
-    @Inject
+    @SuppressWarnings("rawtypes")
     private BaseService baseService;
 
     @Inject
@@ -43,6 +43,11 @@ public class ManagedBeanBridgeMethodTest {
 
     @Inject
     private ManagedSpecialServiceImpl managedSpecialServiceImpl;
+
+    @Inject
+    public void init(BaseService<?> baseService) {
+        this.baseService = baseService;
+    }
 
     @Before
     public void setUp() throws Exception {
