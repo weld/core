@@ -19,8 +19,6 @@ package org.jboss.weld.tck.as7;
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.as.arquillian.container.ExceptionTransformer;
-import org.jboss.weld.resources.ClassLoaderResourceLoader;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * 
@@ -33,7 +31,7 @@ public class JBossAS7Extension implements LoadableExtension {
    
     public void register(ExtensionBuilder builder) {
 
-        if (Reflections.isClassLoadable(JBOSSAS7_MANAGED_CONTAINER_CLASS, new ClassLoaderResourceLoader(this.getClass().getClassLoader()))) {
+        if (Validate.classExists(JBOSSAS7_MANAGED_CONTAINER_CLASS)) {
             // Override the default NOOP exception transformer
             builder.override(DeploymentExceptionTransformer.class, ExceptionTransformer.class,
                     JBossAS7DeploymentExceptionTransformer.class);
