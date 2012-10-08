@@ -30,6 +30,7 @@ import java.util.Set;
 
 /**
  * @author pmuir
+ * @author alesj
  */
 public class ExtensionBean extends AbstractBuiltInBean<Extension> {
 
@@ -41,7 +42,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
     private final boolean proxiable;
 
     public ExtensionBean(BeanManagerImpl manager, WeldClass<Extension> clazz, Metadata<Extension> instance) {
-        super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager);
+        super(ID_PREFIX + BEAN_ID_SEPARATOR + clazz.getName() + "@" + instance.getLocation(), manager);
         this.clazz = clazz;
         this.instance = instance;
         this.passivationCapable = clazz.isSerializable();
