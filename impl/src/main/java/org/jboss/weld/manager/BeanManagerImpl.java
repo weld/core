@@ -110,6 +110,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.PassivatingContextWrapper;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -596,6 +597,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public void addContext(Context context) {
         Class<? extends Annotation> scope = context.getScope();
+        if (isPassivatingScope(scope)) {
+            context = new PassivatingContextWrapper(context, services.get(ContextualStore.class));
+        }
         List<Context> contextList = contexts.get(scope);
         if (contextList == null) {
             contextList = new CopyOnWriteArrayList<Context>();

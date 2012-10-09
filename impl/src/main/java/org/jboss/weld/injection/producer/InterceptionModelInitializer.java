@@ -273,7 +273,8 @@ public class InterceptionModelInitializer<T> {
     }
 
     private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getInterceptorMetadata(Interceptor<?> interceptor) {
-        SerializableContextualImpl<Interceptor<?>, ?> contextual = new SerializableContextualImpl(interceptor, manager.getServices().get(ContextualStore.class));
+        ContextualStore store = manager.getServices().get(ContextualStore.class);
+        SerializableContextualImpl<Interceptor<?>, ?> contextual = cast(store.getSerializableContextual(interceptor));
         if (interceptor instanceof InterceptorImpl) {
             InterceptorImpl<?> interceptorImpl = (InterceptorImpl<?>) interceptor;
             ClassMetadata<?> classMetadata = interceptorImpl.getInterceptorMetadata().getInterceptorClass();

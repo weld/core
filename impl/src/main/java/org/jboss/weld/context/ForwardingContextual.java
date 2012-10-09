@@ -33,6 +33,10 @@ public abstract class ForwardingContextual<T> implements Contextual<T> {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj instanceof ForwardingContextual<?>) {
+            ForwardingContextual<?> that = (ForwardingContextual<?>) obj;
+            return delegate().equals(that.delegate());
+        }
         return this == obj || delegate().equals(obj);
     }
 

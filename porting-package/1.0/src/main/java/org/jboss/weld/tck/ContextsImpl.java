@@ -25,6 +25,7 @@ import org.jboss.weld.context.ManagedContext;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.util.ForwardingContext;
 
 import javax.enterprise.context.spi.Context;
 
@@ -39,6 +40,7 @@ public class ContextsImpl implements Contexts<Context> {
     }
 
     public void setActive(Context context) {
+        context = ForwardingContext.unwrap(context);
         if (context instanceof ManagedContext) {
             ((ManagedContext) context).activate();
         } else if (context instanceof ApplicationContext) {
@@ -49,6 +51,7 @@ public class ContextsImpl implements Contexts<Context> {
     }
 
     public void setInactive(Context context) {
+        context = ForwardingContext.unwrap(context);
         if (context instanceof ManagedContext) {
             ((ManagedContext) context).deactivate();
         } else {
@@ -61,6 +64,7 @@ public class ContextsImpl implements Contexts<Context> {
     }
 
     public void destroyContext(Context context) {
+        context = ForwardingContext.unwrap(context);
         if (context instanceof ManagedContext) {
             ManagedContext managedContext = (ManagedContext) context;
             managedContext.invalidate();
