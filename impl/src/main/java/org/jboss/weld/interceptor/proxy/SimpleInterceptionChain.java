@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.injection.Exceptions;
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ public class SimpleInterceptionChain implements InterceptionChain {
                 }
             }
         } catch (InvocationTargetException e) {
-            throw e.getCause();
+            throw Exceptions.unwrapIfPossible(e);
         }
     }
 

@@ -1,6 +1,8 @@
 package org.jboss.weld.bean.proxy;
 
 import javassist.util.proxy.MethodHandler;
+
+import org.jboss.weld.injection.Exceptions;
 import org.jboss.weld.util.reflection.SecureReflections;
 
 import java.io.Serializable;
@@ -65,7 +67,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
             }
             return SecureReflections.invoke(self, proceed, args);
         } catch (InvocationTargetException e) {
-            throw e.getCause();
+            throw Exceptions.unwrapIfPossible(e);
         } finally {
             if (externalContext) {
                 endInterceptorContext();

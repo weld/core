@@ -17,6 +17,7 @@
 
 package org.jboss.weld.bean.proxy;
 
+import org.jboss.weld.injection.Exceptions;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
@@ -43,7 +44,7 @@ public abstract class AbstractBeanInstance implements BeanInstance {
             SecureReflections.ensureAccessible(method);
             result = method.invoke(instance, arguments);
         } catch (InvocationTargetException e) {
-            throw e.getCause();
+            throw Exceptions.unwrapIfPossible(e);
         }
         return result;
     }
