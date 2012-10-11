@@ -18,6 +18,7 @@ package org.jboss.weld.bean.builtin;
 
 import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.exceptions.NullInstanceException;
+import org.jboss.weld.injection.Exceptions;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -52,12 +53,7 @@ public class CallableMethodHandler implements MethodHandler, Serializable {
             log.trace(CALL_PROXIED_METHOD, proxiedMethod, instance, args, returnValue == null ? null : returnValue);
             return returnValue;
         } catch (InvocationTargetException e) {
-            // Unwrap the ITE
-            if (e.getCause() != null) {
-                throw e.getCause();
-            } else {
-                throw e;
-            }
+            throw Exceptions.unwrapIfPossible(e);
         }
     }
 

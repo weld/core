@@ -1,7 +1,10 @@
 package org.jboss.weld.interceptor.util.proxy;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.jboss.weld.injection.Exceptions;
 
 import javassist.util.proxy.MethodHandler;
 
@@ -29,7 +32,11 @@ public abstract class TargetInstanceProxyMethodHandler<T> implements MethodHandl
                 return null;
             }
         } else {
-            return doInvoke(self, thisMethod, proceed, args);
+            try {
+                return doInvoke(self, thisMethod, proceed, args);
+            } catch (InvocationTargetException e) {
+                throw Exceptions.unwrapIfPossible(e);
+            }
         }
     }
 

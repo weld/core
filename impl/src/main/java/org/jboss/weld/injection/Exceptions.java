@@ -22,7 +22,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
 import javax.enterprise.inject.CreationException;
 import java.lang.reflect.InvocationTargetException;
 
-class Exceptions {
+public class Exceptions {
 
     private static void rethrowException(Throwable t, Class<? extends RuntimeException> exceptionToThrow) {
         if (t instanceof RuntimeException) {
@@ -85,4 +85,10 @@ class Exceptions {
         rethrowException(e.getCause() != null ? e.getCause() : e);
     }
 
+    public static Throwable unwrapIfPossible(Throwable e) {
+        if (e.getCause() != null) {
+            return e.getCause();
+        }
+        return e;
+    }
 }

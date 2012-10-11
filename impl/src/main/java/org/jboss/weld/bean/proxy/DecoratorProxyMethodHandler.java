@@ -18,6 +18,7 @@ package org.jboss.weld.bean.proxy;
 
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.injection.Exceptions;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
@@ -78,7 +79,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
                 try {
                     return decoratorMethod.invokeOnInstance(decoratorInstance, args);
                 } catch (InvocationTargetException e) {
-                    throw e.getCause();
+                    throw Exceptions.unwrapIfPossible(e);
                 }
             }
         }

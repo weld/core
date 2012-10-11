@@ -20,6 +20,7 @@ import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.injection.Exceptions;
 import org.jboss.weld.introspector.MethodSignature;
 import org.jboss.weld.introspector.jlr.MethodSignatureImpl;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -107,11 +108,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
             return returnValue;
         } catch (InvocationTargetException e) {
-            if (e.getCause() != null) {
-                throw e.getCause();
-            } else {
-                throw e;
-            }
+            throw Exceptions.unwrapIfPossible(e);
         }
     }
 
