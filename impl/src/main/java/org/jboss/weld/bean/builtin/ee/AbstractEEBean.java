@@ -19,14 +19,15 @@ package org.jboss.weld.bean.builtin.ee;
 import java.util.concurrent.Callable;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.bean.builtin.CallableMethodHandler;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public abstract class AbstractEEBean<T> extends AbstractBuiltInBean<T> {
+public abstract class AbstractEEBean<T> extends AbstractStaticallyDecorableBuiltInBean<T> {
 
     private final T proxy;
 
@@ -35,7 +36,8 @@ public abstract class AbstractEEBean<T> extends AbstractBuiltInBean<T> {
         this.proxy = new ProxyFactory<T>(type, getTypes(), this).create(new EnterpriseTargetBeanInstance(type, new CallableMethodHandler(callable)));
     }
 
-    public T create(CreationalContext<T> creationalContext) {
+    @Override
+    protected T newInstance(InjectionPoint ip, CreationalContext<T> creationalContext) {
         return proxy;
     }
 

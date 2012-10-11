@@ -16,18 +16,19 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Proxies;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
+
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Proxies;
 
 /**
  * @author pmuir
@@ -63,6 +64,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
         return passivationCapable;
     }
 
+    @Override
     public Extension create(CreationalContext<Extension> creationalContext) {
         return instance.getValue();
     }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,10 +16,8 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -27,42 +25,40 @@ import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * The built-in bean for facade objects. Since special rules are applied for resolving facade beans, we need to resolve
- * decorators per bean instance based on the required bean type.
+ * A decorated built-in bean for which, unlike {@link AbstractFacadeBean}, decorators only need to be resolved once.
  *
  * @author Jozef Hartinger
  *
  * @param <T>
  */
-public abstract class AbstractFacadeBean<T> extends AbstractDecorableBuiltInBean<T> {
+public abstract class AbstractStaticallyDecorableBuiltInBean<T> extends AbstractDecorableBuiltInBean<T> {
 
+    private List<Decorator<?>> decorators;
     private Class<T> proxyClass;
 
-    protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager, Class<T> type) {
-        super(idSuffix, manager, type);
+    protected AbstractStaticallyDecorableBuiltInBean(String idSuffix, BeanManagerImpl beanManager, Class<T> type) {
+        super(idSuffix, beanManager, type);
     }
 
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
-        creationalContext.release();
+    @Override
+    protected List<Decorator<?>> getDecorators(InjectionPoint ip) {
+        return decorators;
     }
 
     @Override
     protected Class<T> getProxyClass() {
+        if (proxyClass == null) {
+            // this should never happen
+            throw new IllegalStateException("No decorators were resolved for this bean at boot time however there are some now");
+        }
         return proxyClass;
     }
 
     @Override
     public void initializeAfterBeanDiscovery() {
-        this.proxyClass = new ProxyFactory<T>(getBeanClass(), getTypes(), this).getProxyClass();
-    }
-
-    @Override
-    protected List<Decorator<?>> getDecorators(InjectionPoint ip) {
-        return beanManager.resolveDecorators(Collections.singleton(ip.getType()), getQualifiers());
-    }
-
-    @Override
-    protected boolean isInjectionPointMetadataRequired() {
-        return true;
+        this.decorators = beanManager.resolveDecorators(getTypes(), getQualifiers());
+        if (!decorators.isEmpty()) {
+            this.proxyClass = new ProxyFactory<T>(getBeanClass(), getTypes(), this).getProxyClass();
+        }
     }
 }

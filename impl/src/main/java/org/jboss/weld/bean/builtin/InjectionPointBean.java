@@ -28,7 +28,7 @@ import org.jboss.weld.util.bean.SerializableForwardingInjectionPoint;
  *
  * @author David Allen
  */
-public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
+public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<InjectionPoint> {
 
     private final CurrentInjectionPoint currentInjectionPointService;
 
@@ -46,7 +46,7 @@ public class InjectionPointBean extends AbstractBuiltInBean<InjectionPoint> {
         this.currentInjectionPointService = getBeanManager().getServices().get(CurrentInjectionPoint.class);
     }
 
-    public InjectionPoint create(CreationalContext<InjectionPoint> creationalContext) {
+    protected InjectionPoint newInstance(InjectionPoint ip, CreationalContext<InjectionPoint> creationalContext) {
         InjectionPoint injectionPoint = currentInjectionPointService.peek();
         return new SerializableForwardingInjectionPoint(injectionPoint);
     }

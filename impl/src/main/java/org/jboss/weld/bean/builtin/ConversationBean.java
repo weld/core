@@ -1,21 +1,20 @@
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.conversation.ConversationImpl;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.Arrays2;
+import java.lang.annotation.Annotation;
+import java.util.Locale;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Locale;
-import java.util.Set;
+import javax.enterprise.inject.spi.InjectionPoint;
 
-public class ConversationBean extends AbstractBuiltInBean<Conversation> {
+import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.conversation.ConversationImpl;
+import org.jboss.weld.manager.BeanManagerImpl;
+
+public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Conversation> {
 
     private Instance<ConversationContext> conversationContexts;
 
@@ -29,7 +28,8 @@ public class ConversationBean extends AbstractBuiltInBean<Conversation> {
         this.conversationContexts = getBeanManager().instance().select(ConversationContext.class);
     }
 
-    public Conversation create(CreationalContext<Conversation> creationalContext) {
+    @Override
+    protected Conversation newInstance(InjectionPoint ip, CreationalContext<Conversation> creationalContext) {
         for (ConversationContext conversationContext : getBeanManager().instance().select(ConversationContext.class)) {
             if (conversationContext.isActive()) {
                 return conversationContext.getCurrentConversation();

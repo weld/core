@@ -22,17 +22,15 @@
 package org.jboss.weld.bean.builtin.ee;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.ServletMessage;
@@ -45,14 +43,14 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class HttpServletRequestBean extends AbstractBuiltInBean<HttpServletRequest> {
+public class HttpServletRequestBean extends AbstractStaticallyDecorableBuiltInBean<HttpServletRequest> {
 
     public HttpServletRequestBean(BeanManagerImpl beanManager) {
         super(HttpServletRequestBean.class.getName(), beanManager, HttpServletRequest.class);
     }
 
     @Override
-    public HttpServletRequest create(CreationalContext<HttpServletRequest> creationalContext) {
+    protected HttpServletRequest newInstance(InjectionPoint ip, CreationalContext<HttpServletRequest> creationalContext) {
         try {
             Context context = getBeanManager().getContext(RequestScoped.class);
             if (context instanceof HttpRequestContextImpl) {

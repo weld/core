@@ -19,6 +19,7 @@ package org.jboss.weld.util;
 
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
 
@@ -31,7 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
@@ -41,11 +45,15 @@ import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.WeldDecorator;
+import org.jboss.weld.bean.proxy.DecorationHelper;
+import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
  * Helper class for {@link javax.enterprise.inject.spi.Decorator} inspections.
@@ -131,5 +139,20 @@ public class Decorators {
             throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, type);
         }
         return result;
+    }
+
+    public static <T> T getOuterDelegate(Bean<T> bean, T instance, CreationalContext<T> creationalContext, Class<T> proxyClass, InjectionPoint originalInjectionPoint, BeanManagerImpl manager, List<Decorator<?>> decorators) {
+        TargetBeanInstance beanInstance = new TargetBeanInstance(bean, instance);
+        DecorationHelper<T> decorationHelper = new DecorationHelper<T>(beanInstance, bean, proxyClass, manager, manager.getServices().get(ContextualStore.class), decorators);
+        DecorationHelper.push(decorationHelper);
+        try {
+            final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
+            if (outerDelegate == null) {
+                throw new WeldException(PROXY_INSTANTIATION_FAILED, bean);
+            }
+            return outerDelegate;
+        } finally {
+            DecorationHelper.pop();
+        }
     }
 }

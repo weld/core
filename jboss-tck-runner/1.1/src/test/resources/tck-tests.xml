@@ -117,22 +117,6 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-             <!-- WELD-1210 -->
-            <class name="org.jboss.cdi.tck.tests.decorators.builtin.http.BuiltinHttpSessionDecoratorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.decorators.builtin.event.BuiltinEventDecoratorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.decorators.builtin.conversation.BuiltinConversationDecoratorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- CDITCK-284 -->
             <class name="org.jboss.cdi.tck.tests.lookup.modules.SpecializedProducerMethodInjectionNotAvailableTest">
                 <methods>

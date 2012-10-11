@@ -25,9 +25,10 @@ import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.servlet.ServletContext;
 
-import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.ServletMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -38,7 +39,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Jozef Hartinger
  *
  */
-public class ServletContextBean extends AbstractBuiltInBean<ServletContext> {
+public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<ServletContext> {
 
     private static ThreadLocal<ServletContext> servletContext = new ThreadLocal<ServletContext>();
 
@@ -47,7 +48,7 @@ public class ServletContextBean extends AbstractBuiltInBean<ServletContext> {
     }
 
     @Override
-    public ServletContext create(CreationalContext<ServletContext> creationalContext) {
+    protected ServletContext newInstance(InjectionPoint ip, CreationalContext<ServletContext> creationalContext) {
         if (servletContext.get() == null) {
             throw new IllegalStateException(ServletMessage.CANNOT_INJECT_OBJECT_OUTSIDE_OF_SERVLET_REQUEST, ServletContext.class.getSimpleName());
         }

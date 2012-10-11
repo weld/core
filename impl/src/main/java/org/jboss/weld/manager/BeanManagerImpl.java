@@ -149,6 +149,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
+import org.jboss.weld.resolution.DecoratorResolvableBuilder;
 import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.InterceptorResolvableBuilder;
 import org.jboss.weld.resolution.NameBasedResolver;
@@ -806,12 +807,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers) {
         checkResolveDecoratorsArguments(types);
-        return decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
+        return decoratorResolver.resolve(new DecoratorResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), isCacheable(qualifiers));
     }
 
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Set<Annotation> qualifiers) {
         checkResolveDecoratorsArguments(types);
-        return decoratorResolver.resolve(new ResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true);
+        return decoratorResolver.resolve(new DecoratorResolvableBuilder(this).addTypes(types).addQualifiers(qualifiers).create(), true);
     }
 
     private void checkResolveDecoratorsArguments(Set<Type> types) {

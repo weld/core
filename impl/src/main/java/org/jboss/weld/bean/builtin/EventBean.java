@@ -16,20 +16,18 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class EventBean extends AbstractFacadeBean<Event<?>> {
 
-    private static final Class<Event<?>> TYPE = new TypeLiteral<Event<?>>() {
-
-        private static final long serialVersionUID = -5563106290838705515L;
-    }.getRawType();
+    private static final Class<Event<?>> TYPE = cast(Event.class);
 
     public EventBean(BeanManagerImpl manager) {
         super(Event.class.getSimpleName(), manager, TYPE);
@@ -41,8 +39,8 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
     }
 
     @Override
-    protected Event<?> newInstance(InjectionPoint injectionPoint, CreationalContext<Event<?>> creationalContext) {
-        return EventImpl.of(injectionPoint, getBeanManager());
+    protected Event<?> newInstance(InjectionPoint ip, CreationalContext<Event<?>> creationalContext) {
+        return EventImpl.of(ip, getBeanManager());
     }
 
     @Override

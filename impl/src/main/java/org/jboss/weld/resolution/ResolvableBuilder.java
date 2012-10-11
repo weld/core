@@ -62,7 +62,7 @@ public class ResolvableBuilder {
     protected final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
     protected Bean<?> declaringBean;
     private final MetaAnnotationStore store;
-    private boolean delegate;
+    protected boolean delegate;
 
     public ResolvableBuilder(final MetaAnnotationStore store) {
         this.store = store;

@@ -22,15 +22,13 @@
 package org.jboss.weld.bean.builtin.ee;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.Set;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.ServletMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -41,7 +39,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Jozef Hartinger
  *
  */
-public class HttpSessionBean extends AbstractBuiltInBean<HttpSession> {
+public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<HttpSession> {
 
     private final HttpServletRequestBean requestBean;
 
@@ -51,7 +49,7 @@ public class HttpSessionBean extends AbstractBuiltInBean<HttpSession> {
     }
 
     @Override
-    public HttpSession create(CreationalContext<HttpSession> creationalContext) {
+    protected HttpSession newInstance(InjectionPoint ip, CreationalContext<HttpSession> creationalContext) {
         try {
             return requestBean.create(null).getSession();
         } catch (IllegalStateException e) {

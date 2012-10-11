@@ -657,7 +657,7 @@ public class Validator implements Service {
         if (injectionPointType instanceof Class<?> && type.equals(injectionPointType)) {
             throw new DefinitionException(INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER, type, injectionPoint);
         }
-        if (injectionPointType instanceof ParameterizedType) {
+        if (injectionPointType instanceof ParameterizedType && !injectionPoint.isDelegate()) {
             ParameterizedType parameterizedType = (ParameterizedType) injectionPointType;
             if (type.equals(parameterizedType.getRawType())) {
                 if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>) {
