@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.NULL_INSTANCE;
+
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
@@ -25,11 +29,6 @@ import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.exceptions.NullInstanceException;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.NULL_INSTANCE;
 
 public class CallableMethodHandler implements MethodHandler, Serializable {
 
@@ -47,18 +46,9 @@ public class CallableMethodHandler implements MethodHandler, Serializable {
         if (instance == null) {
             throw new NullInstanceException(NULL_INSTANCE, callable);
         }
-        try {
-            Object returnValue = SecureReflections.invoke(instance, proxiedMethod, args);
-            log.trace(CALL_PROXIED_METHOD, proxiedMethod, instance, args, returnValue == null ? null : returnValue);
-            return returnValue;
-        } catch (InvocationTargetException e) {
-            // Unwrap the ITE
-            if (e.getCause() != null) {
-                throw e.getCause();
-            } else {
-                throw e;
-            }
-        }
+        Object returnValue = SecureReflections.invokeAndUnwrap(instance, proxiedMethod, args);
+        log.trace(CALL_PROXIED_METHOD, proxiedMethod, instance, args, returnValue == null ? null : returnValue);
+        return returnValue;
     }
 
 }

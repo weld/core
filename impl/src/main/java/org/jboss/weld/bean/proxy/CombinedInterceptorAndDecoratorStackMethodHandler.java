@@ -55,16 +55,14 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                         }
                     } else {
                         if (outerDecorator != null) {
-                            return SecureReflections.invoke(outerDecorator, thisMethod, args);
+                            return SecureReflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
                         }
                     }
                 } finally {
                     this.getDisabledHandlers().remove(this);
                 }
             }
-            return SecureReflections.invoke(self, proceed, args);
-        } catch (InvocationTargetException e) {
-            throw e.getCause();
+            return SecureReflections.invokeAndUnwrap(self, proceed, args);
         } finally {
             if (externalContext) {
                 endInterceptorContext();

@@ -101,17 +101,9 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         }
         Class<?> businessInterface = getBusinessInterface(method);
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
-        try {
-            Object returnValue = SecureReflections.invoke(proxiedInstance, method, args);
-            log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
-            return returnValue;
-        } catch (InvocationTargetException e) {
-            if (e.getCause() != null) {
-                throw e.getCause();
-            } else {
-                throw e;
-            }
-        }
+        Object returnValue = SecureReflections.invokeAndUnwrap(proxiedInstance, method, args);
+        log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
+        return returnValue;
     }
 
     private boolean isRemoveMethod(Method method) {

@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
 import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
@@ -271,6 +272,31 @@ public class SecureReflections {
             }
 
         }.runAsInvocation();
+    }
+
+    /**
+     * Invokes the method using {@link #invoke(Object, Method, Object...)}. If the method throws a {@link Throwable}, the throwable is
+     * unwrapped from the {@link InvocationTargetException} and rethrown. If the reflective invocation fails due to {@link IllegalAccessException} or
+     * {@link IllegalAccessException}, the exception is wrapped within {@link WeldException}.
+     *
+     * This method is useful in cases where no additional control over {@link IllegalAccessException} and {@link IllegalAccessException} is needed.
+     *
+     * @param instance   The instance to invoke on
+     * @param method     The method to invoke
+     * @param parameters The method parameters
+     * @throws WeldException that wraps {@link IllegalArgumentException} or {@link IllegalAccessException} if any of there exceptions occured
+     * @throws Throwable If the method throws a {@link Throwable} this throwable is rethrown from this invocation (the {@link InvocationTargetException} is unwrapped).
+     */
+    public static <T> T invokeAndUnwrap(final Object instance, final Method method, final Object... parameters) throws Throwable {
+        try {
+            return invoke(instance, method, parameters);
+        } catch (IllegalArgumentException e) {
+            throw new WeldException(e);
+        } catch (IllegalAccessException e) {
+            throw new WeldException(e);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
     }
 
     /**
