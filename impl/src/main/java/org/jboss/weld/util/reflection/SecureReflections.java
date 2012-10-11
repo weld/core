@@ -308,25 +308,13 @@ public class SecureReflections {
      *                                   method
      * @see java.lang.reflect.Method#invoke(Object, Object...)
      */
-    public static <T> T invoke(final Object instance, final String methodName, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        return new SecureReflectionAccess<T>() {
-            @Override
-            protected T work() throws Exception {
-                Class<?>[] parameterTypes = new Class<?>[parameters.length];
-                for (int i = 0; i < parameters.length; i++) {
-                    parameterTypes[i] = parameters[i].getClass();
-                }
-                Method method = getMethod(instance.getClass(), methodName, parameterTypes);
-
-                Object result = ensureAccessible(method).invoke(instance, parameters);
-
-                @SuppressWarnings("unchecked")
-                T t = (T) result;
-
-                return t;
-
-            }
-        }.runAsInvocation();
+    public static <T> T invoke(final Object instance, final String methodName, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        Class<?>[] parameterTypes = new Class<?>[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            parameterTypes[i] = parameters[i].getClass();
+        }
+        Method method = getMethod(instance.getClass(), methodName, parameterTypes);
+        return invoke(instance, method, parameters);
     }
 
     /**
