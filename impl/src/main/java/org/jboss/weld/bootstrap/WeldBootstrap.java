@@ -478,7 +478,11 @@ public class WeldBootstrap implements Bootstrap {
     }
 
     public BeansXml parse(Iterable<URL> urls) {
-        return beansXmlParser.parse(urls);
+        return parse(urls, false);
+    }
+
+    public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
+        return beansXmlParser.parse(urls, removeDuplicates);
     }
 
     public BeansXml parse(URL url) {

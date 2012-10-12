@@ -62,7 +62,7 @@ public class URLScanner {
                 }
             }
         }
-        return new ImmutableBeanDeploymentArchive("classpath", handler.getDiscoveredClasses(), bootstrap.parse(handler.getDiscoveredBeansXmlUrls()));
+        return new ImmutableBeanDeploymentArchive("classpath", handler.getDiscoveredClasses(), bootstrap.parse(handler.getDiscoveredBeansXmlUrls(), true));
     }
 
     private String getUrlPath(String resourceName, URL url) throws URISyntaxException {
