@@ -61,8 +61,8 @@ public class ErrorPageTest {
                 .addClasses(Storm.class, Rain.class)
                 .addAsWebInfResource(ErrorPageTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ErrorPageTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-                .addAsWebResource(ErrorPageTest.class.getPackage(), "error.jsf", "error.jspx")
-                .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.jsf", "storm.jspx")
+                .addAsWebResource(ErrorPageTest.class.getPackage(), "error.xhtml", "error.xhtml")
+                .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.xhtml", "storm.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
