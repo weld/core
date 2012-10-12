@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.jboss.weld.osgi.examples</groupId>
+        <artifactId>weld-osgi-examples</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.osgi.examples</groupId>
     <artifactId>weld-osgi-container-lite</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
     <name>Weld OSGi (Examples Container PojoSR)</name>
 
     <url>http://www.seamframework.org/Weld</url>
@@ -28,6 +31,25 @@
             <email>matthieu.clochard@serli.com</email>
         </developer>
     </developers>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>3rdParty</id>
+            <name>JBoss Third Party Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
     <dependencies>
 
@@ -143,8 +165,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <copy file="${maven.dependency.com.googlecode.pojosr.de.kalpatec.pojosr.framework.jar.path}"
-                                      tofile="${project.build.directory}/pojosr.jar"/>
+                                <copy file="${maven.dependency.com.googlecode.pojosr.de.kalpatec.pojosr.framework.jar.path}" tofile="${project.build.directory}/pojosr.jar" />
                             </tasks>
                         </configuration>
                     </execution>
