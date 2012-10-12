@@ -14,22 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.resources;
+package org.jboss.weld.servlet;
 
-import org.jboss.weld.util.reflection.Reflections;
+public class ServletApi {
 
-public class ReflectionCacheFactory {
+    public static final String SERVLET_CONTEXT_CLASS_NAME = "javax.servlet.ServletContext";
 
-    private static final String HOTSPOT_MARKER = "sun.reflect.annotation.AnnotationType";
-
-    private ReflectionCacheFactory() {
-    }
-
-    public static ReflectionCache newInstance() {
-        if (Reflections.isClassLoadable(HOTSPOT_MARKER, WeldClassLoaderResourceLoader.INSTANCE)) {
-            return new HotspotReflectionCache();
-        } else {
-            return new DefaultReflectionCache();
-        }
+    private ServletApi() {
     }
 }

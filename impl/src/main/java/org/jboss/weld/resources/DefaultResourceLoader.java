@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.resources;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collection;
-
-import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.util.collections.EnumerationList;
 
 /**
  * A simple resource loader.
@@ -32,54 +25,22 @@ import org.jboss.weld.util.collections.EnumerationList;
  *
  * @author Pete Muir
  */
-public class DefaultResourceLoader implements ResourceLoader {
+public class DefaultResourceLoader extends WeldClassLoaderResourceLoader {
     public static final DefaultResourceLoader INSTANCE = new DefaultResourceLoader();
 
     protected DefaultResourceLoader() {
-
-    }
-
-    public Class<?> classForName(String name) {
-
-        try {
-            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            if (tccl != null) {
-                return tccl.loadClass(name);
-            } else {
-                return Class.forName(name);
-            }
-        } catch (ClassNotFoundException e) {
-            throw new ResourceLoadingException("Error loading class " + name, e);
-        } catch (NoClassDefFoundError e) {
-            throw new ResourceLoadingException("Error loading class " + name, e);
-        } catch (TypeNotPresentException e) {
-            throw new ResourceLoadingException("Error loading class " + name, e);
-        }
-    }
-
-    public URL getResource(String name) {
-        final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        if (tccl != null) {
-            return tccl.getResource(name);
-        } else {
-            return getClass().getResource(name);
-        }
-    }
-
-    public Collection<URL> getResources(String name) {
-        try {
-            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            if (tccl != null) {
-                return new EnumerationList<URL>(tccl.getResources(name));
-            } else {
-                return new EnumerationList<URL>(getClass().getClassLoader().getResources(name));
-            }
-        } catch (IOException e) {
-            throw new ResourceLoadingException("Error loading resource " + name, e);
-        }
     }
 
     public void cleanup() {
     }
 
+    @Override
+    protected ClassLoader classLoader() {
+        final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        if (tccl == null) {
+            return super.classLoader();
+        } else {
+            return tccl;
+        }
+    }
 }

@@ -116,11 +116,13 @@ import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
+import org.jboss.weld.servlet.ServletApi;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.util.reflection.Formats;
@@ -526,7 +528,7 @@ public class WeldBootstrap implements Bootstrap {
         contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(), RequestContext.class, UnboundLiteral.INSTANCE));
         contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, UnboundLiteral.INSTANCE));
 
-        if (Reflections.isClassLoadable("javax.servlet.ServletContext", deployment.getServices().get(ResourceLoader.class))) {
+        if (Reflections.isClassLoadable(ServletApi.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
             // Register the Http contexts if not in
             contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(), HttpSessionContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpConversationContext>(new HttpConversationContextImpl(), HttpConversationContext.class, HttpLiteral.INSTANCE));
