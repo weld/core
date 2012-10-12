@@ -594,7 +594,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
+                    <version>${compiler.version}</version>
                     <configuration>
                        <source>1.6</source>
                        <target>1.6</target>
@@ -707,8 +707,7 @@
                 <module>environments/se/core</module>
                 <module>environments/se/build</module>
                 <module>environments/servlet</module>
-                <module>environments/osgi/build</module>
-                <module>environments/osgi/core</module>
+                <module>environments/osgi</module>
             </modules>
         </profile>
         <profile>
