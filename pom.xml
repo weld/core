@@ -479,6 +479,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jboss.weld.osgi</groupId>
+                <artifactId>weld-osgi-core-mandatory</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jboss.weld.osgi.tests</groupId>
                 <artifactId>weld-osgi-bundle1</artifactId>
                 <version>${project.version}</version>
@@ -848,6 +854,7 @@
                 <module>environments/se/build</module>
                 <module>environments/servlet</module>
                 <module>environments/osgi</module>
+                <module>environments/osgi/build</module>
             </modules>
         </profile>
         <profile>

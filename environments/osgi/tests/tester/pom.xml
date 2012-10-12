@@ -122,6 +122,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-mandatory</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core</artifactId>
         </dependency>
