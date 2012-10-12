@@ -39,7 +39,7 @@
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
         <cdi.api.version>1.0-SP4</cdi.api.version>
         <cdi.tck.version>1.0.4.SP3</cdi.tck.version>
-        <checkstyle.plugin.version>2.5</checkstyle.plugin.version>
+        <checkstyle.plugin.version>2.9.1</checkstyle.plugin.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.3.2</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
@@ -739,7 +739,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
+                    <version>${compiler.version}</version>
                     <configuration>
                         <source>1.6</source>
                         <target>1.6</target>
@@ -847,8 +847,7 @@
                 <module>environments/se/core</module>
                 <module>environments/se/build</module>
                 <module>environments/servlet</module>
-                <module>environments/osgi/build</module>
-                <module>environments/osgi/core</module>
+                <module>environments/osgi</module>
             </modules>
         </profile>
         <profile>
