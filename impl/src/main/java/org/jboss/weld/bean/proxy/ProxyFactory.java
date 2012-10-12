@@ -64,6 +64,7 @@ import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_PROXY_CLASS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
@@ -282,7 +283,7 @@ public class ProxyFactory<T> {
                 try {
                     proxyClass = cast(classLoader.loadClass(proxyClassName));
                 } catch (ClassNotFoundException e2) {
-                    throw new WeldException(e1);
+                    throw new WeldException(UNABLE_TO_LOAD_PROXY_CLASS, e1, bean, proxiedBeanType, classLoader);
                 }
             }
         }
