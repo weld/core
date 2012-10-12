@@ -44,7 +44,11 @@ public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Con
     }
 
     public void destroy(Conversation instance, CreationalContext<Conversation> creationalContext) {
+    }
 
+    @Override
+    public Class<?> getBeanClass() {
+        return ConversationImpl.class;
     }
 
     @Override

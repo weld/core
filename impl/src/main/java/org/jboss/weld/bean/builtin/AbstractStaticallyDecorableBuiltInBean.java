@@ -58,7 +58,7 @@ public abstract class AbstractStaticallyDecorableBuiltInBean<T> extends Abstract
     public void initializeAfterBeanDiscovery() {
         this.decorators = beanManager.resolveDecorators(getTypes(), getQualifiers());
         if (!decorators.isEmpty()) {
-            this.proxyClass = new ProxyFactory<T>(getBeanClass(), getTypes(), this).getProxyClass();
+            this.proxyClass = new ProxyFactory<T>(getType(), getTypes(), this).getProxyClass();
         }
     }
 }

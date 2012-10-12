@@ -53,7 +53,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractDecorableBuiltInBean
 
     @Override
     public void initializeAfterBeanDiscovery() {
-        this.proxyClass = new ProxyFactory<T>(getBeanClass(), getTypes(), this).getProxyClass();
+        this.proxyClass = new ProxyFactory<T>(getType(), getTypes(), this).getProxyClass();
     }
 
     @Override

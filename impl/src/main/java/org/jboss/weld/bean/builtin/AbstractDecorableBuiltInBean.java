@@ -75,6 +75,11 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
         return false;
     }
 
+    @Override
+    public Class<?> getBeanClass() {
+        return getClass();
+    }
+
     protected void injectionPointNotAvailable() {
         log.warn(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
     }
