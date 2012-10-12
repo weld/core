@@ -46,7 +46,7 @@
                 <updatePolicy>never</updatePolicy>
                 <checksumPolicy>fail</checksumPolicy>
             </snapshots>
-            <id>Knopflerfish</id>
+            <id>3rdParty</id>
             <name>JBoss Third Party Repository</name>
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
             <layout>default</layout>
