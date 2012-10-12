@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.jboss.weld.osgi.examples</groupId>
         <artifactId>weld-osgi-examples</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0.Beta1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -295,10 +293,8 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <copy file="target/classes/config.xargs"
-                                      tofile="${project.build.directory}/config.xargs"/>
-                                <copy file="${maven.dependency.org.knopflerfish.framework.jar.path}"
-                                      tofile="${project.build.directory}/knopflerfish.jar"/>
+                                <copy file="target/classes/config.xargs" tofile="${project.build.directory}/config.xargs" />
+                                <copy file="${maven.dependency.org.knopflerfish.framework.jar.path}" tofile="${project.build.directory}/knopflerfish.jar" />
                             </tasks>
                         </configuration>
                     </execution>
