@@ -23,26 +23,23 @@ package org.jboss.weld.examples.numberguess.ftest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.jboss.arquillian.ajocado.framework.AjaxSelenium;
-import org.jboss.arquillian.ajocado.locator.IdLocator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
+import static org.jboss.arquillian.graphene.Graphene.waitModel;
+import static org.jboss.arquillian.graphene.Graphene.element;
+import static org.jboss.arquillian.graphene.Graphene.guardHttp;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.jboss.arquillian.ajocado.locator.LocatorFactory.id;
-import static org.jboss.arquillian.ajocado.Ajocado.elementPresent;
-import static org.jboss.arquillian.ajocado.Ajocado.waitForHttp;
-import static org.jboss.arquillian.ajocado.Ajocado.waitModel;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Tests numberguess examples in Weld
@@ -57,23 +54,21 @@ import static org.junit.Assert.fail;
 public class CommonNumberGuessTest {
 
     protected String MAIN_PAGE = "/home.jsf";
-    protected IdLocator GUESS_MESSAGES = id("numberGuess:messages");
-
-    protected IdLocator GUESS_FIELD = id("numberGuess:inputGuess");
-    protected IdLocator GUESS_SUBMIT = id("numberGuess:guessButton");
-    protected IdLocator GUESS_RESET = id("numberGuess:resetButton");
-    protected IdLocator GUESS_SMALLEST = id("numberGuess:smallest");
-    protected IdLocator GUESS_BIGGEST = id("numberGuess:biggest");
-
+    protected By GUESS_MESSAGES = By.id("numberGuess:messages");
+    protected By GUESS_FIELD = By.id("numberGuess:inputGuess");
+    protected By GUESS_SUBMIT = By.id("numberGuess:guessButton");
+    protected By GUESS_RESET = By.id("numberGuess:resetButton");
+    protected By GUESS_SMALLEST = By.id("numberGuess:smallest");
+    protected By GUESS_BIGGEST = By.id("numberGuess:biggest");
     protected String WIN_MSG = "Correct!";
     protected String LOSE_MSG = "No guesses left!";
     
     @Drone
-    AjaxSelenium selenium;
+    WebDriver driver;
     
     @ArquillianResource
     private URL contextPath;
-    
+
     @Deployment(testable = false)
     public static WebArchive createTestDeployment1() {
         return Deployments.createDeployment();
@@ -81,13 +76,13 @@ public class CommonNumberGuessTest {
 
     @Before
     public void openStartUrl() throws MalformedURLException {
-        selenium.open(new URL(contextPath.toString() + "home.jsf"));
-        waitModel.until(elementPresent.locator(GUESS_FIELD));
+        driver.navigate().to(new URL(contextPath.toString() + "home.jsf"));
+        waitModel(driver).until(element(GUESS_FIELD).isPresent());
     }
 
     @After
     public void resetSession() {
-        selenium.deleteAllVisibleCookies();
+        driver.manage().deleteAllCookies();
     }
 
     @Test
@@ -103,11 +98,12 @@ public class CommonNumberGuessTest {
                 fail("Game should not be longer than 10 guesses");
             }
 
-            assertTrue("Expected smallest number on page", selenium.isElementPresent(GUESS_SMALLEST));
-            assertTrue("Expected biggest number on page", selenium.isElementPresent(GUESS_BIGGEST));
+            assertTrue("Expected smallest number on page", element(GUESS_SMALLEST).isPresent().apply(driver));
+            assertTrue("Expected biggest number on page", element(GUESS_BIGGEST).isPresent().apply(driver));
 
-            min = Integer.parseInt(selenium.getText(GUESS_SMALLEST));
-            max = Integer.parseInt(selenium.getText(GUESS_BIGGEST));
+            min = Integer.parseInt(driver.findElement(GUESS_SMALLEST).getText());
+            max = Integer.parseInt(driver.findElement(GUESS_BIGGEST).getText());
+
             guess = min + ((max - min) / 2);
             enterGuess(guess);
             i++;
@@ -132,8 +128,9 @@ public class CommonNumberGuessTest {
     }
 
     protected void enterGuess(int guess) {
-        selenium.type(GUESS_FIELD, String.valueOf(guess));
-        waitForHttp(selenium).click(GUESS_SUBMIT);
+        driver.findElement(GUESS_FIELD).clear();
+        driver.findElement(GUESS_FIELD).sendKeys(String.valueOf(guess));
+        guardHttp(driver.findElement(GUESS_SUBMIT)).click();
     }
 
     protected boolean isOnGuessPage() {
@@ -141,13 +138,12 @@ public class CommonNumberGuessTest {
     }
 
     protected boolean isOnWinPage() {
-        String text = selenium.getText(GUESS_MESSAGES);
+        String text = driver.findElement(GUESS_MESSAGES).getText();
         return WIN_MSG.equals(text);
     }
 
     protected boolean isOnLosePage() {
-        String text = selenium.getText(GUESS_MESSAGES);
+        String text = driver.findElement(GUESS_MESSAGES).getText();
         return LOSE_MSG.equals(text);
     }
-
 }
