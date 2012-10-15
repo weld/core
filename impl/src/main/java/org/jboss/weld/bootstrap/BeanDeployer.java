@@ -19,7 +19,7 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
-import static org.slf4j.ext.XLogger.Level.INFO;
+import static org.slf4j.ext.XLogger.Level.DEBUG;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -96,7 +96,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             clazz = resourceLoader.classForName(className);
         } catch (ResourceLoadingException e) {
             log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-            xlog.catching(INFO, e);
+            xlog.catching(DEBUG, e);
         }
 
         if (clazz != null && !clazz.isAnnotation() && !Beans.isVetoed(clazz)) {
@@ -106,7 +106,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 annotatedType = classTransformer.getAnnotatedType(clazz);
             } catch (ResourceLoadingException e) {
                 log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-                xlog.catching(INFO, e);
+                xlog.catching(DEBUG, e);
             }
             if (annotatedType != null) {
                 getEnvironment().addAnnotatedType(annotatedType);
