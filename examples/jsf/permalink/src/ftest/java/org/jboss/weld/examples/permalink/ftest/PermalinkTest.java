@@ -23,27 +23,20 @@ package org.jboss.weld.examples.permalink.ftest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.jboss.arquillian.ajocado.framework.AjaxSelenium;
-import org.jboss.arquillian.ajocado.locator.IdLocator;
-import org.jboss.arquillian.ajocado.locator.XPathLocator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
+import static org.jboss.arquillian.graphene.Graphene.*;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.jboss.arquillian.ajocado.locator.LocatorFactory.id;
-import static org.jboss.arquillian.ajocado.locator.LocatorFactory.xp;
-import static org.jboss.arquillian.ajocado.Ajocado.elementPresent;
-import static org.jboss.arquillian.ajocado.Ajocado.waitForHttp;
-import static org.jboss.arquillian.ajocado.Ajocado.waitModel;
-import static org.junit.Assert.assertTrue;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Tests permalink example in Weld. The first test just adds comment on the first
@@ -58,19 +51,20 @@ import static org.junit.Assert.assertTrue;
 public class PermalinkTest {
     protected String MAIN_PAGE = "/home.jsf";
     protected String PAGE_TITLE = "Direct links to the news you crave";
-    protected XPathLocator VIEW_ENTRY_LINK = xp("//a[contains(text(),'View Entry')][1]");
+    protected By VIEW_ENTRY_LINK = By.xpath("//a[contains(text(),'View Entry')][1]");
     protected String TOPIC_TITLE = "Mojarra == RI";
-    protected XPathLocator PERMALINK_LINK = xp("//a[@title='A bookmarkable link for this entry.'][1]");
-    protected IdLocator AUTHOR_INPUT = id("author");
-    protected IdLocator COMMENT_INPUT = id("body");
-    protected IdLocator SUBMIT_BUTTON = id("post");
-    protected XPathLocator BACK_BUTTON = xp("//input[@type='button'][@value='Back to main page']");
+    protected By PERMALINK_LINK = By.xpath("//a[@title='A bookmarkable link for this entry.'][1]");
+    protected By AUTHOR_INPUT = By.id("author");
+    protected By COMMENT_INPUT = By.id("body");
+    protected By SUBMIT_BUTTON = By.id("post");
+    protected By BACK_BUTTON = By.xpath("//input[@type='button'][@value='Back to main page']");
     protected String COMMENT_TEXT = "This is my first comment on Mojarra project";
     protected String AUTHOR_NAME = "Martin";
     protected String TEXT_ON_HOME_PAGE = "Annotation nation";
+    protected By BODY = By.tagName("body");
 
     @Drone
-    AjaxSelenium selenium;
+    WebDriver driver;
     
     @ArquillianResource
     private URL contextPath;
@@ -82,29 +76,39 @@ public class PermalinkTest {
     
     @Before
     public void openStartUrl() throws MalformedURLException {
-        selenium.open(new URL(contextPath.toString() + "home.jsf"));
-        waitModel.until(elementPresent.locator(VIEW_ENTRY_LINK));
+        driver.navigate().to(new URL(contextPath.toString() + "home.jsf"));
+        waitModel(driver).until(element(VIEW_ENTRY_LINK).isPresent());
     }   
 
     @Test
     @InSequence(1)
     public void addCommentOnTopicTest() {
-        waitForHttp(selenium).click(VIEW_ENTRY_LINK);
-        assertTrue("Topic title expected on the page", selenium.isTextPresent(TOPIC_TITLE));
-        selenium.type(AUTHOR_INPUT, AUTHOR_NAME);
-        selenium.type(COMMENT_INPUT, COMMENT_TEXT);
-        waitForHttp(selenium).click(SUBMIT_BUTTON);
-        assertTrue("A name of comment's author expected", selenium.isTextPresent(AUTHOR_NAME));
-        assertTrue("A text of entered comment expected", selenium.isTextPresent(COMMENT_TEXT));
-        waitForHttp(selenium).click(BACK_BUTTON);
-        assertTrue("Home page expected", selenium.isTextPresent(TEXT_ON_HOME_PAGE));
+        guardHttp(driver.findElement(VIEW_ENTRY_LINK)).click();
+        assertTrue("Topic title expected on the page", isTextOnPage(TOPIC_TITLE));
+        
+        driver.findElement(AUTHOR_INPUT).clear();
+        driver.findElement(AUTHOR_INPUT).sendKeys(AUTHOR_NAME);
+        
+        driver.findElement(COMMENT_INPUT).clear();
+        driver.findElement(COMMENT_INPUT).sendKeys(COMMENT_TEXT);
+        
+        guardHttp(driver.findElement(SUBMIT_BUTTON)).click();
+        assertTrue("A name of comment's author expected", isTextOnPage(AUTHOR_NAME));
+        assertTrue("A text of entered comment expected", isTextOnPage(COMMENT_TEXT));
+        
+        guardHttp(driver.findElement(BACK_BUTTON)).click();
+        assertTrue("Home page expected", isTextOnPage(TEXT_ON_HOME_PAGE));
     }
 
     @Test
     @InSequence(2)
     public void permanentLinkTest() {
-        waitForHttp(selenium).click(PERMALINK_LINK);
-        assertTrue("A name of comment's author expected", selenium.isTextPresent(AUTHOR_NAME));
-        assertTrue("A text of entered comment expected", selenium.isTextPresent(COMMENT_TEXT));
+        guardHttp(driver.findElement(PERMALINK_LINK)).click();
+        assertTrue("A name of comment's author expected", isTextOnPage(AUTHOR_NAME));
+        assertTrue("A text of entered comment expected", isTextOnPage(COMMENT_TEXT));
+    }
+
+    private boolean isTextOnPage(String text) {
+        return element(BODY).textContains(text).apply(driver);
     }
 }
