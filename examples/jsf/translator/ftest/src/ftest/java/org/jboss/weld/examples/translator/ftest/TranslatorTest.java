@@ -22,25 +22,21 @@
 package org.jboss.weld.examples.translator.ftest;
 
 import java.net.URL;
-
-import org.jboss.arquillian.ajocado.framework.AjaxSelenium;
-import org.jboss.arquillian.ajocado.locator.IdLocator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
+import static org.jboss.arquillian.graphene.Graphene.element;
+import static org.jboss.arquillian.graphene.Graphene.guardHttp;
+import static org.jboss.arquillian.graphene.Graphene.waitModel;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.jboss.arquillian.ajocado.locator.LocatorFactory.id;
-import static org.jboss.arquillian.ajocado.Ajocado.elementPresent;
-import static org.jboss.arquillian.ajocado.Ajocado.waitForHttp;
-import static org.jboss.arquillian.ajocado.Ajocado.waitModel;
-import static org.junit.Assert.assertTrue;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Tests translator example in Weld
@@ -52,38 +48,43 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Arquillian.class)
 @RunAsClient
 public class TranslatorTest {
+
     protected String MAIN_PAGE = "/home.jsf";
-    protected IdLocator INPUT_AREA = id("TranslatorMain:text");
-    protected IdLocator TRANSLATE_BUTTON = id("TranslatorMain:button");
+    protected By INPUT_AREA = By.id("TranslatorMain:text");
+    protected By TRANSLATE_BUTTON = By.id("TranslatorMain:button");
+    protected By BODY = By.tagName("body");
     protected String ONE_SENTENCE = "This is only one sentence.";
     protected String MORE_SENTENCES = "First sentence. Second and last sentence.";
     protected String ONE_SENTENCE_TRANSLATED = "Lorem ipsum dolor sit amet.";
     protected String MORE_SENTENCES_TRANSLATED = "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.";
-
+    
     @Drone
-    AjaxSelenium selenium;
+    WebDriver driver;
     
     @ArquillianResource
     private URL contextPath;
-    
+
     @Deployment(testable = false)
     public static EnterpriseArchive createTestDeployment1() {
         return Deployments.createDeployment();
     }
-    
+
     @Before
     public void openStartUrl() {
-        selenium.open(contextPath);
-        waitModel.until(elementPresent.locator(INPUT_AREA));
+        driver.navigate().to(contextPath);
+        waitModel(driver).until(element(INPUT_AREA).isPresent());
     }
 
     @Test
     public void translateTest() {
-        selenium.type(INPUT_AREA, ONE_SENTENCE);
-        waitForHttp(selenium).click(TRANSLATE_BUTTON);
-        assertTrue("One sentence translated into latin expected.", selenium.isTextPresent(ONE_SENTENCE_TRANSLATED));
-        selenium.type(INPUT_AREA, MORE_SENTENCES);
-        waitForHttp(selenium).click(TRANSLATE_BUTTON);
-        assertTrue("More sentences translated into latin expected.", selenium.isTextPresent(MORE_SENTENCES_TRANSLATED));
+        driver.findElement(INPUT_AREA).clear();
+        driver.findElement(INPUT_AREA).sendKeys(ONE_SENTENCE);
+        guardHttp(driver.findElement(TRANSLATE_BUTTON)).click();
+        assertTrue("One sentence translated into latin expected.", element(BODY).textContains(ONE_SENTENCE_TRANSLATED).apply(driver));
+        driver.findElement(INPUT_AREA).clear();
+        driver.findElement(INPUT_AREA).sendKeys(MORE_SENTENCES);
+        guardHttp(driver.findElement(TRANSLATE_BUTTON)).click();
+        assertTrue("More sentences translated into latin expected.", element(BODY).textContains(MORE_SENTENCES_TRANSLATED).apply(driver));
     }
+    
 }
