@@ -25,8 +25,9 @@
     <properties>
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER-->
         <apache.httpclient.version>3.1</apache.httpclient.version>
-        <arquillian.version>1.0.0.CR7</arquillian.version>
-        <arquillian.ajocado.version>1.0.0.CR2</arquillian.ajocado.version>
+        <arquillian.version>1.0.2.Final</arquillian.version>
+        <arquillian.drone.version>1.1.0.CR3</arquillian.drone.version>
+        <arquillian.graphene.version>2.0.0.Alpha2</arquillian.graphene.version>
         <arquillian.jboss.version>1.0.0.CR4</arquillian.jboss.version>
         <arquillian.weld.version>1.0.0.CR3</arquillian.weld.version>
         <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
@@ -44,7 +45,7 @@
         <findbugs-maven-plugin.version>2.3.2</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <google.guava.version>11.0.2</google.guava.version>
-        <htmlunit.version>2.4</htmlunit.version>
+        <htmlunit.version>2.8</htmlunit.version>
         <javax.activation.version>1.1</javax.activation.version>
         <javax.jms.version>1.1</javax.jms.version>
         <javassist.version>3.14.0-GA</javassist.version>
@@ -175,13 +176,6 @@
                 <groupId>org.jboss</groupId>
                 <artifactId>jboss-vfs</artifactId>
                 <version>${jboss.vfs.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.ajocado</groupId>
-                <artifactId>arquillian-ajocado-junit</artifactId>
-                <version>${arquillian.ajocado.version}</version>
-                <type>pom</type>
             </dependency>
 
             <dependency>

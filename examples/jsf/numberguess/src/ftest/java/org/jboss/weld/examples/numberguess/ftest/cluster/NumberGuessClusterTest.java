@@ -23,15 +23,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.arquillian.ajocado.framework.AjaxSelenium;
-import org.jboss.arquillian.ajocado.locator.IdLocator;
-import org.jboss.arquillian.ajocado.locator.XPathLocator;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.container.test.api.Deployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.container.test.api.TargetsContainer;
 import org.jboss.arquillian.drone.api.annotation.Drone;
+import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -41,9 +39,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.jboss.arquillian.ajocado.locator.LocatorFactory.id;
-import static org.jboss.arquillian.ajocado.locator.LocatorFactory.xp;
-import static org.jboss.arquillian.ajocado.Ajocado.waitForHttp;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -68,16 +65,16 @@ public class NumberGuessClusterTest {
     private static final String DEPLOYMENT1 = "dep.container1";
     private static final String DEPLOYMENT2 = "dep.container2";
     
-    protected IdLocator GUESS_MESSAGES = id("numberGuess:messages");
-    protected XPathLocator GUESS_STATUS = xp("//div[contains(text(),'I'm thinking of ')]");
+    protected By GUESS_MESSAGES = By.id("numberGuess:messages");
+    protected By GUESS_STATUS = By.xpath("//div[contains(text(),'I'm thinking of ')]");
     
-    protected IdLocator GUESS_FIELD = id("numberGuess:inputGuess");
-    protected XPathLocator GUESS_FIELD_WITH_VALUE = xp("//input[@id='numberGuess:inputGuess'][@value=3]");
+    protected By GUESS_FIELD = By.id("numberGuess:inputGuess");
+    protected By GUESS_FIELD_WITH_VALUE = By.xpath("//input[@id='numberGuess:inputGuess'][@value=3]");
 
-    protected IdLocator GUESS_SUBMIT = id("numberGuess:guessButton");
-    protected IdLocator GUESS_RESTART = id("numberGuess:restartButton");
-    protected IdLocator GUESS_SMALLEST = id("numberGuess:smallest");
-    protected IdLocator GUESS_BIGGEST = id("numberGuess:biggest");
+    protected By GUESS_SUBMIT = By.id("numberGuess:guessButton");
+    protected By GUESS_RESTART = By.id("numberGuess:restartButton");
+    protected By GUESS_SMALLEST = By.id("numberGuess:smallest");
+    protected By GUESS_BIGGEST = By.id("numberGuess:biggest");
 
     protected String WIN_MSG = "Correct!";
     protected String LOSE_MSG = "No guesses left!";
@@ -95,7 +92,7 @@ public class NumberGuessClusterTest {
     private Deployer deployer;
     
     @Drone
-    AjaxSelenium selenium;
+    WebDriver driver;
     
     String contextPath1;
     String contextPath2;
@@ -123,14 +120,15 @@ public class NumberGuessClusterTest {
     }
     
     protected void resetForm() {
-        waitForHttp(selenium).click(GUESS_RESTART);
+        Graphene.guardHttp(driver.findElement(GUESS_RESTART)).click();
         gameState = null;
     }
 
     protected void enterGuess(int guess) throws InterruptedException {
         gameState.setGuess(guess);
-        selenium.type(GUESS_FIELD, String.valueOf(guess));
-        waitForHttp(selenium).click(GUESS_SUBMIT);
+        driver.findElement(GUESS_FIELD).clear();
+        driver.findElement(GUESS_FIELD).sendKeys(String.valueOf(guess));
+        Graphene.guardHttp(driver.findElement(GUESS_SUBMIT)).click();
     }
     
     protected boolean isOnGuessPage() {
@@ -138,17 +136,17 @@ public class NumberGuessClusterTest {
     }
 
     protected boolean isOnWinPage() {
-        String text = selenium.getText(GUESS_MESSAGES);
+        String text = driver.findElement(GUESS_MESSAGES).getText();
         return WIN_MSG.equals(text);
     }
 
     protected boolean isOnLosePage() {
-        String text = selenium.getText(GUESS_MESSAGES);
+        String text = driver.findElement(GUESS_MESSAGES).getText();
         return LOSE_MSG.equals(text);
     }
     
     public String getAddressForSecondInstance() {
-        String loc = selenium.getLocation().toString();
+        String loc = driver.getCurrentUrl();
         String[] parsedStrings = loc.split("/");
         StringBuilder sb = new StringBuilder();
         for (int i = 4; i < parsedStrings.length; i++) {
@@ -161,7 +159,7 @@ public class NumberGuessClusterTest {
         
         //if (selenium.isCookiePresent("JSESSIONID")) {
         if (!newAddress.contains(";")) {
-            sid = selenium.getCookieByName("JSESSIONID").getValue();
+            sid = driver.manage().getCookieNamed("JSESSIONID").getValue();
             firstPart = newAddress;
         } else {
             // get sessionid directly from browser URL if JSESSIONID cookie is not
@@ -172,13 +170,13 @@ public class NumberGuessClusterTest {
 
         newAddress = firstPart + ";jsessionid=" + sid;
                 
-        selenium.deleteAllVisibleCookies();
+        driver.manage().deleteAllCookies();
 
         return newAddress;
     }
     
     private Integer getRemainingGuesses() {
-        Matcher m = guessesNumberPattern.matcher(selenium.getBodyText());
+        Matcher m = guessesNumberPattern.matcher(driver.findElement(By.tagName("body")).getText());
         if (m.find()) {
             return Integer.parseInt(m.group(1));
         }
@@ -194,8 +192,8 @@ public class NumberGuessClusterTest {
         
         GameState nextState = new GameState();
         nextState.setRemainingGuesses(getRemainingGuesses());
-        nextState.setLargest(Integer.parseInt(selenium.getText(GUESS_BIGGEST)));
-        nextState.setSmallest(Integer.parseInt(selenium.getText(GUESS_SMALLEST)));              
+        nextState.setLargest(Integer.parseInt(driver.findElement(GUESS_BIGGEST).getText()));
+        nextState.setSmallest(Integer.parseInt(driver.findElement(GUESS_SMALLEST).getText()));              
       
         if (gameState == null) {
             // Initial state
@@ -207,8 +205,8 @@ public class NumberGuessClusterTest {
             nextState.setPreviousGuess(gameState.getGuess());
             assertEquals("Remaining guesses dosn't match", gameState.getRemainingGuesses() - 1, nextState.getRemainingGuesses());
 
-            boolean higher = selenium.isTextPresent(HIGHER_MSG);
-            boolean lower = selenium.isTextPresent(LOWER_MSG);
+            boolean higher = Graphene.element(By.tagName("body")).textContains(HIGHER_MSG).apply(driver);
+            boolean lower = Graphene.element(By.tagName("body")).textContains(LOWER_MSG).apply(driver);
             
             assertEquals(lower, (nextState.getLargest() < gameState.getLargest()));
             if (gameState.getGuess() != 0) {
@@ -234,7 +232,7 @@ public class NumberGuessClusterTest {
     private void switchBrowsers() throws MalformedURLException {
         String address = getAddressForSecondInstance();
         String contextPath = browsersSwitched ? contextPath1 : contextPath2;
-        selenium.open(new URL(contextPath + "/" + address));
+        driver.navigate().to(new URL(contextPath + "/" + address));
         
         browsersSwitched = !browsersSwitched;
     }
@@ -249,7 +247,7 @@ public class NumberGuessClusterTest {
         controller.start(CONTAINER2);        
         deployer.deploy(DEPLOYMENT2);
         
-        selenium.open(new URL(contextPath1 + "/" + MAIN_PAGE));
+        driver.navigate().to(new URL(contextPath1 + "/" + MAIN_PAGE));
         
         // we always want to enter at least 3 guesses so that we can continue
         // in the other browser window with expected results
@@ -283,7 +281,7 @@ public class NumberGuessClusterTest {
         controller.start(CONTAINER1);
         deployer.deploy(DEPLOYMENT1);
         
-        selenium.open(new URL(contextPath1 + "/" + MAIN_PAGE));      
+        driver.navigate().to(new URL(contextPath1 + "/" + MAIN_PAGE));      
          
         for(;;) {
             
