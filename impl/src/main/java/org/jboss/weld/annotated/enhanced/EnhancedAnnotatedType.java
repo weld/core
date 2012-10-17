@@ -229,4 +229,6 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
      */
     AnnotatedType<T> slim();
 
+    boolean isMethodOverriden(EnhancedAnnotatedMethod<?, ?> method);
+
 }

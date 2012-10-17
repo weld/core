@@ -189,4 +189,9 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     public AnnotatedType<T> slim() {
         return delegate().slim();
     }
+
+    @Override
+    public boolean isMethodOverriden(EnhancedAnnotatedMethod<?, ?> method) {
+        return delegate().isMethodOverriden(method);
+    }
 }

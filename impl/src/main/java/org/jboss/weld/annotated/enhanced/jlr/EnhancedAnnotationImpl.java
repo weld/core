@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
@@ -84,6 +85,11 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
                 annotatedMembers.put(annotation.annotationType(), enhancedAnnotatedMethod);
             }
         }
+    }
+
+    @Override
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverridenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        return Collections.emptySet();
     }
 
     /**

@@ -17,6 +17,7 @@
 package org.jboss.weld.annotated.enhanced.jlr;
 
 import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -47,10 +48,13 @@ import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
+import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 
 /**
@@ -82,6 +86,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     private final Set<EnhancedAnnotatedMethod<?, ? super T>> methods;
     // The map from annotation type to abstracted method with annotation
     private final ArrayListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ?>> annotatedMethods;
+    // Methods that are overriden by other methods
+    private Set<EnhancedAnnotatedMethod<?, ? super T>> overridenMethods;
 
     // The set of abstracted methods
     private final ArraySet<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods;
@@ -101,6 +107,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     private final boolean discovered;
 
     private final AnnotatedType<T> slim;
+
 
     public static <T> EnhancedAnnotatedType<T> of(SlimAnnotatedType<T> annotatedType, ClassTransformer classTransformer) {
         if (annotatedType instanceof BackedAnnotatedType<?>) {
@@ -260,6 +267,34 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
         }
         this.declaredMetaAnnotationMap = immutableMap(declaredMetaAnnotationMap);
+
+        this.overridenMethods = getOverridenMethods(this, this.methods);
+    }
+
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverridenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        Set<EnhancedAnnotatedMethod<?, ? super T>> overridenMethods = new HashSet<EnhancedAnnotatedMethod<?,? super T>>();
+        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), HashSetSupplier.<Package>instance());
+        for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+            for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
+                if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
+                    if (isOverridden(method, seenMethods)) {
+                        overridenMethods.add(method);
+                    }
+                    seenMethods.put(method.getSignature(), method.getPackage());
+                }
+            }
+        }
+        return immutableSet(overridenMethods);
+    }
+
+    private static boolean isOverridden(EnhancedAnnotatedMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods) {
+        if (method.isPrivate()) {
+            return false;
+        } else if (method.isPackagePrivate() && seenMethods.containsKey(method.getSignature())) {
+            return seenMethods.get(method.getSignature()).contains(method.getPackage());
+        } else {
+            return seenMethods.containsKey(method.getSignature());
+        }
     }
 
     /**
@@ -574,6 +609,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     @Override
     public AnnotatedType<T> slim() {
         return slim;
+    }
+
+    @Override
+    public boolean isMethodOverriden(EnhancedAnnotatedMethod<?, ?> method) {
+        return this.overridenMethods.contains(method);
     }
 
 }

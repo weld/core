@@ -120,13 +120,13 @@ import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.HashSetSupplier;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
@@ -212,7 +212,7 @@ public class Beans {
         EnhancedAnnotatedType<?> t = type;
         List<AnnotatedMethod<? super T>> methods = new ArrayList<AnnotatedMethod<? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredEnhancedMethods(PostConstruct.class));
+            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = filterOutOverridenMethods(type, Reflections.<Collection<EnhancedAnnotatedMethod<?, ? super T>>>cast(t.getDeclaredEnhancedMethods(PostConstruct.class)));
             log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
@@ -226,23 +226,24 @@ public class Beans {
         return immutableList(methods);
     }
 
+    private static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutOverridenMethods(EnhancedAnnotatedType<T> type, Iterable<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        List<EnhancedAnnotatedMethod<?, ? super T>> notOverridenMethods = new ArrayList<EnhancedAnnotatedMethod<?,? super T>>();
+        for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
+            if (!type.isMethodOverriden(method)) {
+                notOverridenMethods.add(method);
+            }
+        }
+        return WeldCollections.immutableList(notOverridenMethods);
+    }
+
     public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(EnhancedAnnotatedType<T> type) {
         List<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
-        // Keep track of all seen methods so we can ignore overridden methods
-        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>() {
-
-            public Set<Package> get() {
-                return new HashSet<Package>();
-            }
-
-        });
         EnhancedAnnotatedType<? super T> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
-            for (EnhancedAnnotatedMethod<?, ? super T> method : t.getDeclaredEnhancedMethods()) {
-                if (!isOverridden(method, seenMethods) && !method.getEnhancedParameters(Observes.class).isEmpty()) {
+            for (EnhancedAnnotatedMethod<?, ? super T> method : t.getDeclaredEnhancedMethodsWithAnnotatedParameters(Observes.class)) {
+                if (!type.isMethodOverriden(method)) {
                     observerMethods.add(method);
                 }
-                seenMethods.put(method.getSignature(), method.getPackage());
             }
             t = t.getEnhancedSuperclass();
         }
@@ -253,7 +254,7 @@ public class Beans {
         EnhancedAnnotatedType<?> t = type;
         List<AnnotatedMethod<? super T>> methods = new ArrayList<AnnotatedMethod<? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredEnhancedMethods(PreDestroy.class));
+            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = filterOutOverridenMethods(type, Reflections.<Collection<EnhancedAnnotatedMethod<?, ? super T>>>cast(t.getDeclaredEnhancedMethods(PreDestroy.class)));
             log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
