@@ -641,11 +641,6 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public boolean isMethodOverriden(EnhancedAnnotatedMethod<?, ?> method) {
-        return this.overriddenMethods.contains(method);
-    }
-
-    @Override
     public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
         return annotatedMethodsByAnnotatedParameters.get(annotationType);
     }
