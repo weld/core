@@ -27,7 +27,7 @@
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.0.1.Final</arquillian.version>
         <arquillian.ajocado.version>1.0.0.CR2</arquillian.ajocado.version>
-        <arquillian.weld.version>1.0.0.CR3</arquillian.weld.version>
+        <arquillian.weld.version>1.0.0.CR4</arquillian.weld.version>
         <arquillian.tomcat.version>1.0.0.CR1</arquillian.tomcat.version>
         <arquillian.tomcat7.version>1.0.0.CR2</arquillian.tomcat7.version>
         <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
