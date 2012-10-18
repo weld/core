@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_WITH_ANNOTATIONS;
 import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
@@ -44,6 +45,7 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.WithAnnotations;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
@@ -143,15 +145,17 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      * Performs validation of the observer method for compliance with the
      * specifications.
      */
-    private void checkObserverMethod(EnhancedAnnotatedMethod<T, ? super X> annotated) {
+    private <Y> void checkObserverMethod(EnhancedAnnotatedMethod<T, Y> annotated) {
         // Make sure exactly one and only one parameter is annotated with Observes
-        List<?> eventObjects = annotated.getEnhancedParameters(Observes.class);
+        List<EnhancedAnnotatedParameter<?, Y>> eventObjects = annotated.getEnhancedParameters(Observes.class);
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
             throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
         }
         if (eventObjects.size() > 1) {
             throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
         }
+        EnhancedAnnotatedParameter<?, Y> eventParameter = eventObjects.iterator().next();
+        checkRequiredTypeAnnotations(eventParameter);
         // Check for parameters annotated with @Disposes
         List<?> disposeParams = annotated.getEnhancedParameters(Disposes.class);
         if (disposeParams.size() > 0) {
@@ -176,6 +180,12 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             }
         }
 
+    }
+
+    protected void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter) {
+        if (eventParameter.isAnnotationPresent(WithAnnotations.class)) {
+            throw new DefinitionException(INVALID_WITH_ANNOTATIONS, this);
+        }
     }
 
     public Class<X> getBeanClass() {

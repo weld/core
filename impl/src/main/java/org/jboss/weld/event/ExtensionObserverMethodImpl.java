@@ -21,16 +21,32 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.logging.messages.EventMessage.INVALID_WITH_ANNOTATIONS;
+
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
+import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * An implementation of {@link ObserverMethod} used for events delivered to extensions. An event can obtain an information about the
@@ -43,10 +59,45 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> {
 
     private final Container containerLifecycleEventDeliveryLock;
+    private final Set<Class<? extends Annotation>> requiredTypeAnnotations;
 
     protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         super(observer, declaringBean, manager);
         this.containerLifecycleEventDeliveryLock = Container.instance();
+        this.requiredTypeAnnotations = initRequiredTypeAnnotations(observer);
+    }
+
+    @SuppressWarnings("unchecked") // it is checked actually :-)
+    protected Set<Class<? extends Annotation>> initRequiredTypeAnnotations(EnhancedAnnotatedMethod<T, ? super X> observer) {
+        EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
+        WithAnnotations annotation = eventParameter.getAnnotation(WithAnnotations.class);
+        if (annotation != null) {
+            Class<?>[] classes = annotation.value();
+            Set<Class<? extends Annotation>> requiredTypeAnnotations = new HashSet<Class<? extends Annotation>>();
+            for (Class<?> clazz : classes) {
+                /*
+                 * TODO: this check can be removed once @WithAnnotations.value() returns Class<? extends Annotation>[]
+                 * See https://issues.jboss.org/browse/CDI-43
+                 */
+                if (Annotation.class.isAssignableFrom(clazz)) {
+                    requiredTypeAnnotations.add((Class<? extends Annotation>) clazz);
+                } else {
+                    throw new IllegalArgumentException(clazz + " is not an annotation");
+                }
+            }
+            return WeldCollections.immutableSet(requiredTypeAnnotations);
+        }
+        return Collections.emptySet();
+    }
+
+    @Override
+    protected void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter) {
+        if (!requiredTypeAnnotations.isEmpty()) {
+            Class<?> rawObserverType = Reflections.getRawType(getObservedType());
+            if (!rawObserverType.equals(ProcessAnnotatedType.class) && !rawObserverType.equals(ProcessSyntheticAnnotatedType.class)) {
+                throw new DefinitionException(INVALID_WITH_ANNOTATIONS, this);
+            }
+        }
     }
 
     @Override
@@ -93,5 +144,9 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         synchronized (containerLifecycleEventDeliveryLock) {
             super.sendEvent(event, receiver, creationalContext);
         }
+    }
+
+    public Collection<Class<? extends Annotation>> getRequiredTypeAnnotations() {
+        return requiredTypeAnnotations;
     }
 }
