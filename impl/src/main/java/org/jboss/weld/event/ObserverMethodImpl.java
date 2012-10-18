@@ -171,9 +171,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
         for (EnhancedAnnotatedParameter<?, ?> parameter : annotated.getEnhancedParameters()) {
-            if (parameter.isAnnotationPresent(Named.class) && parameter.getAnnotation(Named.class).value().equals("")) {
-                throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, getMethod());
-            }
             // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
             if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !BeanManager.class.equals(parameter.getBaseType())) {
                 throw new DefinitionException(INVALID_INJECTION_POINT, this);
