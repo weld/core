@@ -32,8 +32,6 @@ import org.jboss.weld.util.collections.Arrays2;
  */
 public interface EnhancedAnnotatedCallable<T, X, S extends Member> extends EnhancedAnnotatedMember<T, X, S>, AnnotatedCallable<X> {
 
-    Set<Class<? extends Annotation>> MAPPED_PARAMETER_ANNOTATIONS = Arrays2.asSet(Disposes.class, Observes.class);
-
     /**
      * Gets the abstracted parameters of the method
      *

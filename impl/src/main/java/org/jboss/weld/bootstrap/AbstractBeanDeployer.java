@@ -66,7 +66,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
@@ -242,7 +242,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X> void createObserverMethods(RIBean<X> declaringBean, EnhancedAnnotatedType<? super X> annotatedClass) {
-        for (EnhancedAnnotatedMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass)) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, method);
         }
     }

@@ -34,6 +34,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -76,6 +78,10 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @SuppressWarnings("unchecked")
     private static final Set<Class<? extends Annotation>> MAPPED_METHOD_ANNOTATIONS = Arrays2.asSet(PostConstruct.class, PreDestroy.class, Inject.class);
+    @SuppressWarnings("unchecked")
+    private static final Set<Class<? extends Annotation>> MAPPED_METHOD_PARAMETER_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Observes.class);
+    @SuppressWarnings("unchecked")
+    private static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS = Arrays2.<Class<? extends Annotation>>asSet(Disposes.class);
 
     // Class attributes
     private final EnhancedAnnotatedType<? super T> superclass;
@@ -93,10 +99,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     // The set of abstracted methods
     private final Set<EnhancedAnnotatedMethod<?, ? super T>> methods;
     // The map from annotation type to abstracted method with annotation
-//    private final ArrayListMultimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ?>> annotatedMethods;
-    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ?>> annotatedMethods;
-    // Methods that are overriden by other methods
-    private Set<EnhancedAnnotatedMethod<?, ? super T>> overridenMethods;
+    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> annotatedMethods;
+    // Methods that are overridden by other methods
+    private Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods;
+
+    private final Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> annotatedMethodsByAnnotatedParameters;
 
     // The set of abstracted methods
     private final ArraySet<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods;
@@ -217,7 +224,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                         for (Annotation annotation : weldMethod.getAnnotations()) {
                             this.declaredAnnotatedMethods.put(annotation.annotationType(), weldMethod);
                         }
-                        for (Class<? extends Annotation> annotationType : EnhancedAnnotatedMethod.MAPPED_PARAMETER_ANNOTATIONS) {
+                        for (Class<? extends Annotation> annotationType : MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS) {
                             if (weldMethod.getEnhancedParameters(annotationType).size() > 0) {
                                 this.declaredMethodsByAnnotatedParameters.put(annotationType, weldMethod);
                             }
@@ -247,7 +254,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                         this.declaredAnnotatedMethods.put(annotation.annotationType(), enhancedMethod);
                     }
                 }
-                for (Class<? extends Annotation> annotationType : EnhancedAnnotatedMethod.MAPPED_PARAMETER_ANNOTATIONS) {
+                for (Class<? extends Annotation> annotationType : MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS) {
                     if (enhancedMethod.getEnhancedParameters(annotationType).size() > 0) {
                         if (method.getJavaMember().getDeclaringClass().equals(javaClass)) {
                             this.declaredMethodsByAnnotatedParameters.put(annotationType, enhancedMethod);
@@ -270,10 +277,11 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         }
         this.declaredMetaAnnotationMap = immutableMap(declaredMetaAnnotationMap);
 
-        this.overridenMethods = getOverridenMethods(this, methodsTemp);
-        methodsTemp.removeAll(overridenMethods);
+        this.overriddenMethods = getOverridenMethods(this, methodsTemp);
+        methodsTemp.removeAll(overriddenMethods);
         this.methods = methodsTemp;
         this.annotatedMethods = buildAnnotatedMethodMultimap(this.methods);
+        this.annotatedMethodsByAnnotatedParameters = buildAnnotatedParameterMethodMultimap(this.methods);
     }
 
     protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverridenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
@@ -292,11 +300,23 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         return immutableSet(overridenMethods);
     }
 
-    protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ?>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
-        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ?>> result = HashMultimap.create();
+    protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = HashMultimap.create();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
             for (Class<? extends Annotation> annotation : MAPPED_METHOD_ANNOTATIONS) {
                 if (method.isAnnotationPresent(annotation)) {
+                    result.put(annotation, method);
+                }
+            }
+        }
+        return Multimaps.unmodifiableMultimap(result);
+    }
+
+    protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedParameterMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = HashMultimap.create();
+        for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
+            for (Class<? extends Annotation> annotation : MAPPED_METHOD_PARAMETER_ANNOTATIONS) {
+                if (!method.getEnhancedParameters(annotation).isEmpty()) {
                     result.put(annotation, method);
                 }
             }
@@ -422,7 +442,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
      * @see org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType#getEnhancedMethods(Class)
      */
     public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethods(Class<? extends Annotation> annotationType) {
-        return cast(Collections.unmodifiableCollection(annotatedMethods.get(annotationType)));
+        return Collections.unmodifiableCollection(annotatedMethods.get(annotationType));
     }
 
     public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethods(Class<? extends Annotation> annotationType) {
@@ -604,7 +624,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     public Set<AnnotatedMethod<? super T>> getMethods() {
-        return cast(Sets.union(methods, overridenMethods));
+        return cast(Sets.union(methods, overriddenMethods));
     }
 
     public Set<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
@@ -622,7 +642,12 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @Override
     public boolean isMethodOverriden(EnhancedAnnotatedMethod<?, ?> method) {
-        return this.overridenMethods.contains(method);
+        return this.overriddenMethods.contains(method);
+    }
+
+    @Override
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
+        return annotatedMethodsByAnnotatedParameters.get(annotationType);
     }
 
 }

@@ -77,7 +77,6 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Decorated;
 import javax.enterprise.inject.Disposes;
@@ -132,6 +131,7 @@ import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.Proxies;
@@ -482,10 +482,11 @@ public class Validator implements Service {
     }
 
     protected void validateInterceptor(Interceptor<?> interceptor, BeanManagerImpl manager) {
-        // TODO: confirm that producer methods, fields and disposers can be
-        // only found on Weld interceptors?
         if (interceptor instanceof InterceptorImpl<?>) {
             EnhancedAnnotatedType<?> annotated = ((InterceptorImpl<?>) interceptor).getEnhancedAnnotated();
+            if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
+                throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
+            }
             while (annotated != null && annotated.getJavaClass() != Object.class) {
                 if (!annotated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
                     throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
@@ -495,9 +496,6 @@ public class Validator implements Service {
                 }
                 if (!annotated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
                     throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
-                }
-                if (!annotated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
-                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
                 }
                 annotated = annotated.getEnhancedSuperclass();
             }
@@ -523,6 +521,9 @@ public class Validator implements Service {
 
             if (decorator instanceof WeldDecorator<?>) {
                 EnhancedAnnotatedType<?> annotatated = ((WeldDecorator<?>) decorator).getEnhancedAnnotated();
+                if (!BeanMethods.getObserverMethods(annotatated).isEmpty()) {
+                    throw new DefinitionException(DECORATORS_CANNOT_HAVE_OBSERVER_METHODS, decorator);
+                }
                 while (annotatated != null && annotatated.getJavaClass() != Object.class) {
                     if (!annotatated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
                         throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, decorator);
@@ -532,9 +533,6 @@ public class Validator implements Service {
                     }
                     if (!annotatated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
                         throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, decorator);
-                    }
-                    if (!annotatated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
-                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_OBSERVER_METHODS, decorator);
                     }
                     annotatated = annotatated.getEnhancedSuperclass();
                 }

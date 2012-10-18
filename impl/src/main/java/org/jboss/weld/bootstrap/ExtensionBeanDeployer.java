@@ -38,7 +38,7 @@ import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.DeploymentStructures;
 
 /**
@@ -95,7 +95,7 @@ public class ExtensionBeanDeployer {
     }
 
     protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass, Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
-        for (EnhancedAnnotatedMethod<?, ? super X> method : Beans.getObserverMethods(annotatedClass)) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers);
         }
     }

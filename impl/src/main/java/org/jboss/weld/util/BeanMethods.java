@@ -285,4 +285,8 @@ public class BeanMethods {
     public static <T> List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
         return getMethods(type, new InitializerMethodListBuilder<T>(type, declaringBean, manager));
     }
+
+    public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(final EnhancedAnnotatedType<T> type) {
+        return type.getEnhancedMethodsWithAnnotatedParameters(Observes.class);
+    }
 }

@@ -72,7 +72,6 @@ import javax.inject.Inject;
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -185,20 +184,6 @@ public class Beans {
         } else {
             return Proxies.isTypesProxyable(bean.getTypes());
         }
-    }
-
-    public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(EnhancedAnnotatedType<T> type) {
-        List<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
-        EnhancedAnnotatedType<? super T> t = type;
-        while (t != null && !t.getJavaClass().equals(Object.class)) {
-            for (EnhancedAnnotatedMethod<?, ? super T> method : t.getDeclaredEnhancedMethodsWithAnnotatedParameters(Observes.class)) {
-                if (!type.isMethodOverriden(method)) {
-                    observerMethods.add(method);
-                }
-            }
-            t = t.getEnhancedSuperclass();
-        }
-        return observerMethods;
     }
 
     public static List<AnnotatedMethod<?>> getInterceptableMethods(AnnotatedType<?> type) {

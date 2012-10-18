@@ -29,8 +29,8 @@ import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_S
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.decorator.Decorator;
@@ -50,13 +50,13 @@ import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
-import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -211,7 +211,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * methods.
      */
     protected void checkObserverMethods() {
-        List<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = Beans.getObserverMethods(this.getEnhancedAnnotated());
+        Collection<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = BeanMethods.getObserverMethods(this.getEnhancedAnnotated());
 
         if (!observerMethods.isEmpty()) {
             Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();

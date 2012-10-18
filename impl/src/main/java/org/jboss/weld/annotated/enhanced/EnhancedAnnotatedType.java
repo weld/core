@@ -37,9 +37,9 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     Collection<EnhancedAnnotatedField<?, ? super T>> getEnhancedFields();
 
     /**
-     * Gets all fields on the type
+     * Gets all methods on the type including those declared on a superclass of {@link #getJavaClass()}. Overridden methods are not returned.
      *
-     * @return A set of abstracted fields
+     * @return A set of abstracted methods
      */
     Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethods();
 
@@ -117,7 +117,7 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     EnhancedAnnotatedConstructor<T> getDeclaredEnhancedConstructor(ConstructorSignature signature);
 
     /**
-     * Gets all methods annotated with annotationType
+     * Gets all methods annotated with annotationType including those declared on a superclass of {@link #getJavaClass()}. Overridden methods are not returned.
      *
      * @param annotationType The annotation to match
      * @return A set of abstracted methods with the given annotation. Returns an
@@ -174,6 +174,15 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
      *         empty set if there are no matches
      */
     Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
+
+    /**
+     * Gets all methods with parameters annotated with annotationType including those declared on a superclass of {@link #getJavaClass()}. Overridden methods are not returned.
+     *
+     * @param annotationType The annotation to match
+     * @return A set of abstracted methods with the given annotation. Returns an
+     *         empty set if there are no matches
+     */
+    Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType);
 
     /**
      * Gets the superclass.

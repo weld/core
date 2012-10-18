@@ -194,4 +194,10 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     public boolean isMethodOverriden(EnhancedAnnotatedMethod<?, ?> method) {
         return delegate().isMethodOverriden(method);
     }
+
+    @Override
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
+        return delegate().getEnhancedMethodsWithAnnotatedParameters(annotationType);
+    }
+
 }
