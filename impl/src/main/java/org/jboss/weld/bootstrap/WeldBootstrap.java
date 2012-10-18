@@ -444,24 +444,17 @@ public class WeldBootstrap implements Bootstrap {
     }
 
     public Bootstrap validateBeans() {
-        // this try-catch block is an ugly workaround for ARQ-890
-        // TODO remove once we upgrade to a post-1.0.0.CR3 version
-        try {
-            synchronized (this) {
-                log.debug(VALIDATING_BEANS);
-                for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-                    BeanManagerImpl beanManager = entry.getValue().getBeanManager();
-                    beanManager.getBeanResolver().clear();
-                    deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
-                    beanManager.getServices().get(InjectionTargetService.class).validate();
-                }
-                AfterDeploymentValidationImpl.fire(deploymentManager);
+        synchronized (this) {
+            log.debug(VALIDATING_BEANS);
+            for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
+                BeanManagerImpl beanManager = entry.getValue().getBeanManager();
+                beanManager.getBeanResolver().clear();
+                deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
+                beanManager.getServices().get(InjectionTargetService.class).validate();
             }
-            return this;
-        } catch (RuntimeException e) {
-            Container.instance().services().get(ContainerLifecycleEvents.class).cleanup();
-            throw e;
+            AfterDeploymentValidationImpl.fire(deploymentManager);
         }
+        return this;
     }
 
     public Bootstrap endInitialization() {
