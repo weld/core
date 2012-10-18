@@ -51,7 +51,7 @@ import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.collections.WeldCollections;
 
@@ -81,14 +81,14 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         this.bean = bean;
         this.injectableFields = InjectionPointFactory.instance().getFieldInjectionPoints(bean, type, beanManager);
         injectionPoints.addAll(InjectionPoints.flattenInjectionPoints(this.injectableFields));
-        this.initializerMethods = Beans.getInitializerMethods(bean, type, beanManager);
+        this.initializerMethods = BeanMethods.getInitializerMethods(bean, type, beanManager);
         injectionPoints.addAll(InjectionPoints.flattenParameterInjectionPoints(initializerMethods));
         if (isInterceptor()) {
             this.postConstructMethods = Collections.emptyList();
             this.preDestroyMethods = Collections.emptyList();
         } else {
-            this.postConstructMethods = Beans.getPostConstructMethods(type);
-            this.preDestroyMethods = Beans.getPreDestroyMethods(type);
+            this.postConstructMethods = BeanMethods.getPostConstructMethods(type);
+            this.preDestroyMethods = BeanMethods.getPreDestroyMethods(type);
         }
 
         checkType(type);

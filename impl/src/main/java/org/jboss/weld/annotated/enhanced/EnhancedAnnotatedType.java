@@ -123,7 +123,7 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
      * @return A set of abstracted methods with the given annotation. Returns an
      *         empty set if there are no matches
      */
-    Collection<EnhancedAnnotatedMethod<?, ?>> getEnhancedMethods(Class<? extends Annotation> annotationType);
+    Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethods(Class<? extends Annotation> annotationType);
 
     /**
      * Gets all methods annotated with annotationType

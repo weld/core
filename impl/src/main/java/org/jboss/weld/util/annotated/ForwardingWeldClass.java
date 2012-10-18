@@ -70,7 +70,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
         return delegate().getEnhancedFields(annotationType);
     }
 
-    public Collection<EnhancedAnnotatedMethod<?, ?>> getEnhancedMethods(Class<? extends Annotation> annotationType) {
+    public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethods(Class<? extends Annotation> annotationType) {
         return delegate().getEnhancedMethods(annotationType);
     }
 

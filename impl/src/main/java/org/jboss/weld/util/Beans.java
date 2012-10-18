@@ -22,24 +22,13 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_DEFAULT_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_INJECTABLE_CONSTRUCTORS;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_INJECTABLE_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_POST_CONSTRUCT_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_PRE_DESTROY_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_POST_CONSTRUCT_METHODS;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_PRE_DESTROY_METHODS;
 import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
 import static org.jboss.weld.logging.messages.UtilMessage.AMBIGUOUS_CONSTRUCTOR;
 import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_NOT_QUALIFIER;
-import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_DISPOSAL_METHOD;
-import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_PRODUCER;
-import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_METHOD_IS_GENERIC;
 import static org.jboss.weld.logging.messages.UtilMessage.INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
-import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
-import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -63,8 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.decorator.Decorator;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -72,7 +59,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Typed;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -88,8 +74,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
@@ -102,7 +86,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
-import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ResourceInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
@@ -119,16 +102,12 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.util.collections.HashSetSupplier;
-import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 
 /**
@@ -208,34 +187,6 @@ public class Beans {
         }
     }
 
-    public static <T> List<AnnotatedMethod<? super T>> getPostConstructMethods(EnhancedAnnotatedType<T> type) {
-        EnhancedAnnotatedType<?> t = type;
-        List<AnnotatedMethod<? super T>> methods = new ArrayList<AnnotatedMethod<? super T>>();
-        while (!t.getJavaClass().equals(Object.class)) {
-            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = filterOutOverridenMethods(type, Reflections.<Collection<EnhancedAnnotatedMethod<?, ? super T>>>cast(t.getDeclaredEnhancedMethods(PostConstruct.class)));
-            log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
-            if (declaredMethods.size() > 1) {
-                throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
-            } else if (declaredMethods.size() == 1) {
-                AnnotatedMethod<? super T> method = declaredMethods.iterator().next().slim();
-                log.trace(FOUND_ONE_POST_CONSTRUCT_METHOD, method, type);
-                methods.add(0, method);
-            }
-            t = t.getEnhancedSuperclass();
-        }
-        return immutableList(methods);
-    }
-
-    private static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutOverridenMethods(EnhancedAnnotatedType<T> type, Iterable<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        List<EnhancedAnnotatedMethod<?, ? super T>> notOverridenMethods = new ArrayList<EnhancedAnnotatedMethod<?,? super T>>();
-        for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
-            if (!type.isMethodOverriden(method)) {
-                notOverridenMethods.add(method);
-            }
-        }
-        return WeldCollections.immutableList(notOverridenMethods);
-    }
-
     public static <T> List<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(EnhancedAnnotatedType<T> type) {
         List<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = new ArrayList<EnhancedAnnotatedMethod<?, ? super T>>();
         EnhancedAnnotatedType<? super T> t = type;
@@ -248,24 +199,6 @@ public class Beans {
             t = t.getEnhancedSuperclass();
         }
         return observerMethods;
-    }
-
-    public static <T> List<AnnotatedMethod<? super T>> getPreDestroyMethods(EnhancedAnnotatedType<T> type) {
-        EnhancedAnnotatedType<?> t = type;
-        List<AnnotatedMethod<? super T>> methods = new ArrayList<AnnotatedMethod<? super T>>();
-        while (!t.getJavaClass().equals(Object.class)) {
-            Collection<EnhancedAnnotatedMethod<?, ? super T>> declaredMethods = filterOutOverridenMethods(type, Reflections.<Collection<EnhancedAnnotatedMethod<?, ? super T>>>cast(t.getDeclaredEnhancedMethods(PreDestroy.class)));
-            log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
-            if (declaredMethods.size() > 1) {
-                throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
-            } else if (declaredMethods.size() == 1) {
-                AnnotatedMethod<? super T> method = declaredMethods.iterator().next().slim();
-                log.trace(FOUND_ONE_PRE_DESTROY_METHOD, method, type);
-                methods.add(0, method);
-            }
-            t = t.getEnhancedSuperclass();
-        }
-        return immutableList(methods);
     }
 
     public static List<AnnotatedMethod<?>> getInterceptableMethods(AnnotatedType<?> type) {
@@ -288,64 +221,6 @@ public class Beans {
                 return true;
         }
         return false;
-    }
-
-    public static <T> List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
-        List<Set<MethodInjectionPoint<?, ?>>> initializerMethodsList = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
-        // Keep track of all seen methods so we can ignore overridden methods
-        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), HashSetSupplier.<Package>instance());
-
-        if (type.slim() instanceof UnbackedAnnotatedType<?>) {
-            // external AnnotatedTypes require special treatment
-            Collection<EnhancedAnnotatedMethod<?, ? super T>> allMethods = type.getEnhancedMethods();
-
-            for (Class<?> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
-                ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
-                for (EnhancedAnnotatedMethod<?, ?> method : allMethods) {
-                    if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
-                        processPossibleInitializerMethod(type, method, initializerMethods, seenMethods, declaringBean, manager);
-                    }
-                }
-                initializerMethodsList.add(0, immutableSet(initializerMethods));
-            }
-        } else {
-            for (EnhancedAnnotatedType<?> t = type; t != null && !t.getJavaClass().equals(Object.class); t = t.getEnhancedSuperclass()) {
-                ArraySet<MethodInjectionPoint<?, ?>> initializerMethods = new ArraySet<MethodInjectionPoint<?, ?>>();
-                for (EnhancedAnnotatedMethod<?, ?> method : t.getDeclaredEnhancedMethods()) {
-                    processPossibleInitializerMethod(type, method, initializerMethods, seenMethods, declaringBean, manager);
-                }
-                initializerMethodsList.add(0, immutableSet(initializerMethods));
-            }
-        }
-        return immutableList(initializerMethodsList);
-    }
-
-    private static void processPossibleInitializerMethod(EnhancedAnnotatedType<?> type, EnhancedAnnotatedMethod<?, ?> method, Set<MethodInjectionPoint<?, ?>> initializerMethods, Multimap<MethodSignature, Package> seenMethods, Bean<?> declaringBean, BeanManagerImpl manager) {
-        if (method.isAnnotationPresent(Inject.class)) {
-            if (method.getAnnotation(Produces.class) != null) {
-                throw new DefinitionException(INITIALIZER_CANNOT_BE_PRODUCER, method, type);
-            } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
-                throw new DefinitionException(INITIALIZER_CANNOT_BE_DISPOSAL_METHOD, method, type);
-            } else if (method.getEnhancedParameters(Observes.class).size() > 0) {
-                throw new DefinitionException(INVALID_INITIALIZER, method);
-            } else if (method.isGeneric()) {
-                throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
-            }
-            if (!method.isStatic() && !isOverridden(method, seenMethods)) {
-                initializerMethods.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean, type.getJavaClass(), false, manager));
-            }
-        }
-        seenMethods.put(method.getSignature(), method.getPackage());
-    }
-
-    private static boolean isOverridden(EnhancedAnnotatedMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods) {
-        if (method.isPrivate()) {
-            return false;
-        } else if (method.isPackagePrivate() && seenMethods.containsKey(method.getSignature())) {
-            return seenMethods.get(method.getSignature()).contains(method.getPackage());
-        } else {
-            return seenMethods.containsKey(method.getSignature());
-        }
     }
 
     /**
