@@ -28,7 +28,6 @@ import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
@@ -37,7 +36,6 @@ import javax.enterprise.util.AnnotationLiteral;
  * @author Jozef Hartinger
  *
  */
-@Veto
 @SuppressWarnings("all")
 public class InitializedLiteral extends AnnotationLiteral<Initialized> implements Initialized {
 

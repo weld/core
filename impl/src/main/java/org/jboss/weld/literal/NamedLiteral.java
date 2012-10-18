@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.literal;
 
-import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
 
@@ -26,7 +25,6 @@ import javax.inject.Named;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-@Veto
 @SuppressWarnings("all")
 public class NamedLiteral extends AnnotationLiteral<Named> implements Named {
 

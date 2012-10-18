@@ -17,7 +17,6 @@
 package org.jboss.weld.literal;
 
 import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
@@ -25,7 +24,6 @@ import javax.enterprise.util.AnnotationLiteral;
  *
  * @author Pete Muir
  */
-@Veto
 @SuppressWarnings("all")
 public class StereotypeLiteral extends AnnotationLiteral<Stereotype> implements Stereotype {
 

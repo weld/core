@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Veto;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
@@ -49,7 +48,6 @@ import com.google.common.collect.MapMaker;
  * @author Jozef Hartinger
  *
  */
-@Veto
 public class Weld<T> extends CDI<T> {
 
     private class ClassNameToBeanManager implements Function<String, BeanManagerImpl> {

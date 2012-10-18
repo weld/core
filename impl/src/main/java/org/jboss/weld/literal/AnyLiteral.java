@@ -17,7 +17,6 @@
 package org.jboss.weld.literal;
 
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Veto;
 import javax.enterprise.util.AnnotationLiteral;
 
 /**
@@ -26,7 +25,6 @@ import javax.enterprise.util.AnnotationLiteral;
  * @author Pete Muir
  */
 @SuppressWarnings("all")
-@Veto
 public class AnyLiteral extends AnnotationLiteral<Any> implements Any {
 
     private static final long serialVersionUID = 1L;

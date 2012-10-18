@@ -1,6 +1,5 @@
 package org.jboss.weld.injection;
 
-import javax.enterprise.inject.Veto;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -11,7 +10,6 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-@Veto
 public class EmptyInjectionPoint implements InjectionPoint, Serializable {
 
     private static final long serialVersionUID = -2041468540191211977L;
