@@ -63,15 +63,9 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
 
     private final ContainerLifecycleEventPreloader preloader;
 
-    public ContainerLifecycleEvents(ContainerLifecycleEventPreloader preloader) {
+    public ContainerLifecycleEvents(ContainerLifecycleEventPreloader preloader, AnnotationDiscovery discovery) {
         this.preloader = preloader;
-        // TODO provide actual implementation
-        this.discovery = new AnnotationDiscovery() {
-            @Override
-            public boolean containsAnnotations(Class<?> javaClass, Collection<Class<? extends Annotation>> annotations) {
-                return false;
-            }
-        };
+        this.discovery = discovery;
     }
 
     public void processObserverMethod(ObserverMethod<?> observer) {

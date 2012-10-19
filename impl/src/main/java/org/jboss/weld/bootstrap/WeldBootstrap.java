@@ -61,11 +61,13 @@ import org.jboss.weld.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.AfterDeploymentValidationImpl;
+import org.jboss.weld.bootstrap.events.AnnotationDiscovery;
 import org.jboss.weld.bootstrap.events.BeforeBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.ProcessModuleImpl;
+import org.jboss.weld.bootstrap.events.SimpleAnnotationDiscovery;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -261,6 +263,13 @@ public class WeldBootstrap implements Bootstrap {
             if (!registry.contains(TransactionServices.class)) {
                 log.info(JTA_UNAVAILABLE);
             }
+
+            if (!registry.contains(ReflectionCache.class)) {
+                registry.add(ReflectionCache.class, ReflectionCacheFactory.newInstance());
+            }
+            if (!registry.contains(AnnotationDiscovery.class)) {
+                registry.add(AnnotationDiscovery.class, new SimpleAnnotationDiscovery(registry.get(ReflectionCache.class)));
+            }
             // TODO Reinstate if we can find a good way to detect.
             // if (!deployment.getServices().contains(EjbServices.class))
             // {
@@ -313,9 +322,7 @@ public class WeldBootstrap implements Bootstrap {
         services.add(TypeStore.class, typeStore);
         SharedObjectCache cache = new SharedObjectCache();
         services.add(SharedObjectCache.class, cache);
-        ReflectionCache reflectionCache = ReflectionCacheFactory.newInstance();
-        services.add(ReflectionCache.class, reflectionCache);
-        ClassTransformer classTransformer = new ClassTransformer(typeStore, cache, reflectionCache);
+        ClassTransformer classTransformer = new ClassTransformer(typeStore, cache, services.get(ReflectionCache.class));
         services.add(ClassTransformer.class, classTransformer);
         services.add(MemberTransformer.class, new MemberTransformer(classTransformer));
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
@@ -339,7 +346,7 @@ public class WeldBootstrap implements Bootstrap {
             }
         }
 
-        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader));
+        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(AnnotationDiscovery.class)));
 
         if (!services.contains(Validator.class)) {
             services.add(Validator.class, new Validator());

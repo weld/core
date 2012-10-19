@@ -123,17 +123,6 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <!-- WELD-1200 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.annotated.delivery.WithAnnotationsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.annotated.delivery.EnterpriseWithAnnotationsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- WELD-1229 -->
             <class name="org.jboss.cdi.tck.tests.vetoed.VetoedTest">
                 <methods>
@@ -147,7 +136,6 @@
                 </methods>
             </class>
             
-
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
             <class name="org.jboss.cdi.tck.tests.context.application.async.ApplicationContextAsyncListenerTest">

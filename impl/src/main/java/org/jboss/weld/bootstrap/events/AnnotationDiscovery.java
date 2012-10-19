@@ -19,7 +19,9 @@ package org.jboss.weld.bootstrap.events;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-public interface AnnotationDiscovery {
+import org.jboss.weld.bootstrap.api.Service;
+
+public interface AnnotationDiscovery extends Service {
 
     boolean containsAnnotations(Class<?> javaClass, Collection<Class<? extends Annotation>> annotations);
 }
