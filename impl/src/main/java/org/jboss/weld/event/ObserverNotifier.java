@@ -111,6 +111,11 @@ public class ObserverNotifier {
         notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
     }
 
+    public void fireEvent(Object event, Resolvable resolvable) {
+        checkEventObjectType(event);
+        notifyObservers(event, Collections.<Annotation>emptySet(), resolveObserverMethods(resolvable));
+    }
+
     private <T> void notifyObservers(final T event, Set<Annotation> qualifiers, final Set<ObserverMethod<? super T>> observers) {
         for (ObserverMethod<? super T> observer : observers) {
             /*
@@ -135,7 +140,7 @@ public class ObserverNotifier {
             .addQualifiers(qualifiers)
             .addQualifierIfAbsent(AnyLiteral.INSTANCE)
             .create();
-        return cast(resolver.resolve(resolvable, true));
+        return resolveObserverMethods(resolvable);
     }
 
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
@@ -147,6 +152,10 @@ public class ObserverNotifier {
             .addQualifiers(qualifiers)
             .addQualifierIfAbsent(AnyLiteral.INSTANCE)
             .create();
+        return resolveObserverMethods(resolvable);
+    }
+
+    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Resolvable resolvable) {
         return cast(resolver.resolve(resolvable, true));
     }
 

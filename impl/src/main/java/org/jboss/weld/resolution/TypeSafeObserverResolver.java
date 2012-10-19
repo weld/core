@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
@@ -44,10 +45,23 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
 
     @Override
     protected boolean matches(Resolvable resolvable, ObserverMethod<?> observer) {
-        return rules.matches(observer.getObservedType(), resolvable.getTypes())
-                && Beans.containsAllQualifiers(QualifierInstance.qualifiers(metaAnnotationStore, observer.getObservedQualifiers()), resolvable.getQualifiers())
-                // container lifecycle events are fired into Extensions only
-                && (observer instanceof ExtensionObserverMethodImpl<?, ?> || !isContainerLifecycleEvent(resolvable));
+        if (!rules.matches(observer.getObservedType(), resolvable.getTypes())) {
+            return false;
+        }
+        if (!Beans.containsAllQualifiers(QualifierInstance.qualifiers(metaAnnotationStore, observer.getObservedQualifiers()), resolvable.getQualifiers())) {
+            return false;
+        }
+        if (observer instanceof ExtensionObserverMethodImpl<?, ?>) {
+            ExtensionObserverMethodImpl<?, ?> extensionObserver = (ExtensionObserverMethodImpl<?, ?>) observer;
+            if (resolvable instanceof ProcessAnnotatedTypeEventResolvable && !extensionObserver.getRequiredTypeAnnotations().isEmpty()) {
+                // this is a ProcessAnnotatedType observer method with @WithAnnotations and a resolvable for ProcessAnnotatedType
+                ProcessAnnotatedTypeEventResolvable patResolvable = (ProcessAnnotatedTypeEventResolvable) resolvable;
+                return patResolvable.containsRequiredAnnotations(extensionObserver.getRequiredTypeAnnotations());
+            }
+        } else {
+            return !isContainerLifecycleEvent(resolvable); // container lifecycle events are only delivered to extensions
+        }
+        return true;
     }
 
     protected boolean isContainerLifecycleEvent(Resolvable resolvable) {

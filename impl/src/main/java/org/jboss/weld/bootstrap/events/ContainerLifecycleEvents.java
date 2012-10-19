@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -57,11 +59,19 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     private boolean processInjectionTargetObserved;
     private boolean processProducerObserved;
     private boolean processObserverMethodObserved;
+    private final AnnotationDiscovery discovery;
 
     private final ContainerLifecycleEventPreloader preloader;
 
     public ContainerLifecycleEvents(ContainerLifecycleEventPreloader preloader) {
         this.preloader = preloader;
+        // TODO provide actual implementation
+        this.discovery = new AnnotationDiscovery() {
+            @Override
+            public boolean containsAnnotations(Class<?> javaClass, Collection<Class<? extends Annotation>> annotations) {
+                return false;
+            }
+        };
     }
 
     public void processObserverMethod(ObserverMethod<?> observer) {
@@ -135,11 +145,9 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
 
             ProcessAnnotatedTypeImpl<T> event = null;
             if (source == null) {
-                event = new ProcessAnnotatedTypeImpl<T>(beanManager, annotatedType) {
-                };
+                event = new ProcessAnnotatedTypeImpl<T>(beanManager, annotatedType, discovery);
             } else {
-                event = new ProcessSyntheticAnnotatedTypeImpl<T>(beanManager, annotatedType, source) {
-                };
+                event = new ProcessSyntheticAnnotatedTypeImpl<T>(beanManager, annotatedType, discovery, source);
             }
             event.fire();
             return event;
