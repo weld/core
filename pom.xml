@@ -46,7 +46,7 @@
         <findbugs-maven-plugin.version>2.5.1</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <google.guava.version>11.0.2</google.guava.version>
-        <htmlunit.version>2.8</htmlunit.version>
+        <htmlunit.version>2.4</htmlunit.version>
         <jacoco.version>0.5.8.201207111220</jacoco.version>
         <javax.activation.version>1.1</javax.activation.version>
         <javax.jms.version>1.1</javax.jms.version>
