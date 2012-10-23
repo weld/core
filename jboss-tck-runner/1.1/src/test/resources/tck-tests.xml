@@ -129,6 +129,11 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <class name="org.jboss.cdi.tck.tests.extensions.annotated.delivery.EnterpriseWithAnnotationsTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
