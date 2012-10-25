@@ -16,6 +16,10 @@ import org.slf4j.cal10n.LocLogger;
 import static java.util.Collections.emptyList;
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.ADDED_KEY_TO_SESSION;
+import static org.jboss.weld.logging.messages.ContextMessage.REMOVED_KEY_FROM_SESSION;
+import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_ADD_KEY_TO_SESSION;
+import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_REMOVE_KEY_FROM_SESSION;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
@@ -57,9 +61,9 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         HttpSession session = getSession(false);
         if (session != null) {
             session.removeAttribute(key);
-            log.trace("Removed " + key + " from session " + this.getSession(false).getId());
+            log.trace(REMOVED_KEY_FROM_SESSION, key, this.getSession(false).getId());
         } else {
-            log.trace("Unable to remove " + key + " from non-existent session");
+            log.trace(UNABLE_TO_REMOVE_KEY_FROM_SESSION, key);
         }
     }
 
@@ -68,9 +72,9 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         HttpSession session = getSession(true);
         if (session != null) {
             session.setAttribute(key, instance);
-            log.trace("Added " + key + " to session " + this.getSession(false).getId());
+            log.trace(ADDED_KEY_TO_SESSION, key, this.getSession(false).getId());
         } else {
-            log.trace("Unable to add " + key + " to session as no session could be obtained");
+            log.trace(UNABLE_TO_ADD_KEY_TO_SESSION, key);
         }
     }
 
