@@ -24,10 +24,13 @@ import org.slf4j.cal10n.LocLogger;
 
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.ADDING_DETACHED_CONTEXTUAL_UNDER_ID;
+import static org.jboss.weld.logging.messages.ContextMessage.BEAN_STORE_DETACHED;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_ADDED;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_FOUND;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
+import static org.jboss.weld.logging.messages.ContextMessage.UPDATING_STORE_WITH_CONTEXTUAL_UNDER_ID;
 
 /**
  * <p>
@@ -68,7 +71,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     public boolean detach() {
         if (attached) {
             attached = false;
-            log.trace("Bean store " + this + " is detached");
+            log.trace(BEAN_STORE_DETACHED, this);
             return true;
         } else {
             return false;
@@ -93,7 +96,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
             for (String id : beanStore) {
                 ContextualInstance<?> instance = beanStore.get(id);
                 String prefixedId = getNamingScheme().prefix(id);
-                log.trace("Updating underlying store with contextual " + instance + " under ID " + id);
+                log.trace(UPDATING_STORE_WITH_CONTEXTUAL_UNDER_ID, instance, id);
                 setAttribute(prefixedId, instance);
             }
 
@@ -106,7 +109,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
                 if (!beanStore.contains(id)) {
                     ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
                     beanStore.put(id, instance);
-                    log.trace("Adding detached contextual " + instance + " under ID " + id);
+                    log.trace(ADDING_DETACHED_CONTEXTUAL_UNDER_ID, instance, id);
                 }
             }
             return true;

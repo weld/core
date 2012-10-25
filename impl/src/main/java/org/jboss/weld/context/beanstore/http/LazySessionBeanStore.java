@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.LOADING_BEAN_STORE_MAP_FROM_SESSION;
 
 /**
  * <p>
@@ -55,7 +56,7 @@ public class LazySessionBeanStore extends AbstractSessionBeanStore {
     public LazySessionBeanStore(HttpServletRequest request, NamingScheme namingScheme) {
         super(namingScheme);
         this.request = request;
-        log.trace("Loading bean store " + this + " map from session " + getSession(false));
+        log.trace(LOADING_BEAN_STORE_MAP_FROM_SESSION, this, getSession(false));
     }
 
     /**

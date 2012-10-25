@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.LOADING_BEAN_STORE_MAP_FROM_SESSION;
 
 /**
  * <p>
@@ -37,7 +38,7 @@ public class EagerSessionBeanStore extends AbstractSessionBeanStore {
     public EagerSessionBeanStore(NamingScheme namingScheme, HttpSession session) {
         super(namingScheme);
         this.session = session;
-        log.trace("Loading bean store " + this + " map from session " + getSession(false));
+        log.trace(LOADING_BEAN_STORE_MAP_FROM_SESSION, this, getSession(false));
     }
 
     @Override
