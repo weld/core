@@ -20,20 +20,20 @@ import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
 import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
-import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -46,6 +46,7 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -60,6 +61,7 @@ import org.slf4j.ext.XLogger.Level;
  * @author Pete Muir
  * @author Marius Bogoevici
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class ManagedBean<T> extends AbstractClassBean<T> {
 
@@ -108,34 +110,44 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     private void initPassivationCapable() {
         this.passivationCapableBean = getEnhancedAnnotated().isSerializable();
-        if (isNormalScoped()) {
-            this.passivationCapableDependency = true;
-        } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
-            this.passivationCapableDependency = true;
-        } else {
-            this.passivationCapableDependency = false;
-        }
+        this.passivationCapableDependency = isNormalScoped() || (isDependent() && passivationCapableBean);
     }
 
     @Override
     public void initializeAfterBeanDiscovery() {
-        if (this.passivationCapableBean && this.hasDecorators()) {
-            for (Decorator<?> decorator : this.getDecorators()) {
-                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getEnhancedAnnotated().isSerializable()) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
-            }
+        if (this.passivationCapableBean && hasDecorators() && !allDecoratorsArePassivationCapable()) {
+            this.passivationCapableBean = false;
         }
-        if (this.passivationCapableBean && hasInterceptors()) {
-            for (InterceptorMetadata<?> interceptorMetadata : getInterceptors().getAllInterceptors()) {
-                if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
-            }
+        if (this.passivationCapableBean && hasInterceptors() && !allInterceptorsArePassivationCapable()) {
+            this.passivationCapableBean = false;
         }
         super.initializeAfterBeanDiscovery();
+    }
+
+    private boolean allDecoratorsArePassivationCapable() {
+        return getFirstNonPassivationCapableDecorator() == null;
+    }
+
+    private Decorator<?> getFirstNonPassivationCapableDecorator() {
+        for (Decorator<?> decorator : getDecorators()) {
+            if (!Decorators.isPassivationCapable(decorator)) {
+                return decorator;
+            }
+        }
+        return null;
+    }
+
+    private boolean allInterceptorsArePassivationCapable() {
+        return getFirstNonPassivationCapableInterceptor() == null;
+    }
+
+    private InterceptorMetadata<?> getFirstNonPassivationCapableInterceptor() {
+        for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getType()).getAllInterceptors()) {
+            if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
+                return interceptorMetadata;
+            }
+        }
+        return null;
     }
 
     /**
@@ -163,7 +175,6 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 context.deactivate();
             }
         }
-
         return instance;
     }
 
@@ -195,9 +206,15 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         if (!isDependent() && getEnhancedAnnotated().isParameterizedType()) {
             throw new DefinitionException(BEAN_MUST_BE_DEPENDENT, type);
         }
-        boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
+        boolean passivating = beanManager.isPassivatingScope(getScope());
         if (passivating && !isPassivationCapableBean()) {
-            throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+            if (!getEnhancedAnnotated().isSerializable()) {
+                throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+            } else if (hasDecorators() && !allDecoratorsArePassivationCapable()) {
+                throw new DeploymentException(PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_DECORATOR, this, getFirstNonPassivationCapableDecorator());
+            } else if (hasInterceptors() && !allInterceptorsArePassivationCapable()) {
+                throw new DeploymentException(PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_INTERCEPTOR, this, getFirstNonPassivationCapableInterceptor());
+            }
         }
     }
 
