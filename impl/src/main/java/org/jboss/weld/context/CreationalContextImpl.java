@@ -205,4 +205,17 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         }
         this.resourceReferences.add(resoruceReference);
     }
+
+    @Override
+    public boolean destroyDependentInstance(T instance) {
+        for (Iterator<ContextualInstance<?>> iterator = dependentInstances.iterator(); iterator.hasNext();) {
+            ContextualInstance<?> contextualInstance = iterator.next();
+            if (contextualInstance.getInstance().equals(instance)) {
+                iterator.remove();
+                destroy(contextualInstance);
+                return true;
+            }
+        }
+        return false;
+    }
 }

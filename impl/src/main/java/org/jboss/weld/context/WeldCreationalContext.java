@@ -77,6 +77,13 @@ public interface WeldCreationalContext<T> extends CreationalContext<T> {
     List<ContextualInstance<?>> getDependentInstances();
 
     /**
+     * Destroys dependent instance
+     * @param instance
+     * @return true if the instance was destroyed, false otherwise
+     */
+    boolean destroyDependentInstance(T instance);
+
+    /**
      * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every {@link ResourceReference}
      * once this {@link CreationalContext} instance is released.
      */

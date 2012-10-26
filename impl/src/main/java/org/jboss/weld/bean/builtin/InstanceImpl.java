@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
@@ -34,6 +35,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
@@ -161,6 +163,17 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
 
+    @Override
+    public void destroy(T instance) {
+        // TODO check null
+        // TODO check for proxies
+        CreationalContext<? super T> ctx = getCreationalContext();
+        if (ctx instanceof WeldCreationalContext<?>) {
+            WeldCreationalContext<? super T> weldCtx = cast(ctx);
+            weldCtx.destroyDependentInstance(instance);
+        }
+    }
+
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
@@ -184,10 +197,4 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         }
 
     }
-
-    @Override
-    public void destroy(T instance) {
-        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
-    }
-
 }
