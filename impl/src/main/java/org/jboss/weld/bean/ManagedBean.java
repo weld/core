@@ -16,8 +16,34 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
+import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_DECORATOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_INTERCEPTOR;
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
+import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.util.Set;
+
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.PassivationCapable;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.bean.interceptor.WeldInterceptorInstantiator;
@@ -51,29 +77,6 @@ import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.PassivationCapable;
-import java.util.Set;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_INJECTION_POINT_NOT_FOUND;
-import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
-import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 /**
  * Represents a simple bean
  *
@@ -81,6 +84,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @author Pete Muir
  * @author Marius Bogoevici
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class ManagedBean<T> extends AbstractClassBean<T> {
 
@@ -344,33 +348,43 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     protected void initAfterInterceptorsAndDecoratorsInitialized() {
         super.initAfterInterceptorsAndDecoratorsInitialized();
 
-        if (this.passivationCapableBean && this.hasDecorators()) {
-            for (Decorator<?> decorator : this.getDecorators()) {
-                if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
+        if (this.passivationCapableBean && hasDecorators() && !allDecoratorsArePassivationCapable()) {
+            this.passivationCapableBean = false;
+        }
+        if (this.passivationCapableBean && hasInterceptors() && !allInterceptorsArePassivationCapable()) {
+            this.passivationCapableBean = false;
+        }
+    }
+
+    private boolean allDecoratorsArePassivationCapable() {
+        return getFirstNonPassivationCapableDecorator() == null;
+    }
+
+    private Decorator<?> getFirstNonPassivationCapableDecorator() {
+        for (Decorator<?> decorator : getDecorators()) {
+            if (!(PassivationCapable.class.isAssignableFrom(decorator.getClass())) || !((WeldDecorator<?>) decorator).getWeldAnnotated().isSerializable()) {
+                return decorator;
             }
         }
-        if (this.passivationCapableBean && hasInterceptors()) {
-            for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getType()).getAllInterceptors()) {
-                if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
-                    this.passivationCapableBean = false;
-                    break;
-                }
+        return null;
+    }
+
+    private boolean allInterceptorsArePassivationCapable() {
+        return getFirstNonPassivationCapableInterceptor() == null;
+    }
+
+    private InterceptorMetadata<?> getFirstNonPassivationCapableInterceptor() {
+        for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getType()).getAllInterceptors()) {
+            if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
+                return interceptorMetadata;
             }
         }
+        return null;
     }
 
     private void initPassivationCapable() {
         this.passivationCapableBean = getWeldAnnotated().isSerializable();
-        if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
-            this.passivationCapableDependency = true;
-        } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
-            this.passivationCapableDependency = true;
-        } else {
-            this.passivationCapableDependency = false;
-        }
+        this.passivationCapableDependency = isNormalScoped() || (isDependent() && passivationCapableBean);
     }
 
     @Override
@@ -403,7 +417,13 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
         boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(scope).isPassivating();
         if (passivating && !isPassivationCapableBean()) {
-            throw new DefinitionException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+            if (!getWeldAnnotated().isSerializable()) {
+                throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+            } else if (hasDecorators() && !allDecoratorsArePassivationCapable()) {
+                throw new DeploymentException(PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_DECORATOR, this, getFirstNonPassivationCapableDecorator());
+            } else if (hasInterceptors() && !allInterceptorsArePassivationCapable()) {
+                throw new DeploymentException(PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_INTERCEPTOR, this, getFirstNonPassivationCapableInterceptor());
+            }
         }
         if (hasDecorators()) {
             if (getWeldAnnotated().isFinal()) {

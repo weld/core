@@ -85,4 +85,9 @@ public class SimpleInterceptorMetadata<T> implements InterceptorMetadata<T>, Ser
     public InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptorMetadata interceptorReference, InterceptionType interceptionType) {
         return new SimpleInterceptorInvocation(interceptorInstance, interceptionType, getInterceptorMethods(interceptionType), targetClass);
     }
+
+    @Override
+    public String toString() {
+        return "SimpleInterceptorMetadata [" + getInterceptorClass().getClassName() + "]";
+    }
 }
