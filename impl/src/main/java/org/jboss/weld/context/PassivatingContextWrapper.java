@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.context;
 
+import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -25,36 +26,67 @@ import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.ForwardingContext;
 
 /**
- * Forwarding context that wraps passivating contexts and wraps non-serializable {@link Contextual} instances within
- * {@link SerializableContextual}.
+ * Wraps a passivating context with a wrapper that guarantees that each call to the context is done with serializable
+ * {@link Contextual}. The wrapper uses {@link SerializableContextual} if necessary.
  *
  * @author Jozef Hartinger
  *
  */
-public class PassivatingContextWrapper extends ForwardingContext {
+public class PassivatingContextWrapper {
 
-    private final Context context;
-    private final ContextualStore store;
-
-    public PassivatingContextWrapper(Context context, ContextualStore store) {
-        this.context = context;
-        this.store = store;
+    public static Context wrap(Context context, ContextualStore store) {
+        if (context instanceof AlterableContext) {
+            return new AlterableContextWrapper((AlterableContext) context, store);
+        } else {
+            return new ContextWrapper(context, store);
+        }
     }
 
-    @Override
-    public <T> T get(Contextual<T> contextual) {
-        contextual = store.getSerializableContextual(contextual);
-        return context.get(contextual);
+    private abstract static class AbstractPassivatingContextWrapper<C extends Context> extends ForwardingContext {
+
+        private final C context;
+        protected final ContextualStore store;
+
+        public AbstractPassivatingContextWrapper(C context, ContextualStore store) {
+            this.context = context;
+            this.store = store;
+        }
+
+        @Override
+        public <T> T get(Contextual<T> contextual) {
+            contextual = store.getSerializableContextual(contextual);
+            return context.get(contextual);
+        }
+
+        @Override
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+            contextual = store.getSerializableContextual(contextual);
+            return context.get(contextual, creationalContext);
+        }
+
+        @Override
+        protected C delegate() {
+            return context;
+        }
     }
 
-    @Override
-    public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
-        contextual = store.getSerializableContextual(contextual);
-        return context.get(contextual, creationalContext);
+    private static class ContextWrapper extends AbstractPassivatingContextWrapper<Context> {
+
+        public ContextWrapper(Context context, ContextualStore store) {
+            super(context, store);
+        }
     }
 
-    @Override
-    protected Context delegate() {
-        return context;
+    private static class AlterableContextWrapper extends AbstractPassivatingContextWrapper<AlterableContext> implements AlterableContext {
+
+        public AlterableContextWrapper(AlterableContext context, ContextualStore store) {
+            super(context, store);
+        }
+
+        @Override
+        public void destroy(Contextual<?> contextual) {
+            contextual = store.getSerializableContextual(contextual);
+            delegate().destroy(contextual);
+        }
     }
 }

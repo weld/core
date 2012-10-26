@@ -599,7 +599,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public void addContext(Context context) {
         Class<? extends Annotation> scope = context.getScope();
         if (isPassivatingScope(scope)) {
-            context = new PassivatingContextWrapper(context, services.get(ContextualStore.class));
+            context = PassivatingContextWrapper.wrap(context, services.get(ContextualStore.class));
         }
         List<Context> contextList = contexts.get(scope);
         if (contextList == null) {

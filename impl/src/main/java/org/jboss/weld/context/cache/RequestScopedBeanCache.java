@@ -75,4 +75,14 @@ public class RequestScopedBeanCache {
         }
     }
 
+    /**
+     * Flushes the bean cache. The cache remains available for the rest of the request.
+     */
+    public static void invalidate() {
+        if (isActive()) {
+            endRequest();
+            beginRequest();
+        }
+    }
+
 }

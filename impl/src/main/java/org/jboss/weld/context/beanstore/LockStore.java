@@ -35,6 +35,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class LockStore implements Serializable {
 
+    private static final long serialVersionUID = -698649566870070414L;
+
     private transient volatile Map<String, ReferenceCountedLock> locks = new HashMap<String, ReferenceCountedLock>();
 
     public LockedBean lock(String id) {

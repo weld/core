@@ -66,4 +66,11 @@ public interface BeanStore extends Iterable<String> {
      * @return A handle that must be used to unlock the bean
      */
     LockedBean lock(String id);
+
+    /**
+     * Removes a bean instance identified by the given id.
+     * @param id The bean id
+     * @return the removed bean instance of null if there was no bean instance before
+     */
+    <T> ContextualInstance<T> remove(String id);
 }

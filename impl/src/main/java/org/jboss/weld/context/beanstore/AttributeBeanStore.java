@@ -48,7 +48,6 @@ import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
  */
 public abstract class AttributeBeanStore implements BoundBeanStore {
 
-    private static final long serialVersionUID = 8923580660774253916L;
     private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
     private final HashMapBeanStore beanStore;
@@ -132,6 +131,18 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
             setAttribute(prefixedId, instance);
         }
         log.trace(CONTEXTUAL_INSTANCE_ADDED, instance.getContextual(), id, this);
+    }
+
+    @Override
+    public <T> ContextualInstance<T> remove(String id) {
+        ContextualInstance<T> instance = beanStore.remove(id);
+        if (instance != null) {
+            if (isAttached()) {
+                removeAttribute(id);
+            }
+            log.trace(CONTEXTUAL_INSTANCE_REMOVED, id, this);
+        }
+        return instance;
     }
 
     public void clear() {

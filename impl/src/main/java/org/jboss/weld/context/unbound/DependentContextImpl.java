@@ -37,6 +37,7 @@ import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.producer.AbstractInjectionTarget;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -121,5 +122,10 @@ public class DependentContextImpl implements DependentContext {
 
     public Class<? extends Annotation> getScope() {
         return Dependent.class;
+    }
+
+    @Override
+    public void destroy(Contextual<?> contextual) {
+        throw new UnsupportedOperationException();
     }
 }

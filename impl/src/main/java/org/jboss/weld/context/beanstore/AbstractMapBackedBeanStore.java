@@ -40,8 +40,8 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore {
         return delegate().containsKey(id);
     }
 
-    public void remove(String id) {
-        delegate().remove(id);
+    public <T> ContextualInstance<T> remove(String id) {
+        return cast(delegate().remove(id));
     }
 
     @Override
