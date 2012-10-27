@@ -115,7 +115,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
         }
     }
 
-    private Bean<?> getBean() {
+    public Bean<?> getBean() {
         if (bean == null) {
             if (beanId == null) {
                 throw new WeldException(PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN);
@@ -124,6 +124,4 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
         }
         return bean;
     }
-
-
 }

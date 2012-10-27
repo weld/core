@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.logging.messages.BeanMessage.DESTROY_UNSUPPORTED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -29,14 +30,19 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.enterprise.context.spi.AlterableContext;
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.bean.proxy.ProxyMethodHandler;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -44,6 +50,8 @@ import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.base.Preconditions;
 
 /**
  * Helper implementation for Instance for getting instances
@@ -165,8 +173,26 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     @Override
     public void destroy(T instance) {
-        // TODO check null
-        // TODO check for proxies
+        Preconditions.checkNotNull(instance);
+
+        // check if this is a proxy of a normal-scoped bean
+        if (instance instanceof ProxyObject) {
+            ProxyObject proxy = (ProxyObject) instance;
+            if (proxy.getHandler() instanceof ProxyMethodHandler) {
+                ProxyMethodHandler handler = (ProxyMethodHandler) proxy.getHandler();
+                Bean<?> bean = handler.getBean();
+                Context context = getBeanManager().getContext(bean.getScope());
+                if (context instanceof AlterableContext) {
+                    AlterableContext alterableContext = (AlterableContext) context;
+                    alterableContext.destroy(bean);
+                    return;
+                } else {
+                    throw new UnsupportedOperationException(DESTROY_UNSUPPORTED, context);
+                }
+            }
+        }
+
+        // check if this is a dependent instance
         CreationalContext<? super T> ctx = getCreationalContext();
         if (ctx instanceof WeldCreationalContext<?>) {
             WeldCreationalContext<? super T> weldCtx = cast(ctx);

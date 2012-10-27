@@ -17,12 +17,12 @@
 package org.jboss.weld.tests.instance.destroy.dependent;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -41,16 +41,13 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DestroyingDependentInstanceTest {
 
-    @Inject
-    private Instance<Component> instance;
-
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(DestroyingDependentInstanceTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class).intercept(Interceptor.class).addPackage(DestroyingDependentInstanceTest.class.getPackage());
     }
 
     @Test
-    public void testDestroyingDependentInstances() {
+    public void testDestroyingDependentInstances(Instance<Component> instance) {
         List<Component> createdComponents = new ArrayList<Component>();
         for (int i = 0; i < 10; i++) {
             createdComponents.add(instance.get());
@@ -59,5 +56,14 @@ public class DestroyingDependentInstanceTest {
             instance.destroy(component);
         }
         assertEquals(createdComponents, Component.getDestroyedComponents());
+    }
+
+    @Test
+    public void testDestroyingInterceptedDependentBean(Instance<Intercepted> instance) {
+        Intercepted reference = instance.get();
+        reference.foo();
+        Interceptor.reset();
+        instance.destroy(reference);
+        assertTrue(Interceptor.isDestroyed());
     }
 }

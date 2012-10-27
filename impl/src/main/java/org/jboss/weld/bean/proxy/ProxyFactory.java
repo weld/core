@@ -674,6 +674,9 @@ public class ProxyFactory<T> {
 
             Method setMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
+
+            Method getMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("getHandler");
+            generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
         } catch (Exception e) {
             throw new WeldException(e);
         }
@@ -684,6 +687,13 @@ public class ProxyFactory<T> {
         b.aload(0);
         b.aload(1);
         b.putfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.returnInstruction();
+    }
+
+    private static void generateGetMethodHandlerBody(ClassMethod method) {
+        final CodeAttribute b = method.getCodeAttribute();
+        b.aload(0);
+        b.getfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
     }
 
