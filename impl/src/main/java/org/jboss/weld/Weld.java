@@ -180,4 +180,9 @@ public class Weld extends CDI<Object> {
     public void cleanup() {
         beanManagers.clear();
     }
+
+    @Override
+    public void destroy(Object instance) {
+        throw new UnsupportedOperationException();
+    }
 }

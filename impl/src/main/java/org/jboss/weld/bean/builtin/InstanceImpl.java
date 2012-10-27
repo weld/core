@@ -185,4 +185,9 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     }
 
+    @Override
+    public void destroy(T instance) {
+        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+    }
+
 }

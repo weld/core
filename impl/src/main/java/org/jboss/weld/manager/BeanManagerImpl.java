@@ -1474,4 +1474,34 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public ContainerLifecycleEvents getContainerLifecycleEvents() {
         return containerLifecycleEvents;
     }
+
+    @Override
+    public boolean areQualifiersEquivalent(Annotation qualifier1, Annotation qualifier2) {
+        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean areInterceptorBindingsEquivalent(Annotation interceptorBinding1, Annotation interceptorBinding2) {
+        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+    }
+
+    @Override
+    public int getQualifierHashCode(Annotation qualifier) {
+        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+    }
+
+    @Override
+    public int getInterceptorBindingHashCode(Annotation interceptorBinding) {
+        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
+        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
+        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+    }
 }
