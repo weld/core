@@ -19,8 +19,8 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.ConstructorHolder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -30,19 +30,19 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Constructor<X>> implements AnnotatedConstructor<X>, Serializable {
 
-    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
-        return new BackedAnnotatedConstructor<X>(constructor, declaringType, transformer);
+    public static <X> AnnotatedConstructor<X> of(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+        return new BackedAnnotatedConstructor<X>(constructor, declaringType, sharedObjectCache);
     }
 
     private final Constructor<X> constructor;
 
-    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
-        super(constructor, constructor.getDeclaringClass(), declaringType, transformer);
+    public BackedAnnotatedConstructor(Constructor<X> constructor, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+        super(constructor, constructor.getDeclaringClass(), declaringType, sharedObjectCache);
         this.constructor = constructor;
     }
 
     @Override
-    protected List<AnnotatedParameter<X>> initParameters(Constructor<X> member, ClassTransformer transformer) {
+    protected List<AnnotatedParameter<X>> initParameters(Constructor<X> member, SharedObjectCache sharedObjectCache) {
         final Class<?>[] parameterTypes = member.getParameterTypes();
         final Type[] genericParameterTypes = member.getGenericParameterTypes();
         Annotation[][] parameterAnnotations = member.getParameterAnnotations();
@@ -63,7 +63,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
                     parameterType = clazz;
                     position = i;
                 }
-                parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this, transformer));
+                parameters.add(new BackedAnnotatedParameter<X>(parameterType, parameterAnnotations[position], position, this, sharedObjectCache));
             }
             return immutableList(parameters);
         } else {

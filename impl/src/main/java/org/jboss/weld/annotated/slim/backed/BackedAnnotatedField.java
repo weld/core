@@ -15,8 +15,8 @@ import javax.enterprise.inject.spi.AnnotatedField;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.FieldHolder;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -25,15 +25,15 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedField<X> extends BackedAnnotatedMember<X> implements AnnotatedField<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedField<X> of(Field field, BackedAnnotatedType<Y> declaringType, ClassTransformer transformer) {
+    public static <X, Y extends X> AnnotatedField<X> of(Field field, BackedAnnotatedType<Y> declaringType, SharedObjectCache sharedObjectCache) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
-        return new BackedAnnotatedField<X>(field.getGenericType(), field, downcastDeclaringType, transformer);
+        return new BackedAnnotatedField<X>(field.getGenericType(), field, downcastDeclaringType, sharedObjectCache);
     }
 
     private final Field field;
 
-    public BackedAnnotatedField(Type baseType, Field field, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
-        super(baseType, declaringType, transformer);
+    public BackedAnnotatedField(Type baseType, Field field, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+        super(baseType, declaringType, sharedObjectCache);
         this.field = field;
     }
 

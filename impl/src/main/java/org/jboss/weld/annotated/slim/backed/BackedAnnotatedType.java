@@ -25,6 +25,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
@@ -48,11 +49,15 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private final LazyValueHolder<Set<AnnotatedMethod<? super X>>> methods;
     private final LazyValueHolder<Set<AnnotatedField<? super X>>> fields;
     private final ClassTransformer transformer;
+    private final SharedObjectCache sharedObjectCache;
+    private final ReflectionCache reflectionCache;
 
     public BackedAnnotatedType(Class<X> rawType, Type baseType, ClassTransformer classTransformer) {
-        super(baseType, classTransformer);
+        super(baseType, classTransformer.getSharedObjectCache());
         this.javaClass = rawType;
         this.transformer = classTransformer;
+        this.sharedObjectCache = classTransformer.getSharedObjectCache();
+        this.reflectionCache = classTransformer.getReflectionCache();
 
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
@@ -173,7 +178,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ArraySet<AnnotatedConstructor<X>> constructors = new ArraySet<AnnotatedConstructor<X>>(declaredConstructors.length);
             for (Constructor<?> constructor : declaredConstructors) {
                 Constructor<X> c = Reflections.cast(constructor);
-                constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this, transformer));
+                constructors.add(BackedAnnotatedConstructor.of(c, BackedAnnotatedType.this, sharedObjectCache));
             }
             return immutableSet(constructors);
         }
@@ -186,7 +191,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Field field : SecureReflections.getDeclaredFields(clazz)) {
-                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, transformer), transformer));
+                    fields.add(BackedAnnotatedField.of(field, getDeclaringAnnotatedType(field, transformer), sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
             }
@@ -201,7 +206,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
                 for (Method method : SecureReflections.getDeclaredMethods(clazz)) {
-                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, transformer), transformer));
+                    methods.add(BackedAnnotatedMethod.of(method, getDeclaringAnnotatedType(method, transformer), sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
             }
@@ -210,6 +215,6 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     }
 
     public ReflectionCache getReflectionCache() {
-        return transformer.getReflectionCache();
+        return reflectionCache;
     }
 }

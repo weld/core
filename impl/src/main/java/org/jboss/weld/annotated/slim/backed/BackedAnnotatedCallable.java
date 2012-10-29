@@ -23,18 +23,18 @@ import java.util.List;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
-import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 
 public abstract class BackedAnnotatedCallable<X, M extends Member> extends BackedAnnotatedMember<X> implements AnnotatedCallable<X> {
 
     private final List<AnnotatedParameter<X>> parameters;
 
-    public BackedAnnotatedCallable(M member, Type baseType, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
-        super(baseType, declaringType, transformer);
-        this.parameters = initParameters(member, transformer);
+    public BackedAnnotatedCallable(M member, Type baseType, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+        super(baseType, declaringType, sharedObjectCache);
+        this.parameters = initParameters(member, sharedObjectCache);
     }
 
-    protected abstract List<AnnotatedParameter<X>> initParameters(M member, ClassTransformer transformer);
+    protected abstract List<AnnotatedParameter<X>> initParameters(M member, SharedObjectCache sharedObjectCache);
 
     @Override
     public List<AnnotatedParameter<X>> getParameters() {

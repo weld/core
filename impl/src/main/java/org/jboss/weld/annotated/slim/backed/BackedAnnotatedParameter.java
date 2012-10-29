@@ -17,29 +17,26 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.RawType;
 
-import com.google.common.collect.ImmutableSet;
-
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, Serializable {
 
-    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, ClassTransformer transformer) {
-        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable, transformer);
+    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
+        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable, sharedObjectCache);
     }
 
     private final int position;
     private final BackedAnnotatedCallable<X, ?> declaringCallable;
 
-    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, ClassTransformer transformer) {
-        super(baseType, transformer);
+    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
+        super(baseType, sharedObjectCache);
         this.position = position;
         this.declaringCallable = declaringCallable;
     }

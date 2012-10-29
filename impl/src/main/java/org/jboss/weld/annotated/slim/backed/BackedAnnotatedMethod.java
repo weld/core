@@ -19,8 +19,8 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -29,20 +29,20 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method> implements AnnotatedMethod<X>, Serializable {
 
-    public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType, ClassTransformer transformer) {
+    public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType, SharedObjectCache sharedObjectCache) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
-        return new BackedAnnotatedMethod<X>(method, downcastDeclaringType, transformer);
+        return new BackedAnnotatedMethod<X>(method, downcastDeclaringType, sharedObjectCache);
     }
 
     private final Method method;
 
-    public BackedAnnotatedMethod(Method method, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
-        super(method, method.getGenericReturnType(), declaringType, transformer);
+    public BackedAnnotatedMethod(Method method, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+        super(method, method.getGenericReturnType(), declaringType, sharedObjectCache);
         this.method = method;
     }
 
     @Override
-    protected List<AnnotatedParameter<X>> initParameters(Method method, ClassTransformer transformer) {
+    protected List<AnnotatedParameter<X>> initParameters(Method method, SharedObjectCache sharedObjectCache) {
         final Type[] genericParameterTypes = method.getGenericParameterTypes();
 
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(genericParameterTypes.length);
@@ -50,7 +50,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method>
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         for (int i = 0; i < genericParameterTypes.length; i++) {
             Type parameterType = genericParameterTypes[i];
-            parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this, transformer));
+            parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this, sharedObjectCache));
         }
         return immutableList(parameters);
     }
