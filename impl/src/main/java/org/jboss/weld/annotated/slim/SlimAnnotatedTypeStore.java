@@ -16,17 +16,13 @@
  */
 package org.jboss.weld.annotated.slim;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
+import org.jboss.weld.bootstrap.api.Service;
 
-/**
- * Marker interface for lightweight implementations of {@link AnnotatedType}.
- *
- * @author Jozef Hartinger
- *
- * @param <T> the type
- */
-public interface SlimAnnotatedType<T> extends IdentifiedAnnotatedType<T> {
+public interface SlimAnnotatedTypeStore extends Service {
 
-    void clear();
+    <X> SlimAnnotatedType<X> create(Class<X> javaClass);
+
+    <X> SlimAnnotatedType<X> get(String id);
+
+    <X> void put(SlimAnnotatedType<X> type);
 }

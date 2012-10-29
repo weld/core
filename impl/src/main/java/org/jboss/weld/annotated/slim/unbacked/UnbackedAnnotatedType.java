@@ -15,6 +15,7 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
@@ -22,6 +23,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -39,17 +41,25 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
     public static <X> UnbackedAnnotatedType<X> of(AnnotatedType<X> originalType) {
+        if (originalType instanceof IdentifiedAnnotatedType<?>) {
+            return UnbackedAnnotatedType.of(originalType, Reflections.<IdentifiedAnnotatedType<?>>cast(originalType).getID());
+        }
+        return UnbackedAnnotatedType.of(originalType, originalType.getJavaClass().getName());
+    }
+
+    public static <X> UnbackedAnnotatedType<X> of(AnnotatedType<X> originalType, String id) {
         return new UnbackedAnnotatedType<X>(originalType.getBaseType(), originalType.getTypeClosure(), originalType.getAnnotations(), originalType.getJavaClass(),
-                originalType.getConstructors(), originalType.getMethods(), originalType.getFields());
+                originalType.getConstructors(), originalType.getMethods(), originalType.getFields(), id);
     }
 
     private final Class<X> javaClass;
     private final Set<AnnotatedConstructor<X>> constructors;
     private final Set<AnnotatedMethod<? super X>> methods;
     private final Set<AnnotatedField<? super X>> fields;
+    private final String id;
 
     public UnbackedAnnotatedType(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, Class<X> javaClass, Set<AnnotatedConstructor<X>> originalConstructors,
-            Set<AnnotatedMethod<? super X>> originalMethods, Set<AnnotatedField<? super X>> originalFields) {
+            Set<AnnotatedMethod<? super X>> originalMethods, Set<AnnotatedField<? super X>> originalFields, String id) {
         super(baseType, typeClosure, annotations);
         this.javaClass = javaClass;
         Set<AnnotatedConstructor<X>> constructors = new HashSet<AnnotatedConstructor<X>>(originalConstructors.size());
@@ -67,6 +77,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
             fields.add(UnbackedAnnotatedField.of(originalField, this));
         }
         this.fields = immutableSet(fields);
+        this.id = id;
     }
 
     public Class<X> getJavaClass() {
@@ -112,5 +123,15 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
         private Object readResolve() {
             return Container.instance().services().get(ClassTransformer.class).getUnbackedAnnotatedType(id);
         }
+    }
+
+    @Override
+    public String getID() {
+        return id;
+    }
+
+    @Override
+    public void clear() {
+        // noop
     }
 }

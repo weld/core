@@ -119,6 +119,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         return Formats.formatAnnotatedType(this);
     }
 
+    @Override
     public void clear() {
         this.constructors.clear();
         this.fields.clear();
@@ -204,5 +205,10 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
 
     public ReflectionCache getReflectionCache() {
         return reflectionCache;
+    }
+
+    @Override
+    public String getID() {
+        return javaClass.getName();
     }
 }
