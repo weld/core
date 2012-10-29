@@ -213,6 +213,7 @@ public class BeanDeployment {
     // TODO -- OK?
     public void createBeans(Environment environment) {
         beanDeployer.processAnnotatedTypes();
+        beanDeployer.registerAnnotatedTypes();
         beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
         beanDeployer.addBuiltInBean(new EventBean(beanManager));
         beanDeployer.addBuiltInBean(new InstanceBean(beanManager));

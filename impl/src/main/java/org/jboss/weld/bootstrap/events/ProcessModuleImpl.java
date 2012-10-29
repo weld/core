@@ -22,6 +22,7 @@
 package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -112,7 +113,7 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     @Override
     public Iterator<AnnotatedType<?>> getAnnotatedTypes() {
-        return deployment.getBeanDeployer().getEnvironment().getAnnotatedTypes().iterator();
+        return cast(deployment.getBeanDeployer().getEnvironment().getAnnotatedTypes().iterator());
     }
 
     @Override

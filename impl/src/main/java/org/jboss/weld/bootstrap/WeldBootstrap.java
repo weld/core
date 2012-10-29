@@ -47,6 +47,8 @@ import javax.enterprise.inject.spi.Interceptor;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.Weld;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStoreImpl;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
@@ -290,6 +292,7 @@ public class WeldBootstrap implements Bootstrap {
 
             ServiceRegistry deploymentServices = new SimpleServiceRegistry();
             deploymentServices.add(ClassTransformer.class, registry.get(ClassTransformer.class));
+            deploymentServices.add(SlimAnnotatedTypeStore.class, registry.get(SlimAnnotatedTypeStore.class));
             deploymentServices.add(MetaAnnotationStore.class, registry.get(MetaAnnotationStore.class));
             deploymentServices.add(TypeStore.class, registry.get(TypeStore.class));
             deploymentServices.add(ContextualStore.class, registry.get(ContextualStore.class));
@@ -322,7 +325,11 @@ public class WeldBootstrap implements Bootstrap {
         services.add(TypeStore.class, typeStore);
         SharedObjectCache cache = new SharedObjectCache();
         services.add(SharedObjectCache.class, cache);
-        ClassTransformer classTransformer = new ClassTransformer(typeStore, cache, services.get(ReflectionCache.class));
+        ReflectionCache reflectionCache = ReflectionCacheFactory.newInstance();
+        services.add(ReflectionCache.class, reflectionCache);
+        SlimAnnotatedTypeStore slimAnnotatedTypeStore = new SlimAnnotatedTypeStoreImpl(cache, reflectionCache);
+        services.add(SlimAnnotatedTypeStore.class, slimAnnotatedTypeStore);
+        ClassTransformer classTransformer = new ClassTransformer(typeStore, cache, reflectionCache);
         services.add(ClassTransformer.class, classTransformer);
         services.add(MemberTransformer.class, new MemberTransformer(classTransformer));
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));

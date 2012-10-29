@@ -68,7 +68,7 @@ import com.google.common.collect.Iterables;
 
 public class BeanDeployerEnvironment {
 
-    private final Set<AnnotatedType<?>> annotatedTypes;
+    private final Set<SlimAnnotatedType<?>> annotatedTypes;
     private final Map<AnnotatedType<?>, Extension> annotatedTypeSource;
     private final Set<Class<?>> vetoedClasses;
     private final Map<Class<?>, Set<AbstractClassBean<?>>> classBeanMap;
@@ -89,7 +89,7 @@ public class BeanDeployerEnvironment {
 
     protected BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         this(
-                new HashSet<AnnotatedType<?>>(),
+                new HashSet<SlimAnnotatedType<?>>(),
                 new HashMap<AnnotatedType<?>, Extension>(),
                 new HashSet<Class<?>>(),
                 Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
@@ -108,7 +108,7 @@ public class BeanDeployerEnvironment {
     }
 
     protected BeanDeployerEnvironment(
-            Set<AnnotatedType<?>> annotatedTypes,
+            Set<SlimAnnotatedType<?>> annotatedTypes,
             Map<AnnotatedType<?>, Extension> annotatedTypeSource,
             Set<Class<?>> vetoedClasses,
             Map<Class<?>, Set<AbstractClassBean<?>>> classBeanMap,
@@ -144,11 +144,11 @@ public class BeanDeployerEnvironment {
         this.manager = manager;
     }
 
-    public void addAnnotatedType(AnnotatedType<?> annotatedType) {
+    public void addAnnotatedType(SlimAnnotatedType<?> annotatedType) {
         this.annotatedTypes.add(annotatedType);
     }
 
-    public void addAnnotatedTypes(Collection<AnnotatedType<?>> annotatedTypes) {
+    public void addAnnotatedTypes(Collection<SlimAnnotatedType<?>> annotatedTypes) {
         this.annotatedTypes.addAll(annotatedTypes);
     }
 
@@ -157,7 +157,7 @@ public class BeanDeployerEnvironment {
         annotatedTypeSource.put(annotatedType, extension);
     }
 
-    public Set<AnnotatedType<?>> getAnnotatedTypes() {
+    public Set<SlimAnnotatedType<?>> getAnnotatedTypes() {
         return Collections.unmodifiableSet(annotatedTypes);
     }
 

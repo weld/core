@@ -39,6 +39,7 @@ import javax.interceptor.Interceptor;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
@@ -101,7 +102,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
         if (clazz != null && !clazz.isAnnotation() && !Beans.isVetoed(clazz)) {
             containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
-            AnnotatedType<?> annotatedType = null;
+            SlimAnnotatedType<?> annotatedType = null;
             try {
                 annotatedType = classTransformer.getAnnotatedType(clazz);
             } catch (ResourceLoadingException e) {
@@ -129,7 +130,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void processAnnotatedTypes() {
-        Set<AnnotatedType<?>> classesToBeAdded = new HashSet<AnnotatedType<?>>();
+        Set<SlimAnnotatedType<?>> classesToBeAdded = new HashSet<SlimAnnotatedType<?>>();
         Set<AnnotatedType<?>> classesToBeRemoved = new HashSet<AnnotatedType<?>>();
 
         for (AnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
@@ -146,17 +147,23 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                         classesToBeRemoved.add(annotatedType); // remove the original class
                         AnnotatedType<?> modifiedType = event.getAnnotatedType();
                         if (modifiedType instanceof SlimAnnotatedType<?>) {
-                            annotatedType = modifiedType;
+                            classesToBeAdded.add((SlimAnnotatedType<?>) modifiedType);
                         } else {
-                            annotatedType = classTransformer.getAnnotatedType(modifiedType);
+                            classesToBeAdded.add(classTransformer.getAnnotatedType(modifiedType));
                         }
-                        classesToBeAdded.add(annotatedType); // add a replacement for the removed class
                     }
                 }
             }
         }
         getEnvironment().removeAnnotatedTypes(classesToBeRemoved);
         getEnvironment().addAnnotatedTypes(classesToBeAdded);
+    }
+
+    public void registerAnnotatedTypes() {
+        SlimAnnotatedTypeStore store = getManager().getServices().get(SlimAnnotatedTypeStore.class);
+        for (SlimAnnotatedType<?> type : getEnvironment().getAnnotatedTypes()) {
+            store.put(type);
+        }
     }
 
     public void processEnums() {

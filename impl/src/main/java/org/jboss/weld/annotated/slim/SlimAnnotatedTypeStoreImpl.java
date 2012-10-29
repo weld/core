@@ -50,8 +50,9 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Boots
 
     @Override
     public <X> void put(SlimAnnotatedType<X> type) {
-        typesById.put(type.getID(), type);
-        // TODO handle duplicates
+        if (typesById.put(type.getID(), type) != null) {
+            throw new RuntimeException(type.getID()); // TODO
+        }
     }
 
     @Override
