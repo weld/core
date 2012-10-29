@@ -31,7 +31,6 @@ import javax.enterprise.inject.spi.InterceptionType;
 
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
 public class InterceptorResolvableBuilder extends ResolvableBuilder {
 

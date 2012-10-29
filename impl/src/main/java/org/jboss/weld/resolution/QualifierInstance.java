@@ -36,6 +36,9 @@ public class QualifierInstance {
     private final Map<AnnotatedMethod<?>, Object> values;
     private final int hashCode;
 
+    public static QualifierInstance of(Annotation annotation, MetaAnnotationStore store) {
+        return new QualifierInstance(annotation, store);
+    }
 
     public static Set<QualifierInstance> qualifiers(final BeanManagerImpl beanManager, Set<Annotation> annotations) {
         return qualifiers(beanManager.getServices().get(MetaAnnotationStore.class), annotations);

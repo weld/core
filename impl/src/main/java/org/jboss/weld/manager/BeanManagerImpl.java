@@ -164,6 +164,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
@@ -1477,22 +1478,22 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public boolean areQualifiersEquivalent(Annotation qualifier1, Annotation qualifier2) {
-        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+        return Bindings.areQualifiersEquivalent(qualifier1, qualifier2, services.get(MetaAnnotationStore.class));
     }
 
     @Override
     public boolean areInterceptorBindingsEquivalent(Annotation interceptorBinding1, Annotation interceptorBinding2) {
-        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+        return Bindings.areInterceptorBindingsEquivalent(interceptorBinding1, interceptorBinding2, services.get(MetaAnnotationStore.class));
     }
 
     @Override
     public int getQualifierHashCode(Annotation qualifier) {
-        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+        return Bindings.getQualifierHashCode(qualifier, services.get(MetaAnnotationStore.class));
     }
 
     @Override
     public int getInterceptorBindingHashCode(Annotation interceptorBinding) {
-        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+        return Bindings.getInterceptorBindingHashCode(interceptorBinding, services.get(MetaAnnotationStore.class));
     }
 
     @Override
