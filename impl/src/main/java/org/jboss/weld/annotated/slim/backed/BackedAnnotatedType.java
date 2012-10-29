@@ -24,6 +24,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
@@ -206,5 +207,9 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             }
             return immutableSet(methods);
         }
+    }
+
+    public ReflectionCache getReflectionCache() {
+        return transformer.getReflectionCache();
     }
 }

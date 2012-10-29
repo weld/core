@@ -16,6 +16,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
@@ -29,15 +30,15 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, Serializable {
 
-    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, ClassTransformer transformer) {
+    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, ClassTransformer transformer) {
         return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable, transformer);
     }
 
     private final int position;
-    private final AnnotatedCallable<X> declaringCallable;
+    private final BackedAnnotatedCallable<X, ?> declaringCallable;
     private transient Set<Annotation> annotations;
 
-    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, AnnotatedCallable<X> declaringCallable, ClassTransformer transformer) {
+    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, ClassTransformer transformer) {
         super(baseType, transformer);
         this.position = position;
         this.declaringCallable = declaringCallable;
@@ -53,7 +54,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         return position;
     }
 
-    public AnnotatedCallable<X> getDeclaringCallable() {
+    public BackedAnnotatedCallable<X, ?> getDeclaringCallable() {
         return declaringCallable;
     }
 
@@ -139,5 +140,10 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         private Object readResolve() {
             return callable.getParameters().get(position);
         }
+    }
+
+    @Override
+    protected ReflectionCache getReflectionCache() {
+        return getDeclaringCallable().getDeclaringType().getReflectionCache();
     }
 }

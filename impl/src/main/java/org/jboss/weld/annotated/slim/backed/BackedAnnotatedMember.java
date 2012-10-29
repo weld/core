@@ -5,8 +5,8 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMember;
 
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.RawType;
@@ -30,7 +30,12 @@ public abstract class BackedAnnotatedMember<X> extends BackedAnnotated implement
         return Reflections.isStatic(getJavaMember());
     }
 
-    public SlimAnnotatedType<X> getDeclaringType() {
+    public BackedAnnotatedType<X> getDeclaringType() {
         return declaringType;
+    }
+
+    @Override
+    protected ReflectionCache getReflectionCache() {
+        return getDeclaringType().getReflectionCache();
     }
 }
