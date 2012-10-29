@@ -23,16 +23,16 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.metadata.TypeStore;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.resources.ReflectionCacheFactory;
-import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,15 +40,18 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class BackedAnnotatedTypeSerializationTest {
 
+    @Inject
+    private BeanManagerImpl manager;
+    
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(BackedAnnotatedTypeSerializationTest.class.getPackage())
-                .addClass(Utils.class);
+                .addClass(Utils.class).addAsServiceProvider(Extension.class, FooExtension.class);
     }
 
     public AnnotatedType<Foo> getAnnotatedType() {
-        ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
-        return transformer.getAnnotatedType(Foo.class);
+        SlimAnnotatedTypeStore store = manager.getServices().get(SlimAnnotatedTypeStore.class);
+        return store.get(Foo.class.getName());
     }
 
     @Test

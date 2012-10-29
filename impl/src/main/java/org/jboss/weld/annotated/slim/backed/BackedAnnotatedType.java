@@ -18,10 +18,8 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
@@ -129,25 +127,11 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<X>(javaClass);
+        return new SerializationProxy<X>(getID());
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException(PROXY_REQUIRED);
-    }
-
-    private static class SerializationProxy<X> implements Serializable {
-
-        private static final long serialVersionUID = 6346909556206514705L;
-        private final Class<X> javaClass;
-
-        public SerializationProxy(Class<X> javaClass) {
-            this.javaClass = javaClass;
-        }
-
-        private Object readResolve() {
-            return Container.instance().services().get(ClassTransformer.class).getAnnotatedType(javaClass);
-        }
     }
 
     // Lazy initialization

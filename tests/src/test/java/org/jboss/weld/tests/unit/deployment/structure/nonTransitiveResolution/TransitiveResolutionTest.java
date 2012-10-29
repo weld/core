@@ -45,7 +45,7 @@ public class TransitiveResolutionTest {
     @Test
     public void testBeansXmlIsolation() {
         BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
-        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", Alt.class);
+        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", Alt2.class);
         BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
         war.getBeanDeploymentArchives().add(jar1);
         war.getBeanDeploymentArchives().add(jar2);
@@ -74,7 +74,7 @@ public class TransitiveResolutionTest {
     @Test
     public void testBeansXmlMultipleEnabling() {
         BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
-        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), Collections.<String>emptyList(), null, null), Alt.class);
+        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt2.class.getName()), Collections.<String>emptyList(), null, null), Alt2.class);
         BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
         war.getBeanDeploymentArchives().add(jar1);
         war.getBeanDeploymentArchives().add(jar2);

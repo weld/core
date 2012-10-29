@@ -74,15 +74,6 @@ public class ClassTransformer implements BootstrapService {
         }
     }
 
-    private class TransformExternalAnnotatedTypeToSlimAnnotatedType implements Function<AnnotatedType<?>, UnbackedAnnotatedType<?>> {
-        @Override
-        public UnbackedAnnotatedType<?> apply(AnnotatedType<?> input) {
-            UnbackedAnnotatedType<?> type = UnbackedAnnotatedType.of(input);
-            externalSlimAnnotatedTypesById.put(AnnotatedTypes.createTypeId(type), type);
-            return type;
-        }
-    }
-
     private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType implements Function<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
         @Override
         public EnhancedAnnotatedType<?> apply(SlimAnnotatedType<?> annotatedType) {
@@ -130,8 +121,6 @@ public class ClassTransformer implements BootstrapService {
     }
 
     private final ConcurrentMap<TypeHolder<?>, BackedAnnotatedType<?>> discoveredSlimAnnotatedTypes;
-    private final ConcurrentMap<AnnotatedType<?>, UnbackedAnnotatedType<?>> externalSlimAnnotatedTypes;
-    private final ConcurrentMap<String, UnbackedAnnotatedType<?>> externalSlimAnnotatedTypesById;
     private final ConcurrentMap<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
     private final ConcurrentMap<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
     private final TypeStore typeStore;
@@ -143,8 +132,6 @@ public class ClassTransformer implements BootstrapService {
         MapMaker weakValuesMaker = new MapMaker().weakValues();
         // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop it immediately
         this.discoveredSlimAnnotatedTypes = weakValuesMaker.makeComputingMap(new TransformClassToSlimAnnotatedType());
-        this.externalSlimAnnotatedTypes = weakValuesMaker.makeComputingMap(new TransformExternalAnnotatedTypeToSlimAnnotatedType());
-        this.externalSlimAnnotatedTypesById = new ConcurrentHashMap<String, UnbackedAnnotatedType<?>>();
         this.enhancedAnnotatedTypes = defaultMaker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = defaultMaker.makeComputingMap(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
@@ -181,11 +168,7 @@ public class ClassTransformer implements BootstrapService {
         if (type instanceof EnhancedAnnotatedType<?>) {
             return cast(Reflections.<EnhancedAnnotatedType<T>>cast(type).slim());
         }
-        return cast(externalSlimAnnotatedTypes.get(type));
-    }
-
-    public UnbackedAnnotatedType<?> getUnbackedAnnotatedType(String id) {
-        return externalSlimAnnotatedTypesById.get(id);
+        return UnbackedAnnotatedType.of(type);
     }
 
     // Enhanced AnnotatedTypes
@@ -205,7 +188,7 @@ public class ClassTransformer implements BootstrapService {
         if (annotatedType instanceof SlimAnnotatedType<?>) {
             return cast(enhancedAnnotatedTypes.get(annotatedType));
         }
-        return cast(enhancedAnnotatedTypes.get(getAnnotatedType(annotatedType)));
+        return cast(enhancedAnnotatedTypes.get(UnbackedAnnotatedType.of(annotatedType)));
     }
 
     @SuppressWarnings("unchecked")
@@ -242,7 +225,5 @@ public class ClassTransformer implements BootstrapService {
     public void cleanup() {
         cleanupAfterBoot();
         this.discoveredSlimAnnotatedTypes.clear();
-        this.externalSlimAnnotatedTypes.clear();
-        this.externalSlimAnnotatedTypesById.clear();
     }
 }

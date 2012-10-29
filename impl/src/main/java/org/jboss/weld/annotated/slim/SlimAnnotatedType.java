@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.annotated.slim;
 
+import java.io.Serializable;
+
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
+
+import org.jboss.weld.Container;
 
 /**
  * Marker interface for lightweight implementations of {@link AnnotatedType}.
@@ -28,5 +32,22 @@ import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
  */
 public interface SlimAnnotatedType<T> extends IdentifiedAnnotatedType<T> {
 
+    /**
+     * Clear up cached content to save memory. Called after bootstrap is complete.
+     */
     void clear();
+
+    public static class SerializationProxy<X> implements Serializable {
+
+        private static final long serialVersionUID = 6346909556206514705L;
+        private final String id;
+
+        public SerializationProxy(String id) {
+            this.id = id;
+        }
+
+        private Object readResolve() {
+            return Container.instance().services().get(SlimAnnotatedTypeStore.class).get(id);
+        }
+    }
 }

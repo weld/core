@@ -17,10 +17,8 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -44,7 +42,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
         if (originalType instanceof IdentifiedAnnotatedType<?>) {
             return UnbackedAnnotatedType.of(originalType, Reflections.<IdentifiedAnnotatedType<?>>cast(originalType).getID());
         }
-        return UnbackedAnnotatedType.of(originalType, originalType.getJavaClass().getName());
+        return UnbackedAnnotatedType.of(originalType, AnnotatedTypes.createTypeId(originalType));
     }
 
     public static <X> UnbackedAnnotatedType<X> of(AnnotatedType<X> originalType, String id) {
@@ -104,25 +102,11 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<X>(this);
+        return new SerializationProxy<X>(getID());
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException(PROXY_REQUIRED);
-    }
-
-    private static class SerializationProxy<X> implements Serializable {
-
-        private static final long serialVersionUID = 402976292268601274L;
-        private final String id;
-
-        public SerializationProxy(UnbackedAnnotatedType<X> annotatedType) {
-            this.id = AnnotatedTypes.createTypeId(annotatedType);
-        }
-
-        private Object readResolve() {
-            return Container.instance().services().get(ClassTransformer.class).getUnbackedAnnotatedType(id);
-        }
     }
 
     @Override
