@@ -259,7 +259,7 @@ public class MemberTransformer implements BootstrapService {
 
         @Override
         public Collection<EnhancedAnnotatedField<?, ?>> getMembersOfDeclaringType(AnnotatedField<?> source) {
-            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getDeclaredEnhancedFields());
+            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getFields());
         }
     }
 
@@ -271,7 +271,7 @@ public class MemberTransformer implements BootstrapService {
 
         @Override
         public Collection<EnhancedAnnotatedMethod<?, ?>> getMembersOfDeclaringType(AnnotatedMethod<?> source) {
-            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getDeclaredEnhancedMethods());
+            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getMethods());
         }
     }
 

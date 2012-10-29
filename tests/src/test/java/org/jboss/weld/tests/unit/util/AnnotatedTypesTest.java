@@ -52,8 +52,8 @@ public class AnnotatedTypesTest {
         //check that two weld classes on the same underlying are equal
         TypeStore ts = new TypeStore();
         ClassTransformer ct = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance());
-        EnhancedAnnotatedType<Chair> chair1 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct), ct);
-        EnhancedAnnotatedType<Chair> chair2 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct), ct);
+        EnhancedAnnotatedType<Chair> chair1 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache()), ct);
+        EnhancedAnnotatedType<Chair> chair2 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache()), ct);
         Assert.assertTrue(AnnotatedTypes.compareAnnotatedTypes(chair1, chair2));
 
         //check that a different implementation of annotated type is equal to the weld implementation
