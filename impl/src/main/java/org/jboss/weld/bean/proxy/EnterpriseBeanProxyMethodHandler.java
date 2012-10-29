@@ -43,6 +43,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_
  *
  * @author Nicklas Karlsson
  * @author Pete Muir
+ * @author Marko Luksa
  */
 public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable {
 
@@ -106,6 +107,9 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             }
         }
         Class<?> businessInterface = getBusinessInterface(method);
+        if (reference.isRemoved() && isToStringMethod(method)) {
+            return businessInterface.getName() + " [REMOVED]";
+        }
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
         try {
             Object returnValue = SecureReflections.invoke(proxiedInstance, method, args);
@@ -114,6 +118,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         } catch (InvocationTargetException e) {
             throw Exceptions.unwrapIfPossible(e);
         }
+    }
+
+    private boolean isToStringMethod(Method method) {
+        return "toString".equals(method.getName()) && method.getParameterTypes().length == 0;
     }
 
     private Class<?> getBusinessInterface(Method method) {
