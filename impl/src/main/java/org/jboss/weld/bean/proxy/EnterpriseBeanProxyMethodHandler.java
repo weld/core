@@ -43,6 +43,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_
  *
  * @author Nicklas Karlsson
  * @author Pete Muir
+ * @author Marko Luksa
  */
 public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable {
 
@@ -60,8 +61,8 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     /**
      * Constructor
      *
-     * @param bean the session bean
-     * @param creationalContext
+     * @param removeMethods
+     * @param proxy         The generic proxy
      */
     public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, CreationalContext<T> creationalContext) {
         this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
@@ -98,10 +99,17 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             return null;
         }
 
-        if (!clientCanCallRemoveMethods && isRemoveMethod(method)) {
-            throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
+        if (!clientCanCallRemoveMethods) {
+            // TODO we can certainly optimize this search algorithm!
+            MethodSignature methodSignature = new MethodSignatureImpl(method);
+            if (removeMethodSignatures.contains(methodSignature)) {
+                throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
+            }
         }
         Class<?> businessInterface = getBusinessInterface(method);
+        if (reference.isRemoved() && isToStringMethod(method)) {
+            return businessInterface.getName() + " [REMOVED]";
+        }
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
         try {
             Object returnValue = SecureReflections.invoke(proxiedInstance, method, args);
@@ -112,10 +120,8 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         }
     }
 
-    private boolean isRemoveMethod(Method method) {
-        // TODO we can certainly optimize this search algorithm!
-        MethodSignature methodSignature = new MethodSignatureImpl(method);
-        return removeMethodSignatures.contains(methodSignature);
+    private boolean isToStringMethod(Method method) {
+        return "toString".equals(method.getName()) && method.getParameterTypes().length == 0;
     }
 
     private Class<?> getBusinessInterface(Method method) {
