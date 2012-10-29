@@ -29,11 +29,13 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -93,7 +95,19 @@ public class Utils {
     }
 
     public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes)) {
+            protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
+                ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                if (tccl != null) {
+                    try {
+                        return Class.forName(objectStreamClass.getName(), true, tccl);
+                    } catch (ClassNotFoundException e) {
+                        // fall back to ObjectInputStream.resolveClass()
+                    }
+                }
+                return super.resolveClass(objectStreamClass);
+            }
+        };
         return (T) in.readObject();
     }
 
