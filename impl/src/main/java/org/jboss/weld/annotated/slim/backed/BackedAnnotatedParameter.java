@@ -8,6 +8,8 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -18,7 +20,6 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
-import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.RawType;
@@ -36,13 +37,11 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
 
     private final int position;
     private final BackedAnnotatedCallable<X, ?> declaringCallable;
-    private transient Set<Annotation> annotations;
 
     public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, ClassTransformer transformer) {
         super(baseType, transformer);
         this.position = position;
         this.declaringCallable = declaringCallable;
-        this.annotations = SharedObjectFacade.wrap(ImmutableSet.copyOf(annotations));
     }
 
     @Override
@@ -69,7 +68,13 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
 
     @Override
     public Set<Annotation> getAnnotations() {
-        return annotations;
+        if (getDeclaringCallable() instanceof BackedAnnotatedConstructor<?>) {
+            return ImmutableSet.copyOf(getReflectionCache().getParameterAnnotations((Constructor<?>) getDeclaringCallable().getJavaMember(), position));
+        } else if (getDeclaringCallable() instanceof BackedAnnotatedMethod<?>) {
+            return ImmutableSet.copyOf(getReflectionCache().getParameterAnnotations((Method) getDeclaringCallable().getJavaMember(), position));
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override

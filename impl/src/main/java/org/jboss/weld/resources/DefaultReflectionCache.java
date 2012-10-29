@@ -18,6 +18,8 @@ package org.jboss.weld.resources;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
@@ -37,6 +39,8 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
 
     private final Map<AnnotatedElement, Annotation[]> annotations;
     private final Map<AnnotatedElement, Annotation[]> declaredAnnotations;
+    private final Map<Constructor<?>, Annotation[][]> constructorParameterAnnotations;
+    private final Map<Method, Annotation[][]> methodParameterAnnotations;
 
     public DefaultReflectionCache() {
         MapMaker maker = new MapMaker();
@@ -52,6 +56,18 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
                 return internalGetDeclaredAnnotations(input);
             }
         });
+        this.constructorParameterAnnotations = maker.makeComputingMap(new Function<Constructor<?>, Annotation[][]>() {
+            @Override
+            public Annotation[][] apply(Constructor<?> input) {
+                return input.getParameterAnnotations();
+            }
+        });
+        this.methodParameterAnnotations = maker.makeComputingMap(new Function<Method, Annotation[][]>() {
+            @Override
+            public Annotation[][] apply(Method input) {
+                return input.getParameterAnnotations();
+            }
+        });
     }
 
     public Annotation[] getAnnotations(AnnotatedElement element) {
@@ -60,6 +76,16 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
 
     public Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
         return declaredAnnotations.get(element);
+    }
+
+    @Override
+    public Annotation[] getParameterAnnotations(Constructor<?> constructor, int parameterPosition) {
+        return constructorParameterAnnotations.get(constructor)[parameterPosition];
+    }
+
+    @Override
+    public Annotation[] getParameterAnnotations(Method method, int parameterPosition) {
+        return methodParameterAnnotations.get(method)[parameterPosition];
     }
 
     @Override

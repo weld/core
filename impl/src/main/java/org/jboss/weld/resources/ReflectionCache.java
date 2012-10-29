@@ -18,6 +18,8 @@ package org.jboss.weld.resources;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import org.jboss.weld.bootstrap.api.Service;
 
@@ -26,5 +28,9 @@ public interface ReflectionCache extends Service {
     Annotation[] getAnnotations(AnnotatedElement element);
 
     Annotation[] getDeclaredAnnotations(AnnotatedElement element);
+
+    Annotation[] getParameterAnnotations(Constructor<?> constructor, int parameterPosition);
+
+    Annotation[] getParameterAnnotations(Method method, int parameterPosition);
 
 }
