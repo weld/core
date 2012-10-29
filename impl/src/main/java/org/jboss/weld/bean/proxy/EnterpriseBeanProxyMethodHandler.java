@@ -43,6 +43,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_
  *
  * @author Nicklas Karlsson
  * @author Pete Muir
+ * @author Marko Luksa
  */
 public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable {
 
@@ -102,6 +103,9 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
         }
         Class<?> businessInterface = getBusinessInterface(method);
+        if (reference.isRemoved() && isToStringMethod(method)) {
+            return businessInterface.getName() + " [REMOVED]";
+        }
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
         try {
             Object returnValue = SecureReflections.invoke(proxiedInstance, method, args);
@@ -116,6 +120,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         // TODO we can certainly optimize this search algorithm!
         MethodSignature methodSignature = new MethodSignatureImpl(method);
         return removeMethodSignatures.contains(methodSignature);
+    }
+
+    private boolean isToStringMethod(Method method) {
+        return "toString".equals(method.getName()) && method.getParameterTypes().length == 0;
     }
 
     private Class<?> getBusinessInterface(Method method) {
