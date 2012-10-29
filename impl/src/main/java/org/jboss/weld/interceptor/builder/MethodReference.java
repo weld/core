@@ -21,9 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.jboss.weld.interceptor.proxy.InterceptorException;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
-import org.jboss.weld.interceptor.util.ReflectionUtils;
 
 
 /**
@@ -96,47 +94,5 @@ public class MethodReference implements Serializable {
         result = 31 * result + (parameterTypes != null ? Arrays.hashCode(parameterTypes) : 0);
         result = 31 * result + (declaringClass != null ? declaringClass.hashCode() : 0);
         return result;
-    }
-
-    private Object writeReplace() {
-        return new MethodHolderSerializationProxy(this);
-    }
-
-    static class MethodHolderSerializationProxy implements Serializable {
-        private final String className;
-        private final String methodName;
-        private String[] parameterClassNames;
-
-        MethodHolderSerializationProxy(MethodReference methodReference) {
-            className = methodReference.declaringClass != null ? methodReference.declaringClass.getName() : null;
-            methodName = methodReference.methodName;
-            if (methodReference.parameterTypes != null) {
-                parameterClassNames = new String[methodReference.parameterTypes.length];
-                int i = 0;
-                for (Class<?> parameterType : methodReference.parameterTypes) {
-                    parameterClassNames[i++] = parameterType.getName();
-                }
-            }
-        }
-
-        private Object readResolve() {
-
-            try {
-                Class<?>[] parameterTypes = null;
-                if (parameterClassNames != null) {
-                    parameterTypes = new Class<?>[parameterClassNames.length];
-                    for (int i = 0; i < parameterClassNames.length; i++) {
-                        parameterTypes[i] = ReflectionUtils.classForName(parameterClassNames[i]);
-                    }
-                }
-                Class<?> declaringClass = null;
-                if (className != null) {
-                    declaringClass = ReflectionUtils.classForName(className);
-                }
-                return new MethodReference(methodName, parameterTypes, declaringClass);
-            } catch (ClassNotFoundException e) {
-                throw new InterceptorException("Error while deserializing intercepted instance", e);
-            }
-        }
     }
 }
