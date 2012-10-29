@@ -27,7 +27,7 @@ import org.jboss.weld.util.reflection.Formats;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
-public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implements AnnotatedMethod<X>, Serializable {
+public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method> implements AnnotatedMethod<X>, Serializable {
 
     public static <X, Y extends X> AnnotatedMethod<X> of(Method method, BackedAnnotatedType<Y> declaringType, ClassTransformer transformer) {
         BackedAnnotatedType<X> downcastDeclaringType = cast(declaringType);
@@ -35,12 +35,14 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
     }
 
     private final Method method;
-    private final List<AnnotatedParameter<X>> parameters;
 
     public BackedAnnotatedMethod(Method method, BackedAnnotatedType<X> declaringType, ClassTransformer transformer) {
-        super(method.getGenericReturnType(), declaringType, transformer);
+        super(method, method.getGenericReturnType(), declaringType, transformer);
         this.method = method;
+    }
 
+    @Override
+    protected List<AnnotatedParameter<X>> initParameters(Method method, ClassTransformer transformer) {
         final Type[] genericParameterTypes = method.getGenericParameterTypes();
 
         List<AnnotatedParameter<X>> parameters = new ArrayList<AnnotatedParameter<X>>(genericParameterTypes.length);
@@ -50,7 +52,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
             Type parameterType = genericParameterTypes[i];
             parameters.add(BackedAnnotatedParameter.of(parameterType, parameterAnnotations[i], i, this, transformer));
         }
-        this.parameters = immutableList(parameters);
+        return immutableList(parameters);
     }
 
     public Method getJavaMember() {
@@ -68,10 +70,6 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedMember<X> implement
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return method.isAnnotationPresent(annotationType);
-    }
-
-    public List<AnnotatedParameter<X>> getParameters() {
-        return parameters;
     }
 
     @Override
