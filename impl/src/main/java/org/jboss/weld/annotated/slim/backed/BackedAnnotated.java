@@ -11,8 +11,6 @@ import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
 
-import com.google.common.collect.ImmutableSet;
-
 public abstract class BackedAnnotated extends BaseAnnotated {
 
     private final LazyValueHolder<Set<Type>> typeClosure;
@@ -36,6 +34,6 @@ public abstract class BackedAnnotated extends BaseAnnotated {
 
     @Override
     public Set<Annotation> getAnnotations() {
-        return ImmutableSet.copyOf(getReflectionCache().getAnnotations(getAnnotatedElement()));
+        return getReflectionCache().getAnnotationSet(getAnnotatedElement());
     }
 }

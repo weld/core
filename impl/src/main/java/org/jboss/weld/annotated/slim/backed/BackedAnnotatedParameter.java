@@ -69,9 +69,9 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
     @Override
     public Set<Annotation> getAnnotations() {
         if (getDeclaringCallable() instanceof BackedAnnotatedConstructor<?>) {
-            return ImmutableSet.copyOf(getReflectionCache().getParameterAnnotations((Constructor<?>) getDeclaringCallable().getJavaMember(), position));
+            return getReflectionCache().getParameterAnnotationSet((Constructor<?>) getDeclaringCallable().getJavaMember(), position);
         } else if (getDeclaringCallable() instanceof BackedAnnotatedMethod<?>) {
-            return ImmutableSet.copyOf(getReflectionCache().getParameterAnnotations((Method) getDeclaringCallable().getJavaMember(), position));
+            return getReflectionCache().getParameterAnnotationSet((Method) getDeclaringCallable().getJavaMember(), position);
         } else {
             throw new IllegalStateException();
         }

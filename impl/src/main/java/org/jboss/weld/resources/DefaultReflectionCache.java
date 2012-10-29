@@ -20,11 +20,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
+import org.jboss.weld.util.collections.Arrays2;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
@@ -37,23 +41,38 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         return element.getDeclaredAnnotations();
     }
 
-    private final Map<AnnotatedElement, Annotation[]> annotations;
-    private final Map<AnnotatedElement, Annotation[]> declaredAnnotations;
+    private static class Annotations {
+        private final Annotation[] annotations;
+        private final Set<Annotation> annotationSet;
+
+        public Annotations(Annotation[] annotations) {
+            if (annotations.length == 0) {
+                this.annotations = Arrays2.EMPTY_ANNOTATION_ARRAY;
+                this.annotationSet = Collections.emptySet();
+            } else {
+                this.annotations = annotations;
+                this.annotationSet = ImmutableSet.copyOf(annotations);
+            }
+        }
+    }
+
+    private final Map<AnnotatedElement, Annotations> annotations;
+    private final Map<AnnotatedElement, Annotations> declaredAnnotations;
     private final Map<Constructor<?>, Annotation[][]> constructorParameterAnnotations;
     private final Map<Method, Annotation[][]> methodParameterAnnotations;
 
     public DefaultReflectionCache() {
         MapMaker maker = new MapMaker();
-        this.annotations = maker.makeComputingMap(new Function<AnnotatedElement, Annotation[]>() {
+        this.annotations = maker.makeComputingMap(new Function<AnnotatedElement, Annotations>() {
             @Override
-            public Annotation[] apply(AnnotatedElement input) {
-                return internalGetAnnotations(input);
+            public Annotations apply(AnnotatedElement input) {
+                return new Annotations(internalGetAnnotations(input));
             }
         });
-        this.declaredAnnotations = maker.makeComputingMap(new Function<AnnotatedElement, Annotation[]>() {
+        this.declaredAnnotations = maker.makeComputingMap(new Function<AnnotatedElement, Annotations>() {
             @Override
-            public Annotation[] apply(AnnotatedElement input) {
-                return internalGetDeclaredAnnotations(input);
+            public Annotations apply(AnnotatedElement input) {
+                return new Annotations(internalGetDeclaredAnnotations(input));
             }
         });
         this.constructorParameterAnnotations = maker.makeComputingMap(new Function<Constructor<?>, Annotation[][]>() {
@@ -71,11 +90,11 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     }
 
     public Annotation[] getAnnotations(AnnotatedElement element) {
-        return annotations.get(element);
+        return annotations.get(element).annotations;
     }
 
     public Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
-        return declaredAnnotations.get(element);
+        return declaredAnnotations.get(element).annotations;
     }
 
     @Override
@@ -92,5 +111,27 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     public void cleanupAfterBoot() {
         annotations.clear();
         declaredAnnotations.clear();
+        constructorParameterAnnotations.clear();
+        methodParameterAnnotations.clear();
+    }
+
+    @Override
+    public Set<Annotation> getAnnotationSet(AnnotatedElement element) {
+        return annotations.get(element).annotationSet;
+    }
+
+    @Override
+    public Set<Annotation> getDeclaredAnnotationSet(AnnotatedElement element) {
+        return declaredAnnotations.get(element).annotationSet;
+    }
+
+    @Override
+    public Set<Annotation> getParameterAnnotationSet(Constructor<?> constructor, int parameterPosition) {
+        return ImmutableSet.copyOf(getParameterAnnotations(constructor, parameterPosition));
+    }
+
+    @Override
+    public Set<Annotation> getParameterAnnotationSet(Method method, int parameterPosition) {
+        return ImmutableSet.copyOf(getParameterAnnotations(method, parameterPosition));
     }
 }
