@@ -20,11 +20,23 @@ package org.jboss.weld.interceptor.util;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 public class ReflectionUtils {
+
+    private static final Map<String, Class<?>> PRIMITIVES = new HashMap<String, Class<?>>();
+
+    static {
+        Class[] primitiveTypes = {byte.class, short.class, int.class, long.class, float.class, double.class, boolean.class, char.class, void.class};
+        for (Class<?> primitiveType : primitiveTypes) {
+            PRIMITIVES.put(primitiveType.getName(), primitiveType);
+        }
+    }
 
     public static void ensureAccessible(final Method method) {
         doSecurely(new PrivilegedAction<Object>() {
@@ -36,10 +48,23 @@ public class ReflectionUtils {
 
     }
 
-    public static Class<?> classForName(String className) throws ClassNotFoundException {
+    public static Class<?> classForName(String name) throws ClassNotFoundException {
+        try {
+            return classForName0(name);
+        } catch (ClassNotFoundException e) {
+            Class<?> primitive = PRIMITIVES.get(name);
+            if (primitive != null) {
+                return primitive;
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private static Class<?> classForName0(String className) throws ClassNotFoundException {
         ClassLoader threadContextClassLoader = getThreadContextClassLoader();
         if (threadContextClassLoader != null) {
-            return threadContextClassLoader.loadClass(className);
+            return Class.forName(className, true, threadContextClassLoader);
         } else {
             return Class.forName(className);
         }
