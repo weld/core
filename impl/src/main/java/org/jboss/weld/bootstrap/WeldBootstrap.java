@@ -327,8 +327,7 @@ public class WeldBootstrap implements Bootstrap {
         services.add(SharedObjectCache.class, cache);
         ReflectionCache reflectionCache = ReflectionCacheFactory.newInstance();
         services.add(ReflectionCache.class, reflectionCache);
-        SlimAnnotatedTypeStore slimAnnotatedTypeStore = new SlimAnnotatedTypeStoreImpl(cache, reflectionCache);
-        services.add(SlimAnnotatedTypeStore.class, slimAnnotatedTypeStore);
+        services.add(SlimAnnotatedTypeStore.class, new SlimAnnotatedTypeStoreImpl());
         ClassTransformer classTransformer = new ClassTransformer(typeStore, cache, reflectionCache);
         services.add(ClassTransformer.class, classTransformer);
         services.add(MemberTransformer.class, new MemberTransformer(classTransformer));

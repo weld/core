@@ -20,7 +20,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -38,7 +37,6 @@ import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.Logger;
 
@@ -219,11 +217,11 @@ public class ClassTransformer implements BootstrapService {
         for (BackedAnnotatedType<?> annotatedType : discoveredSlimAnnotatedTypes.values()) {
             annotatedType.clear();
         }
+        this.discoveredSlimAnnotatedTypes.clear();
     }
 
     @Override
     public void cleanup() {
         cleanupAfterBoot();
-        this.discoveredSlimAnnotatedTypes.clear();
     }
 }

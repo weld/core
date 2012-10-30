@@ -20,8 +20,6 @@ import org.jboss.weld.bootstrap.api.Service;
 
 public interface SlimAnnotatedTypeStore extends Service {
 
-    <X> SlimAnnotatedType<X> create(Class<X> javaClass);
-
     <X> SlimAnnotatedType<X> get(String id);
 
     <X> void put(SlimAnnotatedType<X> type);

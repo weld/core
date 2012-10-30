@@ -21,26 +21,14 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.BootstrapService;
-import org.jboss.weld.resources.ReflectionCache;
-import org.jboss.weld.resources.SharedObjectCache;
 
 public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, BootstrapService {
 
     private final ConcurrentMap<String, SlimAnnotatedType<?>> typesById;
-    private final SharedObjectCache sharedObjectCache;
-    private final ReflectionCache reflectionCache;
 
-    public SlimAnnotatedTypeStoreImpl(SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache) {
+    public SlimAnnotatedTypeStoreImpl() {
         this.typesById = new ConcurrentHashMap<String, SlimAnnotatedType<?>>();
-        this.sharedObjectCache = sharedObjectCache;
-        this.reflectionCache = reflectionCache;
-    }
-
-    @Override
-    public <X> SlimAnnotatedType<X> create(Class<X> javaClass) {
-        return BackedAnnotatedType.of(javaClass, sharedObjectCache, reflectionCache);
     }
 
     @Override
