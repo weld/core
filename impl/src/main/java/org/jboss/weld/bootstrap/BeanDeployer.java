@@ -59,7 +59,6 @@ import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Beans;
@@ -79,7 +78,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private transient XLogger xlog = loggerFactory().getXLogger(Category.CLASS_LOADING);
 
     private final ResourceLoader resourceLoader;
-    protected final ClassTransformer classTransformer;
+
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
@@ -88,7 +87,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services, BeanDeployerEnvironment environment) {
         super(manager, services, environment);
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
-        this.classTransformer = manager.getServices().get(ClassTransformer.class);
     }
 
     public BeanDeployer addClass(String className) {
@@ -117,8 +115,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public <T> BeanDeployer addSyntheticClass(AnnotatedType<T> annotatedType, Extension extension) {
-        SlimAnnotatedType<T> slim = ClassTransformer.instance(getManager()).getAnnotatedType(annotatedType);
-        getEnvironment().addSyntheticAnnotatedType(slim, extension);
+        getEnvironment().addSyntheticAnnotatedType(classTransformer.getAnnotatedType(annotatedType), extension);
         return this;
     }
 
@@ -308,7 +305,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
         for (Entry<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> entry : getEnvironment().getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
             InternalEjbDescriptor<?> descriptor = entry.getKey();
-            createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()), entry.getValue().getJavaClass());
+            createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()), entry.getValue());
         }
     }
 

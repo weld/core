@@ -23,4 +23,6 @@ public interface SlimAnnotatedTypeStore extends Service {
     <X> SlimAnnotatedType<X> get(String id);
 
     <X> void put(SlimAnnotatedType<X> type);
+
+    <X> void putIfAbsent(SlimAnnotatedType<X> type);
 }

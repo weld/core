@@ -44,6 +44,11 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Boots
     }
 
     @Override
+    public <X> void putIfAbsent(SlimAnnotatedType<X> type) {
+        typesById.putIfAbsent(type.getID(), type);
+    }
+
+    @Override
     public void cleanupAfterBoot() {
         for (SlimAnnotatedType<?> type : typesById.values()) {
             type.clear();
@@ -54,4 +59,6 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Boots
     public void cleanup() {
         typesById.clear();
     }
+
+
 }
