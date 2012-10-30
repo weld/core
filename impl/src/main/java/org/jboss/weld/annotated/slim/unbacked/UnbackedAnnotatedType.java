@@ -118,4 +118,24 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     public void clear() {
         // noop
     }
+
+    @Override
+    public int hashCode() {
+        return getID().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SlimAnnotatedType<?>)) {
+            return false;
+        }
+        SlimAnnotatedType<?> other = (SlimAnnotatedType<?>) obj;
+        return other.getID().equals(getID());
+    }
 }

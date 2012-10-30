@@ -92,27 +92,22 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getBaseType() == null) ? 0 : getBaseType().hashCode());
-        return result;
+        return getID().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (!(obj instanceof SlimAnnotatedType<?>)) {
             return false;
-        BackedAnnotatedType<?> other = (BackedAnnotatedType<?>) obj;
-        if (getBaseType() == null) {
-            if (other.getBaseType() != null)
-                return false;
-        } else if (!getBaseType().equals(other.getBaseType()))
-            return false;
-        return true;
+        }
+        SlimAnnotatedType<?> other = (SlimAnnotatedType<?>) obj;
+        return other.getID().equals(getID());
     }
 
     @Override

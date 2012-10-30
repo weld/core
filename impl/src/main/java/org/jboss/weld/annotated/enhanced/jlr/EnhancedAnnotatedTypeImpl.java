@@ -649,4 +649,23 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         return slim.getID();
     }
 
+    @Override
+    public int hashCode() {
+        return getID().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof EnhancedAnnotatedTypeImpl<?>)) {
+            return false;
+        }
+        EnhancedAnnotatedTypeImpl<?> other = (EnhancedAnnotatedTypeImpl<?>) obj;
+        return getID().equals(other.getID());
+    }
 }
