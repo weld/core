@@ -17,12 +17,37 @@
 package org.jboss.weld.annotated.slim;
 
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.exceptions.DeploymentException;
 
+/**
+ * Store for {@link SlimAnnotatedType}s. This service keeps references to {@link SlimAnnotatedType}s mapped by their ids. The
+ * service is used for serialization of {@link SlimAnnotatedType} and lookup.
+ *
+ * @author Jozef Hartinger
+ *
+ */
 public interface SlimAnnotatedTypeStore extends Service {
 
+    /**
+     * Retrieves a previously stored {@link SlimAnnotatedType}.
+     *
+     * @param id type identifier
+     * @return type identified by the identifier
+     */
     <X> SlimAnnotatedType<X> get(String id);
 
+    /**
+     * Put a {@link SlimAnnotatedType} into the store.
+     *
+     * @param type type to store
+     * @throws DeploymentException if the type identifier is not unique
+     */
     <X> void put(SlimAnnotatedType<X> type);
 
+    /**
+     * Put a {@link SlimAnnotatedType} into the store. Nothing is done if the store already contains a type with the given id.
+     *
+     * @param type type to store
+     */
     <X> void putIfAbsent(SlimAnnotatedType<X> type);
 }
