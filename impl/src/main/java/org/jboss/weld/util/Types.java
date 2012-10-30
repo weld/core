@@ -16,7 +16,11 @@
  */
 package org.jboss.weld.util;
 
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Utility class for Types
@@ -64,5 +68,31 @@ public class Types {
             // Vagaries of if/else statement, can't be reached ;-)
             return type;
         }
+    }
+
+    public static String getTypeId(Type type) {
+        if (type instanceof Class<?>) {
+            return Reflections.<Class<?>>cast(type).getName();
+        }
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) type;
+            StringBuilder builder = new StringBuilder(getTypeId(pt.getRawType()));
+            builder.append("<");
+            for (int i = 0; i < pt.getActualTypeArguments().length; i++) {
+                if (i > 0) {
+                    builder.append(",");
+                }
+                builder.append(getTypeId(pt.getActualTypeArguments()[i]));
+            }
+            builder.append(">");
+            return builder.toString();
+        }
+        if (type instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) type;
+            StringBuilder builder = new StringBuilder(getTypeId(arrayType.getGenericComponentType()));
+            builder.append("[]");
+            return builder.toString();
+        }
+        throw new IllegalArgumentException("Cannot create type id for" + type.toString());
     }
 }

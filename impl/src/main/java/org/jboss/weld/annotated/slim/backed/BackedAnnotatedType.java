@@ -23,6 +23,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -46,6 +47,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private final LazyValueHolder<Set<AnnotatedField<? super X>>> fields;
     private final SharedObjectCache sharedObjectCache;
     private final ReflectionCache reflectionCache;
+    private final String id;
 
     public BackedAnnotatedType(Class<X> rawType, Type baseType, SharedObjectCache sharedObjectCache, ReflectionCache reflectionCache) {
         super(baseType, sharedObjectCache);
@@ -56,6 +58,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         this.constructors = new BackedAnnotatedConstructors();
         this.fields = new BackedAnnotatedFields();
         this.methods = new BackedAnnotatedMethods();
+        this.id = Types.getTypeId(baseType);
     }
 
     @Override
@@ -193,6 +196,6 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
 
     @Override
     public String getID() {
-        return javaClass.getName();
+        return id;
     }
 }
