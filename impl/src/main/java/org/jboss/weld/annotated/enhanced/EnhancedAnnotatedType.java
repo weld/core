@@ -22,6 +22,8 @@ import java.util.Collection;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+
 /**
  * Represents a Class
  *
@@ -236,6 +238,6 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
      * Returns a lightweight implementation of {@link AnnotatedType} with minimal memory footprint.
      * @return the slim version of this {@link AnnotatedType}
      */
-    AnnotatedType<T> slim();
+    SlimAnnotatedType<T> slim();
 
 }

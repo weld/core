@@ -16,22 +16,22 @@
  */
 package org.jboss.weld.util.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
-
-import org.jboss.weld.annotated.enhanced.ConstructorSignature;
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+
+import org.jboss.weld.annotated.enhanced.ConstructorSignature;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 
 public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, Class<T>> implements EnhancedAnnotatedType<T> {
 
@@ -186,7 +186,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     }
 
     @Override
-    public AnnotatedType<T> slim() {
+    public SlimAnnotatedType<T> slim() {
         return delegate().slim();
     }
 

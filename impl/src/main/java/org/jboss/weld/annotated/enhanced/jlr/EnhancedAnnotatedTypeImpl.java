@@ -39,7 +39,6 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
@@ -122,7 +121,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     private final boolean discovered;
 
-    private final AnnotatedType<T> slim;
+    private final SlimAnnotatedType<T> slim;
 
 
     public static <T> EnhancedAnnotatedType<T> of(SlimAnnotatedType<T> annotatedType, ClassTransformer classTransformer) {
@@ -636,7 +635,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public AnnotatedType<T> slim() {
+    public SlimAnnotatedType<T> slim() {
         return slim;
     }
 
