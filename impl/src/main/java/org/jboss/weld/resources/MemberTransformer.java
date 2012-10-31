@@ -25,10 +25,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_MEMB
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
@@ -45,7 +42,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedMember;
-import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedMember;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedMemberIdentifier;
@@ -71,10 +67,6 @@ public class MemberTransformer implements BootstrapService {
 
     private final ClassTransformer transformer;
 
-    private final ConcurrentMap<Member, AnnotatedMember<?>> backedMemberCache;
-    private final BackedFieldLoader backedFieldLoader;
-    private final BackedMethodLoader backedMethodLoader;
-    private final BackedConstructorLoader backedConstructorLoader;
     private final ConcurrentMap<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> unbackedAnnotatedMembersById;
 
     private final ConcurrentMap<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> enhancedMemberCache;
@@ -84,82 +76,11 @@ public class MemberTransformer implements BootstrapService {
 
     public MemberTransformer(ClassTransformer transformer) {
         this.transformer = transformer;
-        this.backedFieldLoader = new BackedFieldLoader();
-        this.backedMethodLoader = new BackedMethodLoader();
-        this.backedConstructorLoader = new BackedConstructorLoader();
-        this.backedMemberCache = new MapMaker().makeComputingMap(new BackedMemberLoaderFunction());
         this.unbackedAnnotatedMembersById = new MapMaker().makeComputingMap(new UnbackedMemberById());
         this.enhancedFieldLoader = new EnhancedFieldLoader();
         this.enhancedMethodLoader = new EnhancedMethodLoader();
         this.enhancedConstructorLoader = new EnhancedConstructorLoader();
         this.enhancedMemberCache = new MapMaker().makeComputingMap(new EnhancedMemberLoaderFunction());
-    }
-
-    // Backed members
-
-    public AnnotatedMember<?> loadBackedMember(Member member) {
-        return Reflections.cast(backedMemberCache.get(member));
-    }
-
-    private class BackedMemberLoaderFunction implements Function<Member, AnnotatedMember<?>> {
-        @Override
-        public AnnotatedMember<?> apply(Member member) {
-            if (member instanceof Field) {
-                return backedFieldLoader.load(Reflections.<Field> cast(member));
-            }
-            if (member instanceof Method) {
-                return backedMethodLoader.load(Reflections.<Method> cast(member));
-            }
-            if (member instanceof Constructor<?>) {
-                return backedConstructorLoader.load(Reflections.<Constructor<?>> cast(member));
-            }
-            throw new IllegalArgumentException(INVALID_ANNOTATED_MEMBER, member);
-        }
-    }
-
-    /**
-     * Iterates over members of a given {@link BackedAnnotatedType} to find a {@link BackedAnnotatedMember} implementation representing given member.
-     *
-     * @author Jozef Hartinger
-     */
-    private abstract class AbstractBackedMemberLoader<M extends Member, A extends AnnotatedMember<?>> {
-
-        public A load(M member) {
-            BackedAnnotatedType<?> type = transformer.getAnnotatedType(member.getDeclaringClass());
-            return findMatching(getMembersOfDeclaringType(type), member);
-        }
-
-        public <X> A findMatching(Collection<? extends A> members, M member) {
-            for (A annotatedMember : members) {
-                if (member.equals(annotatedMember.getJavaMember())) {
-                    return annotatedMember;
-                }
-            }
-            throw new IllegalStateException(UNABLE_TO_LOAD_MEMBER, member);
-        }
-
-        public abstract Collection<? extends A> getMembersOfDeclaringType(BackedAnnotatedType<?> type);
-    }
-
-    private class BackedFieldLoader extends AbstractBackedMemberLoader<Field, AnnotatedField<?>> {
-        @Override
-        public Collection<? extends AnnotatedField<?>> getMembersOfDeclaringType(BackedAnnotatedType<?> type) {
-            return type.getFields();
-        }
-    }
-
-    private class BackedMethodLoader extends AbstractBackedMemberLoader<Method, AnnotatedMethod<?>> {
-        @Override
-        public Collection<? extends AnnotatedMethod<?>> getMembersOfDeclaringType(BackedAnnotatedType<?> type) {
-            return type.getMethods();
-        }
-    }
-
-    private class BackedConstructorLoader extends AbstractBackedMemberLoader<Constructor<?>, AnnotatedConstructor<?>> {
-        @Override
-        public Collection<? extends AnnotatedConstructor<?>> getMembersOfDeclaringType(BackedAnnotatedType<?> type) {
-            return type.getConstructors();
-        }
     }
 
     // Unbacked members
@@ -294,7 +215,6 @@ public class MemberTransformer implements BootstrapService {
     @Override
     public void cleanup() {
         cleanupAfterBoot();
-        backedMemberCache.clear();
         unbackedAnnotatedMembersById.clear();
     }
 }

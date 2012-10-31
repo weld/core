@@ -17,9 +17,7 @@ import java.util.List;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.ConstructorHolder;
 import org.jboss.weld.util.reflection.Formats;
@@ -129,24 +127,28 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<X>(constructor);
+        return new SerializationProxy<X>(this);
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException(PROXY_REQUIRED);
     }
 
-    private static class SerializationProxy<X> implements Serializable {
+    private static class SerializationProxy<X> extends BackedAnnotatedMemberSerializationProxy<X, AnnotatedConstructor<X>> {
 
         private static final long serialVersionUID = -2726172060851333254L;
-        private final ConstructorHolder<X> constructor;
 
-        public SerializationProxy(Constructor<X> constructor) {
-            this.constructor = new ConstructorHolder<X>(constructor);
+        public SerializationProxy(BackedAnnotatedConstructor<X> constructor) {
+            super(constructor.getDeclaringType(), new ConstructorHolder<X>(constructor.getJavaMember()));
         }
 
         private Object readResolve() {
-            return Container.instance().services().get(MemberTransformer.class).loadBackedMember(constructor.get());
+            return resolve();
+        }
+
+        @Override
+        protected Iterable<AnnotatedConstructor<X>> getCandidates() {
+            return type.getConstructors();
         }
     }
 }

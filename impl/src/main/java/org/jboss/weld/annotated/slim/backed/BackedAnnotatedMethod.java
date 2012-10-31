@@ -17,9 +17,7 @@ import java.util.List;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.util.reflection.Formats;
@@ -105,24 +103,28 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method>
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy(method);
+        return new SerializationProxy<X>(this);
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException(PROXY_REQUIRED);
     }
 
-    private static class SerializationProxy implements Serializable {
+    private static class SerializationProxy<X> extends BackedAnnotatedMemberSerializationProxy<X, AnnotatedMethod<X>> {
 
         private static final long serialVersionUID = 8008578690970722095L;
-        private final MethodHolder method;
 
-        public SerializationProxy(Method method) {
-            this.method = new MethodHolder(method);
+        public SerializationProxy(BackedAnnotatedMethod<X> method) {
+            super(method.getDeclaringType(), new MethodHolder(method.getJavaMember()));
         }
 
         private Object readResolve() {
-            return Container.instance().services().get(MemberTransformer.class).loadBackedMember(method.get());
+            return resolve();
+        }
+
+        @Override
+        protected Iterable<AnnotatedMethod<X>> getCandidates() {
+            return cast(type.getMethods());
         }
     }
 }

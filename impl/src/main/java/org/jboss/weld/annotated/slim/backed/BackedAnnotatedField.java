@@ -13,9 +13,7 @@ import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedField;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.FieldHolder;
 import org.jboss.weld.util.reflection.Formats;
@@ -87,24 +85,28 @@ public class BackedAnnotatedField<X> extends BackedAnnotatedMember<X> implements
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy(field);
+        return new SerializationProxy<X>(this);
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException(PROXY_REQUIRED);
     }
 
-    private static class SerializationProxy implements Serializable {
+    private static class SerializationProxy<X> extends BackedAnnotatedMemberSerializationProxy<X, AnnotatedField<X>> {
 
         private static final long serialVersionUID = -8041111397369568219L;
-        private final FieldHolder field;
 
-        public SerializationProxy(Field field) {
-            this.field = new FieldHolder(field);
+        public SerializationProxy(BackedAnnotatedField<X> field) {
+            super(field.getDeclaringType(), new FieldHolder(field.getJavaMember()));
         }
 
         private Object readResolve() {
-            return Container.instance().services().get(MemberTransformer.class).loadBackedMember(field.get());
+            return resolve();
+        }
+
+        @Override
+        protected Iterable<AnnotatedField<X>> getCandidates() {
+            return cast(type.getFields());
         }
     }
 }
