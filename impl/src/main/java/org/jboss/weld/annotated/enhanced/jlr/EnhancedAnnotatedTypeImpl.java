@@ -644,4 +644,9 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         return annotatedMethodsByAnnotatedParameters.get(annotationType);
     }
 
+    @Override
+    public String getID() {
+        return slim.getID();
+    }
+
 }
