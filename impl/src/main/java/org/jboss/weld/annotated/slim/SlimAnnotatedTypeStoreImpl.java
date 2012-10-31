@@ -16,12 +16,16 @@
  */
 package org.jboss.weld.annotated.slim;
 
+
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.bootstrap.api.BootstrapService;
+import org.jboss.weld.exceptions.DeploymentException;
+
+import static org.jboss.weld.logging.messages.BootstrapMessage.DUPLICATE_ANNOTATED_TYPE_ID;;
 
 public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, BootstrapService {
 
@@ -38,8 +42,9 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Boots
 
     @Override
     public <X> void put(SlimAnnotatedType<X> type) {
-        if (typesById.put(type.getID(), type) != null) {
-            throw new RuntimeException(type.getID()); // TODO
+        SlimAnnotatedType<?> previous = typesById.put(type.getID(), type);
+        if (previous != null) {
+            throw new DeploymentException(DUPLICATE_ANNOTATED_TYPE_ID, type.getID(), type, previous);
         }
     }
 
@@ -59,6 +64,4 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Boots
     public void cleanup() {
         typesById.clear();
     }
-
-
 }

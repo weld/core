@@ -61,6 +61,7 @@ public enum BootstrapMessage {
     @MessageId("000126")TIMEOUT_SHUTTING_DOWN_THREAD_POOL,
     @MessageId("000127")INVALID_THREAD_POOL_TYPE,
     @MessageId("000128")INVALID_PROPERTY_VALUE,
+    @MessageId("000129")DUPLICATE_ANNOTATED_TYPE_ID,
     ;
 
 }
