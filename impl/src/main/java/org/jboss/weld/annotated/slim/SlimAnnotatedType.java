@@ -37,12 +37,12 @@ public interface SlimAnnotatedType<T> extends IdentifiedAnnotatedType<T> {
      */
     void clear();
 
-    public static class SerializationProxy<X> implements Serializable {
+    public static class IdentifiedAnnotatedTypeSerializationProxy<X> implements Serializable {
 
         private static final long serialVersionUID = 6346909556206514705L;
         private final String id;
 
-        public SerializationProxy(String id) {
+        public IdentifiedAnnotatedTypeSerializationProxy(String id) {
             this.id = id;
         }
 

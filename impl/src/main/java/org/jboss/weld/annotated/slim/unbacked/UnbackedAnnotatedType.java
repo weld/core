@@ -102,7 +102,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<X>(getID());
+        return new IdentifiedAnnotatedTypeSerializationProxy<X>(getID());
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
