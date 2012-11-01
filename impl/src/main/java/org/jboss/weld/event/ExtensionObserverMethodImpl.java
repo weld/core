@@ -48,6 +48,9 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 /**
  * An implementation of {@link ObserverMethod} used for events delivered to extensions. An event can obtain an information about the
  * observer method and receiver used for event delivery using {@link AbstractContainerEvent#getObserverMethod()} or
@@ -67,25 +70,11 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         this.requiredTypeAnnotations = initRequiredTypeAnnotations(observer);
     }
 
-    @SuppressWarnings("unchecked") // it is checked actually :-)
     protected Set<Class<? extends Annotation>> initRequiredTypeAnnotations(EnhancedAnnotatedMethod<T, ? super X> observer) {
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
         WithAnnotations annotation = eventParameter.getAnnotation(WithAnnotations.class);
         if (annotation != null) {
-            Class<?>[] classes = annotation.value();
-            Set<Class<? extends Annotation>> requiredTypeAnnotations = new HashSet<Class<? extends Annotation>>();
-            for (Class<?> clazz : classes) {
-                /*
-                 * TODO: this check can be removed once @WithAnnotations.value() returns Class<? extends Annotation>[]
-                 * See https://issues.jboss.org/browse/CDI-43
-                 */
-                if (Annotation.class.isAssignableFrom(clazz)) {
-                    requiredTypeAnnotations.add((Class<? extends Annotation>) clazz);
-                } else {
-                    throw new IllegalArgumentException(clazz + " is not an annotation");
-                }
-            }
-            return WeldCollections.immutableSet(requiredTypeAnnotations);
+            return ImmutableSet.<Class<? extends Annotation>>copyOf(annotation.value());
         }
         return Collections.emptySet();
     }
