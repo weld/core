@@ -55,7 +55,6 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -91,7 +90,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         if (type.isDiscovered()) {
             return createId(beanType, ejbDescriptor);
         } else {
-            return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).append(AnnotatedTypes.createTypeId(type)).toString();
+            return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).append(type.getID()).toString();
         }
     }
 

@@ -36,11 +36,7 @@ public class NewManagedBean<T> extends ManagedBean<T> implements NewBean {
      * @return a new NewSimpleBean instance
      */
     public static <T> NewManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
-        if (clazz.isDiscovered()) {
-            return new NewManagedBean<T>(attributes, clazz, createSimpleId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
-        } else {
-            return new NewManagedBean<T>(attributes, clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
-        }
+        return new NewManagedBean<T>(attributes, clazz, createId(NewManagedBean.class.getSimpleName(), clazz), beanManager);
     }
 
     /**

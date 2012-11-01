@@ -96,23 +96,17 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
     }
 
     protected static String createId(EnhancedAnnotatedField<?, ?> field, AbstractClassBean<?> declaringBean) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ProducerField.class.getSimpleName());
+        sb.append(BEAN_ID_SEPARATOR);
+        sb.append(declaringBean.getEnhancedAnnotated().getID());
+        sb.append(".");
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(ProducerField.class.getSimpleName());
-            sb.append(BEAN_ID_SEPARATOR);
-            sb.append(declaringBean.getEnhancedAnnotated().getName());
-            sb.append(".");
             sb.append(field.getName());
-            return sb.toString();
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append(ProducerField.class.getSimpleName());
-            sb.append(BEAN_ID_SEPARATOR);
-            sb.append(AnnotatedTypes.createTypeId(declaringBean.getEnhancedAnnotated()));
-            sb.append(".");
             sb.append(AnnotatedTypes.createFieldId(field));
-            return sb.toString();
         }
+        return sb.toString();
     }
 
     @Override

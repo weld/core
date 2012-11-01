@@ -32,6 +32,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
@@ -45,7 +46,6 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -81,23 +81,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @return A Web Bean
      */
     public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
-        if (clazz.isDiscovered()) {
-            return new ManagedBean<T>(attributes, clazz, createSimpleId(ManagedBean.class.getSimpleName(), clazz), beanManager);
-        } else {
-            return new ManagedBean<T>(attributes, clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
-        }
+        return new ManagedBean<T>(attributes, clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
     }
 
-    protected static String createSimpleId(String beanType, EnhancedAnnotatedType<?> clazz) {
-        return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(clazz.getBaseType()).toString();
-    }
-
-    /**
-     * create a more complete id for types that have been added through the SPI
-     * to prevent duplicate id's
-     */
-    protected static String createId(String beanType, EnhancedAnnotatedType<?> clazz) {
-        return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(AnnotatedTypes.createTypeId(clazz)).toString();
+    protected static String createId(String beanType, IdentifiedAnnotatedType<?> type) {
+        return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(type.getID()).toString();
     }
 
     /**
