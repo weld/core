@@ -36,6 +36,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STERE
 import static org.jboss.weld.logging.messages.BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
@@ -57,7 +58,7 @@ import com.google.common.base.Function;
  */
 public class EnabledBuilder {
 
-    private static class ClassLoader<T> implements Function<Metadata<String>, Metadata<Class<? extends T>>> {
+    private static class ClassLoader<T> implements Function<Metadata<BeansXmlRecord>, Metadata<Class<? extends T>>> {
 
         private final ResourceLoader resourceLoader;
 
@@ -65,11 +66,11 @@ public class EnabledBuilder {
             this.resourceLoader = resourceLoader;
         }
 
-        public Metadata<Class<? extends T>> apply(Metadata<String> from) {
+        public Metadata<Class<? extends T>> apply(Metadata<BeansXmlRecord> from) {
             String location = from.getLocation();
             try {
                 return new MetadataImpl<Class<? extends T>>(Reflections.<Class<? extends T>> cast(resourceLoader
-                        .classForName(from.getValue())), location);
+                        .classForName(from.getValue().getValue())), location);
             } catch (ResourceLoadingException e) {
                 throw new DeploymentException(ERROR_LOADING_BEANS_XML_ENTRY, e.getCause(), from.getValue(), from.getLocation());
             } catch (Exception e) {

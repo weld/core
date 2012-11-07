@@ -16,7 +16,26 @@
  */
 package org.jboss.weld.xml;
 
+import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
+import static org.jboss.weld.logging.messages.XmlMessage.CONFIGURATION_ERROR;
+import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
+import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.inject.spi.BeanManager;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -26,23 +45,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-
-import javax.enterprise.inject.spi.BeanManager;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
-import static org.jboss.weld.logging.messages.XmlMessage.CONFIGURATION_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 
 /**
  * Simple parser for beans.xml
@@ -127,10 +129,10 @@ public class BeansXmlParser {
     }
 
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-        List<Metadata<String>> alternativeStereotypes = new ArrayList<Metadata<String>>();
-        List<Metadata<String>> alternativeClasses = new ArrayList<Metadata<String>>();
-        List<Metadata<String>> decorators = new ArrayList<Metadata<String>>();
-        List<Metadata<String>> interceptors = new ArrayList<Metadata<String>>();
+        List<Metadata<BeansXmlRecord>> alternativeStereotypes = new ArrayList<Metadata<BeansXmlRecord>>();
+        List<Metadata<BeansXmlRecord>> alternativeClasses = new ArrayList<Metadata<BeansXmlRecord>>();
+        List<Metadata<BeansXmlRecord>> decorators = new ArrayList<Metadata<BeansXmlRecord>>();
+        List<Metadata<BeansXmlRecord>> interceptors = new ArrayList<Metadata<BeansXmlRecord>>();
         List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
         List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
         URL beansXmlUrl = null;
@@ -151,10 +153,10 @@ public class BeansXmlParser {
         return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
     }
 
-    private void addTo(List<Metadata<String>> list, List<Metadata<String>> listToAdd, boolean removeDuplicates) {
+    private void addTo(List<Metadata<BeansXmlRecord>> list, List<Metadata<BeansXmlRecord>> listToAdd, boolean removeDuplicates) {
         if (removeDuplicates) {
-            List<Metadata<String>> filteredListToAdd = new ArrayList<Metadata<String>>(listToAdd.size());
-            for (Metadata<String> metadata : listToAdd) {
+            List<Metadata<BeansXmlRecord>> filteredListToAdd = new ArrayList<Metadata<BeansXmlRecord>>(listToAdd.size());
+            for (Metadata<BeansXmlRecord> metadata : listToAdd) {
                 if (!alreadyAdded(metadata, list)) {
                     filteredListToAdd.add(metadata);
                 }
@@ -164,8 +166,8 @@ public class BeansXmlParser {
         list.addAll(listToAdd);
     }
 
-    private boolean alreadyAdded(Metadata<String> metadata, List<Metadata<String>> list) {
-        for (Metadata<String> existing : list) {
+    private boolean alreadyAdded(Metadata<BeansXmlRecord> metadata, List<Metadata<BeansXmlRecord>> list) {
+        for (Metadata<BeansXmlRecord> existing : list) {
             if (existing.getValue().equals(metadata.getValue())) {
                 return true;
             }

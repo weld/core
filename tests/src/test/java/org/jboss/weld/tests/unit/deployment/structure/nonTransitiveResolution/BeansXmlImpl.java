@@ -2,6 +2,7 @@ package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
 import com.google.common.base.Function;
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
 import org.jboss.weld.metadata.MetadataImpl;
@@ -15,18 +16,39 @@ import static org.jboss.weld.bootstrap.spi.Scanning.EMPTY_SCANNING;
 
 public class BeansXmlImpl implements BeansXml {
 
-    private static class AddMetadataFunction<T> implements Function<String, Metadata<String>> {
+    private static class LegacyBeansXmlRecord implements BeansXmlRecord {
 
-        public Metadata<String> apply(String from) {
-            return new MetadataImpl<String>(from, "unknown");
+        private final String value;
+
+        public LegacyBeansXmlRecord(String value) {
+            this.value = value;
+        }
+
+        public Boolean isEnabled() {
+            return null;
+        }
+
+        public Integer getPriority() {
+            return null;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    private static class AddMetadataFunction<T> implements Function<String, Metadata<BeansXmlRecord>> {
+
+        public Metadata<BeansXmlRecord> apply(String from) {
+            return new MetadataImpl<BeansXmlRecord>(new LegacyBeansXmlRecord(from), "unknown");
         }
 
     }
 
-    private final List<Metadata<String>> alternativeClasses;
-    private final List<Metadata<String>> alternativeStereotypes;
-    private final List<Metadata<String>> decorators;
-    private final List<Metadata<String>> interceptors;
+    private final List<Metadata<BeansXmlRecord>> alternativeClasses;
+    private final List<Metadata<BeansXmlRecord>> alternativeStereotypes;
+    private final List<Metadata<BeansXmlRecord>> decorators;
+    private final List<Metadata<BeansXmlRecord>> interceptors;
     private final Scanning scanning;
 
 
@@ -54,19 +76,19 @@ public class BeansXmlImpl implements BeansXml {
         this.scanning = EMPTY_SCANNING;
     }
 
-    public List<Metadata<String>> getEnabledAlternativeClasses() {
+    public List<Metadata<BeansXmlRecord>> getEnabledAlternativeClasses() {
         return alternativeClasses;
     }
 
-    public List<Metadata<String>> getEnabledAlternativeStereotypes() {
+    public List<Metadata<BeansXmlRecord>> getEnabledAlternativeStereotypes() {
         return alternativeStereotypes;
     }
 
-    public List<Metadata<String>> getEnabledDecorators() {
+    public List<Metadata<BeansXmlRecord>> getEnabledDecorators() {
         return decorators;
     }
 
-    public List<Metadata<String>> getEnabledInterceptors() {
+    public List<Metadata<BeansXmlRecord>> getEnabledInterceptors() {
         return interceptors;
     }
 
