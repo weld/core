@@ -19,19 +19,19 @@
       
       <section>
          <title>Bundle types</title>
-         <para>This document discners differents bundle types for OSGi environment using Weld-OSGi: <itemizedlist>
+         <para>This document discerns different bundle types for OSGi environment using Weld-OSGi: <itemizedlist>
             <listitem>
-               <para><emphasis>Bundle</emphasis> reffers to any bundle deployable in the OSGi environment as a Java
+               <para><emphasis>Bundle</emphasis> refers to any bundle deployable in the OSGi environment as a Java
                   archive containing OSGi marker headers in its <code>META-INF/Manifest.MF</code> file.</para>
             </listitem>
             <listitem>
-               <para><emphasis>Bean bundle</emphasis> reffers to any bundle deployable in the OSGi environment and
+               <para><emphasis>Bean bundle</emphasis> refers to any bundle deployable in the OSGi environment and
                   managable by Weld-OSGi as a <emphasis>bundle</emphasis> containing CDI marker file
                   <code>META-INF/bean.xml</code>.</para>
             </listitem>
             <listitem>
-               <para><emphasis>Regular bundle</emphasis> reffers to any bundle deployable in the OSGi environment and
-                  not managable by Weld-OSGi as a <emphasis>bundle</emphasis> not containing CDI marker file.</para>
+               <para><emphasis>Regular bundle</emphasis> refers to any bundle deployable in the OSGi environment and
+                  not manageable by Weld-OSGi as a <emphasis>bundle</emphasis> not containing CDI marker file.</para>
             </listitem>
          </itemizedlist></para>         
       </section>
@@ -48,11 +48,11 @@
                <para>The architecture, organization and workflow of the Weld-OSGi framework.</para>
             </listitem>
             <listitem>
-               <para>The programming model for, and responsabilities of, application developper who uses the
+               <para>The programming model for, and responsibilities of, application developer who uses the
                   Weld-OSGi framework.</para>
             </listitem>
             <listitem>
-               <para>The programming model for, and responsabilities of, vendor who provides the compatibility of
+               <para>The programming model for, and responsibilities of, vendor who provides the compatibility of
                   another CDI implementation.</para>
             </listitem>
          </itemizedlist></para>
@@ -62,13 +62,13 @@
       <section>
          <title>What is Weld-OSGi ?</title>
          
-         <para>Weld-OSGi is an extension to the Weld project as a framework for developping applications in OSGi
+         <para>Weld-OSGi is an extension to the Weld project as a framework for developing applications in OSGi
             environment. Weld-OSGi aims at: <itemizedlist>
                <listitem>
                   <para>Providing a support for OSGi environments to the Weld project.</para>
                </listitem>
                <listitem>
-                  <para>Adressing the OSGi complexity using the CDI programming model.</para>
+                  <para>Addressing the OSGi complexity using the CDI programming model.</para>
                </listitem>
             </itemizedlist></para>
          <para>Weld-OSGi is a group of four bundles deployable in any OSGi environment. It allows the usage of bean
