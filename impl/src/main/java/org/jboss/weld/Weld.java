@@ -183,6 +183,6 @@ public class Weld extends CDI<Object> {
 
     @Override
     public void destroy(Object instance) {
-        throw new UnsupportedOperationException();
+        getInstance().destroy(instance);
     }
 }
