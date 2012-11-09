@@ -96,7 +96,7 @@ public class MyServiceImpl extends AbstractClass implements MyService, OtherInte
                         the service is registered for all these interface types.The blacklist is described below.</para>
                   </listitem>
                   <listitem>
-                     <para>Else if Weld-OSGi the implementation class possesses a non-blacklisted superclass the service
+                     <para>Else if the implementation class possesses a non-blacklisted superclass, the service
                         is registered for this superclass type.</para>
                   </listitem>
                   <listitem>
@@ -112,8 +112,8 @@ public class MyServiceImpl extends AbstractClass implements MyService, OtherInte
       </section>
       <section>
          <title><code>OSGiService</code> annotated or <code>Service&lt;T></code> typed injection points</title>
-         <para>A <code>OSGiService</code> annotated or a <code>Service&lt;T></code> typed injection point is managed by
-            Weld-OSGi through the creation of a new service bean.<code>OSGiService</code> annotation and
+         <para>An <code>OSGiService</code> annotated or a <code>Service&lt;T></code> typed injection point is managed by
+            Weld-OSGi through the creation of a new service bean. <code>OSGiService</code> annotation and
                <code>Service&lt;T></code> type are exclusive on injection point. If an injection point has both,
             Weld-OSGi detects the problem and treats it as an error.</para>
          <itemizedlist>
@@ -149,18 +149,18 @@ public class MyServiceImpl extends AbstractClass implements MyService, OtherInte
          <para>Service provider does not allow to subtype the matching service implementation set.</para>
          <para>Service provider allows to instantiate the first service implementation matching the (possibly)
             over-specified injection point.</para>
-         <para>Service implementation are search into the OSGi service registry, it may be:<itemizedlist>
+         <para>Service implementation are searched into the OSGi service registry, it may be:<itemizedlist>
                <listitem>
-                  <para>An Weld-OSGi auto-published service</para>
+                  <para>A Weld-OSGi auto-published service</para>
                </listitem>
                <listitem>
-                  <para>An regular OSGi service</para>
+                  <para>A regular OSGi service</para>
                </listitem>
             </itemizedlist></para>
       </section>
       <section>
          <title>Clearly specify a service implementation</title>
-         <para><code>Qualifier</code> annotated annotations might be use for both specifying auto-published services and
+         <para><code>Qualifier</code> annotations might be used for both specifying auto-published services and
             service injection points. Such qualifiers should be seen as OSGi service properties, thus every set of
             qualifiers corresponds to a set of OSGi service properties and so to a OSGi service LDAP filter.</para>
          <para>However qualifiers keep a regular meaning for the CDI generated bean of an auto-published service
@@ -170,30 +170,30 @@ public class MyServiceImpl extends AbstractClass implements MyService, OtherInte
             <para>A qualifier will generate an OSGi service property for each of its valued element (an element with a
                default value is always considered valued) following these rules:<itemizedlist>
                   <listitem>
-                     <para>A valued element generate a property with this
+                     <para>A valued element generates a property with this
                         template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>.<emphasis role="italic">decapitalized_element_name</emphasis>=<emphasis role="italic">element_value.toString()</emphasis></programlisting><programlisting>@MyQualifier(lang="EN", country="US")</programlisting>will
                         generate:<programlisting>(myqualifier.lang=EN)
 (myqualifier.country=US)</programlisting></para>
                   </listitem>
                   <listitem>
-                     <para>A non valued element with a default value generate a property with this
+                     <para>A non valued element with a default value generates a property with this
                         template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>.<emphasis role="italic">decapitalized_element_name</emphasis>=<emphasis role="italic">element_default_value.toString()</emphasis></programlisting><programlisting>@MyQualifier(lang="EN")</programlisting>will
                         generate:<programlisting>(myqualifier.lang=EN)
 (myqualifier.country=US) //admitting US is the default value for the element country</programlisting></para>
                   </listitem>
                   <listitem>
-                     <para>A non valued element with no default value generate a property with this
+                     <para>A non valued element with no default value generates a property with this
                         template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>.<emphasis role="italic">decapitalized_element_name</emphasis>=*</programlisting><programlisting>@MyQualifier(lang="EN")</programlisting>will
                         generate:<programlisting>(myqualifier.lang=EN)
 (myqualifier.country=*) //admitting there is no default value for the element country</programlisting></para>
                   </listitem>
                   <listitem>
-                     <para>A qualifier with no element generate a property with this
+                     <para>A qualifier with no element generates a property with this
                         template:<programlisting><emphasis role="italic">decapitalized_qualifier_name</emphasis>=*</programlisting><programlisting>@MyQualifier()</programlisting>will
                         generate:<programlisting>(myqualifier=*)</programlisting></para>
                   </listitem>
                   <listitem>
-                     <para>Some qualifiers follow a specific processing:<itemizedlist>
+                     <para>Some qualifiers follows a specific processing:<itemizedlist>
                            <listitem>
                               <para><code>OSGiService</code> qualifier will not generate any service property</para>
                            </listitem>
@@ -218,20 +218,20 @@ public class MyServiceImpl extends AbstractClass implements MyService, OtherInte
             <title><code>Filter</code> and <code>Properties</code> qualifiers</title>
             <para><code>Filter</code> qualifier allows to specify a OSGi LDAP filter for a <code>OSGiServiceBean</code>
                or a <code>OSGiServiceProducerBean</code> injection point.</para>
-            <para>A <code>Filter</code> qualifier generate a "as it is" OSGi LDAP filter.</para>
+            <para>A <code>Filter</code> qualifier generates a "as it is" OSGi LDAP filter.</para>
             <para><code>Properties</code> qualifier allows to specify OSGi LDAP properties for a auto-published service
                class or for a <code>OSGiServiceBean</code> or a <code>OSGiServiceProducerBean</code> injection
                point.</para>
-            <para>A <code>Properties</code> qualifier generate a property for every one of its <code>Property</code>
+            <para>A <code>Properties</code> qualifier generates a property for every one of its <code>Property</code>
                annotation with this
                template:<programlisting><emphasis role="italic">Property.name()</emphasis>=<emphasis role="italic">Property.value()</emphasis></programlisting><programlisting>@Properties({@Property(name = "lang", value = "EN")
              @Property(name = "country", value = "US"
 })</programlisting>will
                generate:<programlisting>(lang=EN)
 (country=US)</programlisting></para>
-            <para>If a <code>Filter</code> qualifier is used on a bean class Weld-OSGi detects the problem and treats it
+            <para>If a <code>Filter</code> qualifier is used on a bean class, Weld-OSGi detects the problem and treats it
                as an error.</para>
-            <para>It is discourage to use the <code>Properties</code> qualifier on a bean that might be use as a regular
+            <para>It is discouraged to use the <code>Properties</code> qualifier on a bean that might be use as a regular
                CDI bean.</para>
          </section>
          <section>
@@ -289,8 +289,8 @@ public class MyServiceImpl implements MyService {
                         filter<programlisting><emphasis role="italic">null</emphasis></programlisting></para>
                   </listitem>
                </itemizedlist></para>
-            <para>Weld-OSGi never ensure that, neither the provided OSGi LDAP properties, neither the provided OSGi LDAP
-               filter, neither the generated OSGi LDAP filter, are valid. </para>
+            <para>Weld-OSGi never ensure that the provided OSGi LDAP properties, neither the provided OSGi LDAP
+               filter, neither the generated OSGi LDAP filter are valid. </para>
          </section>
          <section>
             <title>Using service filtering</title>
@@ -417,7 +417,7 @@ public class MyServiceQualifiedImpl implements MyService {
                      mechanism</para>
                </listitem>
             </itemizedlist></para>
-         <para>It is discourage to use regular OSGi service publication mechanisms in a Weld-OSGi application.</para>
+         <para>It is discouraged to use regular OSGi service publication mechanisms in a Weld-OSGi application.</para>
          <section>
             <title>OSGi service scopes</title>
             <para>A CDI scope might be precised for every auto-published service class:<itemizedlist>
@@ -468,7 +468,7 @@ public class MyServiceImpl implements MyService {
       <section>
          <title>Inaccessible service at runtime</title>
          <para><code>OSGiServiceBean</code> and <code>OSGiServiceProviderBeans</code> bean instances are dynamically
-            obtained OSGi service instance.</para>
+            obtained as OSGi service instance.</para>
          <para>No instance might be available at runtime due to OSGi dynamism, in such case a
                <code>OSGiServiceUnavailableException</code> is thrown with any <code>OSGiServiceBean</code> method call
             or the <code>OSGiServiceProviderBeans</code>
@@ -488,7 +488,7 @@ public class MyServiceImpl implements MyService {
 }</programlisting></para>
             </listitem>
             <listitem>
-               <para>These events may be fires with the regular CDI
+               <para>These events may be fired with the regular CDI
                   mechanisms<programlisting>BeanManager beanManager;
 ...
 beanManager.fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));</programlisting><programlisting>Event&lt;Object> event;
@@ -516,7 +516,7 @@ event.select(AbstractBundleEvent.class).fire(new BundleInstalled(bundle));</prog
                   <para>Such an event is fired every time the correspondent OSGi bundle event is fired</para>
                </listitem>
                <listitem>
-                  <para>All bundle lifecycle events may be listen using the <code>AbstractBundleEvent</code>
+                  <para>All bundle lifecycle events may be listened using the <code>AbstractBundleEvent</code>
                      event</para>
                </listitem>
                <listitem>
@@ -526,8 +526,8 @@ event.select(AbstractBundleEvent.class).fire(new BundleInstalled(bundle));</prog
                         <code>BundleStarting</code>, <code>BundleStopped</code> and <code>BundleStopping</code></para>
                </listitem>
             </itemizedlist></para>
-         <para>It is possible to filter the listened source bundle by bundle symbolic name and (optional)
-            version<programlisting>public void bindBundle(@Observes @BundleName("com.sample.gui") @BundleVersion("4.2.1") AbstractBundleEvent event) {
+         <para>It is possible to filter the listened source bundle by bundle symbolic name and
+            version (optional)<programlisting>public void bindBundle(@Observes @BundleName("com.sample.gui") @BundleVersion("4.2.1") AbstractBundleEvent event) {
 }
 public void bindBundle(@Observes @BundleName("com.sample.gui") BundleInstalled event) {
 }</programlisting>Only
@@ -643,8 +643,8 @@ public void listenMyMessageEventsFromOtherBundles(@Observes @Sent @Specification
                      file<programlisting>@Inject @BundleDataFile("test.txt") File file;</programlisting></para>
                </listitem>
             </itemizedlist></para>
-         <para>It is possible to precise an external bundle by bundle symbolic name and (optional)
-            version<programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") bundle;
+         <para>It is possible to precise an external bundle by bundle symbolic name and
+            version(optional)<programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") bundle;
 @Inject @BundleName("com.sample.gui") bundle;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") BundleContext bundleContext;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") @BundleHeaders Map&lt;String,String>metadata;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") @BundleHeader("Bundle-SymbolicName") String symbolicName;</programlisting><programlisting>@Inject @BundleName("com.sample.gui") @BundleVersion("4.2.1") @BundleDataFile("test.txt") File file;</programlisting>If
             a <code>BundleVersion</code> annotation is provided without a <code>BundleName</code> annotation Weld-OSGi
             detects the problem and treats it as an error.</para>

@@ -5,14 +5,14 @@
    <title>Architecture of Weld-OSGi</title>
    
    <chapter>
-      <title>Framework organisation</title>
+      <title>Framework organization</title>
       <para>Weld-OSGi is composed of five bundles: <itemizedlist>
             <listitem>
                <para>The <emphasis>API bundle</emphasis> that describes the programming model and the OSGi extension
                   mechanism.</para>
             </listitem>
             <listitem>
-               <para>The <emphasis>SPI bundle</emphasis> that describes the CDI implementatio hooking mechanism.</para>
+               <para>The <emphasis>SPI bundle</emphasis> that describes the CDI implementation hooking mechanism.</para>
             </listitem>
             <listitem>
                <para>The <emphasis>third party API bundle</emphasis> that provides all the needed third party
@@ -27,8 +27,8 @@
                   extension bundle.</para>
             </listitem>
          </itemizedlist></para>
-      <para>Note that as Weld-OSGi runs in an OSGi environment it is implicit
-         that there is an OSGi core bundle too. This one provide OSGi features for all other bundles, including bean
+      <para>Note that as Weld-OSGi runs in an OSGi environment and it is implicit
+         that there is an OSGi core bundle too. This one provides OSGi features for all other bundles, including bean
          bundles. But it is not an actual part of Weld-OSGi.</para>
       <figure>
          <title>The five bundles of Weld-OSGi</title>
@@ -46,7 +46,7 @@
             </listitem>
             <listitem>
                <para>Integration part: this part represents the Weld integration. It provides all the Weld containers
-                  needed by the extension part and defines how these containers should hookup with bean bundles. This
+                  needed by the extension part and defines how these containers should hook up with bean bundles. This
                   part is more described in chapter 3.</para>
             </listitem>
             <listitem>
@@ -60,7 +60,7 @@
       <section>
          <title>API bundle</title>
          <para>The extension API defines all the features provided to OSGi
-            environment using CDI specification. It exposes all the new utilities and defines the comportment of the
+            environment using CDI specification. It exposes all the new utilities and defines the behavior of the
             extension bundle.</para>
          <para>It exposes all the interfaces, events and annotations usable by a developers in order to develop its
             client bean bundles. It defines the programming model of bean bundle. Mostly it is about publishing and
@@ -71,8 +71,8 @@
       </section>
       <section>
          <title>Extension bundle: the puppet master</title>
-         <para>The extension bundle is the orchestrator of Weld-OSGi. It may be use by any application that requires
-            Weld-OSGi. It may be just started at the beginning of a Weld-OSGi application. It requests the extension API
+         <para>The extension bundle is the orchestrator of Weld-OSGi. It may be used by any application that requires
+            Weld-OSGi. It may be just started at the beginning of a Weld-OSGi application. It requires the extension API
             bundle as a dependency.</para>
          <para>The extension bundle is the heart of Weld-OSGi applications. Once it is started, provided that it finds a
             started integration bundle, it manages all the bean bundles. It is in charge of service automatic
@@ -80,11 +80,11 @@
          <para>It runs in background, it just need to be started with the OSGi environment, then everything is
             transparent to the user. Client bean bundles do not have to do anything in order to use Weld-OSGi
             functionality.</para>
-         <para>In order to perform injections the extension bundle search for a CDI compliant container service provider
+         <para>In order to perform injections, the extension bundle searches for a CDI compliant container service provider
             once it is started. Thus it can only work coupled with a bundle providing such a service: the integration
             bundle.</para>
          <para>The extension bundle provides an extension to OSGi as an
-            extender pattern. The extension bundle, the extender, tracks for bean bundles, the extensions, to be
+            extender pattern. The extension bundle (the extender) tracks for bean bundles (the extensions) to be
             started. Then CDI utilities are enabled for these bean bundles over OSGi environment.</para>
          <para>The extension bundle works that
             way:<programlisting>BEGIN
@@ -106,7 +106,7 @@
             unmanage_bean_bundle
     END_WHILE
     stop
-    FOR bean_bundle : namaged_bundles
+    FOR bean_bundle : managed_bundles
         unmanage_bean_bundle
         stop_bean_bundle
     END_FOR
@@ -125,8 +125,8 @@ END</programlisting></para>
             container may be provided using an integration bundle.</para>
          <para>This aims at providing the minimum integration in order to
             start a CDI compliant container with every managed bean bundle. Then the extension bundle can get a CDI
-            container to provide to every one of its manages bean bundle.</para>
-         <para>Moreover the integration API allows to mix CDI compliant
+            container to provide to every one of its managed bean bundle.</para>
+         <para>Moreover, the integration API allows to mix CDI compliant
             container in the same application by providing an embedded mode. In this mode a bean bundle is decoupled
             from the extension bundle and is managed on its own. Thus various implementations of CDI container can be
             used or the behavior of a particular bean bundle can be particularized.</para>
@@ -139,9 +139,9 @@ END</programlisting></para>
       <section>
          <title>Integration bundle: provide Weld containers</title>
          <para>The integration bundle is responsible for providing Weld containers to the extension bundle. It may be
-            started with the extension bundle and publish a CDI container factory service. It request the integration
+            started with the extension bundle and publish a CDI container factory service. It requires the integration
             API bundle as a dependency.</para>
-         <para>The integration bundle may work that way:</para>
+         <para>The integration bundle may work this way:</para>
          <programlisting>BEGIN
     start
     register_container_factory_service
@@ -246,9 +246,9 @@ END</programlisting>
       <section>
          <title>The Embedded-CDIContainer <code>META-INF/Manifest.MF</code> header </title>
          <para>This header prevents the extension bundle to automatically manage the bean bundle that set this manifest
-            header to true. So the bean bundle can be manage more finely by the user or use a different CDI container.
-            If this header is set to false or is not present in the <code>META-INF/Manifest.MF</code> file then the bean
-            bundle will be automatically manage by the extension bundle (if it is started).</para>
+            header to true. So the bean bundle can be managed more finely by the user or use a different CDI container.
+            If this header is set to false or it is not present in the <code>META-INF/Manifest.MF</code> file then the bean
+            bundle will be automatically managed by the extension bundle (if it is started).</para>
       </section>
    </chapter>
    
