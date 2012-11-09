@@ -1,5 +1,20 @@
 package org.jboss.weld.xml;
 
+import static java.util.Arrays.asList;
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_ALTERNATIVES;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_DECORATORS;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
+import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_SCANNING;
+import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_ERROR;
+import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_WARNING;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
@@ -19,21 +34,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_ALTERNATIVES;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_DECORATORS;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_SCANNING;
-import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_WARNING;
 
 /**
  * An implementation of the beans.xml parser written using SAX
@@ -129,8 +129,8 @@ public class BeansXmlHandler extends DefaultHandler {
             }
             builder = new BeansXmlRecordBuilder();
 
-            String enabled = trim(attributes.getValue(JAVAEE_URI, "enabled"));
-            String priority = trim(attributes.getValue(JAVAEE_URI, "priority"));
+            String enabled = interpolate(trim(attributes.getValue(JAVAEE_URI, "enabled")));
+            String priority = interpolate(trim(attributes.getValue(JAVAEE_URI, "priority")));
 
             if (enabled != null) {
                 builder.setEnabled(Boolean.valueOf(enabled));
@@ -148,7 +148,7 @@ public class BeansXmlHandler extends DefaultHandler {
             if (builder == null) {
                 throw new IllegalStateException(BeansXmlRecordBuilder.class.getName() + " not set");
             }
-            builder.setValue(trim(nestedText));
+            builder.setValue(interpolate(trim(nestedText)));
             getRecords(localName).add(buildRecord(builder, qName));
             builder = null;
         }
@@ -177,7 +177,7 @@ public class BeansXmlHandler extends DefaultHandler {
     private final List<Metadata<BeansXmlRecord>> alternativeStereotypes;
     private final List<Metadata<Filter>> includes;
     private final List<Metadata<Filter>> excludes;
-    private final URL file;
+    protected final URL file;
 
     /*
     * Parser State
@@ -248,17 +248,17 @@ public class BeansXmlHandler extends DefaultHandler {
             @Override
             public void processStartChildElement(String uri, String localName, String qName, Attributes attributes) {
                 if (isFilterElement(uri, localName)) {
-                    name = trim(attributes.getValue("name"));
-                    pattern = trim(attributes.getValue("pattern"));
+                    name = interpolate(trim(attributes.getValue("name")));
+                    pattern = interpolate(trim(attributes.getValue("pattern")));
                     systemPropertyActivations = new ArrayList<Metadata<SystemPropertyActivation>>();
                     classAvailableActivations = new ArrayList<Metadata<ClassAvailableActivation>>();
                 } else if (isInNamespace(uri) && "if-system-property".equals(localName)) {
-                    String systemPropertyName = trim(attributes.getValue("name"));
-                    String systemPropertyValue = trim(attributes.getValue("value"));
+                    String systemPropertyName = interpolate(trim(attributes.getValue("name")));
+                    String systemPropertyValue = interpolate(trim(attributes.getValue("value")));
                     Metadata<SystemPropertyActivation> systemPropertyActivation = new XmlMetadata<SystemPropertyActivation>(qName, new SystemPropertyActivationImpl(systemPropertyName, systemPropertyValue), file, locator.getLineNumber());
                     systemPropertyActivations.add(systemPropertyActivation);
                 } else if (isInNamespace(uri) && "if-class-available".equals(localName)) {
-                    String className = trim(attributes.getValue("name"));
+                    String className = interpolate(trim(attributes.getValue("name")));
                     Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(qName, new ClassAvailableActivationImpl(className), file, locator.getLineNumber());
                     classAvailableActivations.add(classAvailableActivation);
                 }
@@ -378,6 +378,10 @@ public class BeansXmlHandler extends DefaultHandler {
             return;
         }
         log.warn(XSD_VALIDATION_ERROR, file, e.getLineNumber(), e.getMessage());
+    }
+
+    protected String interpolate(String string) {
+        return string; // noop by default, integrators may override
     }
 
 }

@@ -93,7 +93,7 @@ public class BeansXmlParser {
                 // The file is just acting as a marker file
                 return EMPTY_BEANS_XML;
             }
-            BeansXmlHandler handler = new BeansXmlHandler(beansXml);
+            BeansXmlHandler handler = getHandler(beansXml);
 
             try {
                 parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
@@ -112,7 +112,7 @@ public class BeansXmlParser {
         } catch (IOException e) {
             throw new IllegalStateException(LOAD_ERROR, e, beansXml);
         } catch (SAXException e) {
-            throw new IllegalStateException(PARSING_ERROR, beansXml, e);
+            throw new IllegalStateException(PARSING_ERROR, e, beansXml);
         } finally {
             if (beansXmlInputStream != null) {
                 try {
@@ -200,5 +200,7 @@ public class BeansXmlParser {
         }
     }
 
-
+    protected BeansXmlHandler getHandler(final URL beansXml) {
+        return new BeansXmlHandler(beansXml);
+    }
 }
