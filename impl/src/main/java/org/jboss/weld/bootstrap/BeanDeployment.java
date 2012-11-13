@@ -205,7 +205,7 @@ public class BeanDeployment {
     public void createEnabled() {
         beanManager.setEnabled(enabledBuilder.create());
         enabledBuilder.clear(); // not needed anymore
-        log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternativeClasses(), beanManager.getEnabled().getAlternativeStereotypes());
+        log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternatives());
         log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
         log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
     }

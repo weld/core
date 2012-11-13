@@ -22,18 +22,17 @@
 package org.jboss.weld.bootstrap;
 
 import static com.google.common.collect.Lists.transform;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.ProcessModule;
-
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
@@ -68,44 +67,51 @@ public class EnabledBuilder {
 
         public Metadata<Class<? extends T>> apply(Metadata<BeansXmlRecord> from) {
             String location = from.getLocation();
+            MetadataImpl<Class<? extends T>> metadata = null;
             try {
-                return new MetadataImpl<Class<? extends T>>(Reflections.<Class<? extends T>> cast(resourceLoader
+                metadata = new MetadataImpl<Class<? extends T>>(Reflections.<Class<? extends T>> cast(resourceLoader
                         .classForName(from.getValue().getValue())), location);
             } catch (ResourceLoadingException e) {
                 throw new DeploymentException(ERROR_LOADING_BEANS_XML_ENTRY, e.getCause(), from.getValue(), from.getLocation());
             } catch (Exception e) {
                 throw new DeploymentException(ERROR_LOADING_BEANS_XML_ENTRY, e, from.getValue(), from.getLocation());
             }
+            if (from.getValue().isStereotype()) {
+                if (!metadata.getValue().isAnnotation()) {
+                    throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, metadata.getValue());
+                }
+            } else {
+                if (metadata.getValue().isAnnotation() || metadata.getValue().isInterface()) {
+                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, metadata.getValue());
+                }
+            }
+            return metadata;
         }
     }
 
     private final List<Metadata<Class<?>>> decorators;
     private final List<Metadata<Class<?>>> interceptors;
-    private final Set<Metadata<Class<? extends Annotation>>> alternativeStereotypes;
-    private final Set<Metadata<Class<?>>> alternativeClasses;
+    private final Set<Metadata<Class<?>>> alternatives;
 
     public static EnabledBuilder of(BeansXml beansXml, ResourceLoader resourceLoader) {
         if (beansXml == null) {
             return new EnabledBuilder();
         }
         ClassLoader<Object> classLoader = new ClassLoader<Object>(resourceLoader);
-        ClassLoader<Annotation> annotationLoader = new ClassLoader<Annotation>(resourceLoader);
         return new EnabledBuilder(
                 new ArrayList<Metadata<Class<?>>>(transform(beansXml.getEnabledDecorators(), classLoader)),
                 new ArrayList<Metadata<Class<?>>>(transform(beansXml.getEnabledInterceptors(), classLoader)),
-                listToSet(transform(beansXml.getEnabledAlternativeStereotypes(), annotationLoader), ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES),
-                listToSet(transform(beansXml.getEnabledAlternativeClasses(), classLoader), ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES));
+                listToSet(transform(beansXml.getEnabledAlternatives(), classLoader), ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES));
     }
 
     protected EnabledBuilder() {
-        this(new ArrayList<Metadata<Class<?>>>(), new ArrayList<Metadata<Class<?>>>(), new HashSet<Metadata<Class<? extends Annotation>>>(), new HashSet<Metadata<Class<?>>>());
+        this(new ArrayList<Metadata<Class<?>>>(), new ArrayList<Metadata<Class<?>>>(), new HashSet<Metadata<Class<?>>>());
     }
 
-    protected EnabledBuilder(List<Metadata<Class<?>>> decorators, List<Metadata<Class<?>>> interceptors, Set<Metadata<Class<? extends Annotation>>> alternativeStereotypes, Set<Metadata<Class<?>>> alternativeClasses) {
+    protected EnabledBuilder(List<Metadata<Class<?>>> decorators, List<Metadata<Class<?>>> interceptors, Set<Metadata<Class<?>>> alternatives) {
         this.decorators = decorators;
         this.interceptors = interceptors;
-        this.alternativeStereotypes = alternativeStereotypes;
-        this.alternativeClasses = alternativeClasses;
+        this.alternatives = alternatives;
     }
 
     private static <T> Set<T> listToSet(List<T> list, ValidatorMessage duplicateMessage) {
@@ -127,25 +133,20 @@ public class EnabledBuilder {
         return interceptors;
     }
 
-    public Set<Metadata<Class<? extends Annotation>>> getAlternativeStereotypes() {
-        return alternativeStereotypes;
-    }
-
-    public Set<Metadata<Class<?>>> getAlternativeClasses() {
-        return alternativeClasses;
+    public Set<Metadata<Class<?>>> getAlternatives() {
+        return alternatives;
     }
 
     public Enabled create() {
         // create defensive copies since extension may keep references to these structures
-        return new Enabled(new HashSet<Metadata<Class<? extends Annotation>>>(alternativeStereotypes),
-                new HashSet<Metadata<Class<?>>>(alternativeClasses), new ArrayList<Metadata<Class<?>>>(decorators),
+        return new Enabled(new HashSet<Metadata<Class<?>>>(alternatives),
+                new ArrayList<Metadata<Class<?>>>(decorators),
                 new ArrayList<Metadata<Class<?>>>(interceptors));
     }
 
     public void clear() {
         decorators.clear();
         interceptors.clear();
-        alternativeClasses.clear();
-        alternativeStereotypes.clear();
+        alternatives.clear();
     }
 }

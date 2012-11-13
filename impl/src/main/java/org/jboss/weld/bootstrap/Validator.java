@@ -595,15 +595,7 @@ public class Validator implements Service {
     }
 
     private void validateEnabledAlternatives(BeanManagerImpl beanManager) {
-        for (Metadata<Class<? extends Annotation>> stereotype : beanManager.getEnabled().getAlternativeStereotypes()) {
-            if (!beanManager.isStereotype(stereotype.getValue())) {
-                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, stereotype);
-            }
-            if (!isAlternative(beanManager, stereotype.getValue())) {
-                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, stereotype);
-            }
-        }
-        if (beanManager.getEnabled().getAlternativeClasses().size() > 0) {
+        if (beanManager.getEnabled().getAlternatives().size() > 0) {
             // lookup structure for validation of alternatives
             Multimap<Class<?>, Bean<?>> beansByClass = HashMultimap.create();
             for (Bean<?> bean : beanManager.getAccessibleBeans()) {
@@ -611,19 +603,28 @@ public class Validator implements Service {
                     beansByClass.put(bean.getBeanClass(), bean);
                 }
             }
-            for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternativeClasses()) {
-                if (clazz.getValue().isAnnotation() || clazz.getValue().isInterface()) {
-                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
-                }
-                // check that the class is a bean class of at least one alternative
-                boolean alternativeBeanFound = false;
-                for (Bean<?> bean : beansByClass.get(clazz.getValue())) {
-                    if (bean.isAlternative()) {
-                        alternativeBeanFound = true;
+            for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternatives()) {
+                if (clazz.getValue().isAnnotation()) {
+                    Class<? extends Annotation> annotation = Reflections.<Metadata<Class<? extends Annotation>>>cast(clazz).getValue();
+                    if (!beanManager.isStereotype(annotation)) {
+                        throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, clazz);
                     }
-                }
-                if (!alternativeBeanFound) {
-                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
+                    if (!isAlternative(beanManager, annotation)) {
+                        throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, clazz);
+                    }
+                } else if (clazz.getValue().isInterface()) {
+                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
+                } else {
+                    // check that the class is a bean class of at least one alternative
+                    boolean alternativeBeanFound = false;
+                    for (Bean<?> bean : beansByClass.get(clazz.getValue())) {
+                        if (bean.isAlternative()) {
+                            alternativeBeanFound = true;
+                        }
+                    }
+                    if (!alternativeBeanFound) {
+                        throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
+                    }
                 }
             }
         }

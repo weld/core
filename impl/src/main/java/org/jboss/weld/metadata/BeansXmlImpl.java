@@ -10,28 +10,22 @@ import org.jboss.weld.bootstrap.spi.Scanning;
 
 public class BeansXmlImpl implements BeansXml {
 
-    private final List<Metadata<BeansXmlRecord>> enabledAlternativeClasses;
-    private final List<Metadata<BeansXmlRecord>> enabledAlternativeStereotypes;
+    private final List<Metadata<BeansXmlRecord>> enabledAlternatives;
     private final List<Metadata<BeansXmlRecord>> enabledDecorators;
     private final List<Metadata<BeansXmlRecord>> enabledInterceptors;
     private final Scanning scanning;
     private final URL url;
 
-    public BeansXmlImpl(List<Metadata<BeansXmlRecord>> enabledAlternativeClasses, List<Metadata<BeansXmlRecord>> enabledAlternativeStereotypes, List<Metadata<BeansXmlRecord>> enabledDecorators, List<Metadata<BeansXmlRecord>> enabledInterceptors, Scanning scanning, URL url) {
-        this.enabledAlternativeClasses = enabledAlternativeClasses;
-        this.enabledAlternativeStereotypes = enabledAlternativeStereotypes;
+    public BeansXmlImpl(List<Metadata<BeansXmlRecord>> enabledAlternatives, List<Metadata<BeansXmlRecord>> enabledDecorators, List<Metadata<BeansXmlRecord>> enabledInterceptors, Scanning scanning, URL url) {
+        this.enabledAlternatives = enabledAlternatives;
         this.enabledDecorators = enabledDecorators;
         this.enabledInterceptors = enabledInterceptors;
         this.scanning = scanning;
         this.url = url;
     }
 
-    public List<Metadata<BeansXmlRecord>> getEnabledAlternativeClasses() {
-        return enabledAlternativeClasses;
-    }
-
-    public List<Metadata<BeansXmlRecord>> getEnabledAlternativeStereotypes() {
-        return enabledAlternativeStereotypes;
+    public List<Metadata<BeansXmlRecord>> getEnabledAlternatives() {
+        return enabledAlternatives;
     }
 
     public List<Metadata<BeansXmlRecord>> getEnabledDecorators() {

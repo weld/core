@@ -107,9 +107,11 @@ public class BeansXmlHandler extends DefaultHandler {
     private abstract class SpecContainer extends Container {
 
         private BeansXmlRecordBuilder builder;
+        private final Collection<Metadata<BeansXmlRecord>> records;
 
-        public SpecContainer(String localName, String... nestedElements) {
+        public SpecContainer(Collection<Metadata<BeansXmlRecord>> records, String localName, String... nestedElements) {
             super(JAVAEE_URI, localName, nestedElements);
+            this.records = records;
         }
 
         /**
@@ -138,6 +140,7 @@ public class BeansXmlHandler extends DefaultHandler {
             if (priority != null) {
                 builder.setPriority(Integer.valueOf(priority));
             }
+            builder.setStereotype("stereotype".equals(localName));
         }
 
         @Override
@@ -149,15 +152,13 @@ public class BeansXmlHandler extends DefaultHandler {
                 throw new IllegalStateException(BeansXmlRecordBuilder.class.getName() + " not set");
             }
             builder.setValue(interpolate(trim(nestedText)));
-            getRecords(localName).add(buildRecord(builder, qName));
+            records.add(buildRecord(builder, qName));
             builder = null;
         }
 
         protected Metadata<BeansXmlRecord> buildRecord(BeansXmlRecordBuilder builder, String qName) {
             return new SpecXmlMetadata(qName, builder.create(), file, locator.getLineNumber());
         }
-
-        protected abstract Collection<Metadata<BeansXmlRecord>> getRecords(String localName);
     }
 
     public static final String WELD_URI = "http://jboss.org/schema/weld/beans";
@@ -173,8 +174,7 @@ public class BeansXmlHandler extends DefaultHandler {
     */
     private final List<Metadata<BeansXmlRecord>> interceptors;
     private final List<Metadata<BeansXmlRecord>> decorators;
-    private final List<Metadata<BeansXmlRecord>> alternativeClasses;
-    private final List<Metadata<BeansXmlRecord>> alternativeStereotypes;
+    private final List<Metadata<BeansXmlRecord>> alternatives;
     private final List<Metadata<Filter>> includes;
     private final List<Metadata<Filter>> excludes;
     protected final URL file;
@@ -191,52 +191,31 @@ public class BeansXmlHandler extends DefaultHandler {
         this.file = file;
         this.interceptors = new ArrayList<Metadata<BeansXmlRecord>>();
         this.decorators = new ArrayList<Metadata<BeansXmlRecord>>();
-        this.alternativeClasses = new ArrayList<Metadata<BeansXmlRecord>>();
-        this.alternativeStereotypes = new ArrayList<Metadata<BeansXmlRecord>>();
+        this.alternatives = new ArrayList<Metadata<BeansXmlRecord>>();
         this.includes = new ArrayList<Metadata<Filter>>();
         this.excludes = new ArrayList<Metadata<Filter>>();
         this.seenContainers = new ArrayList<Container>();
         this.containers = new ArrayList<Container>();
-        containers.add(new SpecContainer("interceptors", "class") {
+        containers.add(new SpecContainer(interceptors, "interceptors", "class") {
 
             @Override
             public void handleMultiple() {
                 throw new DefinitionException(MULTIPLE_INTERCEPTORS, file + "@" + locator.getLineNumber());
             }
-
-            @Override
-            protected Collection<Metadata<BeansXmlRecord>> getRecords(String localName) {
-                return interceptors;
-            }
         });
-        containers.add(new SpecContainer("decorators", "class") {
+        containers.add(new SpecContainer(decorators, "decorators", "class") {
 
             @Override
             public void handleMultiple() {
                 throw new DefinitionException(MULTIPLE_DECORATORS, file + "@" + locator.getLineNumber());
             }
-
-            @Override
-            protected Collection<Metadata<BeansXmlRecord>> getRecords(String localName) {
-                return decorators;
-            }
         });
-        containers.add(new SpecContainer("alternatives", "class", "stereotype") {
+        containers.add(new SpecContainer(alternatives, "alternatives", "class", "stereotype") {
 
             @Override
             public void handleMultiple() {
                 throw new DefinitionException(MULTIPLE_ALTERNATIVES, file + "@" + locator.getLineNumber());
             }
-
-            @Override
-            protected Collection<Metadata<BeansXmlRecord>> getRecords(String localName) {
-                if ("class".equals(localName)) {
-                    return alternativeClasses;
-                } else {
-                    return alternativeStereotypes;
-                }
-            }
-
         });
         containers.add(new Container(WELD_URI, "scan") {
 
@@ -351,7 +330,7 @@ public class BeansXmlHandler extends DefaultHandler {
     }
 
     public BeansXml createBeansXml() {
-        return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), file);
+        return new BeansXmlImpl(alternatives, decorators, interceptors, new ScanningImpl(includes, excludes), file);
     }
 
     @Override

@@ -19,11 +19,9 @@ package org.jboss.weld.manager;
 import static com.google.common.collect.Lists.transform;
 import static java.util.Collections.unmodifiableCollection;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
 
-import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,18 +47,16 @@ import org.jboss.weld.logging.messages.ValidatorMessage;
  */
 public class Enabled {
 
-    public static final Enabled EMPTY_ENABLED = new Enabled(Collections.<Metadata<Class<? extends Annotation>>>emptySet(), Collections.<Metadata<Class<?>>>emptySet(), Collections.<Metadata<Class<?>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList());
+    public static final Enabled EMPTY_ENABLED = new Enabled(Collections.<Metadata<Class<?>>>emptySet(), Collections.<Metadata<Class<?>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList());
 
-    private final Map<Class<? extends Annotation>, Metadata<Class<? extends Annotation>>> alternativeStereotypes;
-    private final Map<Class<?>, Metadata<Class<?>>> alternativeClasses;
+    private final Map<Class<?>, Metadata<Class<?>>> alternatives;
     private final Map<Class<?>, Metadata<Class<?>>> decorators;
     private final Map<Class<?>, Metadata<Class<?>>> interceptors;
     private final Comparator<Decorator<?>> decoratorComparator;
     private final Comparator<Interceptor<?>> interceptorComparator;
 
-    public Enabled(Set<Metadata<Class<? extends Annotation>>> alternativeStereotypes, Set<Metadata<Class<?>>> alternativeClasses, List<Metadata<Class<?>>> decorators, List<Metadata<Class<?>>> interceptors) {
-        this.alternativeStereotypes = createMetadataMap(alternativeStereotypes, ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
-        this.alternativeClasses = createMetadataMap(alternativeClasses, ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES);
+    public Enabled(Set<Metadata<Class<?>>> alternatives, List<Metadata<Class<?>>> decorators, List<Metadata<Class<?>>> interceptors) {
+        this.alternatives = createMetadataMap(alternatives, ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES);
         this.decorators = createMetadataMap(decorators, DECORATOR_SPECIFIED_TWICE);
         this.interceptors = createMetadataMap(interceptors, INTERCEPTOR_SPECIFIED_TWICE);
         final List<Class<?>> decoratorTypes = transform(decorators, new RemoveMetadataWrapperFunction<Class<?>>());
@@ -96,20 +92,12 @@ public class Enabled {
         return result;
     }
 
-    public Collection<Metadata<Class<? extends Annotation>>> getAlternativeStereotypes() {
-        return unmodifiableCollection(alternativeStereotypes.values());
+    public Collection<Metadata<Class<?>>> getAlternatives() {
+        return unmodifiableCollection(alternatives.values());
     }
 
-    public Metadata<Class<? extends Annotation>> getAlternativeStereotype(Class<? extends Annotation> annotationType) {
-        return alternativeStereotypes.get(annotationType);
-    }
-
-    public Collection<Metadata<Class<?>>> getAlternativeClasses() {
-        return unmodifiableCollection(alternativeClasses.values());
-    }
-
-    public Metadata<Class<?>> getAlternativeClass(Class<?> clazz) {
-        return alternativeClasses.get(clazz);
+    public Metadata<Class<?>> getAlternative(Class<?> clazz) {
+        return alternatives.get(clazz);
     }
 
     public Collection<Metadata<Class<?>>> getDecorators() {

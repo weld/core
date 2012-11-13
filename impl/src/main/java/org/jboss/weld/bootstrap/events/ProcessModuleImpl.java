@@ -70,7 +70,7 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
         return new SetView<Metadata<Class<?>>, Class<?>>() {
             @Override
             protected Set<Metadata<Class<?>>> getDelegate() {
-                return deployment.getEnabledBuilder().getAlternativeClasses();
+                return deployment.getEnabledBuilder().getAlternatives();
             }
 
             @Override

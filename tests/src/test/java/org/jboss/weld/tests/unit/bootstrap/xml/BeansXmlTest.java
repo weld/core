@@ -72,8 +72,8 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                assertEquals(1, enabled.getAlternativeClasses().size());
-                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+                assertEquals(1, enabled.getAlternatives().size());
+                assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }
 
         });
@@ -110,8 +110,8 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                Assert.assertEquals(1, enabled.getAlternativeClasses().size());
-                Assert.assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+                Assert.assertEquals(1, enabled.getAlternatives().size());
+                Assert.assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
                 Assert.assertEquals(1, enabled.getInterceptors().size());
                 Assert.assertEquals(Int.class, enabled.getInterceptors().iterator().next().getValue());
                 Assert.assertEquals(1, enabled.getDecorators().size());
@@ -132,8 +132,8 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                assertEquals(1, enabled.getAlternativeClasses().size());
-                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+                assertEquals(1, enabled.getAlternatives().size());
+                assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }
         });
     }
@@ -145,8 +145,8 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                assertEquals(1, enabled.getAlternativeClasses().size());
-                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+                assertEquals(1, enabled.getAlternatives().size());
+                assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }
         });
     }
@@ -160,8 +160,8 @@ public class BeansXmlTest {
 
             public void run(WeldManager beanManager) {
                 Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
-                assertEquals(1, enabled.getAlternativeClasses().size());
-                assertEquals(Alt.class, enabled.getAlternativeClasses().iterator().next().getValue());
+                assertEquals(1, enabled.getAlternatives().size());
+                assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }
         });
     }

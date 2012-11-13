@@ -35,6 +35,10 @@ public class BeansXmlImpl implements BeansXml {
         public String getValue() {
             return value;
         }
+
+        public boolean isStereotype() {
+            return false;
+        }
     }
 
     private static class AddMetadataFunction<T> implements Function<String, Metadata<BeansXmlRecord>> {
@@ -45,23 +49,17 @@ public class BeansXmlImpl implements BeansXml {
 
     }
 
-    private final List<Metadata<BeansXmlRecord>> alternativeClasses;
-    private final List<Metadata<BeansXmlRecord>> alternativeStereotypes;
+    private final List<Metadata<BeansXmlRecord>> alternatives;
     private final List<Metadata<BeansXmlRecord>> decorators;
     private final List<Metadata<BeansXmlRecord>> interceptors;
     private final Scanning scanning;
 
 
-    public BeansXmlImpl(List<String> alternativeClasses, List<String> alternativeStereotypes, List<String> decorators, List<String> interceptors) {
+    public BeansXmlImpl(List<String> alternativeClasses, List<String> decorators, List<String> interceptors) {
         if (alternativeClasses != null) {
-            this.alternativeClasses = transform(alternativeClasses, new AddMetadataFunction<String>());
+            this.alternatives = transform(alternativeClasses, new AddMetadataFunction<String>());
         } else {
-            this.alternativeClasses = emptyList();
-        }
-        if (alternativeStereotypes != null) {
-            this.alternativeStereotypes = transform(alternativeStereotypes, new AddMetadataFunction<String>());
-        } else {
-            this.alternativeStereotypes = emptyList();
+            this.alternatives = emptyList();
         }
         if (decorators != null) {
             this.decorators = transform(decorators, new AddMetadataFunction<String>());
@@ -76,12 +74,8 @@ public class BeansXmlImpl implements BeansXml {
         this.scanning = EMPTY_SCANNING;
     }
 
-    public List<Metadata<BeansXmlRecord>> getEnabledAlternativeClasses() {
-        return alternativeClasses;
-    }
-
-    public List<Metadata<BeansXmlRecord>> getEnabledAlternativeStereotypes() {
-        return alternativeStereotypes;
+    public List<Metadata<BeansXmlRecord>> getEnabledAlternatives() {
+        return alternatives;
     }
 
     public List<Metadata<BeansXmlRecord>> getEnabledDecorators() {

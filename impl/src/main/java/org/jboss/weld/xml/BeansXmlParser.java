@@ -129,8 +129,7 @@ public class BeansXmlParser {
     }
 
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-        List<Metadata<BeansXmlRecord>> alternativeStereotypes = new ArrayList<Metadata<BeansXmlRecord>>();
-        List<Metadata<BeansXmlRecord>> alternativeClasses = new ArrayList<Metadata<BeansXmlRecord>>();
+        List<Metadata<BeansXmlRecord>> alternatives = new ArrayList<Metadata<BeansXmlRecord>>();
         List<Metadata<BeansXmlRecord>> decorators = new ArrayList<Metadata<BeansXmlRecord>>();
         List<Metadata<BeansXmlRecord>> interceptors = new ArrayList<Metadata<BeansXmlRecord>>();
         List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
@@ -138,8 +137,7 @@ public class BeansXmlParser {
         URL beansXmlUrl = null;
         for (URL url : urls) {
             BeansXml beansXml = parse(url);
-            addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
-            addTo(alternativeClasses, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
+            addTo(alternatives, beansXml.getEnabledAlternatives(), removeDuplicates);
             addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
             addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
             includes.addAll(beansXml.getScanning().getIncludes());
@@ -150,7 +148,7 @@ public class BeansXmlParser {
              */
             beansXmlUrl = url;
         }
-        return new BeansXmlImpl(alternativeClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
+        return new BeansXmlImpl(alternatives, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
     }
 
     private void addTo(List<Metadata<BeansXmlRecord>> list, List<Metadata<BeansXmlRecord>> listToAdd, boolean removeDuplicates) {

@@ -44,7 +44,7 @@ public class TransitiveResolutionTest {
     */
     @Test
     public void testBeansXmlIsolation() {
-        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
+        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null), Alt.class);
         BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", Alt2.class);
         BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
         war.getBeanDeploymentArchives().add(jar1);
@@ -58,9 +58,9 @@ public class TransitiveResolutionTest {
             BeanManagerImpl warBeanManager = (BeanManagerImpl) container.getBeanManager(war);
             BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getBeanManager(jar1);
             BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getBeanManager(jar2);
-            Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
-            Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
-            Assert.assertTrue(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+            Assert.assertTrue(warBeanManager.getEnabled().getAlternatives().isEmpty());
+            Assert.assertFalse(jar1BeanManager.getEnabled().getAlternatives().isEmpty());
+            Assert.assertTrue(jar2BeanManager.getEnabled().getAlternatives().isEmpty());
         } finally {
             if (container != null) {
                 container.stopContainer();
@@ -73,8 +73,8 @@ public class TransitiveResolutionTest {
     */
     @Test
     public void testBeansXmlMultipleEnabling() {
-        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null, null), Alt.class);
-        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt2.class.getName()), Collections.<String>emptyList(), null, null), Alt2.class);
+        BeanDeploymentArchiveImpl jar1 = new BeanDeploymentArchiveImpl("first-jar", new BeansXmlImpl(Arrays.asList(Alt.class.getName()), null, null), Alt.class);
+        BeanDeploymentArchiveImpl jar2 = new BeanDeploymentArchiveImpl("second-jar", new BeansXmlImpl(Arrays.asList(Alt2.class.getName()), null, null), Alt2.class);
         BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war");
         war.getBeanDeploymentArchives().add(jar1);
         war.getBeanDeploymentArchives().add(jar2);
@@ -87,9 +87,9 @@ public class TransitiveResolutionTest {
             BeanManagerImpl warBeanManager = (BeanManagerImpl) container.getBeanManager(war);
             BeanManagerImpl jar1BeanManager = (BeanManagerImpl) container.getBeanManager(jar1);
             BeanManagerImpl jar2BeanManager = (BeanManagerImpl) container.getBeanManager(jar2);
-            Assert.assertTrue(warBeanManager.getEnabled().getAlternativeClasses().isEmpty());
-            Assert.assertFalse(jar1BeanManager.getEnabled().getAlternativeClasses().isEmpty());
-            Assert.assertFalse(jar2BeanManager.getEnabled().getAlternativeClasses().isEmpty());
+            Assert.assertTrue(warBeanManager.getEnabled().getAlternatives().isEmpty());
+            Assert.assertFalse(jar1BeanManager.getEnabled().getAlternatives().isEmpty());
+            Assert.assertFalse(jar2BeanManager.getEnabled().getAlternatives().isEmpty());
         } finally {
             if (container != null) {
                 container.stopContainer();
@@ -153,7 +153,7 @@ public class TransitiveResolutionTest {
         final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Basic.class, BasicInterceptor.class, Simple.class);
 
         // Create the BDA in which we will deploy Bar. This is equivalent to a war
-        BeansXml beansXml = new BeansXmlImpl(null, null, null, asList(BasicInterceptor.class.getName()));
+        BeansXml beansXml = new BeansXmlImpl(null, null, asList(BasicInterceptor.class.getName()));
         final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, Complex.class);
 
         // The war can access the ejb jar
@@ -202,7 +202,7 @@ public class TransitiveResolutionTest {
         final BeanDeploymentArchiveImpl ejbJar = new BeanDeploymentArchiveImpl("ejb-jar", Blah.class, BlahDecorator.class, BlahImpl.class);
 
         // Create the BDA in which we will deploy Bar. This is equivalent to a war
-        BeansXml beansXml = new BeansXmlImpl(null, null, asList(BlahDecorator.class.getName()), null);
+        BeansXml beansXml = new BeansXmlImpl(null, asList(BlahDecorator.class.getName()), null);
         final BeanDeploymentArchiveImpl war = new BeanDeploymentArchiveImpl("war", beansXml, BlahImpl2.class);
 
         // The war can access the ejb jar
